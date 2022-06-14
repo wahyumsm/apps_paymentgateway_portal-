@@ -1,0 +1,10 @@
+.sidebar .nav-item .nav-link{
+    border: unset !important;
+}
+
+.sidebar .nav-item .nav-link:hover{
+    background-color: rgba(223, 156, 67, 0.08) !important
+}
+.sidebar-inner{
+    overflow: hidden !important;
+}

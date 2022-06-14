@@ -5,7 +5,7 @@ import ChartistTooltip from 'chartist-plugin-tooltips-updated';
 
 export const SalesValueChart = () => {
   const data = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     series: [[1, 2, 2, 3, 3, 4, 3]]
   };
 
@@ -36,7 +36,7 @@ export const SalesValueChart = () => {
 
 export const SalesValueChartphone = () => {
   const data = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     series: [[1, 2, 2, 3, 3, 4, 3]]
   };
 

@@ -7,8 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faBoxOpen, faChartPie, faCog, faFileAlt, faHandHoldingUsd, faSignOutAlt, faTable, faTimes, faCalendarAlt, faMapPin, faInbox, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { Nav, Badge, Image, Button, Dropdown, Accordion, Navbar } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
+import './css/global.css'
 
 import { Routes } from "../routes";
+import EzeeLogo from "../assets/icon/Logo_Ezeelink.svg";
+import BerandaIcon from "../assets/icon/beranda_icon.svg";
+import LaporanIcon from "../assets/icon/laporan_icon.svg";
+import RiwayatIcon from "../assets/icon/riwayat_icon.svg";
+import DaftarAgenIcon from "../assets/icon/daftaragen_icon.svg";
+import DaftarPartnerIcon from "../assets/icon/daftarpartner_icon.svg";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
@@ -69,7 +76,7 @@ export default (props = {}) => {
 
   return (
     <>
-      <Navbar expand={false} collapseOnSelect variant="dark" className="navbar-theme-primary px-4 d-md-none">
+      <Navbar expand={false} collapseOnSelect variant="dark" className="px-4 d-md-none">
         <Navbar.Brand className="me-lg-5" as={Link} to={Routes.DashboardOverview.path}>
           <Image src={ReactHero} className="navbar-brand-light" />
         </Navbar.Brand>
@@ -78,8 +85,8 @@ export default (props = {}) => {
         </Navbar.Toggle>
       </Navbar>
       <CSSTransition timeout={300} in={show} classNames="sidebar-transition">
-        <SimpleBar className={`collapse ${showClass} sidebar d-md-block bg-primary text-white`}>
-          <div className="sidebar-inner px-4 pt-3">
+        <SimpleBar className={`collapse ${showClass} sidebar d-md-block text-white`} style={{backgroundColor: '#2C1919'}}>       
+          <div className="sidebar-inner px-1">
             <div className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
               <div className="d-flex align-items-center">
                 <div className="user-avatar lg-avatar me-4">
@@ -96,16 +103,17 @@ export default (props = {}) => {
                 <FontAwesomeIcon icon={faTimes} />
               </Nav.Link>
             </div>
-            <Nav className="flex-column pt-3 pt-md-0">
-              <NavItem title="Ezeelink" link={Routes.Presentation.path} image={ReactHero} />
-
+            <Nav className="flex-column pt-3 pt-md-0">              
+              <div style={{backgroundColor: '#DF9C43', width: '102%', height: '45px', textAlign: 'center'}}>
+                <img src={EzeeLogo} style={{width: 66, height: 36, marginTop: 5}} alt=""/>
+              </div>
               <NavItem title="Overview" link={Routes.DashboardOverview.path} icon={faChartPie} />
-              <NavItem external title="Messages" link="https://demo.themesberg.com/volt-pro-react/#/messages" target="_blank" badgeText="Pro" icon={faInbox} />
-              <NavItem title="Transactions" icon={faHandHoldingUsd} link={Routes.Transactions.path} />
-              <NavItem title="Settings" icon={faCog} link={Routes.Settings.path} />
-              <NavItem external title="Calendar" link="https://demo.themesberg.com/volt-pro-react/#/calendar" target="_blank" badgeText="Pro" icon={faCalendarAlt} />
-              <NavItem external title="Map" link="https://demo.themesberg.com/volt-pro-react/#/map" target="_blank" badgeText="Pro" icon={faMapPin} />
-
+              <NavItem external title="Beranda" image={BerandaIcon} />
+              <NavItem title="Laporan" image={LaporanIcon} link={Routes.Transactions.path} />
+              <NavItem title="Riwayat Transaksi" image={RiwayatIcon} link={Routes.Settings.path} />
+              <NavItem external title="Daftar Agen" image={DaftarAgenIcon} />
+              <NavItem external title="Daftar Partner" image={DaftarPartnerIcon} />
+{/* 
               <CollapsableNavItem eventKey="tables/" title="Tables" icon={faTable}>
                 <NavItem title="Bootstrap Table" link={Routes.BootstrapTables.path} />
               </CollapsableNavItem>
@@ -118,9 +126,9 @@ export default (props = {}) => {
                 <NavItem title="Lock" link={Routes.Lock.path} />
                 <NavItem title="404 Not Found" link={Routes.NotFound.path} />
                 <NavItem title="500 Server Error" link={Routes.ServerError.path} />
-              </CollapsableNavItem>
+              </CollapsableNavItem> */}
 
-              <NavItem external title="Plugins" link="https://demo.themesberg.com/volt-pro-react/#/plugins/datatable" target="_blank" badgeText="Pro" icon={faChartPie} />
+              {/* <NavItem external title="Plugins" link="https://demo.themesberg.com/volt-pro-react/#/plugins/datatable" target="_blank" badgeText="Pro" icon={faChartPie} />
 
               <Dropdown.Divider className="my-3 border-indigo" />
 
@@ -153,7 +161,7 @@ export default (props = {}) => {
                 <NavItem title="Tooltips" link={Routes.Tooltips.path} />
               </CollapsableNavItem>
               <NavItem external title="Themesberg" link="https://themesberg.com" target="_blank" image={ThemesbergLogo} />
-              <Button as={Link} to={Routes.Upgrade.path} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faRocket} className="me-1" /> Upgrade to Pro</Button>
+              <Button as={Link} to={Routes.Upgrade.path} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faRocket} className="me-1" /> Upgrade to Pro</Button> */}
             </Nav>
           </div>
         </SimpleBar>
