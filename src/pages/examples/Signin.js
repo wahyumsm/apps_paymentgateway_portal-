@@ -13,53 +13,48 @@ import BgImage from "../../assets/img/illustrations/signin.svg";
 export default () => {
   return (
     <main>
-      <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
-        <Container>
-          <p className="text-center">
+      <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5" style={{ marginTop: 90 }}>
+        <Container style={{ paddingLeft: "unset" }}>
+          {/* <p className="text-center">
             <Card.Link as={Link} to={Routes.DashboardOverview.path} className="text-gray-700">
               <FontAwesomeIcon icon={faAngleLeft} className="me-2" /> Back to homepage
             </Card.Link>
-          </p>
-          <Row className="justify-content-center form-bg-image" style={{ backgroundImage: `url(${BgImage})` }}>
+          </p> */}
+          <Row className="justify-content-center form-bg-image">
+            <img src={BgImage} alt="Signin" className="img-fluid" style={{ maxWidth: 980, maxHeight: 536, position: "absolute" }} />
             <Col xs={12} className="d-flex align-items-center justify-content-center">
-              <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+              <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100" style={{ maxWidth: 440, maxHeight: 459, zIndex: 1, marginTop: 46, marginLeft: 88 }}>
                 <div className="text-center text-md-center mb-4 mt-md-0">
-                  <h3 className="mb-0">Sign in to our platform</h3>
+                  <h3 className="mb-0" style={{ fontFamily: "Exo", fontSize: 24, fontWeight: 700 }}>Login ke Ezeelink Payment Gateway</h3>
                 </div>
                 <Form className="mt-4">
-                  <Form.Group id="email" className="mb-4">
-                    <Form.Label>Your Email</Form.Label>
+                  <Form.Group style={{ fontFamily: "Nunito" }} id="email" className="mb-4">
+                    <Form.Label>Email</Form.Label>
                     <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faEnvelope} />
-                      </InputGroup.Text>
-                      <Form.Control autoFocus required type="email" placeholder="example@company.com" />
+                      <Form.Control autoFocus required type="email" placeholder="Masukkan Email" />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Group id="password" className="mb-4">
-                      <Form.Label>Your Password</Form.Label>
+                    <Form.Group style={{ fontFamily: "Nunito" }} id="password" className="mb-4">
+                      <Form.Label>Kata Sandi</Form.Label>
                       <InputGroup>
-                        <InputGroup.Text>
-                          <FontAwesomeIcon icon={faUnlockAlt} />
-                        </InputGroup.Text>
-                        <Form.Control required type="password" placeholder="Password" />
+                        <Form.Control required type="password" placeholder="Masukkan Kata Sandi" />
                       </InputGroup>
                     </Form.Group>
-                    <div className="d-flex justify-content-between align-items-center mb-4">
+                    {/* <div className="d-flex justify-content-between align-items-center mb-4">
                       <Form.Check type="checkbox">
                         <FormCheck.Input id="defaultCheck5" className="me-2" />
                         <FormCheck.Label htmlFor="defaultCheck5" className="mb-0">Remember me</FormCheck.Label>
                       </Form.Check>
                       <Card.Link className="small text-end">Lost password?</Card.Link>
-                    </div>
+                    </div> */}
                   </Form.Group>
-                  <Button variant="primary" type="submit" className="w-100">
-                    Sign in
+                  <Button style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
+                    Login
                   </Button>
                 </Form>
 
-                <div className="mt-3 mb-4 text-center">
+                {/* <div className="mt-3 mb-4 text-center">
                   <span className="fw-normal">or login with</span>
                 </div>
                 <div className="d-flex justify-content-center my-4">
@@ -72,14 +67,14 @@ export default () => {
                   <Button variant="outline-light" className="btn-icon-only btn-pil text-dark">
                     <FontAwesomeIcon icon={faGithub} />
                   </Button>
-                </div>
-                <div className="d-flex justify-content-center align-items-center mt-4">
-                  <span className="fw-normal">
-                    Not registered?
-                    <Card.Link as={Link} to={Routes.Signup.path} className="fw-bold">
-                      {` Create account `}
+                </div> */}
+                <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
+                  {/* <span className="fw-normal">
+                    Not registered? */}
+                    <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>
+                      {` Lupa Kata Sandi? `}
                     </Card.Link>
-                  </span>
+                  {/* </span> */}
                 </div>
               </div>
             </Col>
