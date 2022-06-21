@@ -61,7 +61,7 @@ export default (props) => {
         </Card>
       )}
       <footer className="footer section py-5">
-        <Row>
+        {/* <Row>
           <Col xs={12} lg={6} className="mb-4 mb-lg-0">
             <p className="mb-0 text-center text-xl-left">
               Copyright © 2019-{`${currentYear} `}
@@ -94,7 +94,7 @@ export default (props) => {
               </li>
             </ul>
           </Col>
-        </Row>
+        </Row> */}
       </footer>
     </div>
   );

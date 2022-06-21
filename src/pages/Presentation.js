@@ -23,7 +23,7 @@ import ReactLogo from "../assets/img/technologies/react-logo.svg";
 import pages from "../data/pages";
 import features from "../data/features";
 
-export default () => {
+export default () => { 
   return (
     <div>test</div>
     )
