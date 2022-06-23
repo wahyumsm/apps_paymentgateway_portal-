@@ -13,7 +13,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Line, Pie} from 'react-chartjs-2';
 import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
 import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
