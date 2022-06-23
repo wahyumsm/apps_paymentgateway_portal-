@@ -1,5 +1,6 @@
 body{
     font-family: 'Nunito';
+    background-color: unset !important;
 }
 .sidebar .nav-item .nav-link{
     border: unset !important;
@@ -53,6 +54,16 @@ body{
     height: 100%;
     background: #FFFFFF;
     padding: 37px 27px 0px 27px;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15);
+}
+
+.sub-base-content{
+    width: 100%;
+    border-radius: 8px;
+    height: 100%;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    padding: 37px 27px 0px 27px;
 }
 
 .p-amount{
@@ -89,4 +100,96 @@ body{
     line-height: 22px;
     color: #C4C4C4;
     border: unset !important;
+}
+
+.circle-data{
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.report-pie-table > tbody > tr > td:nth-child(2){
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+.export-span{
+    color: #077E86;
+    float: right;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.container-content{
+    padding: 29px 113px 0px 113px;
+}
+
+.breadcrumbs-span{
+    font-size: 14px;
+    color: #383838;
+    font-weight: 400;
+}
+
+.menu-detail-akun-span{
+    font-family: 'Exo';
+    font-size: 16px;
+    font-weight: 400;
+    color: '#383838'
+}
+.menu-detail-akun-span-active{
+    font-weight: 700 !important;
+    color: #077E86 !important;
+}
+
+.menu-detail-akun-hr-active{
+    border-bottom: 3px solid #077E86;
+    
+}
+
+.hr-style{
+    border: 0.4px solid #C4C4C4;
+}
+
+.detail-akun-tabs{
+    cursor: pointer;
+}
+
+.head-title{
+    font-family: 'Exo';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    color: #383838;
+}
+
+.active-box{
+    justify-content: center;
+    align-items: center;
+    padding: 6px 28px;
+    width: 95px;
+    height: 32px;
+    background: rgba(7, 126, 134, 0.08);
+    border-radius: 4px;
+}
+
+.active-box-span{
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: #077E86;
+}
+
+.table-form > tbody > tr > td{
+    padding-left: 10px;
+}
+
+.table-api-keys > tbody > tr > td{
+    padding-left: 10px;
+    padding-bottom: 15px;
+}
+
+
+.table-form > tbody > tr{
+    margin-bottom: 16px;
 }

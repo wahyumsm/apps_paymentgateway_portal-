@@ -7,6 +7,7 @@ import Presentation from "./Presentation";
 import Upgrade from "./Upgrade";
 import DashboardOverview from "./dashboard/DashboardOverview";
 import DaftarPartner from './DaftarPartner/DaftarPartner';
+import DetailAkun from './DetailAkun/DetailAkun';
 import RiwayatTransaksi from './RiwayatTransaksi/RiwayatTransaksi';
 import Transactions from "./Transactions";
 import Settings from "./Settings";
@@ -117,6 +118,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
+    <RouteWithSidebar exact path={Routes.DetailAkun.path} component={DetailAkun}/>
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
 
