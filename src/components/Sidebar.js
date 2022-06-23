@@ -110,7 +110,7 @@ export default (props = {}) => {
               <NavItem title="Beranda" link={Routes.DashboardOverview.path} image={BerandaIcon} />
               <NavItem title="Laporan" image={LaporanIcon} link={Routes.Transactions.path} />
               <NavItem title="Riwayat Transaksi" image={RiwayatIcon} link={Routes.RiwayatTransaksi.path} />
-              <NavItem title="Daftar Agen" image={DaftarAgenIcon} />
+              <NavItem title="Daftar Agen" image={DaftarAgenIcon} link={Routes.DaftarAgen.path} />
               <NavItem title="Daftar Partner" image={DaftarPartnerIcon} link={Routes.DaftarPartner.path}/>
 {/* 
               <CollapsableNavItem eventKey="tables/" title="Tables" icon={faTable}>

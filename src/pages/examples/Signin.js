@@ -4,13 +4,42 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
 import { faFacebookF, faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { Col, Row, Form, Card, Button, FormCheck, Container, InputGroup } from '@themesberg/react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import axios from "axios";
 
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
+import encryptData from "../../function/encryptData";
+import { authorization, BaseURL, setUserSession } from "../../function/helpers";
 
 
 export default () => {
+
+  const history = useHistory()
+
+  async function signingInHandler() {
+    console.log('click login');
+    try {
+      const auth = authorization
+      const dataParams = encryptData(`{"username" : 'sysadmin@ezeelink.co.id',
+      "password" : 'sysadmin'}`)
+      console.log(dataParams);
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
+      console.log(dataLogin, 'ini data login');
+      if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
+        setUserSession(dataLogin.data.response_data.access_token)
+        history.push("/")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
+
   return (
     <main>
       <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5" style={{ marginTop: 90 }}>
@@ -49,7 +78,7 @@ export default () => {
                       <Card.Link className="small text-end">Lost password?</Card.Link>
                     </div> */}
                   </Form.Group>
-                  <Button style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
+                  <Button onClick={() => signingInHandler()} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
                     Login
                   </Button>
                 </Form>

@@ -1,13 +1,15 @@
 
 export const Routes = {
     // pages
-    Presentation: { path: "/" },
-    DashboardOverview: { path: "/dashboard" },
+    DashboardOverview: { path: "/" },
+    // DashboardOverview: { path: "/dashboard" },
     RiwayatTransaksi: { path: "/riwayattransaksi"},
     Transactions: { path: "/transactions" },
     Settings: { path: "/settings" },
     Upgrade: { path: "/upgrade" },
     BootstrapTables: { path: "/tables/bootstrap-tables" },
+    DaftarAgen : { path: "/daftaragen" },
+    TambahAgen : { path: "/tambahagen" },
     DaftarPartner : { path: "/daftarpartner" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },

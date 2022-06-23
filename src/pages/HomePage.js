@@ -7,6 +7,7 @@ import Presentation from "./Presentation";
 import Upgrade from "./Upgrade";
 import DashboardOverview from "./dashboard/DashboardOverview";
 import DaftarPartner from './DaftarPartner/DaftarPartner';
+import DaftarAgen from './DaftarAgen/DaftarAgen';
 import RiwayatTransaksi from './RiwayatTransaksi/RiwayatTransaksi';
 import Transactions from "./Transactions";
 import Settings from "./Settings";
@@ -50,6 +51,7 @@ import Tables from "./components/Tables";
 import Tabs from "./components/Tabs";
 import Tooltips from "./components/Tooltips";
 import Toasts from "./components/Toasts";
+import TambahAgen from './DaftarAgen/TambahAgen';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -102,7 +104,7 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
 
 export default () => (
   <Switch>
-    <RouteWithLoader exact path={Routes.Presentation.path} component={Presentation} />
+    {/* <RouteWithLoader exact path={Routes.Presentation.path} component={Presentation} /> */}
     <RouteWithLoader exact path={Routes.Signin.path} component={Signin} />
     <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
     <RouteWithLoader exact path={Routes.ForgotPassword.path} component={ForgotPassword} />
@@ -117,6 +119,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
+    <RouteWithSidebar exact path={Routes.DaftarAgen.path} component={DaftarAgen}/>
+    <RouteWithSidebar exact path={Routes.TambahAgen.path} component={TambahAgen}/>
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
 

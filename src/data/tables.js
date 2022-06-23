@@ -42,9 +42,28 @@ const invoiceItems = [
     { id: 4, item: "Platinum Support", description: "1 year subcription 24/7", price: "3999,00", quantity: 1 },
 ];
 
+const agenLists = [
+    { id: 1, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 2, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Tidak Aktif' },
+    { id: 3, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 4, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 5, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Tidak Aktif' },
+    { id: 6, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 7, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 8, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 9, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Tidak Aktif' },
+    { id: 10, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 11, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 12, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 13, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Tidak Aktif' },
+    { id: 14, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+    { id: 15, IDAgen: 1324, namaAgen: 'Agung Dermawan', email: 'agung.grup@gmail.com', noHp: '021-0987-8907-2222', noRekening: '021-0987-8907-2222', kodeUnik: 123, status: 'Aktif' },
+]
+
 export {
     pageVisits,
     pageTraffic,
     pageRanking,
     invoiceItems,
+    agenLists,
 };

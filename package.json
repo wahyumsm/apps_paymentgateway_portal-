@@ -2,6 +2,7 @@
   "name": "@themesberg/volt-react-dashboard",
   "description": "Payment Gateway CRM React Dashboard",
   "author": "",
+  "proxy": "https://apid.ezeelink.co.id/mobile-demo/mobile1",
   "keywords": [
     "bootstrap 5",
     "react",
@@ -23,11 +24,14 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@themesberg/react-bootstrap": "^1.4.1",
+    "axios": "^0.27.2",
     "bootstrap": "5.0.0-beta1",
     "chart.js": "^3.8.0",
     "chartist": "^0.11.4",
     "chartist-plugin-tooltips-updated": "^0.1.4",
+    "crypto-js": "^4.1.1",
     "faker": "^6.6.6",
+    "js-base64": "^3.7.2",
     "moment-timezone": "^0.5.31",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
@@ -43,10 +47,11 @@
     "react-router-hash-link": "^2.3.1",
     "react-scripts": "3.4.3",
     "react-transition-group": "^4.4.1",
-    "simplebar-react": "^2.3.0"
+    "simplebar-react": "^2.3.0",
+    "styled-components": "^5.3.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "SET HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "build-local": "PUBLIC_URL=./ react-scripts build",
     "test": "react-scripts test",
