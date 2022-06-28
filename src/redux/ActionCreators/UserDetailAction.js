@@ -21,18 +21,5 @@ export const getUserDetail = (url) => {
         } catch (error) {
             console.log(error)
         }
-        // axios.post(BaseURL + url, { data: "" }, { headers: headers })
-        //     .then(userDetail => {
-        //         console.log(userDetail, 'ini data user di action creator');
-        //         dispatch({
-        //             type: FETCH_GETUSERDETAIL,
-        //             payload: {
-        //                 userDetail: userDetail.data.response_data
-        //             }
-        //         })
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
     }
 }

@@ -30,25 +30,6 @@ export default (props) => {
     }, 300);
   };
 
-  // async function getUserDetail() {
-  //   try {
-  //     const auth = "Bearer " + getToken()
-  //     const headers = {
-  //       'Content-Type':'application/json',
-  //       'Authorization' : auth
-  //     }
-  //     const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
-  //     // console.log(userDetail, 'ini data user');
-  //     if (userDetail.status === 200 && userDetail.data.response_code === 200) {
-  //       // console.log(userDetail.data.response_data, 'ini data user untuk navbar');
-  //       setUserDetail(userDetail.data.response_data)
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-    
-  // }
-
   const navToDetailAccount = () => {
     history.push("/detailakun");
   }
@@ -101,7 +82,6 @@ export default (props) => {
   useEffect(() => {
     dispatch(getUserDetail("/Account/GetUserProfile"))
   }, [])
-  // console.log(userDetail, 'ini data user untuk navbar');
   
   return (
     <Navbar variant="dark" expanded className="ps-0 pe-2 pb-0" style={{backgroundColor: '#ffffff'}}>
@@ -143,7 +123,7 @@ export default (props) => {
                   </div>
                 </div>
               </Dropdown.Toggle>
-              <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2" style={{ minWidth: "14rem", width: "100%" }}>
+              <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2" style={{ paddingRight: 20, width: "auto" }}>
                 <Dropdown.Item className="fw-bold" style={{ width: "100%" }}>
                 <img alt="" src={userIcon}/> {userDetail.muser_name} ({userDetail.mrole_desc})
                 </Dropdown.Item>
