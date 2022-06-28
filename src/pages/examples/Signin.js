@@ -23,18 +23,18 @@ export default () => {
     // console.log('click login');
     try {
       const auth = authorization
-      const dataParams = encryptData(`{"username" : '${username}',
-      "password" : '${password}'}`)
+      const dataParams = encryptData(`{"username" : '${username}', "password" : '${password}'}`)
       // console.log(dataParams);
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
+      const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
       // console.log(dataLogin, 'ini data login');
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         history.push("/")
+        // window.location.reload()
       }
     } catch (error) {
       console.log(error);

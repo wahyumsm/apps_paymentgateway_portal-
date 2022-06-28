@@ -12,6 +12,7 @@ import axios from 'axios';
 function DaftarAgen() {
 
   const history = useHistory()
+  const access_token = getToken()
   const [listAgen, setListAgen] = useState([])
 
   function tambahAgen() {
@@ -25,41 +26,26 @@ function DaftarAgen() {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listAgen = await axios.post(BaseURL + "/Agen/ListAgen", { data: "" }, { headers: headers })
+      const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
       // console.log(listAgen, 'ini data agen');
       if (listAgen.status === 200 && listAgen.data.response_code === 200) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
-
-        // listAgen.data.response_data.map((item, id) => {
-        //   console.log(id, 'ini id');
-        //   (item.status === true) ? item.status = "Aktif" : item.status = "Tidak Aktif"
-        //   (!item.id) ? item.id = id + 1 : null
-
-        //   console.log(data);
-        //   console.log(item.id, 'ini item');
-        // })
         setListAgen(listAgen.data.response_data)
       }
     } catch (error) {
       console.log(error)
     }
   }
-
-  useEffect(() => {
-    getDataAgen()
-  }, [])
   
-  // console.log(listAgen, 'ini list agen');
   function detailAgenHandler(agenId) {
-    // console.log(agenId, 'ini agen id dari clik');
-    history.push({pathname: "/detailagen", state: {agenId: agenId}})
+    history.push(`/detailagen/${agenId}`)
   }
 
   const columns = [
     {
       name: 'No',
       selector: row => row.id,
-      width: "55px",
+      // width: "55px",
       ignoreRowClick: true,
       button: true,
     },
@@ -67,32 +53,31 @@ function DaftarAgen() {
       name: 'ID Agen',
       selector: row => row.agen_id,
       sortable: true,
-      width: "120px",
+      // width: "120px",
       cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
-      // onRow
     },
     {
       name: 'Nama Agen',
       selector: row => row.agen_name,
       sortable: true,
-      width: "181px",
+      // width: "181px",
     },
     {
       name: 'Email',
       selector: row => row.agen_email,
       sortable: true,
-      width: "215px",
+      // width: "215px",
     },
     {
       name: 'No Hp',
       selector: row => row.agen_mobile,
       sortable: true,
-      width: "213px",
+      // width: "213px",
     },
     {
       name: 'No Rekening',
       selector: row => row.agen_bank_number,
-      width: "215px",
+      // width: "215px",
       sortable: true
     },
     // {
@@ -119,8 +104,6 @@ function DaftarAgen() {
     }
   ]
 
-  // console.log(listAgen, 'ini list agen setelah diubah');
-
   const customStyles = {
       headCells: {
           style: {
@@ -131,6 +114,14 @@ function DaftarAgen() {
           },
       },
   };
+
+  useEffect(() => {
+    if (!access_token) {
+    history.push('/sign-in');
+    // window.location.reload();
+  }
+    getDataAgen()
+  }, [])
 
   return (
     <div className='main-content' style={{ padding: "37px 27px" }}>

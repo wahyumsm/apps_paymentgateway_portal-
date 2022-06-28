@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, InputGroup } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +10,7 @@ import axios from 'axios';
 function TambahAgen() {
 
     const history = useHistory()
+    const access_token = getToken()
     const [inputHandle, setInputHandle] = useState({
         nama: "",
         email: "",
@@ -36,7 +37,7 @@ function TambahAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const addAgen = await axios.post(BaseURL + "/Agen/SaveAgen", { data: dataParams }, { headers: headers })
+            const addAgen = await axios.post("/Agen/SaveAgen", { data: dataParams }, { headers: headers })
             // console.log(addAgen, 'ini add agen');
         } catch (error) {
             console.log(error)
@@ -44,6 +45,14 @@ function TambahAgen() {
         history.push("/daftaragen")
         alert("Agen Baru Berhasil Ditambahkan")
     }
+
+    useEffect(() => {
+        if (!access_token) {
+        history.push('/sign-in');
+        // window.location.reload();
+    }
+    }, [])
+    
 
     return (
         <div className='main-content' style={{ padding: "37px 27px" }}>

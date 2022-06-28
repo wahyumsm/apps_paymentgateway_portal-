@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, InputGroup } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, getToken } from '../../function/helpers';
 import axios from 'axios';
@@ -10,9 +10,10 @@ import "./DetailAgen.css"
 
 function DetailAgen() {
 
+    const history = useHistory()
+    const access_token = getToken()
+    const { agenId } = useParams()
     const [detailAgen, setDetailAgen] = useState([])
-    const agenId = useLocation().state.agenId
-    // console.log(agenId, 'ini location');
 
     async function getDetailAgen(agenId) {
         try {
@@ -24,7 +25,7 @@ function DetailAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
+            const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200) {
                 // console.log(detailAgen.data.response_data, 'ini detail agen');
@@ -36,6 +37,10 @@ function DetailAgen() {
     }
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/sign-in');
+            // window.location.reload();
+        }
         getDetailAgen(agenId)
     }, [agenId])
     

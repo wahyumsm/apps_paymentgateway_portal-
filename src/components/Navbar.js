@@ -33,7 +33,7 @@ export default (props) => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
+      const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
       // console.log(userDetail, 'ini data user');
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         // console.log(userDetail.data.response_data, 'ini data user untuk navbar');
@@ -56,13 +56,15 @@ export default (props) => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const logout = await axios.post(BaseURL + "/Account/Logout", { data: "" }, { headers: headers })
+      const logout = await axios.post("/Account/Logout", { data: "" }, { headers: headers })
       // console.log(logout, 'ini hasil logout');
+      if (logout.status === 200 && logout.data.response_code === 200) {
+        removeUserSession()
+        history.push("/sign-in")
+      }
     } catch (error) {
       console.log(error)
     }
-    removeUserSession()
-    history.push("/sign-in")
   }
 
 

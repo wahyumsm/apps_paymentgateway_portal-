@@ -11,7 +11,7 @@ export const Routes = {
     BootstrapTables: { path: "/tables/bootstrap-tables" },
     DaftarAgen : { path: "/daftaragen" },
     TambahAgen : { path: "/tambahagen" },
-    DetailAgen : { path: "/detailagen" },
+    DetailAgen : { path: "/detailagen/:agenId" },
     DaftarPartner : { path: "/daftarpartner" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
