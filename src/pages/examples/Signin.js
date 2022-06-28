@@ -20,7 +20,7 @@ export default () => {
   const [password, setPassword] = useState("")
 
   async function signingInHandler(username, password) {
-    // console.log('click login');
+    console.log(username, password, 'ini username dan password');
     try {
       const auth = authorization
       const dataParams = encryptData(`{"username" : '${username}', "password" : '${password}'}`)

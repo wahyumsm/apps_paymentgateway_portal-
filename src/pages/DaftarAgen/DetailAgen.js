@@ -33,6 +33,9 @@ function DetailAgen() {
             }
         } catch (error) {
             console.log(error)
+            if (error.response.status === 401) {
+                history.push('/sign-in')
+            }
         }
     }
 
