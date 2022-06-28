@@ -18,6 +18,7 @@ import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, Pr
 import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
 import {ReactChart} from '../../components/ReactChart';
+import { getToken } from "../../function/helpers";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -29,6 +30,9 @@ ChartJS.register(
 );
 
 export default () => {
+
+  const access_token = getToken()
+
   const options = {
     responsive: true,
     plugins: {

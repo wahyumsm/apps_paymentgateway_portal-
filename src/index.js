@@ -27,7 +27,7 @@ import HomePage from "./pages/HomePage";
 import ScrollToTop from "./components/ScrollToTop";
 
 ReactDOM.render(
-  <HashRouter>
+  <HashRouter basename={'/crm'}>
     <ScrollToTop />
     <HomePage />
   </HashRouter>,

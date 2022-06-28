@@ -1,18 +1,58 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
-import DataTable from 'react-data-table-component';
+import DataTable, { memoize } from 'react-data-table-component';
 import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form} from '@themesberg/react-bootstrap';
 import { agenLists } from '../../data/tables';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
+import { BaseURL, getToken } from '../../function/helpers';
+import axios from 'axios';
 
 function DaftarAgen() {
 
   const history = useHistory()
+  const [listAgen, setListAgen] = useState([])
 
   function tambahAgen() {
     history.push("/tambahagen")
+  }
+
+  async function getDataAgen() {
+    try {
+      const auth = "Bearer " + getToken()
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const listAgen = await axios.post(BaseURL + "/Agen/ListAgen", { data: "" }, { headers: headers })
+      // console.log(listAgen, 'ini data agen');
+      if (listAgen.status === 200 && listAgen.data.response_code === 200) {
+        listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
+
+        // listAgen.data.response_data.map((item, id) => {
+        //   console.log(id, 'ini id');
+        //   (item.status === true) ? item.status = "Aktif" : item.status = "Tidak Aktif"
+        //   (!item.id) ? item.id = id + 1 : null
+
+        //   console.log(data);
+        //   console.log(item.id, 'ini item');
+        // })
+        setListAgen(listAgen.data.response_data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getDataAgen()
+  }, [])
+  
+  // console.log(listAgen, 'ini list agen');
+  function detailAgenHandler(agenId) {
+    // console.log(agenId, 'ini agen id dari clik');
+    history.push({pathname: "/detailagen", state: {agenId: agenId}})
   }
 
   const columns = [
@@ -20,48 +60,51 @@ function DaftarAgen() {
       name: 'No',
       selector: row => row.id,
       width: "55px",
+      ignoreRowClick: true,
+      button: true,
     },
     {
       name: 'ID Agen',
-      selector: row => row.IDAgen,
+      selector: row => row.agen_id,
       sortable: true,
       width: "120px",
-      ignoreRowClick: true,
+      cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
+      // onRow
     },
     {
       name: 'Nama Agen',
-      selector: row => row.namaAgen,
+      selector: row => row.agen_name,
       sortable: true,
       width: "181px",
     },
     {
       name: 'Email',
-      selector: row => row.email,
+      selector: row => row.agen_email,
       sortable: true,
       width: "215px",
     },
     {
       name: 'No Hp',
-      selector: row => row.noHp,
+      selector: row => row.agen_mobile,
       sortable: true,
       width: "213px",
     },
     {
       name: 'No Rekening',
-      selector: row => row.noRekening,
+      selector: row => row.agen_bank_number,
       width: "215px",
       sortable: true
     },
-    {
-      name: 'Kode Unik',
-      selector: row => row.kodeUnik,
-      width: "132px",
-      sortable: true
-    },
+    // {
+    //   name: 'Kode Unik',
+    //   selector: row => row.agen_unique_code,
+    //   width: "132px",
+    //   sortable: true
+    // },
     {
       name: 'Status',
       selector: row => row.status,
-      width: "100px",
+      width: "90px",
       style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
       conditionalCellStyles: [
         {
@@ -74,7 +117,9 @@ function DaftarAgen() {
         }
       ],
     }
-  ];
+  ]
+
+  // console.log(listAgen, 'ini list agen setelah diubah');
 
   const customStyles = {
       headCells: {
@@ -116,14 +161,24 @@ function DaftarAgen() {
             </Col>
           </Row>
         </div>
-        <div className="div-table">
-          <DataTable
-            columns={columns}
-            data={agenLists}
-            customStyles={customStyles}
-            pagination
-          />
-        </div>
+        {
+          listAgen.length === 0 ?
+          <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>No Data</div> :
+          <div className="div-table">
+            <DataTable
+              columns={columns}
+              data={listAgen}
+              customStyles={customStyles}
+              noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+              pagination
+              highlightOnHover
+              onRowClicked={(listAgen) => {
+                // console.log(listAgen.agen_id, 'ini list agen di clik table');
+                detailAgenHandler(listAgen.agen_id)
+              }}
+            />
+          </div>
+        }
       </div>
     </div>
   )

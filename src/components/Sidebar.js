@@ -107,11 +107,11 @@ export default (props = {}) => {
               <div style={{backgroundColor: '#DF9C43', width: '102%', height: '65px', textAlign: 'center'}}>
                 <img src={EzeeLogo} style={{width: 66, height: 36, marginTop: 12}} alt=""/>
               </div>              
-              <NavItem title="Beranda" link={Routes.DashboardOverview.path} image={BerandaIcon} />
+              {/* <NavItem title="Beranda" link={Routes.DashboardOverview.path} image={BerandaIcon} /> */}
               <NavItem title="Laporan" image={LaporanIcon} link={Routes.Transactions.path} />
-              <NavItem title="Riwayat Transaksi" image={RiwayatIcon} link={Routes.RiwayatTransaksi.path} />
+              {/* <NavItem title="Riwayat Transaksi" image={RiwayatIcon} link={Routes.RiwayatTransaksi.path} /> */}
               <NavItem title="Daftar Agen" image={DaftarAgenIcon} link={Routes.DaftarAgen.path} />
-              <NavItem title="Daftar Partner" image={DaftarPartnerIcon} link={Routes.DaftarPartner.path}/>
+              {/* <NavItem title="Daftar Partner" image={DaftarPartnerIcon} link={Routes.DaftarPartner.path}/> */}
 {/* 
               <CollapsableNavItem eventKey="tables/" title="Tables" icon={faTable}>
                 <NavItem title="Bootstrap Table" link={Routes.BootstrapTables.path} />
@@ -126,7 +126,7 @@ export default (props = {}) => {
                 <NavItem title="404 Not Found" link={Routes.NotFound.path} />
                 <NavItem title="500 Server Error" link={Routes.ServerError.path} />
               </CollapsableNavItem> */}
-              <CollapsableNavItem eventKey="components/" title="Components" icon={faBoxOpen}>
+              {/* <CollapsableNavItem eventKey="components/" title="Components" icon={faBoxOpen}>
                 <NavItem title="Accordion" link={Routes.Accordions.path} />
                 <NavItem title="Alerts" link={Routes.Alerts.path} />
                 <NavItem title="Badges" link={Routes.Badges.path} />
@@ -144,7 +144,7 @@ export default (props = {}) => {
                 <NavItem title="Tabs" link={Routes.Tabs.path} />
                 <NavItem title="Toasts" link={Routes.Toasts.path} />
                 <NavItem title="Tooltips" link={Routes.Tooltips.path} />
-              </CollapsableNavItem>
+              </CollapsableNavItem> */}
 
               {/* <NavItem external title="Plugins" link="https://demo.themesberg.com/volt-pro-react/#/plugins/datatable" target="_blank" badgeText="Pro" icon={faChartPie} />
 

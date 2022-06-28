@@ -1,64 +1,195 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCog, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Form, Button, ButtonGroup, Breadcrumb, InputGroup, Dropdown } from '@themesberg/react-bootstrap';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
 import { invoiceItems } from '../data/tables';
 import DataTable from 'react-data-table-component';
 import { TransactionsTable } from "../components/Tables";
+import { BaseURL, getToken } from "../function/helpers";
+import axios from "axios";
+import encryptData from "../function/encryptData";
+import * as XLSX from "xlsx"
 
 export default () => {
 
-    const columns = [
-      {
-          name: 'No',
-          selector: row => row.id
-      },
-      {
-          name: 'ID Transaksi',
-          selector: row => row.description,
-          sortable: true
-      },
-      {
-          name: 'Waktu',
-          selector: row => row.price,
-          sortable: true
-      },
-      {
-          name: 'Nama Agen',
-          selector: row => row.price,
-          sortable: true
-      },
-      {
-          name: 'Total Akhir',
-          selector: row => row.price,
-          sortable: true
-      },
-      {
-          name: 'Status',
-          selector: row => row.quantity,
-          width: "100px",
-          cell:(row) =>
-          <>
-              {row.partner_status === 1 ? <div className='active-status-badge'>Active</div> : <div className='inactive-status-badge'>Inactive</div>}
-          </>,
-          sortable: true
-      },
-      {
-        name: 'Action',
-        width: "230px",
-      //   cell:(row) => 
-      //     <>
-      //     <img alt="" src={DeleteIcon} onClick={() => openDeleteModal(row.partner_id)}/>&nbsp;&nbsp;&nbsp;&nbsp;
-      //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, true)}>Ubah</span>&nbsp;&nbsp;&nbsp;&nbsp;
-      //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, false)}>Detail</span>
-      //     </>,
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true
+  const history = useHistory();
+  const access_token = getToken();
+  const [userDetail, setUserDetail] = useState([])
+  const [listTransferDana, setListTransferDana] = useState([])
+  const [listSettlement, setListSettlement] = useState([])
+  // console.log(access_token, 'ini access token');
+  async function getUserDetail() {
+    try {
+      const auth = "Bearer " + getToken()
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
       }
+      const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
+      // console.log(userDetail, 'ini data user');
+      if (userDetail.status === 200 && userDetail.data.response_code === 200) {
+        // console.log(userDetail.data.response_data, 'ini data user');
+        setUserDetail(userDetail.data.response_data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    
+  }
+  async function getListTransferDana() {
+    try {
+      const auth = "Bearer " + getToken()
+      const dataParams = encryptData(`{"start_time": "2022-01-01", "end_time": "2022-12-30", "sub_name": "", "id": "", "status": ""}`)
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+      // console.log(listTransferDana, 'ini data transfer dana');
+      listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.status === "Success") ? obj.status = "Berhasil" : obj.status = "Gagal" }));
+      setListTransferDana(listTransferDana.data.response_data.list)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function getSettlement() {
+    try {
+      const auth = "Bearer " + getToken()
+      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"2022-06-10", "tvasettl_to":"2022-06-27"}`)
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
+      // console.log(dataSettlement, 'ini data settlement');
+      dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.tvasettl_status_id === 1) ? obj.status = "Berhasil" : obj.status = "Gagal" }));
+      setListSettlement(dataSettlement.data.response_data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (!access_token) {
+      history.push('/sign-in');
+    }
+    getUserDetail()
+    getListTransferDana()
+    getSettlement()
+  }, [])
+  
+
+  const columnstransferDana = [
+    {
+        name: 'No',
+        selector: row => row.number
+    },
+    {
+        name: 'ID Transaksi',
+        selector: row => row.id,
+        sortable: true
+    },
+    {
+        name: 'Waktu',
+        selector: row => row.created_at,
+        sortable: true
+    },
+    {
+        name: 'Nama Agen',
+        selector: row => row.name,
+        sortable: true
+    },
+    {
+        name: 'Total Akhir',
+        selector: row => row.amount,
+        sortable: true
+    },
+    {
+        name: 'Status',
+        selector: row => row.status,
+        width: "100px",
+        sortable: true,
+        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+        conditionalCellStyles: [
+          {
+            when: row => row.status === "Berhasil",
+            style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
+          },
+          {
+            when: row => row.status === "Gagal",
+            style: { background: "#F0F0F0" }
+          }
+        ],
+    },
+    // {
+    //   name: 'Action',
+    //   width: "230px",
+    // //   cell:(row) => 
+    // //     <>
+    // //     <img alt="" src={DeleteIcon} onClick={() => openDeleteModal(row.partner_id)}/>&nbsp;&nbsp;&nbsp;&nbsp;
+    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, true)}>Ubah</span>&nbsp;&nbsp;&nbsp;&nbsp;
+    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, false)}>Detail</span>
+    // //     </>,
+    //   ignoreRowClick: true,
+    //   allowOverflow: true,
+    //   button: true
+    // }
+  ];
+
+  const columnsSettlement = [
+    {
+        name: 'No',
+        selector: row => row.number
+    },
+    {
+        name: 'ID Transaksi',
+        selector: row => row.tvasettl_id,
+        sortable: true
+    },
+    {
+        name: 'Waktu',
+        selector: row => row.tvasettl_crtdt,
+        sortable: true
+    },
+    {
+        name: 'Jumlah',
+        selector: row => row.tvasettl_amount,
+        sortable: true
+    },
+    {
+        name: 'Status',
+        selector: row => row.status,
+        width: "100px",
+        sortable: true,
+        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+        conditionalCellStyles: [
+          {
+            when: row => row.status === "Berhasil",
+            style: { background: "rgba(7, 126, 134, 0.08)" }
+          },
+          {
+            when: row => row.status === "Gagal",
+            style: { background: "#F0F0F0" }
+          }
+        ],
+    },
+    // {
+    //   name: 'Action',
+    //   width: "230px",
+    // //   cell:(row) => 
+    // //     <>
+    // //     <img alt="" src={DeleteIcon} onClick={() => openDeleteModal(row.partner_id)}/>&nbsp;&nbsp;&nbsp;&nbsp;
+    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, true)}>Ubah</span>&nbsp;&nbsp;&nbsp;&nbsp;
+    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, false)}>Detail</span>
+    // //     </>,
+    //   ignoreRowClick: true,
+    //   allowOverflow: true,
+    //   button: true
+    // }
   ];
 
   const customStyles = {
@@ -71,6 +202,28 @@ export default () => {
           },
       },
   };
+
+  function exportReportTransferDanaMasukHandler(data) {
+    let dataExcel = []
+    for (let i = 0; i < data.length; i++) {
+      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, Waktu: data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: (data[i].status === "Success") ? "Berhasil" : "Gagal" })
+    }
+    let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+    let workBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+    XLSX.writeFile(workBook, "Report Transfer Dana Masuk.xlsx");
+  }
+
+  function exportReportSettlementHandler(data) {
+    let dataExcel = []
+    for (let i = 0; i < data.length; i++) {
+      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_id, Waktu: data[i].tvasettl_crtdt, Jumlah: data[i].tvasettl_amount, Status: data[i].tvasettl_status_id })
+    }
+    let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+    let workBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+    XLSX.writeFile(workBook, "Report Settlement.xlsx");
+  }
 
   const data = {
       labels: [
@@ -91,6 +244,8 @@ export default () => {
         hoverOffset: 4
       }]
     };
+    // console.log(listTransferDana, 'ini data transfer dana');
+    // console.log(listSettlement, 'ini data settlement');
 
   return (
     <>
@@ -101,13 +256,14 @@ export default () => {
         
         <h2 className="h5 mt-5">Dana Masuk</h2>
         <div className='base-content'>
-            <div className='dana-amount'>
+          <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Dana Masuk dari Agen</span>
+            {/* <div className='dana-amount'>
                 <div className="card-information mt-3 mb-3" style={{border: '1px solid #EBEBEB', width: 250}}>
                     <p className="p-info">Detail Dana Masuk dari Agen</p>
                     <p className="p-amount">Rp. 49.700.000</p>
                 </div>
-            </div>
-            <Row>
+            </div> */}
+            {/* <Row>
               <Col xs={3}>
                 <div className="div-chart" style={{width: 350, height: 350}}>
                   <Chart type='pie' data={data} />
@@ -156,8 +312,8 @@ export default () => {
                 </table>
                 <br/>
               </Col>
-            </Row>
-            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+            </Row> */}
+            {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
@@ -189,16 +345,16 @@ export default () => {
                         </Col>
                     </Row>
                 </Col>
-            </Row>
+            </Row> */}
             <div>
-              <Link className="export-span">Export</Link>
+              <Link onClick={() => exportReportTransferDanaMasukHandler(listTransferDana)} className="export-span">Export</Link>
             </div>
             <br/>
             <br/>
             <div className="div-table">
                 <DataTable
-                    columns={columns}
-                    data={invoiceItems}
+                    columns={columnstransferDana}
+                    data={listTransferDana}
                     customStyles={customStyles}
                     pagination
                 />
@@ -206,8 +362,8 @@ export default () => {
         </div>
         <h2 className="h5 mt-5">Settlement</h2>
         <div className='base-content'>
-        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
-            <Row>
+          <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
+            {/* <Row>
               <Col xs={12}>
                 <div className="div-chart">
                   <Chart type='line' data={data} />
@@ -241,16 +397,16 @@ export default () => {
                         </Col>
                     </Row>
                 </Col>
-            </Row>
+            </Row> */}
             <div>
-              <Link className="export-span">Export</Link>
+              <Link onClick={() => exportReportSettlementHandler(listSettlement)} className="export-span">Export</Link>
             </div>
             <br/>
             <br/>
             <div className="div-table">
                 <DataTable
-                    columns={columns}
-                    data={invoiceItems}
+                    columns={columnsSettlement}
+                    data={listSettlement}
                     customStyles={customStyles}
                     pagination
                 />

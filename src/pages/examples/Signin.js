@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
 import { faFacebookF, faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
@@ -16,20 +16,22 @@ import { authorization, BaseURL, setUserSession } from "../../function/helpers";
 export default () => {
 
   const history = useHistory()
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
 
-  async function signingInHandler() {
-    console.log('click login');
+  async function signingInHandler(username, password) {
+    // console.log('click login');
     try {
       const auth = authorization
-      const dataParams = encryptData(`{"username" : 'sysadmin@ezeelink.co.id',
-      "password" : 'sysadmin'}`)
-      console.log(dataParams);
+      const dataParams = encryptData(`{"username" : '${username}',
+      "password" : '${password}'}`)
+      // console.log(dataParams);
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
-      console.log(dataLogin, 'ini data login');
+      const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
+      // console.log(dataLogin, 'ini data login');
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         history.push("/")
@@ -60,14 +62,14 @@ export default () => {
                   <Form.Group style={{ fontFamily: "Nunito" }} id="email" className="mb-4">
                     <Form.Label>Email</Form.Label>
                     <InputGroup>
-                      <Form.Control autoFocus required type="email" placeholder="Masukkan Email" />
+                      <Form.Control onChange={e => setUsername(e.target.value)} autoFocus required type="email" placeholder="Masukkan Email" />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group>
                     <Form.Group style={{ fontFamily: "Nunito" }} id="password" className="mb-4">
                       <Form.Label>Kata Sandi</Form.Label>
                       <InputGroup>
-                        <Form.Control required type="password" placeholder="Masukkan Kata Sandi" />
+                        <Form.Control onChange={e => setPassword(e.target.value)} required type="password" placeholder="Masukkan Kata Sandi" />
                       </InputGroup>
                     </Form.Group>
                     {/* <div className="d-flex justify-content-between align-items-center mb-4">
@@ -78,7 +80,7 @@ export default () => {
                       <Card.Link className="small text-end">Lost password?</Card.Link>
                     </div> */}
                   </Form.Group>
-                  <Button onClick={() => signingInHandler()} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
+                  <Button onClick={() => signingInHandler(username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
                     Login
                   </Button>
                 </Form>

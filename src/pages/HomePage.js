@@ -53,6 +53,7 @@ import Tabs from "./components/Tabs";
 import Tooltips from "./components/Tooltips";
 import Toasts from "./components/Toasts";
 import TambahAgen from './DaftarAgen/TambahAgen';
+import DetailAgen from './DaftarAgen/DetailAgen';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -95,7 +96,7 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
         <main className="content">
           <Navbar />
           <Component {...props} />
-          <Footer toggleSettings={toggleSettings} showSettings={showSettings} />
+          {/* <Footer toggleSettings={toggleSettings} showSettings={showSettings} /> */}
         </main>
       </>
     )}
@@ -122,6 +123,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
     <RouteWithSidebar exact path={Routes.DaftarAgen.path} component={DaftarAgen}/>
     <RouteWithSidebar exact path={Routes.TambahAgen.path} component={TambahAgen}/>
+    <RouteWithSidebar exact path={Routes.DetailAgen.path} component={DetailAgen}/>
     <RouteWithSidebar exact path={Routes.DetailAkun.path} component={DetailAkun}/>
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />

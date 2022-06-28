@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCog, faEnvelopeOpen, faSearch, faSignOutAlt, faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
@@ -11,11 +11,14 @@ import iconDetailAkun from "../assets/icon/detail_akun_icon.svg"
 import userIcon from "../assets/icon/akun_icon.svg"
 import logoutIcon from "../assets/icon/logout_icon.svg"
 import { useHistory } from "react-router-dom";
+import { BaseURL, getToken, removeUserSession } from "../function/helpers";
+import axios from "axios";
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
   const areNotificationsRead = notifications.reduce((acc, notif) => acc && notif.read, true);
   const history = useHistory();
+  const [userDetail, setUserDetail] = useState([])
 
   const markNotificationsAsRead = () => {
     setTimeout(() => {
@@ -23,14 +26,54 @@ export default (props) => {
     }, 300);
   };
 
+  async function getUserDetail() {
+    try {
+      const auth = "Bearer " + getToken()
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
+      // console.log(userDetail, 'ini data user');
+      if (userDetail.status === 200 && userDetail.data.response_code === 200) {
+        // console.log(userDetail.data.response_data, 'ini data user untuk navbar');
+        setUserDetail(userDetail.data.response_data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    
+  }
+
   const navToDetailAccount = () => {
     history.push("/detailakun");
+  }
+
+  async function logoutHandler() {
+    try {
+      const auth = "Bearer " + getToken()
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const logout = await axios.post(BaseURL + "/Account/Logout", { data: "" }, { headers: headers })
+      // console.log(logout, 'ini hasil logout');
+    } catch (error) {
+      console.log(error)
+    }
+    removeUserSession()
+    history.push("/sign-in")
   }
 
 
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;
     const readClassName = read ? "" : "text-danger";
+
+    useEffect(() => {
+      // getUserDetail()
+    }, [])
+    
 
     return (
       <ListGroup.Item action href={link} className="border-bottom border-light">
@@ -89,20 +132,20 @@ export default (props) => {
                 <div className="media d-flex align-items-center">
                   <Image src={Profile3} className="user-avatar md-avatar rounded-circle" />
                   <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                    <span className="mb-0 font-small fw-bold">Bonnie Green</span>
+                    <span className="mb-0 font-small fw-bold">{"Sysadmin"}</span>
                   </div>
                 </div>
               </Dropdown.Toggle>
               <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
                 <Dropdown.Item className="fw-bold">
-                <img alt="" src={userIcon}/> My Profile
+                <img alt="" src={userIcon}/> {"Sysadmin"} ({"Admin"})
                 </Dropdown.Item>
-                <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
+                {/* <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
                   <img alt="" src={iconDetailAkun}/> Detail Akun
-                </Dropdown.Item>
+                </Dropdown.Item> */}
                 <Dropdown.Divider />
 
-                <Dropdown.Item className="fw-bold">
+                <Dropdown.Item onClick={() => logoutHandler()} className="fw-bold">
                   <img alt="" src={logoutIcon}/> Logout
                 </Dropdown.Item>
               </Dropdown.Menu>
