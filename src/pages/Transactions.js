@@ -36,6 +36,9 @@ export default () => {
       }
     } catch (error) {
       console.log(error)
+      if (error.response.status === 401) {
+        history.push('/sign-in')
+      }
     }
     
   }
@@ -53,6 +56,9 @@ export default () => {
       setListTransferDana(listTransferDana.data.response_data.list)
     } catch (error) {
       console.log(error)
+      if (error.response.status === 401) {
+        history.push('/sign-in')
+      }
     }
   }
 
@@ -70,6 +76,9 @@ export default () => {
       setListSettlement(dataSettlement.data.response_data)
     } catch (error) {
       console.log(error)
+      if (error.response.status === 401) {
+        history.push('/sign-in')
+      }
     }
   }
 

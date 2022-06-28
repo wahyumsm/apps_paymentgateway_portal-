@@ -38,11 +38,14 @@ function TambahAgen() {
             }
             const addAgen = await axios.post(BaseURL + "/Agen/SaveAgen", { data: dataParams }, { headers: headers })
             // console.log(addAgen, 'ini add agen');
+            history.push("/daftaragen")
+            alert("Agen Baru Berhasil Ditambahkan")
         } catch (error) {
             console.log(error)
+            if (error.response.status === 401) {
+                history.push('/sign-in')
+            }
         }
-        history.push("/daftaragen")
-        alert("Agen Baru Berhasil Ditambahkan")
     }
 
     return (

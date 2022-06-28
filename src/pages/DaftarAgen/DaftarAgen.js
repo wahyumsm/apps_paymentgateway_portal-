@@ -29,19 +29,13 @@ function DaftarAgen() {
       // console.log(listAgen, 'ini data agen');
       if (listAgen.status === 200 && listAgen.data.response_code === 200) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
-
-        // listAgen.data.response_data.map((item, id) => {
-        //   console.log(id, 'ini id');
-        //   (item.status === true) ? item.status = "Aktif" : item.status = "Tidak Aktif"
-        //   (!item.id) ? item.id = id + 1 : null
-
-        //   console.log(data);
-        //   console.log(item.id, 'ini item');
-        // })
         setListAgen(listAgen.data.response_data)
       }
     } catch (error) {
       console.log(error)
+      if (error.response.status === 401) {
+        history.push('/sign-in')
+      }
     }
   }
 
@@ -49,9 +43,7 @@ function DaftarAgen() {
     getDataAgen()
   }, [])
   
-  // console.log(listAgen, 'ini list agen');
   function detailAgenHandler(agenId) {
-    // console.log(agenId, 'ini agen id dari clik');
     history.push({pathname: "/detailagen", state: {agenId: agenId}})
   }
 
@@ -118,8 +110,6 @@ function DaftarAgen() {
       ],
     }
   ]
-
-  // console.log(listAgen, 'ini list agen setelah diubah');
 
   const customStyles = {
       headCells: {

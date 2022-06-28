@@ -34,6 +34,7 @@ export default () => {
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         history.push("/")
+        window.location.reload()
       }
     } catch (error) {
       console.log(error);

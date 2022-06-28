@@ -10,6 +10,7 @@ import "./DetailAgen.css"
 
 function DetailAgen() {
 
+    const history = useHistory()
     const [detailAgen, setDetailAgen] = useState([])
     const agenId = useLocation().state.agenId
     // console.log(agenId, 'ini location');
@@ -32,6 +33,9 @@ function DetailAgen() {
             }
         } catch (error) {
             console.log(error)
+            if (error.response.status === 401) {
+                history.push('/sign-in')
+            }
         }
     }
 
