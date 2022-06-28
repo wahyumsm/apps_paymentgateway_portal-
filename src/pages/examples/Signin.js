@@ -29,7 +29,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
+      const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
       // console.log(dataLogin, 'ini data login');
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
@@ -99,13 +99,15 @@ export default () => {
                     <FontAwesomeIcon icon={faGithub} />
                   </Button>
                 </div> */}
-                <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
-                  {/* <span className="fw-normal">
-                    Not registered? */}
-                    <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>
-                      {` Lupa Kata Sandi? `}
-                    </Card.Link>
-                  {/* </span> */}
+                <div style={{ display: 'none' }}>
+                  <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
+                    {/* <span className="fw-normal">
+                      Not registered? */}
+                      <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>
+                        {` Lupa Kata Sandi? `}
+                      </Card.Link>
+                    {/* </span> */}
+                  </div>
                 </div>
               </div>
             </Col>

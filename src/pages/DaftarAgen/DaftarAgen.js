@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
-import DataTable, { memoize } from 'react-data-table-component';
+import DataTable, { FilterComponent } from 'react-data-table-component';
 import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form} from '@themesberg/react-bootstrap';
-import { agenLists } from '../../data/tables';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, Link } from 'react-router-dom';
@@ -26,7 +25,7 @@ function DaftarAgen() {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
+      const listAgen = await axios.post(BaseURL + "/Agen/ListAgen", { data: "" }, { headers: headers })
       // console.log(listAgen, 'ini data agen');
       if (listAgen.status === 200 && listAgen.data.response_code === 200) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
@@ -45,7 +44,6 @@ function DaftarAgen() {
     {
       name: 'No',
       selector: row => row.id,
-      // width: "55px",
       ignoreRowClick: true,
       button: true,
     },
@@ -53,31 +51,26 @@ function DaftarAgen() {
       name: 'ID Agen',
       selector: row => row.agen_id,
       sortable: true,
-      // width: "120px",
       cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
     },
     {
       name: 'Nama Agen',
       selector: row => row.agen_name,
       sortable: true,
-      // width: "181px",
     },
     {
       name: 'Email',
       selector: row => row.agen_email,
       sortable: true,
-      // width: "215px",
     },
     {
       name: 'No Hp',
       selector: row => row.agen_mobile,
       sortable: true,
-      // width: "213px",
     },
     {
       name: 'No Rekening',
       selector: row => row.agen_bank_number,
-      // width: "215px",
       sortable: true
     },
     // {
@@ -118,10 +111,28 @@ function DaftarAgen() {
   useEffect(() => {
     if (!access_token) {
     history.push('/sign-in');
-    // window.location.reload();
   }
     getDataAgen()
   }, [])
+
+  // const [filterText, setFilterText] = useState('');
+	// const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+  // const filteredItems = listAgen.filter(
+	// 	item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
+	// );
+
+  // const subHeaderComponentMemo = React.useMemo(() => {
+	// 	const handleClear = () => {
+	// 		if (filterText) {
+	// 			setResetPaginationToggle(!resetPaginationToggle);
+	// 			setFilterText('');
+	// 		}
+	// 	};
+
+	// 	return (
+	// 		<FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
+	// 	);
+	// }, [filterText, resetPaginationToggle]);
 
   return (
     <div className='main-content' style={{ padding: "37px 27px" }}>
@@ -134,7 +145,7 @@ function DaftarAgen() {
         </button>
       </div>
       <div className='base-content'>   
-        <div className='search-bar mb-5'>
+        <div className='search-bar mb-5' style={{ display: 'none' }}>
           <Row>
             <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
               <span className='h5'>
@@ -145,8 +156,6 @@ function DaftarAgen() {
               <Form.Control
                 placeholder="Masukkan Nama Agen"
                 type='text'
-                // aria-label="Masukkan Nama Agen"
-                // aria-describedby="basic-addon2"
                 style={{ width: 200, marginTop: '-7px' }}
                 />
             </Col>
@@ -154,7 +163,7 @@ function DaftarAgen() {
         </div>
         {
           listAgen.length === 0 ?
-          <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>No Data</div> :
+          <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
           <div className="div-table">
             <DataTable
               columns={columns}
@@ -163,8 +172,12 @@ function DaftarAgen() {
               noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
               pagination
               highlightOnHover
+              // paginationResetDefaultPage={resetPaginationToggle}
+              // subHeader
+              // subHeaderComponent={subHeaderComponentMemo}
+              // selectableRows
+              // persistTableHead
               onRowClicked={(listAgen) => {
-                // console.log(listAgen.agen_id, 'ini list agen di clik table');
                 detailAgenHandler(listAgen.agen_id)
               }}
             />

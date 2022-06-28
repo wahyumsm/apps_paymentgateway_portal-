@@ -17,28 +17,9 @@ export default () => {
 
   const history = useHistory();
   const access_token = getToken();
-  const [userDetail, setUserDetail] = useState([])
   const [listTransferDana, setListTransferDana] = useState([])
   const [listSettlement, setListSettlement] = useState([])
   // console.log(access_token, 'ini access token');
-  async function getUserDetail() {
-    try {
-      const auth = "Bearer " + getToken()
-      const headers = {
-        'Content-Type':'application/json',
-        'Authorization' : auth
-      }
-      const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
-      // console.log(userDetail, 'ini data user');
-      if (userDetail.status === 200 && userDetail.data.response_code === 200) {
-        // console.log(userDetail.data.response_data, 'ini data user');
-        setUserDetail(userDetail.data.response_data)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    
-  }
   async function getListTransferDana() {
     try {
       const auth = "Bearer " + getToken()
@@ -47,7 +28,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
+      const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
       // console.log(listTransferDana, 'ini data transfer dana');
       listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.status === "Success") ? obj.status = "Berhasil" : obj.status = "Gagal" }));
       setListTransferDana(listTransferDana.data.response_data.list)
@@ -64,7 +45,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
+      const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
       // console.log(dataSettlement, 'ini data settlement');
       dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.tvasettl_status_id === 1) ? obj.status = "Berhasil" : obj.status = "Gagal" }));
       setListSettlement(dataSettlement.data.response_data)
@@ -76,9 +57,7 @@ export default () => {
   useEffect(() => {
     if (!access_token) {
       history.push('/sign-in');
-      // window.location.reload();
     }
-    // getUserDetail()
     getListTransferDana()
     getSettlement()
   }, [])
@@ -347,9 +326,12 @@ export default () => {
                     </Row>
                 </Col>
             </Row> */}
-            <div>
-              <Link onClick={() => exportReportTransferDanaMasukHandler(listTransferDana)} className="export-span">Export</Link>
-            </div>
+            {
+              listTransferDana.length !== 0 &&
+              <div>
+                <Link onClick={() => exportReportTransferDanaMasukHandler(listTransferDana)} className="export-span">Export</Link>
+              </div>
+            }
             <br/>
             <br/>
             <div className="div-table">
@@ -399,9 +381,12 @@ export default () => {
                     </Row>
                 </Col>
             </Row> */}
-            <div>
-              <Link onClick={() => exportReportSettlementHandler(listSettlement)} className="export-span">Export</Link>
-            </div>
+            {
+              listSettlement.length !== 0 &&
+              <div>
+                <Link onClick={() => exportReportSettlementHandler(listSettlement)} className="export-span">Export</Link>
+              </div>
+            }
             <br/>
             <br/>
             <div className="div-table">

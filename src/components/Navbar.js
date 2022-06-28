@@ -6,19 +6,23 @@ import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import { Row, Col, Nav, Form, Image, Navbar, Dropdown, Container, ListGroup, InputGroup } from '@themesberg/react-bootstrap';
 
 import NOTIFICATIONS_DATA from "../data/notifications";
-import Profile3 from "../assets/img/team/profile-picture-3.jpg";
+import Profile3 from "../assets/icon/default_profile.png";
 import iconDetailAkun from "../assets/icon/detail_akun_icon.svg"
 import userIcon from "../assets/icon/akun_icon.svg"
 import logoutIcon from "../assets/icon/logout_icon.svg"
+import arrowDown from "../assets/img/icons/arrow_down.svg"
 import { useHistory } from "react-router-dom";
 import { BaseURL, getToken, removeUserSession } from "../function/helpers";
 import axios from "axios";
+import { getUserDetail } from "../redux/ActionCreators/UserDetailAction";
+import { useDispatch, useSelector } from "react-redux";
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
   const areNotificationsRead = notifications.reduce((acc, notif) => acc && notif.read, true);
   const history = useHistory();
-  const [userDetail, setUserDetail] = useState([])
+  const userDetail = useSelector(state => state.userDetailReducer.userDetail);
+  const dispatch = useDispatch()
 
   const markNotificationsAsRead = () => {
     setTimeout(() => {
@@ -26,24 +30,24 @@ export default (props) => {
     }, 300);
   };
 
-  async function getUserDetail() {
-    try {
-      const auth = "Bearer " + getToken()
-      const headers = {
-        'Content-Type':'application/json',
-        'Authorization' : auth
-      }
-      const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
-      // console.log(userDetail, 'ini data user');
-      if (userDetail.status === 200 && userDetail.data.response_code === 200) {
-        // console.log(userDetail.data.response_data, 'ini data user untuk navbar');
-        setUserDetail(userDetail.data.response_data)
-      }
-    } catch (error) {
-      console.log(error)
-    }
+  // async function getUserDetail() {
+  //   try {
+  //     const auth = "Bearer " + getToken()
+  //     const headers = {
+  //       'Content-Type':'application/json',
+  //       'Authorization' : auth
+  //     }
+  //     const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
+  //     // console.log(userDetail, 'ini data user');
+  //     if (userDetail.status === 200 && userDetail.data.response_code === 200) {
+  //       // console.log(userDetail.data.response_data, 'ini data user untuk navbar');
+  //       setUserDetail(userDetail.data.response_data)
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
     
-  }
+  // }
 
   const navToDetailAccount = () => {
     history.push("/detailakun");
@@ -56,7 +60,7 @@ export default (props) => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const logout = await axios.post("/Account/Logout", { data: "" }, { headers: headers })
+      const logout = await axios.post(BaseURL + "/Account/Logout", { data: "" }, { headers: headers })
       // console.log(logout, 'ini hasil logout');
       if (logout.status === 200 && logout.data.response_code === 200) {
         removeUserSession()
@@ -71,11 +75,6 @@ export default (props) => {
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;
     const readClassName = read ? "" : "text-danger";
-
-    useEffect(() => {
-      // getUserDetail()
-    }, [])
-    
 
     return (
       <ListGroup.Item action href={link} className="border-bottom border-light">
@@ -98,7 +97,12 @@ export default (props) => {
       </ListGroup.Item>
     );
   };
-
+  
+  useEffect(() => {
+    dispatch(getUserDetail("/Account/GetUserProfile"))
+  }, [])
+  // console.log(userDetail, 'ini data user untuk navbar');
+  
   return (
     <Navbar variant="dark" expanded className="ps-0 pe-2 pb-0" style={{backgroundColor: '#ffffff'}}>
       <Container fluid className="px-0">
@@ -107,7 +111,7 @@ export default (props) => {
 
           </div>
           <Nav className="align-items-center">
-            <Dropdown as={Nav.Item} onToggle={markNotificationsAsRead} >
+            {/* <Dropdown as={Nav.Item} onToggle={markNotificationsAsRead} >
               <Dropdown.Toggle as={Nav.Link} className="text-dark icon-notifications me-lg-3">
                 <span className="icon icon-sm">
                   <FontAwesomeIcon icon={faBell} className="bell-shake" />
@@ -127,20 +131,21 @@ export default (props) => {
                   </Dropdown.Item>
                 </ListGroup>
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
 
             <Dropdown as={Nav.Item}>
               <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0">
                 <div className="media d-flex align-items-center">
                   <Image src={Profile3} className="user-avatar md-avatar rounded-circle" />
                   <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                    <span className="mb-0 font-small fw-bold">{"Sysadmin"}</span>
+                    <span className="mb-0 font-small fw-bold">{userDetail.muser_name}</span>
+                    <img src={arrowDown} alt="arrow_down" style={{ marginLeft: 10 }} />
                   </div>
                 </div>
               </Dropdown.Toggle>
-              <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
-                <Dropdown.Item className="fw-bold">
-                <img alt="" src={userIcon}/> {"Sysadmin"} ({"Admin"})
+              <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2" style={{ minWidth: "14rem", width: "100%" }}>
+                <Dropdown.Item className="fw-bold" style={{ width: "100%" }}>
+                <img alt="" src={userIcon}/> {userDetail.muser_name} ({userDetail.mrole_desc})
                 </Dropdown.Item>
                 {/* <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
                   <img alt="" src={iconDetailAkun}/> Detail Akun

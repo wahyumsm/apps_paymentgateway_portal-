@@ -25,7 +25,7 @@ function DetailAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
+            const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200) {
                 // console.log(detailAgen.data.response_data, 'ini detail agen');
@@ -44,6 +44,7 @@ function DetailAgen() {
         getDetailAgen(agenId)
     }, [agenId])
     
+    // console.log(detailAgen.status, 'ini detail agen');
 
     return (
         <div className='main-content' style={{ padding: "37px 27px" }}>
@@ -63,7 +64,7 @@ function DetailAgen() {
                             <Form.Check
                                 type="switch"
                                 id="custom-switch"
-                                label="Aktif"
+                                label={(detailAgen.status === true) ? "Aktif" : "Tidak Aktif"}
                                 checked={detailAgen.status}
                                 />
                         </Col>

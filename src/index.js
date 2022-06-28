@@ -16,6 +16,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from "react-router-dom";
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 // core styles
 import "./scss/volt.scss";
@@ -27,9 +29,11 @@ import HomePage from "./pages/HomePage";
 import ScrollToTop from "./components/ScrollToTop";
 
 ReactDOM.render(
-  <HashRouter basename={'/crm'}>
-    <ScrollToTop />
-    <HomePage />
-  </HashRouter>,
+  <Provider store={store}>
+    <HashRouter basename={'/ezeepg'}>
+      <ScrollToTop />
+      <HomePage />
+    </HashRouter>
+  </Provider>,
   document.getElementById("root")
 );
