@@ -8,7 +8,7 @@ import { Chart } from 'react-chartjs-2';
 import { invoiceItems } from '../data/tables';
 import DataTable from 'react-data-table-component';
 import { TransactionsTable } from "../components/Tables";
-import { BaseURL, getToken } from "../function/helpers";
+import { BaseURL, convertToRupiah, getToken } from "../function/helpers";
 import axios from "axios";
 import encryptData from "../function/encryptData";
 import * as XLSX from "xlsx"
@@ -20,6 +20,11 @@ export default () => {
   const [listTransferDana, setListTransferDana] = useState([])
   const [listSettlement, setListSettlement] = useState([])
   const currentDate = new Date().toISOString().split('T')[0]
+  const [inputHandle, setInputHandle] = useState({
+    idTransaksi: "",
+    periode: "",
+    status: "",
+  })
   // console.log(access_token, 'ini access token');
   async function getListTransferDana(currentDate) {
     try {
@@ -31,8 +36,8 @@ export default () => {
         'Authorization' : auth
       }
       const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-      // console.log(listTransferDana, 'ini data transfer dana');
-      listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.status === "Success") ? obj.status = "Berhasil" : obj.status = "Gagal" }));
+      console.log(listTransferDana, 'ini data transfer dana');
+      listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
       setListTransferDana(listTransferDana.data.response_data.list)
     } catch (error) {
       console.log(error)
@@ -51,8 +56,8 @@ export default () => {
         'Authorization' : auth
       }
       const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      // console.log(dataSettlement, 'ini data settlement');
-      dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.tvasettl_status_id === 1) ? obj.status = "Berhasil" : obj.status = "Gagal" }));
+      console.log(dataSettlement, 'ini data settlement');
+      dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
       setListSettlement(dataSettlement.data.response_data)
     } catch (error) {
       console.log(error)
@@ -79,37 +84,46 @@ export default () => {
     {
         name: 'ID Transaksi',
         selector: row => row.id,
-        sortable: true
+        // sortable: true
     },
     {
         name: 'Waktu',
         selector: row => row.created_at,
-        sortable: true
+        // sortable: true
     },
     {
         name: 'Nama Agen',
         selector: row => row.name,
-        sortable: true
+        // sortable: true
     },
     {
         name: 'Total Akhir',
         selector: row => row.amount,
-        sortable: true
+        // sortable: true,
+        cell: row => <div>{ convertToRupiah(row.amount) }</div>
     },
     {
         name: 'Status',
         selector: row => row.status,
-        width: "100px",
-        sortable: true,
-        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+        width: "150px",
+        // sortable: true,
+        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
         conditionalCellStyles: [
           {
-            when: row => row.status === "Berhasil",
-            style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
+            when: row => row.status === "Success",
+            style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", paddingLeft: "unset" }
           },
           {
-            when: row => row.status === "Gagal",
-            style: { background: "#F0F0F0" }
+            when: row => row.status_id === 1 || row.status_id === 7,
+            style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
+          },
+          {
+            when: row => row.status_id === 4 || row.status_id === 9,
+            style: { background: "#FDEAEA", color: "#EE2E2C", paddingLeft: "unset" }
+          },
+          {
+            when: row => row.status_id === 3 || row.status_id === 5 || row.status_id === 6 || row.status_id === 8 || row.status_id === 10 || row.status_id === 11 || row.status_id === 12 || row.status_id === 13 || row.status_id === 14 || row.status_id === 15,
+            style: { background: "#F0F0F0", color: "#888888", paddingLeft: "unset" }
           }
         ],
     },
@@ -131,38 +145,50 @@ export default () => {
   const columnsSettlement = [
     {
         name: 'No',
-        selector: row => row.number
+        selector: row => row.number,
+        width: "67px"
     },
     {
         name: 'ID Transaksi',
-        selector: row => row.tvasettl_id,
-        sortable: true
+        selector: row => row.tvasettl_code,
+        width: "251px"
+        // sortable: true
     },
     {
         name: 'Waktu',
         selector: row => row.tvasettl_crtdt,
-        sortable: true
+        // width: "251px"
+        // sortable: true
     },
     {
         name: 'Jumlah',
         selector: row => row.tvasettl_amount,
-        sortable: true,
-        cell: row => <div></div>
+        // width: "251px",
+        // sortable: true,
+        cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>
     },
     {
         name: 'Status',
-        selector: row => row.status,
-        width: "100px",
-        sortable: true,
-        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+        selector: row => row.mstatus_name,
+        width: "127px",
+        // sortable: true,
+        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: 6, margin: "6px 16px", width: "50%", borderRadius: 4 },
         conditionalCellStyles: [
           {
-            when: row => row.status === "Berhasil",
-            style: { background: "rgba(7, 126, 134, 0.08)" }
+            when: row => row.tvasettl_status_id === 2,
+            style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
           },
           {
-            when: row => row.status === "Gagal",
-            style: { background: "#F0F0F0" }
+            when: row => row.tvasettl_status_id === 1 || row.tvasettl_status_id === 7,
+            style: { background: "#FEF4E9", color: "#F79421" }
+          },
+          {
+            when: row => row.tvasettl_status_id === 4 || row.tvasettl_status_id === 9,
+            style: { background: "#FDEAEA", color: "#EE2E2C" }
+          },
+          {
+            when: row => row.tvasettl_status_id === 3 || row.tvasettl_status_id === 5 || row.tvasettl_status_id === 6 || row.tvasettl_status_id === 8 || row.tvasettl_status_id === 10 || row.tvasettl_status_id === 11 || row.tvasettl_status_id === 12 || row.tvasettl_status_id === 13 || row.tvasettl_status_id === 14 || row.tvasettl_status_id === 15,
+            style: { background: "#F0F0F0", color: "#888888" }
           }
         ],
     },
@@ -187,7 +213,7 @@ export default () => {
               backgroundColor: '#F2F2F2',
               border: '12px',
               fontWeight: 'bold',
-              fontSize: '16px'
+              fontSize: '16px',
           },
       },
   };
@@ -214,6 +240,14 @@ export default () => {
     XLSX.writeFile(workBook, "Report Settlement.xlsx");
   }
 
+  function handleChange(e) {
+    console.log(e.target.value);
+    setInputHandle({
+        ...inputHandle,
+        [e.target.name] : e.target.value
+    })
+  }
+
   const data = {
       labels: [
         'Red',
@@ -234,7 +268,7 @@ export default () => {
       }]
     };
     // console.log(listTransferDana, 'ini data transfer dana');
-    // console.log(listSettlement, 'ini data settlement');
+    // console.log(listSettlement.data, 'ini data settlement');
 
   return (
     <>
@@ -362,20 +396,20 @@ export default () => {
                 </div>
               </Col>
             </Row>            
-            <br/>
-            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+            <br/> */}
+            {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
-                    <input type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                    <input name="idTransaksi" onChange={(e) => handleChange(e.target.value)} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
                 <Col xs={4}>
                     <span>Periode</span>
-                    <input type='text'className='input-text-ez' placeholder='Pilih Periode' style={{marginLeft: 48}}/>
+                    <input name="periode" onChange={(e) => handleChange(e.target.value)} type='text'className='input-text-ez' placeholder='Pilih Periode' style={{marginLeft: 48}}/>
                 </Col>
                 <Col xs={4}>
                     <span>Status</span>
-                    <input type='text'className='input-text-ez' placeholder='Pilih Status'/>
+                    <input name="status" onChange={(e) => handleChange(e.target.value)} type='text'className='input-text-ez' placeholder='Pilih Status'/>
                 </Col>
             </Row>
             <Row className='mt-4'>

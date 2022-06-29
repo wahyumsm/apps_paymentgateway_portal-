@@ -6,8 +6,8 @@ export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms="
 // export const authBearer = "Basic ZXplZWxpbms6ZXplZWxpbms="
 
 export const setUserSession = (token) => {
-    sessionStorage.setItem("token", token);
     localStorage.setItem("token", token)
+    sessionStorage.setItem("token", token);
 }
 
 export const getToken = () => {
@@ -17,4 +17,8 @@ export const getToken = () => {
 export const removeUserSession = () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
+}
+
+export function convertToRupiah(money) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0}).format(money)
 }
