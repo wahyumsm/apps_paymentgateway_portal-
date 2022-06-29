@@ -19,11 +19,12 @@ export default () => {
   const access_token = getToken();
   const [listTransferDana, setListTransferDana] = useState([])
   const [listSettlement, setListSettlement] = useState([])
+  const currentDate = new Date().toISOString().split('T')[0]
   // console.log(access_token, 'ini access token');
-  async function getListTransferDana() {
+  async function getListTransferDana(currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"start_time": "2022-01-01", "end_time": "2022-12-30", "sub_name": "", "id": "", "status": ""}`)
+      const dataParams = encryptData(`{"start_time": "2022-01-01", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": ""}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -40,10 +41,10 @@ export default () => {
     }
   }
 
-  async function getSettlement() {
+  async function getSettlement(currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"2022-06-10", "tvasettl_to":"2022-06-27"}`)
+      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"2022-01-01", "tvasettl_to":"${currentDate}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -64,9 +65,9 @@ export default () => {
     if (!access_token) {
       history.push('/sign-in');
     }
-    getListTransferDana()
-    getSettlement()
-  }, [])
+    getListTransferDana(currentDate)
+    getSettlement(currentDate)
+  }, [currentDate])
   
 
   const columnstransferDana = [
