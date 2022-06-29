@@ -19,16 +19,18 @@ export default () => {
   const access_token = getToken();
   const [listTransferDana, setListTransferDana] = useState([])
   const [listSettlement, setListSettlement] = useState([])
+  const currentDate = new Date().toISOString().split('T')[0]
   // console.log(access_token, 'ini access token');
-  async function getListTransferDana() {
+  async function getListTransferDana(currentDate) {
     try {
+
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"start_time": "2022-01-01", "end_time": "2022-12-30", "sub_name": "", "id": "", "status": ""}`)
+      const dataParams = encryptData(`{"start_time": "2022-01-01", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": ""}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+      const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
       // console.log(listTransferDana, 'ini data transfer dana');
       listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.status === "Success") ? obj.status = "Berhasil" : obj.status = "Gagal" }));
       setListTransferDana(listTransferDana.data.response_data.list)
@@ -40,15 +42,15 @@ export default () => {
     }
   }
 
-  async function getSettlement() {
+  async function getSettlement(currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"2022-06-10", "tvasettl_to":"2022-06-27"}`)
+      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"2022-01-01", "tvasettl_to":"${currentDate}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
+      const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
       // console.log(dataSettlement, 'ini data settlement');
       dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.tvasettl_status_id === 1) ? obj.status = "Berhasil" : obj.status = "Gagal" }));
       setListSettlement(dataSettlement.data.response_data)
@@ -64,8 +66,8 @@ export default () => {
     if (!access_token) {
       history.push('/sign-in');
     }
-    getListTransferDana()
-    getSettlement()
+    getListTransferDana(currentDate)
+    getSettlement(currentDate)
   }, [])
   
 
@@ -144,7 +146,8 @@ export default () => {
     {
         name: 'Jumlah',
         selector: row => row.tvasettl_amount,
-        sortable: true
+        sortable: true,
+        cell: row => <div></div>
     },
     {
         name: 'Status',

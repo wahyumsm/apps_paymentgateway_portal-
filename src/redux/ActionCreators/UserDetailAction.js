@@ -10,7 +10,7 @@ export const getUserDetail = (url) => {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const userDetail = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
+            const userDetail = await axios.post(url, { data: "" }, { headers: headers })
             // console.log(userDetail, 'ini data user di action creator');
             dispatch({
                 type: FETCH_GETUSERDETAIL,
@@ -21,18 +21,5 @@ export const getUserDetail = (url) => {
         } catch (error) {
             console.log(error)
         }
-        // axios.post(BaseURL + url, { data: "" }, { headers: headers })
-        //     .then(userDetail => {
-        //         console.log(userDetail, 'ini data user di action creator');
-        //         dispatch({
-        //             type: FETCH_GETUSERDETAIL,
-        //             payload: {
-        //                 userDetail: userDetail.data.response_data
-        //             }
-        //         })
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //     })
     }
 }
