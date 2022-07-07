@@ -15,7 +15,7 @@ export const Routes = {
     DaftarPartner : { path: "/daftarpartner" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
-    Signin: { path: "/sign-in" },
+    Login: { path: "/login" },
     Signup: { path: "/examples/sign-up" },
     ForgotPassword: { path: "/examples/forgot-password" },
     ResetPassword: { path: "/examples/reset-password" },

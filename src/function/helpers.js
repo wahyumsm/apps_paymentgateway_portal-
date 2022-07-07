@@ -22,3 +22,11 @@ export const removeUserSession = () => {
 export function convertToRupiah(money) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0}).format(money)
 }
+
+export function errorCatch(statusCode) {
+    const code = {
+        "401": "/login",
+        "403": "/404",
+    }
+    return code[statusCode]
+}

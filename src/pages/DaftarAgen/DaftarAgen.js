@@ -5,7 +5,7 @@ import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form} from '@theme
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, Link } from 'react-router-dom';
-import { BaseURL, getToken } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken } from '../../function/helpers';
 import axios from 'axios';
 
 function DaftarAgen() {
@@ -26,16 +26,14 @@ function DaftarAgen() {
         'Authorization' : auth
       }
       const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
-      console.log(listAgen, 'ini data agen');
+      // console.log(listAgen, 'ini data agen');
       if (listAgen.status === 200 && listAgen.data.response_code === 200) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
       }
     } catch (error) {
       console.log(error)
-      if (error.response.status === 401) {
-        history.push('/sign-in')
-      }
+      history.push(errorCatch(error.response.status))
     }
   }
   
@@ -113,7 +111,7 @@ function DaftarAgen() {
 
   useEffect(() => {
     if (!access_token) {
-    history.push('/sign-in');
+    history.push('/login');
   }
     getDataAgen()
   }, [])
@@ -180,9 +178,9 @@ function DaftarAgen() {
               // subHeaderComponent={subHeaderComponentMemo}
               // selectableRows
               // persistTableHead
-              onRowClicked={(listAgen) => {
-                detailAgenHandler(listAgen.agen_id)
-              }}
+              // onRowClicked={(listAgen) => {
+              //   detailAgenHandler(listAgen.agen_id)
+              // }}
             />
           </div>
         }
