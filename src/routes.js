@@ -12,7 +12,11 @@ export const Routes = {
     DaftarAgen : { path: "/daftaragen" },
     TambahAgen : { path: "/tambahagen" },
     DetailAgen : { path: "/detailagen/:agenId" },
+    EditAgen : { path: "/editagen/:agenId" },
     DaftarPartner : { path: "/daftarpartner" },
+    TambahPartner : { path: "/tambahpartner" },
+    DetailPartner : { path: "/detailpartner/:partnerId" },
+    EditPartner : { path: "/editpartner/:partnerId" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
     Login: { path: "/login" },
@@ -20,8 +24,8 @@ export const Routes = {
     ForgotPassword: { path: "/examples/forgot-password" },
     ResetPassword: { path: "/examples/reset-password" },
     Lock: { path: "/examples/lock" },
-    NotFound: { path: "/404" },
-    ServerError: { path: "/500" },
+    NotFound: { path: "/examples/404" },
+    ServerError: { path: "/examples/500" },
 
     // docs
     DocsOverview: { path: "/documentation/overview" },
