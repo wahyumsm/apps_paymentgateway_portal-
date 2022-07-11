@@ -30,25 +30,6 @@ export default (props) => {
     }, 300);
   };
 
-  // async function getUserDetail() {
-  //   try {
-  //     const auth = "Bearer " + getToken()
-  //     const headers = {
-  //       'Content-Type':'application/json',
-  //       'Authorization' : auth
-  //     }
-  //     const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
-  //     // console.log(userDetail, 'ini data user');
-  //     if (userDetail.status === 200 && userDetail.data.response_code === 200) {
-  //       // console.log(userDetail.data.response_data, 'ini data user untuk navbar');
-  //       setUserDetail(userDetail.data.response_data)
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-    
-  // }
-
   const navToDetailAccount = () => {
     history.push("/detailakun");
   }
@@ -60,8 +41,7 @@ export default (props) => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const logout = await axios.post("/Account/Logout", { data: "" }, { headers: headers })
-      // console.log(logout, 'ini hasil logout');
+      const logout = await axios.post(BaseURL + "/Account/Logout", { data: "" }, { headers: headers })
       if (logout.status === 200 && logout.data.response_code === 200) {
         removeUserSession()
         history.push("/login")
@@ -101,7 +81,6 @@ export default (props) => {
   useEffect(() => {
     dispatch(getUserDetail("/Account/GetUserProfile"))
   }, [])
-  // console.log(userDetail, 'ini data user untuk navbar');
   
   return (
     <Navbar variant="dark" expanded className="ps-0 pe-2 pb-0" style={{backgroundColor: '#ffffff'}}>
