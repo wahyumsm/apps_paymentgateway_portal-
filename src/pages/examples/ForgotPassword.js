@@ -40,7 +40,7 @@ export default () => {
         <Container>
           <Row className="justify-content-center">
             <p className="text-center">
-              <Card.Link as={Link} to={Routes.Signin.path} style={{ fontFamily: "Exo", color: "#077E86" }}>
+              <Card.Link as={Link} to={Routes.Login.path} style={{ fontFamily: "Exo", color: "#077E86" }}>
                 <FontAwesomeIcon icon={faAngleLeft} className="me-2" /> Kembali ke Login page
               </Card.Link>
             </p>

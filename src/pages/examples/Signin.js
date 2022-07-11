@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
 import { faFacebookF, faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { Col, Row, Form, Card, Button, FormCheck, Container, InputGroup } from '@themesberg/react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
@@ -11,6 +11,7 @@ import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
 import { authorization, BaseURL, setUserSession } from "../../function/helpers";
+import "./Signin.css";
 
 
 export default () => {
@@ -18,22 +19,26 @@ export default () => {
   const history = useHistory()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordInputType = showPassword ? "text" : "password";
+  const passwordIconColor = showPassword ? "#262B40" : "";
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   async function signingInHandler(username, password) {
     try {
       const auth = authorization
       const dataParams = encryptData(`{"username" : '${username}', "password" : '${password}'}`)
-      // console.log(dataParams);
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
-      // console.log(dataLogin, 'ini data login');
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         history.push("/")
-        window.location.reload()
       }
     } catch (error) {
       console.log(error);
@@ -51,7 +56,7 @@ export default () => {
             </Card.Link>
           </p> */}
           <Row className="justify-content-center form-bg-image">
-            <img src={BgImage} alt="Signin" className="img-fluid" style={{ maxWidth: 980, maxHeight: 536, position: "absolute" }} />
+            <img src={BgImage} alt="Login" className="img-fluid" style={{ maxWidth: 980, maxHeight: 536, position: "absolute" }} />
             <Col xs={12} className="d-flex align-items-center justify-content-center">
               <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100" style={{ maxWidth: 440, maxHeight: 459, zIndex: 1, marginTop: 46, marginLeft: 88 }}>
                 <div className="text-center text-md-center mb-4 mt-md-0">
@@ -68,7 +73,10 @@ export default () => {
                     <Form.Group style={{ fontFamily: "Nunito" }} id="password" className="mb-4">
                       <Form.Label>Kata Sandi</Form.Label>
                       <InputGroup>
-                        <Form.Control onChange={e => setPassword(e.target.value)} required type="password" placeholder="Masukkan Kata Sandi" />
+                        <Form.Control onChange={e => setPassword(e.target.value)} required type={passwordInputType} placeholder="Masukkan Kata Sandi" />
+                        <InputGroup.Text onClick={togglePasswordVisibility} className="pass-log">
+                          <FontAwesomeIcon color={passwordIconColor} icon={faEye} />
+                        </InputGroup.Text>
                       </InputGroup>
                     </Form.Group>
                     {/* <div className="d-flex justify-content-between align-items-center mb-4">

@@ -15,7 +15,7 @@ export default () => {
         <Container>
           <Row className="justify-content-center">
             {/* <p className="text-center">
-              <Card.Link as={Link} to={Routes.Signin.path} className="text-gray-700">
+              <Card.Link as={Link} to={Routes.Login.path} className="text-gray-700">
                 <FontAwesomeIcon icon={faAngleLeft} className="me-2" /> Back to sign in
               </Card.Link>
             </p> */}

@@ -11,7 +11,7 @@ export const getUserDetail = (url) => {
                 'Authorization' : auth
             }
             const userDetail = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
-            // console.log(userDetail, 'ini data user di action creator');
+            // console.log(userDetail, "userDetail");
             dispatch({
                 type: FETCH_GETUSERDETAIL,
                 payload: {

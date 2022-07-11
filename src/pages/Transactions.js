@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faCog, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { Col, Row, Form, Button, ButtonGroup, Breadcrumb, InputGroup, Dropdown } from '@themesberg/react-bootstrap';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faCheck, faCog, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Col, Row, Form, Modal, Button, Table, ButtonGroup, Breadcrumb, InputGroup, Dropdown, Container, Image } from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
-import { Chart } from 'react-chartjs-2';
-import { invoiceItems } from '../data/tables';
+// import { Chart } from 'react-chartjs-2';
+// import { invoiceItems } from '../data/tables';
 import DataTable from 'react-data-table-component';
-import { TransactionsTable } from "../components/Tables";
-import { BaseURL, getToken } from "../function/helpers";
+// import { TransactionsTable } from "../components/Tables";
+import { BaseURL, convertToRupiah, errorCatch, getToken } from "../function/helpers";
 import axios from "axios";
 import encryptData from "../function/encryptData";
 import * as XLSX from "xlsx"
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
+// import { addDays } from "date-fns";
+import "./Transactions.css";
 
 export default () => {
 
@@ -19,56 +23,150 @@ export default () => {
   const access_token = getToken();
   const [listTransferDana, setListTransferDana] = useState([])
   const [listSettlement, setListSettlement] = useState([])
+  const [state, setState] = useState(null)
+  const [dateRange, setDateRange] = useState([])
+  const [inputHandle, setInputHandle] = useState({
+    idTransaksi: "",
+    namaAgen: "",
+    status: "",
+  })
+  const [pendingTransfer, setPendingTransfer] = useState(true)
+  const [pendingSettlement, setPendingSettlement] = useState(true)
+  const [detailTransferDana, setDetailTransferDana] = useState({})
+  const [showModalDetailTransferDana, setShowModalDetailTransferDana] = useState(false)
   const currentDate = new Date().toISOString().split('T')[0]
-  // console.log(access_token, 'ini access token');
-  async function getListTransferDana(currentDate) {
+  const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
+
+  function handleChange(e) {
+    setInputHandle({
+        ...inputHandle,
+        [e.target.name] : e.target.value
+    })
+  }
+
+  function pickDate(item) {
+    setState(item)
+    if (item !== null) {
+      item = item.map(el => el.toLocaleDateString('en-CA'))
+      setDateRange(item)
+    }
+  }
+  async function getListTransferDana(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"start_time": "2022-01-01", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": ""}`)
+      const dataParams = encryptData(`{"start_time": "${oneMonthAgo}", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": ""}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
-      // console.log(listTransferDana, 'ini data transfer dana');
-      listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.status === "Success") ? obj.status = "Berhasil" : obj.status = "Gagal" }));
-      setListTransferDana(listTransferDana.data.response_data.list)
+      if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200) {
+        listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListTransferDana(listTransferDana.data.response_data.list)
+        setPendingTransfer(false)
+      }
     } catch (error) {
       console.log(error)
-      if (error.response.status === 401) {
-        history.push('/sign-in')
-      }
+      history.push(errorCatch(error.response.status))
     }
   }
 
-  async function getSettlement(currentDate) {
+  async function getSettlement(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"2022-01-01", "tvasettl_to":"${currentDate}"}`)
+      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"${oneMonthAgo}", "tvasettl_to":"${currentDate}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
-      // console.log(dataSettlement, 'ini data settlement');
-      dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.tvasettl_status_id === 1) ? obj.status = "Berhasil" : obj.status = "Gagal" }));
-      setListSettlement(dataSettlement.data.response_data)
+      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200) {
+        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(dataSettlement.data.response_data)
+        setPendingSettlement(false)
+      }
     } catch (error) {
       console.log(error)
-      if (error.response.status === 401) {
-        history.push('/sign-in')
-      }
+      history.push(errorCatch(error.response.status))
     }
+  }
+
+  async function filterTransferButtonHandle(idTransaksi, namaAgen, periode, status) {
+    try {
+      setPendingSettlement(true)
+      const auth = "Bearer " + getToken()
+      const dataParams = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const filterTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+      if (filterTransferDana.status === 200 && filterTransferDana.data.response_code == 200) {
+        filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListTransferDana(filterTransferDana.data.response_data.list)
+        setPendingSettlement(false)
+      }
+    } catch (error) {
+      console.log(error)
+      history.push(errorCatch(error.response.status))
+    }
+  }
+
+  async function filterSettlementButtonHandle(idTransaksi, periode, status) {
+    try {
+      const auth = "Bearer " + getToken()
+      const dataParams = encryptData(`{"tvasettl_id":${(idTransaksi.length !== 0) ? idTransaksi : 0}, "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const filterSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
+      if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200) {
+        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data)
+      }
+    } catch (error) {
+      console.log(error)
+      history.push(errorCatch(error.response.status))
+    }
+  }
+
+  function resetButtonHandle() {
+    setInputHandle({
+        ...inputHandle,
+        idTransaksi : "",
+        namaAgen: "",
+        status : ""
+    })
+    setState(null)
+    setDateRange([])
   }
 
   useEffect(() => {
     if (!access_token) {
-      history.push('/sign-in');
+      history.push('/login');
     }
-    getListTransferDana(currentDate)
-    getSettlement(currentDate)
-  }, [currentDate])
-  
+    getListTransferDana(oneMonthAgo, currentDate)
+    getSettlement(oneMonthAgo, currentDate)
+  }, [])
+
+  async function detailListTransferHandler(trxId) {
+    try {
+      const auth = "Bearer " + getToken()
+      const dataParams = encryptData(`{"tvatrans_trx_id":${trxId}}`)
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const detailTransaksi = await axios.post(BaseURL + "/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
+      if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200) {
+        setDetailTransferDana(detailTransaksi.data.response_data)
+        setShowModalDetailTransferDana(true)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const columnstransferDana = [
     {
@@ -78,37 +176,48 @@ export default () => {
     {
         name: 'ID Transaksi',
         selector: row => row.id,
-        sortable: true
+        cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
+      // sortable: true
     },
     {
         name: 'Waktu',
         selector: row => row.created_at,
-        sortable: true
+        // sortable: true
     },
     {
         name: 'Nama Agen',
         selector: row => row.name,
-        sortable: true
+        // sortable: true
     },
     {
         name: 'Total Akhir',
         selector: row => row.amount,
-        sortable: true
+        // sortable: true,
+        cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
+        style: { display: "flex", flexDirection: "row", justifyContent: "center", }
     },
     {
         name: 'Status',
         selector: row => row.status,
-        width: "100px",
-        sortable: true,
-        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+        width: "150px",
+        // sortable: true,
+        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
         conditionalCellStyles: [
           {
-            when: row => row.status === "Berhasil",
-            style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
+            when: row => row.status_id === "2",
+            style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", paddingLeft: "unset" }
           },
           {
-            when: row => row.status === "Gagal",
-            style: { background: "#F0F0F0" }
+            when: row => row.status_id === "1" || row.status_id === "7",
+            style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
+          },
+          {
+            when: row => row.status_id === "4" || row.status_id === "9",
+            style: { background: "#FDEAEA", color: "#EE2E2C", paddingLeft: "unset" }
+          },
+          {
+            when: row => row.status_id === "3" || row.status_id === "5" || row.status_id === "6" || row.status_id === "8" || row.status_id === "10" || row.status_id === "11" || row.status_id === "12" || row.status_id === "13" || row.status_id === "14" || row.status_id === "15",
+            style: { background: "#F0F0F0", color: "#888888", paddingLeft: "unset" }
           }
         ],
     },
@@ -130,53 +239,51 @@ export default () => {
   const columnsSettlement = [
     {
         name: 'No',
-        selector: row => row.number
+        selector: row => row.number,
+        width: "67px"
     },
     {
         name: 'ID Transaksi',
-        selector: row => row.tvasettl_id,
-        sortable: true
+        selector: row => row.tvasettl_code,
+        width: "251px"
+        // sortable: true
     },
     {
         name: 'Waktu',
         selector: row => row.tvasettl_crtdt,
-        sortable: true
+        // sortable: true
     },
     {
         name: 'Jumlah',
         selector: row => row.tvasettl_amount,
-        sortable: true
+        // sortable: true,
+        cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>
     },
     {
         name: 'Status',
-        selector: row => row.status,
-        width: "100px",
-        sortable: true,
-        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+        selector: row => row.mstatus_name,
+        width: "127px",
+        // sortable: true,
+        style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: 6, margin: "6px 16px", width: "50%", borderRadius: 4 },
         conditionalCellStyles: [
           {
-            when: row => row.status === "Berhasil",
-            style: { background: "rgba(7, 126, 134, 0.08)" }
+            when: row => row.tvasettl_status_id === 2,
+            style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
           },
           {
-            when: row => row.status === "Gagal",
-            style: { background: "#F0F0F0" }
+            when: row => row.tvasettl_status_id === 1 || row.tvasettl_status_id === 7,
+            style: { background: "#FEF4E9", color: "#F79421" }
+          },
+          {
+            when: row => row.tvasettl_status_id === 4 || row.tvasettl_status_id === 9,
+            style: { background: "#FDEAEA", color: "#EE2E2C" }
+          },
+          {
+            when: row => row.tvasettl_status_id === 3 || row.tvasettl_status_id === 5 || row.tvasettl_status_id === 6 || row.tvasettl_status_id === 8 || row.tvasettl_status_id === 10 || row.tvasettl_status_id === 11 || row.tvasettl_status_id === 12 || row.tvasettl_status_id === 13 || row.tvasettl_status_id === 14 || row.tvasettl_status_id === 15,
+            style: { background: "#F0F0F0", color: "#888888" }
           }
         ],
     },
-    // {
-    //   name: 'Action',
-    //   width: "230px",
-    // //   cell:(row) => 
-    // //     <>
-    // //     <img alt="" src={DeleteIcon} onClick={() => openDeleteModal(row.partner_id)}/>&nbsp;&nbsp;&nbsp;&nbsp;
-    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, true)}>Ubah</span>&nbsp;&nbsp;&nbsp;&nbsp;
-    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, false)}>Detail</span>
-    // //     </>,
-    //   ignoreRowClick: true,
-    //   allowOverflow: true,
-    //   button: true
-    // }
   ];
 
   const customStyles = {
@@ -185,7 +292,7 @@ export default () => {
               backgroundColor: '#F2F2F2',
               border: '12px',
               fontWeight: 'bold',
-              fontSize: '16px'
+              fontSize: '16px',
           },
       },
   };
@@ -193,7 +300,7 @@ export default () => {
   function exportReportTransferDanaMasukHandler(data) {
     let dataExcel = []
     for (let i = 0; i < data.length; i++) {
-      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, Waktu: data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: (data[i].status === "Success") ? "Berhasil" : "Gagal" })
+      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, Waktu: data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
     }
     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
     let workBook = XLSX.utils.book_new();
@@ -211,6 +318,13 @@ export default () => {
     XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
     XLSX.writeFile(workBook, "Report Settlement.xlsx");
   }
+
+  const CustomLoader = () => (
+    <div style={{ padding: '24px' }}>
+      <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+      {/* <div>Loading...</div> */}
+    </div>
+  );
 
   const data = {
       labels: [
@@ -231,8 +345,6 @@ export default () => {
         hoverOffset: 4
       }]
     };
-    // console.log(listTransferDana, 'ini data transfer dana');
-    // console.log(listSettlement, 'ini data settlement');
 
   return (
     <>
@@ -300,39 +412,60 @@ export default () => {
                 <br/>
               </Col>
             </Row> */}
-            {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
-                    <input type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksi} name="idTransaksi" type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
                 <Col xs={4}>
                     <span>Nama Agen</span>
-                    <input type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>
+                    <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgen} name="namaAgen" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>
                 </Col>
                 <Col xs={4}>
                     <span>Status</span>
-                    <input type='text'className='input-text-ez' placeholder='Pilih Status'/>
+                    <Form.Select name="status" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.status} onChange={(e) => handleChange(e)}>
+                      <option name="status" defaultValue value={0}>Pilih Status</option>
+                      <option name="status" value={2}>Success</option>
+                      <option name="status" value={1}>In Progress</option>
+                      {/* <option name="status" value={3}>Refund</option> */}
+                      {/* <option name="status" value={4}>Canceled</option> */}
+                      <option name="status" value={7}>Waiting For Payment</option>
+                      {/* <option name="status" value={8}>Paid</option> */}
+                      <option name="status" value={9}>Payment Expired</option>
+                      {/* <option name="status" value={10}>Withdraw</option> */}
+                      {/* <option name="status" value={11}>Idle</option> */}
+                      {/* <option name="status" value={15}>Expected Success</option> */}
+                    </Form.Select>
                 </Col>
             </Row>
             <Row className='mt-4'>
                 <Col xs={4}>
-                    <span>Periode</span>
-                    <input type='text'className='input-text-ez' placeholder='Pilih Periode' style={{marginLeft: 64}}/>
+                    <span style={{ marginRight: 20 }}>Periode*</span>
+                    <DateRangePicker
+                      onChange={pickDate}
+                      value={state}
+                      clearIcon={null}
+                      // calendarIcon={null}
+                    />
                 </Col>
             </Row>
             <Row className='mt-4'>
                 <Col xs={3}>
                     <Row>
                         <Col xs={6}>
-                            <button className='btn-ez'>Terapkan</button>
+                            <button onClick={() => filterTransferButtonHandle(inputHandle.idTransaksi, inputHandle.namaAgen, dateRange, inputHandle.status)} className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0 || dateRange.length !== 0 && inputHandle.namaAgen.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0 || dateRange.length === 0 && inputHandle.namaAgen.length === 0}>
+                              Terapkan
+                            </button>
                         </Col>
                         <Col xs={6}>
-                            <button className='btn-ez'>Atur Ulang</button>
+                            <button onClick={resetButtonHandle} className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0 || dateRange.length !== 0 && inputHandle.namaAgen.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0 || dateRange.length === 0 && inputHandle.namaAgen.length === 0}>
+                              Atur Ulang
+                            </button>
                         </Col>
                     </Row>
                 </Col>
-            </Row> */}
+            </Row>
             {
               listTransferDana.length !== 0 &&
               <div>
@@ -347,47 +480,65 @@ export default () => {
                     data={listTransferDana}
                     customStyles={customStyles}
                     pagination
+                    highlightOnHover
+                    progressPending={pendingTransfer}
+                    progressComponent={<CustomLoader />}
                 />
             </div>
         </div>
         <h2 className="h5 mt-5">Settlement</h2>
         <div className='base-content'>
-          <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
+          {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span> */}
             {/* <Row>
               <Col xs={12}>
                 <div className="div-chart">
                   <Chart type='line' data={data} />
                 </div>
               </Col>
-            </Row>            
-            <br/>
+            </Row>             */}
+            {/* <br/> */}
             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
-                    <input type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                    <input name="idTransaksi" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksi} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
                 <Col xs={4}>
-                    <span>Periode</span>
-                    <input type='text'className='input-text-ez' placeholder='Pilih Periode' style={{marginLeft: 48}}/>
+                    <span style={{ marginRight: 20 }}>Periode*</span>
+                      <DateRangePicker
+                        onChange={pickDate}
+                        value={state}
+                        clearIcon={null}
+                        // calendarIcon={null}
+                      />
                 </Col>
                 <Col xs={4}>
                     <span>Status</span>
-                    <input type='text'className='input-text-ez' placeholder='Pilih Status'/>
+                    <Form.Select name="status" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.status} onChange={(e) => handleChange(e)}>
+                      <option name="status" defaultValue value={0}>Pilih Status</option>
+                      <option name="status" value={2}>Success</option>
+                      <option name="status" value={1}>In Progress</option>
+                      <option name="status" value={3}>Pending</option>
+                      <option name="status" value={4}>Failed</option>
+                    </Form.Select>
                 </Col>
             </Row>
             <Row className='mt-4'>
                 <Col xs={3}>
                     <Row>
                         <Col xs={6}>
-                            <button className='btn-ez'>Terapkan</button>
+                            <button onClick={() => filterSettlementButtonHandle(inputHandle.idTransaksi, dateRange, inputHandle.status)} className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0}>
+                              Terapkan
+                            </button>
                         </Col>
                         <Col xs={6}>
-                            <button className='btn-ez'>Atur Ulang</button>
+                            <button onClick={resetButtonHandle} className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0}>
+                              Atur Ulang
+                            </button>
                         </Col>
                     </Row>
                 </Col>
-            </Row> */}
+            </Row>
             {
               listSettlement.length !== 0 &&
               <div>
@@ -402,13 +553,74 @@ export default () => {
                     data={listSettlement}
                     customStyles={customStyles}
                     pagination
+                    highlightOnHover
+                    progressPending={pendingSettlement}
+                    progressComponent={<CustomLoader />}
                 />
             </div>
         </div>
       </div>
-      <div className="table-settings mb-4">
-
-      </div>
+      <Modal centered show={showModalDetailTransferDana} onHide={() => setShowModalDetailTransferDana(false)} style={{ borderRadius: 8 }}>
+        <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+            <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
+              <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Detail Transaksi</p>
+            </div>
+            <div>
+              <Container style={{ paddingLeft: "unset", paddingRight: "unset" }}>
+                <Row style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400 }}>
+                  <Col>ID Transaksi</Col>
+                  <Col style={{ display: "flex", justifyContent: "end" }}>Status</Col>
+                </Row>
+                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
+                  <Col>{detailTransferDana.tvatrans_trx_id}</Col>
+                  <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 160, width: "100%", height: 32, background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }}>{detailTransferDana.mstatus_name}</Col>
+                  <br />
+                </Row>
+                <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: -10 }}>{detailTransferDana.tvatrans_crtdt}</div>
+                <center>
+                  <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
+                </center>
+                <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, }}>Detail Pengiriman</div>
+                <Row style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>
+                  <Col>Nama Agen</Col>
+                  <Col style={{ display: "flex", justifyContent: "end" }}>ID Agen</Col>
+                </Row>
+                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
+                  <Col>{detailTransferDana.mpartnerdtl_sub_name}</Col>
+                  <Col style={{ display: "flex", justifyContent: "end" }}>{detailTransferDana.mpartnerdtl_partner_id}</Col>
+                </Row>
+                <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No Rekening</div>
+                <div style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>{detailTransferDana.tvatrans_va_number}</div>
+                <center>
+                  <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
+                </center>
+                <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, }}>Rincian Dana</div>
+                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                  <Col style={{ fontWeight: 400 }}>Jumlah Dana Diterima</Col>
+                  <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_amount)}</Col>
+                </Row>
+                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                  <Col style={{ fontWeight: 400 }}>Biaya VA</Col>
+                  <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_bank_fee)}</Col>
+                </Row>
+                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                  <Col style={{ fontWeight: 400 }}>Biaya Partner</Col>
+                  <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
+                </Row>
+                <center>
+                  <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, padding: "0px 24px", border: "1px dashed #EBEBEB" }} />
+                </center>
+                <Row style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 700, marginTop: 12 }}>
+                  <Col>Total</Col>
+                  <Col style={{ display: "flex", justifyContent: "end" }}>{convertToRupiah((detailTransferDana.tvatrans_amount + detailTransferDana.tvatrans_bank_fee + detailTransferDana.tvatrans_partner_fee))}</Col>
+                </Row>
+              </Container>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                <Button variant="primary" onClick={() => setShowModalDetailTransferDana(false)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Oke</Button>
+            </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

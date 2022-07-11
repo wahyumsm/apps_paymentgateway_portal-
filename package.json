@@ -13,7 +13,7 @@
     "bootstrap 5 dashboard"
   ],
   "version": "1.0.1",
-  "homepage": "/ezeepg",
+  "homepage": "/ezeepg/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
@@ -24,12 +24,14 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@themesberg/react-bootstrap": "^1.4.1",
+    "@wojtekmaj/react-daterange-picker": "^3.4.0",
     "axios": "^0.27.2",
     "bootstrap": "5.0.0-beta1",
     "chart.js": "^3.8.0",
     "chartist": "^0.11.4",
     "chartist-plugin-tooltips-updated": "^0.1.4",
     "crypto-js": "^4.1.1",
+    "date-fns": "^2.28.0",
     "faker": "^6.6.6",
     "jquery": "^3.6.0",
     "js-base64": "^3.7.2",

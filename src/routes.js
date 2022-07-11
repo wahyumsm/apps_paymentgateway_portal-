@@ -15,13 +15,13 @@ export const Routes = {
     DaftarPartner : { path: "/daftarpartner" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
-    Signin: { path: "/sign-in" },
+    Login: { path: "/login" },
     Signup: { path: "/examples/sign-up" },
     ForgotPassword: { path: "/examples/forgot-password" },
     ResetPassword: { path: "/examples/reset-password" },
     Lock: { path: "/examples/lock" },
-    NotFound: { path: "/examples/404" },
-    ServerError: { path: "/examples/500" },
+    NotFound: { path: "/404" },
+    ServerError: { path: "/500" },
 
     // docs
     DocsOverview: { path: "/documentation/overview" },

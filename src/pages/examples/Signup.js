@@ -83,7 +83,7 @@ export default () => {
                 <div className="d-flex justify-content-center align-items-center mt-4">
                   <span className="fw-normal">
                     Already have an account?
-                    <Card.Link as={Link} to={Routes.Signin.path} className="fw-bold">
+                    <Card.Link as={Link} to={Routes.Login.path} className="fw-bold">
                       {` Login here `}
                     </Card.Link>
                   </span>

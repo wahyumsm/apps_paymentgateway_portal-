@@ -42,10 +42,9 @@ export default (props) => {
         'Authorization' : auth
       }
       const logout = await axios.post(BaseURL + "/Account/Logout", { data: "" }, { headers: headers })
-      // console.log(logout, 'ini hasil logout');
       if (logout.status === 200 && logout.data.response_code === 200) {
         removeUserSession()
-        history.push("/sign-in")
+        history.push("/login")
       }
     } catch (error) {
       console.log(error)
