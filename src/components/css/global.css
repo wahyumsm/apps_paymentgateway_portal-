@@ -25,8 +25,8 @@ body {
 }
 
 .content-page {
-    padding-left: 109px;
-    padding-right: 109px;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .card-information {
@@ -88,6 +88,15 @@ body {
     font-weight: 400;
     font-size: 14px;
     color: #888888;
+}
+
+.btn-primary {
+    background-color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background-color: #FFFFFF;
+    color: #000000;
 }
 
 .btn-ez {
@@ -243,4 +252,36 @@ body {
     font-weight: 400;
     font-size: 14px;
     color: #888888;
+}
+
+.berhasil-status-badge {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 10px;
+    width: 95px;
+    height: 32px;
+    background: rgba(7, 126, 134, 0.08);
+    border-radius: 4px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: #077E86;
+}
+
+.gagal-status-badge {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 10px;
+    width: 95px;
+    height: 32px;
+    background: #FDEAEA;
+    border-radius: 4px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: #EE2E2C;
 }

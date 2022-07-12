@@ -82,7 +82,7 @@ function DetailAgen() {
                                 ID Agen
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='nama'
                                 value={detailAgen.agen_id}
@@ -91,7 +91,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -101,7 +101,7 @@ function DetailAgen() {
                                 Nama Agen
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='nama'
                                 value={detailAgen.agen_name}
@@ -110,7 +110,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -120,7 +120,7 @@ function DetailAgen() {
                                 Email Agen
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='email'
                                 value={detailAgen.agen_email}
@@ -129,7 +129,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -139,7 +139,7 @@ function DetailAgen() {
                                 No Hp Agen
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='mobileNumber'
                                 value={detailAgen.agen_mobile}
@@ -148,7 +148,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -158,7 +158,7 @@ function DetailAgen() {
                                 Nama Bank
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 value={detailAgen.agen_bank}
                                 // placeholder="BCA"
@@ -166,7 +166,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -176,7 +176,7 @@ function DetailAgen() {
                                 No Rekening
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='akunBank'
                                 value={detailAgen.agen_bank_number}
@@ -185,7 +185,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -195,7 +195,7 @@ function DetailAgen() {
                                 Nama Pemilik Rekening
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='rekeningOwner'
                                 value={detailAgen.agen_bank_name}
@@ -204,7 +204,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>

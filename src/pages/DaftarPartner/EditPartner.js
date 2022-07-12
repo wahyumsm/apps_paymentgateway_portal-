@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Form, Row} from '@themesberg/react-bootstrap';
+import { Col, Form, Row, Modal} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
 import { getToken } from '../../function/helpers';
@@ -174,10 +174,10 @@ function EditPartner() {
             if (rekeningOwner === undefined) {
                 rekeningOwner = detailPartner.mpartnerdtl_account_name
             }
-            if (fee === undefined) {
+            if (fee === 0) {
                 fee = detailPartner.mpartner_fee
             }
-            if (settlementFee === undefined) {
+            if (settlementFee === 0) {
                 settlementFee = detailPartner.mpartnerdtl_settlement_fee
             }
             const auth = "Bearer " + getToken()

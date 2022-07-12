@@ -72,7 +72,7 @@ function TambahPartner() {
                 <h4 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Tambah Partner</h4>
                 <h5 style={{ fontFamily: "Exo" }}>Profil Perusahaan</h5>
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+            <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
@@ -80,29 +80,29 @@ function TambahPartner() {
                                 Nama Perusahaan*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='namaPerusahaan'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Perusahaan"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Email Perusahaan
+                                Email Perusahaan*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='emailPerusahaan'
                                 onChange={handleChange}
                                 placeholder="Masukkan Email Perusahaan"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -112,13 +112,13 @@ function TambahPartner() {
                                 Nomor Telepon*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='phoneNumber'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor Telepon"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -128,13 +128,13 @@ function TambahPartner() {
                                 Alamat*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='alamat'
                                 onChange={handleChange}
                                 placeholder="Masukkan Alamat"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -151,13 +151,13 @@ function TambahPartner() {
                                 No NPWP*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='noNpwp'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor NPWP"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -167,13 +167,13 @@ function TambahPartner() {
                                 Nama NPWP*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='namaNpwp'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama NPWP"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -190,13 +190,13 @@ function TambahPartner() {
                                 Nama Direktur*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='nama'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Direktur"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -206,13 +206,13 @@ function TambahPartner() {
                                 No Hp Direktur*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='noHp'
                                 onChange={handleChange}
                                 placeholder="Masukkan No HP Direktur"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -229,14 +229,14 @@ function TambahPartner() {
                                 Nama Bank*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='bankName'
                                 onChange={handleChange}
                                 placeholder="BCA"
                                 type='text'
                                 disabled
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -246,13 +246,13 @@ function TambahPartner() {
                                 No. Rekening*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='akunBank'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor Rekening"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -262,13 +262,13 @@ function TambahPartner() {
                                 Nama Pemilik Rekening*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='rekeningOwner'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Pemilik Rekening"
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -285,14 +285,14 @@ function TambahPartner() {
                                 Fee*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='fee'
                                 onChange={handleChange}
                                 placeholder="Rp."
                                 // value={convertToRupiah(inputHandle.fee)}
                                 type='number'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -302,13 +302,13 @@ function TambahPartner() {
                                 Settlement Fee*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='settlementFee'
                                 onChange={handleChange}
                                 placeholder="Rp."
                                 type='text'
-                                style={{ width: 917, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
