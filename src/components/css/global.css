@@ -193,3 +193,12 @@ body{
 .table-form > tbody > tr{
     margin-bottom: 16px;
 }
+
+.user-dropdown {
+    padding: 10px;
+}
+
+.dropdown-item:hover {
+    border-radius: 8px;
+    background-color: #f0f0f0;
+}

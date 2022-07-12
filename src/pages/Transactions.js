@@ -29,7 +29,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+      const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
       // console.log(listTransferDana, 'ini data transfer dana');
       listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.status === "Success") ? obj.status = "Berhasil" : obj.status = "Gagal" }));
       setListTransferDana(listTransferDana.data.response_data.list)
@@ -49,7 +49,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
+      const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
       // console.log(dataSettlement, 'ini data settlement');
       dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, status: (obj.tvasettl_status_id === 1) ? obj.status = "Berhasil" : obj.status = "Gagal" }));
       setListSettlement(dataSettlement.data.response_data)
