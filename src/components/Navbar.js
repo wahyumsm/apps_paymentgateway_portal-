@@ -41,7 +41,7 @@ export default (props) => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const logout = await axios.post(BaseURL + "/Account/Logout", { data: "" }, { headers: headers })
+      const logout = await axios.post("/Account/Logout", { data: "" }, { headers: headers })
       if (logout.status === 200 && logout.data.response_code === 200) {
         removeUserSession()
         history.push("/login")
@@ -81,6 +81,8 @@ export default (props) => {
   useEffect(() => {
     dispatch(getUserDetail("/Account/GetUserProfile"))
   }, [])
+
+  console.log(userDetail, "userDetail");
   
   return (
     <Navbar variant="dark" expanded className="ps-0 pe-2 pb-0" style={{backgroundColor: '#ffffff'}}>
@@ -124,7 +126,7 @@ export default (props) => {
               </Dropdown.Toggle>
               <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2" style={{ minWidth: "14rem", width: "100%" }}>
                 <Dropdown.Item className="fw-bold" style={{ width: "100%" }}>
-                <img alt="" src={userIcon}/> {userDetail.muser_name} ({userDetail.mrole_desc})
+                  <img alt="" src={userIcon}/> {userDetail.muser_name} ({userDetail.mrole_desc})
                 </Dropdown.Item>
                 {/* <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
                   <img alt="" src={iconDetailAkun}/> Detail Akun

@@ -35,7 +35,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
+      const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         history.push("/")

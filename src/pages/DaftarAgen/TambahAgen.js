@@ -37,7 +37,7 @@ function TambahAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const addAgen = await axios.post(BaseURL + "/Agen/SaveAgen", { data: dataParams }, { headers: headers })
+            const addAgen = await axios.post("/Agen/SaveAgen", { data: dataParams }, { headers: headers })
             if (addAgen.status === 200 && addAgen.data.response_code === 200) {
                 setDetailNewAgen(addAgen.data.response_data)
                 setShowModal(true)
