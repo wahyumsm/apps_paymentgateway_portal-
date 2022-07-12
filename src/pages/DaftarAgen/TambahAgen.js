@@ -32,16 +32,16 @@ function TambahAgen() {
     async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": "${bankName}", "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}}`)
-            // console.log(dataParams, 'ini data params');
+            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const addAgen = await axios.post("/Agen/SaveAgen", { data: dataParams }, { headers: headers })            
-            // console.log(addAgen, 'ini add agen');
-            history.push("/daftaragen")
-            alert("Agen Baru Berhasil Ditambahkan")
+            const addAgen = await axios.post(BaseURL + "/Agen/SaveAgen", { data: dataParams }, { headers: headers })
+            if (addAgen.status === 200 && addAgen.data.response_code === 200) {
+                setDetailNewAgen(addAgen.data.response_data)
+                setShowModal(true)
+            }
         } catch (error) {
             console.log(error)
             if (error.response.status === 401) {

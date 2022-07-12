@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
 import DataTable, { FilterComponent } from 'react-data-table-component';
-import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form} from '@themesberg/react-bootstrap';
+import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image} from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, Link } from 'react-router-dom';
 import { BaseURL, errorCatch, getToken } from '../../function/helpers';
 import axios from 'axios';
+import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 
 function DaftarAgen() {
 
   const history = useHistory()
   const access_token = getToken()
   const [listAgen, setListAgen] = useState([])
+  const [pending, setPending] = useState(true)
 
   function tambahAgen() {
     history.push("/tambahagen")
@@ -25,11 +27,11 @@ function DaftarAgen() {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
-      // console.log(listAgen, 'ini data agen');
+      const listAgen = await axios.post(BaseURL + "/Agen/ListAgen", { data: "" }, { headers: headers })
       if (listAgen.status === 200 && listAgen.data.response_code === 200) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
+        setPending(false)
       }
     } catch (error) {
       console.log(error)
@@ -51,28 +53,28 @@ function DaftarAgen() {
     {
       name: 'ID Agen',
       selector: row => row.agen_id,
-      sortable: true,
+      // sortable: true,
       cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
     },
     {
       name: 'Nama Agen',
       selector: row => row.agen_name,
-      sortable: true,
+      // sortable: true,
     },
     {
       name: 'Email',
       selector: row => row.agen_email,
-      sortable: true,
+      // sortable: true,
     },
     {
       name: 'No Hp',
       selector: row => row.agen_mobile,
-      sortable: true,
+      // sortable: true,
     },
     {
       name: 'No Rekening',
       selector: row => row.agen_bank_number,
-      sortable: true
+      // sortable: true
     },
     // {
     //   name: 'Kode Unik',
@@ -115,6 +117,13 @@ function DaftarAgen() {
   }
     getDataAgen()
   }, [])
+
+  const CustomLoader = () => (
+    <div style={{ padding: '24px' }}>
+      <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+      {/* <div>Loading...</div> */}
+    </div>
+  );
 
   // const [filterText, setFilterText] = useState('');
 	// const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
@@ -170,9 +179,11 @@ function DaftarAgen() {
               columns={columns}
               data={listAgen}
               customStyles={customStyles}
-              noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+              // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
               pagination
               highlightOnHover
+              progressPending={pending}
+              progressComponent={<CustomLoader />}
               // paginationResetDefaultPage={resetPaginationToggle}
               // subHeader
               // subHeaderComponent={subHeaderComponentMemo}
