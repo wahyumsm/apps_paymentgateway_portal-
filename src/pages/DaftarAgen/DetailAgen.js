@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getToken } from '../../function/helpers';
+import { BaseURL, getToken } from '../../function/helpers';
 import axios from 'axios';
 import "./DetailAgen.css"
 
@@ -29,17 +29,23 @@ function DetailAgen() {
             }
         } catch (error) {
             console.log(error)
-            history.push(errorCatch(error.response.status))
+            if (error.response.status === 401) {
+                history.push('/sign-in')
+            }
         }
     }
 
     useEffect(() => {
         if (!access_token) {
-            history.push('/login');
+            history.push('/sign-in');
             // window.location.reload();
         }
         getDetailAgen(agenId)
     }, [agenId])
+
+    function editAgen(agenId) {
+        history.push(`/editagen/${agenId}`)
+    }
     
     return (
         <div className='main-content' style={{ padding: "37px 27px" }}>
@@ -61,7 +67,7 @@ function DetailAgen() {
                                 id="custom-switch"
                                 label={(detailAgen.status === true) ? "Aktif" : "Tidak Aktif"}
                                 checked={detailAgen.status}
-                                />
+                            />
                         </Col>
                     </Row>
                     <Row className='mb-4'>
@@ -70,7 +76,7 @@ function DetailAgen() {
                                 ID Agen
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='nama'
                                 value={detailAgen.agen_id}
@@ -79,7 +85,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -89,7 +95,7 @@ function DetailAgen() {
                                 Nama Agen
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='nama'
                                 value={detailAgen.agen_name}
@@ -98,7 +104,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -108,7 +114,7 @@ function DetailAgen() {
                                 Email Agen
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='email'
                                 value={detailAgen.agen_email}
@@ -117,7 +123,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -127,7 +133,7 @@ function DetailAgen() {
                                 No Hp Agen
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='mobileNumber'
                                 value={detailAgen.agen_mobile}
@@ -136,7 +142,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -146,7 +152,7 @@ function DetailAgen() {
                                 Nama Bank
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 value={detailAgen.agen_bank}
                                 // placeholder="BCA"
@@ -154,7 +160,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -164,7 +170,7 @@ function DetailAgen() {
                                 No Rekening
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='akunBank'
                                 value={detailAgen.agen_bank_number}
@@ -173,7 +179,7 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
@@ -183,7 +189,7 @@ function DetailAgen() {
                                 Nama Pemilik Rekening
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='rekeningOwner'
                                 value={detailAgen.agen_bank_name}
@@ -192,17 +198,17 @@ function DetailAgen() {
                                 disabled
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
                     </Row>
                 </div>
             </div>
-            {/* <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
-                <button disabled style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+            <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
+                <button onClick={() => editAgen(agenId)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                     Edit
                 </button>
-            </div> */}
+            </div>
         </div>
     )
 }

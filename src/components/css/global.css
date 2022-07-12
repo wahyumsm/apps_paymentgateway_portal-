@@ -1,33 +1,35 @@
-body{
+body {
     font-family: 'Nunito';
     background-color: unset !important;
 }
-.sidebar .nav-item .nav-link{
+
+.sidebar .nav-item .nav-link {
     border: unset !important;
 }
 
-.sidebar .nav-item.active > .nav-link {
+.sidebar .nav-item.active>.nav-link {
     color: #eaedf2;
     background-color: rgba(223, 156, 67, 0.08) !important
 }
 
-.sidebar .nav-item .nav-link:hover{
+.sidebar .nav-item .nav-link:hover {
     background-color: rgba(223, 156, 67, 0.08) !important
 }
-.sidebar-inner{
+
+.sidebar-inner {
     overflow: hidden !important;
 }
 
-.content{
+.content {
     padding: unset !important;
 }
 
-.content-page{
-    padding-left: 109px;
-    padding-right: 109px;
+.content-page {
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
-.card-information{
+.card-information {
     width: 198px;
     border-radius: 8px;
     height: 95px;
@@ -35,20 +37,20 @@ body{
     padding: 12px 24px;
 }
 
-.p-info{
+.p-info {
     font-family: 'Nunito';
     font-weight: 400;
     font-size: 14px;
     color: #888888;
 }
 
-.div-chart{
+.div-chart {
     width: 100%;
     height: 100%;
     color: #FFFFFF;
 }
 
-.base-content{
+.base-content {
     width: 100%;
     border-radius: 8px;
     height: 100%;
@@ -57,7 +59,7 @@ body{
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15);
 }
 
-.sub-base-content{
+.sub-base-content {
     width: 100%;
     border-radius: 8px;
     height: 100%;
@@ -66,15 +68,15 @@ body{
     padding: 37px 27px 0px 27px;
 }
 
-.p-amount{
+.p-amount {
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 700;
-    font-size: 20px; 
+    font-size: 20px;
     color: #383838;
 }
 
-.input-text-ez{
+.input-text-ez {
     width: 57%;
     margin-left: 20px;
     height: 40px;
@@ -88,7 +90,16 @@ body{
     color: #888888;
 }
 
-.btn-ez{
+.btn-primary {
+    background-color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.btn-ez {
     height: 40px;
     background: #EBEBEB;
     width: 100%;
@@ -102,59 +113,60 @@ body{
     border: unset !important;
 }
 
-.circle-data{
+.circle-data {
     width: 16px;
     height: 16px;
     border-radius: 50%;
 }
 
-.report-pie-table > tbody > tr > td:nth-child(2){
+.report-pie-table>tbody>tr>td:nth-child(2) {
     padding-left: 10px;
     padding-bottom: 10px;
 }
 
-.export-span{
+.export-span {
     color: #077E86;
     float: right;
     font-weight: 700;
     text-decoration: underline;
 }
 
-.container-content{
+.container-content {
     padding: 29px 113px 0px 113px;
 }
 
-.breadcrumbs-span{
+.breadcrumbs-span {
     font-size: 14px;
     color: #383838;
     font-weight: 400;
 }
 
-.menu-detail-akun-span{
+.menu-detail-akun-span {
     font-family: 'Exo';
     font-size: 16px;
     font-weight: 400;
     color: '#383838'
 }
-.menu-detail-akun-span-active{
+
+.menu-detail-akun-span-active {
     font-weight: 700 !important;
     color: #077E86 !important;
 }
 
-.menu-detail-akun-hr-active{
+.menu-detail-akun-hr-active {
     border-bottom: 3px solid #077E86;
-    
+
 }
 
-.hr-style{
+.hr-style {
     border: 0.4px solid #C4C4C4;
 }
 
-.detail-akun-tabs{
+.detail-akun-tabs {
     cursor: pointer;
 }
 
-.head-title{
+.head-title {
     font-family: 'Exo';
     font-style: normal;
     font-weight: 700;
@@ -162,7 +174,7 @@ body{
     color: #383838;
 }
 
-.active-box{
+.active-box {
     justify-content: center;
     align-items: center;
     padding: 6px 28px;
@@ -172,7 +184,7 @@ body{
     border-radius: 4px;
 }
 
-.active-box-span{
+.active-box-span {
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 600;
@@ -180,16 +192,96 @@ body{
     color: #077E86;
 }
 
-.table-form > tbody > tr > td{
+.inactive-box {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    width: 95px;
+    height: 32px;
+    background: rgba(7, 126, 134, 0.08);
+    border-radius: 4px;
+}
+
+.inactive-box-span {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
+
+.table-form>tbody>tr>td {
     padding-left: 10px;
 }
 
-.table-api-keys > tbody > tr > td{
+.table-api-keys>tbody>tr>td {
     padding-left: 10px;
     padding-bottom: 15px;
 }
 
 
-.table-form > tbody > tr{
+.table-form>tbody>tr {
     margin-bottom: 16px;
+}
+
+.active-status-badge {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    width: 60px;
+    height: 32px;
+    background: rgba(7, 126, 134, 0.08);
+    border-radius: 4px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: #077E86;
+}
+
+.inactive-status-badge {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    width: 95px;
+    height: 32px;
+    background: rgba(7, 126, 134, 0.08);
+    border-radius: 4px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
+
+.berhasil-status-badge {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 10px;
+    width: 95px;
+    height: 32px;
+    background: rgba(7, 126, 134, 0.08);
+    border-radius: 4px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: #077E86;
+}
+
+.gagal-status-badge {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 10px;
+    width: 95px;
+    height: 32px;
+    background: #FDEAEA;
+    border-radius: 4px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: #EE2E2C;
 }

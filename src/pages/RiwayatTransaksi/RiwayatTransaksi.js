@@ -7,7 +7,8 @@ function RiwayatTransaksi() {
     const columns = [
         {
             name: 'No',
-            selector: row => row.id
+            selector: row => row.id,
+            width: "67px"
         },
         {
             name: 'ID Transaksi',
@@ -17,7 +18,8 @@ function RiwayatTransaksi() {
         {
             name: 'Waktu',
             selector: row => row.price,
-            sortable: true
+            sortable: true,            
+            width: "100px"
         },
         {
             name: 'Nama Partner',
@@ -27,7 +29,8 @@ function RiwayatTransaksi() {
         {
             name: 'Nama Agen',
             selector: row => row.price,
-            sortable: true
+            sortable: true,
+            width: "140px"
         },
         {
             name: 'Jumlah Diterima',
@@ -37,32 +40,20 @@ function RiwayatTransaksi() {
         {
             name: 'Status',
             selector: row => row.quantity,
-            width: "100px",
+            width: "108px",
             cell:(row) =>
             <>
-                {row.partner_status === 1 ? <div className='active-status-badge'>Active</div> : <div className='inactive-status-badge'>Inactive</div>}
+                {row.quantity === 20 ? <div className='berhasil-status-badge'>Berhasil</div> : <div className='gagal-status-badge'>Gagal</div>}
             </>,
             sortable: true
         },
-        {
-          name: 'Action',
-          width: "230px",
-        //   cell:(row) => 
-        //     <>
-        //     <img alt="" src={DeleteIcon} onClick={() => openDeleteModal(row.partner_id)}/>&nbsp;&nbsp;&nbsp;&nbsp;
-        //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, true)}>Ubah</span>&nbsp;&nbsp;&nbsp;&nbsp;
-        //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, false)}>Detail</span>
-        //     </>,
-          ignoreRowClick: true,
-          allowOverflow: true,
-          button: true
-        }
     ];
 
     const columnsSettl = [
         {
             name: 'No',
-            selector: row => row.id
+            selector: row => row.id,
+            width: "67px"
         },
         {
             name: 'ID Transaksi',
@@ -72,41 +63,30 @@ function RiwayatTransaksi() {
         {
             name: 'Waktu',
             selector: row => row.price,
-            sortable: true
+            sortable: true,
+            width: "100px"
         },
         {
             name: 'Nama Partner',
             selector: row => row.price,
-            sortable: true
+            sortable: true,
         },
         {
             name: 'Nominal Settlement',
             selector: row => row.price,
-            sortable: true
+            sortable: true,
+            width: "200px"
         },
         {
             name: 'Status',
             selector: row => row.quantity,
-            width: "100px",
+            width: "108px",
             cell:(row) =>
             <>
-                {row.partner_status === 1 ? <div className='active-status-badge'>Active</div> : <div className='inactive-status-badge'>Inactive</div>}
+                {row.quantity === 20 ? <div className='berhasil-status-badge'>Berhasil</div> : <div className='gagal-status-badge'>Gagal</div>}
             </>,
             sortable: true
         },
-        {
-          name: 'Action',
-          width: "230px",
-        //   cell:(row) => 
-        //     <>
-        //     <img alt="" src={DeleteIcon} onClick={() => openDeleteModal(row.partner_id)}/>&nbsp;&nbsp;&nbsp;&nbsp;
-        //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, true)}>Ubah</span>&nbsp;&nbsp;&nbsp;&nbsp;
-        //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, false)}>Detail</span>
-        //     </>,
-          ignoreRowClick: true,
-          allowOverflow: true,
-          button: true
-        }
     ];
 
     const customStyles = {
@@ -121,7 +101,7 @@ function RiwayatTransaksi() {
     };
 
   return (
-    <div className="py-4 content-page">
+    <div className="content-page">
         <div className='head-title'>
             <h2 className="h5 mb-2 mt-4">Riwayat Transaksi</h2>
         </div>
@@ -131,27 +111,39 @@ function RiwayatTransaksi() {
                 <div className='base-content mt-3'>
                     <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                     <Row className='mt-4'>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-between align-items-center">
                             <span>ID Transaksi</span>
-                            <input type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                            <input type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>           
                         </Col>
                         <Col xs={4}>
                             <span>Nama Agen</span>
-                            <input type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>
+                            <input type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>                        
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-between align-items-center">
                             <span>Status</span>
-                            <input type='text'className='input-text-ez' placeholder='Pilih Status'/>
+                            <Form.Select className="input-text-ez me-4">
+                                <option defaultChecked>Status</option>
+                                <option value="1">Berhasil</option>
+                                <option value="2">Gagal</option>
+                            </Form.Select>             
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-between align-items-center">
                             <span>Nama Partner</span>
-                            <input type='text'className='input-text-ez' placeholder='Masukkan Nama Partner'/>
+                            <input type='text'className='input-text-ez me-1' placeholder='Masukkan Nama Partner'/>
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-between align-items-center">
                             <span>Periode</span>
-                            <input type='text'className='input-text-ez' placeholder='Pilih Periode' style={{marginLeft: 48}}/>
+                            <Form.Select className="input-text-ez me-4">
+                                <option defaultChecked>Pilih Periode</option>
+                                <option value="1">Hari Ini</option>
+                                <option value="2">Kemarin</option>
+                                <option value="3">7 Hari Terakhir</option>
+                                <option value="3">Bulan Ini</option>
+                                <option value="3">Bulan Kemarin</option>
+                                <option value="3">Pilih Range Tanggal</option>
+                            </Form.Select>
                         </Col>
                     </Row>
                     <Row className='mt-4'>
@@ -181,23 +173,35 @@ function RiwayatTransaksi() {
                 <div className='base-content mt-3'>
                     <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                     <Row className='mt-4'>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-between align-items-center">
                             <span>ID Transaksi</span>
-                            <input type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                            <input type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-between align-items-center">
                             <span>Nama Partner</span>
                             <input type='text'className='input-text-ez' placeholder='Masukkan Nama Partner'/>
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-between align-items-center">
                             <span>Periode</span>
-                            <input type='text'className='input-text-ez' placeholder='Pilih Periode'/>
+                            <Form.Select className="input-text-ez me-4">
+                                <option defaultChecked>Pilih Periode</option>
+                                <option value="1">Hari Ini</option>
+                                <option value="2">Kemarin</option>
+                                <option value="3">7 Hari Terakhir</option>
+                                <option value="3">Bulan Ini</option>
+                                <option value="3">Bulan Kemarin</option>
+                                <option value="3">Pilih Range Tanggal</option>
+                            </Form.Select>
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-between align-items-center">
                             <span>Status</span>
-                            <input type='text'className='input-text-ez' placeholder='Pilih Status' style={{marginLeft: 65}}/>
+                            <Form.Select className="input-text-ez me-2">
+                                <option defaultChecked>Status</option>
+                                <option value="1">Berhasil</option>
+                                <option value="2">Gagal</option>
+                            </Form.Select>   
                         </Col>
                     </Row>
                     <Row className='mt-4'>

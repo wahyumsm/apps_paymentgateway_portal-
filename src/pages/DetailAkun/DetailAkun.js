@@ -1,10 +1,75 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
+import axios from 'axios';
+import { getToken } from '../../function/helpers';
+import encryptData from '../../function/encryptData';
+import { useHistory, useParams } from 'react-router-dom';
 function DetailAkun() {
-
     const [isDetailAkun, setIsDetailAkun] = useState(true);
+    const [dataAkun, setDataAkun] = useState({})
+    const history = useHistory()
+    // const { partnerId } = useParams()
+    console.log(dataAkun.mpartner_id)
+    const [inputHandle, setInputHandle] = useState({
+        callbackUrl: dataAkun.callback_url,
+    })
+
+    function handleChange(e) {
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    async function userDetailPartner (url) {
+        try {
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const userDetailPartner = await axios.post(url, { data: "" }, { headers: headers })
+            console.log(userDetailPartner, 'ini data user ');
+            if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200) {
+                setDataAkun(userDetailPartner.data.response_data)
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(()=>{
+        userDetailPartner('/Account/GetPartnerDetail')
+    },[])
+
+    async function updateUrlCallback(id, callbackUrl) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"mpartner_id":"${id}", "callback_url":"${callbackUrl}"}`)
+            // console.log(dataParams, 'ini data params');
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const editCallback = await axios.post("/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
+            console.log(editCallback, 'ini add Callback');
+            if(editCallback.status === 200 && editCallback.data.response_code === 200) {
+                history.push("/detailakun")
+                // alert("Edit Data Partner Berhasil Ditambahkan")
+            }          
+            
+            alert("Edit URL Berhasil")
+        } catch (error) {
+            console.log(error)
+            if (error.response.status === 401) {
+                history.push('/sign-in')
+            }
+        }
+    }
+
 
     function detailAkunTabs(isTabs){
         setIsDetailAkun(isTabs)
@@ -20,6 +85,8 @@ function DetailAkun() {
             $('#detailakunspan').addClass('menu-detail-akun-span-active')
         }
     }
+
+    console.log(dataAkun);
 
   return (
     <div className='container-content'>
@@ -47,32 +114,35 @@ function DetailAkun() {
                         <tbody>
                             <tr>
                                 <td style={{width: 200}}>Status</td>
-                                <td><div className='active-box'><span className='active-box-span'>Aktif</span></div></td>
+                                {dataAkun.mpartner_is_active === true ? 
+                                    <td><div className='active-box'><span className='active-box-span'>Aktif</span></div></td>
+                                    :
+                                    <td><div className='inactive-box'><span className='inactive-box-span'>Tidak Aktif</span></div></td>}
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>ID Partner</td>
-                                <td><input type='text'className='input-text-ez' placeholder='98123913' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_id} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Nama Perusahaan</td>
-                                <td><input type='text'className='input-text-ez' placeholder='PT Agung Sejahtera' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Email Perusahaan</td>
-                                <td><input type='text'className='input-text-ez' placeholder='agungsejahtera@gmail.com'disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_email} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Nomor Telepon</td>
-                                <td><input type='text'className='input-text-ez' placeholder='021 - 984934'disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_telp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Alamat</td>
-                                <td><input type='text'className='input-text-ez' placeholder='JL. AM Sangaji'disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_address} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                         </tbody>
@@ -88,12 +158,12 @@ function DetailAkun() {
                         <tbody>
                             <tr>
                                 <td style={{width: 200}}>No NPWP</td>
-                                <td><input type='text'className='input-text-ez' placeholder='0829392323' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_npwp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Nama NPWP</td>
-                                <td><input type='text'className='input-text-ez' placeholder='Agung' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_npwp_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                         </tbody>
@@ -109,12 +179,12 @@ function DetailAkun() {
                         <tbody>
                             <tr>
                                 <td style={{width: 200}}>Nama Direktur</td>
-                                <td><input type='text'className='input-text-ez' placeholder='Agung Wirawan' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_direktur} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>No Hp Direktur</td>
-                                <td><input type='text'className='input-text-ez' placeholder='08271817321' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_direktur_telp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                         </tbody>
@@ -130,17 +200,17 @@ function DetailAkun() {
                         <tbody>
                             <tr>
                                 <td style={{width: 200}}>Nama Bank</td>
-                                <td><input type='text'className='input-text-ez' placeholder='BCA' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mbank_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>No. Rekening</td>
-                                <td><input type='text'className='input-text-ez' placeholder='3283131' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_number} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Nama Pemilik Rekening</td>
-                                <td><input type='text'className='input-text-ez' placeholder='Agung Wirawan' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                         </tbody>
@@ -152,7 +222,7 @@ function DetailAkun() {
                 <div className='konfigurasi-section' style={{marginTop: 24}}>
                   <hr className='hr-style' style={{marginTop: -25}}/>
                     <div className='base-content'>
-                        <span>You will need to know your <b>Merchant ID</b> and <b>Server Key</b> to communicate with Midtrans. Please use the Development server while you are still in development.</span>
+                        <span>You will need to know your <b>Partner ID</b> and <b>Private Key</b> to communicate with Midtrans. Please use the Development server while you are still in development.</span>
                         <br/>
                         <br/>
                         <p className='head-title'>API Keys</p>
@@ -161,19 +231,19 @@ function DetailAkun() {
                                 <thead></thead>
                                 <tbody>
                                     <tr>
-                                        <td>Merchant ID</td>
+                                        <td>Partner ID</td>
                                         <td>:</td>
-                                        <td><span><b>G960040526</b></span></td>
+                                        <td><span><b>{dataAkun.mpartner_id}</b></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Client Key</td>
+                                        <td>Public Key</td>
                                         <td>:</td>
-                                        <td><span><b>Mid-client-GbmkuVCiTsvAiKc</b></span></td>
+                                        <td><span><b>{dataAkun.public_key}</b></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Server Key</td>
+                                        <td>Private Key</td>
                                         <td>:</td>
-                                        <td><span><b>Mid-server-A6Ap5gxgUdZuPX_570lwSyiR</b></span></td>
+                                        <td><span><b>{dataAkun.private_key}</b></span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -190,7 +260,7 @@ function DetailAkun() {
                         <br/>
                     </div>
                     <br/>
-                    <div className="base-content">
+                    <div className="base-content mb-5">
                         <p>Midtrans requires the URL endpoints for for the following scenarios:</p>
                         <br/>
                         <Row>
@@ -199,13 +269,17 @@ function DetailAkun() {
                             </Col>
                             <Col xs={9}>
                                 <div>
-                                    <input type='text'className='input-text-ez' placeholder='https://api.ezeepasar.com/mobile-amaranthus/midtrans/notification' disabled style={{width: '100%', marginLeft: 'unset'}}/> 
+                                    <input type='text'className='input-text-ez' onChange={handleChange} defaultValue={dataAkun.callback_url} name="callbackUrl" style={{width: '100%', marginLeft: 'unset'}}/> 
                                     <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p>
-                                    <p><b><u>See History</u></b></p>
                                     <br/>
                                 </div>
                             </Col>
                         </Row>
+                        <div style={{ display: "flex", justifyContent: "end", marginTop: 16 }}>
+                        <button onClick={() => updateUrlCallback(dataAkun.mpartner_id, inputHandle.callbackUrl)} className='mb-5' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+                            Update
+                        </button>
+                    </div>
                     </div>
                 </div>
             </>
