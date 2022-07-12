@@ -23,7 +23,7 @@ function DetailAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
+            const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200) {
                 setDetailAgen(detailAgen.data.response_data)
             }

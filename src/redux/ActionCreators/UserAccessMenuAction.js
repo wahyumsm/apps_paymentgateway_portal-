@@ -1,8 +1,8 @@
-import { FETCH_GETUSERDETAIL } from "../ActionType/ActionTypes";
+import { FETCH_GETUSERACCESSMENU } from "../ActionType/ActionTypes";
 import axios from "axios";
 import { BaseURL, getToken } from "../../function/helpers";
 
-export const getUserDetail = (url) => {
+export const getUserAccessMenu = (url) => {
     return async (dispatch) => {
         try {
             const auth = "Bearer " + getToken()
@@ -10,12 +10,11 @@ export const getUserDetail = (url) => {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const userDetail = await axios.post(url, { data: "" }, { headers: headers })
-            // console.log(userDetail, "userDetail");
+            const userAccessMenu = await axios.post(url, { data: "" }, { headers: headers })
             dispatch({
-                type: FETCH_GETUSERDETAIL,
+                type: FETCH_GETUSERACCESSMENU,
                 payload: {
-                    userDetail: userDetail.data.response_data
+                    userAccessMenu: userAccessMenu.data.response_data
                 }
             })
         } catch (error) {
