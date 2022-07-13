@@ -553,7 +553,7 @@ export default () => {
                     data={listSettlement}
                     customStyles={customStyles}
                     pagination
-                    highlightOnHover
+                    // highlightOnHover
                     progressPending={pendingSettlement}
                     progressComponent={<CustomLoader />}
                 />
