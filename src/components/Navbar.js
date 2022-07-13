@@ -45,6 +45,7 @@ import DataTable from "react-data-table-component";
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 import checklistCircle from '../assets/img/icons/checklist_circle.svg';
 import CopyIcon from '../assets/icon/carbon_copy.svg'
+import encryptData from '../function/encryptData'
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -71,8 +72,22 @@ export default (props) => {
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
   const handleCloseHistoryTopUp = () => setShowModalHistoryTopUp(false);
+  const [topUp, setTopUp] = useState({})
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
+  const [inputHandle, setInputHandle] = useState({
+    image: "",
+    amount: "",
+    reffNo: "",
+  })
+
+  function handleChange(e) {
+    setInputHandle({
+      ...inputHandle,
+      [e.target.name] : e.target.value
+    })
+  }
+
   const handleClick = (event) => {
     hiddenFileInput.current.click();
   };
@@ -86,6 +101,37 @@ export default (props) => {
   const toHistoryBalance = () => {
     alert("HistoryBalance!");
   };
+
+  async function topUpHandle(image, amount, reffNo) {
+    try {
+        const auth = "Bearer " + getToken()
+        // const dataParams = encryptData(`{"SlipPaymentFile": "${slipPayment}", "amount": "${amount}", "reffNo": "${reffNo}"`)
+        // console.log(dataParams, 'ini data params');
+        // let formData = new FormData()
+        // formData.append('SlipPayment', image)
+        const headers = {
+            'Content-Type':'multipart/form-data',
+            'Authorization' : auth
+        }
+        const topUp = await axios.post("/Partner/TopupConfirmation", { headers: headers })
+        console.log(topUp, 'ini topup');
+        console.log(image, 'ini image');        
+        if(topUp.status === 200 && topUp.data.response_code === 200) {
+          // setShowModalTopUp(false)
+          // setShowModalKonfirmasiTopUp(true)
+          setTopUp(topUp.data.response_data)
+            // setAddPartner(addPartner.data.response_data)
+            // history.push("/daftarpartner")
+        }          
+        
+        alert("Partner Baru Berhasil Ditambahkan")
+    } catch (error) {
+        console.log(error)
+        if (error.response.status === 401) {
+            history.push('/sign-in')
+        }
+      }
+    }
 
   async function logoutHandler() {
     try {
@@ -180,7 +226,8 @@ export default (props) => {
 
   const modalNavbar = () => {
     setShowModalTopUp(false)
-    setShowModalKonfirmasiTopUp(true)
+    // topUpHandle(inputHandle.image, inputHandle.amount, inputHandle.reffNo)
+    setShowModalKonfirmasiTopUp(true)    
   }
 
   const modalRiwayat = () => {
@@ -355,12 +402,12 @@ export default (props) => {
               <Form action="#">
                 <Form.Group className="mb-3">
                   <Form.Label>Nominal Top Up Saldo</Form.Label>
-                  <Form.Control placeholder="Rp -" disabled />
+                  <Form.Control name="amount" placeholder="Rp -" type="number" />
                 </Form.Group>
                 <Form.Group id="referenceNumber">
                   <Form.Label>Reference Number</Form.Label>
                   <InputGroup className="disini"></InputGroup>
-                  <Form.Control placeholder="Masukkan Reference Number" />
+                  <Form.Control name="reffNo" placeholder="Masukkan Reference Number" type="number" />
                 </Form.Group>
                 <div style={{ color: "#B9121B", fontSize: 12 }}>
                   <img src={noteIconRed} className="me-2" />
@@ -401,6 +448,7 @@ export default (props) => {
                   accept="image/*"
                   style={{ display: "none" }}
                   ref={hiddenFileInput}
+                  name="image"
                 />
               </div>
               <div className="d-flex justify-content-center">
