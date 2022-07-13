@@ -81,7 +81,6 @@ export default (props) => {
       data: event.target.files[0],
     };
     setImageTopUp(dataImage);
-    console.log(dataImage);
   };
 
   const toHistoryBalance = () => {
@@ -358,12 +357,10 @@ export default (props) => {
                   <Form.Label>Nominal Top Up Saldo</Form.Label>
                   <Form.Control placeholder="Rp -" disabled />
                 </Form.Group>
-                <Form.Group id="referenceNumber" mb-1>
+                <Form.Group id="referenceNumber">
                   <Form.Label>Reference Number</Form.Label>
-                  <InputGroup>
-                    <InputGroup.Text className="text-gray-600"></InputGroup.Text>
-                    <Form.Control placeholder="Masukkan Reference Number" />
-                  </InputGroup>
+                  <InputGroup className="disini"></InputGroup>
+                  <Form.Control placeholder="Masukkan Reference Number" />
                 </Form.Group>
                 <div style={{ color: "#B9121B", fontSize: 12 }}>
                   <img src={noteIconRed} className="me-2" />
@@ -391,11 +388,13 @@ export default (props) => {
                     fontSize: 14,
                     color: "#077E86",
                     fontWeight: 700,
+                    cursor: "pointer",
                   }}
                   onClick={handleClick}
                 >
                   Upload File
                 </u>
+                <span className="mx-1">{imageTopUp.data?.name}</span>
                 <input
                   type="file"
                   onChange={handleFileChange}
