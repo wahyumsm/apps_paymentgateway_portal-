@@ -285,3 +285,18 @@ body {
     font-size: 14px;
     color: #EE2E2C;
 }
+.user-dropdown {
+    padding: 10px;
+}
+
+.dropdown-item:hover {
+    border-radius: 8px;
+    background-color: #f0f0f0;
+}
+
+.text-modal {
+    color: #888888;
+    font-size: 12px;
+    font-weight: 400;
+    font-style: italic;
+}
