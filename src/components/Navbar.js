@@ -21,7 +21,7 @@ import {
   ListGroup,
   InputGroup,
   Modal,
-  Button,
+  Button, Table
 } from "@themesberg/react-bootstrap";
 
 import NOTIFICATIONS_DATA from "../data/notifications";
@@ -40,6 +40,11 @@ import axios from "axios";
 import { getUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
 import DropdownToggle from "@themesberg/react-bootstrap/lib/esm/DropdownToggle";
+import { agenLists } from "../data/tables";
+import DataTable from "react-data-table-component";
+import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
+import checklistCircle from '../assets/img/icons/checklist_circle.svg';
+import CopyIcon from '../assets/icon/carbon_copy.svg'
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -62,7 +67,10 @@ export default (props) => {
   };
 
   const [showModalTopUp, setShowModalTopUp] = useState(false);
+  const [showModalHistoryTopUp, setShowModalHistoryTopUp] = useState(false)
+  const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
+  const handleCloseHistoryTopUp = () => setShowModalHistoryTopUp(false);
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
   const handleClick = (event) => {
@@ -100,6 +108,85 @@ export default (props) => {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const columns = [
+    {
+      name: 'No',
+      selector: row => row.id,
+      ignoreRowClick: true,
+      button: true,
+    },
+    {
+      name: 'ID Transaksi',
+      selector: row => row.IDAgen,
+      // sortable: true,
+      // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
+    },
+    {
+      name: 'Sumber Agen',
+      selector: row => row.namaAgen,
+      // sortable: true,
+    },
+    {
+      name: 'Kode Unik',
+      selector: row => row.email,
+      // sortable: true,
+    },
+    {
+      name: 'Nominal Top Up',
+      selector: row => row.noHp,
+      // sortable: true,
+    },
+    {
+      name: 'Tanggal Top Up',
+      selector: row => row.noRekening,
+      // sortable: true
+    },
+    {
+      name: 'Status',
+      selector: row => row.status,
+      width: "90px",
+      style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+      // conditionalCellStyles: [
+      //   {
+      //     when: row => row.status === "Aktif",
+      //     style: { background: "rgba(7, 126, 134, 0.08)" }
+      //   },
+      //   {
+      //     when: row => row.status === "Tidak Aktif",
+      //     style: { background: "#F0F0F0" }
+      //   }
+      // ],
+    }
+  ]
+
+  const customStyles = {
+      headCells: {
+          style: {
+              backgroundColor: '#F2F2F2',
+              border: '12px',
+              fontWeight: 'bold',
+              fontSize: '16px',
+          },
+      },
+  };
+
+  const CustomLoader = () => (
+    <div style={{ padding: '24px' }}>
+      <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+      {/* <div>Loading...</div> */}
+    </div>
+  );
+
+  const modalNavbar = () => {
+    setShowModalTopUp(false)
+    setShowModalKonfirmasiTopUp(true)
+  }
+
+  const modalRiwayat = () => {
+    setShowModalKonfirmasiTopUp(false)
+    setShowModalHistoryTopUp(true)
   }
 
   const Notification = (props) => {
@@ -251,7 +338,7 @@ export default (props) => {
           </Nav>
         </div>
         <React.Fragment>
-          <Modal centered show={showModalTopUp} onHide={handleCloseModalTopUp}>
+          <Modal centered show={showModalTopUp}>
             <Modal.Header className="border-0">
               <Col>
                 <Button
@@ -335,6 +422,7 @@ export default (props) => {
                     borderRadius: 6,
                     textAlign: "center",
                   }}
+                  onClick={modalNavbar}
                 >
                   <FontAwesomeIcon style={{ marginRight: 10 }} /> Konfirmasi
                 </button>
@@ -342,6 +430,99 @@ export default (props) => {
             </Modal.Body>
           </Modal>
         </React.Fragment>
+        <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }}>
+          <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+              <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 12 }}>
+                  <img src={checklistCircle} alt="logo" />
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Top Up Berhasil</p>
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
+                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Kamu telah berhasil top up senilai Rp100.000</p>
+              </div>
+              <center>
+                  <div style={{ margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
+              </center>
+              <div>
+                  <Table className='detailSave'>
+                    <tr>ID Transaksi</tr>
+                    <tr>
+                        <td style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>#3123535</td>
+                        <td className="mx-5 text-end" style={{ fontWeight: 600 }}><img src={CopyIcon} alt="copy" />Salin</td>
+                    </tr>
+                    <tr>
+                        <td>Rabu, 06 Juli 2022 11:46 WIB</td>
+                    </tr>
+                  </Table>
+                  <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Detail Transaksi</p>
+                  <Table >
+                      <tr>
+                          <td>Nominal Top Up</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>Rp.100.000</td>
+                      </tr>
+                      <tr>
+                          <td>Sumber Agen</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>Agen Agus</td>
+                      </tr>
+                      <tr>
+                          <td>Kode Unik</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>145</td>
+                      </tr>
+                      <tr>
+                          <td>Status</td>
+                          <td>:</td>
+                          <td className='active-status-badge' style={{ fontWeight: 600 }}>Berhasil</td>
+                      </tr>
+                  </Table>
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <Button variant="primary" onClick={modalRiwayat} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>Lihat Riwayat Top up</Button>
+              </div>
+          </Modal.Body>
+        </Modal>
+        <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
+          <Modal.Header className="border-0">
+            <Button
+              className="position-absolute top-0 end-0 m-3"
+              variant="close"
+              aria-label="Close"
+              onClick={handleCloseHistoryTopUp}
+            />
+            <Modal.Title className="fw-bold mt-3">
+              History Top Up
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {
+              agenLists.length === 0 ?
+              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
+              <div className="div-table">
+                <DataTable
+                  columns={columns}
+                  data={agenLists}
+                  customStyles={customStyles}
+                  // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                  pagination
+                  highlightOnHover
+                  // progressPending={pending}
+                  progressComponent={<CustomLoader />}
+                  // paginationResetDefaultPage={resetPaginationToggle}
+                  // subHeader
+                  // subHeaderComponent={subHeaderComponentMemo}
+                  // selectableRows
+                  // persistTableHead
+                  // onRowClicked={(listAgen) => {
+                  //   detailAgenHandler(listAgen.agen_id)
+                  // }}
+                />
+              </div>
+            }
+          </Modal.Body>
+        </Modal>
       </Container>
     </Navbar>
   );
