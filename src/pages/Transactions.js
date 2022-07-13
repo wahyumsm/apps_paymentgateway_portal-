@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faCheck, faCog, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { Col, Row, Form, Modal, Button, Table, ButtonGroup, Breadcrumb, InputGroup, Dropdown, Container } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Modal, Button, Table, ButtonGroup, Breadcrumb, InputGroup, Dropdown, Container, Image } from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
 // import { Chart } from 'react-chartjs-2';
@@ -13,6 +13,7 @@ import axios from "axios";
 import encryptData from "../function/encryptData";
 import * as XLSX from "xlsx"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 // import { addDays } from "date-fns";
 import "./Transactions.css";
 import {Line} from 'react-chartjs-2'
@@ -32,6 +33,8 @@ export default () => {
     namaAgen: "",
     status: "",
   })
+  const [pendingTransfer, setPendingTransfer] = useState(true)
+  const [pendingSettlement, setPendingSettlement] = useState(true)
   const [detailTransferDana, setDetailTransferDana] = useState({})
   const [showModalDetailTransferDana, setShowModalDetailTransferDana] = useState(false)
   const currentDate = new Date().toISOString().split('T')[0]
@@ -60,9 +63,11 @@ export default () => {
         'Authorization' : auth
       }
       const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-      // console.log(listTransferDana, 'ini data transfer dana');
-      listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
-      setListTransferDana(listTransferDana.data.response_data.list)
+      if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200) {
+        listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListTransferDana(listTransferDana.data.response_data.list)
+        setPendingTransfer(false)
+      }
     } catch (error) {
       console.log(error)
       history.push(errorCatch(error.response.status))
@@ -78,8 +83,11 @@ export default () => {
         'Authorization' : auth
       }
       const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-      setListSettlement(dataSettlement.data.response_data)
+      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200) {
+        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(dataSettlement.data.response_data)
+        setPendingSettlement(false)
+      }
     } catch (error) {
       console.log(error)
       history.push(errorCatch(error.response.status))
@@ -115,6 +123,7 @@ export default () => {
 
   async function filterTransferButtonHandle(idTransaksi, namaAgen, periode, status) {
     try {
+      setPendingSettlement(true)
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
       const headers = {
@@ -122,8 +131,11 @@ export default () => {
         'Authorization' : auth
       }
       const filterTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-      filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
-      setListTransferDana(filterTransferDana.data.response_data.list)
+      if (filterTransferDana.status === 200 && filterTransferDana.data.response_code == 200) {
+        filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListTransferDana(filterTransferDana.data.response_data.list)
+        setPendingSettlement(false)
+      }
     } catch (error) {
       console.log(error)
       history.push(errorCatch(error.response.status))
@@ -134,14 +146,15 @@ export default () => {
     try {
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"tvasettl_id":${(idTransaksi.length !== 0) ? idTransaksi : 0}, "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
-      // console.log(dataParams, 'ini data params');
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const filterSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-      setListSettlement(filterSettlement.data.response_data)
+      if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200) {
+        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data)
+      }
     } catch (error) {
       console.log(error)
       history.push(errorCatch(error.response.status))
@@ -172,13 +185,11 @@ export default () => {
     try {
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"tvatrans_trx_id":${trxId}}`)
-      // console.log(dataParams, 'ini data params');
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const detailTransaksi = await axios.post("/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
-      // console.log(detailTransaksi, 'ini data detail transaksi');
       if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200) {
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)
@@ -213,8 +224,8 @@ export default () => {
         name: 'Total Akhir',
         selector: row => row.amount,
         // sortable: true,
-        cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "flex-end" }}>{ convertToRupiah(row.amount) }</div>,
-        style: { display: "flex", flexDirection: "row", justifyContent: "right", }
+        cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
+        style: { display: "flex", flexDirection: "row", justifyContent: "center", }
     },
     {
         name: 'Status',
@@ -338,6 +349,13 @@ export default () => {
     XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
     XLSX.writeFile(workBook, "Report Settlement.xlsx");
   }
+
+  const CustomLoader = () => (
+    <div style={{ padding: '24px' }}>
+      <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+      {/* <div>Loading...</div> */}
+    </div>
+  );
 
   const data = {
       labels: [
@@ -493,6 +511,9 @@ export default () => {
                     data={listTransferDana}
                     customStyles={customStyles}
                     pagination
+                    highlightOnHover
+                    progressPending={pendingTransfer}
+                    progressComponent={<CustomLoader />}
                 />
             </div>
         </div>
@@ -607,6 +628,9 @@ export default () => {
                     data={listSettlement}
                     customStyles={customStyles}
                     pagination
+                    highlightOnHover
+                    progressPending={pendingSettlement}
+                    progressComponent={<CustomLoader />}
                 />
             </div>
         </div>

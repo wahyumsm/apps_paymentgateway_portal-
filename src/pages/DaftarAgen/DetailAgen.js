@@ -17,8 +17,6 @@ function DetailAgen() {
 
     async function getDetailAgen(agenId) {
         try {
-            // const agen_id = "EDS2940181"
-            // console.log(agenId, 'ini agen id di func');
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"agen_id":"${agenId}"}`)
             const headers = {
@@ -26,9 +24,7 @@ function DetailAgen() {
                 'Authorization' : auth
             }
             const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
-            // console.log(detailAgen, 'ini detail agen');
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200) {
-                console.log(detailAgen.data.response_data, 'ini detail agen');
                 setDetailAgen(detailAgen.data.response_data)
             }
         } catch (error) {
@@ -51,8 +47,6 @@ function DetailAgen() {
         history.push(`/editagen/${agenId}`)
     }
     
-    // console.log(detailAgen.status, 'ini detail agen');
-
     return (
         <div className='main-content' style={{ padding: "37px 27px" }}>
             <div className="head-title">
