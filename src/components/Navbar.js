@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -20,6 +20,8 @@ import {
   Container,
   ListGroup,
   InputGroup,
+  Modal,
+  Button,
 } from "@themesberg/react-bootstrap";
 
 import NOTIFICATIONS_DATA from "../data/notifications";
@@ -28,6 +30,8 @@ import iconDetailAkun from "../assets/icon/detail_akun_icon.svg";
 import userIcon from "../assets/icon/akun_icon.svg";
 import logoutIcon from "../assets/icon/logout_icon.svg";
 import topUpSaldoIcon from "../assets/icon/top_up_saldo_icon.svg";
+import noteIcon from "../assets/icon/note_icon.svg";
+import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
@@ -57,8 +61,19 @@ export default (props) => {
     history.push("/detailakun");
   };
 
-  const toTopUpSaldo = () => {
-    alert("TopUp!");
+  const [showModalTopUp, setShowModalTopUp] = useState(false);
+  const handleCloseModalTopUp = () => setShowModalTopUp(false);
+  const [imageTopUp, setImageTopUp] = useState({});
+  const hiddenFileInput = useRef(null);
+  const handleClick = (event) => {
+    hiddenFileInput.current.click();
+  };
+  const handleFileChange = (event) => {
+    let dataImage = {
+      data: event.target.files[0],
+    };
+    setImageTopUp(dataImage);
+    console.log(dataImage);
   };
 
   const toHistoryBalance = () => {
@@ -131,7 +146,6 @@ export default (props) => {
         <div className="d-flex justify-content-between w-100">
           <div className="d-flex align-items-center"></div>
           <Nav className="align-items-center">
-            
             {/* Saldo */}
             <Dropdown as={Nav.Item}>
               <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0">
@@ -147,16 +161,16 @@ export default (props) => {
               </Dropdown.Toggle>
               <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
                 <Dropdown.Item
-                  onClick={() => toTopUpSaldo()}
+                  onClick={() => setShowModalTopUp(true)}
                   className="fw-bold"
                 >
-                  <img alt="" src={riwayatSaldoIcon} /> Top Up Saldo
+                  <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
                 </Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => toHistoryBalance()}
                   className="fw-bold"
                 >
-                  <img alt="" src={topUpSaldoIcon} /> Riwayat
+                  <img alt="" src={riwayatSaldoIcon} /> Riwayat
                 </Dropdown.Item>
               </Dropdown.Menu>
 
@@ -236,6 +250,98 @@ export default (props) => {
             </Dropdown>
           </Nav>
         </div>
+        <React.Fragment>
+          <Modal centered show={showModalTopUp} onHide={handleCloseModalTopUp}>
+            <Modal.Header className="border-0">
+              <Col>
+                <Button
+                  className="position-absolute top-0 end-0 m-3"
+                  variant="close"
+                  aria-label="Close"
+                  onClick={handleCloseModalTopUp}
+                />
+                <Modal.Title className="text-center fw-bold mt-3">
+                  Konfirmasi Top Up Saldo
+                </Modal.Title>
+              </Col>
+            </Modal.Header>
+            <Modal.Body>
+              <Form action="#">
+                <Form.Group className="mb-3">
+                  <Form.Label>Nominal Top Up Saldo</Form.Label>
+                  <Form.Control placeholder="Rp -" disabled />
+                </Form.Group>
+                <Form.Group id="referenceNumber" mb-1>
+                  <Form.Label>Reference Number</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Text className="text-gray-600"></InputGroup.Text>
+                    <Form.Control placeholder="Masukkan Reference Number" />
+                  </InputGroup>
+                </Form.Group>
+                <div style={{ color: "#B9121B", fontSize: 12 }}>
+                  <img src={noteIconRed} className="me-2" />
+                  Nomor Referensi wajib diisi
+                </div>
+              </Form>
+              <div>
+                <img src={noteIcon} className="me-2" />
+                <span className="text-modal">
+                  Reference Number dapat dilihat pada bukti transfer
+                </span>
+              </div>
+              <div
+                className="my-2"
+                style={{
+                  fontSize: 14,
+                  color: "#383838",
+                }}
+              >
+                Upload Bukti Transaksi
+              </div>
+              <div className="mb-4">
+                <u
+                  style={{
+                    fontSize: 14,
+                    color: "#077E86",
+                    fontWeight: 700,
+                  }}
+                  onClick={handleClick}
+                >
+                  Upload File
+                </u>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  ref={hiddenFileInput}
+                />
+              </div>
+              <div className="d-flex justify-content-center">
+                <button
+                  // onClick={() => tambahAgen()}
+                  style={{
+                    fontFamily: "Exo",
+                    fontSize: 16,
+                    fontWeight: 700,
+                    alignItems: "center",
+                    padding: "12px 12px",
+                    gap: 8,
+                    width: "100%",
+                    height: 48,
+                    background:
+                      "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                    border: "0.6px solid #2C1919",
+                    borderRadius: 6,
+                    textAlign: "center",
+                  }}
+                >
+                  <FontAwesomeIcon style={{ marginRight: 10 }} /> Konfirmasi
+                </button>
+              </div>
+            </Modal.Body>
+          </Modal>
+        </React.Fragment>
       </Container>
     </Navbar>
   );
