@@ -10,7 +10,7 @@ import axios from "axios";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
-import { authorization, BaseURL, setUserSession } from "../../function/helpers";
+import { authorization, BaseURL, errorCatch, setUserSession } from "../../function/helpers";
 import "./Signin.css";
 
 
@@ -42,6 +42,7 @@ export default () => {
       }
     } catch (error) {
       console.log(error);
+      history.push(errorCatch(error.response.status))
     }
     
   }

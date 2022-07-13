@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToRupiah, getToken } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getToken } from '../../function/helpers';
 import axios from 'axios';
 
 function TambahPartner() {
@@ -43,7 +43,7 @@ function TambahPartner() {
                 'Authorization' : auth
             }
             const addPartner = await axios.post("/Partner/SavePartner", { data: dataParams }, { headers: headers })
-            console.log(addPartner, 'ini add partner');
+            // console.log(addPartner, 'ini add partner');
             if(addPartner.status === 200 && addPartner.data.response_code === 200) {
                 // setAddPartner(addPartner.data.response_data)
                 history.push("/daftarpartner")
@@ -52,9 +52,7 @@ function TambahPartner() {
             alert("Partner Baru Berhasil Ditambahkan")
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/sign-in')
-            }
+            history.push(errorCatch(error.response.status))
         }
     }
 

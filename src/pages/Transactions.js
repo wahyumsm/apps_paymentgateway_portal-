@@ -23,12 +23,16 @@ export default () => {
   const access_token = getToken();
   const [listTransferDana, setListTransferDana] = useState([])
   const [listSettlement, setListSettlement] = useState([])
-  const [state, setState] = useState(null)
-  const [dateRange, setDateRange] = useState([])
+  const [stateDanaMasuk, setStateDanaMasuk] = useState(null)
+  const [stateSettlement, setStateSettlement] = useState(null)
+  const [dateRangeDanaMasuk, setDateRangeDanaMasuk] = useState([])
+  const [dateRangeSettlement, setDateRangeSettlement] = useState([])
   const [inputHandle, setInputHandle] = useState({
-    idTransaksi: "",
-    namaAgen: "",
-    status: "",
+    idTransaksiDanaMasuk: "",
+    idTransaksiSettlement: "",
+    namaAgenDanaMasuk: "",
+    statusDanaMasuk: "",
+    statusSettlement: "",
   })
   const [pendingTransfer, setPendingTransfer] = useState(true)
   const [pendingSettlement, setPendingSettlement] = useState(true)
@@ -44,13 +48,22 @@ export default () => {
     })
   }
 
-  function pickDate(item) {
-    setState(item)
+  function pickDateDanaMasuk(item) {
+    setStateDanaMasuk(item)
     if (item !== null) {
       item = item.map(el => el.toLocaleDateString('en-CA'))
-      setDateRange(item)
+      setDateRangeDanaMasuk(item)
     }
   }
+
+  function pickDateSettlement(item) {
+    setStateSettlement(item)
+    if (item !== null) {
+      item = item.map(el => el.toLocaleDateString('en-CA'))
+      setDateRangeSettlement(item)
+    }
+  }
+  
   async function getListTransferDana(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
@@ -131,15 +144,25 @@ export default () => {
     }
   }
 
-  function resetButtonHandle() {
-    setInputHandle({
-        ...inputHandle,
-        idTransaksi : "",
-        namaAgen: "",
-        status : ""
-    })
-    setState(null)
-    setDateRange([])
+  function resetButtonHandle(param) {
+    if (param === "Dana Masuk") {
+      setInputHandle({
+          ...inputHandle,
+          idTransaksiDanaMasuk: "",
+          namaAgenDanaMasuk: "",
+          statusDanaMasuk: "",
+      })
+      setStateDanaMasuk(null)
+      setDateRangeDanaMasuk([])
+    } else {
+      setInputHandle({
+          ...inputHandle,
+          idTransaksiSettlement: "",
+          statusSettlement: "",
+      })
+      setStateSettlement(null)
+      setDateRangeSettlement([])
+    }
   }
 
   useEffect(() => {
@@ -165,6 +188,7 @@ export default () => {
       }
     } catch (error) {
       console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -416,26 +440,26 @@ export default () => {
             <Row className='mt-4'>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
-                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksi} name="idTransaksi" type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
                 <Col xs={4}>
                     <span>Nama Agen</span>
-                    <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgen} name="namaAgen" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>
+                    <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgenDanaMasuk} name="namaAgenDanaMasuk" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>
                 </Col>
                 <Col xs={4}>
                     <span>Status</span>
-                    <Form.Select name="status" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.status} onChange={(e) => handleChange(e)}>
-                      <option name="status" defaultValue value={0}>Pilih Status</option>
-                      <option name="status" value={2}>Success</option>
-                      <option name="status" value={1}>In Progress</option>
-                      {/* <option name="status" value={3}>Refund</option> */}
-                      {/* <option name="status" value={4}>Canceled</option> */}
-                      <option name="status" value={7}>Waiting For Payment</option>
-                      {/* <option name="status" value={8}>Paid</option> */}
-                      <option name="status" value={9}>Payment Expired</option>
-                      {/* <option name="status" value={10}>Withdraw</option> */}
-                      {/* <option name="status" value={11}>Idle</option> */}
-                      {/* <option name="status" value={15}>Expected Success</option> */}
+                    <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
+                      <option defaultValue value={0}>Pilih Status</option>
+                      <option value={2}>Success</option>
+                      <option value={1}>In Progress</option>
+                      {/* <option value={3}>Refund</option> */}
+                      {/* <option value={4}>Canceled</option> */}
+                      <option value={7}>Waiting For Payment</option>
+                      {/* <option value={8}>Paid</option> */}
+                      <option value={9}>Payment Expired</option>
+                      {/* <option value={10}>Withdraw</option> */}
+                      {/* <option value={11}>Idle</option> */}
+                      {/* <option value={15}>Expected Success</option> */}
                     </Form.Select>
                 </Col>
             </Row>
@@ -443,8 +467,8 @@ export default () => {
                 <Col xs={4}>
                     <span style={{ marginRight: 20 }}>Periode*</span>
                     <DateRangePicker
-                      onChange={pickDate}
-                      value={state}
+                      onChange={pickDateDanaMasuk}
+                      value={stateDanaMasuk}
                       clearIcon={null}
                       // calendarIcon={null}
                     />
@@ -454,12 +478,20 @@ export default () => {
                 <Col xs={3}>
                     <Row>
                         <Col xs={6}>
-                            <button onClick={() => filterTransferButtonHandle(inputHandle.idTransaksi, inputHandle.namaAgen, dateRange, inputHandle.status)} className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0 || dateRange.length !== 0 && inputHandle.namaAgen.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0 || dateRange.length === 0 && inputHandle.namaAgen.length === 0}>
+                            <button
+                              onClick={() => filterTransferButtonHandle(inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk)}
+                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                            >
                               Terapkan
                             </button>
                         </Col>
                         <Col xs={6}>
-                            <button onClick={resetButtonHandle} className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0 || dateRange.length !== 0 && inputHandle.namaAgen.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0 || dateRange.length === 0 && inputHandle.namaAgen.length === 0}>
+                            <button
+                              onClick={() => resetButtonHandle("Dana Masuk")}
+                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                            >
                               Atur Ulang
                             </button>
                         </Col>
@@ -501,25 +533,25 @@ export default () => {
             <Row className='mt-4'>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
-                    <input name="idTransaksi" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksi} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                    <input name="idTransaksiSettlement" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
                 <Col xs={4}>
                     <span style={{ marginRight: 20 }}>Periode*</span>
                       <DateRangePicker
-                        onChange={pickDate}
-                        value={state}
+                        onChange={pickDateSettlement}
+                        value={stateSettlement}
                         clearIcon={null}
                         // calendarIcon={null}
                       />
                 </Col>
                 <Col xs={4}>
                     <span>Status</span>
-                    <Form.Select name="status" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.status} onChange={(e) => handleChange(e)}>
-                      <option name="status" defaultValue value={0}>Pilih Status</option>
-                      <option name="status" value={2}>Success</option>
-                      <option name="status" value={1}>In Progress</option>
-                      <option name="status" value={3}>Pending</option>
-                      <option name="status" value={4}>Failed</option>
+                    <Form.Select name="statusSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
+                      <option defaultValue value={0}>Pilih Status</option>
+                      <option value={2}>Success</option>
+                      <option value={1}>In Progress</option>
+                      <option value={3}>Pending</option>
+                      <option value={4}>Failed</option>
                     </Form.Select>
                 </Col>
             </Row>
@@ -527,12 +559,20 @@ export default () => {
                 <Col xs={3}>
                     <Row>
                         <Col xs={6}>
-                            <button onClick={() => filterSettlementButtonHandle(inputHandle.idTransaksi, dateRange, inputHandle.status)} className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0}>
+                            <button
+                              onClick={() => filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, dateRangeSettlement, inputHandle.statusSettlement)}
+                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0}
+                            >
                               Terapkan
                             </button>
                         </Col>
                         <Col xs={6}>
-                            <button onClick={resetButtonHandle} className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0}>
+                            <button
+                              onClick={() => resetButtonHandle("Settlement")}
+                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0}
+                            >
                               Atur Ulang
                             </button>
                         </Col>

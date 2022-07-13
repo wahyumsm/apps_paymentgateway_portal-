@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form} from '@themesberg/react-bootstrap';
+import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image, Modal, Container} from '@themesberg/react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { invoiceItems } from '../../data/tables';
-import { convertToRupiah, getToken } from '../../function/helpers';
+import { convertToRupiah, errorCatch, getToken } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import * as XLSX from "xlsx"
+import Pagination from "react-js-pagination";
 
 function RiwayatTransaksi() {
 
     const history = useHistory()
     const access_token = getToken();
     const [dataListPartner, setDataListPartner] = useState([])
+    const [dataListAgenFromPartner, setDataListAgenFromPartner] = useState([])
     const [dataRiwayatDanaMasuk, setDataRiwayatDanaMasuk] = useState([])
-    const [pageNumber, setPageNumber] = useState(0)
     const [dataRiwayatSettlement, setDataRiwayatSettlement] = useState([])
     const [totalSettlement, setTotalSettlement] = useState([])
-    const [state, setState] = useState(null)
-    const [dateRange, setDateRange] = useState([])
-    const [showDate, setShowDate] = useState("none")
+    const [stateDanaMasuk, setStateDanaMasuk] = useState(null)
+    const [stateSettlement, setStateSettlement] = useState(null)
+    const [dateRangeDanaMasuk, setDateRangeDanaMasuk] = useState([])
+    const [dateRangeSettlement, setDateRangeSettlement] = useState([])
+    const [showDateDanaMasuk, setShowDateDanaMasuk] = useState("none")
+    const [showDateSettlement, setShowDateSettlement] = useState("none")
     const [inputHandle, setInputHandle] = useState({
         idTransaksiDanaMasuk: "",
         idTransaksiSettlement: "",
@@ -28,29 +34,96 @@ function RiwayatTransaksi() {
         namaAgenDanaMasuk: "",
         statusDanaMasuk: [],
         statusSettlement: [],
-        periode: 0,
+        periodeDanaMasuk: 0,
+        periodeSettlement: 0,
     })
+    const [pendingTransfer, setPendingTransfer] = useState(true)
+    const [pendingSettlement, setPendingSettlement] = useState(true)
+    const [detailTransferDana, setDetailTransferDana] = useState({})
+    const [showModalDetailTransferDana, setShowModalDetailTransferDana] = useState(false)
+    const [activePageDanaMasuk, setActivePageDanaMasuk] = useState(1)
+    const [activePageSettlement, setActivePageSettlement] = useState(1)
+    const [pageNumberDanaMasuk, setPageNumberDanaMasuk] = useState({})
+    const [pageNumberSettlement, setPageNumberSettlement] = useState({})
+
+    async function getListAgenFromPartner(pertnerId) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"partner_id": "${pertnerId}"}`);
+            // console.log(dataParams, "dataParams listagen");
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const listAgenFromPartner = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
+            // console.log(listAgenFromPartner, "listagen");
+            if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200) {
+                setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
+            }
+        } catch (error) {
+            console.log(error)
+            history.push(errorCatch(error.response.status))
+    }
+    }
 
     function handleChange(e) {
-        if (e.target.name === "periode" && e.target.value === "7") {
-            setShowDate("")
-            setInputHandle({
-                ...inputHandle,
-                [e.target.name] : e.target.value
-            })
-        }else if (e.target.name !== "periode" && e.target.value !== "7" && inputHandle.periode === "7") {
-            setShowDate("")
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    function handleChangeNamaPartner(e) {
+        getListAgenFromPartner(e.target.value)
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    function handleChangePeriodeTransfer(e) {
+        if (e.target.value === "7") {
+            setShowDateDanaMasuk("")
             setInputHandle({
                 ...inputHandle,
                 [e.target.name] : e.target.value
             })
         } else {
-            setShowDate("none")
+            setShowDateDanaMasuk("none")
             setInputHandle({
                 ...inputHandle,
                 [e.target.name] : e.target.value
             })
         }
+    }
+
+    function handleChangePeriodeSettlement(e) {
+        
+        if (e.target.value === "7") {
+            setShowDateSettlement("")
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name] : e.target.value
+            })
+        } else {
+            setShowDateSettlement("none")
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name] : e.target.value
+            })
+        }
+    }
+
+    function handlePageChangeDanaMasuk(page) {
+        // console.log(page, "page");
+        setActivePageDanaMasuk(page)
+        riwayatDanaMasuk(page)
+    }
+
+    function handlePageChangeSettlement(page) {
+        // console.log(page, "page");
+        setActivePageSettlement(page)
+        riwayatSettlement(page)
     }
 
     async function listPartner() {
@@ -67,10 +140,11 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error);
-        }
+            history.push(errorCatch(error.response.status))
+    }
     }
 
-    async function riwayatDanaMasuk() {
+    async function riwayatDanaMasuk(currentPage) {
         // dateId :
         // 0 -> all
         // 2 -> hari ini
@@ -81,7 +155,7 @@ function RiwayatTransaksi() {
         // 7 -> pilih tanggal
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [1,2,3,4,5,6,7,8,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 0, "date_from": "", "date_to": "", "page": 1, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 0, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
             // console.log(dataParams, "dataParams");
             const headers = {
                 'Content-Type': 'application/json',
@@ -90,19 +164,21 @@ function RiwayatTransaksi() {
             const dataRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
             // console.log(dataRiwayatDanaMasuk, "dataRiwayatDanaMasuk");
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200) {
-                // setPageNumber(dataRiwayatDanaMasuk.data.response_data)
-                dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: idx + 1}))
+                dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
+                setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
                 setDataRiwayatDanaMasuk(dataRiwayatDanaMasuk.data.response_data.results)
+                setPendingTransfer(false)
             }
         } catch (error) {
             console.log(error)
-        }
+            history.push(errorCatch(error.response.status))
+    }
     }
 
-    async function riwayatSettlement() {
+    async function riwayatSettlement(currentPage) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 0, "date_from": "", "date_to": "", "page": 1, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 0, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
             // console.log(dataParams, "dataParams");
             const headers = {
                 'Content-Type': 'application/json',
@@ -111,25 +187,37 @@ function RiwayatTransaksi() {
             const dataRiwayatSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             // console.log(dataRiwayatSettlement, "riwayatSettlement");
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200) {
-                dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: idx + 1}))
+                dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
+                setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
                 setDataRiwayatSettlement(dataRiwayatSettlement.data.response_data.results.list_data)
                 setTotalSettlement(dataRiwayatSettlement.data.response_data.results.total_settlement)
+                setPendingSettlement(false)
             }
         } catch (error) {
             console.log(error)
+            history.push(errorCatch(error.response.status))
+    }
+    }
+
+    function pickDateDanaMasuk(item) {
+        setStateDanaMasuk(item)
+        if (item !== null) {
+            item = item.map(el => el.toLocaleDateString('en-CA'))
+            setDateRangeDanaMasuk(item)
         }
     }
 
-    function pickDate(item) {
-        setState(item)
+    function pickDateSettlement(item) {
+        setStateSettlement(item)
         if (item !== null) {
             item = item.map(el => el.toLocaleDateString('en-CA'))
-            setDateRange(item)
+            setDateRangeSettlement(item)
         }
     }
 
     async function filterRiwayatDanaMasuk(statusId, transId, partnerId, subPartnerId, dateId, periode) {
         try {
+            setPendingTransfer(true)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 10}`)
             // console.log(dataParams, "dataParams");
@@ -142,10 +230,36 @@ function RiwayatTransaksi() {
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataRiwayatDanaMasuk(filterRiwayatDanaMasuk.data.response_data.results)
+                setPendingTransfer(false)
             }
         } catch (error) {
             console.log(error)
-        }
+            history.push(errorCatch(error.response.status))
+    }
+    }
+
+    async function filterSettlement(statusId, transId, partnerId, dateId, periode) {
+        try {
+            setPendingSettlement(true)
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 10}`)
+            // console.log(dataParams, "dataParams");
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const filterSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+            // console.log(filterSettlement, "ini filterSettlement");
+            if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200) {
+                filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: idx + 1}))
+                setDataRiwayatSettlement(filterSettlement.data.response_data.results.list_data)
+                setTotalSettlement(filterSettlement.data.response_data.results.total_settlement)
+                setPendingSettlement(false)
+            }
+        } catch (error) {
+            console.log(error)
+            history.push(errorCatch(error.response.status))
+    }
     }
 
     function resetButtonHandle(param) {
@@ -156,11 +270,11 @@ function RiwayatTransaksi() {
                 namaPartnerDanaMasuk: "",
                 namaAgenDanaMasuk: "",
                 statusDanaMasuk: [],
-                periode: 0,
+                periodeDanaMasuk: 0,
             })
-            setState(null)
-            setDateRange([])
-            setShowDate("none")
+            setStateDanaMasuk(null)
+            setDateRangeDanaMasuk([])
+            setShowDateDanaMasuk("none")
         } else {
             setInputHandle({
                 ...inputHandle,
@@ -169,9 +283,9 @@ function RiwayatTransaksi() {
                 statusSettlement: [],
                 periodeSettlement: 0,
             })
-            setState(null)
-            setDateRange([])
-            setShowDate("none")
+            setStateSettlement(null)
+            setDateRangeSettlement([])
+            setShowDateSettlement("none")
         }
     }
 
@@ -180,9 +294,30 @@ function RiwayatTransaksi() {
             history.push('/login');
         }
         listPartner()
-        riwayatDanaMasuk()
-        riwayatSettlement()
+        riwayatDanaMasuk(activePageDanaMasuk)
+        riwayatSettlement(activePageSettlement)
     }, [])
+
+    async function detailListTransferHandler(partnerId) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"tvatrans_trx_id": "${partnerId}"}`);
+            // console.log(dataParams, "dataParams listagen");
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const detailListTransfer = await axios.post("/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
+            // console.log(detailListTransfer, "detailListTransfer");
+            if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200) {
+                setDetailTransferDana(detailListTransfer.data.response_data)
+                setShowModalDetailTransferDana(true)
+            }
+        } catch (error) {
+            console.log(error)
+            history.push(errorCatch(error.response.status))
+    }
+    }
     
     const columns = [
         {
@@ -192,9 +327,10 @@ function RiwayatTransaksi() {
         },
         {
             name: 'ID Transaksi',
-            selector: row => row.mpartnerdtl_partner_id,
-            width: "120px"
-            // sortable: true
+            selector: row => row.tvatrans_trx_id,
+            width: "120px",
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
+        // sortable: true
         },
         {
             name: 'Waktu',
@@ -255,7 +391,7 @@ function RiwayatTransaksi() {
         },
         {
             name: 'ID Transaksi',
-            selector: row => row.mpartnerdtl_partner_id,
+            selector: row => row.tvasettl_id,
             // sortable: true
         },
         {
@@ -313,6 +449,25 @@ function RiwayatTransaksi() {
         },
     };
 
+    function exportReportTransferDanaMasukHandler(data) {
+        // console.log(data, "data");
+        let dataExcel = []
+        for (let i = 0; i < data.length; i++) {
+            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+        }
+        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+        let workBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+        XLSX.writeFile(workBook, "Riwayat Transaksi Dana Masuk.xlsx");
+    }
+
+    const CustomLoader = () => (
+        <div style={{ padding: '24px' }}>
+            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+          {/* <div>Loading...</div> */}
+        </div>
+    );
+
     // console.log(inputHandle.status, "ini input handle status");
 
   return (
@@ -333,7 +488,7 @@ function RiwayatTransaksi() {
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Partner</span>
-                            <Form.Select name='namaPartnerDanaMasuk' className="input-text-ez me-4" value={inputHandle.namaPartnerDanaMasuk} onChange={(e) => handleChange(e)}>
+                            <Form.Select name='namaPartnerDanaMasuk' className="input-text-ez me-4" value={inputHandle.namaPartnerDanaMasuk} onChange={(e) => handleChangeNamaPartner(e)}>
                                 <option defaultChecked value="">Pilih Nama Partner</option>
                                 {
                                     dataListPartner.map((item, index) => {
@@ -344,9 +499,19 @@ function RiwayatTransaksi() {
                                 }
                             </Form.Select>
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Agen</span>
-                            <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgenDanaMasuk} name="namaAgenDanaMasuk" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>
+                            <Form.Select name='namaAgenDanaMasuk' className="input-text-ez me-4" value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
+                                <option defaultChecked value="">Pilih Nama Agen</option>
+                                {
+                                    dataListAgenFromPartner.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item.agen_id}>{item.agen_name}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Select>
+                            {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgenDanaMasuk} name="namaAgenDanaMasuk" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/> */}
                             {/* <input type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>                         */}
                         </Col>
                     </Row>
@@ -367,9 +532,9 @@ function RiwayatTransaksi() {
                                 {/* <option value={15}>Expected Success</option> */}
                             </Form.Select>
                         </Col>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDate === "none") ? "30%" : "40%" }}>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "30%" : "40%" }}>
                             <span>Periode*</span>
-                            <Form.Select name='periode' className="input-text-ez me-4" value={inputHandle.periode} onChange={(e) => handleChange(e)}>
+                            <Form.Select name='periodeDanaMasuk' className="input-text-ez me-4" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                                 <option defaultChecked>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
                                 <option value={3}>Kemarin</option>
@@ -378,10 +543,10 @@ function RiwayatTransaksi() {
                                 <option value={6}>Bulan Kemarin</option>
                                 <option value={7}>Pilih Range Tanggal</option>
                             </Form.Select>
-                            <div style={{ display: showDate }}>
+                            <div style={{ display: showDateDanaMasuk }}>
                                 <DateRangePicker 
-                                    onChange={pickDate}
-                                    value={state}
+                                    onChange={pickDateDanaMasuk}
+                                    value={stateDanaMasuk}
                                     clearIcon={null}
                                     // calendarIcon={null}
                                 />
@@ -393,9 +558,9 @@ function RiwayatTransaksi() {
                             <Row>
                                 <Col xs={6}>
                                     <button
-                                        onClick={() => filterRiwayatDanaMasuk(inputHandle.status, inputHandle.idTransaksi, inputHandle.namaPartner, inputHandle.namaAgen, inputHandle.periode, dateRange, )}
-                                        className={(inputHandle.periode || dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0 || dateRange.length !== 0 && inputHandle.namaAgen.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periode === "" || inputHandle.periode === "" && inputHandle.idTransaksi.length === 0 || inputHandle.periode === "" && inputHandle.status.length === 0 || inputHandle.periode === "" && inputHandle.namaAgen.length === 0}
+                                        onClick={() => filterRiwayatDanaMasuk(inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, )}
+                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeDanaMasuk === "" || inputHandle.periodeDanaMasuk === "" && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === "" && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === "" && inputHandle.namaAgenDanaMasuk.length === 0}
                                     >
                                         Terapkan
                                     </button>
@@ -403,20 +568,41 @@ function RiwayatTransaksi() {
                                 <Col xs={6}>
                                     <button
                                         onClick={() => resetButtonHandle("Dana Masuk")}
-                                        className={(inputHandle.periode || dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0 || dateRange.length !== 0 && inputHandle.namaAgen.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periode === "" || inputHandle.periode === "" && inputHandle.idTransaksi.length === 0 || inputHandle.periode === "" && inputHandle.status.length === 0 || inputHandle.periode === "" && inputHandle.namaAgen.length === 0}
-                                    >Atur Ulang</button>
+                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeDanaMasuk === "" || inputHandle.periodeDanaMasuk === "" && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === "" && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === "" && inputHandle.namaAgenDanaMasuk.length === 0}
+                                    >
+                                        Atur Ulang
+                                    </button>
                                 </Col>
                             </Row>
                         </Col>
                     </Row>
-                    <div className="div-table mt-6">
+                    {/* {
+                        dataRiwayatDanaMasuk.length !== 0 &&
+                        <div style={{ marginBottom: -30 }}>
+                            <Link onClick={() => exportReportTransferDanaMasukHandler(dataRiwayatDanaMasuk)} className="export-span">Export</Link>
+                        </div>
+                    } */}
+                    <div className="div-table mt-4 pb-4">
                         <DataTable
                             columns={columns}
                             data={dataRiwayatDanaMasuk}
                             customStyles={customStyles}
                             highlightOnHover
+                            progressPending={pendingTransfer}
+                            progressComponent={<CustomLoader />}
                             // pagination
+                        />
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                        <Pagination
+                            activePage={activePageDanaMasuk}
+                            itemsCountPerPage={pageNumberDanaMasuk.row_per_page}
+                            totalItemsCount={(pageNumberDanaMasuk.row_per_page*pageNumberDanaMasuk.max_page)}
+                            pageRangeDisplayed={5}
+                            itemClass="page-item"
+                            linkClass="page-link"
+                            onChange={handlePageChangeDanaMasuk}
                         />
                     </div>
                 </div>
@@ -432,7 +618,17 @@ function RiwayatTransaksi() {
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Partner</span>
-                            <input onChange={(e) => handleChange(e)} value={inputHandle.namaPartnerSettlement} name="namaPartnerSettlement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
+                            <Form.Select name='namaPartnerSettlement' className="input-text-ez me-4" value={inputHandle.namaPartnerSettlement} onChange={(e) => handleChange(e)}>
+                                <option defaultChecked value="">Pilih Nama Partner</option>
+                                {
+                                    dataListPartner.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item.partner_id}>{item.nama_perusahaan}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Select>
+                            {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaPartnerSettlement} name="namaPartnerSettlement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/> */}
                             {/* <input type='text'className='input-text-ez' placeholder='Masukkan Nama Partner'/> */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
@@ -453,9 +649,9 @@ function RiwayatTransaksi() {
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDate === "none") ? "30%" : "40%" }}>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "30%" : "40%" }}>
                             <span>Periode*</span>
-                            <Form.Select name='periode' className="input-text-ez me-4" value={inputHandle.periode} onChange={(e) => handleChange(e)}>
+                            <Form.Select name='periodeSettlement' className="input-text-ez me-4" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                                 <option defaultChecked>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
                                 <option value={3}>Kemarin</option>
@@ -464,10 +660,10 @@ function RiwayatTransaksi() {
                                 <option value={6}>Bulan Kemarin</option>
                                 <option value={7}>Pilih Range Tanggal</option>
                             </Form.Select>
-                            <div style={{ display: showDate }}>
+                            <div style={{ display: showDateSettlement }}>
                                 <DateRangePicker 
-                                    onChange={pickDate}
-                                    value={state}
+                                    onChange={pickDateSettlement}
+                                    value={stateSettlement}
                                     clearIcon={null}
                                     // calendarIcon={null}
                                 />
@@ -478,10 +674,22 @@ function RiwayatTransaksi() {
                         <Col xs={3}>
                             <Row>
                                 <Col xs={6}>
-                                    <button className='btn-ez'>Terapkan</button>
+                                    <button
+                                        onClick={() => filterSettlement(inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, )}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeSettlement === "" || inputHandle.periodeSettlement === "" && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === "" && inputHandle.statusSettlement.length === 0}
+                                    >
+                                        Terapkan
+                                    </button>
                                 </Col>
                                 <Col xs={6}>
-                                    <button className='btn-ez'>Atur Ulang</button>
+                                    <button
+                                        onClick={() => resetButtonHandle("Settlement")}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeSettlement === "" || inputHandle.periodeSettlement === "" && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === "" && inputHandle.statusSettlement.length === 0}
+                                    >
+                                        Atur Ulang
+                                    </button>
                                 </Col>
                             </Row>
                         </Col>
@@ -492,17 +700,99 @@ function RiwayatTransaksi() {
                             <p className="p-amount">{convertToRupiah(totalSettlement)}</p>
                         </div>
                     </div>
-                    <div className="div-table mt-6 mb-6">
+                    <div className="div-table mt-4 pb-4">
                         <DataTable
                             columns={columnsSettl}
                             data={dataRiwayatSettlement}
                             customStyles={customStyles}
+                            progressPending={pendingSettlement}
+                            progressComponent={<CustomLoader />}
                             // pagination
+                        />
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                        <Pagination
+                            activePage={activePageSettlement}
+                            itemsCountPerPage={pageNumberSettlement.row_per_page}
+                            totalItemsCount={(pageNumberSettlement.row_per_page*pageNumberSettlement.max_page)}
+                            pageRangeDisplayed={5}
+                            itemClass="page-item"
+                            linkClass="page-link"
+                            onChange={handlePageChangeSettlement}
                         />
                     </div>
                 </div>
             </div>
         </div>
+        <Modal centered show={showModalDetailTransferDana} onHide={() => setShowModalDetailTransferDana(false)} style={{ borderRadius: 8 }}>
+            <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+                <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
+                    <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Detail Transaksi</p>
+                </div>
+                <div>
+                    <Container style={{ paddingLeft: "unset", paddingRight: "unset" }}>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400 }}>
+                            <Col>ID Transaksi</Col>
+                            <Col style={{ display: "flex", justifyContent: "end" }}>Status</Col>
+                        </Row>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
+                            <Col>{detailTransferDana.mpartnerdtl_partner_id}</Col>
+                            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 160, width: "100%", height: 32, background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }}>{detailTransferDana.mstatus_name}</Col>
+                            <br />
+                        </Row>
+                        <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: -10 }}>{detailTransferDana.tvatrans_crtdt}</div>
+                        <center>
+                            <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
+                        </center>
+                        <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, }}>Detail Pengiriman</div>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>
+                            <Col>Nama Agen</Col>
+                            <Col style={{ display: "flex", justifyContent: "end" }}>ID Agen</Col>
+                        </Row>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
+                            <Col>{detailTransferDana.mpartnerdtl_sub_name}</Col>
+                            <Col style={{ display: "flex", justifyContent: "end" }}>{detailTransferDana.tvatrans_sub_partner_id}</Col>
+                        </Row>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>
+                            <Col>Nama Partner</Col>
+                            <Col style={{ display: "flex", justifyContent: "end" }}>ID Partner</Col>
+                        </Row>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
+                            <Col>{detailTransferDana.mpartner_name}</Col>
+                            <Col style={{ display: "flex", justifyContent: "end" }}>{detailTransferDana.mpartnerdtl_partner_id}</Col>
+                        </Row>
+                        <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No Rekening</div>
+                        <div style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>{detailTransferDana.tvatrans_va_number}</div>
+                        <center>
+                            <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
+                        </center>
+                        <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, }}>Rincian Dana</div>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                            <Col style={{ fontWeight: 400 }}>Jumlah Dana Diterima</Col>
+                            <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_amount)}</Col>
+                        </Row>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                            <Col style={{ fontWeight: 400 }}>Biaya VA</Col>
+                            <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_bank_fee)}</Col>
+                        </Row>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                            <Col style={{ fontWeight: 400 }}>Biaya Partner</Col>
+                            <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
+                        </Row>
+                        <center>
+                            <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, padding: "0px 24px", border: "1px dashed #EBEBEB" }} />
+                        </center>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 700, marginTop: 12 }}>
+                            <Col>Total</Col>
+                            <Col style={{ display: "flex", justifyContent: "end" }}>{convertToRupiah((detailTransferDana.tvatrans_amount + detailTransferDana.tvatrans_bank_fee + detailTransferDana.tvatrans_partner_fee))}</Col>
+                        </Row>
+                    </Container>
+                </div>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                    <Button variant="primary" onClick={() => setShowModalDetailTransferDana(false)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Kembali</Button>
+                </div>
+            </Modal.Body>
+        </Modal>
     </div>
   )
 }

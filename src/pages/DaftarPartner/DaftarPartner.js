@@ -5,7 +5,7 @@ import { Col, Row, Form} from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { getToken } from '../../function/helpers';
+import { errorCatch, getToken } from '../../function/helpers';
 import axios from 'axios';
 
 function DaftarPartner() {
@@ -25,7 +25,7 @@ function DaftarPartner() {
                 'Authorization' : auth
             }
             const listDataPartner = await axios.post(url, { data: "" }, { headers: headers })
-            console.log(listDataPartner, 'ini data user ');
+            // console.log(listDataPartner, 'ini data user ');
             if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200) {
                 listDataPartner.data.response_data = listDataPartner.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
                 setListPartner(listDataPartner.data.response_data)
@@ -33,6 +33,7 @@ function DaftarPartner() {
             
         } catch (error) {
             console.log(error)
+            history.push(errorCatch(error.response.status))
         }
     }
 

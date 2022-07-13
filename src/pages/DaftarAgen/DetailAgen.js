@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, getToken } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken } from '../../function/helpers';
 import axios from 'axios';
 import "./DetailAgen.css"
 
@@ -29,9 +29,7 @@ function DetailAgen() {
             }
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/sign-in')
-            }
+            history.push(errorCatch(error.response.status))
         }
     }
 

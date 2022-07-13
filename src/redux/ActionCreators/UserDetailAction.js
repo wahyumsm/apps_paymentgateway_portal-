@@ -1,6 +1,7 @@
 import { FETCH_GETUSERDETAIL } from "../ActionType/ActionTypes";
 import axios from "axios";
-import { BaseURL, getToken } from "../../function/helpers";
+import { BaseURL, errorCatch, getToken } from "../../function/helpers";
+import { useHistory } from "react-router-dom";
 
 export const getUserDetail = (url) => {
     return async (dispatch) => {
@@ -20,6 +21,8 @@ export const getUserDetail = (url) => {
             })
         } catch (error) {
             console.log(error)
-        }
+            const history = useHistory()
+            history.push(errorCatch(error.response.status))
+    }
     }
 }

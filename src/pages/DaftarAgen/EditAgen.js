@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Modal, Button } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, getToken } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken } from '../../function/helpers';
 import axios from 'axios';
 import "./EditAgen.css"
 
@@ -71,9 +71,7 @@ function EditAgen() {
             }
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/sign-in')
-            }
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -107,7 +105,7 @@ function EditAgen() {
             const editAgen = await axios.post("/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200) {
-                console.log(editAgen.data.response_data, 'ini update agen');
+                // console.log(editAgen.data.response_data, 'ini update agen');
                 setShowModalEdit(true)
             }
             
@@ -115,9 +113,7 @@ function EditAgen() {
             // alert("Edit Data Agen Berhasil")
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/sign-in')
-            }
+            history.push(errorCatch(error.response.status))
         }
     }
 

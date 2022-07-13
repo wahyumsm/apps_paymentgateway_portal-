@@ -35,7 +35,7 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, getToken, removeUserSession } from "../function/helpers";
+import { BaseURL, errorCatch, getToken, removeUserSession } from "../function/helpers";
 import axios from "axios";
 import { getUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -99,6 +99,7 @@ export default (props) => {
       }
     } catch (error) {
       console.log(error);
+      history.push(errorCatch(error.response.status))
     }
   }
 

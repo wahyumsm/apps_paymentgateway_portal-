@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { getToken } from '../../function/helpers';
+import { errorCatch, getToken } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import { useHistory, useParams } from 'react-router-dom';
 function DetailAkun() {
@@ -11,7 +11,7 @@ function DetailAkun() {
     const [dataAkun, setDataAkun] = useState({})
     const history = useHistory()
     // const { partnerId } = useParams()
-    console.log(dataAkun.mpartner_id)
+    // console.log(dataAkun.mpartner_id)
     const [inputHandle, setInputHandle] = useState({
         callbackUrl: dataAkun.callback_url,
     })
@@ -31,14 +31,15 @@ function DetailAkun() {
                 'Authorization' : auth
             }
             const userDetailPartner = await axios.post(url, { data: "" }, { headers: headers })
-            console.log(userDetailPartner, 'ini data user ');
+            // console.log(userDetailPartner, 'ini data user ');
             if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200) {
                 setDataAkun(userDetailPartner.data.response_data)
             }
             
         } catch (error) {
             console.log(error)
-        }
+            history.push(errorCatch(error.response.status))
+    }
     }
 
     useEffect(()=>{
@@ -55,7 +56,7 @@ function DetailAkun() {
                 'Authorization' : auth
             }
             const editCallback = await axios.post("/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
-            console.log(editCallback, 'ini add Callback');
+            // console.log(editCallback, 'ini add Callback');
             if(editCallback.status === 200 && editCallback.data.response_code === 200) {
                 history.push("/detailakun")
                 // alert("Edit Data Partner Berhasil Ditambahkan")
@@ -64,9 +65,7 @@ function DetailAkun() {
             alert("Edit URL Berhasil")
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/sign-in')
-            }
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -86,7 +85,7 @@ function DetailAkun() {
         }
     }
 
-    console.log(dataAkun);
+    // console.log(dataAkun);
 
   return (
     <div className='container-content'>

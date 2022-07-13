@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row, Modal} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { getToken } from '../../function/helpers';
+import { errorCatch, getToken } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
@@ -32,7 +32,7 @@ function EditPartner() {
         fee: 0,
         settlementFee: 0,
     })
-    console.log(partnerId, 'ini agen id');
+    // console.log(partnerId, 'ini agen id');
 
     function handleChange(e) {
         if (e.target.name === "active") {
@@ -60,7 +60,7 @@ function EditPartner() {
                 'Authorization' : auth
             }
             const detailPartner = await axios.post("/Partner/EditPartner", { data: dataParams }, { headers: headers })
-            console.log(detailPartner, 'ini detail partner');
+            // console.log(detailPartner, 'ini detail partner');
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200) {
                 // console.log(detailAgen.data.response_data, 'ini detail agen');
                 if (detailPartner.data.response_data.mpartner_is_active === true) {
@@ -78,9 +78,7 @@ function EditPartner() {
             }
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/sign-in')
-            }
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -188,7 +186,7 @@ function EditPartner() {
                 'Authorization' : auth
             }
             const editPartner = await axios.post("/Partner/UpdatePartner", { data: dataParams }, { headers: headers })
-            console.log(editPartner, 'ini add partner');
+            // console.log(editPartner, 'ini add partner');
             if(editPartner.status === 200 && editPartner.data.response_code === 200) {
                 history.push("/daftarpartner")
                 // alert("Edit Data Partner Berhasil Ditambahkan")
@@ -197,9 +195,7 @@ function EditPartner() {
             alert("Edit Data Partner Berhasil")
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/sign-in')
-            }
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -226,10 +222,8 @@ function EditPartner() {
             setListAgen(listAgen.data.response_data)
           }
         } catch (error) {
-          console.log(error)
-        //   if (error.response.status === 401) {
-        //     history.push('/sign-in')
-        //   }
+            console.log(error)
+            history.push(errorCatch(error.response.status))
         }
     }
 

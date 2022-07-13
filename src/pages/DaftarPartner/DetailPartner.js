@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { getToken } from '../../function/helpers';
+import { errorCatch, getToken } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
@@ -15,7 +15,7 @@ function DetailPartner() {
     const { partnerId } = useParams()
     const [listAgen, setListAgen] = useState([])
     const [detailPartner, setDetailPartner] = useState([])
-    console.log(partnerId, 'ini agen id');
+    // console.log(partnerId, 'ini agen id');
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getDetailPartner(partnerId) {
@@ -29,16 +29,14 @@ function DetailPartner() {
                 'Authorization' : auth
             }
             const detailPartner = await axios.post("/Partner/EditPartner", { data: dataParams }, { headers: headers })
-            console.log(detailPartner, 'ini detail partner');
+            // console.log(detailPartner, 'ini detail partner');
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200) {
                 // console.log(detailPartner.data, 'ini detail agen');
                 setDetailPartner(detailPartner.data.response_data)
             }
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/sign-in')
-            }
+            history.push(errorCatch(error.response.status))
         }
     } 
 
@@ -108,16 +106,14 @@ function DetailPartner() {
             'Authorization' : auth
           }
           const listAgen = await axios.post("/Partner/GetListAgen", { data: dataParams }, { headers: headers })
-          console.log(listAgen, 'ini data agen');
+        //   console.log(listAgen, 'ini data agen');
           if (listAgen.status === 200 && listAgen.data.response_code === 200) {
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
           }
         } catch (error) {
           console.log(error)
-          if (error.response.status === 401) {
-            history.push('/sign-in')
-          }
+            history.push(errorCatch(error.response.status))
         }
     }
 
