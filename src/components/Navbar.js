@@ -270,22 +270,11 @@ export default (props) => {
                   <Form.Label>Nominal Top Up Saldo</Form.Label>
                   <Form.Control placeholder="Rp -" disabled />
                 </Form.Group>
-
-                {/* <Form.Group id="referenceNumber">
-                  <Form.Label>Reference Number</Form.Label>
-                  <InputGroup>
-                    <InputGroup.Text></InputGroup.Text>
-                  </InputGroup>
-                  <Form.Control placeholder="Masukkan Reference Number" />
-                </Form.Group> */}
-
                 <Form.Group id="referenceNumber">
                   <Form.Label>Reference Number</Form.Label>
-                  <InputGroup className="disini">
-                  </InputGroup>
+                  <InputGroup className="disini"></InputGroup>
                   <Form.Control placeholder="Masukkan Reference Number" />
                 </Form.Group>
-
                 <div style={{ color: "#B9121B", fontSize: 12 }}>
                   <img src={noteIconRed} className="me-2" />
                   Nomor Referensi wajib diisi
