@@ -76,7 +76,6 @@ export default (props) => {
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
   const [inputHandle, setInputHandle] = useState({
-    image: "",
     amount: "",
     reffNo: "",
   })
@@ -88,12 +87,13 @@ export default (props) => {
     })
   }
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     hiddenFileInput.current.click();
   };
+  
   const handleFileChange = (event) => {
     let dataImage = {
-      data: event.target.files[0],
+      SlipPaymentFile: event.target.files[0],
     };
     setImageTopUp(dataImage);
   };
@@ -102,34 +102,49 @@ export default (props) => {
     alert("HistoryBalance!");
   };
 
-  async function topUpHandle(image, amount, reffNo) {
+  async function topUpHandle(imageTopUp, amount, reffNo) {
     try {
-        const auth = "Bearer " + getToken()
+        // console.log(imageTopUp, 'ini image');      
+        // console.log(amount, 'ini amount');        
+        // console.log(reffNo, 'ini reffNo'); 
+        
+       //ddd = imageTopUp;
+        const auth = "Bearer " + getToken()        
+        var formData = new FormData()
+        formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
+        formData.append('amount', amount)
+        formData.append('reffNo', reffNo)
+        console.log(formData, "ini form data")
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
+        }
+        // console.log(formData.get("SlipPaymentFile"))
+        // for (var key of formData.entries()) {
+        //   console.log(key[0] + ', ' + key[1]);
+        // }
+        // console.log(formData.entries(), "ini form data");
         // const dataParams = encryptData(`{"SlipPaymentFile": "${slipPayment}", "amount": "${amount}", "reffNo": "${reffNo}"`)
         // console.log(dataParams, 'ini data params');
-        // let formData = new FormData()
-        // formData.append('SlipPayment', image)
         const headers = {
             'Content-Type':'multipart/form-data',
             'Authorization' : auth
         }
-        const topUp = await axios.post("/Partner/TopupConfirmation", { headers: headers })
+        const topUp = await axios.post("/Partner/TopupConfirmation", { data: formData }, { headers: headers })
         console.log(topUp, 'ini topup');
-        console.log(image, 'ini image');        
-        if(topUp.status === 200 && topUp.data.response_code === 200) {
-          // setShowModalTopUp(false)
-          // setShowModalKonfirmasiTopUp(true)
-          setTopUp(topUp.data.response_data)
-            // setAddPartner(addPartner.data.response_data)
-            // history.push("/daftarpartner")
-        }          
+        // if(topUp.status === 200 && topUp.data.response_code === 200) {
+        //   // setShowModalTopUp(false)
+        //   // setShowModalKonfirmasiTopUp(true)
+        //   setTopUp(topUp.data.response_data)
+        //     // setAddPartner(addPartner.data.response_data)
+        //     // history.push("/daftarpartner")
+        // }          
         
-        alert("Partner Baru Berhasil Ditambahkan")
+        // alert("Anda Berhasil Top up")
     } catch (error) {
         console.log(error)
-        if (error.response.status === 401) {
-            history.push('/sign-in')
-        }
+        // if (error.response.status === 401) {
+        //     history.push('/sign-in')
+        // }
       }
     }
 
@@ -226,8 +241,8 @@ export default (props) => {
 
   const modalNavbar = () => {
     setShowModalTopUp(false)
-    // topUpHandle(inputHandle.image, inputHandle.amount, inputHandle.reffNo)
-    setShowModalKonfirmasiTopUp(true)    
+    topUpHandle(imageTopUp, inputHandle.amount, inputHandle.reffNo)
+    // setShowModalKonfirmasiTopUp(true)    
   }
 
   const modalRiwayat = () => {
@@ -402,12 +417,12 @@ export default (props) => {
               <Form action="#">
                 <Form.Group className="mb-3">
                   <Form.Label>Nominal Top Up Saldo</Form.Label>
-                  <Form.Control name="amount" placeholder="Rp -" type="number" />
+                  <Form.Control name="amount"  onChange={handleChange} placeholder="Rp." type="number" />
                 </Form.Group>
                 <Form.Group id="referenceNumber">
                   <Form.Label>Reference Number</Form.Label>
                   <InputGroup className="disini"></InputGroup>
-                  <Form.Control name="reffNo" placeholder="Masukkan Reference Number" type="number" />
+                  <Form.Control name="reffNo"  onChange={handleChange} placeholder="Masukkan Reference Number" type="number" />
                 </Form.Group>
                 <div style={{ color: "#B9121B", fontSize: 12 }}>
                   <img src={noteIconRed} className="me-2" />
@@ -441,14 +456,15 @@ export default (props) => {
                 >
                   Upload File
                 </u>
-                <span className="mx-1">{imageTopUp.data?.name}</span>
+                <span className="mx-1">{imageTopUp.SlipPaymentFile?.name}</span>
                 <input
                   type="file"
                   onChange={handleFileChange}
-                  accept="image/*"
+                  // accept="image/*"
                   style={{ display: "none" }}
                   ref={hiddenFileInput}
-                  name="image"
+                  id="imageTopUp"
+                  name="imageTopUp"
                 />
               </div>
               <div className="d-flex justify-content-center">
