@@ -45,8 +45,7 @@ import DataTable from "react-data-table-component";
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 import checklistCircle from '../assets/img/icons/checklist_circle.svg';
 import CopyIcon from '../assets/icon/carbon_copy.svg'
-import encryptData from '../function/encryptData'
-import moment from "moment-timezone";
+import GagalIcon from '../assets/icon/gagaltopup_icon.svg'
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -88,6 +87,8 @@ export default (props) => {
     reffNo: "",
   })
   const [ topUpResult, setTopUpResult ] = useState({})
+  const [iconGagal, setIconGagal] = useState(false)
+  const [uploadGagal, setUploadGagal] = useState(false)
 
   function handleChange(e) {
     setInputHandle({
@@ -124,6 +125,16 @@ export default (props) => {
 
   async function topUpHandle(imageTopUp, amount, reffNo) {
     try {
+        if (inputHandle.reffNo.length === 0 || inputHandle.reffNo === undefined) {
+          setIconGagal(true)
+        } else {
+          setIconGagal(false)
+        }
+        if (Object.keys(imageTopUp).length === 0) {
+          setUploadGagal(true)
+        } else {
+          setUploadGagal(false)
+        }
         const auth = "Bearer " + getToken()        
         var formData = new FormData()
         formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
@@ -141,13 +152,15 @@ export default (props) => {
         console.log(topUp, 'ini topup');
         if(topUp.status === 200 && topUp.data.response_code === 200) {
           setTopUpResult(topUp.data.response_data.results)
+          setShowModalTopUp(false)
+          setShowModalKonfirmasiTopUp(true)
         }
-        
-        // alert("Anda Berhasil Top up")
-    } catch (error) {
+      } catch (error) {
         console.log(error)
         if (error.response.status === 401) {
-            history.push('/sign-in')
+            history.push('/login')
+        } else if (error.response.status === 400) {
+          alert("Top Up Gagal")
         }
       }
     }
@@ -210,10 +223,9 @@ export default (props) => {
         { data: "" },
         { headers: headers }
       );
-      // console.log(logout, 'ini hasil logout');
       if (logout.status === 200 && logout.data.response_code === 200) {
         removeUserSession();
-        history.push("/sign-in");
+        history.push("/login");
       }
     } catch (error) {
       console.log(error);
@@ -229,7 +241,7 @@ export default (props) => {
     },
     {
       name: 'ID Transaksi',
-      selector: row => row.id_trans,
+      selector: row => row.code_trans,
       sortable: true,
     },
     {
@@ -254,9 +266,8 @@ export default (props) => {
     },
     {
       name: 'Status',
-      selector: row => row.status,
-      width: "90px",
-      style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+      selector: row => row.status_name === "Berhasil" ? <div className="berhasil-status-topup">Berhasil</div> : <div className="gagal-status-topup">Gagal</div>,
+      width: "150px",
     }
   ]
 
@@ -278,21 +289,10 @@ export default (props) => {
     </div>
   );
 
-  const modalNavbar = () => {
-    setShowModalTopUp(false)
-    topUpHandle(imageTopUp, getBalance.topupAmount, inputHandle.reffNo)
-    setShowModalKonfirmasiTopUp(true)  
-  }
-
   const modalRiwayat = () => {
     setShowModalKonfirmasiTopUp(false)
     setShowModalHistoryTopUp(true)
   };
-
-  const modalGagal = () => {
-    setShowGagalTopUp(false)
-    setShowModalHistoryTopUp(true)
-  }
 
   const Notification = (props) => {
   const { link, sender, image, time, message, read = false } = props;
@@ -469,14 +469,18 @@ export default (props) => {
                 </Form.Group>
                 <Form.Group id="referenceNumber">
                   <Form.Label>Reference Number</Form.Label>
-                  <InputGroup className="disini"></InputGroup>
-                  <Form.Control name="reffNo"  onChange={handleChange} placeholder="Masukkan Reference Number" type="number" />
+                  <InputGroup className="topup"></InputGroup>
+                  <Form.Control className="reff" name="reffNo"  onChange={handleChange} placeholder="Masukkan Reference Number" type="number" />
                 </Form.Group>
-                {/* <div style={{ color: "#B9121B", fontSize: 12 }}>
-                  <img src={noteIconRed} className="me-2" />
-                  Nomor Referensi wajib diisi
-                </div> */}
-              </Form>
+                {iconGagal === true && 
+                <>
+                  <div style={{ color: "#B9121B", fontSize: 12 }}>
+                    <img src={noteIconRed} className="me-2" />
+                    Nomor Referensi wajib diisi
+                  </div>
+                </>
+              }               
+              </Form>              
               <div>
                 <img src={noteIcon} className="me-2" />
                 <span className="text-modal">
@@ -505,6 +509,12 @@ export default (props) => {
                   Upload File
                 </u>
                 <span className="mx-1">{imageTopUp.SlipPaymentFile?.name}</span>
+                {uploadGagal === true && 
+                  <span style={{ color: "#B9121B", fontSize: 12 }} className="mx-2">
+                    <img src={noteIconRed} className="me-2" />
+                    Wajib upload bukti top up
+                  </span>
+                }                
                 <input
                   type="file"
                   onChange={handleFileChange}
@@ -532,7 +542,7 @@ export default (props) => {
                     borderRadius: 6,
                     textAlign: "center",
                   }}
-                  onClick={modalNavbar}
+                  onClick={() => topUpHandle(imageTopUp, getBalance.topupAmount, inputHandle.reffNo)}
                 >
                   <FontAwesomeIcon style={{ marginRight: 10 }} /> Konfirmasi
                 </button>
@@ -544,6 +554,12 @@ export default (props) => {
         
         <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }}>
           <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+              <Button
+                className="position-absolute top-0 end-0 m-3"
+                variant="close"
+                aria-label="Close"
+                onClick={() => setShowModalKonfirmasiTopUp(false)}
+              />
               <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 12 }}>
                   <img src={checklistCircle} alt="logo" />
               </div>
@@ -596,91 +612,7 @@ export default (props) => {
               </div>
           </Modal.Body>
         </Modal>
-        <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
-          <Modal.Header className="border-0">
-            <Button
-              className="position-absolute top-0 end-0 m-3"
-              variant="close"
-              aria-label="Close"
-              onClick={handleCloseHistoryTopUp}
-            />
-            <Modal.Title className="fw-bold mt-3">
-              History Top Up
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {
-              agenLists.length === 0 ?
-              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
-              <div className="div-table">
-                <DataTable
-                  columns={columns}
-                  data={listRiwayat}
-                  customStyles={customStyles}
-                  // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                  pagination
-                  highlightOnHover
-                  // progressPending={pending}
-                  progressComponent={<CustomLoader />}
-                  // paginationResetDefaultPage={resetPaginationToggle}
-                  // subHeader
-                  // subHeaderComponent={subHeaderComponentMemo}
-                  // selectableRows
-                  // persistTableHead
-                  // onRowClicked={(listAgen) => {
-                  //   detailAgenHandler(listAgen.agen_id)
-                  // }}
-                />
-              </div>
-            }
-          </Modal.Body>
-        </Modal>
 
-        {/* ModalGagal */}
-        <Modal centered show={showGagalTopUp} onHide={() => setShowGagalTopUp(false)} style={{ borderRadius: 8 }}>
-          <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
-              <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 12 }}>
-                  <img src={checklistCircle} alt="logo" />
-              </div>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Top Up Gagal</p>
-              </div>
-              <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
-                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Kamu telah berhasil top up senilai {topUpResult.amount}</p>
-              </div>
-              <center>
-                  <div style={{ margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
-              </center>
-              <div>
-                  <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Detail Transaksi</p>
-                  <Table >
-                      <tr>
-                          <td>Nominal Top Up</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{topUpResult.amount}</td>
-                      </tr>
-                      <tr>
-                          <td>Sumber Agen</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{topUpResult.partner}</td>
-                      </tr>
-                      <tr>
-                          <td>Kode Unik</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{topUpResult.uniqueCode}</td>
-                      </tr>
-                      <tr>
-                          <td>Status</td>
-                          <td>:</td>
-                          <td className='inactive-status-badge' style={{ fontWeight: 600 }}>{topUpResult.statusName}</td>
-                      </tr>
-                  </Table>
-              </div>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <Button onClick={modalGagal} variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>Lihat Riwayat Top up</Button>
-              </div>
-          </Modal.Body>
-        </Modal>
 
         <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
           <Modal.Header className="border-0">
@@ -703,7 +635,6 @@ export default (props) => {
                   columns={columns}
                   data={listRiwayat}
                   customStyles={customStyles}
-                  // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                   pagination
                   highlightOnHover
                   // progressPending={pending}
@@ -721,7 +652,6 @@ export default (props) => {
             }
           </Modal.Body>
         </Modal>
-
 
         <Modal className="history-modal" size="xl" centered show={showRiwayatTopUp} onHide={handleCloseRiwayatTopUp}>
           <Modal.Header className="border-0">

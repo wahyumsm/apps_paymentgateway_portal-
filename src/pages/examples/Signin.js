@@ -87,10 +87,10 @@ export default () => {
                       <Card.Link className="small text-end">Lost password?</Card.Link>
                     </div> */}
                   </Form.Group>
+                </Form>
                   <Button onClick={() => signingInHandler(username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
                     Login
                   </Button>
-                </Form>
 
                 {/* <div className="mt-3 mb-4 text-center">
                   <span className="fw-normal">or login with</span>

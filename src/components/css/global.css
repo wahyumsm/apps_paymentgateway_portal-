@@ -285,6 +285,7 @@ body {
     font-size: 14px;
     color: #EE2E2C;
 }
+
 .user-dropdown {
     padding: 10px;
 }
@@ -305,6 +306,42 @@ body {
     max-width: 751px;
 }
 
-.disini .input-group-text {
-    border-right: unset
+.topup .input-group-text {
+    border-right: unset;
+}
+
+.reff {    
+    border-color: "#B9121B"
+}
+
+.berhasil-status-topup {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 10px;
+    width: 95px;
+    height: 32px;
+    background: rgba(7, 126, 134, 0.08);
+    border-radius: 4px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: #077E86;
+}
+
+.gagal-status-topup {
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 10px;
+    width: 95px;
+    height: 32px;
+    background: #FDEAEA;
+    border-radius: 4px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: #EE2E2C;
 }

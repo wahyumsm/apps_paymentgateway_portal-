@@ -8,6 +8,7 @@ import { BaseURL, errorCatch, getToken } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import "./TambahAgen.css";
+import noteIconRed from "../../assets/icon/note_icon_red.svg"
 
 function TambahAgen() {
 
@@ -33,8 +34,14 @@ function TambahAgen() {
         })
     }
 
+    const [errorCode, setErrorCode] = useState(0)
+
+
     async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee) {
-        try {
+        try {         
+
+            console.log(inputHandle.email.length)
+
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}}`)
             const headers = {
@@ -48,8 +55,8 @@ function TambahAgen() {
                 setShowModal(true)
             }
         } catch (error) {
-            console.log(error)
             history.push(errorCatch(error.response.status))
+            setErrorCode(error.response.data.response_code)
         }
     }
 
@@ -95,7 +102,7 @@ function TambahAgen() {
                                 Nama Agen*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='nama'
                                 onChange={handleChange}
@@ -104,17 +111,17 @@ function TambahAgen() {
                                 required
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
-                                />
+                                style={{ width: "100%", height: 40, marginTop: '-7px'}}
+                            />
                         </Col>
                     </Row>
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Email Agen
+                                Email Agen*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='email'
                                 onChange={handleChange}
@@ -122,8 +129,14 @@ function TambahAgen() {
                                 type='email'
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
-                                />
+                                style={{ width: "100%", height: 40, marginTop: '-7px', borderColor: errorCode === 101 ? "#B9121B" : "" }}
+                            />                            
+                            {errorCode === 101 &&
+                                <span style={{ color: "#B9121B", fontSize: 12 }}>
+                                    <img src={noteIconRed} className="me-2" />
+                                    Email sudah terdaftar menjadi agen
+                                </span>
+                            }
                         </Col>
                     </Row>
                     <Row className='mb-4'>
@@ -132,7 +145,7 @@ function TambahAgen() {
                                 No Hp Agen*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='mobileNumber'
                                 onChange={handleChange}
@@ -141,8 +154,14 @@ function TambahAgen() {
                                 required
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
-                                />
+                                style={{ width: "100%", height: 40, marginTop: '-7px', borderColor: errorCode === 102 ? "#B9121B" : "" }}
+                            />                            
+                            {errorCode === 102 && 
+                                <span style={{ color: "#B9121B", fontSize: 12 }}>
+                                    <img src={noteIconRed} className="me-2" />
+                                    No Hp sudah terdaftar menjadi agen
+                                </span>
+                            }
                         </Col>
                     </Row>
                     <Row className='mb-4'>
@@ -151,7 +170,7 @@ function TambahAgen() {
                                 Nama Bank*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='bankName'
                                 placeholder="BCA"
@@ -160,7 +179,7 @@ function TambahAgen() {
                                 required
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
                         </Col>
                     </Row>
@@ -170,7 +189,7 @@ function TambahAgen() {
                                 No Rekening*
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='akunBank'
                                 onChange={handleChange}
@@ -179,7 +198,7 @@ function TambahAgen() {
                                 required
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
                         </Col>
                     </Row>
@@ -189,7 +208,7 @@ function TambahAgen() {
                                 Nama Pemilik Rekening
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='rekeningOwner'
                                 onChange={handleChange}
@@ -197,7 +216,7 @@ function TambahAgen() {
                                 type='text'
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
                         </Col>
                     </Row>
@@ -207,7 +226,7 @@ function TambahAgen() {
                                 Settlement Fee
                             </span>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={9}>
                             <Form.Control
                                 name='settlementFee'
                                 onChange={handleChange}
@@ -215,7 +234,7 @@ function TambahAgen() {
                                 type='number'
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
-                                style={{ width: 870, height: 40, marginTop: '-7px' }}
+                                style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
                         </Col>
                     </Row>

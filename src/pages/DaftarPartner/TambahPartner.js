@@ -53,14 +53,14 @@ function TambahPartner() {
         } catch (error) {
             console.log(error)
             if (error.response.status === 401) {
-                history.push('/sign-in')
+                history.push('/login')
             }
         }
     }
 
     useEffect(() => {
         if (!access_token) {
-        history.push('/sign-in');
+        history.push('/login');
         // window.location.reload();
         }
     }, [access_token, history])
@@ -316,7 +316,7 @@ function TambahPartner() {
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
-                <button onClick={() => tambahPartner(inputHandle.namaPerusahaan, inputHandle.emailPerusahaan, inputHandle.phoneNumber, inputHandle.alamat, inputHandle.noNpwp, inputHandle.namaNpwp, inputHandle.nama, inputHandle.noHp, inputHandle.active, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.fee, inputHandle.settlementFee)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+                <button onClick={() => tambahPartner(inputHandle.namaPerusahaan, inputHandle.emailPerusahaan, inputHandle.phoneNumber, inputHandle.alamat, inputHandle.noNpwp, inputHandle.namaNpwp, inputHandle.nama, inputHandle.noHp, inputHandle.active, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.fee, inputHandle.settlementFee)}  className={(inputHandle.namaPerusahaan.length === 0 || inputHandle.emailPerusahaan.length === 0 || inputHandle.phoneNumber.length === 0 || inputHandle.alamat.length === 0 || inputHandle.noNpwp.length === 0 || inputHandle.namaNpwp.length === 0 || inputHandle.nama.length === 0 || inputHandle.noHp.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.fee.length === 0 || inputHandle.settlementFee.length === 0) ? "btn-off" : "add-button"} disabled={inputHandle.namaPerusahaan.length === 0 || inputHandle.emailPerusahaan.length === 0 || inputHandle.phoneNumber.length === 0 || inputHandle.alamat.length === 0 || inputHandle.noNpwp.length === 0 || inputHandle.namaNpwp.length === 0 || inputHandle.nama.length === 0 || inputHandle.noHp.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.fee.length === 0 || inputHandle.settlementFee.length === 0}>
                     Tambahkan
                 </button>
             </div>

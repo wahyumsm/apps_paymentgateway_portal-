@@ -37,7 +37,7 @@ function DetailPartner() {
         } catch (error) {
             console.log(error)
             if (error.response.status === 401) {
-                history.push('/sign-in')
+                history.push('/login')
             }
         }
     } 
@@ -116,14 +116,14 @@ function DetailPartner() {
         } catch (error) {
           console.log(error)
           if (error.response.status === 401) {
-            history.push('/sign-in')
+            history.push('/login')
           }
         }
     }
 
     useEffect(() => {
         if (!access_token) {
-        history.push('/sign-in');
+        history.push('/login');
       }
         getDetailPartner(partnerId)
         getDataAgen(partnerId)

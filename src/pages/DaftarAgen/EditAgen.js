@@ -72,7 +72,7 @@ function EditAgen() {
         } catch (error) {
             console.log(error)
             if (error.response.status === 401) {
-                history.push('/sign-in')
+                history.push('/login')
             }
         }
     }
@@ -116,7 +116,7 @@ function EditAgen() {
         } catch (error) {
             console.log(error)
             if (error.response.status === 401) {
-                history.push('/sign-in')
+                history.push('/login')
             }
         }
     }
@@ -134,7 +134,7 @@ function EditAgen() {
 
     useEffect(() => {
         if (!access_token) {
-            history.push('/sign-in');
+            history.push('/login');
             // window.location.reload();
         }
         getDetailAgen(agenId)
