@@ -63,8 +63,7 @@ function TambahPartner() {
 
     useEffect(() => {
         if (!access_token) {
-            // RouteTo("/login")
-            history.push('/login');
+        history.push('/login');
         // window.location.reload();
         }
         if (user_role === 102) {

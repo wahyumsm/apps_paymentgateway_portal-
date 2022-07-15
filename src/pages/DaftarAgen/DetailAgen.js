@@ -40,7 +40,6 @@ function DetailAgen() {
 
     useEffect(() => {
         if (!access_token) {
-            // RouteTo("/login")
             history.push('/login');
             // window.location.reload();
         }
