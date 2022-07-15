@@ -14,7 +14,6 @@ export const GetUserAccessMenu = (url) => {
                 'Authorization' : auth
             }
             const userAccessMenu = await axios.post(url, { data: "" }, { headers: headers })
-            console.log(userAccessMenu, "userAccessMenu action");
             if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length === 0) {
                 dispatch({
                     type: FETCH_GETUSERACCESSMENU,

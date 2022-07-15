@@ -6,6 +6,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./DetailAgen.css"
 
 function DetailAgen() {
@@ -52,9 +53,10 @@ function DetailAgen() {
     }
     
     return (
-        <div className='main-content' style={{ padding: "37px 27px" }}>
+        <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
+            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
             <div className="head-title">
-                <h4 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
+                <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
                 {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
             </div>
             <div className='base-content' style={{ width:"93%", padding: 50 }}>

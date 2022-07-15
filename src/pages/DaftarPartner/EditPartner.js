@@ -34,7 +34,6 @@ function EditPartner() {
         fee: 0,
         settlementFee: 0,
     })
-    // console.log(partnerId, 'ini agen id');
 
     function handleChange(e) {
         if (e.target.name === "active") {
@@ -53,8 +52,6 @@ function EditPartner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getDetailPartner(partnerId) {
         try {
-            // const agen_id = "EDS2940181"
-            // console.log(agenId, 'ini agen id di func');
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"partner_id":"${partnerId}"}`)
             const headers = {
@@ -294,7 +291,7 @@ function EditPartner() {
     }
 
     return (
-        <div className='container-content'>
+        <div className='container-content mt-5'>
             {isDetailAkun ? <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Partner &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner</span>
             : <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Partner &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen</span>}
             <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
@@ -309,7 +306,7 @@ function EditPartner() {
                 isDetailAkun ? 
                 <>
                 <div className='detail-akun-section'>        
-                    <hr className='hr-style' style={{marginTop: -2}}/>
+                    {/* <hr className='hr-style' style={{marginTop: -2}}/> */}
                     <br/>
                     <span className='head-title'>Profil Perusahaan</span>
                     <br/>
@@ -458,7 +455,7 @@ function EditPartner() {
                     </div>
                 </> : 
                 <> 
-                    <div className='base-content mt-5'>   
+                    <div className='base-content mt-5 mb-5'>   
                         <div className='search-bar mb-5'>
                             <Row>
                                 <Col xs={3} style={{width: '18%'}}>

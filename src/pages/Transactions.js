@@ -18,6 +18,7 @@ import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg
 import "./Transactions.css";
 import {Line} from 'react-chartjs-2'
 import { max } from "date-fns";
+import breadcrumbsIcon from "../assets/icon/breadcrumbs_icon.svg";
 
 export default () => {
 
@@ -132,7 +133,7 @@ export default () => {
       // console.log(dataChartTransfer, 'ini data chart transfer ');
       if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200) {
         dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-      setDataChartTransfer(dataChartTransfer.data.response_data)
+        setDataChartTransfer(dataChartTransfer.data.response_data)
       }
     } catch (error) {
       console.log(error)
@@ -433,12 +434,12 @@ export default () => {
 
   return (
     <>
-      <div className="main-content" style={{padding: "37px 27px 37px 27px"}}>
+      <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
+        <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Laporan</span>
         <div className="head-title">
-          <h2 className="h4 mt-5">Laporan</h2>
+          <h2 className="h4 mt-4">Laporan</h2>
         </div>
-        
-        <h2 className="h5 mt-5">Dana Masuk</h2>
+        <h2 className="h5 mt-3">Dana Masuk</h2>
         <div className='base-content'>
           <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Dana Masuk dari Agen</span>
             {/* <div className='dana-amount'>
@@ -582,7 +583,7 @@ export default () => {
         <h2 className="h5 mt-5">Settlement</h2>
         <div className='base-content'>
           <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
-          <Line
+          {/* <Line
             className="mt-3 mb-3"
             data={{
               labels: dataChartTransfer.map(obj => obj.dates),
@@ -625,7 +626,7 @@ export default () => {
                 }
               }
             }}
-          />
+          /> */}
             {/* <Row>
               <Col xs={12}>
                 <div className="div-chart">

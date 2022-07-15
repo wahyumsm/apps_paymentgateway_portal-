@@ -90,9 +90,11 @@ export default () => {
 
   if(access_token) {
     return (
-      <div>
-        <h1>Dashboard</h1>
-        <p style={{ display: "flex", justifyContent: "center", marginTop: 150 }}>There is no data in this page</p>
+      <div className="py-4 mt-6 content-page">
+        <div className="head-title">
+          <h2 className="h5 mb-2">Ringkasan</h2>
+          <p style={{ display: "flex", justifyContent: "center", marginTop: 150 }}>There is no data in this page</p>
+        </div>
       </div>
     )
   }

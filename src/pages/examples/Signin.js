@@ -10,26 +10,45 @@ import axios from "axios";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
-import { authorization, BaseURL, errorCatch, RouteTo, setUserSession } from "../../function/helpers";
+import { authorization, BaseURL, errorCatch, RouteTo, setRoleSession, setUserSession } from "../../function/helpers";
 import "./Signin.css";
-import { useDispatch, useSelector } from "react-redux";
 import { GetUserDetail } from "../../redux/ActionCreators/UserDetailAction";
 
 
 export default () => {
 
   const history = useHistory()
-  const dispatch = useDispatch()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
   const passwordInputType = showPassword ? "text" : "password";
   const passwordIconColor = showPassword ? "#262B40" : "";
-  // console.log(userDetail, "userDetail");
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  async function userDetail(token) {
+    try {
+      const auth = "Bearer " + token
+      const headers = {
+          'Content-Type':'application/json',
+          'Authorization' : auth
+      }
+      const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
+      // console.log(userDetail.data, "userDetail di login");
+      if (userDetail.status === 200 && userDetail.data.response_code === 200) {
+        setRoleSession(userDetail.data.response_data.muser_role_id)
+        if (userDetail.data.response_data.muser_role_id === 102) {
+          history.push("/laporan")
+        } else {
+          history.push("/")
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   async function signingInHandler(username, password) {
     try {
@@ -42,7 +61,7 @@ export default () => {
       const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
-        history.push("/")
+        userDetail(dataLogin.data.response_data.access_token)
       }
     } catch (error) {
       console.log(error);
@@ -93,33 +112,15 @@ export default () => {
                       <Card.Link className="small text-end">Lost password?</Card.Link>
                     </div> */}
                   </Form.Group>
-                  <Button onClick={() => signingInHandler(username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
-                    Login
-                  </Button>
                 </Form>
-
-                {/* <div className="mt-3 mb-4 text-center">
-                  <span className="fw-normal">or login with</span>
-                </div>
-                <div className="d-flex justify-content-center my-4">
-                  <Button variant="outline-light" className="btn-icon-only btn-pill text-facebook me-2">
-                    <FontAwesomeIcon icon={faFacebookF} />
-                  </Button>
-                  <Button variant="outline-light" className="btn-icon-only btn-pill text-twitter me-2">
-                    <FontAwesomeIcon icon={faTwitter} />
-                  </Button>
-                  <Button variant="outline-light" className="btn-icon-only btn-pil text-dark">
-                    <FontAwesomeIcon icon={faGithub} />
-                  </Button>
-                </div> */}
+                <Button onClick={() => signingInHandler(username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
+                  Login
+                </Button>
                 <div style={{ display: 'none' }}>
                   <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
-                    {/* <span className="fw-normal">
-                      Not registered? */}
-                      <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>
-                        {` Lupa Kata Sandi? `}
-                      </Card.Link>
-                    {/* </span> */}
+                    <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>
+                      {` Lupa Kata Sandi? `}
+                    </Card.Link>
                   </div>
                 </div>
               </div>

@@ -7,6 +7,7 @@ import encryptData from '../../function/encryptData';
 import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./TambahAgen.css";
 
 function TambahAgen() {
@@ -74,9 +75,10 @@ function TambahAgen() {
     
 
     return (
-        <div className='main-content' style={{ padding: "37px 27px" }}>
+        <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
+            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Tambah Agen</span>
             <div className="head-title">
-                <h4 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Tambah Agen Baru</h4>
+                <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Tambah Agen Baru</h4>
                 <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5>
             </div>
             <div className='base-content' style={{ width:"93%", padding: 50 }}>

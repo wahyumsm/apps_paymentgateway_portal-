@@ -11,8 +11,6 @@ function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
     const history = useHistory()
-    // const { partnerId } = useParams()
-    // console.log(dataAkun.mpartner_id)
     const [inputHandle, setInputHandle] = useState({
         callbackUrl: dataAkun.callback_url,
     })
@@ -95,10 +93,8 @@ function DetailAkun() {
         }
     }
 
-    // console.log(dataAkun);
-
   return (
-    <div className='container-content'>
+    <div className='container-content mt-5'>
         <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Akun</span>
         <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
             <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => detailAkunTabs(true)} id="detailakuntab">
@@ -112,7 +108,7 @@ function DetailAkun() {
             isDetailAkun ? 
             <>
             <div className='detail-akun-section'>        
-                <hr className='hr-style' style={{marginTop: -2}}/>
+                {/* <hr className='hr-style' style={{marginTop: -2}}/> */}
                 <br/>
                 <span className='head-title'>Profil Perusahaan</span>
                 <br/>
@@ -203,7 +199,7 @@ function DetailAkun() {
                 <span className='head-title'>Rekening</span>
                 <br/>
                 <br/>
-                <div className='base-content'>
+                <div className='base-content mb-5'>
                     <table style={{width: '100%', marginLeft: 'unset'}} className="table-form">
                         <thead></thead>
                         <tbody>
@@ -229,7 +225,7 @@ function DetailAkun() {
             </> : 
             <>
                 <div className='konfigurasi-section' style={{marginTop: 24}}>
-                  <hr className='hr-style' style={{marginTop: -25}}/>
+                    {/* <hr className='hr-style' style={{marginTop: -25}}/> */}
                     <div className='base-content'>
                         <span>You will need to know your <b>Partner ID</b> and <b>Private Key</b> to communicate with Midtrans. Please use the Development server while you are still in development.</span>
                         <br/>

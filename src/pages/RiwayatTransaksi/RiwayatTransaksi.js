@@ -10,6 +10,7 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
 function RiwayatTransaksi() {
 
@@ -51,13 +52,11 @@ function RiwayatTransaksi() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"partner_id": "${pertnerId}"}`);
-            // console.log(dataParams, "dataParams listagen");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const listAgenFromPartner = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
-            // console.log(listAgenFromPartner, "listagen");
             if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length === 0) {
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
             } else {
@@ -66,7 +65,6 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -120,13 +118,11 @@ function RiwayatTransaksi() {
     }
 
     function handlePageChangeDanaMasuk(page) {
-        // console.log(page, "page");
         setActivePageDanaMasuk(page)
         riwayatDanaMasuk(page)
     }
 
     function handlePageChangeSettlement(page) {
-        // console.log(page, "page");
         setActivePageSettlement(page)
         riwayatSettlement(page)
     }
@@ -139,7 +135,6 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
-            // console.log(listPartner, "ini list partner");
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
                 setDataListPartner(listPartner.data.response_data)
             } else {
@@ -148,7 +143,6 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error);
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -165,13 +159,11 @@ function RiwayatTransaksi() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 0, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
-            // console.log(dataParams, "dataParams");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const dataRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatDanaMasuk, "dataRiwayatDanaMasuk");
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
@@ -195,13 +187,11 @@ function RiwayatTransaksi() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 0, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
-            // console.log(dataParams, "dataParams");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const dataRiwayatSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatSettlement, "riwayatSettlement");
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
@@ -244,13 +234,11 @@ function RiwayatTransaksi() {
             setPendingTransfer(true)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 10}`)
-            // console.log(dataParams, "dataParams");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const filterRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(filterRiwayatDanaMasuk, "filterRiwayatDanaMasuk");
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataRiwayatDanaMasuk(filterRiwayatDanaMasuk.data.response_data.results)
@@ -273,13 +261,11 @@ function RiwayatTransaksi() {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 10}`)
-            // console.log(dataParams, "dataParams");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const filterSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(filterSettlement, "ini filterSettlement");
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataRiwayatSettlement(filterSettlement.data.response_data.results.list_data)
@@ -343,13 +329,11 @@ function RiwayatTransaksi() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"tvatrans_trx_id": "${partnerId}"}`);
-            // console.log(dataParams, "dataParams listagen");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const detailListTransfer = await axios.post("/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
-            // console.log(detailListTransfer, "detailListTransfer");
             if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length === 0) {
                 setDetailTransferDana(detailListTransfer.data.response_data)
                 setShowModalDetailTransferDana(true)
@@ -496,7 +480,6 @@ function RiwayatTransaksi() {
     };
 
     function exportReportTransferDanaMasukHandler(data) {
-        // console.log(data, "data");
         let dataExcel = []
         for (let i = 0; i < data.length; i++) {
             dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
@@ -514,15 +497,14 @@ function RiwayatTransaksi() {
         </div>
     );
 
-    // console.log(inputHandle.status, "ini input handle status");
-
   return (
-    <div className="content-page">
+    <div className="content-page mt-6">
+        <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Transaksi</span>
         <div className='head-title'>
-            <h2 className="h5 mb-2 mt-4">Riwayat Transaksi</h2>
+            <h2 className="h5 mb-3 mt-4">Riwayat Transaksi</h2>
         </div>
         <div className='main-content'>
-            <div className='riwayat-dana-masuk-div mt-5'>
+            <div className='riwayat-dana-masuk-div mt-4'>
                 <span className='mt-4' style={{fontWeight: 600}}>Riwayat Dana Masuk</span>
                 <div className='base-content mt-3'>
                     <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
@@ -557,8 +539,6 @@ function RiwayatTransaksi() {
                                     })
                                 }
                             </Form.Select>
-                            {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgenDanaMasuk} name="namaAgenDanaMasuk" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/> */}
-                            {/* <input type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>                         */}
                         </Col>
                     </Row>
                     <Row className='mt-4'>

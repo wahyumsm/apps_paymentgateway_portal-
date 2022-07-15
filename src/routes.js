@@ -1,11 +1,11 @@
 
 export const Routes = {
     // pages
-    DashboardOverview: { path: "/dash" },
+    DashboardOverview: { path: "/" },
     // DashboardOverview: { path: "/dashboard" },
     RiwayatTransaksi: { path: "/riwayattransaksi"},
     DetailAkun : { path: "/detailakun"},
-    Transactions: { path: "/" },
+    Transactions: { path: "/laporan" },
     Settings: { path: "/settings" },
     Upgrade: { path: "/upgrade" },
     BootstrapTables: { path: "/tables/bootstrap-tables" },

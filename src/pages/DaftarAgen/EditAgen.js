@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./EditAgen.css"
 
 function EditAgen() {
@@ -43,8 +44,6 @@ function EditAgen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getDetailAgen(agenId) {
         try {
-            // const agen_id = "EDS2940181"
-            // console.log(agenId, 'ini agen id di func');
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"agen_id":"${agenId}"}`)
             const headers = {
@@ -54,8 +53,6 @@ function EditAgen() {
             const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
-                // console.log(detailAgen.data.response_data, 'ini detail agen');
-                // (detailAgen.data.response_data.status === true) ? { ...detailAgen.data.response_data, isActive: "Aktif" } : { ...detailAgen.data.response_data, isActive: "Tidak Aktif" }
                 if (detailAgen.data.response_data.status === true) {
                     detailAgen.data.response_data = {
                         ...detailAgen.data.response_data,
@@ -120,15 +117,11 @@ function EditAgen() {
             const editAgen = await axios.post("/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
-                // console.log(editAgen.data.response_data, 'ini update agen');
                 setShowModalEdit(true)
             } else {
                 setUserSession(editAgen.data.response_new_token)
                 setShowModalEdit(true)
             }
-            
-            // history.push("/daftaragen")
-            // alert("Edit Data Agen Berhasil")
         } catch (error) {
             console.log(error)
             // RouteTo(errorCatch(error.response.status))
@@ -165,9 +158,10 @@ function EditAgen() {
 
     return (
         <>
-            <div className='main-content' style={{ padding: "37px 27px" }}>
+            <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
+                <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
                 <div className="head-title">
-                    <h4 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
+                    <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
                     {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
                 </div>
                 <div className='base-content' style={{ width:"93%", padding: 50 }}>

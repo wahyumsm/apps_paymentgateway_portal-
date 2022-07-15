@@ -21,14 +21,17 @@ import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
 import { GetUserAccessMenu } from "../redux/ActionCreators/UserAccessMenuAction";
 import { useDispatch, useSelector } from "react-redux";
+import { getRole } from "../function/helpers";
 
 export default (props = {}) => {
+
   const location = useLocation();
   const dispatch = useDispatch()
   const { pathname } = location;
   const [show, setShow] = useState(false);
   const showClass = show ? "show" : "";
   const userAccessMenu = useSelector(state => state.userAccessMenuReducer.userAccessMenu)
+  const user_role = getRole()
 
   const onCollapse = () => setShow(!show);
 
@@ -82,7 +85,7 @@ export default (props = {}) => {
     dispatch(GetUserAccessMenu("/Account/GetUserAccess"))
   }, [])
   
-  console.log(userAccessMenu, "ini userAccessMenu");
+  // console.log(userAccessMenu, "ini userAccessMenu");
 
   if (!userAccessMenu) {
     return null
@@ -100,8 +103,8 @@ export default (props = {}) => {
       </Navbar>
       <CSSTransition timeout={300} in={show} classNames="sidebar-transition">
         <SimpleBar className={`collapse ${showClass} sidebar d-md-block text-white`} style={{backgroundColor: '#2C1919'}}>       
-          <div className="sidebar-inner px-1">
-            <div className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+          <div className="sidebar-inner">
+            {/* <div className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
               <div className="d-flex align-items-center">
                 <div className="user-avatar lg-avatar me-4">
                   <Image src={ProfilePicture} className="card-img-top rounded-circle border-white" />
@@ -116,9 +119,9 @@ export default (props = {}) => {
               <Nav.Link className="collapse-close d-md-none" onClick={onCollapse}>
                 <FontAwesomeIcon icon={faTimes} />
               </Nav.Link>
-            </div>
+            </div> */}
             <Nav className="flex-column pt-3 pt-md-0">              
-              <div style={{backgroundColor: '#DF9C43', width: '102%', height: '65px', textAlign: 'center'}}>
+              <div style={{backgroundColor: '#DF9C43', width: '102%', height: '67px', textAlign: 'center'}}>
                 <img src={EzeeLogo} style={{width: 66, height: 36, marginTop: 12}} alt=""/>
               </div>              
               {
@@ -132,7 +135,7 @@ export default (props = {}) => {
                       // image={(item.label === "Dashboard") ? BerandaIcon : (item.label === "Report") ? LaporanIcon : (item.label === "Daftar Agen") ? DaftarAgenIcon : ""}
                       image={item.icon}
                       // link={Routes.Transactions.path}
-                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 13) ? Routes.RiwayatTransaksi.path : ""}
+                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 16) ? Routes.RiwayatTransaksi.path : ""}
                     />
                   )
                 })
