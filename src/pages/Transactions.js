@@ -16,12 +16,15 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 // import { addDays } from "date-fns";
 import "./Transactions.css";
+import {Line} from 'react-chartjs-2'
+import { max } from "date-fns";
 
 export default () => {
 
   const history = useHistory();
   const access_token = getToken();
   const [listTransferDana, setListTransferDana] = useState([])
+  const [dataChartTransfer, setDataChartTransfer] = useState([])
   const [listSettlement, setListSettlement] = useState([])
   const [stateDanaMasuk, setStateDanaMasuk] = useState(null)
   const [stateSettlement, setStateSettlement] = useState(null)
@@ -117,6 +120,33 @@ export default () => {
     }
   }
 
+  async function getSettlementChart(oneMonthAgo, currentDate) {
+    try {
+      const auth = "Bearer " + getToken()
+      const dataParams = encryptData(`{"tvasettl_from":"${oneMonthAgo}", "tvasettl_to":"${currentDate}"}`)
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const dataChartTransfer = await axios.post("/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
+      // console.log(dataChartTransfer, 'ini data chart transfer ');
+      if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200) {
+        dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+      setDataChartTransfer(dataChartTransfer.data.response_data)
+      }
+    } catch (error) {
+      console.log(error)
+      history.push(errorCatch(error.response.status))
+    }
+  }
+
+//   var chart    = document.getElementById('chart').getContext('2d'),
+//     gradient = chart.createLinearGradient(0, 0, 0, 450);
+
+// gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)');
+// gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
+// gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+
   async function filterTransferButtonHandle(idTransaksi, namaAgen, periode, status) {
     try {
       setPendingSettlement(true)
@@ -196,6 +226,7 @@ export default () => {
     }
     getListTransferDana(oneMonthAgo, currentDate)
     getSettlement(oneMonthAgo, currentDate)
+    getSettlementChart(oneMonthAgo, currentDate)
   }, [])
 
   async function detailListTransferHandler(trxId) {
@@ -398,7 +429,7 @@ export default () => {
         ],
         hoverOffset: 4
       }]
-    };
+    };    
 
   return (
     <>
@@ -550,7 +581,51 @@ export default () => {
         </div>
         <h2 className="h5 mt-5">Settlement</h2>
         <div className='base-content'>
-          {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span> */}
+          <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
+          <Line
+            className="mt-3 mb-3"
+            data={{
+              labels: dataChartTransfer.map(obj => obj.dates),
+              datasets: [
+                {
+                  label: null,
+                  fill: true,
+                  // backgroundColor: gradient,
+                  backgroundColor: "rgba(156, 67, 223, 0.38)",
+                  borderColor: "#9C43DF",
+                  pointBackgroundColor: "rgba(220, 220, 220, 1)",
+                  pointBorderColor: "#9C43DF",
+                  data: dataChartTransfer.map(obj => obj.nominal_day)
+                },
+              ],
+            }}
+            height={100}
+            width={200}
+            options= {{
+              plugins: {
+                legend: {
+                  display: false
+                },
+              },
+              responsive: true,
+              scales: {
+                xAxes: {
+                  beginAtZero: false,
+                  ticks: {
+                    autoSkip: false,
+                    maxRotation: 45,
+                    minRotation: 45
+                  }
+                },
+                yAxes: {
+                  beginAtZero: true,
+                  ticks: {
+                    stepSize: 2000
+                  }
+                }
+              }
+            }}
+          />
             {/* <Row>
               <Col xs={12}>
                 <div className="div-chart">

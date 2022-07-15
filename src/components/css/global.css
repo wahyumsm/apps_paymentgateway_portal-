@@ -300,3 +300,11 @@ body {
     font-weight: 400;
     font-style: italic;
 }
+
+.history-modal .modal-content {
+    max-width: 751px;
+}
+
+.disini .input-group-text {
+    border-right: unset
+}

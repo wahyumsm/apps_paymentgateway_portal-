@@ -21,7 +21,7 @@ import {
   ListGroup,
   InputGroup,
   Modal,
-  Button,
+  Button, Table
 } from "@themesberg/react-bootstrap";
 
 import NOTIFICATIONS_DATA from "../data/notifications";
@@ -35,11 +35,18 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, getToken, removeUserSession, RouteTo, setRoleSession } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
 import DropdownToggle from "@themesberg/react-bootstrap/lib/esm/DropdownToggle";
+import { agenLists } from "../data/tables";
+import DataTable from "react-data-table-component";
+import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
+import checklistCircle from '../assets/img/icons/checklist_circle.svg';
+import CopyIcon from '../assets/icon/carbon_copy.svg'
+import encryptData from '../function/encryptData'
+import moment from "moment-timezone";
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -47,6 +54,7 @@ export default (props) => {
     (acc, notif) => acc && notif.read,
     true
   );
+  const [listRiwayat, setListRiwayat] = useState([])
   const history = useHistory();
   const userDetail = useSelector((state) => state.userDetailReducer.userDetail);
   const dispatch = useDispatch();
@@ -62,24 +70,134 @@ export default (props) => {
     // RouteTo("/detailakun")
   };
 
+  const [getBalance, setGetBalance] = useState({})
   const [showModalTopUp, setShowModalTopUp] = useState(false);
+  const [showModalHistoryTopUp, setShowModalHistoryTopUp] = useState(false)
+  const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
+  const [showGagalTopUp, setShowGagalTopUp] = useState(false)
+  const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
+  const handleCloseHistoryTopUp = () => setShowModalHistoryTopUp(false);
+  const handleCloseRiwayatTopUp = () => setShowRiwayatTopUp(false)
+  const [topUp, setTopUp] = useState({})
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
-  const handleClick = (event) => {
+  const access_token = getToken()
+  const [text, setText] = useState('');
+  const [inputHandle, setInputHandle] = useState({
+    amount: "",
+    reffNo: "",
+  })
+  const [ topUpResult, setTopUpResult ] = useState({})
+
+  function handleChange(e) {
+    setInputHandle({
+      ...inputHandle,
+      [e.target.name] : e.target.value
+    })
+  }
+
+  const handleClick = () => {
     hiddenFileInput.current.click();
   };
+  
   const handleFileChange = (event) => {
     let dataImage = {
-      data: event.target.files[0],
+      SlipPaymentFile: event.target.files[0],
     };
     setImageTopUp(dataImage);
-    console.log(dataImage);
   };
 
   const toHistoryBalance = () => {
-    alert("HistoryBalance!");
+    setShowRiwayatTopUp(true)
+  };  
+
+  const copyHandler = (event) => {
+    setText(event.target.value);
   };
+
+  const copyId = async () => {
+    var copyText = document.getElementById('myInput').innerHTML;
+    await navigator.clipboard.writeText(copyText);
+    alert('Text copied');
+  };
+
+
+  async function topUpHandle(imageTopUp, amount, reffNo) {
+    try {
+        const auth = "Bearer " + getToken()        
+        var formData = new FormData()
+        formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
+        formData.append('amount', amount)
+        formData.append('reffNo', reffNo)
+        console.log(formData, "ini form data")
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
+        }
+        const headers = {
+            'Content-Type':'multipart/form-data',
+            'Authorization' : auth
+        }
+        const topUp = await axios.post("/Partner/TopupConfirmation", formData, { headers: headers })
+        console.log(topUp, 'ini topup');
+        if(topUp.status === 200 && topUp.data.response_code === 200) {
+          setTopUpResult(topUp.data.response_data.results)
+        }
+        
+        // alert("Anda Berhasil Top up")
+    } catch (error) {
+        console.log(error)
+        if (error.response.status === 401) {
+            history.push('/sign-in')
+        }
+      }
+    }
+
+    async function GetBalanceHandle () {
+      try {
+          const auth = "Bearer " + getToken()
+          const headers = {
+              'Content-Type':'application/json',
+              'Authorization' : auth
+          }
+          const getBalance = await axios.post("/partner/GetBalance", { data: "" }, { headers: headers })
+          console.log(getBalance, 'ini data get balance');
+          if (getBalance.data.response_code === 200 && getBalance.status === 200) {
+              // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
+              setGetBalance(getBalance.data.response_data)
+          }
+          
+      } catch (error) {
+          console.log(error)
+      }
+    }
+
+    async function listRiwayatTopUp () {
+      try {
+          const auth = "Bearer " + getToken()
+          const headers = {
+              'Content-Type':'application/json',
+              'Authorization' : auth
+          }
+          const listRiwayat = await axios.post("/partner/TopUpHistory", { data: "" }, { headers: headers })
+          console.log(listRiwayat, 'ini data user ');
+          if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200) {
+              listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
+              setListRiwayat(listRiwayat.data.response_data)
+          }
+          
+      } catch (error) {
+          console.log(error)
+      }
+    }
+
+    useEffect(() => {
+      if (!access_token) {
+      history.push('/login');
+    }
+      GetBalanceHandle()
+      listRiwayatTopUp()
+    }, [])
 
   async function logoutHandler() {
     try {
@@ -106,10 +224,85 @@ export default (props) => {
     }
   }
 
-  const Notification = (props) => {
-    const { link, sender, image, time, message, read = false } = props;
-    const readClassName = read ? "" : "text-danger";
+  const columns = [
+    {
+      name: 'No',
+      selector: row => row.number,
+      ignoreRowClick: true,
+      button: true,
+    },
+    {
+      name: 'ID Transaksi',
+      selector: row => row.id_trans,
+      sortable: true,
+    },
+    {
+      name: 'Sumber Agen',
+      selector: row => row.agen_name,
+      sortable: true,
+    },
+    {
+      name: 'Kode Unik',
+      selector: row => row.unique_code,
+      sortable: true,
+    },
+    {
+      name: 'Nominal Top Up',
+      selector: row => row.amount,
+      sortable: true,
+    },
+    {
+      name: 'Tanggal Top Up',
+      selector: row => row.topup_date,
+      sortable: true
+    },
+    {
+      name: 'Status',
+      selector: row => row.status,
+      width: "90px",
+      style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
+    }
+  ]
 
+  const customStyles = {
+      headCells: {
+          style: {
+              backgroundColor: '#F2F2F2',
+              border: '12px',
+              fontWeight: 'bold',
+              fontSize: '16px',
+          },
+      },
+  };
+
+  const CustomLoader = () => (
+    <div style={{ padding: '24px' }}>
+      <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+      {/* <div>Loading...</div> */}
+    </div>
+  );
+
+  const modalNavbar = () => {
+    setShowModalTopUp(false)
+    topUpHandle(imageTopUp, getBalance.topupAmount, inputHandle.reffNo)
+    setShowModalKonfirmasiTopUp(true)  
+  }
+
+  const modalRiwayat = () => {
+    setShowModalKonfirmasiTopUp(false)
+    setShowModalHistoryTopUp(true)
+  };
+
+  const modalGagal = () => {
+    setShowGagalTopUp(false)
+    setShowModalHistoryTopUp(true)
+  }
+
+  const Notification = (props) => {
+  const { link, sender, image, time, message, read = false } = props;
+  const readClassName = read ? "" : "text-danger";
+
+ 
     return (
       <ListGroup.Item action href={link} className="border-bottom border-light">
         <Row className="align-items-center">
@@ -160,12 +353,13 @@ export default (props) => {
         <div className="d-flex justify-content-between w-100">
           <div className="d-flex align-items-center"></div>
           <Nav className="align-items-center">
+
             {/* Saldo */}
             <Dropdown as={Nav.Item}>
               <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0">
                 <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
                   <span className="mb-0 font-small">Saldo: </span>
-                  <span className="mb-0 font-small fw-bold">Rp 20.000.000</span>
+                  <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
                   <img
                     src={arrowDown}
                     alt="arrow_down"
@@ -264,8 +458,10 @@ export default (props) => {
             </Dropdown>
           </Nav>
         </div>
+
+        {/* Modal Input Data */}
         <React.Fragment>
-          <Modal centered show={showModalTopUp} onHide={handleCloseModalTopUp}>
+          <Modal centered show={showModalTopUp}>
             <Modal.Header className="border-0">
               <Col>
                 <Button
@@ -283,19 +479,17 @@ export default (props) => {
               <Form action="#">
                 <Form.Group className="mb-3">
                   <Form.Label>Nominal Top Up Saldo</Form.Label>
-                  <Form.Control placeholder="Rp -" disabled />
+                  <Form.Control disabled name="amount" value={getBalance.topupAmount} type="number" />
                 </Form.Group>
-                <Form.Group id="referenceNumber" mb-1>
+                <Form.Group id="referenceNumber">
                   <Form.Label>Reference Number</Form.Label>
-                  <InputGroup>
-                    <InputGroup.Text className="text-gray-600"></InputGroup.Text>
-                    <Form.Control placeholder="Masukkan Reference Number" />
-                  </InputGroup>
+                  <InputGroup className="disini"></InputGroup>
+                  <Form.Control name="reffNo"  onChange={handleChange} placeholder="Masukkan Reference Number" type="number" />
                 </Form.Group>
-                <div style={{ color: "#B9121B", fontSize: 12 }}>
+                {/* <div style={{ color: "#B9121B", fontSize: 12 }}>
                   <img src={noteIconRed} className="me-2" />
                   Nomor Referensi wajib diisi
-                </div>
+                </div> */}
               </Form>
               <div>
                 <img src={noteIcon} className="me-2" />
@@ -318,22 +512,25 @@ export default (props) => {
                     fontSize: 14,
                     color: "#077E86",
                     fontWeight: 700,
+                    cursor: "pointer",
                   }}
                   onClick={handleClick}
                 >
                   Upload File
                 </u>
+                <span className="mx-1">{imageTopUp.SlipPaymentFile?.name}</span>
                 <input
                   type="file"
                   onChange={handleFileChange}
                   accept="image/*"
                   style={{ display: "none" }}
                   ref={hiddenFileInput}
+                  id="imageTopUp"
+                  name="imageTopUp"
                 />
               </div>
               <div className="d-flex justify-content-center">
                 <button
-                  // onClick={() => tambahAgen()}
                   style={{
                     fontFamily: "Exo",
                     fontSize: 16,
@@ -349,6 +546,7 @@ export default (props) => {
                     borderRadius: 6,
                     textAlign: "center",
                   }}
+                  onClick={modalNavbar}
                 >
                   <FontAwesomeIcon style={{ marginRight: 10 }} /> Konfirmasi
                 </button>
@@ -356,6 +554,228 @@ export default (props) => {
             </Modal.Body>
           </Modal>
         </React.Fragment>
+
+        
+        <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }}>
+          <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+              <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 12 }}>
+                  <img src={checklistCircle} alt="logo" />
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Top Up Berhasil</p>
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
+                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Kamu telah berhasil top up senilai {topUpResult.amount}</p>
+              </div>
+              <center>
+                  <div style={{ margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
+              </center>
+              <div>
+                  <Table className='detailSave'>
+                    <tr>ID Transaksi</tr>
+                    <tr>
+                        <td onChange={copyHandler} id="myInput" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }} >{topUpResult.IDTrx}</td>
+                        <td onClick={copyId} className="mx-5 text-end" style={{ fontWeight: 600, cursor: "pointer" }} ><img src={CopyIcon} alt="copy" />Salin</td>
+                    </tr>
+                    <tr>
+                        <td>{topUpResult.tglTrx}</td>
+                    </tr>
+                  </Table>
+                  <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Detail Transaksi</p>
+                  <Table >
+                      <tr>
+                          <td>Nominal Top Up</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>{topUpResult.amount}</td>
+                      </tr>
+                      <tr>
+                          <td>Sumber Agen</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>{topUpResult.partner}</td>
+                      </tr>
+                      <tr>
+                          <td>Kode Unik</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>{topUpResult.uniqueCode}</td>
+                      </tr>
+                      <tr>
+                          <td>Status</td>
+                          <td>:</td>
+                          <td className='active-status-badge' style={{ fontWeight: 600 }}>{topUpResult.statusName}</td>
+                      </tr>
+                  </Table>
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <Button variant="primary" onClick={modalRiwayat} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>Lihat Riwayat Top up</Button>
+              </div>
+          </Modal.Body>
+        </Modal>
+        <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
+          <Modal.Header className="border-0">
+            <Button
+              className="position-absolute top-0 end-0 m-3"
+              variant="close"
+              aria-label="Close"
+              onClick={handleCloseHistoryTopUp}
+            />
+            <Modal.Title className="fw-bold mt-3">
+              History Top Up
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {
+              agenLists.length === 0 ?
+              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
+              <div className="div-table">
+                <DataTable
+                  columns={columns}
+                  data={listRiwayat}
+                  customStyles={customStyles}
+                  // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                  pagination
+                  highlightOnHover
+                  // progressPending={pending}
+                  progressComponent={<CustomLoader />}
+                  // paginationResetDefaultPage={resetPaginationToggle}
+                  // subHeader
+                  // subHeaderComponent={subHeaderComponentMemo}
+                  // selectableRows
+                  // persistTableHead
+                  // onRowClicked={(listAgen) => {
+                  //   detailAgenHandler(listAgen.agen_id)
+                  // }}
+                />
+              </div>
+            }
+          </Modal.Body>
+        </Modal>
+
+        {/* ModalGagal */}
+        <Modal centered show={showGagalTopUp} onHide={() => setShowGagalTopUp(false)} style={{ borderRadius: 8 }}>
+          <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+              <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 12 }}>
+                  <img src={checklistCircle} alt="logo" />
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Top Up Gagal</p>
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
+                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Kamu telah berhasil top up senilai {topUpResult.amount}</p>
+              </div>
+              <center>
+                  <div style={{ margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
+              </center>
+              <div>
+                  <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Detail Transaksi</p>
+                  <Table >
+                      <tr>
+                          <td>Nominal Top Up</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>{topUpResult.amount}</td>
+                      </tr>
+                      <tr>
+                          <td>Sumber Agen</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>{topUpResult.partner}</td>
+                      </tr>
+                      <tr>
+                          <td>Kode Unik</td>
+                          <td>:</td>
+                          <td style={{ fontWeight: 600 }}>{topUpResult.uniqueCode}</td>
+                      </tr>
+                      <tr>
+                          <td>Status</td>
+                          <td>:</td>
+                          <td className='inactive-status-badge' style={{ fontWeight: 600 }}>{topUpResult.statusName}</td>
+                      </tr>
+                  </Table>
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <Button onClick={modalGagal} variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>Lihat Riwayat Top up</Button>
+              </div>
+          </Modal.Body>
+        </Modal>
+
+        <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
+          <Modal.Header className="border-0">
+            <Button
+              className="position-absolute top-0 end-0 m-3"
+              variant="close"
+              aria-label="Close"
+              onClick={handleCloseHistoryTopUp}
+            />
+            <Modal.Title className="fw-bold mt-3">
+              History Top Up
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {
+              agenLists.length === 0 ?
+              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
+              <div className="div-table">
+                <DataTable
+                  columns={columns}
+                  data={listRiwayat}
+                  customStyles={customStyles}
+                  // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                  pagination
+                  highlightOnHover
+                  // progressPending={pending}
+                  progressComponent={<CustomLoader />}
+                  // paginationResetDefaultPage={resetPaginationToggle}
+                  // subHeader
+                  // subHeaderComponent={subHeaderComponentMemo}
+                  // selectableRows
+                  // persistTableHead
+                  // onRowClicked={(listAgen) => {
+                  //   detailAgenHandler(listAgen.agen_id)
+                  // }}
+                />
+              </div>
+            }
+          </Modal.Body>
+        </Modal>
+
+
+        <Modal className="history-modal" size="xl" centered show={showRiwayatTopUp} onHide={handleCloseRiwayatTopUp}>
+          <Modal.Header className="border-0">
+            <Button
+              className="position-absolute top-0 end-0 m-3"
+              variant="close"
+              aria-label="Close"
+              onClick={handleCloseRiwayatTopUp}
+            />
+            <Modal.Title className="fw-bold mt-3">
+              History Top Up
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {
+              agenLists.length === 0 ?
+              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
+              <div className="div-table">
+                <DataTable
+                  columns={columns}
+                  data={listRiwayat}
+                  customStyles={customStyles}
+                  // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                  pagination
+                  highlightOnHover
+                  // progressPending={pending}
+                  progressComponent={<CustomLoader />}
+                  // paginationResetDefaultPage={resetPaginationToggle}
+                  // subHeader
+                  // subHeaderComponent={subHeaderComponentMemo}
+                  // selectableRows
+                  // persistTableHead
+                  // onRowClicked={(listAgen) => {
+                  //   detailAgenHandler(listAgen.agen_id)
+                  // }}
+                />
+              </div>
+            }
+          </Modal.Body>
+        </Modal>
       </Container>
     </Navbar>
   );
