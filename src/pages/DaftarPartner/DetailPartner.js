@@ -3,14 +3,16 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { errorCatch, getToken } from '../../function/helpers';
+import { errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
 
 function DetailPartner() {
+
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const history = useHistory()
+    const user_role = getRole()
     const access_token = getToken()
     const { partnerId } = useParams()
     const [listAgen, setListAgen] = useState([])
@@ -30,12 +32,16 @@ function DetailPartner() {
             }
             const detailPartner = await axios.post("/Partner/EditPartner", { data: dataParams }, { headers: headers })
             // console.log(detailPartner, 'ini detail partner');
-            if (detailPartner.status === 200 && detailPartner.data.response_code === 200) {
+            if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
                 // console.log(detailPartner.data, 'ini detail agen');
+                setDetailPartner(detailPartner.data.response_data)
+            } else {
+                setUserSession(detailPartner.data.response_new_token)
                 setDetailPartner(detailPartner.data.response_data)
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     } 
@@ -107,23 +113,31 @@ function DetailPartner() {
           }
           const listAgen = await axios.post("/Partner/GetListAgen", { data: dataParams }, { headers: headers })
         //   console.log(listAgen, 'ini data agen');
-          if (listAgen.status === 200 && listAgen.data.response_code === 200) {
+          if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
+            listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+            setListAgen(listAgen.data.response_data)
+          } else {
+            setUserSession(listAgen.data.response_new_token)
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
           }
         } catch (error) {
           console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
 
     useEffect(() => {
         if (!access_token) {
-        history.push('/sign-in');
-      }
+            history.push('/login');
+        }
+        if (user_role === 102) {
+            history.push('/404');
+        }
         getDetailPartner(partnerId)
         getDataAgen(partnerId)
-      }, [partnerId])
+    }, [partnerId])
 
     const customStyles = {
         headCells: {
@@ -137,10 +151,12 @@ function DetailPartner() {
     };
 
     function detailAgenHandler(agenId) {
+        // RouteTo(`/detailagen/${agenId}`)
         history.push(`/detailagen/${agenId}`)
       }
 
     function editPartner(partnerId) {
+        // RouteTo(`/editpartner/${partnerId}`)
         history.push(`/editpartner/${partnerId}`)
     }
 

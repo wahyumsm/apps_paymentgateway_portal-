@@ -19,7 +19,7 @@ import DaftarPartnerIcon from "../assets/icon/daftarpartner_icon.svg";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
-import { getUserAccessMenu } from "../redux/ActionCreators/UserAccessMenuAction";
+import { GetUserAccessMenu } from "../redux/ActionCreators/UserAccessMenuAction";
 import { useDispatch, useSelector } from "react-redux";
 
 export default (props = {}) => {
@@ -79,10 +79,14 @@ export default (props = {}) => {
   };
 
   useEffect(() => {
-    dispatch(getUserAccessMenu("/Account/GetUserAccess"))
+    dispatch(GetUserAccessMenu("/Account/GetUserAccess"))
   }, [])
   
   console.log(userAccessMenu, "ini userAccessMenu");
+
+  if (!userAccessMenu) {
+    return null
+  }
 
   return (
     <>

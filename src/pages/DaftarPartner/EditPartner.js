@@ -3,15 +3,17 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row, Modal} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { errorCatch, getToken } from '../../function/helpers';
+import { errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
 
 function EditPartner() {
+
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const history = useHistory()
     const access_token = getToken()
+    const user_role = getRole()
     const { partnerId } = useParams()
     const [listAgen, setListAgen] = useState([])
     const [detailPartner, setDetailPartner] = useState([])
@@ -61,8 +63,22 @@ function EditPartner() {
             }
             const detailPartner = await axios.post("/Partner/EditPartner", { data: dataParams }, { headers: headers })
             // console.log(detailPartner, 'ini detail partner');
-            if (detailPartner.status === 200 && detailPartner.data.response_code === 200) {
+            if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
                 // console.log(detailAgen.data.response_data, 'ini detail agen');
+                if (detailPartner.data.response_data.mpartner_is_active === true) {
+                    detailPartner.data.response_data = {
+                        ...detailPartner.data.response_data,
+                        isActive: "Aktif"
+                    }
+                } else {
+                    detailPartner.data.response_data = {
+                        ...detailPartner.data.response_data,
+                        isActive: "Tidak Aktif"
+                    }
+                }
+                setDetailPartner(detailPartner.data.response_data)
+            } else {
+                setUserSession(detailPartner.data.response_new_token)
                 if (detailPartner.data.response_data.mpartner_is_active === true) {
                     detailPartner.data.response_data = {
                         ...detailPartner.data.response_data,
@@ -78,6 +94,7 @@ function EditPartner() {
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -187,24 +204,22 @@ function EditPartner() {
             }
             const editPartner = await axios.post("/Partner/UpdatePartner", { data: dataParams }, { headers: headers })
             // console.log(editPartner, 'ini add partner');
-            if(editPartner.status === 200 && editPartner.data.response_code === 200) {
+            if(editPartner.status === 200 && editPartner.data.response_code === 200 && editPartner.data.response_new_token.length === 0) {
+                // RouteTo('/daftarpartner')
                 history.push("/daftarpartner")
                 // alert("Edit Data Partner Berhasil Ditambahkan")
-            }          
+            } else {
+                setUserSession(editPartner.data.response_new_token)
+                history.push("/daftarpartner")
+            }
             
             alert("Edit Data Partner Berhasil")
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
-
-    useEffect(() => {
-        if (!access_token) {
-        history.push('/sign-in');
-        // window.location.reload();
-        }
-    }, [access_token, history])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getDataAgen(partnerId) {
@@ -218,22 +233,30 @@ function EditPartner() {
           }
           const listAgen = await axios.post("/Partner/GetListAgen", { data: dataParams }, { headers: headers })
         //   console.log(listAgen, 'ini data agen');
-          if (listAgen.status === 200 && listAgen.data.response_code === 200) {
+          if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
+            setListAgen(listAgen.data.response_data)
+          } else {
+            setUserSession(listAgen.data.response_new_token)
             setListAgen(listAgen.data.response_data)
           }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
 
     useEffect(() => {
         if (!access_token) {
-        history.push('/sign-in');
-      }
+            // RouteTo('/login')
+            history.push('/login');
+        }
+        if (user_role === 102) {
+            history.push('/404');
+        }
         getDetailPartner(partnerId)
         getDataAgen(partnerId)
-      }, [partnerId])
+    }, [partnerId])
 
     const customStyles = {
         headCells: {
@@ -247,6 +270,7 @@ function EditPartner() {
     };
 
     function detailAgenHandler(agenId) {
+        // RouteTo(`/detailagen/${agenId}`)
         history.push(`/detailagen/${agenId}`)
     }
 

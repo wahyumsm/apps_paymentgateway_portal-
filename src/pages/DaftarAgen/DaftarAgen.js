@@ -5,7 +5,7 @@ import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image} from 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, Link } from 'react-router-dom';
-import { BaseURL, errorCatch, getToken } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 
@@ -17,6 +17,7 @@ function DaftarAgen() {
   const [pending, setPending] = useState(true)
 
   function tambahAgen() {
+    // RouteTo("/tambahagen")
     history.push("/tambahagen")
   }
 
@@ -28,18 +29,25 @@ function DaftarAgen() {
         'Authorization' : auth
       }
       const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
-      if (listAgen.status === 200 && listAgen.data.response_code === 200) {
+      if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
+        listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
+        setListAgen(listAgen.data.response_data)
+        setPending(false)
+      } else {
+        setUserSession(listAgen.data.response_new_token)
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
         setPending(false)
       }
     } catch (error) {
       console.log(error)
+      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
   
   function detailAgenHandler(agenId) {
+    // RouteTo(`/detailagen/${agenId}`)
     history.push(`/detailagen/${agenId}`)
   }
 
@@ -113,6 +121,7 @@ function DaftarAgen() {
 
   useEffect(() => {
     if (!access_token) {
+      // RouteTo("/login")
     history.push('/login');
   }
     getDataAgen()

@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToRupiah, errorCatch, getToken } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 
 function TambahPartner() {
     const [addPartner, setAddPartner] = useState({})
     const history = useHistory()
     const access_token = getToken()
+    const user_role = getRole()
     const [inputHandle, setInputHandle] = useState({
         namaPerusahaan: "",
         emailPerusahaan: "",
@@ -44,24 +45,33 @@ function TambahPartner() {
             }
             const addPartner = await axios.post("/Partner/SavePartner", { data: dataParams }, { headers: headers })
             // console.log(addPartner, 'ini add partner');
-            if(addPartner.status === 200 && addPartner.data.response_code === 200) {
+            if(addPartner.status === 200 && addPartner.data.response_code === 200 && addPartner.data.response_new_token.length === 0) {
                 // setAddPartner(addPartner.data.response_data)
+                // RouteTo("/daftarpartner")
                 history.push("/daftarpartner")
-            }          
+            } else {
+                setUserSession(addPartner.data.response_new_token)
+                history.push("/daftarpartner")
+            }
             
             alert("Partner Baru Berhasil Ditambahkan")
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
 
     useEffect(() => {
         if (!access_token) {
-        history.push('/sign-in');
+            // RouteTo("/login")
+            history.push('/login');
         // window.location.reload();
         }
-    }, [access_token, history])
+        if (user_role === 102) {
+            history.push('/404');
+        }
+    }, [])
     
 
     return (

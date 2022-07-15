@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getToken } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import "./TambahAgen.css";
@@ -43,26 +43,33 @@ function TambahAgen() {
             }
             const addAgen = await axios.post("/Agen/SaveAgen", { data: dataParams }, { headers: headers })
             // console.log(addAgen);
-            if (addAgen.status === 200 && addAgen.data.response_code === 200) {
+            if (addAgen.status === 200 && addAgen.data.response_code === 200 && addAgen.data.response_new_token.length === 0) {
+                setDetailNewAgen(addAgen.data.response_data)
+                setShowModal(true)
+            } else {
+                setUserSession(addAgen.data.response_new_token)
                 setDetailNewAgen(addAgen.data.response_data)
                 setShowModal(true)
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
 
     function successButtonHandle() {
         setShowModal(false)
+        // RouteTo("/daftaragen")
         history.push("/daftaragen")
     }
 
     useEffect(() => {
         if (!access_token) {
+            // RouteTo("/login")
         history.push('/login');
         // window.location.reload();
-    }
+        }
     }, [])
     
 

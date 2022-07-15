@@ -3,9 +3,10 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { errorCatch, getToken } from '../../function/helpers';
+import { errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import { useHistory, useParams } from 'react-router-dom';
+import { el } from 'date-fns/locale';
 function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
@@ -32,12 +33,16 @@ function DetailAkun() {
             }
             const userDetailPartner = await axios.post(url, { data: "" }, { headers: headers })
             // console.log(userDetailPartner, 'ini data user ');
-            if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200) {
+            if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length === 0) {
+                setDataAkun(userDetailPartner.data.response_data)
+            } else {
+                setUserSession(userDetailPartner.data.response_new_token)
                 setDataAkun(userDetailPartner.data.response_data)
             }
             
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -57,14 +62,19 @@ function DetailAkun() {
             }
             const editCallback = await axios.post("/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
             // console.log(editCallback, 'ini add Callback');
-            if(editCallback.status === 200 && editCallback.data.response_code === 200) {
+            if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
+                // RouteTo('/detailakun')
                 history.push("/detailakun")
                 // alert("Edit Data Partner Berhasil Ditambahkan")
-            }          
+            } else {
+                setUserSession(editCallback.data.response_new_token)
+                history.push("/detailakun")
+            }
             
             alert("Edit URL Berhasil")
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }

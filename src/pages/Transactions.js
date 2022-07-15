@@ -8,7 +8,7 @@ import 'chart.js/auto';
 // import { invoiceItems } from '../data/tables';
 import DataTable from 'react-data-table-component';
 // import { TransactionsTable } from "../components/Tables";
-import { BaseURL, convertToRupiah, errorCatch, getToken } from "../function/helpers";
+import { BaseURL, convertToRupiah, errorCatch, getToken, RouteTo, setUserSession } from "../function/helpers";
 import axios from "axios";
 import encryptData from "../function/encryptData";
 import * as XLSX from "xlsx"
@@ -73,13 +73,20 @@ export default () => {
         'Authorization' : auth
       }
       const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-      if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200) {
+
+      if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token.length === 0) {
+        listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListTransferDana(listTransferDana.data.response_data.list)
+        setPendingTransfer(false)
+      } else {
+        setUserSession(listTransferDana.data.response_new_token)
         listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(listTransferDana.data.response_data.list)
         setPendingTransfer(false)
       }
     } catch (error) {
       console.log(error)
+      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
@@ -93,13 +100,19 @@ export default () => {
         'Authorization' : auth
       }
       const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200) {
+      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200 && dataSettlement.data.response_new_token.length === 0) {
+        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(dataSettlement.data.response_data)
+        setPendingSettlement(false)
+      } else {
+        setUserSession(dataSettlement.data.response_new_token)
         dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(dataSettlement.data.response_data)
         setPendingSettlement(false)
       }
     } catch (error) {
       console.log(error)
+      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
@@ -114,13 +127,19 @@ export default () => {
         'Authorization' : auth
       }
       const filterTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-      if (filterTransferDana.status === 200 && filterTransferDana.data.response_code == 200) {
+      if (filterTransferDana.status === 200 && filterTransferDana.data.response_code == 200 && filterTransferDana.data.response_new_token.length === 0) {
+        filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListTransferDana(filterTransferDana.data.response_data.list)
+        setPendingSettlement(false)
+      } else {
+        setUserSession(filterTransferDana.data.response_new_token)
         filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(filterTransferDana.data.response_data.list)
         setPendingSettlement(false)
       }
     } catch (error) {
       console.log(error)
+      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
@@ -134,12 +153,17 @@ export default () => {
         'Authorization' : auth
       }
       const filterSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200) {
+      if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
+        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data)
+      } else {
+        setUserSession(filterSettlement.data.response_new_token)
         filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(filterSettlement.data.response_data)
       }
     } catch (error) {
       console.log(error)
+      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
@@ -167,6 +191,7 @@ export default () => {
 
   useEffect(() => {
     if (!access_token) {
+      // RouteTo("/login")
       history.push('/login');
     }
     getListTransferDana(oneMonthAgo, currentDate)
@@ -182,12 +207,17 @@ export default () => {
         'Authorization' : auth
       }
       const detailTransaksi = await axios.post("/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
-      if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200) {
+      if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200 && detailTransaksi.data.response_new_token.length === 0) {
+        setDetailTransferDana(detailTransaksi.data.response_data)
+        setShowModalDetailTransferDana(true)
+      } else {
+        setUserSession(detailTransaksi.data.response_new_token)
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)
       }
     } catch (error) {
       console.log(error)
+      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }

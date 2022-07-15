@@ -35,9 +35,9 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getToken, removeUserSession } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, removeUserSession, RouteTo, setRoleSession } from "../function/helpers";
 import axios from "axios";
-import { getUserDetail } from "../redux/ActionCreators/UserDetailAction";
+import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
 import DropdownToggle from "@themesberg/react-bootstrap/lib/esm/DropdownToggle";
 
@@ -58,7 +58,8 @@ export default (props) => {
   };
 
   const navToDetailAccount = () => {
-    history.push("/detailakun");
+    // history.push("/detaila/kun");
+    // RouteTo("/detailakun")
   };
 
   const [showModalTopUp, setShowModalTopUp] = useState(false);
@@ -95,11 +96,13 @@ export default (props) => {
       // console.log(logout, 'ini hasil logout');
       if (logout.status === 200 && logout.data.response_code === 200) {
         removeUserSession();
-        history.push("/sign-in");
+        history.push("/login");
+        // RouteTo("/login");
       }
     } catch (error) {
       console.log(error);
-      history.push(errorCatch(error.response.status))
+      // RouteTo(errorCatch(error.response.status));
+      // history.push(errorCatch(error.response.status))
     }
   }
 
@@ -133,8 +136,18 @@ export default (props) => {
   };
 
   useEffect(() => {
-    dispatch(getUserDetail("/Account/GetUserProfile"));
+    dispatch(GetUserDetail("/Account/GetUserProfile"));
   }, []);
+
+  console.log(userDetail, "ini user detail di navbar");
+
+  if (!userDetail) {
+    return null;
+  }
+
+  if (userDetail.muser_role_id) {
+    setRoleSession(userDetail.muser_role_id);
+  }
 
   return (
     <Navbar
@@ -174,10 +187,10 @@ export default (props) => {
                   <img alt="" src={riwayatSaldoIcon} /> Riwayat
                 </Dropdown.Item>
               </Dropdown.Menu>
-
-              {/* notification */}
             </Dropdown>
-            <Dropdown as={Nav.Item} onToggle={markNotificationsAsRead}>
+
+            {/* notification */}
+            {/* <Dropdown as={Nav.Item} onToggle={markNotificationsAsRead}>
               <Dropdown.Toggle
                 as={Nav.Link}
                 className="text-dark icon-notifications me-lg-3"
@@ -206,7 +219,7 @@ export default (props) => {
                   </Dropdown.Item>
                 </ListGroup>
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
 
             {/* profile */}
             <Dropdown as={Nav.Item}>

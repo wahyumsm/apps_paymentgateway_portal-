@@ -1,9 +1,11 @@
 import { FETCH_GETUSERDETAIL } from "../ActionType/ActionTypes";
 import axios from "axios";
-import { BaseURL, errorCatch, getToken } from "../../function/helpers";
+import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 
-export const getUserDetail = (url) => {
+
+export const GetUserDetail = (url) => {
+    // const history = useHistory()
     return async (dispatch) => {
         try {
             const auth = "Bearer " + getToken()
@@ -12,17 +14,27 @@ export const getUserDetail = (url) => {
                 'Authorization' : auth
             }
             const userDetail = await axios.post(url, { data: "" }, { headers: headers })
-            // console.log(userDetail, "userDetail");
-            dispatch({
-                type: FETCH_GETUSERDETAIL,
-                payload: {
-                    userDetail: userDetail.data.response_data
-                }
-            })
+            console.log(userDetail.data, "userDetail");
+            if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
+                dispatch({
+                    type: FETCH_GETUSERDETAIL,
+                    payload: {
+                        userDetail: userDetail.data.response_data
+                    }
+                })
+            } else {
+                setUserSession(userDetail.data.response_new_token)
+                dispatch({
+                    type: FETCH_GETUSERDETAIL,
+                    payload: {
+                        userDetail: userDetail.data.response_data
+                    }
+                })
+            }
         } catch (error) {
             console.log(error)
-            const history = useHistory()
-            history.push(errorCatch(error.response.status))
-    }
+            // RouteTo(errorCatch(error.response.status))
+            // history.push(errorCatch(error.response.status))
+        }
     }
 }

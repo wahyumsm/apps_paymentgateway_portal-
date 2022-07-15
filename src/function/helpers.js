@@ -10,13 +10,24 @@ export const setUserSession = (token) => {
     sessionStorage.setItem("token", token);
 }
 
+export const setRoleSession = (role) => {
+    localStorage.setItem("role", role)
+    sessionStorage.setItem("role", role);
+}
+
 export const getToken = () => {
     return localStorage.getItem("token") || sessionStorage.getItem("token") || null
 }
 
+export const getRole = () => {
+    return localStorage.getItem("role") || sessionStorage.getItem("role") || null
+}
+
 export const removeUserSession = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("role");
 }
 
 export function convertToRupiah(money) {

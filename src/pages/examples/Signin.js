@@ -10,18 +10,22 @@ import axios from "axios";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
-import { authorization, BaseURL, errorCatch, setUserSession } from "../../function/helpers";
+import { authorization, BaseURL, errorCatch, RouteTo, setUserSession } from "../../function/helpers";
 import "./Signin.css";
+import { useDispatch, useSelector } from "react-redux";
+import { GetUserDetail } from "../../redux/ActionCreators/UserDetailAction";
 
 
 export default () => {
 
   const history = useHistory()
+  const dispatch = useDispatch()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
   const passwordInputType = showPassword ? "text" : "password";
   const passwordIconColor = showPassword ? "#262B40" : "";
+  // console.log(userDetail, "userDetail");
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -42,7 +46,8 @@ export default () => {
       }
     } catch (error) {
       console.log(error);
-      history.push(errorCatch(error.response.status))
+      // RouteTo(errorCatch(error.response.status))
+      // history.push(errorCatch(error.response.status))
     }
     
   }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Modal, Button } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getToken } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import "./EditAgen.css"
 
@@ -53,9 +53,23 @@ function EditAgen() {
             }
             const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
-            if (detailAgen.status === 200 && detailAgen.data.response_code === 200) {
+            if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
                 // console.log(detailAgen.data.response_data, 'ini detail agen');
                 // (detailAgen.data.response_data.status === true) ? { ...detailAgen.data.response_data, isActive: "Aktif" } : { ...detailAgen.data.response_data, isActive: "Tidak Aktif" }
+                if (detailAgen.data.response_data.status === true) {
+                    detailAgen.data.response_data = {
+                        ...detailAgen.data.response_data,
+                        isActive: "Aktif"
+                    }
+                } else {
+                    detailAgen.data.response_data = {
+                        ...detailAgen.data.response_data,
+                        isActive: "Tidak Aktif"
+                    }
+                }
+                setDetailAgen(detailAgen.data.response_data)
+            } else {
+                setUserSession(detailAgen.data.response_new_token)
                 if (detailAgen.data.response_data.status === true) {
                     detailAgen.data.response_data = {
                         ...detailAgen.data.response_data,
@@ -71,6 +85,7 @@ function EditAgen() {
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -104,8 +119,11 @@ function EditAgen() {
             }
             const editAgen = await axios.post("/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
-            if (editAgen.status === 200 && editAgen.data.response_code === 200) {
+            if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
                 // console.log(editAgen.data.response_data, 'ini update agen');
+                setShowModalEdit(true)
+            } else {
+                setUserSession(editAgen.data.response_new_token)
                 setShowModalEdit(true)
             }
             
@@ -113,28 +131,32 @@ function EditAgen() {
             // alert("Edit Data Agen Berhasil")
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
 
     const goDetail = () => {
         updateDetailAgen(inputHandle.id, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active)  
+        // RouteTo("/daftaragen")
         history.push("/daftaragen")        
         setShowModalEdit(false)       
     }
 
     const batalEdit = () => {
         setShowModalBatalEdit(false)
+        // RouteTo("/daftaragen")
         history.push("/daftaragen")
     }
 
     useEffect(() => {
         if (!access_token) {
-            history.push('/sign-in');
+            // RouteTo("/login")
+            history.push('/login');
             // window.location.reload();
         }
         getDetailAgen(agenId)
-    }, [access_token, agenId, getDetailAgen, history])
+    }, [access_token, agenId, getDetailAgen])
     
     const goBack = () => {
         window.history.back();

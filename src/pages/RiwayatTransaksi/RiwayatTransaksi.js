@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image, Modal, Container} from '@themesberg/react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { invoiceItems } from '../../data/tables';
-import { convertToRupiah, errorCatch, getToken } from '../../function/helpers';
+import { convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
@@ -15,6 +15,7 @@ function RiwayatTransaksi() {
 
     const history = useHistory()
     const access_token = getToken();
+    const user_role = getRole();
     const [dataListPartner, setDataListPartner] = useState([])
     const [dataListAgenFromPartner, setDataListAgenFromPartner] = useState([])
     const [dataRiwayatDanaMasuk, setDataRiwayatDanaMasuk] = useState([])
@@ -57,11 +58,15 @@ function RiwayatTransaksi() {
             }
             const listAgenFromPartner = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
             // console.log(listAgenFromPartner, "listagen");
-            if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200) {
+            if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length === 0) {
+                setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
+            } else {
+                setUserSession(listAgenFromPartner.data.response_new_token)
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -135,11 +140,15 @@ function RiwayatTransaksi() {
             }
             const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
             // console.log(listPartner, "ini list partner");
-            if (listPartner.status === 200 && listPartner.data.response_code === 200) {
+            if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
+                setDataListPartner(listPartner.data.response_data)
+            } else {
+                setUserSession(listPartner.data.response_new_token)
                 setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
             console.log(error);
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -163,7 +172,13 @@ function RiwayatTransaksi() {
             }
             const dataRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
             // console.log(dataRiwayatDanaMasuk, "dataRiwayatDanaMasuk");
-            if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200) {
+            if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
+                dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
+                setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
+                setDataRiwayatDanaMasuk(dataRiwayatDanaMasuk.data.response_data.results)
+                setPendingTransfer(false)
+            } else {
+                setUserSession(dataRiwayatDanaMasuk.data.response_new_token)
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
                 setDataRiwayatDanaMasuk(dataRiwayatDanaMasuk.data.response_data.results)
@@ -171,6 +186,7 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -186,7 +202,14 @@ function RiwayatTransaksi() {
             }
             const dataRiwayatSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             // console.log(dataRiwayatSettlement, "riwayatSettlement");
-            if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200) {
+            if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
+                dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
+                setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
+                setDataRiwayatSettlement(dataRiwayatSettlement.data.response_data.results.list_data)
+                setTotalSettlement(dataRiwayatSettlement.data.response_data.results.total_settlement)
+                setPendingSettlement(false)
+            } else {
+                setUserSession(dataRiwayatSettlement.data.response_new_token)
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
                 setDataRiwayatSettlement(dataRiwayatSettlement.data.response_data.results.list_data)
@@ -195,6 +218,7 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -227,13 +251,19 @@ function RiwayatTransaksi() {
             }
             const filterRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
             // console.log(filterRiwayatDanaMasuk, "filterRiwayatDanaMasuk");
-            if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200) {
+            if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
+                filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: idx + 1}))
+                setDataRiwayatDanaMasuk(filterRiwayatDanaMasuk.data.response_data.results)
+                setPendingTransfer(false)
+            } else {
+                setUserSession(filterRiwayatDanaMasuk.data.response_new_token)
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataRiwayatDanaMasuk(filterRiwayatDanaMasuk.data.response_data.results)
                 setPendingTransfer(false)
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -250,7 +280,13 @@ function RiwayatTransaksi() {
             }
             const filterSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             // console.log(filterSettlement, "ini filterSettlement");
-            if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200) {
+            if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
+                filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: idx + 1}))
+                setDataRiwayatSettlement(filterSettlement.data.response_data.results.list_data)
+                setTotalSettlement(filterSettlement.data.response_data.results.total_settlement)
+                setPendingSettlement(false)
+            } else {
+                setUserSession(filterSettlement.data.response_new_token)
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataRiwayatSettlement(filterSettlement.data.response_data.results.list_data)
                 setTotalSettlement(filterSettlement.data.response_data.results.total_settlement)
@@ -258,6 +294,7 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -291,7 +328,11 @@ function RiwayatTransaksi() {
 
     useEffect(() => {
         if (!access_token) {
+            // RouteTo("/login")
             history.push('/login');
+        }
+        if (user_role === 102) {
+            history.push('/404');
         }
         listPartner()
         riwayatDanaMasuk(activePageDanaMasuk)
@@ -309,12 +350,17 @@ function RiwayatTransaksi() {
             }
             const detailListTransfer = await axios.post("/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
             // console.log(detailListTransfer, "detailListTransfer");
-            if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200) {
+            if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length === 0) {
+                setDetailTransferDana(detailListTransfer.data.response_data)
+                setShowModalDetailTransferDana(true)
+            } else {
+                setUserSession(detailListTransfer.data.response_new_token)
                 setDetailTransferDana(detailListTransfer.data.response_data)
                 setShowModalDetailTransferDana(true)
             }
         } catch (error) {
             console.log(error)
+            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
