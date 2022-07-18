@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { getToken } from '../../function/helpers';
+import { convertToRupiah, getToken } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
@@ -53,7 +53,6 @@ function DetailPartner() {
           name: 'ID Agen',
           selector: row => row.agen_id,
           sortable: true,
-        //   cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
         },
         {
           name: 'Nama Agen',
@@ -102,7 +101,6 @@ function DetailPartner() {
         try {
           const auth = "Bearer " + getToken()
           const dataParams = encryptData(`{"partner_id":"${partnerId}"}`)
-        //   console.log(dataParams, 'ini data params');
           const headers = {
             'Content-Type':'application/json',
             'Authorization' : auth
@@ -306,12 +304,12 @@ function DetailPartner() {
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>Fee</td>
-                                    <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_fee} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(detailPartner.mpartner_fee)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee</td>
-                                    <td><input type='text'className='input-text-ez' value={detailPartner.mpartnerdtl_settlement_fee} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(detailPartner.mpartnerdtl_settlement_fee)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                             </tbody>
@@ -327,12 +325,12 @@ function DetailPartner() {
                     <div className='base-content mt-5'>   
                         <div className='search-bar mb-5'>
                             <Row>
-                                <Col xs={3} style={{width: '18%'}}>
+                                <Col xs={3} >
                                     <span className='h5'>
                                         Cari Data Agen :
                                     </span>
                                 </Col>
-                                <Col xs={2}>
+                                <Col xs={6}>
                                     <Form.Control
                                         placeholder="Masukkan Nama Agen"
                                         aria-label="Masukkan Nama Agen"
@@ -353,11 +351,6 @@ function DetailPartner() {
                             noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                             pagination
                             highlightOnHover
-                            // paginationResetDefaultPage={resetPaginationToggle}
-                            // subHeader
-                            // subHeaderComponent={subHeaderComponentMemo}
-                            // selectableRows
-                            // persistTableHead
                             onRowClicked={(listAgen) => {
                                 detailAgenHandler(listAgen.agen_id)
                             }}

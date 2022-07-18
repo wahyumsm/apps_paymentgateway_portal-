@@ -45,7 +45,6 @@ import DataTable from "react-data-table-component";
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 import checklistCircle from '../assets/img/icons/checklist_circle.svg';
 import CopyIcon from '../assets/icon/carbon_copy.svg'
-import GagalIcon from '../assets/icon/gagaltopup_icon.svg'
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -64,20 +63,14 @@ export default (props) => {
     }, 300);
   };
 
-  const navToDetailAccount = () => {
-    history.push("/detailakun");
-  };
-
   const [getBalance, setGetBalance] = useState({})
   const [showModalTopUp, setShowModalTopUp] = useState(false);
   const [showModalHistoryTopUp, setShowModalHistoryTopUp] = useState(false)
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
-  const [showGagalTopUp, setShowGagalTopUp] = useState(false)
   const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
   const handleCloseHistoryTopUp = () => setShowModalHistoryTopUp(false);
   const handleCloseRiwayatTopUp = () => setShowRiwayatTopUp(false)
-  const [topUp, setTopUp] = useState({})
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
   const access_token = getToken()
@@ -238,31 +231,36 @@ export default (props) => {
       selector: row => row.number,
       ignoreRowClick: true,
       button: true,
+      width: "50px"
     },
     {
       name: 'ID Transaksi',
       selector: row => row.code_trans,
       sortable: true,
+      width: "150px"
     },
     {
       name: 'Sumber Agen',
       selector: row => row.agen_name,
       sortable: true,
+      width: "170px"
     },
     {
       name: 'Kode Unik',
       selector: row => row.unique_code,
-      sortable: true,
+      sortable: true
     },
     {
       name: 'Nominal Top Up',
       selector: row => row.amount,
       sortable: true,
+      width: "170px"
     },
     {
       name: 'Tanggal Top Up',
       selector: row => row.topup_date,
-      sortable: true
+      sortable: true,
+      width: "170px"
     },
     {
       name: 'Status',
@@ -285,7 +283,7 @@ export default (props) => {
   const CustomLoader = () => (
     <div style={{ padding: '24px' }}>
       <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-      {/* <div>Loading...</div> */}
+      <div>Loading...</div>
     </div>
   );
 
@@ -603,7 +601,7 @@ export default (props) => {
                       <tr>
                           <td>Status</td>
                           <td>:</td>
-                          <td className='active-status-badge' style={{ fontWeight: 600 }}>{topUpResult.statusName}</td>
+                          <td className='active-status-topup' style={{ fontWeight: 600 }}>{topUpResult.statusName}</td>
                       </tr>
                   </Table>
               </div>
@@ -612,7 +610,6 @@ export default (props) => {
               </div>
           </Modal.Body>
         </Modal>
-
 
         <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
           <Modal.Header className="border-0">
@@ -637,16 +634,7 @@ export default (props) => {
                   customStyles={customStyles}
                   pagination
                   highlightOnHover
-                  // progressPending={pending}
                   progressComponent={<CustomLoader />}
-                  // paginationResetDefaultPage={resetPaginationToggle}
-                  // subHeader
-                  // subHeaderComponent={subHeaderComponentMemo}
-                  // selectableRows
-                  // persistTableHead
-                  // onRowClicked={(listAgen) => {
-                  //   detailAgenHandler(listAgen.agen_id)
-                  // }}
                 />
               </div>
             }

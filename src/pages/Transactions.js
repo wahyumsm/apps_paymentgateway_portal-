@@ -202,13 +202,14 @@ export default () => {
   const columnstransferDana = [
     {
         name: 'No',
-        selector: row => row.number
+        selector: row => row.number,
+        width: "67px"
     },
     {
         name: 'ID Transaksi',
         selector: row => row.id,
         cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
-      // sortable: true
+        // sortable: true
     },
     {
         name: 'Waktu',
@@ -353,7 +354,7 @@ export default () => {
   const CustomLoader = () => (
     <div style={{ padding: '24px' }}>
       <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-      {/* <div>Loading...</div> */}
+      <div>Loading...</div>
     </div>
   );
 

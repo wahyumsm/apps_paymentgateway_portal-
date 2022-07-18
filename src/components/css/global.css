@@ -254,7 +254,7 @@ body {
     color: #888888;
 }
 
-.berhasil-status-badge {
+.berhasil-status-badge, .active-status-topup {
     justify-content: center;
     align-items: center;
     padding: 6px 12px;
@@ -268,6 +268,10 @@ body {
     font-weight: 600;
     font-size: 14px;
     color: #077E86;
+}
+
+.active-status-topup {
+    text-align: center;
 }
 
 .gagal-status-badge {
@@ -328,6 +332,7 @@ body {
     font-weight: 600;
     font-size: 14px;
     color: #077E86;
+    text-align: center;
 }
 
 .gagal-status-topup {
@@ -344,4 +349,5 @@ body {
     font-weight: 600;
     font-size: 14px;
     color: #EE2E2C;
+    text-align: center;
 }

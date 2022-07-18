@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
 import DataTable from 'react-data-table-component';
-import { Col, Row, Form} from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Image} from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { getToken } from '../../function/helpers';
 import axios from 'axios';
+import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 
 function DaftarPartner() {
 
@@ -54,12 +55,14 @@ function DaftarPartner() {
             name: 'ID Partner',
             selector: row => row.partner_id,
             sortable: true,
-            cell: (row) => <Link style={{textDecoration: "underline", color: "#077E86"}} onClick={() => detailPartnerHandler(row.partner_id)}>{row.partner_id}</Link>
+            cell: (row) => <Link style={{textDecoration: "underline", color: "#077E86"}} onClick={() => detailPartnerHandler(row.partner_id)}>{row.partner_id}</Link>,
+            width: "130px"
         },
         {
             name: 'Nama Perusahaan',
             selector: row => row.nama_perusahaan,
-            sortable: true
+            sortable: true,
+            width: "230px"
         },
         {
             name: 'Email Perusahaan',
@@ -74,7 +77,7 @@ function DaftarPartner() {
         {
             name: 'Status',
             selector: row => row.status === "Aktif" ? <div className='active-status-badge'>Aktif</div> : <div className='inactive-status-badge'>Tidak Aktif</div>,
-            width: "200px",
+            width: "180px",
             sortable: true
         },
     ];
@@ -92,6 +95,13 @@ function DaftarPartner() {
         },
     };
 
+    const CustomLoader = () => (
+        <div style={{ padding: '24px' }}>
+          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+          <div>Loading...</div>
+        </div>
+    );
+
   return (
     <div className='main-content' style={{padding: "37px 27px 37px 27px"}}>
         <div className="head-title">
@@ -105,12 +115,12 @@ function DaftarPartner() {
         <div className='base-content'>   
             <div className='search-bar mb-5'>
                 <Row>
-                    <Col xs={3} style={{width: '18%'}}>
+                    <Col xs={3}>
                         <span className='h5'>
                             Cari Data Partner :
                         </span>
                     </Col>
-                    <Col xs={2}>
+                    <Col xs={6}>
                         <Form.Control
                             placeholder="Recipient's username"
                             aria-label="Recipient's username"
@@ -120,19 +130,24 @@ function DaftarPartner() {
                     </Col>
                 </Row>
             </div>
-            <div className="div-table">
-                <DataTable
-                    columns={columns}
-                    data={listPartner}
-                    customStyles={customStyles}
-                    noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                    pagination
-                    highlightOnHover
-                />
-            </div>
+            {
+                listPartner.length === 0 ?
+                <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
+                <div className="div-table">
+                    <DataTable
+                        columns={columns}
+                        data={listPartner}
+                        customStyles={customStyles}
+                        noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                        pagination
+                        highlightOnHover
+                        progressComponent={<CustomLoader />}
+                    />
+                </div>
+            }
         </div>
     </div>
-  )
+    )
 }
 
 export default DaftarPartner

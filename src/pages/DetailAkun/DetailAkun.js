@@ -5,12 +5,11 @@ import $ from 'jquery'
 import axios from 'axios';
 import { getToken } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
     const history = useHistory()
-    // const { partnerId } = useParams()
     console.log(dataAkun.mpartner_id)
     const [inputHandle, setInputHandle] = useState({
         callbackUrl: dataAkun.callback_url,
