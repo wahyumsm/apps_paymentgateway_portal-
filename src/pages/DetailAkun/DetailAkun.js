@@ -3,14 +3,14 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { getToken } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import { el } from 'date-fns/locale';
 function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
     const history = useHistory()
-    console.log(dataAkun.mpartner_id)
     const [inputHandle, setInputHandle] = useState({
         callbackUrl: dataAkun.callback_url,
     })
@@ -30,14 +30,19 @@ function DetailAkun() {
                 'Authorization' : auth
             }
             const userDetailPartner = await axios.post(url, { data: "" }, { headers: headers })
-            console.log(userDetailPartner, 'ini data user ');
-            if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200) {
+            // console.log(userDetailPartner, 'ini data user ');
+            if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length === 0) {
+                setDataAkun(userDetailPartner.data.response_data)
+            } else {
+                setUserSession(userDetailPartner.data.response_new_token)
                 setDataAkun(userDetailPartner.data.response_data)
             }
             
         } catch (error) {
             console.log(error)
-        }
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
+    }
     }
 
     useEffect(()=>{
@@ -54,18 +59,21 @@ function DetailAkun() {
                 'Authorization' : auth
             }
             const editCallback = await axios.post("/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
-            console.log(editCallback, 'ini add Callback');
-            if(editCallback.status === 200 && editCallback.data.response_code === 200) {
+            // console.log(editCallback, 'ini add Callback');
+            if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
+                // RouteTo('/detailakun')
                 history.push("/detailakun")
                 // alert("Edit Data Partner Berhasil Ditambahkan")
-            }          
+            } else {
+                setUserSession(editCallback.data.response_new_token)
+                history.push("/detailakun")
+            }
             
             alert("Edit URL Berhasil")
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/login')
-            }
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -85,10 +93,8 @@ function DetailAkun() {
         }
     }
 
-    console.log(dataAkun);
-
   return (
-    <div className='container-content'>
+    <div className='container-content mt-5'>
         <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Akun</span>
         <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
             <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => detailAkunTabs(true)} id="detailakuntab">
@@ -193,7 +199,7 @@ function DetailAkun() {
                 <span className='head-title'>Rekening</span>
                 <br/>
                 <br/>
-                <div className='base-content'>
+                <div className='base-content mb-5'>
                     <table style={{width: '100%', marginLeft: 'unset'}} className="table-form">
                         <thead></thead>
                         <tbody>
@@ -219,7 +225,7 @@ function DetailAkun() {
             </> : 
             <>
                 <div className='konfigurasi-section' style={{marginTop: 24}}>
-                  <hr className='hr-style' style={{marginTop: -25}}/>
+                    <hr className='hr-style' style={{marginTop: -25}}/>
                     <div className='base-content'>
                         <span>You will need to know your <b>Partner ID</b> and <b>Private Key</b> to communicate with Midtrans. Please use the Development server while you are still in development.</span>
                         <br/>

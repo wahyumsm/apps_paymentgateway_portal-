@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCashRegister, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Button, Dropdown, ButtonGroup } from '@themesberg/react-bootstrap';
@@ -18,7 +18,9 @@ import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, Pr
 import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
 import {ReactChart} from '../../components/ReactChart';
-import { getToken } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken } from "../../function/helpers";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -31,7 +33,9 @@ ChartJS.register(
 
 export default () => {
 
+  const history = useHistory()
   const access_token = getToken()
+  const user_role = getRole()
 
   const options = {
     responsive: true,
@@ -74,6 +78,46 @@ export default () => {
   //     ],
   //   }
   // }
+
+  async function ringkasanData() {
+    try {
+      const auth = 'Bearer ' + getToken();
+      const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': auth
+      }
+      const ringkasanData = await axios.post("/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
+      // console.log(ringkasanData);
+      // if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200) {
+        
+      // }
+    } catch (error) {
+      console.log(error)
+      history.push(errorCatch(error.response.status))
+    }
+  }
+
+  useEffect(() => {
+    if (!access_token) {
+      history.push('/login');
+    }
+    if (user_role === 102) {
+      history.push('/404');
+    }
+    ringkasanData()
+  }, [access_token, user_role])
+  
+
+  if(access_token) {
+    return (
+      <div className="py-4 mt-6 content-page">
+        <div className="head-title">
+          <h2 className="h5 mb-2">Ringkasan</h2>
+          <p style={{ display: "flex", justifyContent: "center", marginTop: 150 }}>There is no data in this page</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

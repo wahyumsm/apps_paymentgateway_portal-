@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToRupiah, getToken } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
+import breadcrumbsIcon from '../../assets/icon/breadcrumbs_icon.svg';
 
 function TambahPartner() {
     const [addPartner, setAddPartner] = useState({})
     const history = useHistory()
     const access_token = getToken()
+    const user_role = getRole()
     const [inputHandle, setInputHandle] = useState({
         namaPerusahaan: "",
         emailPerusahaan: "",
@@ -43,18 +45,19 @@ function TambahPartner() {
                 'Authorization' : auth
             }
             const addPartner = await axios.post("/Partner/SavePartner", { data: dataParams }, { headers: headers })
-            console.log(addPartner, 'ini add partner');
-            if(addPartner.status === 200 && addPartner.data.response_code === 200) {
-                // setAddPartner(addPartner.data.response_data)
+            // console.log(addPartner, 'ini add partner');
+            if(addPartner.status === 200 && addPartner.data.response_code === 200 && addPartner.data.response_new_token.length === 0) {
                 history.push("/daftarpartner")
-            }          
+            } else {
+                setUserSession(addPartner.data.response_new_token)
+                history.push("/daftarpartner")
+            }
             
             alert("Partner Baru Berhasil Ditambahkan")
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/login')
-            }
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -63,13 +66,17 @@ function TambahPartner() {
         history.push('/login');
         // window.location.reload();
         }
-    }, [access_token, history])
+        if (user_role === 102) {
+            history.push('/404');
+        }
+    }, [access_token, user_role])
     
 
     return (
-        <div className='main-content' style={{ padding: "37px 27px" }}>
+        <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
+            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Tambah Agen</span>
             <div className="head-title">
-                <h4 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Tambah Partner</h4>
+                <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Tambah Partner</h4>
                 <h5 style={{ fontFamily: "Exo" }}>Profil Perusahaan</h5>
             </div>
             <div className='base-content' style={{ width:"100%", padding: 50 }}>
@@ -316,7 +323,12 @@ function TambahPartner() {
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
-                <button onClick={() => tambahPartner(inputHandle.namaPerusahaan, inputHandle.emailPerusahaan, inputHandle.phoneNumber, inputHandle.alamat, inputHandle.noNpwp, inputHandle.namaNpwp, inputHandle.nama, inputHandle.noHp, inputHandle.active, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.fee, inputHandle.settlementFee)}  className={(inputHandle.namaPerusahaan.length === 0 || inputHandle.emailPerusahaan.length === 0 || inputHandle.phoneNumber.length === 0 || inputHandle.alamat.length === 0 || inputHandle.noNpwp.length === 0 || inputHandle.namaNpwp.length === 0 || inputHandle.nama.length === 0 || inputHandle.noHp.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.fee.length === 0 || inputHandle.settlementFee.length === 0) ? "btn-off" : "add-button"} disabled={inputHandle.namaPerusahaan.length === 0 || inputHandle.emailPerusahaan.length === 0 || inputHandle.phoneNumber.length === 0 || inputHandle.alamat.length === 0 || inputHandle.noNpwp.length === 0 || inputHandle.namaNpwp.length === 0 || inputHandle.nama.length === 0 || inputHandle.noHp.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.fee.length === 0 || inputHandle.settlementFee.length === 0}>
+                <button
+                    onClick={() => tambahPartner(inputHandle.namaPerusahaan, inputHandle.emailPerusahaan, inputHandle.phoneNumber, inputHandle.alamat, inputHandle.noNpwp, inputHandle.namaNpwp, inputHandle.nama, inputHandle.noHp, inputHandle.active, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.fee, inputHandle.settlementFee)}
+                    style={{ width: 136 }}
+                    className={(inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && inputHandle.fee.length !== 0 && inputHandle.settlementFee.length !== 0) ? 'btn-ez-on' : 'btn-ez'}
+                    disabled={inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && inputHandle.fee.length !== 0 && inputHandle.settlementFee.length !== 0}
+                >
                     Tambahkan
                 </button>
             </div>
