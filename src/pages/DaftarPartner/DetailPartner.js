@@ -3,25 +3,25 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { convertToRupiah, getToken } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
 
 function DetailPartner() {
+
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const history = useHistory()
+    const user_role = getRole()
     const access_token = getToken()
     const { partnerId } = useParams()
     const [listAgen, setListAgen] = useState([])
     const [detailPartner, setDetailPartner] = useState([])
-    console.log(partnerId, 'ini agen id');
+    // console.log(partnerId, 'ini agen id');
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getDetailPartner(partnerId) {
         try {
-            // const agen_id = "EDS2940181"
-            // console.log(agenId, 'ini agen id di func');
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"partner_id":"${partnerId}"}`)
             const headers = {
@@ -29,16 +29,18 @@ function DetailPartner() {
                 'Authorization' : auth
             }
             const detailPartner = await axios.post("/Partner/EditPartner", { data: dataParams }, { headers: headers })
-            console.log(detailPartner, 'ini detail partner');
-            if (detailPartner.status === 200 && detailPartner.data.response_code === 200) {
+            // console.log(detailPartner, 'ini detail partner');
+            if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
                 // console.log(detailPartner.data, 'ini detail agen');
+                setDetailPartner(detailPartner.data.response_data)
+            } else {
+                setUserSession(detailPartner.data.response_new_token)
                 setDetailPartner(detailPartner.data.response_data)
             }
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/login')
-            }
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
         }
     } 
 
@@ -106,26 +108,32 @@ function DetailPartner() {
             'Authorization' : auth
           }
           const listAgen = await axios.post("/Partner/GetListAgen", { data: dataParams }, { headers: headers })
-          console.log(listAgen, 'ini data agen');
-          if (listAgen.status === 200 && listAgen.data.response_code === 200) {
+        //   console.log(listAgen, 'ini data agen');
+          if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
+            listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+            setListAgen(listAgen.data.response_data)
+          } else {
+            setUserSession(listAgen.data.response_new_token)
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
           }
         } catch (error) {
           console.log(error)
-          if (error.response.status === 401) {
-            history.push('/login')
-          }
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
         }
     }
 
     useEffect(() => {
         if (!access_token) {
-        history.push('/login');
-      }
+            history.push('/login');
+        }
+        if (user_role === 102) {
+            history.push('/404');
+        }
         getDetailPartner(partnerId)
         getDataAgen(partnerId)
-      }, [partnerId])
+    }, [access_token, user_role, partnerId])
 
     const customStyles = {
         headCells: {
@@ -139,10 +147,12 @@ function DetailPartner() {
     };
 
     function detailAgenHandler(agenId) {
+        // RouteTo(`/detailagen/${agenId}`)
         history.push(`/detailagen/${agenId}`)
       }
 
     function editPartner(partnerId) {
+        // RouteTo(`/editpartner/${partnerId}`)
         history.push(`/editpartner/${partnerId}`)
     }
 
@@ -163,7 +173,7 @@ function DetailPartner() {
     }
 
     return (
-        <div className='container-content'>
+        <div className='container-content mt-5'>
             {isDetailAkun ? <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Partner &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner</span>
             : <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Partner &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen</span>}
             <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
@@ -322,7 +332,8 @@ function DetailPartner() {
                 </div>
                 </> : 
                 <> 
-                    <div className='base-content mt-5'>   
+                    <hr className='hr-style' style={{marginTop: -2}}/>
+                    <div className='base-content mt-5 mb-5'>   
                         <div className='search-bar mb-5'>
                             <Row>
                                 <Col xs={3} >

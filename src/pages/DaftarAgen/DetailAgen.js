@@ -4,8 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, getToken } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./DetailAgen.css"
 
 function DetailAgen() {
@@ -24,14 +25,16 @@ function DetailAgen() {
                 'Authorization' : auth
             }
             const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
-            if (detailAgen.status === 200 && detailAgen.data.response_code === 200) {
+            if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
+                setDetailAgen(detailAgen.data.response_data)
+            } else {
+                setUserSession(detailAgen.data.response_new_token)
                 setDetailAgen(detailAgen.data.response_data)
             }
         } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/login')
-            }
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -44,13 +47,15 @@ function DetailAgen() {
     }, [agenId])
 
     function editAgen(agenId) {
+        // RouteTo(`/editagen/${agenId}`)
         history.push(`/editagen/${agenId}`)
     }
     
     return (
-        <div className='main-content' style={{ padding: "37px 27px" }}>
+        <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
+            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
             <div className="head-title">
-                <h4 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
+                <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
                 {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
             </div>
             <div className='base-content' style={{ width:"93%", padding: 50 }}>

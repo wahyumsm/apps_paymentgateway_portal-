@@ -1,11 +1,11 @@
 
 export const Routes = {
     // pages
-    DashboardOverview: { path: "/dash" },
+    DashboardOverview: { path: "/" },
     // DashboardOverview: { path: "/dashboard" },
     RiwayatTransaksi: { path: "/riwayattransaksi"},
     DetailAkun : { path: "/detailakun"},
-    Transactions: { path: "/" },
+    Transactions: { path: "/laporan" },
     Settings: { path: "/settings" },
     Upgrade: { path: "/upgrade" },
     BootstrapTables: { path: "/tables/bootstrap-tables" },
@@ -24,7 +24,7 @@ export const Routes = {
     ForgotPassword: { path: "/examples/forgot-password" },
     ResetPassword: { path: "/examples/reset-password" },
     Lock: { path: "/examples/lock" },
-    NotFound: { path: "/examples/404" },
+    NotFound: { path: "/404" },
     ServerError: { path: "/examples/500" },
 
     // docs

@@ -35,9 +35,9 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, convertToRupiah, getToken, removeUserSession } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession } from "../function/helpers";
 import axios from "axios";
-import { getUserDetail } from "../redux/ActionCreators/UserDetailAction";
+import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
 import DropdownToggle from "@themesberg/react-bootstrap/lib/esm/DropdownToggle";
 import { agenLists } from "../data/tables";
@@ -52,6 +52,7 @@ export default (props) => {
     (acc, notif) => acc && notif.read,
     true
   );
+  const user_role = getRole()
   const [listRiwayat, setListRiwayat] = useState([])
   const history = useHistory();
   const userDetail = useSelector((state) => state.userDetailReducer.userDetail);
@@ -61,6 +62,11 @@ export default (props) => {
     setTimeout(() => {
       setNotifications(notifications.map((n) => ({ ...n, read: true })));
     }, 300);
+  };
+
+  const navToDetailAccount = () => {
+    history.push("/detailakun");
+    // RouteTo("/detailakun")
   };
 
   const [getBalance, setGetBalance] = useState({})
@@ -133,16 +139,15 @@ export default (props) => {
         formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
         formData.append('amount', amount)
         formData.append('reffNo', reffNo)
-        console.log(formData, "ini form data")
-        for (var pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
-        }
+        // for (var pair of formData.entries()) {
+        //     console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
+        // }
         const headers = {
             'Content-Type':'multipart/form-data',
             'Authorization' : auth
         }
         const topUp = await axios.post("/Partner/TopupConfirmation", formData, { headers: headers })
-        console.log(topUp, 'ini topup');
+        // console.log(topUp, 'ini topup');
         if(topUp.status === 200 && topUp.data.response_code === 200) {
           setTopUpResult(topUp.data.response_data.results)
           setShowModalTopUp(false)
@@ -166,7 +171,7 @@ export default (props) => {
               'Authorization' : auth
           }
           const getBalance = await axios.post("/partner/GetBalance", { data: "" }, { headers: headers })
-          console.log(getBalance, 'ini data get balance');
+          // console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
@@ -185,7 +190,7 @@ export default (props) => {
               'Authorization' : auth
           }
           const listRiwayat = await axios.post("/partner/TopUpHistory", { data: "" }, { headers: headers })
-          console.log(listRiwayat, 'ini data user ');
+          // console.log(listRiwayat, 'ini data user ');
           if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setListRiwayat(listRiwayat.data.response_data)
@@ -198,8 +203,9 @@ export default (props) => {
 
     useEffect(() => {
       if (!access_token) {
-      history.push('/login');
-    }
+        history.push('/login');
+      }
+      dispatch(GetUserDetail("/Account/GetUserProfile"));
       GetBalanceHandle()
       listRiwayatTopUp()
     }, [])
@@ -222,6 +228,8 @@ export default (props) => {
       }
     } catch (error) {
       console.log(error);
+      // RouteTo(errorCatch(error.response.status));
+      // history.push(errorCatch(error.response.status))
     }
   }
 
@@ -293,10 +301,9 @@ export default (props) => {
   };
 
   const Notification = (props) => {
-  const { link, sender, image, time, message, read = false } = props;
-  const readClassName = read ? "" : "text-danger";
+    const { link, sender, image, time, message, read = false } = props;
+    const readClassName = read ? "" : "text-danger";
 
- 
     return (
       <ListGroup.Item action href={link} className="border-bottom border-light">
         <Row className="align-items-center">
@@ -322,53 +329,51 @@ export default (props) => {
     );
   };
 
-  useEffect(() => {
-    dispatch(getUserDetail("/Account/GetUserProfile"));
-  }, []);
-
   return (
     <Navbar
       variant="dark"
       expanded
-      className="ps-0 pe-2 pb-0"
-      style={{ backgroundColor: "#ffffff" }}
+      className="ps-0 pe-4 pb-2 pt-2"
+      style={{ backgroundColor: "#ffffff", boxShadow: "0 2px 7px 0 rgba(0,0,0,.2)", position: "fixed", top: 0, left: 260, right: 0, zIndex: 999 }}
     >
       <Container fluid className="px-0">
         <div className="d-flex justify-content-between w-100">
           <div className="d-flex align-items-center"></div>
           <Nav className="align-items-center">
 
-            {/* Saldo */}
-            <Dropdown as={Nav.Item}>
-              <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0">
-                <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
-                  <span className="mb-0 font-small">Saldo: </span>
-                  <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
-                  <img
-                    src={arrowDown}
-                    alt="arrow_down"
-                    style={{ marginLeft: 10 }}
-                  />
-                </div>
-              </Dropdown.Toggle>
-              <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
-                <Dropdown.Item
-                  onClick={() => setShowModalTopUp(true)}
-                  className="fw-bold"
-                >
-                  <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => toHistoryBalance()}
-                  className="fw-bold"
-                >
-                  <img alt="" src={riwayatSaldoIcon} /> Riwayat
-                </Dropdown.Item>
-              </Dropdown.Menu>
+            {
+              (user_role === "102") && 
+              <Dropdown as={Nav.Item}>
+                <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
+                  <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
+                    <span className="mb-0 font-small">Saldo: </span>
+                    <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
+                    <img
+                      src={arrowDown}
+                      alt="arrow_down"
+                      style={{ marginLeft: 10 }}
+                    />
+                  </div>
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
+                  <Dropdown.Item
+                    onClick={() => setShowModalTopUp(true)}
+                    className="fw-bold"
+                  >
+                    <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => toHistoryBalance()}
+                    className="fw-bold"
+                  >
+                    <img alt="" src={riwayatSaldoIcon} /> Riwayat
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            }
 
-              {/* notification */}
-            </Dropdown>
-            <Dropdown as={Nav.Item} onToggle={markNotificationsAsRead}>
+            {/* notification */}
+            {/* <Dropdown as={Nav.Item} onToggle={markNotificationsAsRead}>
               <Dropdown.Toggle
                 as={Nav.Link}
                 className="text-dark icon-notifications me-lg-3"
@@ -397,7 +402,7 @@ export default (props) => {
                   </Dropdown.Item>
                 </ListGroup>
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
 
             {/* profile */}
             <Dropdown as={Nav.Item}>
@@ -423,13 +428,15 @@ export default (props) => {
                 className="user-dropdown dropdown-menu-right mt-2"
                 style={{ paddingRight: 20, width: "auto" }}
               >
-                <Dropdown.Item className="fw-bold" style={{ width: "100%" }}>
-                  <img alt="" src={userIcon} /> {userDetail.muser_name} (
-                  {userDetail.mrole_desc})
+                <Dropdown.Item className="fw-bold" style={{ width: "100%", pointerEvents: "none" }}>
+                  <img alt="" src={userIcon} /> {userDetail.muser_name} ({userDetail.mrole_desc})
                 </Dropdown.Item>
-                {/* <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
-                  <img alt="" src={iconDetailAkun}/> Detail Akun
-                </Dropdown.Item> */}
+                {
+                  (user_role === "102") &&
+                  <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
+                    <img alt="" src={iconDetailAkun}/> Detail Akun
+                  </Dropdown.Item>
+                }
                 <Dropdown.Divider />
 
                 <Dropdown.Item
