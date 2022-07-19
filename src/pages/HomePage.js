@@ -58,6 +58,7 @@ import TambahPartner from './DaftarPartner/TambahPartner';
 import DetailPartner from './DaftarPartner/DetailPartner';
 import EditPartner from './DaftarPartner/EditPartner';
 import EditAgen from './DaftarAgen/EditAgen';
+import AddUser from './ManagementUser/AddUser';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -135,6 +136,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DetailAkun.path} component={DetailAkun}/>
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
+    <RouteWithSidebar exact path={Routes.AddUser.path} component={AddUser}/>
 
     {/* components */}
     <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} />
