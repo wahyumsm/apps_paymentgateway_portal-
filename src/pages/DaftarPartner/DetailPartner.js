@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
@@ -135,7 +135,7 @@ function DetailPartner() {
         }
         getDetailPartner(partnerId)
         getDataAgen(partnerId)
-    }, [partnerId])
+    }, [access_token, user_role, partnerId])
 
     const customStyles = {
         headCells: {
@@ -190,7 +190,7 @@ function DetailPartner() {
                 isDetailAkun ? 
                 <>
                 <div className='detail-akun-section'>        
-                    {/* <hr className='hr-style' style={{marginTop: -2}}/> */}
+                    <hr className='hr-style' style={{marginTop: -2}}/>
                     <br/>
                     <span className='head-title'>Profil Perusahaan</span>
                     <br/>
@@ -334,6 +334,7 @@ function DetailPartner() {
                 </div>
                 </> : 
                 <> 
+                    <hr className='hr-style' style={{marginTop: -2}}/>
                     <div className='base-content mt-5 mb-5'>   
                         <div className='search-bar mb-5'>
                             <Row>

@@ -18,8 +18,9 @@ import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, Pr
 import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
 import {ReactChart} from '../../components/ReactChart';
-import { getRole, getToken } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -78,6 +79,24 @@ export default () => {
   //   }
   // }
 
+  async function ringkasanData() {
+    try {
+      const auth = 'Bearer ' + getToken();
+      const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': auth
+      }
+      const ringkasanData = await axios.post("/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
+      // console.log(ringkasanData);
+      // if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200) {
+        
+      // }
+    } catch (error) {
+      console.log(error)
+      history.push(errorCatch(error.response.status))
+    }
+  }
+
   useEffect(() => {
     if (!access_token) {
       history.push('/login');
@@ -85,7 +104,8 @@ export default () => {
     if (user_role === 102) {
       history.push('/404');
     }
-  }, [])
+    ringkasanData()
+  }, [access_token, user_role])
   
 
   if(access_token) {

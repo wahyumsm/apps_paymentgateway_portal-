@@ -31,7 +31,6 @@ export default (props = {}) => {
   const [show, setShow] = useState(false);
   const showClass = show ? "show" : "";
   const userAccessMenu = useSelector(state => state.userAccessMenuReducer.userAccessMenu)
-  const user_role = getRole()
 
   const onCollapse = () => setShow(!show);
 

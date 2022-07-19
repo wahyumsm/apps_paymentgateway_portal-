@@ -5,7 +5,7 @@ import { Col, Row, Form} from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
@@ -54,7 +54,7 @@ function DaftarPartner() {
             history.push('/404');
         }
         listDataPartner('/Partner/ListPartner')
-    },[])
+    },[access_token, user_role])
 
     function detailPartnerHandler(partnerId) {
         // RouteTo(`/detailpartner/${partnerId}`)
@@ -121,7 +121,7 @@ function DaftarPartner() {
             </button>
         </div>
         <div className='base-content'>   
-            <div className='search-bar mb-5'>
+            {/* <div className='search-bar mb-5'>
                 <Row>
                     <Col xs={3} style={{width: '18%'}}>
                         <span className='h5'>
@@ -137,7 +137,7 @@ function DaftarPartner() {
                             />
                     </Col>
                 </Row>
-            </div>
+            </div> */}
             <div className="div-table">
                 <DataTable
                     columns={columns}

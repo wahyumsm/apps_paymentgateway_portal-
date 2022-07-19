@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row, Modal} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
@@ -99,7 +99,7 @@ function EditPartner() {
     const columns = [
         {
           name: 'No',
-          selector: row => row.id,
+          selector: row => row.number,
           ignoreRowClick: true,
           button: true,
         },
@@ -231,6 +231,7 @@ function EditPartner() {
           const listAgen = await axios.post("/Partner/GetListAgen", { data: dataParams }, { headers: headers })
         //   console.log(listAgen, 'ini data agen');
           if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
+            listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
           } else {
             setUserSession(listAgen.data.response_new_token)
@@ -253,7 +254,7 @@ function EditPartner() {
         }
         getDetailPartner(partnerId)
         getDataAgen(partnerId)
-    }, [partnerId])
+    }, [access_token, user_role, partnerId])
 
     const customStyles = {
         headCells: {
@@ -306,7 +307,7 @@ function EditPartner() {
                 isDetailAkun ? 
                 <>
                 <div className='detail-akun-section'>        
-                    {/* <hr className='hr-style' style={{marginTop: -2}}/> */}
+                    <hr className='hr-style' style={{marginTop: -2}}/>
                     <br/>
                     <span className='head-title'>Profil Perusahaan</span>
                     <br/>
@@ -455,6 +456,7 @@ function EditPartner() {
                     </div>
                 </> : 
                 <> 
+                    <hr className='hr-style' style={{marginTop: -2}}/>
                     <div className='base-content mt-5 mb-5'>   
                         <div className='search-bar mb-5'>
                             <Row>

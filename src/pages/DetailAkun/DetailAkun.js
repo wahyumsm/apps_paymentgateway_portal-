@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import { useHistory, useParams } from 'react-router-dom';
 import { el } from 'date-fns/locale';
@@ -108,7 +108,7 @@ function DetailAkun() {
             isDetailAkun ? 
             <>
             <div className='detail-akun-section'>        
-                {/* <hr className='hr-style' style={{marginTop: -2}}/> */}
+                <hr className='hr-style' style={{marginTop: -2}}/>
                 <br/>
                 <span className='head-title'>Profil Perusahaan</span>
                 <br/>
@@ -225,7 +225,7 @@ function DetailAkun() {
             </> : 
             <>
                 <div className='konfigurasi-section' style={{marginTop: 24}}>
-                    {/* <hr className='hr-style' style={{marginTop: -25}}/> */}
+                    <hr className='hr-style' style={{marginTop: -25}}/>
                     <div className='base-content'>
                         <span>You will need to know your <b>Partner ID</b> and <b>Private Key</b> to communicate with Midtrans. Please use the Development server while you are still in development.</span>
                         <br/>

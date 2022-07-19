@@ -41,7 +41,7 @@ function TambahAgen() {
     async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee) {
         try {         
 
-            console.log(inputHandle.email.length)
+            // console.log(inputHandle.email.length)
 
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}}`)

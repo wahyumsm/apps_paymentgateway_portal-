@@ -69,7 +69,7 @@ function TambahPartner() {
         if (user_role === 102) {
             history.push('/404');
         }
-    }, [])
+    }, [access_token, user_role])
     
 
     return (
