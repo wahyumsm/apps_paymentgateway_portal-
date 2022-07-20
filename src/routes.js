@@ -17,6 +17,7 @@ export const Routes = {
     TambahPartner : { path: "/tambahpartner" },
     DetailPartner : { path: "/detailpartner/:partnerId" },
     ListUser : { path: "/managementuser" },
+    UpdateUser : { path: "/updateuser/:muserId" },
     EditPartner : { path: "/editpartner/:partnerId" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },

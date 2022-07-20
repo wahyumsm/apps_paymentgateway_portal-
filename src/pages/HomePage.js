@@ -59,6 +59,7 @@ import DetailPartner from './DaftarPartner/DetailPartner';
 import EditPartner from './DaftarPartner/EditPartner';
 import EditAgen from './DaftarAgen/EditAgen';
 import ListUser from './ManagementUser/ListUser';
+import UpdateUser from './ManagementUser/UpdateUser';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -135,6 +136,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.EditPartner.path} component={EditPartner}/>
     <RouteWithSidebar exact path={Routes.DetailAkun.path} component={DetailAkun}/>
     <RouteWithSidebar exact path={Routes.ListUser.path} component={ListUser}/>
+    <RouteWithSidebar exact path={Routes.UpdateUser.path} component={UpdateUser} />
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
 
