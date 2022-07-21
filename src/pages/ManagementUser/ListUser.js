@@ -121,7 +121,7 @@ function ListUser () {
   );
 
     const tambahPartner = () => {
-        history.push("/managementuser")
+        history.push("/adduser")
     }
 
   return (

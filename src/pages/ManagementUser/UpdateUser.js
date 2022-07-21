@@ -4,6 +4,7 @@ import { errorCatch, getToken, setUserSession } from "../../function/helpers";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
+import ro from "date-fns/esm/locale/ro/index.js";
 
 function UpdateUser() {
     const history = useHistory();
@@ -11,54 +12,93 @@ function UpdateUser() {
     const { muserId } = useParams()
     const [listRole, setListRole] = useState([])
     const [listPartner, setListPartner] = useState([])
+    const [editUser, setEditUser] = useState([])
     const [detailUser, setDetailUser] = useState([])
     const [inputHandle, setInputHandle] = useState({
-        
+        id: muserId,
+        namaUser: detailUser.name,
+        emailUser: detailUser.email,
+        roleUser: 0,
+        isActive: detailUser.is_active,
     })
+    const roleeee = [{ role_id: detailUser.role_id, role_name: detailUser.role_name }]
+    const newArrayObj = listRole.map(obj => roleeee.find(o => o.role_id === obj.role_id) || obj)
+    console.log(newArrayObj);
+    
+    function roleAwal (id, role_id) {
+        let element = document.getElementById(id)
+        element.value = role_id
+        console.log("panggil")
+    }    
+
+    function handleChange(e) {
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name]: e.target.value,
+        });
+    }
 
     async function getDetailUser(muserId) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"muser_id":"${muserId}"}`)
             const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
+                'Content-Type': 'application/json',
+                'Authorization': auth
             }
             const detailUser = await axios.post("/Account/DetailUserAccess", { data: dataParams }, { headers: headers })
             console.log(detailUser, 'ini detail user manage');
             if (detailUser.status === 200 && detailUser.data.response_code === 200 && detailUser.data.response_new_token.length === 0) {
                 // console.log(detailAgen.data.response_data, 'ini detail agen');
-                if (detailUser.data.response_data.mpartner_is_active === true) {
-                    detailUser.data.response_data = {
-                        ...detailUser.data.response_data,
-                        isActive: "Aktif"
-                    }
-                } else {
-                    detailUser.data.response_data = {
-                        ...detailUser.data.response_data,
-                        isActive: "Tidak Aktif"
-                    }
-                }
                 setDetailUser(detailUser.data.response_data)
             } else {
                 setUserSession(detailUser.data.response_new_token)
-                if (detailUser.data.response_data.mpartner_is_active === true) {
-                    detailUser.data.response_data = {
-                        ...detailUser.data.response_data,
-                        isActive: "Aktif"
-                    }
-                } else {
-                    detailUser.data.response_data = {
-                        ...detailUser.data.response_data,
-                        isActive: "Tidak Aktif"
-                    }
-                }
                 setDetailUser(detailUser.data.response_data)
             }
         } catch (error) {
             console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function editUserHandle(id, namaUser, emailUser, roleUser, isActive) {
+        try {
+            if (namaUser === undefined) {
+                namaUser = detailUser.name
+            }
+            if (emailUser === undefined) {
+                emailUser = detailUser.email
+            }
+            if (roleUser === undefined) {
+                roleUser = detailUser.role_id
+            }
+            if (isActive === undefined) {
+                isActive = detailUser.is_active
+            }
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"muser_id":"${id}", "name": "${namaUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}"}`)
+            // console.log(dataParams, 'ini data params');
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const editUser = await axios.post("/Account/UpdateUser", { data: dataParams }, { headers: headers })
+            console.log(editUser, 'ini edit user management');
+            if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length === 0) {
+                // RouteTo('/daftarpartner')
+                history.push("/managementuser")
+                // alert("Edit Data Partner Berhasil Ditambahkan")
+            } else {
+                setUserSession(editUser.data.response_new_token)
+                history.push("/managementuser")
+            }
+
+            alert("Edit Data Partner Berhasil")
+        } catch (error) {
+            console.log(error)
+            // RouteTo(errorCatch(error.response.status))
+            // history.push(errorCatch(error.response.status))
         }
     }
 
@@ -105,10 +145,13 @@ function UpdateUser() {
         if (!access_token) {
             history.push('/login');
         }
+        if (inputHandle.roleUser == 102) {
+            getListPartner()
+        }
         getDetailUser(muserId)
         getMenuRole()
-        getListPartner()
-    }, [access_token, muserId])
+        roleAwal("roleUser", roleeee.role_id)
+    }, [access_token, muserId, inputHandle.roleUser])
 
     const goBack = () => {
         window.history.back();
@@ -125,34 +168,36 @@ function UpdateUser() {
                     <Row className="my-3">
                         <Col xs={12} className="mt-2">
                             <h6>Nama</h6>
-                            <input type="text" className="input-text-user" defaultValue={(detailUser.name)} placeholder="Input nama" />
+                            <input name="nameUser" type="text" className="input-text-user" onChange={handleChange} defaultValue={(detailUser.name)} placeholder="Input nama" />
                         </Col>
                         <Col xs={12} className="mt-2">
                             <h6>Email</h6>
-                            <input type="text" className="input-text-user" placeholder="Input email" />
-                        </Col>
-                        <Col xs={12} className="mt-2">
-                            <h6>Password</h6>
-                            <input type="text" className="input-text-user" placeholder="Input password" />
+                            <input name="emailUser" type="text" className="input-text-user" onChange={handleChange} defaultValue={(detailUser.email)} placeholder="Input email" />
                         </Col>
                         <Col xs={12} className="mt-2">
                             <h6>Role</h6>
-                            <Form.Select name="statusDanaMasuk" className='input-text-user' style={{ display: "inline" }} >
-                                <option value="">Select Role</option>
-                                {listRole.map((data, idx) => {
+                            <Form.Select id="roleUser" name="roleUser" className='input-text-user' onChange={handleChange} defaultValue={(detailUser.role_id)} style={{ display: "inline" }} >
+                                {/* <option defaultValue>{detailUser.role}</option> */}
+                                {/* {listRole.find((data, id) => {
+                                    if (data.role_id == roleeee.role_id) data[id] = roleeee[id]
+                                    console.log(listRole);
+                                }) */}
+
+                                {newArrayObj.map((data, idx) => {
                                     return (
-                                        <option defaultValue value={data.role_id}>{data.role_name}</option>
+                                        <option key={idx} value={data.role_id}>{data.role_name}</option>
                                     )
-                                })}
+                                })
+                                }
                             </Form.Select>
                         </Col>
-                        <Col xs={12} className="mt-2">
-                            <h6>ID Partner</h6>
-                            <Form.Select className="input-text-user" style={{ display: "inline" }} >
+                        <Col xs={12} className="mt-2" style={{ display: inputHandle.roleUser == 102 ? "" : "none" }}>
+                            <h6>Partner</h6>
+                            <Form.Select name="" className="input-text-user" style={{ display: "inline" }} >
                                 <option value="">Select Partner</option>
                                 {listPartner.map((data, idx) => {
                                     return (
-                                        <option value={data.id}>{data.partner_id}</option>
+                                        <option key={idx} value={data.id}>{data.partner_id}</option>
                                     )
                                 })}
                             </Form.Select>
@@ -161,8 +206,8 @@ function UpdateUser() {
                             <h6>Status</h6>
                             <Form.Select className="input-text-user" style={{ display: "inline" }} >
                                 <option value="">Select Status</option>
-                                <option value={1}>Aktif</option>
-                                <option value={2}>Tidak Aktif</option>
+                                <option value={true}>Aktif</option>
+                                <option value={false}>Tidak Aktif</option>
                             </Form.Select>
                         </Col>
                     </Row>
@@ -171,7 +216,7 @@ function UpdateUser() {
                     <button onClick={goBack} className='mx-2' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "#FFFFFF", color: "#888888", border: "0.6px solid #EBEBEB", borderRadius: 6 }}>
                         Batal
                     </button>
-                    <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+                    <button onClick={() => editUserHandle(inputHandle.id, inputHandle.namaUser, inputHandle.emailUser, inputHandle.roleUser, inputHandle.isActive)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                         Submit
                     </button>
                 </div>

@@ -207,14 +207,14 @@ function AddUser() {
               style={{ display: inputHandle.role == 102 ? "" : "none" }}
             >
               <Form.Label style={{ fontFamily: "Nunito" }}>
-                Id Partner
+                Partner
               </Form.Label>
               <Form.Select
                 name="partnerId"
                 onChange={handleChange}
                 value={inputHandle.partnerId}
               >
-                <option defaultValue>--- Choose Id Partner ---</option>
+                <option defaultValue>--- Choose Partner ---</option>
                 {listPartner.map((item, index) => {
                   return (
                     <option key={index} value={item.partner_id}>
