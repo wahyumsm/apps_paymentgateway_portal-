@@ -12,17 +12,22 @@ function UpdateUser() {
     const { muserId } = useParams();
     const [listRole, setListRole] = useState([]);
     const [listPartner, setListPartner] = useState([]);
+    const [listAgen, setListAgen] = useState([]);
     const [editUser, setEditUser] = useState([]);
-    const [detailUser, setDetailUser] = useState([]);
+    // const [detailUser, setDetailUser] = useState([]);
     const [inputHandle, setInputHandle] = useState({
         id: muserId,
-        namaUser: detailUser.name,
-        emailUser: detailUser.email,
+        nameUser: "",
+        emailUser: "",
         roleUser: 0,
-        isActive: detailUser.is_active,
+        isActive: false,
+        partner: "",
+        roleName: "",
+        namaPartner: "",
+        partnerId: "",
     });
     const roleeee = [
-        { role_id: detailUser.role_id, role_name: detailUser.role_name },
+        { role_id: inputHandle.roleUser, role_name: inputHandle.roleName },
     ];
     const newArrayObj = listRole.map(
         (obj) => roleeee.find((o) => o.role_id === obj.role_id) || obj
@@ -33,6 +38,14 @@ function UpdateUser() {
             ...inputHandle,
             [e.target.name]: e.target.value,
         });
+    }
+
+    function handleNamaPartner(e) {
+        getListAgen(e.target.value)
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
     }
 
     async function getDetailUser(muserId) {
@@ -54,90 +67,42 @@ function UpdateUser() {
                 detailUser.data.response_code === 200 &&
                 detailUser.data.response_new_token.length === 0
             ) {
+                const dataDetail = detailUser.data.response_data
+                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name})
                 // console.log(detailAgen.data.response_data, 'ini detail agen');
-                setDetailUser(detailUser.data.response_data);
+                // setDetailUser(detailUser.data.response_data);
             } else {
+                const dataDetail = detailUser.data.response_data
                 setUserSession(detailUser.data.response_new_token);
-                setDetailUser(detailUser.data.response_data);
+                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name})
+                // setDetailUser(detailUser.data.response_data);
             }
         } catch (error) {
             console.log(error);
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status));
         }
-    }
+    }        
 
-    
-        async function editUserHandle(id, namaUser, emailUser, roleUser, isActive) {
+        async function editUserHandle(id, nameUser, emailUser, roleUser, isActive, partner) {
             try {
-                if (namaUser === undefined) {
-                    namaUser = detailUser.name;
-                }
-                if (emailUser === undefined) {
-                    emailUser = detailUser.email;
-                }
-                if (roleUser === undefined) {
-                    roleUser = detailUser.role_id;
-                }
-                if (isActive === undefined) {
-                    isActive = detailUser.is_active;
-                }
-                const auth = "Bearer " + getToken();
-                const dataParams = encryptData(
-                    `{"muser_id":"${id}", "name": "${namaUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}"}`
-                );
-                // console.log(dataParams, 'ini data params');
-                const headers = {
-                    "Content-Type": "application/json",
-                    Authorization: auth,
-                };
-                const editUser = await axios.post(
-                    "/Account/UpdateUser",
-                    { data: dataParams },
-                    { headers: headers }
-                );
-                console.log(editUser, "ini edit user management");
-                if (
-                    editUser.status === 200 &&
-                    editUser.data.response_code === 200 &&
-                    editUser.data.response_new_token.length === 0
-                ) {
-                    // RouteTo('/daftarpartner')
-                    history.push("/managementuser");
-                    // alert("Edit Data Partner Berhasil Ditambahkan")
-                } else {
-                    setUserSession(editUser.data.response_new_token);
-                    history.push("/managementuser");
-                }
-
-                alert("Edit Data Partner Berhasil");
-            } catch (error) {
-                console.log(error);
-                // RouteTo(errorCatch(error.response.status))
-                // history.push(errorCatch(error.response.status))
-            }
-        }
-        
-
-        async function editUserHandle(id, namaUser, emailUser, roleUser, isActive) {
-            try {
-                if (namaUser === undefined) {
-                    namaUser = detailUser.name
-                }
-                if (emailUser === undefined) {
-                    emailUser = detailUser.email
-                }
-                if (roleUser === undefined) {
-                    roleUser = detailUser.role_id
-                }
-                if (isActive === undefined) {
-                    isActive = detailUser.is_active
-                }
+                // if (namaUser === undefined) {
+                //     namaUser = detailUser.name
+                // }
+                // if (emailUser === undefined) {
+                //     emailUser = detailUser.email
+                // }
+                // if (roleUser === undefined) {
+                //     roleUser = detailUser.role_id
+                // }
+                // if (isActive === undefined) {
+                //     isActive = detailUser.is_active
+                // }
                 // if (partner === "") {
                 //     partner = ""
                 // }
                 const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"muser_id":"${id}", "name": "${namaUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}"}`)
+                const dataParams = encryptData(`{"muser_id":"${id}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${partner}"}`)
                 // console.log(dataParams, 'ini data params');
                 const headers = {
                     'Content-Type': 'application/json',
@@ -161,6 +126,7 @@ function UpdateUser() {
                 // history.push(errorCatch(error.response.status))
             }
         }
+        console.log(inputHandle.roleUser);
 
         async function getMenuRole() {
             try {
@@ -212,18 +178,42 @@ function UpdateUser() {
                 // history.push(errorCatch(error.response.status))
             }
         }
-        console.log(inputHandle.emailUser);
+
+        async function getListAgen(partnerId) {
+            try {
+                const auth = 'Bearer ' + getToken();
+                const dataParams = encryptData(`{"partner_id": "${partnerId}"}`);
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth
+                }
+                const listAgen = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
+                if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
+                    setListAgen(listAgen.data.response_data)
+                } else {
+                    setUserSession(listAgen.data.response_new_token)
+                    setListAgen(listAgen.data.response_data)
+                }
+            } catch (error) {
+                console.log(error)
+                history.push(errorCatch(error.response.status))
+            }
+        }
 
         useEffect(() => {
             if (!access_token) {
                 history.push("/login");
             }
-            if (inputHandle.roleUser == 102) {
-                getListPartner();
-            }
+            
+            // getListPartner();
             getDetailUser(muserId);
             getMenuRole();
-        }, [access_token, muserId, inputHandle.roleUser]);
+            console.log(inputHandle.emailUser);
+            if (inputHandle.roleUser == 102 || inputHandle.roleUser == 103) {
+                console.log("masuk loh")
+                getListPartner();                
+            }
+        }, [access_token, muserId]);
 
         const goBack = () => {
             window.history.back();
@@ -247,7 +237,7 @@ function UpdateUser() {
                                     type="text"
                                     className="input-text-user"
                                     onChange={handleChange}
-                                    defaultValue={detailUser.name}
+                                    defaultValue={inputHandle.nameUser}
                                     placeholder="Input nama"
                                 />
                             </Col>
@@ -258,7 +248,7 @@ function UpdateUser() {
                                     type="text"
                                     className="input-text-user"
                                     onChange={handleChange}
-                                    defaultValue={detailUser.email}
+                                    defaultValue={inputHandle.emailUser}
                                     placeholder="Input email"
                                 />
                             </Col>
@@ -269,9 +259,7 @@ function UpdateUser() {
                                     className="input-text-user"
                                     onChange={handleChange}
                                     value={
-                                        inputHandle.roleUser == 0
-                                            ? detailUser.role_id
-                                            : inputHandle.roleUser
+                                        inputHandle.roleUser
                                     }
                                     style={{ display: "inline" }}
                                 >
@@ -293,19 +281,42 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.roleUser == 102 ? "" : "none" }}
+                                style={{ display: inputHandle.roleUser == 102 || inputHandle.roleUser == 103  ? "" : "none" }}
                             >
                                 <h6>Partner</h6>
                                 <Form.Select
                                     name=""
                                     className="input-text-user"
                                     style={{ display: "inline" }}
+                                    value={inputHandle.namaPartner}
+                                    onChange={(e) => handleNamaPartner(e)}
                                 >
                                     <option value="">Select Partner</option>
                                     {listPartner.map((data, idx) => {
                                         return (
-                                            <option key={idx} value={data.id}>
-                                                {data.partner_id}
+                                            <option key={idx} value={data.partner_id}>
+                                                {data.nama_perusahaan}
+                                            </option>
+                                        );
+                                    })}
+                                </Form.Select>
+                            </Col>
+                            <Col
+                                xs={12}
+                                className="mt-2"
+                                style={{ display: inputHandle.roleUser == 103 ? "" : "none" }}
+                            >
+                                <h6>Agen</h6>
+                                <Form.Select
+                                    name=""
+                                    className="input-text-user"
+                                    style={{ display: "inline" }}
+                                >
+                                    <option value="">Select Agen</option>
+                                    {listAgen.map((data, idx) => {
+                                        return (
+                                            <option key={idx} value={data.agen_id}>
+                                                {data.agen_name}
                                             </option>
                                         );
                                     })}
@@ -316,10 +327,12 @@ function UpdateUser() {
                                 <Form.Select
                                     className="input-text-user"
                                     style={{ display: "inline" }}
+                                    onChange={handleChange}
+                                    value={(inputHandle.isActive)}
+                                    name="isActive"
                                 >
-                                    <option value="">Select Status</option>
-                                    <option value={true}>Aktif</option>
-                                    <option value={false}>Tidak Aktif</option>
+                                    <option value={true}>Online</option>
+                                    <option value={false}>Offline</option>
                                 </Form.Select>
                             </Col>
                         </Row>
