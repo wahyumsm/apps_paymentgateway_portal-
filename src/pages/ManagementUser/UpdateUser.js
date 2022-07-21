@@ -14,28 +14,27 @@ function UpdateUser() {
     const [listPartner, setListPartner] = useState([])
     const [editUser, setEditUser] = useState([])
     const [detailUser, setDetailUser] = useState([])
+    const [isChecked, setIsChecked] = useState([])
     const [inputHandle, setInputHandle] = useState({
         id: muserId,
         namaUser: detailUser.name,
         emailUser: detailUser.email,
         roleUser: 0,
         isActive: detailUser.is_active,
+        partner: "",
     })
     const roleeee = [{ role_id: detailUser.role_id, role_name: detailUser.role_name }]
     const newArrayObj = listRole.map(obj => roleeee.find(o => o.role_id === obj.role_id) || obj)
-    console.log(newArrayObj);
-    
-    function roleAwal (id, role_id) {
-        let element = document.getElementById(id)
-        element.value = role_id
-        console.log("panggil")
-    }    
 
     function handleChange(e) {
         setInputHandle({
             ...inputHandle,
             [e.target.name]: e.target.value,
         });
+    }
+
+    function handleActiveStatus(e) {
+        setIsChecked(!isChecked)
     }
 
     async function getDetailUser(muserId) {
@@ -76,6 +75,9 @@ function UpdateUser() {
             if (isActive === undefined) {
                 isActive = detailUser.is_active
             }
+            // if (partner === "") {
+            //     partner = ""
+            // }
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"muser_id":"${id}", "name": "${namaUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}"}`)
             // console.log(dataParams, 'ini data params');
@@ -150,7 +152,6 @@ function UpdateUser() {
         }
         getDetailUser(muserId)
         getMenuRole()
-        roleAwal("roleUser", roleeee.role_id)
     }, [access_token, muserId, inputHandle.roleUser])
 
     const goBack = () => {
@@ -174,15 +175,9 @@ function UpdateUser() {
                             <h6>Email</h6>
                             <input name="emailUser" type="text" className="input-text-user" onChange={handleChange} defaultValue={(detailUser.email)} placeholder="Input email" />
                         </Col>
-                        <Col xs={12} className="mt-2">
+                        <Col xs={12} className="mt-2"> 
                             <h6>Role</h6>
-                            <Form.Select id="roleUser" name="roleUser" className='input-text-user' onChange={handleChange} defaultValue={(detailUser.role_id)} style={{ display: "inline" }} >
-                                {/* <option defaultValue>{detailUser.role}</option> */}
-                                {/* {listRole.find((data, id) => {
-                                    if (data.role_id == roleeee.role_id) data[id] = roleeee[id]
-                                    console.log(listRole);
-                                }) */}
-
+                            <Form.Select name="roleUser" className='input-text-user' onChange={handleChange} value={(inputHandle.roleUser == 0 ? detailUser.role_id : inputHandle.roleUser)} style={{ display: "inline" }} >
                                 {newArrayObj.map((data, idx) => {
                                     return (
                                         <option key={idx} value={data.role_id}>{data.role_name}</option>
@@ -197,14 +192,14 @@ function UpdateUser() {
                                 <option value="">Select Partner</option>
                                 {listPartner.map((data, idx) => {
                                     return (
-                                        <option key={idx} value={data.id}>{data.partner_id}</option>
+                                        <option key={idx} value={data.id}>{data.nama_perusahaan}</option>
                                     )
                                 })}
                             </Form.Select>
                         </Col>
                         <Col xs={12} className="mt-2 mb-5">
                             <h6>Status</h6>
-                            <Form.Select className="input-text-user" style={{ display: "inline" }} >
+                            <Form.Select name="isActive" className="input-text-user" style={{ display: "inline" }} onChange={handleChange} value={(inputHandle.isActive ? detailUser.is_active : inputHandle.isActive)} >
                                 <option value="">Select Status</option>
                                 <option value={true}>Aktif</option>
                                 <option value={false}>Tidak Aktif</option>
