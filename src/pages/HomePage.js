@@ -54,6 +54,11 @@ import Tooltips from "./components/Tooltips";
 import Toasts from "./components/Toasts";
 import TambahAgen from './DaftarAgen/TambahAgen';
 import DetailAgen from './DaftarAgen/DetailAgen';
+import TambahPartner from './DaftarPartner/TambahPartner';
+import DetailPartner from './DaftarPartner/DetailPartner';
+import EditPartner from './DaftarPartner/EditPartner';
+import EditAgen from './DaftarAgen/EditAgen';
+import ListMenuAccess from './ManagementUser/ListMenuAccess';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -121,10 +126,15 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
+    <RouteWithSidebar exact path={Routes.TambahPartner.path} component={TambahPartner}/>
     <RouteWithSidebar exact path={Routes.DaftarAgen.path} component={DaftarAgen}/>
     <RouteWithSidebar exact path={Routes.TambahAgen.path} component={TambahAgen}/>
     <RouteWithSidebar exact path={Routes.DetailAgen.path} component={DetailAgen}/>
+    <RouteWithSidebar exact path={Routes.EditAgen.path} component={EditAgen}/>
+    <RouteWithSidebar exact path={Routes.DetailPartner.path} component={DetailPartner}/>
+    <RouteWithSidebar exact path={Routes.EditPartner.path} component={EditPartner}/>
     <RouteWithSidebar exact path={Routes.DetailAkun.path} component={DetailAkun}/>
+    <RouteWithSidebar exact path={Routes.ListMenuAccess.path} component={ListMenuAccess}/>
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
 

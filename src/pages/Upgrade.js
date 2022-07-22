@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExternalLinkAlt, faDownload, faCheckCircle, faRocket, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Button } from '@themesberg/react-bootstrap';
 import { Table } from '@themesberg/react-bootstrap';
+import { useHistory } from "react-router-dom";
+import { getRole, getToken } from "../function/helpers";
 
 export default () => {
+
+    const history = useHistory()
+    const access_token = getToken()
+    const user_role = getRole()
+
+    useEffect(() => {
+        if (!access_token) {
+            // RouteTo("/login")
+            history.push('/login');
+        }
+        if (user_role === 102) {
+            history.push('/404');
+        }
+    }, [access_token, user_role])
+
     return (
         <>
             <Row className="mt-lg-5 mt-4 d-flex justify-content-center">

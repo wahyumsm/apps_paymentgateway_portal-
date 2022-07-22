@@ -1,10 +1,10 @@
-import { FETCH_GETUSERDETAIL } from "../ActionType/ActionTypes";
+import { FETCH_GETUSERACCESSMENU } from "../ActionType/ActionTypes";
 import axios from "axios";
 import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 
 
-export const GetUserDetail = (url) => {
+export const GetUserAccessMenu = (url) => {
     // const history = useHistory()
     return async (dispatch) => {
         try {
@@ -13,20 +13,20 @@ export const GetUserDetail = (url) => {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const userDetail = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
-            if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
+            const userAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
+            if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length === 0) {
                 dispatch({
-                    type: FETCH_GETUSERDETAIL,
+                    type: FETCH_GETUSERACCESSMENU,
                     payload: {
-                        userDetail: userDetail.data.response_data
+                        userAccessMenu: userAccessMenu.data.response_data
                     }
                 })
             } else {
-                setUserSession(userDetail.data.response_new_token)
+                setUserSession(userAccessMenu.data.response_new_token)
                 dispatch({
-                    type: FETCH_GETUSERDETAIL,
+                    type: FETCH_GETUSERACCESSMENU,
                     payload: {
-                        userDetail: userDetail.data.response_data
+                        userAccessMenu: userAccessMenu.data.response_data
                     }
                 })
             }

@@ -1,16 +1,32 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
 import { faFacebookF, faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { Col, Row, Form, Card, Button, FormCheck, Container, InputGroup } from '@themesberg/react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
+import { getRole, getToken } from "../../function/helpers";
 
 
 export default () => {
+
+  const history = useHistory()
+  const access_token = getToken()
+  const user_role = getRole()
+
+  useEffect(() => {
+      if (!access_token) {
+          // RouteTo("/login")
+          history.push('/login');
+      }
+      if (user_role === 102) {
+          history.push('/404');
+      }
+  }, [access_token, user_role])
+  
   return (
     <main>
       <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">

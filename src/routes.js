@@ -1,18 +1,23 @@
 
 export const Routes = {
     // pages
-    DashboardOverview: { path: "/dash" },
+    DashboardOverview: { path: "/" },
     // DashboardOverview: { path: "/dashboard" },
     RiwayatTransaksi: { path: "/riwayattransaksi"},
     DetailAkun : { path: "/detailakun"},
-    Transactions: { path: "/" },
+    Transactions: { path: "/laporan" },
     Settings: { path: "/settings" },
     Upgrade: { path: "/upgrade" },
     BootstrapTables: { path: "/tables/bootstrap-tables" },
     DaftarAgen : { path: "/daftaragen" },
     TambahAgen : { path: "/tambahagen" },
     DetailAgen : { path: "/detailagen/:agenId" },
+    EditAgen : { path: "/editagen/:agenId" },
     DaftarPartner : { path: "/daftarpartner" },
+    TambahPartner : { path: "/tambahpartner" },
+    DetailPartner : { path: "/detailpartner/:partnerId" },
+    EditPartner : { path: "/editpartner/:partnerId" },
+    ListMenuAccess : { path: "/menuaccess/:userId" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
     Login: { path: "/login" },
@@ -21,7 +26,7 @@ export const Routes = {
     ResetPassword: { path: "/examples/reset-password" },
     Lock: { path: "/examples/lock" },
     NotFound: { path: "/404" },
-    ServerError: { path: "/500" },
+    ServerError: { path: "/examples/500" },
 
     // docs
     DocsOverview: { path: "/documentation/overview" },
