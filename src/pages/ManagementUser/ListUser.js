@@ -22,13 +22,6 @@ function ListUser () {
   })
   const [pending, setPending] = useState(true)
 
-  function handleChange(e) {
-    setInputHandle({
-        ...inputHandle,
-        [e.target.name] : e.target.value
-    })
-  }
-
   function detailUserHandler(muserId) {
     history.push(`/updateuser/${muserId}`)
 }

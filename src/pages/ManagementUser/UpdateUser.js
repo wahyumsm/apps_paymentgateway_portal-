@@ -9,11 +9,10 @@ function UpdateUser() {
     const history = useHistory();
     const access_token = getToken();
     const { muserId } = useParams();
+    console.log(muserId, "ini userid");
     const [listRole, setListRole] = useState([]);
     const [listPartner, setListPartner] = useState([]);
     const [listAgen, setListAgen] = useState([]);
-    const [editUser, setEditUser] = useState([]);
-    const [detailUser, setDetailUser] = useState([]);
     const [inputHandle, setInputHandle] = useState({
         idUser: muserId,
         nameUser: "",
@@ -25,12 +24,19 @@ function UpdateUser() {
         partnerId: "",
         agenId: "",
     });
-    const roleHandle = [
-        { role_id: inputHandle.roleUser, role_name: inputHandle.roleName },
-    ];
-    const newArrayObj = listRole.map(
-        (obj) => roleHandle.find((o) => o.role_id === obj.role_id) || obj
-    );
+    // const roleHandle = [
+    //     { role_id: inputHandle.roleUser, role_name: inputHandle.roleName },
+    // ];
+    // const newArrayObj = listRole.map(
+    //     (obj) => roleHandle.find((o) => o.role_id === obj.role_id) || obj
+    // );
+
+    // const partnerHandler = [
+    //     {partner_id: inputHandle.partnerId, nama_perusahaan: inputHandle.namaPerusahaan}
+    // ]
+    // const newArrayPartner = listPartner.map(
+    //     (obj) => partnerHandler.find((o) => o.partner_id == obj.partner_id) || obj
+    // )
 
     function handleChange(e) {
         setInputHandle({
@@ -39,10 +45,28 @@ function UpdateUser() {
         });
     }
 
+    function handleChangeToPartner (e) {
+        // getListPartner()
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    function handleChangeToAgen(e) {
+        getListAgen(e.target.value)
+        // console.log(e.target.value, "ini target value");
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    }
+
     async function getDetailUser(muserId) {
         try {
             const auth = "Bearer " + getToken();
             const dataParams = encryptData(`{"muser_id":"${muserId}"}`);
+            console.log(dataParams, "ini data param");
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: auth,
@@ -59,26 +83,22 @@ function UpdateUser() {
                 detailUser.data.response_new_token.length === 0
             ) {
                 const dataDetail = detailUser.data.response_data
-                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name})
-                // console.log(detailAgen.data.response_data, 'ini detail agen');
-                // setDetailUser(detailUser.data.response_data);
+                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan})
+                getListAgen(dataDetail.partner_id)
             } else {
                 const dataDetail = detailUser.data.response_data
                 setUserSession(detailUser.data.response_new_token);
-                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name})
-                // setDetailUser(detailUser.data.response_data);
+                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan})
+                getListAgen(dataDetail.partner_id)
             }
         } catch (error) {
             console.log(error);
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status));
         }
     }        
 
         async function editUserHandle(idUser, nameUser, emailUser, roleUser, isActive, partnerId, agenId) {
             try {
-                console.log(agenId, "iniii")
-                console.log(partnerId, "iniii partner")
                 const auth = "Bearer " + getToken()
                 const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser == 102) ? partnerId : (inputHandle.roleUser == 103 ) ? agenId : ""}"}`)
                 // console.log(dataParams, 'ini data params');
@@ -89,9 +109,7 @@ function UpdateUser() {
                 const editUser = await axios.post("/Account/UpdateUser", { data: dataParams }, { headers: headers })
                 console.log(editUser, 'ini edit user management');
                 if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length === 0) {
-                    // RouteTo('/daftarpartner')
                     history.push("/managementuser")
-                    // alert("Edit Data Partner Berhasil Ditambahkan")
                 } else {
                     setUserSession(editUser.data.response_new_token)
                     history.push("/managementuser")
@@ -100,7 +118,6 @@ function UpdateUser() {
                 alert("Edit Data User Management Berhasil")
             } catch (error) {
                 console.log(error)
-                // RouteTo(errorCatch(error.response.status))
                 history.push(errorCatch(error.response.status))
             }
         }
@@ -118,19 +135,21 @@ function UpdateUser() {
                     { headers: headers }
                 );
                 console.log(listRole, "ini role");
-                if (listRole.status === 200 && listRole.data.response_code === 200) {
+                if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length === 0) {
                     setListRole(listRole.data.response_data);
+                } else {
+                    setUserSession(listRole.data.response_new_token)
+                    setListRole(listRole.data.response_data)
                 }
             } catch (error) {
                 console.log(error);
-                //   history.push(errorCatch(error.response.status))
+                  history.push(errorCatch(error.response.status))
             }
         }
 
         async function getListPartner() {
             try {
                 const auth = "Bearer " + getToken();
-                console.log(auth);
                 const headers = {
                     "Content-Type": "application/json",
                     Authorization: auth,
@@ -158,6 +177,7 @@ function UpdateUser() {
 
         async function getListAgen(partnerId) {
             try {
+                console.log(partnerId, "ini partner id di function list agen");
                 const auth = 'Bearer ' + getToken();
                 const dataParams = encryptData(`{"partner_id": "${partnerId}"}`);
                 const headers = {
@@ -165,6 +185,7 @@ function UpdateUser() {
                     'Authorization': auth
                 }
                 const listAgen = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
+                console.log(listAgen, "ini agen di user");
                 if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
                     setListAgen(listAgen.data.response_data)
                 } else {
@@ -172,47 +193,24 @@ function UpdateUser() {
                     setListAgen(listAgen.data.response_data)
                 }
             } catch (error) {
-                console.log(error)
                 history.push(errorCatch(error.response.status))
             }
-        }
-
-        function handleChangeToPartner (e) {
-            getListPartner()
-            setInputHandle({
-                ...inputHandle,
-                [e.target.name] : e.target.value
-            })
-        }
-    
-        function handleChangeToAgen(e) {
-            getListAgen(e.target.value)
-            setInputHandle({
-                ...inputHandle,
-                [e.target.name] : e.target.value
-            })
         }
 
         useEffect(() => {
             if (!access_token) {
                 history.push("/login");
             }
-            
-            // getListPartner();
             getDetailUser(muserId);
             getMenuRole();
-            if (inputHandle.roleUser == 102 || inputHandle.roleUser == 103) {
-                console.log("masuk loh")
-                getListPartner();                
-            }
-            // if (inputHandle.roleUser == 103) {
-            //     getListAgen()
-            // }
+            getListPartner();
         }, [access_token, muserId]);
 
         const goBack = () => {
             window.history.back();
         };
+
+        console.log(inputHandle, 'ini input handle');
 
         return (
             <>
@@ -258,7 +256,7 @@ function UpdateUser() {
                                     }
                                     style={{ display: "inline" }}
                                 >
-                                    {newArrayObj.map((data, idx) => {
+                                    {listRole.map((data, idx) => {
                                         return (
                                             <option key={idx} value={data.role_id}>
                                                 {data.role_name}
@@ -270,17 +268,17 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.roleUser == 102 || inputHandle.roleUser == 103  ? "" : "none" }}
+                                style={{ display: inputHandle.roleUser == 102 ? "" : (inputHandle.roleUser == 103)  ? "" : "none" }}
                             >
                                 <h6>Partner</h6>
                                 <Form.Select
                                     name="partnerId"
                                     className="input-text-user"
                                     style={{ display: "inline" }}
+                                    onChange={(e) => handleChangeToAgen(e)}                                    
                                     value={inputHandle.partnerId}
-                                    onChange={(e) => handleChangeToAgen(e)}
                                 >
-                                    <option value="">Select Partner</option>
+                                    {/* <option value="">Select Partner</option> */}
                                     {listPartner.map((data, idx) => {
                                         return (
                                             <option key={idx} value={data.partner_id}>
@@ -293,7 +291,7 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.partnerId != undefined && inputHandle.roleUser == 103 ? "" : "none" }}
+                                style={{ display: inputHandle.partnerId !== undefined && inputHandle.roleUser == 103 ? "" : "none" }}
                             >
                                 <h6>Agen</h6>
                                 <Form.Select
