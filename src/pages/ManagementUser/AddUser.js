@@ -24,10 +24,12 @@ function AddUser() {
     password: "",
     role: 0,
     partnerId: "",
+    agenId: "",
   });
   const [listRole, setListRole] = useState([]);
   const [listPartner, setDataListPartner] = useState([]);
   const [addUser, setAddUser] = useState([]);
+  const [dataListAgenFromPartner, setDataListAgenFromPartner] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const passwordInputType = showPassword ? "text" : "password";
   const [isChecked, setIsChecked] = useState(false);
@@ -60,7 +62,6 @@ function AddUser() {
       );
       if (listRole.data.response_code === 200 && listRole.status === 200) {
         setListRole(listRole.data.response_data);
-        console.log(listRole.data.response_data);
       }
     } catch (e) {
       history.push(errorCatch(e.response.status));
@@ -95,10 +96,48 @@ function AddUser() {
     }
   }
 
-  async function sendAddUser(name, email, password, role, isActive, partnerId) {
+  async function getListAgen(partnerId) {
+    try {
+      const dataParams = encryptData(`{"partner_id": "${partnerId}"}`);
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: auth,
+      };
+      const listAgenFromPartner = await axios.post(
+        "/Partner/GetListAgen",
+        { data: dataParams },
+        { headers: headers }
+      );
+      if (
+        listAgenFromPartner.status === 200 &&
+        listAgenFromPartner.data.response_code === 200 &&
+        listAgenFromPartner.data.response_new_token.length === 0
+      ) {
+        setDataListAgenFromPartner(listAgenFromPartner.data.response_data);
+      } else {
+        setUserSession(listAgenFromPartner.data.response_new_token);
+        setDataListAgenFromPartner(listAgenFromPartner.data.response_data);
+      }
+    } catch (e) {
+      console.log(e);
+      history.push(errorCatch(e.response.status));
+    }
+  }
+
+  async function sendAddUser(
+    name,
+    email,
+    password,
+    role,
+    isActive,
+    partnerId,
+    agenId
+  ) {
     try {
       const dataParams = encryptData(
-        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${partnerId}"}`
+        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${
+          role == 102 ? partnerId : role == 103 ? agenId : ""
+        }"}`
       );
       const headers = {
         "Content-Type": "application/json",
@@ -111,7 +150,6 @@ function AddUser() {
       );
       if (addUser.data.response_code === 200 && addUser.status === 200) {
         setAddUser(addUser.data.response_data);
-        console.log(addUser.data.response_data);
       }
     } catch (e) {
       history.push(errorCatch(e.response.status));
@@ -123,11 +161,14 @@ function AddUser() {
       // RouteTo("/login")
       history.push("/login");
     }
-    if (inputHandle.role == 102) {
+    if (inputHandle.role == 102 || inputHandle.role == 103) {
       getListPartner();
     }
     getListRole();
-  }, [inputHandle.role]);
+    if (inputHandle.role == 103 && inputHandle.partnerId != "") {
+      getListAgen(inputHandle.partnerId);
+    }
+  }, [inputHandle.role, inputHandle.partnerId]);
 
   return (
     <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
@@ -204,21 +245,49 @@ function AddUser() {
             </Form.Group>
             <Form.Group
               className="mb-3"
-              style={{ display: inputHandle.role == 102 ? "" : "none" }}
+              style={{
+                display:
+                  inputHandle.role == 102 || inputHandle.role == 103
+                    ? ""
+                    : "none",
+              }}
             >
-              <Form.Label style={{ fontFamily: "Nunito" }}>
-                Id Partner
-              </Form.Label>
+              <Form.Label style={{ fontFamily: "Nunito" }}>Partner</Form.Label>
               <Form.Select
                 name="partnerId"
                 onChange={handleChange}
                 value={inputHandle.partnerId}
               >
-                <option defaultValue>--- Choose Id Partner ---</option>
+                <option defaultValue>--- Choose Partner ---</option>
                 {listPartner.map((item, index) => {
                   return (
                     <option key={index} value={item.partner_id}>
                       {item.nama_perusahaan}
+                    </option>
+                  );
+                })}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group
+              className="mb-3"
+              style={{
+                display:
+                  inputHandle.role == 103 && inputHandle.partnerId != ""
+                    ? ""
+                    : "none",
+              }}
+            >
+              <Form.Label style={{ fontFamily: "Nunito" }}>Agen</Form.Label>
+              <Form.Select
+                name="agenId"
+                onChange={handleChange}
+                value={inputHandle.agenId}
+              >
+                <option defaultValue>--- Choose Agen ---</option>
+                {dataListAgenFromPartner.map((item, index) => {
+                  return (
+                    <option key={index} value={item.agen_id}>
+                      {item.agen_name}
                     </option>
                   );
                 })}
@@ -249,7 +318,8 @@ function AddUser() {
               inputHandle.password,
               inputHandle.role,
               isChecked,
-              inputHandle.partnerId
+              inputHandle.partnerId,
+              inputHandle.agenId
             )
           }
           className={
