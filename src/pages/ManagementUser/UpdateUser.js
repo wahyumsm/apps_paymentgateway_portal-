@@ -84,7 +84,9 @@ function UpdateUser() {
             ) {
                 const dataDetail = detailUser.data.response_data
                 setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan})
-                getListAgen(dataDetail.partner_id)
+                if (dataDetail.role_id === 102 || dataDetail.role_id === 103) {
+                    getListAgen(dataDetail.partner_id)
+                }
             } else {
                 const dataDetail = detailUser.data.response_data
                 setUserSession(detailUser.data.response_new_token);
