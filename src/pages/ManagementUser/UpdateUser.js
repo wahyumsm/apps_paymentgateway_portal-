@@ -4,7 +4,6 @@ import { errorCatch, getToken, setUserSession } from "../../function/helpers";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
-import ro from "date-fns/esm/locale/ro/index.js";
 
 function UpdateUser() {
     const history = useHistory();
@@ -14,23 +13,23 @@ function UpdateUser() {
     const [listPartner, setListPartner] = useState([]);
     const [listAgen, setListAgen] = useState([]);
     const [editUser, setEditUser] = useState([]);
-    // const [detailUser, setDetailUser] = useState([]);
+    const [detailUser, setDetailUser] = useState([]);
     const [inputHandle, setInputHandle] = useState({
-        id: muserId,
+        idUser: muserId,
         nameUser: "",
         emailUser: "",
         roleUser: 0,
         isActive: false,
-        partner: "",
         roleName: "",
-        namaPartner: "",
+        namaPerusahaan: "",
         partnerId: "",
+        agenId: "",
     });
-    const roleeee = [
+    const roleHandle = [
         { role_id: inputHandle.roleUser, role_name: inputHandle.roleName },
     ];
     const newArrayObj = listRole.map(
-        (obj) => roleeee.find((o) => o.role_id === obj.role_id) || obj
+        (obj) => roleHandle.find((o) => o.role_id === obj.role_id) || obj
     );
 
     function handleChange(e) {
@@ -38,14 +37,6 @@ function UpdateUser() {
             ...inputHandle,
             [e.target.name]: e.target.value,
         });
-    }
-
-    function handleNamaPartner(e) {
-        getListAgen(e.target.value)
-        setInputHandle({
-            ...inputHandle,
-            [e.target.name] : e.target.value
-        })
     }
 
     async function getDetailUser(muserId) {
@@ -84,25 +75,12 @@ function UpdateUser() {
         }
     }        
 
-        async function editUserHandle(id, nameUser, emailUser, roleUser, isActive, partner) {
+        async function editUserHandle(idUser, nameUser, emailUser, roleUser, isActive, partnerId, agenId) {
             try {
-                // if (namaUser === undefined) {
-                //     namaUser = detailUser.name
-                // }
-                // if (emailUser === undefined) {
-                //     emailUser = detailUser.email
-                // }
-                // if (roleUser === undefined) {
-                //     roleUser = detailUser.role_id
-                // }
-                // if (isActive === undefined) {
-                //     isActive = detailUser.is_active
-                // }
-                // if (partner === "") {
-                //     partner = ""
-                // }
+                console.log(agenId, "iniii")
+                console.log(partnerId, "iniii partner")
                 const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"muser_id":"${id}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${partner}"}`)
+                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser == 102) ? partnerId : (inputHandle.roleUser == 103 ) ? agenId : ""}"}`)
                 // console.log(dataParams, 'ini data params');
                 const headers = {
                     'Content-Type': 'application/json',
@@ -119,14 +97,13 @@ function UpdateUser() {
                     history.push("/managementuser")
                 }
 
-                alert("Edit Data Partner Berhasil")
+                alert("Edit Data User Management Berhasil")
             } catch (error) {
                 console.log(error)
                 // RouteTo(errorCatch(error.response.status))
-                // history.push(errorCatch(error.response.status))
+                history.push(errorCatch(error.response.status))
             }
         }
-        console.log(inputHandle.roleUser);
 
         async function getMenuRole() {
             try {
@@ -175,7 +152,7 @@ function UpdateUser() {
                     setListPartner(listPartner.data.response_data);
                 }
             } catch (error) {
-                // history.push(errorCatch(error.response.status))
+                history.push(errorCatch(error.response.status))
             }
         }
 
@@ -200,6 +177,22 @@ function UpdateUser() {
             }
         }
 
+        function handleChangeToPartner (e) {
+            getListPartner()
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name] : e.target.value
+            })
+        }
+    
+        function handleChangeToAgen(e) {
+            getListAgen(e.target.value)
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name] : e.target.value
+            })
+        }
+
         useEffect(() => {
             if (!access_token) {
                 history.push("/login");
@@ -208,11 +201,13 @@ function UpdateUser() {
             // getListPartner();
             getDetailUser(muserId);
             getMenuRole();
-            console.log(inputHandle.emailUser);
             if (inputHandle.roleUser == 102 || inputHandle.roleUser == 103) {
                 console.log("masuk loh")
                 getListPartner();                
             }
+            // if (inputHandle.roleUser == 103) {
+            //     getListAgen()
+            // }
         }, [access_token, muserId]);
 
         const goBack = () => {
@@ -237,7 +232,7 @@ function UpdateUser() {
                                     type="text"
                                     className="input-text-user"
                                     onChange={handleChange}
-                                    defaultValue={inputHandle.nameUser}
+                                    value={inputHandle.nameUser}
                                     placeholder="Input nama"
                                 />
                             </Col>
@@ -248,7 +243,7 @@ function UpdateUser() {
                                     type="text"
                                     className="input-text-user"
                                     onChange={handleChange}
-                                    defaultValue={inputHandle.emailUser}
+                                    value={inputHandle.emailUser}
                                     placeholder="Input email"
                                 />
                             </Col>
@@ -257,18 +252,12 @@ function UpdateUser() {
                                 <Form.Select
                                     name="roleUser"
                                     className="input-text-user"
-                                    onChange={handleChange}
+                                    onChange={(e)=>handleChangeToPartner(e)}
                                     value={
                                         inputHandle.roleUser
                                     }
                                     style={{ display: "inline" }}
                                 >
-                                    {/* <option defaultValue>{detailUser.role}</option> */}
-                                    {/* {listRole.find((data, id) => {
-                                    if (data.role_id == roleeee.role_id) data[id] = roleeee[id]
-                                    console.log(listRole);
-                                }) */}
-
                                     {newArrayObj.map((data, idx) => {
                                         return (
                                             <option key={idx} value={data.role_id}>
@@ -285,11 +274,11 @@ function UpdateUser() {
                             >
                                 <h6>Partner</h6>
                                 <Form.Select
-                                    name=""
+                                    name="partnerId"
                                     className="input-text-user"
                                     style={{ display: "inline" }}
-                                    value={inputHandle.namaPartner}
-                                    onChange={(e) => handleNamaPartner(e)}
+                                    value={inputHandle.partnerId}
+                                    onChange={(e) => handleChangeToAgen(e)}
                                 >
                                     <option value="">Select Partner</option>
                                     {listPartner.map((data, idx) => {
@@ -304,13 +293,15 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.roleUser == 103 ? "" : "none" }}
+                                style={{ display: inputHandle.partnerId != undefined && inputHandle.roleUser == 103 ? "" : "none" }}
                             >
                                 <h6>Agen</h6>
                                 <Form.Select
-                                    name=""
+                                    name="agenId"
                                     className="input-text-user"
                                     style={{ display: "inline" }}
+                                    value={inputHandle.agenId}
+                                    onChange={handleChange}
                                 >
                                     <option value="">Select Agen</option>
                                     {listAgen.map((data, idx) => {
@@ -364,11 +355,13 @@ function UpdateUser() {
                         <button
                             onClick={() =>
                                 editUserHandle(
-                                    inputHandle.id,
-                                    inputHandle.namaUser,
+                                    muserId,
+                                    inputHandle.nameUser,
                                     inputHandle.emailUser,
                                     inputHandle.roleUser,
-                                    inputHandle.isActive
+                                    inputHandle.isActive,
+                                    inputHandle.partnerId,
+                                    inputHandle.agenId
                                 )
                             }
                             style={{
