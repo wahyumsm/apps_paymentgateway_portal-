@@ -35,7 +35,7 @@ export default () => {
           'Content-Type':'application/json',
           'Authorization' : auth
       }
-      const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
+      const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
       // console.log(userDetail.data, "userDetail di login");
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         setRoleSession(userDetail.data.response_data.muser_role_id)
@@ -58,7 +58,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
+      const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         userDetail(dataLogin.data.response_data.access_token)
