@@ -46,7 +46,9 @@ function RiwayatTransaksi() {
     const [activePageDanaMasuk, setActivePageDanaMasuk] = useState(1)
     const [activePageSettlement, setActivePageSettlement] = useState(1)
     const [pageNumberDanaMasuk, setPageNumberDanaMasuk] = useState({})
+    const [totalPageDanaMasuk, setTotalPageDanaMasuk] = useState(0)
     const [pageNumberSettlement, setPageNumberSettlement] = useState({})
+    const [totalPageSettlement, setTotalPageSettlement] = useState(0)
     const [isFilterDanaMasuk, setIsFilterDanaMasuk] = useState(false)
     const [isFilterSettlement, setIsFilterSettlement] = useState(false)
 
@@ -179,15 +181,18 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const dataRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+            // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
+                setTotalPageDanaMasuk(dataRiwayatDanaMasuk.data.response_data.max_page)
                 setDataRiwayatDanaMasuk(dataRiwayatDanaMasuk.data.response_data.results)
                 setPendingTransfer(false)
             } else {
                 setUserSession(dataRiwayatDanaMasuk.data.response_new_token)
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
+                setTotalPageDanaMasuk(dataRiwayatDanaMasuk.data.response_data.max_page)
                 setDataRiwayatDanaMasuk(dataRiwayatDanaMasuk.data.response_data.results)
                 setPendingTransfer(false)
             }
@@ -207,9 +212,11 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const dataRiwayatSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+            // console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
+                setTotalPageSettlement(dataRiwayatSettlement.data.response_data.max_page)
                 setDataRiwayatSettlement(dataRiwayatSettlement.data.response_data.results.list_data)
                 setTotalSettlement(dataRiwayatSettlement.data.response_data.results.total_settlement)
                 setPendingSettlement(false)
@@ -217,6 +224,7 @@ function RiwayatTransaksi() {
                 setUserSession(dataRiwayatSettlement.data.response_new_token)
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
+                setTotalPageSettlement(dataRiwayatSettlement.data.response_data.max_page)
                 setDataRiwayatSettlement(dataRiwayatSettlement.data.response_data.results.list_data)
                 setTotalSettlement(dataRiwayatSettlement.data.response_data.results.total_settlement)
                 setPendingSettlement(false)
@@ -258,15 +266,18 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const filterRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+            // console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
+                setTotalPageDanaMasuk(filterRiwayatDanaMasuk.data.response_data.max_page)
                 setDataRiwayatDanaMasuk(filterRiwayatDanaMasuk.data.response_data.results)
                 setPendingTransfer(false)
             } else {
                 setUserSession(filterRiwayatDanaMasuk.data.response_new_token)
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
+                setTotalPageDanaMasuk(filterRiwayatDanaMasuk.data.response_data.max_page)
                 setDataRiwayatDanaMasuk(filterRiwayatDanaMasuk.data.response_data.results)
                 setPendingTransfer(false)
             }
@@ -294,6 +305,7 @@ function RiwayatTransaksi() {
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberSettlement(filterSettlement.data.response_data)
+                setTotalPageSettlement(filterSettlement.data.response_data.max_page)
                 setDataRiwayatSettlement(filterSettlement.data.response_data.results.list_data)
                 setTotalSettlement(filterSettlement.data.response_data.results.total_settlement)
                 setPendingSettlement(false)
@@ -301,6 +313,7 @@ function RiwayatTransaksi() {
                 setUserSession(filterSettlement.data.response_new_token)
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberSettlement(filterSettlement.data.response_data)
+                setTotalPageSettlement(filterSettlement.data.response_data.max_page)
                 setDataRiwayatSettlement(filterSettlement.data.response_data.results.list_data)
                 setTotalSettlement(filterSettlement.data.response_data.results.total_settlement)
                 setPendingSettlement(false)
@@ -602,7 +615,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": convertToRupiah(data[i].tvasettl_amount), Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -630,7 +643,7 @@ function RiwayatTransaksi() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": convertToRupiah(data[i].tvasettl_amount), Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -780,6 +793,7 @@ function RiwayatTransaksi() {
                         />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDanaMasuk}</div>
                         <Pagination
                             activePage={activePageDanaMasuk}
                             itemsCountPerPage={pageNumberDanaMasuk.row_per_page}
@@ -903,6 +917,7 @@ function RiwayatTransaksi() {
                         />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlement}</div>
                         <Pagination
                             activePage={activePageSettlement}
                             itemsCountPerPage={pageNumberSettlement.row_per_page}
