@@ -24,7 +24,7 @@ function ListMenuAccess() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const listAccessMenu = await axios.post(BaseURL + '/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
+            const listAccessMenu = await axios.post('/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
             // console.log(listAccessMenu, "ini list access menu");
             if (listAccessMenu.status === 200 && listAccessMenu.data.response_code === 200 && listAccessMenu.data.response_new_token.length === 0) {
                 setListAccessMenu(listAccessMenu.data.response_data)
@@ -130,6 +130,9 @@ function ListMenuAccess() {
                                 <thead>
                                     <tr>
                                         <th>
+                                            <Form.Check onChange={handleCheckParent} label="#" name="#" htmlFor="#" />
+                                        </th>
+                                        <th>
                                             <Form.Check onChange={handleCheckParent} label="Access Menu Name" name="accessMenuName" htmlFor="accessMenuName" />
                                         </th>
                                         <th>
@@ -156,7 +159,11 @@ function ListMenuAccess() {
                                             return (
                                                 <tr key={index}>
                                                     <td>
-                                                        <Form.Check onChange={(e) => handleCheck(e, item.label)} checked={(inputCheck[`isAccess${item.label}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label}`]} label={item.label} name={`isAccess${item.label}`} htmlFor={`isAccess${item.label}`} />
+                                                        <Form.Check onChange={(e) => handleCheck(e, item.label)} checked={(inputCheck[`isAccess${item.label}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label}`]} name={`isAccess${item.label}`} htmlFor={`isAccess${item.label}`} />
+                                                    </td>
+                                                    <td style={{ fontWeight: 700 }}>
+                                                        {/* <Form.Check onChange={(e) => handleCheck(e, item.label)} label={item.label} name={`isAccess${item.label}`} htmlFor={`isAccess${item.label}`} /> */}
+                                                        {item.label}
                                                     </td>
                                                     <td>
                                                         <Form.Check onChange={(e) => handleCheck(e, item.label)} checked={(inputCheck[`isInsertable${item.label}`] === undefined) ? item.is_insertable : inputCheck[`isInsertable${item.label}`]} label={(inputCheck[`isInsertable${item.label}`] === undefined && item.is_insertable) ? "Granted" : (inputCheck[`isInsertable${item.label}`] === undefined && item.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${item.label}`] === true && item.is_insertable) ? "Granted" : (inputCheck[`isInsertable${item.label}`] === false && item.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${item.label}`] === true && item.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${item.label}`} htmlFor={`isInsertable${item.label}`} />

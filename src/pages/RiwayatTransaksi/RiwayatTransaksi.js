@@ -58,7 +58,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listAgenFromPartner = await axios.post(BaseURL + "/Partner/GetListAgen", {data: dataParams}, {headers: headers})
+            const listAgenFromPartner = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
             if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length === 0) {
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
             } else {
@@ -149,7 +149,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
+            const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
                 setDataListPartner(listPartner.data.response_data)
             } else {
@@ -178,7 +178,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const dataRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+            const dataRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
@@ -206,7 +206,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const dataRiwayatSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+            const dataRiwayatSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
@@ -257,7 +257,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const filterRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+            const filterRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
@@ -289,7 +289,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+            const filterSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             // console.log(filterSettlement, 'ini filter data settlement');
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
@@ -360,7 +360,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const detailListTransfer = await axios.post(BaseURL + "/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
+            const detailListTransfer = await axios.post("/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
             if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length === 0) {
                 setDetailTransferDana(detailListTransfer.data.response_data)
                 setShowModalDetailTransferDana(true)
@@ -375,12 +375,14 @@ function RiwayatTransaksi() {
             history.push(errorCatch(error.response.status))
     }
     }
+
+    // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
     
     const columns = [
         {
             name: 'No',
             selector: row => row.number,
-            width: "67px"
+            width: "53px"
         },
         {
             name: 'ID Transaksi',
@@ -393,32 +395,41 @@ function RiwayatTransaksi() {
             name: 'Waktu',
             selector: row => row.tvatrans_crtdt_format,
             // sortable: true,          
-            // width: "100px"
+            width: "143px",
         },
         {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             // sortable: true
+            width: "150px",
         },
         {
             name: 'Nama Agen',
             selector: row => row.mpartnerdtl_sub_name,
             // sortable: true,
             // width: "175px"
+            width: "150px",
+        },
+        {
+            name: 'No VA',
+            selector: row => row.tvatrans_va_number,
+            // sortable: true,
+            width: "173px"
         },
         {
             name: 'Jumlah Diterima',
             selector: row => row.tvatrans_amount,
+            // width: "130px",
             // sortable: true
-            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center" }}>{ convertToRupiah(row.tvatrans_amount) }</div>,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", }
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ convertToRupiah(row.tvatrans_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
             width: "150px",
             // sortable: true,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
                     when: row => row.tvatrans_status_id === 2,
@@ -444,36 +455,44 @@ function RiwayatTransaksi() {
         {
             name: 'No',
             selector: row => row.number,
-            width: "67px"
+            width: "57px",
+            style: { justifyContent: "center", }
         },
         {
             name: 'ID Transaksi',
             selector: row => row.tvasettl_code,
             // sortable: true
+            width: "224px",
+            // style: { justifyContent: "center", }
         },
         {
             name: 'Waktu',
             selector: row => row.tvasettl_crtdt_format,
+            // style: { justifyContent: "center", }
+            // width: "224px",
             // sortable: true,
         },
         {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
+            width: "224px",
+            // style: { justifyContent: "center", }
             // sortable: true,
         },
         {
             name: 'Nominal Settlement',
             selector: row => row.tvasettl_amount,
             // sortable: true,
-            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", }
+            width: "224px",
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
-            width: "150px",
+            width: "130px",
             // sortable: true,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
                     when: row => row.tvasettl_status_id === 2,
@@ -501,7 +520,9 @@ function RiwayatTransaksi() {
                 backgroundColor: '#F2F2F2',
                 border: '12px',
                 fontWeight: 'bold',
-                fontSize: '16px'
+                fontSize: '16px',
+                display: 'flex',
+                // justifyContent: 'center',
             },
         },
     };
@@ -516,12 +537,12 @@ function RiwayatTransaksi() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": convertToRupiah(data[i].tvatrans_amount), Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -544,12 +565,12 @@ function RiwayatTransaksi() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+                    const dataExportDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
                     if (dataExportDanaMasuk.status === 200 && dataExportDanaMasuk.data.response_code === 200) {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": convertToRupiah(data[i].tvatrans_amount), Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -575,7 +596,7 @@ function RiwayatTransaksi() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
                     // console.log(dataExportFilter, 'ini data filter settlement');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200) {
                         const data = dataExportFilter.data.response_data.results.list_data
@@ -603,7 +624,7 @@ function RiwayatTransaksi() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+                    const dataExportSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
                     // console.log(dataExportSettlement, 'ini data settlement di export');
                     if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200) {
                         const data = dataExportSettlement.data.response_data.results.list_data
