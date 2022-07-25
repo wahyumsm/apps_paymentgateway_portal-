@@ -48,7 +48,7 @@ function RiwayatTransaksi() {
     const [pageNumberDanaMasuk, setPageNumberDanaMasuk] = useState({})
     const [totalPageDanaMasuk, setTotalPageDanaMasuk] = useState(0)
     const [pageNumberSettlement, setPageNumberSettlement] = useState({})
-    const [totalPageSettlement, setTotalPageSettlement] = useState({})
+    const [totalPageSettlement, setTotalPageSettlement] = useState(0)
     const [isFilterDanaMasuk, setIsFilterDanaMasuk] = useState(false)
     const [isFilterSettlement, setIsFilterSettlement] = useState(false)
 
@@ -181,6 +181,7 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const dataRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+            // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
@@ -211,6 +212,7 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const dataRiwayatSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+            // console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
@@ -264,6 +266,7 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const filterRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+            // console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
@@ -385,6 +388,8 @@ function RiwayatTransaksi() {
             history.push(errorCatch(error.response.status))
     }
     }
+
+    // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
     
     const columns = [
         {
@@ -474,6 +479,8 @@ function RiwayatTransaksi() {
         {
             name: 'Waktu',
             selector: row => row.tvasettl_crtdt_format,
+            // style: { justifyContent: "center", }
+            // width: "224px",
             // sortable: true,
         },
         {
@@ -523,7 +530,9 @@ function RiwayatTransaksi() {
                 backgroundColor: '#F2F2F2',
                 border: '12px',
                 fontWeight: 'bold',
-                fontSize: '16px'
+                fontSize: '16px',
+                display: 'flex',
+                // justifyContent: 'center',
             },
         },
     };
