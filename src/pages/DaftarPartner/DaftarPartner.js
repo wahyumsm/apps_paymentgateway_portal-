@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
 import DataTable from 'react-data-table-component';
-import { Col, Row, Form, Image} from '@themesberg/react-bootstrap';
+import { Image} from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,7 @@ function DaftarPartner() {
     const access_token = getToken()
     const user_role = getRole()
     const [listPartner, setListPartner] = useState([])
+    const [pending, setPending] = useState(true)
 
     function tambahPartner() {
         // RouteTo("/tambahpartner")
@@ -30,14 +31,15 @@ function DaftarPartner() {
                 'Authorization' : auth
             }
             const listDataPartner = await axios.post(url, { data: "" }, { headers: headers })
-            // console.log(listDataPartner, 'ini data user ');
             if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length === 0) {
                 listDataPartner.data.response_data = listDataPartner.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
                 setListPartner(listDataPartner.data.response_data)
+                setPending(false)
             } else {
                 setUserSession(listDataPartner.data.response_new_token)
                 listDataPartner.data.response_data = listDataPartner.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
                 setListPartner(listDataPartner.data.response_data)
+                setPending(false)
             }
             
         } catch (error) {
@@ -153,9 +155,10 @@ function DaftarPartner() {
                     columns={columns}
                     data={listPartner}
                     customStyles={customStyles}
-                    noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                     pagination
                     highlightOnHover
+                    progressPending={pending}
+                    progressComponent={<CustomLoader />}
                 />
             </div>
         </div>

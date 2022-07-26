@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Form } from "@themesberg/react-bootstrap";
-import { errorCatch, getToken, setUserSession } from "../../function/helpers";
+import { errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
@@ -8,8 +8,8 @@ import encryptData from "../../function/encryptData";
 function UpdateUser() {
     const history = useHistory();
     const access_token = getToken();
+    const user_role = getRole()
     const { muserId } = useParams();
-    console.log(muserId, "ini userid");
     const [listRole, setListRole] = useState([]);
     const [listPartner, setListPartner] = useState([]);
     const [listAgen, setListAgen] = useState([]);
@@ -24,19 +24,6 @@ function UpdateUser() {
         partnerId: "",
         agenId: "",
     });
-    // const roleHandle = [
-    //     { role_id: inputHandle.roleUser, role_name: inputHandle.roleName },
-    // ];
-    // const newArrayObj = listRole.map(
-    //     (obj) => roleHandle.find((o) => o.role_id === obj.role_id) || obj
-    // );
-
-    // const partnerHandler = [
-    //     {partner_id: inputHandle.partnerId, nama_perusahaan: inputHandle.namaPerusahaan}
-    // ]
-    // const newArrayPartner = listPartner.map(
-    //     (obj) => partnerHandler.find((o) => o.partner_id == obj.partner_id) || obj
-    // )
 
     function handleChange(e) {
         setInputHandle({
@@ -46,7 +33,6 @@ function UpdateUser() {
     }
 
     function handleChangeToPartner (e) {
-        // getListPartner()
         setInputHandle({
             ...inputHandle,
             [e.target.name] : e.target.value
@@ -55,7 +41,6 @@ function UpdateUser() {
 
     function handleChangeToAgen(e) {
         getListAgen(e.target.value)
-        // console.log(e.target.value, "ini target value");
         setInputHandle({
             ...inputHandle,
             [e.target.name] : e.target.value
@@ -76,7 +61,6 @@ function UpdateUser() {
                 { data: dataParams },
                 { headers: headers }
             );
-            console.log(detailUser, "ini detail user manage");
             if (
                 detailUser.status === 200 &&
                 detailUser.data.response_code === 200 &&
@@ -103,13 +87,11 @@ function UpdateUser() {
             try {
                 const auth = "Bearer " + getToken()
                 const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser == 102) ? partnerId : (inputHandle.roleUser == 103 ) ? agenId : ""}"}`)
-                // console.log(dataParams, 'ini data params');
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
                 const editUser = await axios.post("/Account/UpdateUser", { data: dataParams }, { headers: headers })
-                console.log(editUser, 'ini edit user management');
                 if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length === 0) {
                     history.push("/managementuser")
                 } else {
@@ -187,7 +169,6 @@ function UpdateUser() {
                     'Authorization': auth
                 }
                 const listAgen = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
-                console.log(listAgen, "ini agen di user");
                 if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
                     setListAgen(listAgen.data.response_data)
                 } else {
@@ -203,16 +184,17 @@ function UpdateUser() {
             if (!access_token) {
                 history.push("/login");
             }
+            if (user_role == 102) {
+                history.push('/404');
+            }
             getDetailUser(muserId);
             getMenuRole();
             getListPartner();
-        }, [access_token, muserId]);
+        }, [access_token, muserId, user_role]);
 
         const goBack = () => {
             window.history.back();
         };
-
-        console.log(inputHandle, 'ini input handle');
 
         return (
             <>
@@ -280,7 +262,6 @@ function UpdateUser() {
                                     onChange={(e) => handleChangeToAgen(e)}                                    
                                     value={inputHandle.partnerId}
                                 >
-                                    {/* <option value="">Select Partner</option> */}
                                     {listPartner.map((data, idx) => {
                                         return (
                                             <option key={idx} value={data.partner_id}>
@@ -322,8 +303,8 @@ function UpdateUser() {
                                     value={(inputHandle.isActive)}
                                     name="isActive"
                                 >
-                                    <option value={true}>Online</option>
-                                    <option value={false}>Offline</option>
+                                    <option value={true}>Aktif</option>
+                                    <option value={false}>Tidak Aktif</option>
                                 </Form.Select>
                             </Col>
                         </Row>

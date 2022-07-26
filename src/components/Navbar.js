@@ -82,7 +82,7 @@ export default (props) => {
   const access_token = getToken()
   const [text, setText] = useState('');
   const [inputHandle, setInputHandle] = useState({
-    amount: "",
+    amount: 0,
     reffNo: "",
   })
   const [ topUpResult, setTopUpResult ] = useState({})
@@ -170,8 +170,8 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const getBalance = await axios.post("/partner/GetBalance", { data: "" }, { headers: headers })
-          // console.log(getBalance, 'ini data get balance');
+          const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
+          // console.log(getBalance.data.response_data.topupAmount, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
@@ -347,7 +347,7 @@ export default (props) => {
                 <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                   <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
                     <span className="mb-0 font-small">Saldo: </span>
-                    <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
+                    <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.topupAmount)}</span>
                     <img
                       src={arrowDown}
                       alt="arrow_down"
