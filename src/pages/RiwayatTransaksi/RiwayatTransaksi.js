@@ -552,7 +552,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -580,7 +580,7 @@ function RiwayatTransaksi() {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
