@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Form, Image } from '@themesberg/react-bootstrap';
-import {Link, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import 'chart.js/auto';
 import DataTable from 'react-data-table-component';
-import { BaseURL, convertToRupiah, errorCatch, getToken } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken } from "../../function/helpers";
 import axios from "axios";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import "./ListUser.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faEye, faPencilAlt, faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faEye, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 function ListUser () {
 
   const history = useHistory();
   const access_token = getToken();
   const [listManageUser, setListManageUser] = useState([])
+  const user_role = getRole()
   const [inputHandle, setInputHandle] = useState({
     idTransaksi: "",
     namaAgen: "",
@@ -50,14 +51,18 @@ function ListUser () {
     if (!access_token) {
       history.push('/login');
     }
+    if (user_role == 102) {
+      history.push('/404');
+    }
     getListManageUser()
-  }, [])
+  }, [access_token, user_role])
 
   const columnManageUser = [
     {
         name: 'No',
         selector: row => row.number,
-        width: "67px"
+        width: "67px",
+        sortable: true,
     },
     {
         name: 'Role',
@@ -70,22 +75,22 @@ function ListUser () {
     {
         name: 'Nama',
         selector: row => row.name,
-        // sortable: true
-    },
-    {
-        name: 'Status',
-        selector: row => row.status === true ? "Aktif" : "Tidak Aktif",
+        sortable: true
     },
     {
         name: 'Online Status',
-        selector: row => row.is_active === true ? "Online" : "Offline",
-        // sortable: true,
+        selector: row => row.status === true ? "Online" : "Offline",
+    },
+    {
+        name: 'Status',
+        selector: row => row.is_active === true ? "Aktif" : "Tidak Aktif",
+        sortable: true,
     },
     {
         name: 'Access',
         selector: row => row.total_access,
         width: "150px",
-        // sortable: true,
+        sortable: true,
     },
     {
         name: 'Action',
@@ -133,7 +138,7 @@ function ListUser () {
                 <Col xs={6}>
                     <Form.Select name="statusDanaMasuk" className='input-text-user' style={{ display: "inline" }} >
                         <option defaultValue value={1}>Nama</option>
-                        <option value={2}>Username</option>
+                        <option value={2}>Email</option>
                     </Form.Select>
                 </Col>
                 <Col xs={6}>
@@ -167,13 +172,6 @@ function ListUser () {
                     </Row>
                 </Col>
             </Row>
-            {/* {
-              listManageUser.length !== 0 &&
-              <div>
-                <Link className="export-span">Export</Link>
-              </div>
-            }
-            <br/> */}
             <br/>
             <div className="div-table">
                 <DataTable

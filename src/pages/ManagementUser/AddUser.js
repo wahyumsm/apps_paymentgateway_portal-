@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import {
   BaseURL,
   errorCatch,
+  getRole,
   getToken,
   RouteTo,
   setUserSession,
@@ -15,7 +16,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function AddUser() {
   const history = useHistory();
-  const access_token = getToken();
+  const access_token = getToken();  
+  const user_role = getRole()
   const auth = "Bearer " + getToken();
 
   const [inputHandle, setInputHandle] = useState({
@@ -160,6 +162,9 @@ function AddUser() {
       // RouteTo("/login")
       history.push("/login");
     }
+    if (user_role == 102) {
+      history.push('/404');
+    }
     if (inputHandle.role == 102 || inputHandle.role == 103) {
       getListPartner();
     }
@@ -167,7 +172,7 @@ function AddUser() {
     if (inputHandle.role == 103 && inputHandle.partnerId != "") {
       getListAgen(inputHandle.partnerId);
     }
-  }, [inputHandle.role, inputHandle.partnerId]);
+  }, [inputHandle.role, inputHandle.partnerId, user_role]);
 
   return (
     <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
