@@ -190,7 +190,7 @@ function DetailAgen() {
                         </Col>
                         <Col xs={9}>
                             <Form.Control
-                                value={detailAgen.nominal_topup}
+                                value={detailAgen.nominal_topup === null ? 0 : detailAgen.nominal_topup}
                                 type='text'
                                 disabled
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
