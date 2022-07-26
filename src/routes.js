@@ -19,6 +19,7 @@ export const Routes = {
     ListUser : { path: "/managementuser" },
     UpdateUser : { path: "/updateuser/:muserId" },
     EditPartner : { path: "/editpartner/:partnerId" },
+    ListMenuAccess : { path: "/menuaccess/:userId" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
     Login: { path: "/login" },

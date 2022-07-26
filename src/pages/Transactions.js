@@ -71,7 +71,7 @@ export default () => {
   async function getListTransferDana(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"start_time": "${oneMonthAgo}", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": ""}`)
+      const dataParams = encryptData(`{"start_time": "${currentDate}", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": ""}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -98,20 +98,21 @@ export default () => {
   async function getSettlement(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"${oneMonthAgo}", "tvasettl_to":"${currentDate}"}`)
+      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"${currentDate}", "tvasettl_to":"${currentDate}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200 && dataSettlement.data.response_new_token.length === 0) {
-        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(dataSettlement.data.response_data)
+      // console.log(dataSettlement, "ini data settlement");
+      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200 && dataSettlement.data.response_new_token === null) {
+        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(dataSettlement.data.response_data.results)
         setPendingSettlement(false)
       } else {
         setUserSession(dataSettlement.data.response_new_token)
-        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(dataSettlement.data.response_data)
+        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(dataSettlement.data.response_data.results)
         setPendingSettlement(false)
       }
     } catch (error) {
@@ -132,8 +133,8 @@ export default () => {
       const dataChartTransfer = await axios.post("/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
       // console.log(dataChartTransfer, 'ini data chart transfer ');
       if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200) {
-        dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setDataChartTransfer(dataChartTransfer.data.response_data)
+        dataChartTransfer.data.response_data.results = dataChartTransfer.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setDataChartTransfer(dataChartTransfer.data.response_data.results)
       }
     } catch (error) {
       console.log(error)
@@ -184,13 +185,13 @@ export default () => {
         'Authorization' : auth
       }
       const filterSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
-        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(filterSettlement.data.response_data)
+      if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token === null) {
+        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data.results)
       } else {
         setUserSession(filterSettlement.data.response_new_token)
-        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(filterSettlement.data.response_data)
+        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data.results)
       }
     } catch (error) {
       console.log(error)

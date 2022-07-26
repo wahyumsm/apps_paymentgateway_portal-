@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxOpen, faCartArrowDown, faChartPie, faChevronDown, faClipboard, faCommentDots, faFileAlt, faPlus, faRocket, faStore } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Button, Dropdown } from '@themesberg/react-bootstrap';
@@ -6,9 +6,26 @@ import { ChoosePhotoWidget, ProfileCardWidget } from "../components/Widgets";
 import { GeneralInfoForm } from "../components/Forms";
 
 import Profile3 from "../assets/img/team/profile-picture-3.jpg";
+import { useHistory } from "react-router-dom";
+import { getRole, getToken } from "../function/helpers";
 
 
 export default () => {
+
+  const history = useHistory()
+  const access_token = getToken()
+  const user_role = getRole()
+
+  useEffect(() => {
+    if (!access_token) {
+        // RouteTo("/login")
+        history.push('/login');
+    }
+    if (user_role === 102) {
+        history.push('/404');
+    }
+  }, [access_token, user_role])
+  
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
