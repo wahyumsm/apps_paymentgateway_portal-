@@ -34,6 +34,11 @@ export function convertToRupiah(money) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0}).format(money)
 }
 
+export function convertToCurrency(money) {
+    const moneyNum = parseInt(money)
+    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 0}).format(moneyNum)
+}
+
 export function errorCatch(statusCode) {
     const code = {
         "401": "/login",

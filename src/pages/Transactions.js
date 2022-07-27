@@ -183,7 +183,7 @@ export default () => {
   async function filterSettlementButtonHandle(idTransaksi, periode, status) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_code":${(idTransaksi.length !== 0) ? idTransaksi : 0}, "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
+      const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -741,7 +741,7 @@ export default () => {
                   <Col>{detailTransferDana.mpartnerdtl_sub_name}</Col>
                   <Col style={{ display: "flex", justifyContent: "end" }}>{detailTransferDana.mpartnerdtl_partner_id}</Col>
                 </Row>
-                <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No Rekening</div>
+                <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No VA</div>
                 <div style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>{detailTransferDana.tvatrans_va_number}</div>
                 <center>
                   <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />

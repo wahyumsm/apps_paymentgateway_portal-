@@ -35,7 +35,7 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -347,7 +347,7 @@ export default (props) => {
                 <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                   <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
                     <span className="mb-0 font-small">Saldo: </span>
-                    <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.topupAmount)}</span>
+                    <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
                     <img
                       src={arrowDown}
                       alt="arrow_down"
@@ -470,7 +470,7 @@ export default (props) => {
               <Form action="#">
                 <Form.Group className="mb-3">
                   <Form.Label>Nominal Top Up Saldo</Form.Label>
-                  <Form.Control disabled name="amount" value={getBalance.topupAmount} type="number" />
+                  <Form.Control disabled name="amount" value={convertToRupiah(getBalance.topupAmount)} type="text" />
                 </Form.Group>
                 <Form.Group id="referenceNumber">
                   <Form.Label>Reference Number</Form.Label>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, Modal, Button } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Modal, Button, InputGroup } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./EditAgen.css"
@@ -25,7 +25,7 @@ function EditAgen() {
         akunBank: detailAgen.agen_bank_number,
         rekeningOwner: detailAgen.agen_bank_name,
         active: detailAgen.status,
-        nominal: 0
+        nominal: convertToCurrency(0)
     })
 
     function handleChange(e) {
@@ -157,7 +157,7 @@ function EditAgen() {
     const goBack = () => {
         window.history.back();
     };
-    // console.log(inputHandle.active, 'ini detail agen dari input handle');
+    // console.log(inputHandle.nominal, 'ini detail agen dari input handle');
 
     return (
         <>
@@ -308,6 +308,7 @@ function EditAgen() {
                                 <Form.Control
                                     name='nominal'
                                     defaultValue={detailAgen.nominal_topup}
+                                    value={inputHandle.nominal === 0 ? detailAgen.nominal_topup : inputHandle.nominal}
                                     type='number'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
