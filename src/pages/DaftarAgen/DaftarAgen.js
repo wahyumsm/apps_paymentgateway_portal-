@@ -30,6 +30,7 @@ function DaftarAgen() {
         'Authorization' : auth
       }
       const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
+      console.log(listAgen, "ini list agen di daftar agen")
       if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
@@ -68,29 +69,24 @@ function DaftarAgen() {
     {
       name: 'Nama Agen',
       selector: row => row.agen_name,
-      // sortable: true,
+      sortable: true,
     },
     {
       name: 'Email',
       selector: row => row.agen_email,
-      // sortable: true,
     },
     {
       name: 'No Hp',
       selector: row => row.agen_mobile,
-      // sortable: true,
     },
     {
       name: 'No Rekening',
       selector: row => row.agen_bank_number,
-      // sortable: true
     },
-    // {
-    //   name: 'Kode Unik',
-    //   selector: row => row.agen_unique_code,
-    //   width: "132px",
-    //   sortable: true
-    // },
+    {
+      name: "Default",
+      selector: row => row.is_default === true ? "Default Partner" : "-",
+    },
     {
       name: 'Status',
       selector: row => row.status,
@@ -109,17 +105,6 @@ function DaftarAgen() {
     }
   ]
 
-  const customStyles = {
-      headCells: {
-          style: {
-              backgroundColor: '#F2F2F2',
-              border: '12px',
-              fontWeight: 'bold',
-              fontSize: '16px'
-          },
-      },
-  };
-
   useEffect(() => {
     if (!access_token) {
       // RouteTo("/login")
@@ -128,10 +113,21 @@ function DaftarAgen() {
     getDataAgen()
   }, [])
 
+  const customStyles = {
+    headCells: {
+        style: {
+            backgroundColor: '#F2F2F2',
+            border: '12px',
+            fontWeight: 'bold',
+            fontSize: '16px'
+        },
+    },
+  };
+
   const CustomLoader = () => (
     <div style={{ padding: '24px' }}>
       <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-      {/* <div>Loading...</div> */}
+      <div>Loading...</div>
     </div>
   );
 
