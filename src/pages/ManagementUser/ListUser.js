@@ -83,11 +83,11 @@ function ListUser () {
     },
     {
         name: 'Online Status',
-        selector: row => row.status === true ? "Online" : "Offline",
+        selector: row => row.is_online === true ? "Online" : "Offline",
     },
     {
         name: 'Status',
-        selector: row => row.is_active === true ? "Aktif" : "Tidak Aktif",
+        selector: row => row.status === true ? "Aktif" : "Tidak Aktif",
         sortable: true,
     },
     {
