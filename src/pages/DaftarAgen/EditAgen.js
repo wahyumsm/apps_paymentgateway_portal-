@@ -308,7 +308,7 @@ function EditAgen() {
                                 <Form.Control
                                     name='nominal'
                                     defaultValue={detailAgen.nominal_topup}
-                                    value={inputHandle.nominal === 0 ? detailAgen.nominal_topup : inputHandle.nominal}
+                                    // value={inputHandle.nominal === 0 ? detailAgen.nominal_topup : inputHandle.nominal}
                                     type='number'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
