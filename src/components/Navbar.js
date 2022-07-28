@@ -146,7 +146,7 @@ export default (props) => {
             'Content-Type':'multipart/form-data',
             'Authorization' : auth
         }
-        const topUp = await axios.post("/Partner/TopupConfirmation", formData, { headers: headers })
+        const topUp = await axios.post(BaseURL + "/Partner/TopupConfirmation", formData, { headers: headers })
         // console.log(topUp, 'ini topup');
         if(topUp.status === 200 && topUp.data.response_code === 200) {
           setTopUpResult(topUp.data.response_data.results)
@@ -170,7 +170,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
+          const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
           // console.log(getBalance.data.response_data.topupAmount, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
@@ -189,7 +189,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const listRiwayat = await axios.post("/partner/TopUpHistory", { data: "" }, { headers: headers })
+          const listRiwayat = await axios.post(BaseURL + "/partner/TopUpHistory", { data: "" }, { headers: headers })
           // console.log(listRiwayat, 'ini data user ');
           if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
@@ -218,7 +218,7 @@ export default (props) => {
         Authorization: auth,
       };
       const logout = await axios.post(
-        "/Account/Logout",
+        BaseURL + "/Account/Logout",
         { data: "" },
         { headers: headers }
       );

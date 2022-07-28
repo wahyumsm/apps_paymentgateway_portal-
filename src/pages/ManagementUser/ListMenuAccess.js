@@ -24,7 +24,7 @@ function ListMenuAccess() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const listAccessMenu = await axios.post('/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
+            const listAccessMenu = await axios.post(BaseURL + '/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
             // console.log(listAccessMenu, "ini list access menu");
             if (listAccessMenu.status === 200 && listAccessMenu.data.response_code === 200 && listAccessMenu.data.response_new_token.length === 0) {
                 setListAccessMenu(listAccessMenu.data.response_data)

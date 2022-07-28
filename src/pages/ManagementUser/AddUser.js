@@ -58,7 +58,7 @@ function AddUser() {
     };
     try {
       const listRole = await axios.post(
-        "/Account/GetAccessRole",
+        BaseURL + "/Account/GetAccessRole",
         { data: "" },
         { headers: headers }
       );
@@ -78,7 +78,7 @@ function AddUser() {
         Authorization: auth,
       };
       const listPartner = await axios.post(
-        "/Partner/ListPartner",
+        BaseURL + "/Partner/ListPartner",
         { data: "" },
         { headers: headers }
       );
@@ -106,7 +106,7 @@ function AddUser() {
         Authorization: auth,
       };
       const listAgenFromPartner = await axios.post(
-        "/Partner/GetListAgen",
+        BaseURL + "/Partner/GetListAgen",
         { data: dataParams },
         { headers: headers }
       );
@@ -145,7 +145,7 @@ function AddUser() {
         Authorization: auth,
       };
       const addUser = await axios.post(
-        "/Account/AddUser",
+        BaseURL + "/Account/AddUser",
         { data: dataParams },
         { headers: headers }
       );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Form } from "@themesberg/react-bootstrap";
-import { errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
@@ -51,13 +51,13 @@ function UpdateUser() {
         try {
             const auth = "Bearer " + getToken();
             const dataParams = encryptData(`{"muser_id":"${muserId}"}`);
-            console.log(dataParams, "ini data param");
+            // console.log(dataParams, "ini data param");
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: auth,
             };
             const detailUser = await axios.post(
-                "/Account/DetailUserAccess",
+                BaseURL + "/Account/DetailUserAccess",
                 { data: dataParams },
                 { headers: headers }
             );
@@ -91,7 +91,7 @@ function UpdateUser() {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                const editUser = await axios.post("/Account/UpdateUser", { data: dataParams }, { headers: headers })
+                const editUser = await axios.post(BaseURL + "/Account/UpdateUser", { data: dataParams }, { headers: headers })
                 if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length === 0) {
                     history.push("/managementuser")
                 } else {
@@ -114,11 +114,11 @@ function UpdateUser() {
                     Authorization: auth,
                 };
                 const listRole = await axios.post(
-                    "/Account/GetAccessRole",
+                    BaseURL + "/Account/GetAccessRole",
                     { data: "" },
                     { headers: headers }
                 );
-                console.log(listRole, "ini role");
+                // console.log(listRole, "ini role");
                 if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length === 0) {
                     setListRole(listRole.data.response_data);
                 } else {
@@ -139,11 +139,11 @@ function UpdateUser() {
                     Authorization: auth,
                 };
                 const listPartner = await axios.post(
-                    "/Partner/ListPartner",
+                    BaseURL + "/Partner/ListPartner",
                     { data: "" },
                     { headers: headers }
                 );
-                console.log(listPartner, "ini partner di user");
+                // console.log(listPartner, "ini partner di user");
                 if (
                     listPartner.status === 200 &&
                     listPartner.data.response_code === 200 &&
@@ -161,14 +161,14 @@ function UpdateUser() {
 
         async function getListAgen(partnerId) {
             try {
-                console.log(partnerId, "ini partner id di function list agen");
+                // console.log(partnerId, "ini partner id di function list agen");
                 const auth = 'Bearer ' + getToken();
                 const dataParams = encryptData(`{"partner_id": "${partnerId}"}`);
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                const listAgen = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
+                const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", {data: dataParams}, {headers: headers})
                 if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
                     setListAgen(listAgen.data.response_data)
                 } else {

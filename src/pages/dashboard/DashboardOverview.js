@@ -86,7 +86,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const ringkasanData = await axios.post("/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
+      const ringkasanData = await axios.post(BaseURL + "/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
       // console.log(ringkasanData);
       // if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200) {
         
