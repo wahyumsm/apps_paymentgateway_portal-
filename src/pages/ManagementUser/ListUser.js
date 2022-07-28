@@ -38,7 +38,7 @@ function ListUser () {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listManageUser = await axios.post(BaseURL + "/Account/ListUser", { data: "" }, { headers: headers })
+      const listManageUser = await axios.post("/Account/ListUser", { data: "" }, { headers: headers })
       // console.log(listManageUser, "ini data user")
       if (listManageUser.status === 200 && listManageUser.data.response_code === 200) {
         listManageUser.data.response_data = listManageUser.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, icon: <div className="d-flex justify-content-center align-items-center"><FontAwesomeIcon icon={faEye} className="me-2" style={{cursor: "pointer"}} onClick={() => menuAccessHandler(obj.muser_id)} /><FontAwesomeIcon icon={faPencilAlt} className="mx-2" style={{cursor: "pointer"}} onClick={() => detailUserHandler(obj.muser_id)} /></div> }));

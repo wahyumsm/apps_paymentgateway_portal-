@@ -57,7 +57,7 @@ function UpdateUser() {
                 Authorization: auth,
             };
             const detailUser = await axios.post(
-                BaseURL + "/Account/DetailUserAccess",
+                "/Account/DetailUserAccess",
                 { data: dataParams },
                 { headers: headers }
             );
@@ -91,7 +91,7 @@ function UpdateUser() {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                const editUser = await axios.post(BaseURL + "/Account/UpdateUser", { data: dataParams }, { headers: headers })
+                const editUser = await axios.post("/Account/UpdateUser", { data: dataParams }, { headers: headers })
                 if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length === 0) {
                     history.push("/managementuser")
                 } else {
@@ -114,7 +114,7 @@ function UpdateUser() {
                     Authorization: auth,
                 };
                 const listRole = await axios.post(
-                    BaseURL + "/Account/GetAccessRole",
+                    "/Account/GetAccessRole",
                     { data: "" },
                     { headers: headers }
                 );
@@ -139,7 +139,7 @@ function UpdateUser() {
                     Authorization: auth,
                 };
                 const listPartner = await axios.post(
-                    BaseURL + "/Partner/ListPartner",
+                    "/Partner/ListPartner",
                     { data: "" },
                     { headers: headers }
                 );
@@ -168,7 +168,7 @@ function UpdateUser() {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", {data: dataParams}, {headers: headers})
+                const listAgen = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
                 if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
                     setListAgen(listAgen.data.response_data)
                 } else {
