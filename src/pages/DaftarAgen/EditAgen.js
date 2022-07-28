@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, Modal, Button } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Modal, Button, InputGroup } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./EditAgen.css"
@@ -24,7 +24,8 @@ function EditAgen() {
         bankName: 1,
         akunBank: detailAgen.agen_bank_number,
         rekeningOwner: detailAgen.agen_bank_name,
-        active: detailAgen.status
+        active: detailAgen.status,
+        nominal: convertToCurrency(0)
     })
 
     function handleChange(e) {
@@ -87,7 +88,7 @@ function EditAgen() {
         }
     }
 
-    async function updateDetailAgen(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active) {
+    async function updateDetailAgen(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
         try {
             if (namaAgen === undefined) {
                 namaAgen = detailAgen.agen_name
@@ -107,9 +108,12 @@ function EditAgen() {
             if (active === undefined) {
                 active = detailAgen.status
             }
+            if (nominal === undefined) {
+                nominal = detailAgen.nominal_topup
+            }
             // console.log(agenId, 'ini agen id di func');
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}"}`)
+            const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}", "nominal":${nominal}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -130,7 +134,7 @@ function EditAgen() {
     }
 
     const goDetail = () => {
-        updateDetailAgen(inputHandle.id, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active)  
+        updateDetailAgen(inputHandle.id, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active, inputHandle.nominal)  
         // RouteTo("/daftaragen")
         history.push("/daftaragen")        
         setShowModalEdit(false)       
@@ -148,12 +152,12 @@ function EditAgen() {
             // window.location.reload();
         }
         getDetailAgen(agenId)
-    }, [access_token, agenId, getDetailAgen])
+    }, [access_token, agenId])
     
     const goBack = () => {
         window.history.back();
     };
-    // console.log(inputHandle.active, 'ini detail agen dari input handle');
+    // console.log(inputHandle.nominal, 'ini detail agen dari input handle');
 
     return (
         <>
@@ -192,11 +196,8 @@ function EditAgen() {
                                 <Form.Control
                                     name='nama'
                                     value={detailAgen.agen_id}
-                                    // placeholder="Masukkan Nama Agen"
                                     type='text'
                                     disabled
-                                    // aria-label="Masukkan Nama Agen"
-                                    // aria-describedby="basic-addon2"
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     />
                             </Col>
@@ -211,10 +212,7 @@ function EditAgen() {
                                 <Form.Control
                                     name='namaAgen'
                                     defaultValue={detailAgen.agen_name}
-                                    // placeholder="Masukkan Nama Agen"
                                     type='text'
-                                    // aria-label="Masukkan Nama Agen"
-                                    // aria-describedby="basic-addon2"
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}
                                 />
@@ -230,10 +228,7 @@ function EditAgen() {
                                 <Form.Control
                                     name='emailAgen'
                                     defaultValue={detailAgen.agen_email}
-                                    // placeholder="Masukkan Email Agen"
                                     type='text'
-                                    // aria-label="Masukkan Nama Agen"
-                                    // aria-describedby="basic-addon2"
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}
                                 />
@@ -249,10 +244,7 @@ function EditAgen() {
                                 <Form.Control
                                     name='phoneNumber'
                                     defaultValue={detailAgen.agen_mobile}
-                                    // placeholder="Masukkan No Hp Agen"
                                     type='text'
-                                    // aria-label="Masukkan Nama Agen"
-                                    // aria-describedby="basic-addon2"
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
                                 />
@@ -270,8 +262,6 @@ function EditAgen() {
                                     placeholder="BCA (Bank Central Asia)"
                                     type='text'
                                     disabled
-                                    // aria-label="Masukkan Nama Agen"
-                                    // aria-describedby="basic-addon2"
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                             </Col>
@@ -286,10 +276,7 @@ function EditAgen() {
                                 <Form.Control
                                     name='akunBank'
                                     defaultValue={detailAgen.agen_bank_number}
-                                    // placeholder="Masukkan No Rekening"
                                     type='text'
-                                    // aria-label="Masukkan Nama Agen"
-                                    // aria-describedby="basic-addon2"
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
                                 />
@@ -305,10 +292,24 @@ function EditAgen() {
                                 <Form.Control
                                     name='rekeningOwner'
                                     defaultValue={detailAgen.agen_bank_name}
-                                    // placeholder="Masukkan Nama Pemilik Rekening"
                                     type='text'
-                                    // aria-label="Masukkan Nama Agen"
-                                    // aria-describedby="basic-addon2"
+                                    style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                    onChange={handleChange}    
+                                />
+                            </Col>
+                        </Row>
+                        <Row className='mt-2'>
+                            <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                    Nominal Top up
+                                </span>
+                            </Col>
+                            <Col xs={9}>
+                                <Form.Control
+                                    name='nominal'
+                                    defaultValue={detailAgen.nominal_topup}
+                                    // value={inputHandle.nominal === 0 ? detailAgen.nominal_topup : inputHandle.nominal}
+                                    type='number'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
                                 />

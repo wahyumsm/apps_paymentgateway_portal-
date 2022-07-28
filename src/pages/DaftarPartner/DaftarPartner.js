@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
 import DataTable from 'react-data-table-component';
-import { Col, Row, Form} from '@themesberg/react-bootstrap';
+import { Image} from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
+import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
 function DaftarPartner() {
@@ -15,6 +16,7 @@ function DaftarPartner() {
     const access_token = getToken()
     const user_role = getRole()
     const [listPartner, setListPartner] = useState([])
+    const [pending, setPending] = useState(true)
 
     function tambahPartner() {
         // RouteTo("/tambahpartner")
@@ -29,14 +31,15 @@ function DaftarPartner() {
                 'Authorization' : auth
             }
             const listDataPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
-            // console.log(listDataPartner, 'ini data user ');
             if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length === 0) {
                 listDataPartner.data.response_data = listDataPartner.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
                 setListPartner(listDataPartner.data.response_data)
+                setPending(false)
             } else {
                 setUserSession(listDataPartner.data.response_new_token)
                 listDataPartner.data.response_data = listDataPartner.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
                 setListPartner(listDataPartner.data.response_data)
+                setPending(false)
             }
             
         } catch (error) {
@@ -71,12 +74,14 @@ function DaftarPartner() {
             name: 'ID Partner',
             selector: row => row.partner_id,
             sortable: true,
-            cell: (row) => <Link style={{textDecoration: "underline", color: "#077E86"}} onClick={() => detailPartnerHandler(row.partner_id)}>{row.partner_id}</Link>
+            cell: (row) => <Link style={{textDecoration: "underline", color: "#077E86"}} onClick={() => detailPartnerHandler(row.partner_id)}>{row.partner_id}</Link>,
+            width: "130px"
         },
         {
             name: 'Nama Perusahaan',
             selector: row => row.nama_perusahaan,
-            sortable: true
+            sortable: true,
+            width: "230px"
         },
         {
             name: 'Email Perusahaan',
@@ -91,7 +96,7 @@ function DaftarPartner() {
         {
             name: 'Status',
             selector: row => row.status === "Aktif" ? <div className='active-status-badge'>Aktif</div> : <div className='inactive-status-badge'>Tidak Aktif</div>,
-            width: "200px",
+            width: "180px",
             sortable: true
         },
     ];
@@ -109,6 +114,13 @@ function DaftarPartner() {
         },
     };
 
+    const CustomLoader = () => (
+        <div style={{ padding: '24px' }}>
+          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+          <div>Loading...</div>
+        </div>
+    );
+
   return (
     <div className='main-content mt-5' style={{padding: "37px 27px 37px 27px"}}>
         <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Partner</span>
@@ -123,12 +135,12 @@ function DaftarPartner() {
         <div className='base-content'>   
             {/* <div className='search-bar mb-5'>
                 <Row>
-                    <Col xs={3} style={{width: '18%'}}>
+                    <Col xs={3}>
                         <span className='h5'>
                             Cari Data Partner :
                         </span>
                     </Col>
-                    <Col xs={2}>
+                    <Col xs={6}>
                         <Form.Control
                             placeholder="Recipient's username"
                             aria-label="Recipient's username"
@@ -143,14 +155,15 @@ function DaftarPartner() {
                     columns={columns}
                     data={listPartner}
                     customStyles={customStyles}
-                    noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                     pagination
                     highlightOnHover
+                    progressPending={pending}
+                    progressComponent={<CustomLoader />}
                 />
             </div>
         </div>
     </div>
-  )
+    )
 }
 
 export default DaftarPartner

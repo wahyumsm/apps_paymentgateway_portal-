@@ -395,7 +395,7 @@ function RiwayatTransaksi() {
         {
             name: 'No',
             selector: row => row.number,
-            width: "53px"
+            width: "70px"
         },
         {
             name: 'ID Transaksi',
@@ -965,7 +965,7 @@ function RiwayatTransaksi() {
                             <Col>{detailTransferDana.mpartner_name}</Col>
                             <Col style={{ display: "flex", justifyContent: "end" }}>{detailTransferDana.mpartnerdtl_partner_id}</Col>
                         </Row>
-                        <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No Rekening</div>
+                        <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No VA</div>
                         <div style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>{detailTransferDana.tvatrans_va_number}</div>
                         <center>
                             <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />

@@ -16,6 +16,8 @@ export const Routes = {
     DaftarPartner : { path: "/daftarpartner" },
     TambahPartner : { path: "/tambahpartner" },
     DetailPartner : { path: "/detailpartner/:partnerId" },
+    ListUser : { path: "/managementuser" },
+    UpdateUser : { path: "/updateuser/:muserId" },
     EditPartner : { path: "/editpartner/:partnerId" },
     ListMenuAccess : { path: "/menuaccess/:userId" },
     Billing: { path: "/examples/billing" },
@@ -27,6 +29,7 @@ export const Routes = {
     Lock: { path: "/examples/lock" },
     NotFound: { path: "/404" },
     ServerError: { path: "/examples/500" },
+    AddUser: {path:"/adduser"},
 
     // docs
     DocsOverview: { path: "/documentation/overview" },

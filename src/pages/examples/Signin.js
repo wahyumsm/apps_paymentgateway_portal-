@@ -59,6 +59,7 @@ export default () => {
         'Authorization' : auth
       }
       const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
+      // console.log(dataLogin.data, "dataLogin di login");
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         userDetail(dataLogin.data.response_data.access_token)

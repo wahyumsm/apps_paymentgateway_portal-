@@ -98,21 +98,21 @@ export default () => {
   async function getSettlement(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_id":0, "tvasettl_status_id":0, "tvasettl_from":"${currentDate}", "tvasettl_to":"${currentDate}"}`)
+      const dataParams = encryptData(`{"tvasettl_code":"", "tvasettl_status_id":0, "tvasettl_from":"${currentDate}", "tvasettl_to":"${currentDate}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
       // console.log(dataSettlement, "ini data settlement");
-      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200 && dataSettlement.data.response_new_token === null) {
-        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(dataSettlement.data.response_data.results)
+      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200 && dataSettlement.data.response_new_token.length === 0) {
+        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(dataSettlement.data.response_data)
         setPendingSettlement(false)
       } else {
         setUserSession(dataSettlement.data.response_new_token)
-        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(dataSettlement.data.response_data.results)
+        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(dataSettlement.data.response_data)
         setPendingSettlement(false)
       }
     } catch (error) {
@@ -132,9 +132,13 @@ export default () => {
       }
       const dataChartTransfer = await axios.post(BaseURL + "/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
       // console.log(dataChartTransfer, 'ini data chart transfer ');
-      if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200) {
-        dataChartTransfer.data.response_data.results = dataChartTransfer.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setDataChartTransfer(dataChartTransfer.data.response_data.results)
+      if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length === 0) {
+        dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setDataChartTransfer(dataChartTransfer.data.response_data)
+      } else {
+        setUserSession(dataChartTransfer.data.response_new_token)
+        dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setDataChartTransfer(dataChartTransfer.data.response_data)
       }
     } catch (error) {
       console.log(error)
@@ -179,19 +183,19 @@ export default () => {
   async function filterSettlementButtonHandle(idTransaksi, periode, status) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_id":${(idTransaksi.length !== 0) ? idTransaksi : 0}, "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
+      const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const filterSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
-      if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token === null) {
-        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(filterSettlement.data.response_data.results)
+      if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
+        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data)
       } else {
         setUserSession(filterSettlement.data.response_new_token)
-        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(filterSettlement.data.response_data.results)
+        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data)
       }
     } catch (error) {
       console.log(error)
@@ -258,13 +262,14 @@ export default () => {
   const columnstransferDana = [
     {
         name: 'No',
-        selector: row => row.number
+        selector: row => row.number,
+        width: "67px"
     },
     {
         name: 'ID Transaksi',
         selector: row => row.id,
         cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
-      // sortable: true
+        // sortable: true
     },
     {
         name: 'Waktu',
@@ -398,7 +403,7 @@ export default () => {
   function exportReportSettlementHandler(data) {
     let dataExcel = []
     for (let i = 0; i < data.length; i++) {
-      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_id, Waktu: data[i].tvasettl_crtdt, Jumlah: data[i].tvasettl_amount, Status: data[i].tvasettl_status_id })
+      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt, Jumlah: data[i].tvasettl_amount, Status: data[i].tvasettl_status_id })
     }
     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
     let workBook = XLSX.utils.book_new();
@@ -409,7 +414,7 @@ export default () => {
   const CustomLoader = () => (
     <div style={{ padding: '24px' }}>
       <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-      {/* <div>Loading...</div> */}
+      <div>Loading...</div>
     </div>
   );
 
@@ -431,7 +436,7 @@ export default () => {
         ],
         hoverOffset: 4
       }]
-    };    
+    };
 
   return (
     <>
@@ -736,7 +741,7 @@ export default () => {
                   <Col>{detailTransferDana.mpartnerdtl_sub_name}</Col>
                   <Col style={{ display: "flex", justifyContent: "end" }}>{detailTransferDana.mpartnerdtl_partner_id}</Col>
                 </Row>
-                <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No Rekening</div>
+                <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No VA</div>
                 <div style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>{detailTransferDana.tvatrans_va_number}</div>
                 <center>
                   <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />

@@ -82,12 +82,12 @@ function TambahPartner() {
             <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama Perusahaan*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='namaPerusahaan'
                                 onChange={handleChange}
@@ -98,12 +98,12 @@ function TambahPartner() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Email Perusahaan*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='emailPerusahaan'
                                 onChange={handleChange}
@@ -114,12 +114,12 @@ function TambahPartner() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nomor Telepon*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='phoneNumber'
                                 onChange={handleChange}
@@ -130,12 +130,12 @@ function TambahPartner() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Alamat*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='alamat'
                                 onChange={handleChange}
@@ -150,15 +150,15 @@ function TambahPartner() {
             <div className="head-title">
                 <h5 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Detail NPWP</h5>
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+            <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 No NPWP*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='noNpwp'
                                 onChange={handleChange}
@@ -169,12 +169,12 @@ function TambahPartner() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama NPWP*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='namaNpwp'
                                 onChange={handleChange}
@@ -189,15 +189,15 @@ function TambahPartner() {
             <div className="head-title">
                 <h5 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Profil Direktur Perusahaan</h5>
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+            <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama Direktur*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='nama'
                                 onChange={handleChange}
@@ -208,12 +208,12 @@ function TambahPartner() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 No Hp Direktur*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='noHp'
                                 onChange={handleChange}
@@ -228,15 +228,15 @@ function TambahPartner() {
             <div className="head-title">
                 <h5 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Rekening</h5>
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+            <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama Bank*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='bankName'
                                 onChange={handleChange}
@@ -248,12 +248,12 @@ function TambahPartner() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 No. Rekening*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='akunBank'
                                 onChange={handleChange}
@@ -264,12 +264,12 @@ function TambahPartner() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama Pemilik Rekening*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='rekeningOwner'
                                 onChange={handleChange}
@@ -284,15 +284,15 @@ function TambahPartner() {
             <div className="head-title">
                 <h5 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>Biaya</h5>
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+            <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Fee*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='fee'
                                 onChange={handleChange}
@@ -304,12 +304,12 @@ function TambahPartner() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Settlement Fee*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='settlementFee'
                                 onChange={handleChange}

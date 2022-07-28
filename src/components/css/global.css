@@ -90,6 +90,19 @@ body {
     color: #888888;
 }
 
+.input-text-user {
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 0px 10px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
+
 .btn-primary {
     background-color: #FFFFFF;
 }
@@ -254,7 +267,7 @@ body {
     color: #888888;
 }
 
-.berhasil-status-badge {
+.berhasil-status-badge, .active-status-topup {
     justify-content: center;
     align-items: center;
     padding: 6px 12px;
@@ -268,6 +281,10 @@ body {
     font-weight: 600;
     font-size: 14px;
     color: #077E86;
+}
+
+.active-status-topup {
+    text-align: center;
 }
 
 .gagal-status-badge {
@@ -328,6 +345,7 @@ body {
     font-weight: 600;
     font-size: 14px;
     color: #077E86;
+    text-align: center;
 }
 
 .gagal-status-topup {
@@ -344,4 +362,5 @@ body {
     font-weight: 600;
     font-size: 14px;
     color: #EE2E2C;
+    text-align: center;
 }

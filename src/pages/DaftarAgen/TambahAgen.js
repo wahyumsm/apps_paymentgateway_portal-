@@ -24,6 +24,7 @@ function TambahAgen() {
         rekeningOwner: "",
         status: "true",
         settlementFee: 0,
+        nominal: 0,
     })
     const [showModal, setShowModal] = useState(false)
     const [detailNewAgen, setDetailNewAgen] = useState({})
@@ -38,13 +39,10 @@ function TambahAgen() {
     const [errorCode, setErrorCode] = useState(0)
 
 
-    async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee) {
+    async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee, nominal) {
         try {         
-
-            // console.log(inputHandle.email.length)
-
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}}`)
+            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -105,12 +103,12 @@ function TambahAgen() {
                         </Col>
                     </Row> */}
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama Agen*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='nama'
                                 onChange={handleChange}
@@ -124,12 +122,12 @@ function TambahAgen() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Email Agen*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='email'
                                 onChange={handleChange}
@@ -148,12 +146,12 @@ function TambahAgen() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 No Hp Agen*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='mobileNumber'
                                 onChange={handleChange}
@@ -173,12 +171,12 @@ function TambahAgen() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama Bank*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='bankName'
                                 placeholder="BCA"
@@ -192,12 +190,12 @@ function TambahAgen() {
                         </Col>
                     </Row>
                     <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 No Rekening*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='akunBank'
                                 onChange={handleChange}
@@ -211,12 +209,12 @@ function TambahAgen() {
                         </Col>
                     </Row>
                     <Row className='mb-2'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Pemilik Rekening
+                                Nama Pemilik Rekening*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='rekeningOwner'
                                 onChange={handleChange}
@@ -229,12 +227,12 @@ function TambahAgen() {
                         </Col>
                     </Row>
                     <Row>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Settlement Fee
+                                Settlement Fee*
                             </span>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={10}>
                             <Form.Control
                                 name='settlementFee'
                                 onChange={handleChange}
@@ -246,10 +244,28 @@ function TambahAgen() {
                                 />
                         </Col>
                     </Row>
+                    <Row className='mt-4'>
+                        <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
+                            <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                Nominal Top up
+                            </span>
+                        </Col>
+                        <Col xs={10}>
+                            <Form.Control
+                                name='nominal'
+                                onChange={handleChange}
+                                placeholder="Masukkan Nominal Top up (Optional)"
+                                type='number'
+                                // aria-label="Masukkan Nama Agen"
+                                // aria-describedby="basic-addon2"
+                                style={{ width: "100%", height: 40, marginTop: '-7px' }}
+                                />
+                        </Col>
+                    </Row>
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
-                <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 }>
+                <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee, inputHandle.nominal)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 }>
                     Tambahkan
                 </button>
             </div>
