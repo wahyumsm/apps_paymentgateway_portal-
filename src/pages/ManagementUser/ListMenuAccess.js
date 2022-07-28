@@ -67,7 +67,7 @@ function ListMenuAccess() {
                 ...inputCheck,
                 [e.target.name] : e.target.checked
             })
-        } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 4 && details !== undefined) {
+        } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 4 && details.length !== 0) {
             if (details.length !== 0) {
                 details.forEach(el => {
                     let access2 = `isAccess${el.label}`
@@ -99,7 +99,7 @@ function ListMenuAccess() {
                     [visibled]: e.target.checked
                 })
             }
-        } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 4 && details === undefined) {
+        } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 4 && details.length === 0) {
             setInputCheck({
                 ...inputCheck,
                 [access]: e.target.checked,
@@ -108,17 +108,17 @@ function ListMenuAccess() {
                 [deleted]: e.target.checked,
                 [visibled]: e.target.checked
             })
-        } else if (e.target.name === access && e.target.checked === true && stringMenuId.length === 4 && details !== undefined) {
+        } else if (e.target.name === access && e.target.checked === true && stringMenuId.length === 4 && details.length !== 0) {
             setInputCheck({
                 ...inputCheck,
                 [e.target.name] : e.target.checked
             })
-        } else if (e.target.name === access && e.target.checked === true && stringMenuId.length === 4 && details === undefined) {
+        } else if (e.target.name === access && e.target.checked === true && stringMenuId.length === 4 && details.length === 0) {
             setInputCheck({
                 ...inputCheck,
                 [e.target.name] : e.target.checked
             })
-        } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 2 && details !== undefined) {
+        } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 2 && details.length !== 0) {
             if (details.length !== 0) {
                 let dataObj = {}
                 dataObj[access] = e.target.checked
@@ -180,7 +180,7 @@ function ListMenuAccess() {
                     [visibled]: e.target.checked
                 })
             }
-        } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 2 && details === undefined) {
+        } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 2 && details.length === 0) {
             setInputCheck({
                 ...inputCheck,
                 [access]: e.target.checked,
@@ -189,49 +189,242 @@ function ListMenuAccess() {
                 [deleted]: e.target.checked,
                 [visibled]: e.target.checked
             })
-        } else if (e.target.name === access && e.target.checked === true && stringMenuId.length === 2 && details !== undefined) {
+        } else if (e.target.name === access && e.target.checked === true && stringMenuId.length === 2 && details.length !== 0) {
             setInputCheck({
                 ...inputCheck,
                 [e.target.name] : e.target.checked
             })
-        } else if (e.target.name === access && e.target.checked === true && stringMenuId.length === 2 && details === undefined) {
+        } else if (e.target.name === access && e.target.checked === true && stringMenuId.length === 2 && details.length === 0) {
             setInputCheck({
                 ...inputCheck,
                 [e.target.name] : e.target.checked
             })
         }
         else {
-            // console.log("ini masuk else");
             setInputCheck({
                 ...inputCheck,
                 [e.target.name] : e.target.checked
             })
         }
-        // if (e.target.name === `isAccess${menuName}` && e.target.checked === false) {
-        //     setInputCheck({
-        //         ...inputCheck,
-        //         [access]: e.target.checked,
-        //         [insert]: e.target.checked,
-        //         [update]: e.target.checked,
-        //         [deleted]: e.target.checked,
-        //         [visibled]: e.target.checked
-        //     })
-        // } else if (e.target.name === `isAccess${menuName}` && e.target.checked === true) {
-        //     setInputCheck({
-        //         ...inputCheck,
-        //         [e.target.name] : e.target.checked
-        //     })
-        // }
-        // else {
-        //     setInputCheck({
-        //         ...inputCheck,
-        //         [e.target.name] : e.target.checked
-        //     })
-        // }
     }
 
-    function handleCheckParent(e) {
-        console.log(e.target, "ini checked parent");
+    function handleCheckParent(e, listAccessMenu, inputCheckData) {
+        console.log(e.target.name, "ini name parent");
+        console.log(e.target.checked, "ini checked parent");
+        let dataObj = {}
+        listAccessMenu.forEach(el => {
+            let access = `isAccess${el.label}`
+            let insert = `isInsertable${el.label}`
+            let update = `isUpdateable${el.label}`
+            let deleted = `isDeleteable${el.label}`
+            let visibled = `isVisibled${el.label}`
+            // dataObj[access] = e.target.checked
+            // dataObj[insert] = e.target.checked
+            // dataObj[update] = e.target.checked
+            // dataObj[deleted] = e.target.checked
+            // dataObj[visibled] = e.target.checked
+            if (e.target.name === "#" && e.target.checked === false) {
+                console.log("e.target.name === # && e.target.checked === false");
+                if (el.detail.length !== 0) {
+                    dataObj[access] = e.target.checked
+                    dataObj[insert] = e.target.checked
+                    dataObj[update] = e.target.checked
+                    dataObj[deleted] = e.target.checked
+                    dataObj[visibled] = e.target.checked
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        dataObj[access2] = e.target.checked
+                        dataObj[insert2] = e.target.checked
+                        dataObj[update2] = e.target.checked
+                        dataObj[deleted2] = e.target.checked
+                        dataObj[visibled2] = e.target.checked
+                        if (item.detail !== undefined) {
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                dataObj[access3] = e.target.checked
+                                dataObj[insert3] = e.target.checked
+                                dataObj[update3] = e.target.checked
+                                dataObj[deleted3] = e.target.checked
+                                dataObj[visibled3] = e.target.checked
+                            })
+                        } else {
+                            dataObj[access2] = e.target.checked
+                            dataObj[insert2] = e.target.checked
+                            dataObj[update2] = e.target.checked
+                            dataObj[deleted2] = e.target.checked
+                            dataObj[visibled2] = e.target.checked
+                        }
+                    })
+                } else {
+                    dataObj[access] = e.target.checked
+                    dataObj[insert] = e.target.checked
+                    dataObj[update] = e.target.checked
+                    dataObj[deleted] = e.target.checked
+                    dataObj[visibled] = e.target.checked
+                }
+            // } else if (e.target.name === "#" && e.target.checked === false) {
+            //     console.log("e.target.name === # && e.target.checked === false");
+            //     dataObj[access] = e.target.checked
+            //     dataObj[insert] = e.target.checked
+            //     dataObj[update] = e.target.checked
+            //     dataObj[deleted] = e.target.checked
+            //     dataObj[visibled] = e.target.checked
+            } else if (e.target.name === "#" && e.target.checked === true) {
+                console.log("e.target.name === # && e.target.checked === true");
+                if (el.detail.length !== 0 && inputCheckData[insert] === false && inputCheckData[update] === false && inputCheckData[deleted] === false && inputCheckData[visibled] === false) {
+                    // dataObj[access] = e.target.checked
+                    dataObj[access] = e.target.checked
+                    dataObj[insert] = false
+                    dataObj[update] = false
+                    dataObj[deleted] = false
+                    dataObj[visibled] = false
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        dataObj[access2] = e.target.checked
+                        dataObj[insert2] = false
+                        dataObj[update2] = false
+                        dataObj[deleted2] = false
+                        dataObj[visibled2] = false
+                        if (item.detail !== undefined) {
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                dataObj[access3] = e.target.checked
+                                dataObj[insert3] = false
+                                dataObj[update3] = false
+                                dataObj[deleted3] = false
+                                dataObj[visibled3] = false
+                            })
+                        } else {
+                            dataObj[access2] = e.target.checked
+                            dataObj[insert2] = false
+                            dataObj[update2] = false
+                            dataObj[deleted2] = false
+                            dataObj[visibled2] = false
+                        }
+                    })
+                    // if (inputCheckData[insert] === false && inputCheckData[update] === false && inputCheckData[deleted] === false && inputCheckData[visibled] === false) {
+                    //     dataObj[access] = e.target.checked
+                    //     dataObj[insert] = false
+                    //     dataObj[update] = false
+                    //     dataObj[deleted] = false
+                    //     dataObj[visibled] = false
+                    //     el.detail.forEach(item => {
+                    //         let access2 = `isAccess${item.label}`
+                    //         let insert2 = `isInsertable${item.label}`
+                    //         let update2 = `isUpdateable${item.label}`
+                    //         let deleted2 = `isDeleteable${item.label}`
+                    //         let visibled2 = `isVisibled${item.label}`
+                    //         dataObj[access2] = e.target.checked
+                    //         dataObj[insert2] = false
+                    //         dataObj[update2] = false
+                    //         dataObj[deleted2] = false
+                    //         dataObj[visibled2] = false
+                    //         if (item.detail !== undefined) {
+                    //             item.detail.forEach(item2 => {
+                    //                 let access3 = `isAccess${item2.label}`
+                    //                 let insert3 = `isInsertable${item2.label}`
+                    //                 let update3 = `isUpdateable${item2.label}`
+                    //                 let deleted3 = `isDeleteable${item2.label}`
+                    //                 let visibled3 = `isVisibled${item2.label}`
+                    //                 dataObj[access3] = e.target.checked
+                    //                 dataObj[insert3] = false
+                    //                 dataObj[update3] = false
+                    //                 dataObj[deleted3] = false
+                    //                 dataObj[visibled3] = false
+                    //             })
+                    //         } else {
+                    //             dataObj[access2] = e.target.checked
+                    //             dataObj[insert2] = false
+                    //             dataObj[update2] = false
+                    //             dataObj[deleted2] = false
+                    //             dataObj[visibled2] = false
+                    //         }
+                    //     })
+                    // }
+                    // dataObj[access] = e.target.checked
+                    // el.detail.forEach(item => {
+                    //     let access2 = `isAccess${item.label}`
+                    //     dataObj[access2] = e.target.checked
+                    //     if (item.detail !== undefined) {
+                    //         item.detail.forEach(item2 => {
+                    //             let access3 = `isAccess${item2.label}`
+                    //             dataObj[access3] = e.target.checked
+                    //         })
+                    //     } else {
+                    //         dataObj[access2] = e.target.checked
+                    //     }
+                    // })
+                } else {
+                    console.log("e.target.name === # && e.target.checked === true yang else");
+                    dataObj[access] = e.target.checked
+                    // dataObj[insert] = false
+                    // dataObj[update] = false
+                    // dataObj[deleted] = false
+                    // dataObj[visibled] = false
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        dataObj[access2] = e.target.checked
+                        // dataObj[insert2] = false
+                        // dataObj[update2] = false
+                        // dataObj[deleted2] = false
+                        // dataObj[visibled2] = false
+                        if (item.detail !== undefined) {
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                dataObj[access3] = e.target.checked
+                                // dataObj[insert3] = false
+                                // dataObj[update3] = false
+                                // dataObj[deleted3] = false
+                                // dataObj[visibled3] = false
+                            })
+                        } else {
+                            dataObj[access2] = e.target.checked
+                            // dataObj[insert2] = false
+                            // dataObj[update2] = false
+                            // dataObj[deleted2] = false
+                            // dataObj[visibled2] = false
+                        }
+                    })
+                    dataObj[access] = e.target.checked
+                    // dataObj[insert] = false
+                    // dataObj[update] = false
+                    // dataObj[deleted] = false
+                    // dataObj[visibled] = false
+                }
+            // } else if (e.target.name === "#" && e.target.checked === true && el.detail.length === 0) {
+            //     console.log("e.target.name === # && e.target.checked === true && el.detail.length === 0");
+            //     dataObj[access] = e.target.checked
+            }
+            console.log(dataObj, "ini dataObj");
+        })
+        if (Object.keys(dataObj).length !== 0) {
+            setInputCheck(dataObj)
+        }
+        // console.log(dataObj, "ini dataObj");
     }
 
     useEffect(() => {
@@ -302,33 +495,28 @@ function ListMenuAccess() {
                                 <thead>
                                     <tr>
                                         <th>
-                                            <Form.Check onChange={handleCheckParent} label="#" name="#" htmlFor="#" />
+                                            <Form.Check onChange={(e) => handleCheckParent(e, listAccessMenu, inputCheck)} label="#" name="#" htmlFor="#" />
                                         </th>
                                         <th>
-                                            "Access Menu Name"
-                                            {/* <Form.Check onChange={handleCheckParent} label="Access Menu Name" name="accessMenuName" htmlFor="accessMenuName" /> */}
+                                            Access Menu Name
                                         </th>
                                         <th>
-                                            <Form.Check onChange={handleCheckParent} label="Access Insert" name="accessInsert" htmlFor="accessInsert" />
+                                            <Form.Check onChange={(e) => handleCheckParent(e, listAccessMenu, inputCheck)} label="Access Insert" name="accessInsert" htmlFor="accessInsert" />
                                         </th>
                                         <th>
-                                            <Form.Check onChange={handleCheckParent} label="Access Update" name="accessUpdate" htmlFor="accessUpdate" />
+                                            <Form.Check onChange={(e) => handleCheckParent(e, listAccessMenu, inputCheck)} label="Access Update" name="accessUpdate" htmlFor="accessUpdate" />
                                         </th>
                                         <th>
-                                            <Form.Check onChange={handleCheckParent} label="Access Delete" name="accessDelete" htmlFor="accessDelete" />
+                                            <Form.Check onChange={(e) => handleCheckParent(e, listAccessMenu, inputCheck)} label="Access Delete" name="accessDelete" htmlFor="accessDelete" />
                                         </th>
                                         <th>
-                                            <Form.Check onChange={handleCheckParent} label="Access Visible" name="accessVisible" htmlFor="accessVisible" />
+                                            <Form.Check onChange={(e) => handleCheckParent(e, listAccessMenu, inputCheck)} label="Access Visible" name="accessVisible" htmlFor="accessVisible" />
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         listAccessMenu.map((item, index) => {
-                                            // let isInsertable = "isInsertable" + (index + 1)
-                                            // console.log(item, "item");
-                                            // console.log(item.is_insertable, "item.is_insertable");
-                                            // item.is_deletable = false
                                             return (
                                                 <tr key={index}>
                                                     <td>
@@ -339,7 +527,6 @@ function ListMenuAccess() {
                                                         {
                                                             item.detail.length !== 0 ?
                                                             item.detail.map((itemDetail, index) => {
-                                                                // console.log(itemDetail, "itemDetail");
                                                                 return (
                                                                     <>
                                                                         <tr key={index}>
@@ -374,7 +561,7 @@ function ListMenuAccess() {
                                                                 // console.log(itemDetail, "itemDetail insert");
                                                                 return (
                                                                     <>
-                                                                        <tr>
+                                                                        <tr key={itemDetail.id}>
                                                                             <td>
                                                                                 <Form.Check onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, (inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`])} checked={(inputCheck[`isInsertable${itemDetail.label}`] === undefined) ? itemDetail.is_insertable : inputCheck[`isInsertable${itemDetail.label}`]} label={(inputCheck[`isInsertable${itemDetail.label}`] === undefined && itemDetail.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetail.label}`] === undefined && itemDetail.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${itemDetail.label}`] === true && itemDetail.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetail.label}`] === false && itemDetail.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${itemDetail.label}`] === true && itemDetail.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${itemDetail.label}`} htmlFor={`isInsertable${itemDetail.label}`} />
                                                                                 {
@@ -382,7 +569,7 @@ function ListMenuAccess() {
                                                                                     itemDetail.detail.map(itemDetails => {
                                                                                         return (
                                                                                             <>
-                                                                                                <tr>
+                                                                                                <tr key={itemDetails.id}>
                                                                                                     <td>
                                                                                                         <Form.Check onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, (inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`])} checked={(inputCheck[`isInsertable${itemDetails.label}`] === undefined) ? itemDetails.is_insertable : inputCheck[`isInsertable${itemDetails.label}`]} label={(inputCheck[`isInsertable${itemDetails.label}`] === undefined && itemDetails.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetails.label}`] === undefined && itemDetails.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${itemDetails.label}`] === true && itemDetails.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetails.label}`] === false && itemDetails.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${itemDetails.label}`] === true && itemDetails.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${itemDetails.label}`} htmlFor={`isInsertable${itemDetails.label}`} />
                                                                                                     </td>
@@ -405,7 +592,7 @@ function ListMenuAccess() {
                                                             item.detail.map(itemDetail => {
                                                                 return (
                                                                     <>
-                                                                        <tr>
+                                                                        <tr key={itemDetail.id}>
                                                                             <td>
                                                                                 <Form.Check onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, (inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`])} checked={(inputCheck[`isUpdateable${itemDetail.label}`] === undefined) ? itemDetail.is_updatable : inputCheck[`isUpdateable${itemDetail.label}`]} label={(inputCheck[`isUpdateable${itemDetail.label}`] === undefined && itemDetail.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetail.label}`] === undefined && itemDetail.is_updatable === false) ? "Disabled" : (inputCheck[`isUpdateable${itemDetail.label}`] === true && itemDetail.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetail.label}`] === false && itemDetail.is_updatable) ? "Disabled" : (inputCheck[`isUpdateable${itemDetail.label}`] === true && itemDetail.is_updatable === false) ? "Granted" : "Disabled"} name={`isUpdateable${itemDetail.label}`} htmlFor={`isUpdateable${itemDetail.label}`} />
                                                                                 {
@@ -413,7 +600,7 @@ function ListMenuAccess() {
                                                                                     itemDetail.detail.map(itemDetails => {
                                                                                         return (
                                                                                             <>
-                                                                                                <tr>
+                                                                                                <tr key={itemDetails.id}>
                                                                                                     <td>
                                                                                                         <Form.Check onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, (inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`])} checked={(inputCheck[`isUpdateable${itemDetails.label}`] === undefined) ? itemDetails.is_updatable : inputCheck[`isUpdateable${itemDetails.label}`]} label={(inputCheck[`isUpdateable${itemDetails.label}`] === undefined && itemDetails.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetails.label}`] === undefined && itemDetails.is_updatable === false) ? "Disabled" : (inputCheck[`isUpdateable${itemDetails.label}`] === true && itemDetails.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetails.label}`] === false && itemDetails.is_updatable) ? "Disabled" : (inputCheck[`isUpdateable${itemDetails.label}`] === true && itemDetails.is_updatable === false) ? "Granted" : "Disabled"} name={`isUpdateable${itemDetails.label}`} htmlFor={`isUpdateable${itemDetails.label}`} />
                                                                                                     </td>
@@ -436,7 +623,7 @@ function ListMenuAccess() {
                                                             item.detail.map(itemDetail => {
                                                                 return (
                                                                     <>
-                                                                        <tr>
+                                                                        <tr key={itemDetail.id}>
                                                                             <td>
                                                                                 <Form.Check onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, (inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`])} checked={(inputCheck[`isDeleteable${itemDetail.label}`] === undefined) ? itemDetail.is_deletable : inputCheck[`isDeleteable${itemDetail.label}`]} label={(inputCheck[`isDeleteable${itemDetail.label}`] === undefined && itemDetail.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetail.label}`] === undefined && itemDetail.is_deletable === false) ? "Disabled" : (inputCheck[`isDeleteable${itemDetail.label}`] === true && itemDetail.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetail.label}`] === false && itemDetail.is_deletable) ? "Disabled" : (inputCheck[`isDeleteable${itemDetail.label}`] === true && itemDetail.is_deletable === false) ? "Granted" : "Disabled"} name={`isDeleteable${itemDetail.label}`} htmlFor={`isDeleteable${itemDetail.label}`} />
                                                                                 {
@@ -444,7 +631,7 @@ function ListMenuAccess() {
                                                                                     itemDetail.detail.map(itemDetails => {
                                                                                         return (
                                                                                             <>
-                                                                                                <tr>
+                                                                                                <tr key={itemDetails.id}>
                                                                                                     <td>
                                                                                                         <Form.Check onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, (inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`])} checked={(inputCheck[`isDeleteable${itemDetails.label}`] === undefined) ? itemDetails.is_deletable : inputCheck[`isDeleteable${itemDetails.label}`]} label={(inputCheck[`isDeleteable${itemDetails.label}`] === undefined && itemDetails.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetails.label}`] === undefined && itemDetails.is_deletable === false) ? "Disabled" : (inputCheck[`isDeleteable${itemDetails.label}`] === true && itemDetails.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetails.label}`] === false && itemDetails.is_deletable) ? "Disabled" : (inputCheck[`isDeleteable${itemDetails.label}`] === true && itemDetails.is_deletable === false) ? "Granted" : "Disabled"} name={`isDeleteable${itemDetails.label}`} htmlFor={`isDeleteable${itemDetails.label}`} />
                                                                                                     </td>
@@ -467,7 +654,7 @@ function ListMenuAccess() {
                                                             item.detail.map(itemDetail => {
                                                                 return (
                                                                     <>
-                                                                        <tr>
+                                                                        <tr key={itemDetail.id}>
                                                                             <td>
                                                                                 <Form.Check onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, (inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`])} checked={(inputCheck[`isVisibled${itemDetail.label}`] === undefined) ? itemDetail.is_visibled : inputCheck[`isVisibled${itemDetail.label}`]} label={(inputCheck[`isVisibled${itemDetail.label}`] === undefined && itemDetail.is_visibled) ? "Granted" : (inputCheck[`isVisibled${itemDetail.label}`] === undefined && itemDetail.is_visibled === false) ? "Disabled" : (inputCheck[`isVisibled${itemDetail.label}`] === true && itemDetail.is_visibled) ? "Granted" : (inputCheck[`isVisibled${itemDetail.label}`] === false && itemDetail.is_visibled) ? "Disabled" : (inputCheck[`isVisibled${itemDetail.label}`] === true && itemDetail.is_visibled === false) ? "Granted" : "Disabled"} name={`isVisibled${itemDetail.label}`} htmlFor={`isVisibled${itemDetail.label}`} />
                                                                                 {
@@ -475,7 +662,7 @@ function ListMenuAccess() {
                                                                                     itemDetail.detail.map(itemDetails => {
                                                                                         return (
                                                                                             <>
-                                                                                                <tr>
+                                                                                                <tr key={itemDetails.id}>
                                                                                                     <td>
                                                                                                         <Form.Check onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, (inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`])} checked={(inputCheck[`isVisibled${itemDetails.label}`] === undefined) ? itemDetails.is_visibled : inputCheck[`isVisibled${itemDetails.label}`]} label={(inputCheck[`isVisibled${itemDetails.label}`] === undefined && itemDetails.is_visibled) ? "Granted" : (inputCheck[`isVisibled${itemDetails.label}`] === undefined && itemDetails.is_visibled === false) ? "Disabled" : (inputCheck[`isVisibled${itemDetails.label}`] === true && itemDetails.is_visibled) ? "Granted" : (inputCheck[`isVisibled${itemDetails.label}`] === false && itemDetails.is_visibled) ? "Disabled" : (inputCheck[`isVisibled${itemDetails.label}`] === true && itemDetails.is_visibled === false) ? "Granted" : "Disabled"} name={`isVisibled${itemDetails.label}`} htmlFor={`isVisibled${itemDetails.label}`} />
                                                                                                     </td>
