@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Modal, Button } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToCurrency, convertToRupiah, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./EditAgen.css"
@@ -11,20 +11,32 @@ function EditAgen() {
     const history = useHistory()
     const access_token = getToken()
     const { agenId } = useParams()
-    const [detailAgen, setDetailAgen] = useState([])
+    // const [detailAgen, setDetailAgen] = useState([])
     const [showModalEdit, setShowModalEdit] = useState(false)
     const [showModalBatalEdit, setShowModalBatalEdit] = useState(false)
     const [showModalNonAktifAgen, setShowModalNonAktifAgen] = useState(false)
     const [showModalAktifAgen, setShowModalAktifAgen] = useState(false)
+    // const [inputHandle, setInputHandle] = useState({
+    //     id:agenId,
+    //     namaAgen: detailAgen.agen_name,
+    //     emailAgen: detailAgen.agen_email,
+    //     phoneNumber: detailAgen.agen_mobile,
+    //     bankName: 1,
+    //     akunBank: detailAgen.agen_bank_number,
+    //     rekeningOwner: detailAgen.agen_bank_name,
+    //     active: detailAgen.status,
+    //     nominal: 0
+    // })
+
     const [inputHandle, setInputHandle] = useState({
         id:agenId,
-        namaAgen: detailAgen.agen_name,
-        emailAgen: detailAgen.agen_email,
-        phoneNumber: detailAgen.agen_mobile,
+        namaAgen: "",
+        emailAgen: "",
+        phoneNumber: "",
         bankName: 1,
-        akunBank: detailAgen.agen_bank_number,
-        rekeningOwner: detailAgen.agen_bank_name,
-        active: detailAgen.status,
+        akunBank: "",
+        rekeningOwner: "",
+        active: false,
         nominal: 0
     })
 
@@ -40,6 +52,14 @@ function EditAgen() {
                 [e.target.name] : e.target.value
             })
         }
+    }
+
+    function handleChangeConvert (e) {
+        (new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(e.target.value)) ;
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,7 +85,9 @@ function EditAgen() {
                         isActive: "Tidak Aktif"
                     }
                 }
-                setDetailAgen(detailAgen.data.response_data)
+                const dataDetail = detailAgen.data.response_data
+                setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
+                // setDetailAgen(detailAgen.data.response_data)
             } else {
                 setUserSession(detailAgen.data.response_new_token)
                 if (detailAgen.data.response_data.status === true) {
@@ -79,7 +101,9 @@ function EditAgen() {
                         isActive: "Tidak Aktif"
                     }
                 }
-                setDetailAgen(detailAgen.data.response_data)
+                const dataDetail = detailAgen.data.response_data
+                setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
+                // setDetailAgen(detailAgen.data.response_data)
             }
         } catch (error) {
             console.log(error)
@@ -90,27 +114,27 @@ function EditAgen() {
 
     async function updateDetailAgen(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
         try {
-            if (namaAgen === undefined) {
-                namaAgen = detailAgen.agen_name
-            }
-            if (emailAgen === undefined) {
-                emailAgen = detailAgen.agen_email
-            }
-            if (phoneNumber === undefined) {
-                phoneNumber = detailAgen.agen_mobile
-            }
-            if (akunBank === undefined) {
-                akunBank = detailAgen.agen_bank_number
-            }
-            if (rekeningOwner === undefined) {
-                rekeningOwner = detailAgen.agen_bank_name
-            }
-            if (active === undefined) {
-                active = detailAgen.status
-            }
-            if (nominal === undefined) {
-                nominal = detailAgen.nominal_topup
-            }
+            // if (namaAgen === undefined) {
+            //     namaAgen = detailAgen.agen_name
+            // }
+            // if (emailAgen === undefined) {
+            //     emailAgen = detailAgen.agen_email
+            // }
+            // if (phoneNumber === undefined) {
+            //     phoneNumber = detailAgen.agen_mobile
+            // }
+            // if (akunBank === undefined) {
+            //     akunBank = detailAgen.agen_bank_number
+            // }
+            // if (rekeningOwner === undefined) {
+            //     rekeningOwner = detailAgen.agen_bank_name
+            // }
+            // if (active === undefined) {
+            //     active = detailAgen.status
+            // }
+            // if (nominal === undefined) {
+            //     nominal = detailAgen.nominal_topup
+            // }
             // console.log(agenId, 'ini agen id di func');
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}", "nominal":${nominal}}`)
@@ -134,7 +158,7 @@ function EditAgen() {
     }
 
     const goDetail = () => {
-        updateDetailAgen(inputHandle.id, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active, inputHandle.nominal)  
+        updateDetailAgen(agenId, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active, inputHandle.nominal)  
         // RouteTo("/daftaragen")
         history.push("/daftaragen")        
         setShowModalEdit(false)       
@@ -179,8 +203,10 @@ function EditAgen() {
                                 <Form.Check
                                     type="switch"
                                     id="custom-switch"
-                                    label={(inputHandle.active === undefined) ? detailAgen.isActive : (inputHandle.active === true) ? "Aktif" : "Tidak Aktif"}
-                                    checked={(inputHandle.active === undefined) ? detailAgen.status : inputHandle.active}
+                                    // label={(inputHandle.active === undefined) ? detailAgen.isActive : (inputHandle.active === true) ? "Aktif" : "Tidak Aktif"}
+                                    // checked={(inputHandle.active === undefined) ? detailAgen.status : inputHandle.active}
+                                    label={(inputHandle.active === true) ? "Aktif" : "Tidak Aktif"}
+                                    checked={(inputHandle.active === undefined) ? inputHandle.active : inputHandle.active}
                                     name="active"
                                     onChange={handleChange}
                                 />
@@ -194,8 +220,8 @@ function EditAgen() {
                             </Col>
                             <Col xs={9}>
                                 <Form.Control
-                                    name='nama'
-                                    value={detailAgen.agen_id}
+                                    name='id'
+                                    value={inputHandle.id}
                                     type='text'
                                     disabled
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
@@ -211,7 +237,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='namaAgen'
-                                    defaultValue={detailAgen.agen_name}
+                                    value={inputHandle.namaAgen}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}
@@ -227,7 +253,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='emailAgen'
-                                    defaultValue={detailAgen.agen_email}
+                                    value={inputHandle.emailAgen}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}
@@ -243,7 +269,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='phoneNumber'
-                                    defaultValue={detailAgen.agen_mobile}
+                                    value={inputHandle.phoneNumber}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
@@ -258,7 +284,7 @@ function EditAgen() {
                             </Col>
                             <Col xs={9}>
                                 <Form.Control
-                                    value={detailAgen.agen_bank_id}
+                                    value={inputHandle.bankName && "BCA (Bank Central Asia)"}
                                     placeholder="BCA (Bank Central Asia)"
                                     type='text'
                                     disabled
@@ -275,7 +301,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='akunBank'
-                                    defaultValue={detailAgen.agen_bank_number}
+                                    value={inputHandle.akunBank}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
@@ -291,7 +317,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='rekeningOwner'
-                                    defaultValue={detailAgen.agen_bank_name}
+                                    value={inputHandle.rekeningOwner}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
@@ -307,7 +333,8 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='nominal'
-                                    defaultValue={detailAgen.nominal_topup}
+                                    value={convertToCurrency(inputHandle.nominal)}
+                                    // placeholder={(inputHandle.nominal).toLocaleString()}
                                     type='number'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
