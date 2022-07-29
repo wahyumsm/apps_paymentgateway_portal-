@@ -218,13 +218,8 @@ function ListMenuAccess() {
             let update = `isUpdateable${el.label}`
             let deleted = `isDeleteable${el.label}`
             let visibled = `isVisibled${el.label}`
-            // dataObj[access] = e.target.checked
-            // dataObj[insert] = e.target.checked
-            // dataObj[update] = e.target.checked
-            // dataObj[deleted] = e.target.checked
-            // dataObj[visibled] = e.target.checked
             if (e.target.name === "#" && e.target.checked === false) {
-                console.log("e.target.name === # && e.target.checked === false");
+                // console.log("e.target.name === # && e.target.checked === false");
                 if (el.detail.length !== 0) {
                     dataObj[access] = e.target.checked
                     dataObj[insert] = e.target.checked
@@ -270,17 +265,10 @@ function ListMenuAccess() {
                     dataObj[deleted] = e.target.checked
                     dataObj[visibled] = e.target.checked
                 }
-            // } else if (e.target.name === "#" && e.target.checked === false) {
-            //     console.log("e.target.name === # && e.target.checked === false");
-            //     dataObj[access] = e.target.checked
-            //     dataObj[insert] = e.target.checked
-            //     dataObj[update] = e.target.checked
-            //     dataObj[deleted] = e.target.checked
-            //     dataObj[visibled] = e.target.checked
             } else if (e.target.name === "#" && e.target.checked === true) {
-                console.log("e.target.name === # && e.target.checked === true");
+                // console.log("e.target.name === # && e.target.checked === true");
                 if (el.detail.length !== 0 && inputCheckData[insert] === false && inputCheckData[update] === false && inputCheckData[deleted] === false && inputCheckData[visibled] === false) {
-                    // dataObj[access] = e.target.checked
+                    // console.log("detail tidak nol dan yg lain false");
                     dataObj[access] = e.target.checked
                     dataObj[insert] = false
                     dataObj[update] = false
@@ -318,113 +306,1444 @@ function ListMenuAccess() {
                             dataObj[visibled2] = false
                         }
                     })
-                    // if (inputCheckData[insert] === false && inputCheckData[update] === false && inputCheckData[deleted] === false && inputCheckData[visibled] === false) {
-                    //     dataObj[access] = e.target.checked
-                    //     dataObj[insert] = false
-                    //     dataObj[update] = false
-                    //     dataObj[deleted] = false
-                    //     dataObj[visibled] = false
-                    //     el.detail.forEach(item => {
-                    //         let access2 = `isAccess${item.label}`
-                    //         let insert2 = `isInsertable${item.label}`
-                    //         let update2 = `isUpdateable${item.label}`
-                    //         let deleted2 = `isDeleteable${item.label}`
-                    //         let visibled2 = `isVisibled${item.label}`
-                    //         dataObj[access2] = e.target.checked
-                    //         dataObj[insert2] = false
-                    //         dataObj[update2] = false
-                    //         dataObj[deleted2] = false
-                    //         dataObj[visibled2] = false
-                    //         if (item.detail !== undefined) {
-                    //             item.detail.forEach(item2 => {
-                    //                 let access3 = `isAccess${item2.label}`
-                    //                 let insert3 = `isInsertable${item2.label}`
-                    //                 let update3 = `isUpdateable${item2.label}`
-                    //                 let deleted3 = `isDeleteable${item2.label}`
-                    //                 let visibled3 = `isVisibled${item2.label}`
-                    //                 dataObj[access3] = e.target.checked
-                    //                 dataObj[insert3] = false
-                    //                 dataObj[update3] = false
-                    //                 dataObj[deleted3] = false
-                    //                 dataObj[visibled3] = false
-                    //             })
-                    //         } else {
-                    //             dataObj[access2] = e.target.checked
-                    //             dataObj[insert2] = false
-                    //             dataObj[update2] = false
-                    //             dataObj[deleted2] = false
-                    //             dataObj[visibled2] = false
-                    //         }
-                    //     })
-                    // }
-                    // dataObj[access] = e.target.checked
-                    // el.detail.forEach(item => {
-                    //     let access2 = `isAccess${item.label}`
-                    //     dataObj[access2] = e.target.checked
-                    //     if (item.detail !== undefined) {
-                    //         item.detail.forEach(item2 => {
-                    //             let access3 = `isAccess${item2.label}`
-                    //             dataObj[access3] = e.target.checked
-                    //         })
-                    //     } else {
-                    //         dataObj[access2] = e.target.checked
-                    //     }
-                    // })
-                } else {
-                    console.log("e.target.name === # && e.target.checked === true yang else");
+                } else if (el.detail.length === 0 && inputCheckData[insert] === false && inputCheckData[update] === false && inputCheckData[deleted] === false && inputCheckData[visibled] === false) {
+                    // console.log("detail nol dan yg lain false");
                     dataObj[access] = e.target.checked
-                    // dataObj[insert] = false
-                    // dataObj[update] = false
-                    // dataObj[deleted] = false
-                    // dataObj[visibled] = false
+                    dataObj[insert] = false
+                    dataObj[update] = false
+                    dataObj[deleted] = false
+                    dataObj[visibled] = false
+                }
+            } else if (e.target.name === "accessInsert" && e.target.checked === false) {
+                let accessData = (inputCheckData[access] === undefined) ? el.is_access : inputCheckData[access]
+                // console.log(accessData, "accessData in false");
+                if (el.detail.length !== 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = e.target.checked //e.target.checked === false
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData
                     el.detail.forEach(item => {
                         let access2 = `isAccess${item.label}`
                         let insert2 = `isInsertable${item.label}`
                         let update2 = `isUpdateable${item.label}`
                         let deleted2 = `isDeleteable${item.label}`
                         let visibled2 = `isVisibled${item.label}`
-                        dataObj[access2] = e.target.checked
-                        // dataObj[insert2] = false
-                        // dataObj[update2] = false
-                        // dataObj[deleted2] = false
-                        // dataObj[visibled2] = false
-                        if (item.detail !== undefined) {
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === false
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
                             item.detail.forEach(item2 => {
                                 let access3 = `isAccess${item2.label}`
                                 let insert3 = `isInsertable${item2.label}`
                                 let update3 = `isUpdateable${item2.label}`
                                 let deleted3 = `isDeleteable${item2.label}`
                                 let visibled3 = `isVisibled${item2.label}`
-                                dataObj[access3] = e.target.checked
-                                // dataObj[insert3] = false
-                                // dataObj[update3] = false
-                                // dataObj[deleted3] = false
-                                // dataObj[visibled3] = false
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === false
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === false
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
                             })
-                        } else {
-                            dataObj[access2] = e.target.checked
-                            // dataObj[insert2] = false
-                            // dataObj[update2] = false
-                            // dataObj[deleted2] = false
-                            // dataObj[visibled2] = false
+                        } else if (item.detail !== undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === false
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === false
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === false
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === false
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === false
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
                         }
                     })
-                    dataObj[access] = e.target.checked
-                    // dataObj[insert] = false
-                    // dataObj[update] = false
-                    // dataObj[deleted] = false
-                    // dataObj[visibled] = false
+                } else if (el.detail.length !== 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = e.target.checked //e.target.checked === false
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === false
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === false
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === false
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === false
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === false
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === false
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === false
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === false
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length === 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = e.target.checked //e.target.checked === false
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData
+                } else if (el.detail.length === 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = e.target.checked //e.target.checked === false
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
                 }
-            // } else if (e.target.name === "#" && e.target.checked === true && el.detail.length === 0) {
-            //     console.log("e.target.name === # && e.target.checked === true && el.detail.length === 0");
-            //     dataObj[access] = e.target.checked
+            } else if (e.target.name === "accessInsert" && e.target.checked === true) {
+                let accessData = (inputCheckData[access] === undefined) ? el.is_access : inputCheckData[access]
+                // console.log(accessData, "accessData ini true");
+                if (el.detail.length !== 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData //e.target.checked === true
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2 //e.target.checked === true
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3 //e.target.checked === true
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === true
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === true
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3 //e.target.checked === true
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === true
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2 //e.target.checked === true
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === true
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length !== 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = e.target.checked //e.target.checked === true
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2 //e.target.checked === true
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3 //e.target.checked === true
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === true
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === true
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3 //e.target.checked === true
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = e.target.checked //e.target.checked === true
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2 //e.target.checked === true
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = e.target.checked //e.target.checked === true
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length === 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData //e.target.checked === true
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData
+                } else if (el.detail.length === 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = e.target.checked //e.target.checked === true
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                }
+            } else if (e.target.name === "accessUpdate" && e.target.checked === false) {
+                let accessData = (inputCheckData[access] === undefined) ? el.is_access : inputCheckData[access]
+                // console.log(accessData, "accessData in false");
+                if (el.detail.length !== 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = e.target.checked //e.target.checked === false
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = e.target.checked //e.target.checked === false
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = e.target.checked //e.target.checked === false
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = e.target.checked //e.target.checked === false
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = e.target.checked //e.target.checked === false
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = e.target.checked //e.target.checked === false
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = e.target.checked //e.target.checked === false
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = e.target.checked //e.target.checked === false
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = e.target.checked //e.target.checked === false
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length !== 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = e.target.checked //e.target.checked === false
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = e.target.checked //e.target.checked === false
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = e.target.checked //e.target.checked === false
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = e.target.checked //e.target.checked === false
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = e.target.checked //e.target.checked === false
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = e.target.checked //e.target.checked === false
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = e.target.checked //e.target.checked === false
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = e.target.checked //e.target.checked === false
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = e.target.checked //e.target.checked === false
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length === 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = e.target.checked //e.target.checked === false
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData
+                } else if (el.detail.length === 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = e.target.checked //e.target.checked === false
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                }
+            } else if (e.target.name === "accessUpdate" && e.target.checked === true) {
+                let accessData = (inputCheckData[access] === undefined) ? el.is_access : inputCheckData[access]
+                // console.log(accessData, "accessData ini true");
+                if (el.detail.length !== 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData //e.target.checked === true
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2 //e.target.checked === true
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3 //e.target.checked === true
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = e.target.checked //e.target.checked === true
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = e.target.checked //e.target.checked === true
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3 //e.target.checked === true
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = e.target.checked //e.target.checked === true
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2 //e.target.checked === true
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = e.target.checked //e.target.checked === true
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length !== 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = e.target.checked //e.target.checked === true
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2 //e.target.checked === true
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3 //e.target.checked === true
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = e.target.checked //e.target.checked === true
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = e.target.checked //e.target.checked === true
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3 //e.target.checked === true
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = e.target.checked //e.target.checked === true
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2 //e.target.checked === true
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = e.target.checked //e.target.checked === true
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length === 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData //e.target.checked === true
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData
+                } else if (el.detail.length === 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = e.target.checked //e.target.checked === true
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                }
+            } else if (e.target.name === "accessDelete" && e.target.checked === false) {
+                let accessData = (inputCheckData[access] === undefined) ? el.is_access : inputCheckData[access]
+                // console.log(accessData, "accessData in false");
+                if (el.detail.length !== 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData
+                    dataObj[deleted] = e.target.checked //e.target.checked === false
+                    dataObj[visibled] = accessData
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = e.target.checked //e.target.checked === false
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === false
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === false
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = e.target.checked //e.target.checked === false
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === false
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === false
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = e.target.checked //e.target.checked === false
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = e.target.checked //e.target.checked === false
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length !== 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = e.target.checked //e.target.checked === false
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = e.target.checked //e.target.checked === false
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === false
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === false
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = e.target.checked //e.target.checked === false
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === false
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === false
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = e.target.checked //e.target.checked === false
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = e.target.checked //e.target.checked === false
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length === 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData
+                    dataObj[deleted] = e.target.checked //e.target.checked === false
+                    dataObj[visibled] = accessData
+                } else if (el.detail.length === 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = e.target.checked //e.target.checked === false
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                }
+            } else if (e.target.name === "accessDelete" && e.target.checked === true) {
+                let accessData = (inputCheckData[access] === undefined) ? el.is_access : inputCheckData[access]
+                // console.log(accessData, "accessData ini true");
+                if (el.detail.length !== 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData //e.target.checked === true
+                    dataObj[visibled] = accessData
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2 //e.target.checked === true
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3 //e.target.checked === true
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === true
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = e.target.checked //e.target.checked === true
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3 //e.target.checked === true
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === true
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2 //e.target.checked === true
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = e.target.checked //e.target.checked === true
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length !== 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = e.target.checked //e.target.checked === true
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2 //e.target.checked === true
+                            dataObj[visibled2] = accessData2
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3 //e.target.checked === true
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === true
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = e.target.checked //e.target.checked === true
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3 //e.target.checked === true
+                                    dataObj[visibled3] = accessData3
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = e.target.checked //e.target.checked === true
+                                    dataObj[visibled3] = (inputCheckData[visibled3] === undefined) ? item2.is_visibled : inputCheckData[visibled3]
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2 //e.target.checked === true
+                            dataObj[visibled2] = accessData2
+                        } else if (item.detail === undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = e.target.checked //e.target.checked === true
+                            dataObj[visibled2] = (inputCheckData[visibled2] === undefined) ? item.is_visibled : inputCheckData[visibled2]
+                        }
+                    })
+                } else if (el.detail.length === 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData //e.target.checked === true
+                    dataObj[visibled] = accessData
+                } else if (el.detail.length === 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = e.target.checked //e.target.checked === true
+                    dataObj[visibled] = (inputCheckData[visibled] === undefined) ? el.is_visibled : inputCheckData[visibled]
+                }
+            } else if (e.target.name === "accessVisible" && e.target.checked === false) {
+                let accessData = (inputCheckData[access] === undefined) ? el.is_access : inputCheckData[access]
+                // console.log(accessData, "accessData in false");
+                if (el.detail.length !== 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = e.target.checked //e.target.checked === false
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = e.target.checked //e.target.checked === false
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === false
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === false
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = e.target.checked //e.target.checked === false
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === false
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === false
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = e.target.checked //e.target.checked === false
+                        } else if (item.detail === undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = e.target.checked //e.target.checked === false
+                        }
+                    })
+                } else if (el.detail.length !== 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = e.target.checked //e.target.checked === false
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = e.target.checked //e.target.checked === false
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === false
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === false
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = e.target.checked //e.target.checked === false
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === false
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === false
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = e.target.checked //e.target.checked === false
+                        } else if (item.detail === undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = e.target.checked //e.target.checked === false
+                        }
+                    })
+                } else if (el.detail.length === 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = e.target.checked //e.target.checked === false
+                } else if (el.detail.length === 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = e.target.checked //e.target.checked === false
+                }
+            } else if (e.target.name === "accessVisible" && e.target.checked === true) {
+                let accessData = (inputCheckData[access] === undefined) ? el.is_access : inputCheckData[access]
+                // console.log(accessData, "accessData ini true");
+                if (el.detail.length !== 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData //e.target.checked === true
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2 //e.target.checked === true
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3 //e.target.checked === true
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === true
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = e.target.checked //e.target.checked === true
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3 //e.target.checked === true
+                                } else if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === true
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === false && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2 //e.target.checked === true
+                        } else if (item.detail === undefined && accessData === false && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = e.target.checked //e.target.checked === true
+                        }
+                    })
+                } else if (el.detail.length !== 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = e.target.checked //e.target.checked === true
+                    el.detail.forEach(item => {
+                        let access2 = `isAccess${item.label}`
+                        let insert2 = `isInsertable${item.label}`
+                        let update2 = `isUpdateable${item.label}`
+                        let deleted2 = `isDeleteable${item.label}`
+                        let visibled2 = `isVisibled${item.label}`
+                        let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
+                        if (item.detail !== undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2 //e.target.checked === true
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3 //e.target.checked === true
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === true
+                                }
+                            })
+                        } else if (item.detail !== undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = e.target.checked //e.target.checked === true
+                            item.detail.forEach(item2 => {
+                                let access3 = `isAccess${item2.label}`
+                                let insert3 = `isInsertable${item2.label}`
+                                let update3 = `isUpdateable${item2.label}`
+                                let deleted3 = `isDeleteable${item2.label}`
+                                let visibled3 = `isVisibled${item2.label}`
+                                let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
+                                if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = accessData3
+                                    dataObj[update3] = accessData3
+                                    dataObj[deleted3] = accessData3
+                                    dataObj[visibled3] = accessData3 //e.target.checked === true
+                                } else if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === true) {
+                                    dataObj[access3] = accessData3
+                                    dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3]
+                                    dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                                    dataObj[deleted3] = (inputCheckData[deleted3] === undefined) ? item2.is_deletable : inputCheckData[deleted3]
+                                    dataObj[visibled3] = e.target.checked //e.target.checked === true
+                                }
+                            })
+                        } else if (item.detail === undefined && accessData === true && accessData2 === false) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = accessData2
+                            dataObj[update2] = accessData2
+                            dataObj[deleted2] = accessData2
+                            dataObj[visibled2] = accessData2 //e.target.checked === true
+                        } else if (item.detail === undefined && accessData === true && accessData2 === true) {
+                            dataObj[access2] = accessData2
+                            dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2]
+                            dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
+                            dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
+                            dataObj[visibled2] = e.target.checked //e.target.checked === true
+                        }
+                    })
+                } else if (el.detail.length === 0 && accessData === false) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = accessData
+                    dataObj[update] = accessData
+                    dataObj[deleted] = accessData
+                    dataObj[visibled] = accessData //e.target.checked === true
+                } else if (el.detail.length === 0 && accessData === true) {
+                    dataObj[access] = accessData
+                    dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert]
+                    dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
+                    dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
+                    dataObj[visibled] = e.target.checked //e.target.checked === true
+                }
             }
-            console.log(dataObj, "ini dataObj");
         })
+        // console.log(dataObj, "ini dataObj");
         if (Object.keys(dataObj).length !== 0) {
             setInputCheck(dataObj)
         }
-        // console.log(dataObj, "ini dataObj");
     }
 
     useEffect(() => {
