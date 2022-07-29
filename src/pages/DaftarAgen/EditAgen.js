@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Modal, Button } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToCurrency, convertToRupiah, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./EditAgen.css"
@@ -11,22 +11,11 @@ function EditAgen() {
     const history = useHistory()
     const access_token = getToken()
     const { agenId } = useParams()
-    // const [detailAgen, setDetailAgen] = useState([])
     const [showModalEdit, setShowModalEdit] = useState(false)
     const [showModalBatalEdit, setShowModalBatalEdit] = useState(false)
     const [showModalNonAktifAgen, setShowModalNonAktifAgen] = useState(false)
     const [showModalAktifAgen, setShowModalAktifAgen] = useState(false)
-    // const [inputHandle, setInputHandle] = useState({
-    //     id:agenId,
-    //     namaAgen: detailAgen.agen_name,
-    //     emailAgen: detailAgen.agen_email,
-    //     phoneNumber: detailAgen.agen_mobile,
-    //     bankName: 1,
-    //     akunBank: detailAgen.agen_bank_number,
-    //     rekeningOwner: detailAgen.agen_bank_name,
-    //     active: detailAgen.status,
-    //     nominal: 0
-    // })
+    const [edit, setEdit] = useState(false)
 
     const [inputHandle, setInputHandle] = useState({
         id:agenId,
@@ -52,14 +41,6 @@ function EditAgen() {
                 [e.target.name] : e.target.value
             })
         }
-    }
-
-    function handleChangeConvert (e) {
-        (new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(e.target.value)) ;
-        setInputHandle({
-            ...inputHandle,
-            [e.target.name] : e.target.value
-        })
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,28 +95,6 @@ function EditAgen() {
 
     async function updateDetailAgen(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
         try {
-            // if (namaAgen === undefined) {
-            //     namaAgen = detailAgen.agen_name
-            // }
-            // if (emailAgen === undefined) {
-            //     emailAgen = detailAgen.agen_email
-            // }
-            // if (phoneNumber === undefined) {
-            //     phoneNumber = detailAgen.agen_mobile
-            // }
-            // if (akunBank === undefined) {
-            //     akunBank = detailAgen.agen_bank_number
-            // }
-            // if (rekeningOwner === undefined) {
-            //     rekeningOwner = detailAgen.agen_bank_name
-            // }
-            // if (active === undefined) {
-            //     active = detailAgen.status
-            // }
-            // if (nominal === undefined) {
-            //     nominal = detailAgen.nominal_topup
-            // }
-            // console.log(agenId, 'ini agen id di func');
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}", "nominal":${nominal}}`)
             const headers = {
@@ -202,9 +161,7 @@ function EditAgen() {
                             <Col xs={2}>
                                 <Form.Check
                                     type="switch"
-                                    id="custom-switch"
-                                    // label={(inputHandle.active === undefined) ? detailAgen.isActive : (inputHandle.active === true) ? "Aktif" : "Tidak Aktif"}
-                                    // checked={(inputHandle.active === undefined) ? detailAgen.status : inputHandle.active}
+                                    id="custom-switch"                                    
                                     label={(inputHandle.active === true) ? "Aktif" : "Tidak Aktif"}
                                     checked={(inputHandle.active === undefined) ? inputHandle.active : inputHandle.active}
                                     name="active"
@@ -331,14 +288,24 @@ function EditAgen() {
                                 </span>
                             </Col>
                             <Col xs={9}>
-                                <Form.Control
-                                    name='nominal'
-                                    value={convertToCurrency(inputHandle.nominal)}
-                                    // placeholder={(inputHandle.nominal).toLocaleString()}
-                                    type='number'
-                                    style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                    onChange={handleChange}    
-                                />
+                                {edit ?
+                                    <Form.Control
+                                        name='nominal'
+                                        value={inputHandle.nominal}
+                                        type='number'
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                        onChange={handleChange}
+                                        onBlur={() => setEdit(!edit)}
+                                    /> :
+                                    <Form.Control
+                                        name='nominal'
+                                        value={convertFormatNumber(inputHandle.nominal)}
+                                        type='text'
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                        onFocus={() => setEdit(!edit)}
+                                        // readOnly
+                                    />
+                                }
                             </Col>
                         </Row>
                     </div>

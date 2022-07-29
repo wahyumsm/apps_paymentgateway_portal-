@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, InputGroup } from '@themesberg/react-bootstrap';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { Col, Row, Form } from '@themesberg/react-bootstrap';
+import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToCurrency, convertToRupiah, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./DetailAgen.css"
@@ -190,7 +188,7 @@ function DetailAgen() {
                         </Col>
                         <Col xs={9}>
                             <Form.Control
-                                value={convertToRupiah(detailAgen.nominal_topup === null ? 0 : detailAgen.nominal_topup)}
+                                value={convertToCurrency(detailAgen.nominal_topup === null ? 0 : detailAgen.nominal_topup)}
                                 type='text'
                                 disabled
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}

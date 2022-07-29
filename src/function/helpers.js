@@ -1,5 +1,5 @@
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile1"
-export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
+export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile1"
+// export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
 
 export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms="
 
@@ -35,9 +35,18 @@ export function convertToRupiah(money) {
 }
 
 export function convertToCurrency(money) {
-    // const convert = parseInt(money)
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0}).format(money)
+    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(money).replace(/\B(?=(\d{4})+(?!\d))/g, ".")
 }
+
+export const convertFormatNumber = (num) => {
+    let rupiah = "";
+    let angkaRev = num.toString().split("").reverse().join("");
+    for (var i = 0; i < angkaRev.length; i++) if (i % 3 == 0) rupiah += angkaRev.substr(i, 3) + ".";
+    return rupiah
+      .split("", rupiah.length - 1)
+      .reverse()
+      .join("");
+};
 
 export function errorCatch(statusCode) {
     const code = {
