@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Form } from "@themesberg/react-bootstrap";
-import { errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
@@ -51,7 +51,7 @@ function UpdateUser() {
         try {
             const auth = "Bearer " + getToken();
             const dataParams = encryptData(`{"muser_id":"${muserId}"}`);
-            console.log(dataParams, "ini data param");
+            // console.log(dataParams, "ini data param");
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: auth,
@@ -118,7 +118,7 @@ function UpdateUser() {
                     { data: "" },
                     { headers: headers }
                 );
-                console.log(listRole, "ini role");
+                // console.log(listRole, "ini role");
                 if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length === 0) {
                     setListRole(listRole.data.response_data);
                 } else {
@@ -143,7 +143,7 @@ function UpdateUser() {
                     { data: "" },
                     { headers: headers }
                 );
-                console.log(listPartner, "ini partner di user");
+                // console.log(listPartner, "ini partner di user");
                 if (
                     listPartner.status === 200 &&
                     listPartner.data.response_code === 200 &&
@@ -161,7 +161,7 @@ function UpdateUser() {
 
         async function getListAgen(partnerId) {
             try {
-                console.log(partnerId, "ini partner id di function list agen");
+                // console.log(partnerId, "ini partner id di function list agen");
                 const auth = 'Bearer ' + getToken();
                 const dataParams = encryptData(`{"partner_id": "${partnerId}"}`);
                 const headers = {

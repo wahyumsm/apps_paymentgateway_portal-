@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Form, Row, Modal} from '@themesberg/react-bootstrap';
+import { Col, Form, Row } from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
 import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
@@ -249,7 +249,7 @@ function EditPartner() {
             // RouteTo('/login')
             history.push('/login');
         }
-        if (user_role === 102) {
+        if (user_role == 102) {
             history.push('/404');
         }
         getDetailPartner(partnerId)

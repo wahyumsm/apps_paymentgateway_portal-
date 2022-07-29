@@ -71,11 +71,9 @@ export default (props) => {
 
   const [getBalance, setGetBalance] = useState({})
   const [showModalTopUp, setShowModalTopUp] = useState(false);
-  const [showModalHistoryTopUp, setShowModalHistoryTopUp] = useState(false)
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
-  const handleCloseHistoryTopUp = () => setShowModalHistoryTopUp(false);
   const handleCloseRiwayatTopUp = () => setShowRiwayatTopUp(false)
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
@@ -171,7 +169,7 @@ export default (props) => {
               'Authorization' : auth
           }
           const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
-          // console.log(getBalance.data.response_data.topupAmount, 'ini data get balance');
+          console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
@@ -208,7 +206,7 @@ export default (props) => {
       dispatch(GetUserDetail("/Account/GetUserProfile"));
       GetBalanceHandle()
       listRiwayatTopUp()
-    }, [])
+    }, [showModalTopUp])
 
   async function logoutHandler() {
     try {
@@ -229,7 +227,7 @@ export default (props) => {
     } catch (error) {
       console.log(error);
       // RouteTo(errorCatch(error.response.status));
-      // history.push(errorCatch(error.response.status))
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -262,7 +260,9 @@ export default (props) => {
       name: 'Nominal Top Up',
       selector: row => row.amount,
       sortable: true,
-      width: "170px"
+      width: "170px",
+      cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
+      style: { display: "flex", flexDirection: "row", justifyContent: "center", }
     },
     {
       name: 'Tanggal Top Up',
@@ -297,7 +297,7 @@ export default (props) => {
 
   const modalRiwayat = () => {
     setShowModalKonfirmasiTopUp(false)
-    setShowModalHistoryTopUp(true)
+    setShowRiwayatTopUp(true)
   };
 
   const Notification = (props) => {
@@ -451,111 +451,117 @@ export default (props) => {
         </div>
 
         {/* Modal Input Data */}
-        <React.Fragment>
-          <Modal centered show={showModalTopUp}>
-            <Modal.Header className="border-0">
-              <Col>
-                <Button
-                  className="position-absolute top-0 end-0 m-3"
-                  variant="close"
-                  aria-label="Close"
-                  onClick={handleCloseModalTopUp}
-                />
-                <Modal.Title className="text-center fw-bold mt-3">
-                  Konfirmasi Top Up Saldo
-                </Modal.Title>
-              </Col>
-            </Modal.Header>
-            <Modal.Body>
-              <Form action="#">
-                <Form.Group className="mb-3">
-                  <Form.Label>Nominal Top Up Saldo</Form.Label>
-                  <Form.Control disabled name="amount" value={convertToRupiah(getBalance.topupAmount)} type="text" />
-                </Form.Group>
-                <Form.Group id="referenceNumber">
-                  <Form.Label>Reference Number</Form.Label>
-                  <InputGroup className="topup"></InputGroup>
-                  <Form.Control className="reff" name="reffNo"  onChange={handleChange} placeholder="Masukkan Reference Number" type="number" />
-                </Form.Group>
-                {iconGagal === true && 
-                <>
-                  <div style={{ color: "#B9121B", fontSize: 12 }}>
-                    <img src={noteIconRed} className="me-2" />
-                    Nomor Referensi wajib diisi
-                  </div>
-                </>
-              }               
-              </Form>              
-              <div>
-                <img src={noteIcon} className="me-2" />
-                <span className="text-modal">
-                  Reference Number dapat dilihat pada bukti transfer
-                </span>
-              </div>
-              <div
-                className="my-2"
+        <Modal centered show={showModalTopUp}>
+          <Modal.Header className="border-0">
+            <Col>
+              <Button
+                className="position-absolute top-0 end-0 m-3"
+                variant="close"
+                aria-label="Close"
+                onClick={handleCloseModalTopUp}
+              />
+              <Modal.Title className="text-center fw-bold mt-3">
+                Konfirmasi Top Up Saldo
+              </Modal.Title>
+            </Col>
+          </Modal.Header>
+          <Modal.Body>
+            <Form action="#">
+              <Form.Group className="mb-3">
+                <Form.Label>Nominal Top Up Saldo</Form.Label>
+                <Form.Control disabled name="amount" value={convertToRupiah(getBalance.topupAmount)} type="text" />
+                {getBalance.topupAmount_temp !== 0 ?
+                    <>
+                      <div style={{ color: "#383838", fontSize: 12 }} className="mt-1">
+                        <img src={noteIcon} className="me-2" />
+                        Update nominal top up sebesar {convertToRupiah(getBalance.topupAmount_temp)} akan di update besok
+                      </div>
+                    </> :
+                    " "
+                  }
+              </Form.Group>
+              <Form.Group id="referenceNumber">
+                <Form.Label>Reference Number</Form.Label>
+                <InputGroup className="topup"></InputGroup>
+                <Form.Control className="reff" name="reffNo"  onChange={handleChange} placeholder="Masukkan Reference Number" type="number" />
+              </Form.Group>
+              {iconGagal === true && 
+              <>
+                <div style={{ color: "#B9121B", fontSize: 12 }}>
+                  <img src={noteIconRed} className="me-2" />
+                  Nomor Referensi wajib diisi
+                </div>
+              </>
+            }               
+            </Form>              
+            <div>
+              <img src={noteIcon} className="me-2" />
+              <span className="text-modal">
+                Reference Number dapat dilihat pada bukti transfer
+              </span>
+            </div>
+            <div
+              className="my-2"
+              style={{
+                fontSize: 14,
+                color: "#383838",
+              }}
+            >
+              Upload Bukti Transaksi
+            </div>
+            <div className="mb-4">
+              <u
                 style={{
                   fontSize: 14,
-                  color: "#383838",
+                  color: "#077E86",
+                  fontWeight: 700,
+                  cursor: "pointer",
                 }}
+                onClick={handleClick}
               >
-                Upload Bukti Transaksi
-              </div>
-              <div className="mb-4">
-                <u
-                  style={{
-                    fontSize: 14,
-                    color: "#077E86",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                  }}
-                  onClick={handleClick}
-                >
-                  Upload File
-                </u>
-                <span className="mx-1">{imageTopUp.SlipPaymentFile?.name}</span>
-                {uploadGagal === true && 
-                  <span style={{ color: "#B9121B", fontSize: 12 }} className="mx-2">
-                    <img src={noteIconRed} className="me-2" />
-                    Wajib upload bukti top up
-                  </span>
-                }                
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  ref={hiddenFileInput}
-                  id="imageTopUp"
-                  name="imageTopUp"
-                />
-              </div>
-              <div className="d-flex justify-content-center">
-                <button
-                  style={{
-                    fontFamily: "Exo",
-                    fontSize: 16,
-                    fontWeight: 700,
-                    alignItems: "center",
-                    padding: "12px 12px",
-                    gap: 8,
-                    width: "100%",
-                    height: 48,
-                    background:
-                      "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
-                    border: "0.6px solid #2C1919",
-                    borderRadius: 6,
-                    textAlign: "center",
-                  }}
-                  onClick={() => topUpHandle(imageTopUp, getBalance.topupAmount, inputHandle.reffNo)}
-                >
-                  <FontAwesomeIcon style={{ marginRight: 10 }} /> Konfirmasi
-                </button>
-              </div>
-            </Modal.Body>
-          </Modal>
-        </React.Fragment>
-
+                Upload File
+              </u>
+              <span className="mx-1">{imageTopUp.SlipPaymentFile?.name}</span>
+              {uploadGagal === true && 
+                <span style={{ color: "#B9121B", fontSize: 12 }} className="mx-2">
+                  <img src={noteIconRed} className="me-2" />
+                  Wajib upload bukti top up
+                </span>
+              }                
+              <input
+                type="file"
+                onChange={handleFileChange}
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={hiddenFileInput}
+                id="imageTopUp"
+                name="imageTopUp"
+              />
+            </div>
+            <div className="d-flex justify-content-center">
+              <button
+                style={{
+                  fontFamily: "Exo",
+                  fontSize: 16,
+                  fontWeight: 700,
+                  alignItems: "center",
+                  padding: "12px 12px",
+                  gap: 8,
+                  width: "100%",
+                  height: 48,
+                  background:
+                    "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                  border: "0.6px solid #2C1919",
+                  borderRadius: 6,
+                  textAlign: "center",
+                }}
+                onClick={() => topUpHandle(imageTopUp, getBalance.topupAmount, inputHandle.reffNo)}
+              >
+                <FontAwesomeIcon style={{ marginRight: 10 }} /> Konfirmasi
+              </button>
+            </div>
+          </Modal.Body>
+        </Modal>
         
         <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }}>
           <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
@@ -572,7 +578,7 @@ export default (props) => {
                   <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Top Up Berhasil</p>
               </div>
               <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
-                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Kamu telah berhasil top up senilai {topUpResult.amount}</p>
+                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Kamu telah berhasil top up senilai {convertToRupiah(topUpResult.amount)}</p>
               </div>
               <center>
                   <div style={{ margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
@@ -593,7 +599,7 @@ export default (props) => {
                       <tr>
                           <td>Nominal Top Up</td>
                           <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{topUpResult.amount}</td>
+                          <td style={{ fontWeight: 600 }}>{convertToRupiah(topUpResult.amount)}</td>
                       </tr>
                       <tr>
                           <td>Sumber Agen</td>
@@ -618,35 +624,6 @@ export default (props) => {
           </Modal.Body>
         </Modal>
 
-        <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
-          <Modal.Header className="border-0">
-            <Button
-              className="position-absolute top-0 end-0 m-3"
-              variant="close"
-              aria-label="Close"
-              onClick={handleCloseHistoryTopUp}
-            />
-            <Modal.Title className="fw-bold mt-3">
-              History Top Up
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {
-              agenLists.length === 0 ?
-              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
-              <div className="div-table">
-                <DataTable
-                  columns={columns}
-                  data={listRiwayat}
-                  customStyles={customStyles}
-                  pagination
-                  highlightOnHover
-                  progressComponent={<CustomLoader />}
-                />
-              </div>
-            }
-          </Modal.Body>
-        </Modal>
 
         <Modal className="history-modal" size="xl" centered show={showRiwayatTopUp} onHide={handleCloseRiwayatTopUp}>
           <Modal.Header className="border-0">
@@ -674,14 +651,6 @@ export default (props) => {
                   highlightOnHover
                   // progressPending={pending}
                   progressComponent={<CustomLoader />}
-                  // paginationResetDefaultPage={resetPaginationToggle}
-                  // subHeader
-                  // subHeaderComponent={subHeaderComponentMemo}
-                  // selectableRows
-                  // persistTableHead
-                  // onRowClicked={(listAgen) => {
-                  //   detailAgenHandler(listAgen.agen_id)
-                  // }}
                 />
               </div>
             }

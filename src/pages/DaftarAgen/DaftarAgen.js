@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
 import DataTable, { FilterComponent } from 'react-data-table-component';
-import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image} from '@themesberg/react-bootstrap';
+import { Col, Row, Button, Form, Image} from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, Link } from 'react-router-dom';
@@ -30,7 +30,7 @@ function DaftarAgen() {
         'Authorization' : auth
       }
       const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
-      console.log(listAgen, "ini list agen di daftar agen")
+      // console.log(listAgen, "ini list agen di daftar agen")
       if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
@@ -63,7 +63,6 @@ function DaftarAgen() {
     {
       name: 'ID Agen',
       selector: row => row.agen_id,
-      // sortable: true,
       cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
     },
     {
@@ -111,7 +110,7 @@ function DaftarAgen() {
     history.push('/login');
   }
     getDataAgen()
-  }, [])
+  }, [pending])
 
   const customStyles = {
     headCells: {
@@ -178,30 +177,22 @@ function DaftarAgen() {
             </Col>
           </Row>
         </div>
-        {
+        {/* {
           listAgen.length === 0 ?
           <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
-          <div className="div-table">
+          <div className="div-table"> */}
             <DataTable
               columns={columns}
               data={listAgen}
               customStyles={customStyles}
-              // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+              noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
               pagination
               highlightOnHover
               progressPending={pending}
               progressComponent={<CustomLoader />}
-              // paginationResetDefaultPage={resetPaginationToggle}
-              // subHeader
-              // subHeaderComponent={subHeaderComponentMemo}
-              // selectableRows
-              // persistTableHead
-              // onRowClicked={(listAgen) => {
-              //   detailAgenHandler(listAgen.agen_id)
-              // }}
             />
-          </div>
-        }
+          {/* </div>
+        } */}
       </div>
     </div>
   )

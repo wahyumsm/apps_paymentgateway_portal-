@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, InputGroup } from '@themesberg/react-bootstrap';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { Col, Row, Form } from '@themesberg/react-bootstrap';
+import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
@@ -25,7 +23,7 @@ function DetailAgen() {
                 'Authorization' : auth
             }
             const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
-            console.log(detailAgen, "ini detail agen");
+            // console.log(detailAgen, "ini detail agen");
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
                 setDetailAgen(detailAgen.data.response_data)
             } else {
@@ -190,7 +188,7 @@ function DetailAgen() {
                         </Col>
                         <Col xs={9}>
                             <Form.Control
-                                value={detailAgen.nominal_topup === null ? 0 : convertToCurrency(detailAgen.nominal_topup)}
+                                value={convertToCurrency(detailAgen.nominal_topup === null ? 0 : detailAgen.nominal_topup)}
                                 type='text'
                                 disabled
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
