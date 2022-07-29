@@ -71,11 +71,9 @@ export default (props) => {
 
   const [getBalance, setGetBalance] = useState({})
   const [showModalTopUp, setShowModalTopUp] = useState(false);
-  const [showModalHistoryTopUp, setShowModalHistoryTopUp] = useState(false)
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
-  const handleCloseHistoryTopUp = () => setShowModalHistoryTopUp(false);
   const handleCloseRiwayatTopUp = () => setShowRiwayatTopUp(false)
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
@@ -171,7 +169,7 @@ export default (props) => {
               'Authorization' : auth
           }
           const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
-          // console.log(getBalance.data.response_data.topupAmount, 'ini data get balance');
+          console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
@@ -208,7 +206,7 @@ export default (props) => {
       dispatch(GetUserDetail("/Account/GetUserProfile"));
       GetBalanceHandle()
       listRiwayatTopUp()
-    }, [])
+    }, [showModalTopUp])
 
   async function logoutHandler() {
     try {
@@ -229,7 +227,7 @@ export default (props) => {
     } catch (error) {
       console.log(error);
       // RouteTo(errorCatch(error.response.status));
-      // history.push(errorCatch(error.response.status))
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -299,7 +297,7 @@ export default (props) => {
 
   const modalRiwayat = () => {
     setShowModalKonfirmasiTopUp(false)
-    setShowModalHistoryTopUp(true)
+    setShowRiwayatTopUp(true)
   };
 
   const Notification = (props) => {
@@ -472,6 +470,15 @@ export default (props) => {
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
                 <Form.Control disabled name="amount" value={convertToRupiah(getBalance.topupAmount)} type="text" />
+                {getBalance.topupAmount_temp !== 0 ?
+                    <>
+                      <div style={{ color: "#383838", fontSize: 12 }} className="mt-1">
+                        <img src={noteIcon} className="me-2" />
+                        Update nominal top up sebesar {convertToRupiah(getBalance.topupAmount_temp)} akan di update besok
+                      </div>
+                    </> :
+                    " "
+                  }
               </Form.Group>
               <Form.Group id="referenceNumber">
                 <Form.Label>Reference Number</Form.Label>
@@ -617,35 +624,6 @@ export default (props) => {
           </Modal.Body>
         </Modal>
 
-        <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
-          <Modal.Header className="border-0">
-            <Button
-              className="position-absolute top-0 end-0 m-3"
-              variant="close"
-              aria-label="Close"
-              onClick={handleCloseHistoryTopUp}
-            />
-            <Modal.Title className="fw-bold mt-3">
-              History Top Up
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {
-              agenLists.length === 0 ?
-              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
-              <div className="div-table">
-                <DataTable
-                  columns={columns}
-                  data={listRiwayat}
-                  customStyles={customStyles}
-                  pagination
-                  highlightOnHover
-                  progressComponent={<CustomLoader />}
-                />
-              </div>
-            }
-          </Modal.Body>
-        </Modal>
 
         <Modal className="history-modal" size="xl" centered show={showRiwayatTopUp} onHide={handleCloseRiwayatTopUp}>
           <Modal.Header className="border-0">
@@ -673,14 +651,6 @@ export default (props) => {
                   highlightOnHover
                   // progressPending={pending}
                   progressComponent={<CustomLoader />}
-                  // paginationResetDefaultPage={resetPaginationToggle}
-                  // subHeader
-                  // subHeaderComponent={subHeaderComponentMemo}
-                  // selectableRows
-                  // persistTableHead
-                  // onRowClicked={(listAgen) => {
-                  //   detailAgenHandler(listAgen.agen_id)
-                  // }}
                 />
               </div>
             }
