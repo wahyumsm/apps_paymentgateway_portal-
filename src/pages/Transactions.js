@@ -131,7 +131,7 @@ export default () => {
         'Authorization' : auth
       }
       const dataChartTransfer = await axios.post("/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
-      // console.log(dataChartTransfer, 'ini data chart transfer ');
+      console.log(dataChartTransfer, 'ini data chart transfer ');
       if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length === 0) {
         dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setDataChartTransfer(dataChartTransfer.data.response_data)

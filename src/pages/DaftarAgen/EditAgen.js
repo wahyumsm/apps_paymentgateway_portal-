@@ -102,7 +102,7 @@ function EditAgen() {
                 'Authorization' : auth
             }
             const editAgen = await axios.post("/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
-            // console.log(detailAgen, 'ini detail agen');
+            console.log(editAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
                 setShowModalEdit(true)
             } else {
@@ -129,6 +129,14 @@ function EditAgen() {
         history.push("/daftaragen")
     }
 
+    const goBack = () => {
+        window.history.back();
+    };
+
+    const stayEdit = () => {
+        setShowModalBatalEdit(false)
+    }
+
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
@@ -137,9 +145,6 @@ function EditAgen() {
         getDetailAgen(agenId)
     }, [access_token, agenId])
     
-    const goBack = () => {
-        window.history.back();
-    };
     // console.log(inputHandle.nominal, 'ini detail agen dari input handle');
 
     return (
@@ -163,7 +168,7 @@ function EditAgen() {
                                     type="switch"
                                     id="custom-switch"                                    
                                     label={(inputHandle.active === true) ? "Aktif" : "Tidak Aktif"}
-                                    checked={(inputHandle.active === undefined) ? inputHandle.active : inputHandle.active}
+                                    checked={(inputHandle.active)}
                                     name="active"
                                     onChange={handleChange}
                                 />
@@ -359,7 +364,7 @@ function EditAgen() {
                             
                         </p>                
                         <div className="d-flex justify-content-center mb-3">
-                            <Button onClick={goBack} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
+                            <Button onClick={stayEdit} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
                             <Button onClick={batalEdit} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
                         </div>
                     </Modal.Body>
@@ -373,10 +378,10 @@ function EditAgen() {
                 >
                     <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
                         <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu yakin ingin membatalkan perubahan yang dilakukan pada data Partner?</p>
+                            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu yakin ingin menonaktifkan agen?</p>
                         </div>
                         <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Data akan kembali seperti kondisi semula</p>
+                            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Transaksi agen tidak akan tersimpan di dashboard</p>
                         </div>
                         <p>
                             
@@ -396,10 +401,10 @@ function EditAgen() {
                 >
                     <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
                         <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu yakin ingin membatalkan perubahan yang dilakukan pada data Partner?</p>
+                            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu yakin ingin aktifkan agen?</p>
                         </div>
                         <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Data akan kembali seperti kondisi semula</p>
+                            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Transaksi agen  akan tersimpan di dashboard</p>
                         </div>
                         <p>
                             
