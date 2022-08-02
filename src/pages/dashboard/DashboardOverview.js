@@ -64,7 +64,7 @@ export default () => {
         ...inputHandle,
         [e.target.name]: e.target.value,
       })
-    }
+    } 
   };
 
   const [expanded, setExpanded] = useState(false);
