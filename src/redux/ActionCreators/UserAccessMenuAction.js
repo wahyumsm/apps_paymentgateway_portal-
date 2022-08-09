@@ -21,7 +21,7 @@ export const GetUserAccessMenu = (url) => {
                         userAccessMenu: userAccessMenu.data.response_data
                     }
                 })
-            } else {
+            } else if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length !== 0) {
                 setUserSession(userAccessMenu.data.response_new_token)
                 dispatch({
                     type: FETCH_GETUSERACCESSMENU,

@@ -52,7 +52,7 @@ function TambahAgen() {
             if (addAgen.status === 200 && addAgen.data.response_code === 200 && addAgen.data.response_new_token.length === 0) {
                 setDetailNewAgen(addAgen.data.response_data)
                 setShowModal(true)
-            } else {
+            } else if (addAgen.status === 200 && addAgen.data.response_code === 200 && addAgen.data.response_new_token.length !== 0) {
                 setUserSession(addAgen.data.response_new_token)
                 setDetailNewAgen(addAgen.data.response_data)
                 setShowModal(true)

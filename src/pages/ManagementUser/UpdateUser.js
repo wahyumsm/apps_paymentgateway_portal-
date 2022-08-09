@@ -71,7 +71,11 @@ function UpdateUser() {
                 if (dataDetail.role_id === 102 || dataDetail.role_id === 103) {
                     getListAgen(dataDetail.partner_id)
                 }
-            } else {
+            } else if (
+                detailUser.status === 200 &&
+                detailUser.data.response_code === 200 &&
+                detailUser.data.response_new_token.length !== 0
+            ) {
                 const dataDetail = detailUser.data.response_data
                 setUserSession(detailUser.data.response_new_token);
                 setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan})
@@ -86,7 +90,7 @@ function UpdateUser() {
         async function editUserHandle(idUser, nameUser, emailUser, roleUser, isActive, partnerId, agenId) {
             try {
                 const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser == 102) ? partnerId : (inputHandle.roleUser == 103 ) ? agenId : ""}"}`)
+                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser === 102) ? partnerId : (inputHandle.roleUser === 103 ) ? agenId : ""}"}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
@@ -94,7 +98,7 @@ function UpdateUser() {
                 const editUser = await axios.post("/Account/UpdateUser", { data: dataParams }, { headers: headers })
                 if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length === 0) {
                     history.push("/managementuser")
-                } else {
+                } else if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length !== 0) {
                     setUserSession(editUser.data.response_new_token)
                     history.push("/managementuser")
                 }
@@ -121,7 +125,7 @@ function UpdateUser() {
                 // console.log(listRole, "ini role");
                 if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length === 0) {
                     setListRole(listRole.data.response_data);
-                } else {
+                } else if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length !== 0) {
                     setUserSession(listRole.data.response_new_token)
                     setListRole(listRole.data.response_data)
                 }
@@ -150,7 +154,11 @@ function UpdateUser() {
                     listPartner.data.response_new_token.length === 0
                 ) {
                     setListPartner(listPartner.data.response_data);
-                } else {
+                } else if (
+                    listPartner.status === 200 &&
+                    listPartner.data.response_code === 200 &&
+                    listPartner.data.response_new_token.length !== 0
+                ) {
                     setUserSession(listPartner.data.response_new_token);
                     setListPartner(listPartner.data.response_data);
                 }
@@ -171,7 +179,7 @@ function UpdateUser() {
                 const listAgen = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
                 if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
                     setListAgen(listAgen.data.response_data)
-                } else {
+                } else if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length !== 0) {
                     setUserSession(listAgen.data.response_new_token)
                     setListAgen(listAgen.data.response_data)
                 }
@@ -184,7 +192,7 @@ function UpdateUser() {
             if (!access_token) {
                 history.push("/login");
             }
-            if (user_role == 102) {
+            if (user_role === 102) {
                 history.push('/404');
             }
             getDetailUser(muserId);
@@ -252,7 +260,7 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.roleUser == 102 ? "" : (inputHandle.roleUser == 103)  ? "" : "none" }}
+                                style={{ display: inputHandle.roleUser === 102 ? "" : (inputHandle.roleUser === 103)  ? "" : "none" }}
                             >
                                 <h6>Partner</h6>
                                 <Form.Select
@@ -274,7 +282,7 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.partnerId !== undefined && inputHandle.roleUser == 103 ? "" : "none" }}
+                                style={{ display: inputHandle.partnerId !== undefined && inputHandle.roleUser === 103 ? "" : "none" }}
                             >
                                 <h6>Agen</h6>
                                 <Form.Select

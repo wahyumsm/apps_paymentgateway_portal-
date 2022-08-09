@@ -33,7 +33,7 @@ function DetailPartner() {
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
                 // console.log(detailPartner.data, 'ini detail agen');
                 setDetailPartner(detailPartner.data.response_data)
-            } else {
+            } else if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length !== 0) {
                 setUserSession(detailPartner.data.response_new_token)
                 setDetailPartner(detailPartner.data.response_data)
             }
@@ -112,7 +112,7 @@ function DetailPartner() {
           if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
-          } else {
+          } else if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length !== 0) {
             setUserSession(listAgen.data.response_new_token)
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
@@ -128,7 +128,7 @@ function DetailPartner() {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role == 102) {
+        if (user_role === 102) {
             history.push('/404');
         }
         getDetailPartner(partnerId)

@@ -35,7 +35,7 @@ function DaftarPartner() {
                 listDataPartner.data.response_data = listDataPartner.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
                 setListPartner(listDataPartner.data.response_data)
                 setPending(false)
-            } else {
+            } else if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length !== 0) {
                 setUserSession(listDataPartner.data.response_new_token)
                 listDataPartner.data.response_data = listDataPartner.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
                 setListPartner(listDataPartner.data.response_data)
@@ -53,7 +53,7 @@ function DaftarPartner() {
         if (!access_token) {
             history.push("/login")
         }
-        if (user_role == 102) {
+        if (user_role === 102) {
             history.push('/404');
         }
         listDataPartner('/Partner/ListPartner')
