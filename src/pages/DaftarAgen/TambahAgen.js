@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -37,7 +37,7 @@ function TambahAgen() {
     }
 
     const [errorCode, setErrorCode] = useState(0)
-
+    const [add, setAdd] = useState(false)
 
     async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee, nominal) {
         try {         
@@ -251,15 +251,26 @@ function TambahAgen() {
                             </span>
                         </Col>
                         <Col xs={10}>
-                            <Form.Control
-                                name='nominal'
-                                onChange={handleChange}
-                                placeholder="Masukkan Nominal Top up (Optional)"
-                                type='number'
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
-                                style={{ width: "100%", height: 40, marginTop: '-7px' }}
+                            {add ?
+                                <Form.Control
+                                    name='nominal'
+                                    onChange={handleChange}
+                                    placeholder="Masukkan Nominal Top up (Optional)"
+                                    value={inputHandle.nominal}
+                                    type='number'
+                                    style={{ width: "100%", height: 40, marginTop: '-7px' }}
+                                    onBlur={() => setAdd(!add)}
+                                /> :
+                                <Form.Control
+                                    name='nominal'
+                                    onChange={handleChange}
+                                    value={convertFormatNumber(inputHandle.nominal)}
+                                    placeholder="Masukkan Nominal Top up (Optional)"
+                                    type='text'
+                                    style={{ width: "100%", height: 40, marginTop: '-7px' }}
+                                    onFocus={() => setAdd(!add)}
                                 />
+                            }
                         </Col>
                     </Row>
                 </div>

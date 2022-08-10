@@ -162,7 +162,7 @@ function AddUser() {
       // RouteTo("/login")
       history.push("/login");
     }
-    if (user_role == 102) {
+    if (user_role === 102) {
       history.push('/404');
     }
     if (inputHandle.role == 102 || inputHandle.role == 103) {

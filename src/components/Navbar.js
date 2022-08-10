@@ -21,7 +21,7 @@ import {
   ListGroup,
   InputGroup,
   Modal,
-  Button, Table
+  Button, Table, Alert, Toast
 } from "@themesberg/react-bootstrap";
 
 import NOTIFICATIONS_DATA from "../data/notifications";
@@ -35,7 +35,7 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +45,11 @@ import DataTable from "react-data-table-component";
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 import checklistCircle from '../assets/img/icons/checklist_circle.svg';
 import CopyIcon from '../assets/icon/carbon_copy.svg'
+import Jam from '../assets/icon/jam_icon.svg'
+import noticeIcon from '../assets/icon/notice_icon.svg'
+import Countdown from "react-countdown";
+import Checklist from '../assets/icon/checklist_icon.svg'
+import encryptData from "../function/encryptData";
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -73,19 +78,25 @@ export default (props) => {
   const [showModalTopUp, setShowModalTopUp] = useState(false);
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
+  const [showStatusTopup, setShowStatusTopup] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
   const handleCloseRiwayatTopUp = () => setShowRiwayatTopUp(false)
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
   const access_token = getToken()
   const [text, setText] = useState('');
+  const [nominalTopup, setNominalTopup] = useState(false)
   const [inputHandle, setInputHandle] = useState({
+    amounts: 0,
     amount: 0,
     reffNo: "",
   })
+  const [topUpBalance, setTopUpBalance] = useState({})
   const [ topUpResult, setTopUpResult ] = useState({})
   const [iconGagal, setIconGagal] = useState(false)
   const [uploadGagal, setUploadGagal] = useState(false)
+  const convertTimeStamp = (time) => {new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(time*1000))}
+  console.log(convertTimeStamp(1660103016), ' ini log timestamp')
 
   function handleChange(e) {
     setInputHandle({
@@ -106,48 +117,43 @@ export default (props) => {
   };
 
   const toHistoryBalance = () => {
-    setShowRiwayatTopUp(true)
+    history.push('/riwayattopup')
   };  
 
   const copyHandler = (event) => {
     setText(event.target.value);
   };
 
-  const copyId = async () => {
-    var copyText = document.getElementById('myInput').innerHTML;
+  const copyPrice = async () => {
+    var copyText = document.getElementById('pricing').innerHTML;
     await navigator.clipboard.writeText(copyText);
     alert('Text copied');
   };
 
 
-  async function topUpHandle(imageTopUp, amount, reffNo) {
+  const copyRek = async () => {
+    var copyText = document.getElementById('noRek').innerHTML;
+    await navigator.clipboard.writeText(copyText);
+    alert('Text copied');
+  };
+
+  async function topUpConfirmation(amounts) {
     try {
-        if (inputHandle.reffNo.length === 0 || inputHandle.reffNo === undefined) {
+        if (inputHandle.amounts.length === 0 || inputHandle.amounts === undefined || inputHandle.amounts == 0) {
           setIconGagal(true)
         } else {
           setIconGagal(false)
         }
-        if (Object.keys(imageTopUp).length === 0) {
-          setUploadGagal(true)
-        } else {
-          setUploadGagal(false)
-        }
-        const auth = "Bearer " + getToken()        
-        var formData = new FormData()
-        formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
-        formData.append('amount', amount)
-        formData.append('reffNo', reffNo)
-        // for (var pair of formData.entries()) {
-        //     console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
-        // }
+        const auth = "Bearer " + getToken()   
+        const dataParams = encryptData(`{"tparttopup_amount":${amounts}}`)
         const headers = {
-            'Content-Type':'multipart/form-data',
-            'Authorization' : auth
-        }
-        const topUp = await axios.post("/Partner/TopupConfirmation", formData, { headers: headers })
-        // console.log(topUp, 'ini topup');
-        if(topUp.status === 200 && topUp.data.response_code === 200) {
-          setTopUpResult(topUp.data.response_data.results)
+          "Content-Type": "application/json",
+          'Authorization': auth,
+        };
+        const topUpBalance = await axios.post("/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
+        console.log(topUpBalance, 'ini topup balance ya');
+        if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200) {
+          setTopUpBalance(topUpBalance.data.response_data)
           setShowModalTopUp(false)
           setShowModalKonfirmasiTopUp(true)
         }
@@ -155,11 +161,77 @@ export default (props) => {
         console.log(error)
         if (error.response.status === 401) {
             history.push('/login')
-        } else if (error.response.status === 400) {
-          alert("Top Up Gagal")
-        }
+        } 
+        // else if (error.response.status === 400) {
+        //   alert("Top Up Gagal")
+        // }
       }
     }
+
+    async function topUpHandleConfirm() {
+      try {
+          const auth = "Bearer " + getToken()        
+          const headers = {
+              'Content-Type':'application/json',
+              'Authorization' : auth
+          }
+          const topUpResult = await axios.post("/Partner/TopupConfirmation", { data: "" }, { headers: headers })
+          // console.log(topUp, 'ini topup');
+          if(topUpResult.status === 200 && topUpResult.data.response_code === 200) {
+            setTopUpResult(topUpResult.data.response_data)
+            setShowModalKonfirmasiTopUp(false)
+            setShowStatusTopup(true)
+          }
+        } catch (error) {
+          console.log(error)
+          if (error.response.status === 401) {
+              history.push('/login')
+          } else if (error.response.status === 400) {
+            alert("Top Up Gagal")
+          }
+        }
+      }
+
+  // async function topUpHandle(imageTopUp, amount, reffNo) {
+  //   try {
+  //       if (inputHandle.reffNo.length === 0 || inputHandle.reffNo === undefined) {
+  //         setIconGagal(true)
+  //       } else {
+  //         setIconGagal(false)
+  //       }
+  //       if (Object.keys(imageTopUp).length === 0) {
+  //         setUploadGagal(true)
+  //       } else {
+  //         setUploadGagal(false)
+  //       }
+  //       const auth = "Bearer " + getToken()        
+  //       var formData = new FormData()
+  //       formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
+  //       formData.append('amount', amount)
+  //       formData.append('reffNo', reffNo)
+  //       // for (var pair of formData.entries()) {
+  //       //     console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
+  //       // }
+  //       const headers = {
+  //           'Content-Type':'multipart/form-data',
+  //           'Authorization' : auth
+  //       }
+  //       const topUp = await axios.post("/Partner/TopupConfirmation", formData, { headers: headers })
+  //       // console.log(topUp, 'ini topup');
+  //       if(topUp.status === 200 && topUp.data.response_code === 200) {
+  //         setTopUpResult(topUp.data.response_data.results)
+  //         setShowModalTopUp(false)
+  //         setShowModalKonfirmasiTopUp(true)
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //       if (error.response.status === 401) {
+  //           history.push('/login')
+  //       } else if (error.response.status === 400) {
+  //         alert("Top Up Gagal")
+  //       }
+  //     }
+  //   }
 
     async function GetBalanceHandle () {
       try {
@@ -295,10 +367,16 @@ export default (props) => {
     </div>
   );
 
-  const modalRiwayat = () => {
+  const toRiwayatTopup = () => {
     setShowModalKonfirmasiTopUp(false)
-    setShowRiwayatTopUp(true)
+    setShowStatusTopup(true)
+    // setShowRiwayatTopUp(true)
   };
+
+  const toKonfirmasiTopup = () => {
+    setShowModalTopUp(false)
+    setShowModalKonfirmasiTopUp(true)
+  }
 
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;
@@ -330,7 +408,8 @@ export default (props) => {
   };
 
   return (
-    <Navbar
+    <>
+      <Navbar
       variant="dark"
       expanded
       className="ps-0 pe-4 pb-2 pt-2"
@@ -461,7 +540,7 @@ export default (props) => {
                 onClick={handleCloseModalTopUp}
               />
               <Modal.Title className="text-center fw-bold mt-3">
-                Konfirmasi Top Up Saldo
+                Top Up Saldo
               </Modal.Title>
             </Col>
           </Modal.Header>
@@ -469,76 +548,35 @@ export default (props) => {
             <Form action="#">
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
-                <Form.Control disabled name="amount" value={convertToRupiah(getBalance.topupAmount)} type="text" />
-                {getBalance.topupAmount_temp !== 0 ?
-                    <>
-                      <div style={{ color: "#383838", fontSize: 12 }} className="mt-1">
-                        <img src={noteIcon} className="me-2" />
-                        Update nominal top up sebesar {convertToRupiah(getBalance.topupAmount_temp)} akan di update besok
-                      </div>
-                    </> :
-                    " "
-                  }
-              </Form.Group>
-              <Form.Group id="referenceNumber">
-                <Form.Label>Reference Number</Form.Label>
-                <InputGroup className="topup"></InputGroup>
-                <Form.Control className="reff" name="reffNo"  onChange={handleChange} placeholder="Masukkan Reference Number" type="number" />
-              </Form.Group>
-              {iconGagal === true && 
-              <>
-                <div style={{ color: "#B9121B", fontSize: 12 }}>
+                {nominalTopup ? 
+                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="number" /> :
+                  <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={convertFormatNumber(inputHandle.amounts)} />
+                }
+                {/* {getBalance.topupAmount_temp !== 0 ?
+                  <>
+                    <div style={{ color: "#383838", fontSize: 12 }} className="mt-1">
+                      <img src={noteIcon} className="me-2" />
+                      Update nominal top up sebesar {convertToRupiah(getBalance.topupAmount_temp)} akan di update besok
+                    </div>
+                  </> :
+                  " "
+                } */}
+                {iconGagal === true && 
+                  <>
+                    <div style={{ color: "#B9121B", fontSize: 12 }}>
+                      <img src={noteIconRed} className="me-2" />
+                      Nominal Top Up wajib diisi
+                    </div>
+                  </>
+                }
+                {/* <div style={{ color: "#B9121B", fontSize: 12 }}>
                   <img src={noteIconRed} className="me-2" />
-                  Nomor Referensi wajib diisi
-                </div>
-              </>
-            }               
-            </Form>              
-            <div>
-              <img src={noteIcon} className="me-2" />
-              <span className="text-modal">
-                Reference Number dapat dilihat pada bukti transfer
-              </span>
-            </div>
-            <div
-              className="my-2"
-              style={{
-                fontSize: 14,
-                color: "#383838",
-              }}
-            >
-              Upload Bukti Transaksi
-            </div>
-            <div className="mb-4">
-              <u
-                style={{
-                  fontSize: 14,
-                  color: "#077E86",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-                onClick={handleClick}
-              >
-                Upload File
-              </u>
-              <span className="mx-1">{imageTopUp.SlipPaymentFile?.name}</span>
-              {uploadGagal === true && 
-                <span style={{ color: "#B9121B", fontSize: 12 }} className="mx-2">
-                  <img src={noteIconRed} className="me-2" />
-                  Wajib upload bukti top up
-                </span>
-              }                
-              <input
-                type="file"
-                onChange={handleFileChange}
-                accept="image/*"
-                style={{ display: "none" }}
-                ref={hiddenFileInput}
-                id="imageTopUp"
-                name="imageTopUp"
-              />
-            </div>
-            <div className="d-flex justify-content-center">
+                  Nominal Top Up wajib diisi
+                </div> */}
+              </Form.Group>
+              
+            </Form>     
+            <div className="d-flex justify-content-center mt-2">
               <button
                 style={{
                   fontFamily: "Exo",
@@ -555,75 +593,83 @@ export default (props) => {
                   borderRadius: 6,
                   textAlign: "center",
                 }}
-                onClick={() => topUpHandle(imageTopUp, getBalance.topupAmount, inputHandle.reffNo)}
+                onClick={() => topUpConfirmation(inputHandle.amounts)}
               >
-                <FontAwesomeIcon style={{ marginRight: 10 }} /> Konfirmasi
+                <FontAwesomeIcon style={{ marginRight: 10 }} /> TOP UP
               </button>
             </div>
           </Modal.Body>
         </Modal>
         
-        <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }}>
-          <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+        {/* Modal Konfirmasi Top Up */}
+        <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }} className="confirm-modal">
+          <Modal.Header className="border-0">
+            <Col>
               <Button
                 className="position-absolute top-0 end-0 m-3"
                 variant="close"
                 aria-label="Close"
                 onClick={() => setShowModalKonfirmasiTopUp(false)}
               />
-              <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 12 }}>
-                  <img src={checklistCircle} alt="logo" />
+              <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
+                Selesaikan Proses Topup
+              </Modal.Title>
+            </Col>            
+          </Modal.Header>
+          <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+              <div className="text-center" style={{fontSize: "14px"}}>Selesaikan Pembayaran Dalam</div> 
+              <div className="text-center mt-2">
+                <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={Date.now() + 7199000} daysInHours={true} /></span>
               </div>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Top Up Berhasil</p>
+              <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-center mt-2">
+                <div>Batas Akhir :</div>
+                <div className="mx-2 fw-bold">{(topUpBalance.exp_date !== undefined) ? convertDateTimeStamp(topUpBalance.exp_date) + " WIB" : null}</div>
               </div>
-              <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
-                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Kamu telah berhasil top up senilai {convertToRupiah(topUpResult.amount)}</p>
+              <div className="mt-4" style={{border: "1px solid #EBEBEB", borderRadius: "8px", padding: "10px"}}>
+                <Table className='detailSave'>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div>ID Transaksi</div>
+                    <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{topUpBalance.id_transaksi}</div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div className="d-flex flex-column text-left">
+                      <div style={{padding:"unset"}}>Metode Pembayaran</div>
+                      <div style={{padding:"unset"}} className="fw-bold mt-1">Tranfer Bank</div>
+                    </div>
+                    <div className="d-flex flex-column">
+                      <div style={{padding:"unset"}} className="text-end"><img src={topUpBalance.metode_pembayaran} alt="bca" style={{width: "38px", height: "12px"}} /></div>
+                      <div style={{padding:"unset"}} className="mt-1">{topUpBalance.tf_bank}</div>
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div className="d-flex flex-column text-left">
+                      <div style={{padding:"unset"}}>No Rekening</div>
+                      <div onChange={copyHandler} id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{topUpBalance.no_rek}</div>
+                    </div>
+                    <div className="d-flex flex-column mt-3">
+                      <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div className="d-flex flex-column text-left">
+                      <div style={{padding:"unset"}}>Nominal Transfer</div>
+                      <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{convertToCurrency(topUpBalance.amount_transfer)}</div>
+                    </div>
+                    <div className="d-flex flex-column mt-3">
+                      <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                    </div>
+                  </div>
+                </Table>                
               </div>
-              <center>
-                  <div style={{ margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
-              </center>
-              <div>
-                  <Table className='detailSave'>
-                    <tr>ID Transaksi</tr>
-                    <tr>
-                        <td onChange={copyHandler} id="myInput" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }} >{topUpResult.IDTrx}</td>
-                        <td onClick={copyId} className="mx-5 text-end" style={{ fontWeight: 600, cursor: "pointer" }} ><img src={CopyIcon} alt="copy" />Salin</td>
-                    </tr>
-                    <tr>
-                        <td>{topUpResult.tglTrx}</td>
-                    </tr>
-                  </Table>
-                  <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Detail Transaksi</p>
-                  <Table >
-                      <tr>
-                          <td>Nominal Top Up</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{convertToRupiah(topUpResult.amount)}</td>
-                      </tr>
-                      <tr>
-                          <td>Sumber Agen</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{topUpResult.partner}</td>
-                      </tr>
-                      <tr>
-                          <td>Kode Unik</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{topUpResult.uniqueCode}</td>
-                      </tr>
-                      <tr>
-                          <td>Status</td>
-                          <td>:</td>
-                          <td className='active-status-topup' style={{ fontWeight: 600 }}>{topUpResult.statusName}</td>
-                      </tr>
-                  </Table>
-              </div>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <Button variant="primary" onClick={modalRiwayat} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>Lihat Riwayat Top up</Button>
+              <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
+                <img src={noticeIcon} alt="notice" />
+                <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga 3 digit terakhir.</div>
+              </Table>
+              <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
               </div>
           </Modal.Body>
         </Modal>
-
 
         <Modal className="history-modal" size="xl" centered show={showRiwayatTopUp} onHide={handleCloseRiwayatTopUp}>
           <Modal.Header className="border-0">
@@ -658,5 +704,14 @@ export default (props) => {
         </Modal>
       </Container>
     </Navbar>
+    {topUpResult.is_update === true ?
+      <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
+        <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="top-center" delay={3000} autohide>
+          <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Top Up Saldo {convertToRupiah(inputHandle.amounts)} Berhasil</Toast.Body>
+        </Toast>
+      </div> :
+      ""
+    }
+    </>
   );
 };

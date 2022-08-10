@@ -1,6 +1,6 @@
 body {
     font-family: 'Nunito';
-    background-color: unset !important;
+    background-color: #F3F4F5 !important;
 }
 
 .sidebar .nav-item .nav-link {
@@ -27,6 +27,7 @@ body {
 .content-page {
     padding-left: 50px;
     padding-right: 50px;
+    background-color: #F3F4F5;
 }
 
 .card-information {
@@ -50,13 +51,20 @@ body {
     color: #FFFFFF;
 }
 
-.base-content {
+.base-content, .base-content-beranda {
     width: 100%;
     border-radius: 8px;
     height: 100%;
     background: #FFFFFF;
-    padding: 37px 27px 0px 27px;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15);
+}
+
+.base-content {    
+    padding: 37px 27px 0px 27px;
+}
+
+.base-content-beranda {    
+    padding: 27px;
 }
 
 .sub-base-content {
@@ -126,6 +134,20 @@ body {
     border: unset !important;
 }
 
+.btn-reset {
+    height: 40px;
+    background: #FFFFFF;
+    width: 100%;
+    border-radius: 8px;
+    font-family: 'Nunito Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 22px;
+    color: #077E86;
+    border: 0.4px solid #077E86;
+}
+
 .circle-data {
     width: 16px;
     height: 16px;
@@ -168,7 +190,6 @@ body {
 
 .menu-detail-akun-hr-active {
     border-bottom: 3px solid #077E86;
-
 }
 
 .hr-style {
@@ -323,6 +344,17 @@ body {
     max-width: 751px;
 }
 
+.confirm-modal .modal-content {
+    width: 400px;
+}
+
+/* .disiniya {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 440px;
+} */
+
 .topup .input-group-text {
     border-right: unset;
 }
@@ -365,18 +397,18 @@ body {
     text-align: center;
 }
 
-.multiselect {
+  /* .multiselect {
     width: 200px;
-  }
+  } */
   
-  .selectBox {
+  /* .selectBox {
     position: relative;
   }
   
   .selectBox select {
     width: 100%;
     font-weight: bold;
-  }
+  } */
   
   .overSelect {
     position: absolute;
@@ -386,7 +418,7 @@ body {
     bottom: 0;
   }
   
-  /* #checkboxes {
+  #checkboxes {
     display: none;
     border: 1px #dadada solid;
   }
@@ -397,4 +429,13 @@ body {
   
   #checkboxes label:hover {
     background-color: #1e90ff;
-  } */
+  }
+
+  label.list {
+    font-weight: 400;
+    font-size: small;
+  }
+
+  .title-topup {
+    font-weight: 700;
+  }
