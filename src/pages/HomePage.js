@@ -10,7 +10,6 @@ import DaftarPartner from './DaftarPartner/DaftarPartner';
 import DaftarAgen from './DaftarAgen/DaftarAgen';
 import DetailAkun from './DetailAkun/DetailAkun';
 import RiwayatTransaksi from './RiwayatTransaksi/RiwayatTransaksi';
-import RiwayatTopup from './RiwayatTransaksi/RiwayatTopup';
 import Transactions from "./Transactions";
 import Settings from "./Settings";
 import BootstrapTables from "./tables/BootstrapTables";
@@ -131,7 +130,6 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} />
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
-    <RouteWithSidebar exact path={Routes.RiwayatTopup.path} component={RiwayatTopup} />
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
     <RouteWithSidebar exact path={Routes.TambahPartner.path} component={TambahPartner}/>
     <RouteWithSidebar exact path={Routes.DaftarAgen.path} component={DaftarAgen}/>
