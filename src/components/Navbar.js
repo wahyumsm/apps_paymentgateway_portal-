@@ -456,7 +456,7 @@ export default (props) => {
                     onClick={() => toHistoryBalance()}
                     className="fw-bold"
                   >
-                    <img alt="" src={riwayatSaldoIcon} /> Riwayat
+                    <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>

@@ -82,7 +82,7 @@ export default () => {
         listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(listTransferDana.data.response_data.list)
         setPendingTransfer(false)
-      } else {
+      } else if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token.length !== 0) {
         setUserSession(listTransferDana.data.response_new_token)
         listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(listTransferDana.data.response_data.list)
@@ -105,11 +105,11 @@ export default () => {
       }
       const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
       // console.log(dataSettlement, "ini data settlement");
-      if (dataSettlement.status === 200 && dataSettlement.data.response_code == 200 && dataSettlement.data.response_new_token.length === 0) {
+      if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
         dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(dataSettlement.data.response_data)
         setPendingSettlement(false)
-      } else {
+      } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
         setUserSession(dataSettlement.data.response_new_token)
         dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(dataSettlement.data.response_data)
@@ -135,7 +135,7 @@ export default () => {
       if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length === 0) {
         dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setDataChartTransfer(dataChartTransfer.data.response_data)
-      } else {
+      } else if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length !== 0) {
         setUserSession(dataChartTransfer.data.response_new_token)
         dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setDataChartTransfer(dataChartTransfer.data.response_data)
@@ -158,16 +158,18 @@ export default () => {
       setPendingSettlement(true)
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
+      console.log(dataParams, "ini data params dana masuk filter");
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const filterTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-      if (filterTransferDana.status === 200 && filterTransferDana.data.response_code == 200 && filterTransferDana.data.response_new_token.length === 0) {
+      console.log(filterTransferDana, "ini data filter transfer dana");
+      if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token.length === 0) {
         filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(filterTransferDana.data.response_data.list)
         setPendingSettlement(false)
-      } else {
+      } else if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token.length !== 0) {
         setUserSession(filterTransferDana.data.response_new_token)
         filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(filterTransferDana.data.response_data.list)
@@ -181,6 +183,7 @@ export default () => {
   }
 
   async function filterSettlementButtonHandle(idTransaksi, periode, status) {
+    console.log("ini filter settlement");
     try {
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
@@ -189,10 +192,11 @@ export default () => {
         'Authorization' : auth
       }
       const filterSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
+      console.log(filterSettlement, "ini data filter settlement");
       if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
         filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(filterSettlement.data.response_data)
-      } else {
+      } else if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length !== 0) {
         setUserSession(filterSettlement.data.response_new_token)
         filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(filterSettlement.data.response_data)
@@ -233,7 +237,7 @@ export default () => {
     getListTransferDana(oneMonthAgo, currentDate)
     getSettlement(oneMonthAgo, currentDate)
     getSettlementChart(oneMonthAgo, currentDate)
-  }, [])
+  }, [access_token])
 
   async function detailListTransferHandler(trxId) {
     try {
@@ -247,7 +251,7 @@ export default () => {
       if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200 && detailTransaksi.data.response_new_token.length === 0) {
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)
-      } else {
+      } else if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200 && detailTransaksi.data.response_new_token.length !== 0) {
         setUserSession(detailTransaksi.data.response_new_token)
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)

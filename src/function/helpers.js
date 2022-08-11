@@ -41,7 +41,7 @@ export function convertToCurrency(money) {
 export const convertFormatNumber = (num) => {
     let rupiah = "";
     let angkaRev = num.toString().split("").reverse().join("");
-    for (var i = 0; i < angkaRev.length; i++) if (i % 3 == 0) rupiah += angkaRev.substr(i, 3) + ".";
+    for (var i = 0; i < angkaRev.length; i++) if (i % 3 === 0) rupiah += angkaRev.substr(i, 3) + ".";
     return rupiah
       .split("", rupiah.length - 1)
       .reverse()

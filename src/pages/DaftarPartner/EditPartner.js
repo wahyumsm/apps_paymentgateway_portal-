@@ -74,7 +74,7 @@ function EditPartner() {
                     }
                 }
                 setDetailPartner(detailPartner.data.response_data)
-            } else {
+            } else if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length !== 0) {
                 setUserSession(detailPartner.data.response_new_token)
                 if (detailPartner.data.response_data.mpartner_is_active === true) {
                     detailPartner.data.response_data = {
@@ -205,7 +205,7 @@ function EditPartner() {
                 // RouteTo('/daftarpartner')
                 history.push("/daftarpartner")
                 // alert("Edit Data Partner Berhasil Ditambahkan")
-            } else {
+            } else if(editPartner.status === 200 && editPartner.data.response_code === 200 && editPartner.data.response_new_token.length !== 0) {
                 setUserSession(editPartner.data.response_new_token)
                 history.push("/daftarpartner")
             }
@@ -233,7 +233,7 @@ function EditPartner() {
           if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
-          } else {
+          } else if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length !== 0) {
             setUserSession(listAgen.data.response_new_token)
             setListAgen(listAgen.data.response_data)
           }

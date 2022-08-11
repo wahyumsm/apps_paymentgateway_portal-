@@ -60,7 +60,7 @@ function EditAgen() {
                         ...detailAgen.data.response_data,
                         isActive: "Aktif"
                     }
-                } else {
+                } else if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length !== 0) {
                     detailAgen.data.response_data = {
                         ...detailAgen.data.response_data,
                         isActive: "Tidak Aktif"
@@ -105,7 +105,7 @@ function EditAgen() {
             console.log(editAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
                 setShowModalEdit(true)
-            } else {
+            } else if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length !== 0) {
                 setUserSession(editAgen.data.response_new_token)
                 setShowModalEdit(true)
             }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image, Modal, Container} from '@themesberg/react-bootstrap';
-import DataTable from 'react-data-table-component';
-import { invoiceItems } from '../../data/tables';
+import DataTable, { defaultThemes } from 'react-data-table-component';
+// import { invoiceItems } from '../../data/tables';
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
@@ -63,7 +63,7 @@ function RiwayatTransaksi() {
             const listAgenFromPartner = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
             if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length === 0) {
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
-            } else {
+            } else if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length !== 0) {
                 setUserSession(listAgenFromPartner.data.response_new_token)
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
             }
@@ -154,7 +154,7 @@ function RiwayatTransaksi() {
             const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
                 setDataListPartner(listPartner.data.response_data)
-            } else {
+            } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
                 setUserSession(listPartner.data.response_new_token)
                 setDataListPartner(listPartner.data.response_data)
             }
@@ -188,7 +188,7 @@ function RiwayatTransaksi() {
                 setTotalPageDanaMasuk(dataRiwayatDanaMasuk.data.response_data.max_page)
                 setDataRiwayatDanaMasuk(dataRiwayatDanaMasuk.data.response_data.results)
                 setPendingTransfer(false)
-            } else {
+            } else if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length !== 0) {
                 setUserSession(dataRiwayatDanaMasuk.data.response_new_token)
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
@@ -212,7 +212,7 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const dataRiwayatSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
+            console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
@@ -220,7 +220,7 @@ function RiwayatTransaksi() {
                 setDataRiwayatSettlement(dataRiwayatSettlement.data.response_data.results.list_data)
                 setTotalSettlement(dataRiwayatSettlement.data.response_data.results.total_settlement)
                 setPendingSettlement(false)
-            } else {
+            } else if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length !== 0) {
                 setUserSession(dataRiwayatSettlement.data.response_new_token)
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
@@ -273,7 +273,7 @@ function RiwayatTransaksi() {
                 setTotalPageDanaMasuk(filterRiwayatDanaMasuk.data.response_data.max_page)
                 setDataRiwayatDanaMasuk(filterRiwayatDanaMasuk.data.response_data.results)
                 setPendingTransfer(false)
-            } else {
+            } else if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length !== 0) {
                 setUserSession(filterRiwayatDanaMasuk.data.response_new_token)
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
@@ -295,13 +295,13 @@ function RiwayatTransaksi() {
             setActivePageSettlement(page)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
-            // console.log(dataParams, 'ini data params filter');
+            console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const filterSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(filterSettlement, 'ini filter data settlement');
+            console.log(filterSettlement, 'ini filter data settlement');
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberSettlement(filterSettlement.data.response_data)
@@ -309,7 +309,7 @@ function RiwayatTransaksi() {
                 setDataRiwayatSettlement(filterSettlement.data.response_data.results.list_data)
                 setTotalSettlement(filterSettlement.data.response_data.results.total_settlement)
                 setPendingSettlement(false)
-            } else {
+            } else if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length !== 0) {
                 setUserSession(filterSettlement.data.response_new_token)
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberSettlement(filterSettlement.data.response_data)
@@ -377,7 +377,7 @@ function RiwayatTransaksi() {
             if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length === 0) {
                 setDetailTransferDana(detailListTransfer.data.response_data)
                 setShowModalDetailTransferDana(true)
-            } else {
+            } else if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length !== 0) {
                 setUserSession(detailListTransfer.data.response_new_token)
                 setDetailTransferDana(detailListTransfer.data.response_data)
                 setShowModalDetailTransferDana(true)
@@ -469,41 +469,73 @@ function RiwayatTransaksi() {
             name: 'No',
             selector: row => row.number,
             width: "57px",
-            style: { justifyContent: "center", }
+            // style: { justifyContent: "center", }
         },
         {
             name: 'ID Transaksi',
             selector: row => row.tvasettl_code,
             // sortable: true
             width: "224px",
-            // style: { justifyContent: "center", }
+            // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
         {
             name: 'Waktu',
             selector: row => row.tvasettl_crtdt_format,
-            // style: { justifyContent: "center", }
-            // width: "224px",
+            // style: { justifyContent: "center", },
+            width: "150px",
             // sortable: true,
         },
         {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             width: "224px",
-            // style: { justifyContent: "center", }
+            // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
             // sortable: true,
         },
         {
             name: 'Nominal Settlement',
-            selector: row => row.tvasettl_amount,
+            selector: row => convertToRupiah(row.tvasettl_amount),
             // sortable: true,
             width: "224px",
-            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
-            style: { display: "flex", flexDirection: "row", justifyContent: "right", }
+            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+        },
+        {
+            name: 'Fee Transaksi',
+            selector: row => convertToRupiah(row.total_partner_fee),
+            // sortable: true,
+            width: "224px",
+            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+        },
+        {
+            name: 'Fee Tax Transaksi',
+            selector: row => convertToRupiah(row.total_fee_tax),
+            // sortable: true,
+            width: "224px",
+            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+        },
+        {
+            name: 'Fee Bank',
+            selector: row => convertToRupiah(row.total_fee_bank),
+            // sortable: true,
+            width: "224px",
+            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+        },
+        {
+            name: 'Fee Settlement',
+            selector: row => convertToRupiah(row.tvasettl_fee),
+            // sortable: true,
+            width: "224px",
+            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
-            width: "130px",
+            width: "140px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
@@ -535,7 +567,28 @@ function RiwayatTransaksi() {
                 fontWeight: 'bold',
                 fontSize: '16px',
                 display: 'flex',
-                // justifyContent: 'center',
+                justifyContent: 'flex-start',
+                '&:not(:last-of-type)': {
+                    borderRightStyle: 'solid',
+                    borderRightWidth: '1px',
+                    borderRightColor: defaultThemes.default.divider.default,
+                },
+            },
+        },
+        cells: {
+            style: {
+                '&:not(:last-of-type)': {
+                    borderRightStyle: 'solid',
+                    borderRightWidth: '1px',
+                    borderRightColor: defaultThemes.default.divider.default,
+                },
+            },
+        },
+        headRow: {
+            style: {
+                borderTopStyle: 'solid',
+                borderTopWidth: '1px',
+                borderTopColor: defaultThemes.default.divider.default,
             },
         },
     };
@@ -912,6 +965,7 @@ function RiwayatTransaksi() {
                             customStyles={customStyles}
                             progressPending={pendingSettlement}
                             progressComponent={<CustomLoader />}
+                            dense
                             // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                             // pagination
                         />

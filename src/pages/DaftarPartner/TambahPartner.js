@@ -48,7 +48,7 @@ function TambahPartner() {
             // console.log(addPartner, 'ini add partner');
             if(addPartner.status === 200 && addPartner.data.response_code === 200 && addPartner.data.response_new_token.length === 0) {
                 history.push("/daftarpartner")
-            } else {
+            } else if(addPartner.status === 200 && addPartner.data.response_code === 200 && addPartner.data.response_new_token.length !== 0) {
                 setUserSession(addPartner.data.response_new_token)
                 history.push("/daftarpartner")
             }
