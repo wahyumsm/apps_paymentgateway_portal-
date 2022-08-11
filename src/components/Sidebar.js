@@ -84,7 +84,7 @@ export default (props = {}) => {
     dispatch(GetUserAccessMenu("/Account/GetUserAccess"))
   }, [])
   
-  // console.log(userAccessMenu, "ini userAccessMenu");
+  console.log(userAccessMenu, "ini userAccessMenu");
 
   if (!userAccessMenu) {
     return null

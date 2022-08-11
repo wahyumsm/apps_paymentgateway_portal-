@@ -106,7 +106,8 @@ export default (props) => {
   };
 
   const toHistoryBalance = () => {
-    setShowRiwayatTopUp(true)
+    // setShowRiwayatTopUp(true)
+    history.push("/riwayattopup")
   };  
 
   const copyHandler = (event) => {
@@ -366,7 +367,7 @@ export default (props) => {
                     onClick={() => toHistoryBalance()}
                     className="fw-bold"
                   >
-                    <img alt="" src={riwayatSaldoIcon} /> Riwayat
+                    <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>

@@ -119,10 +119,10 @@ function ListMenuAccess() {
                     const saveAccess = await axios.post("/Account/SaveAccess", {data: dataParams}, {headers: headers})
                     console.log(saveAccess, "ini save access");
                     if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length === 0) {
-                        // history.push("/managementuser")
+                        history.push("/managementuser")
                     } else if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length !== 0) {
                         setUserSession(saveAccess.data.response_new_token)
-                        // history.push("/managementuser")
+                        history.push("/managementuser")
                     }
                 } else {
                     setTimeout(() => {
@@ -1967,7 +1967,7 @@ function ListMenuAccess() {
             <div className='main-content'>
                 <div className='riwayat-dana-masuk-div mt-4'>
                     <div className='base-content mt-3'>
-                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                        {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span> */}
                         <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20 }}>
                             {/* <DataTable
                                 columns={columns}

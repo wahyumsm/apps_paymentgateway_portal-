@@ -62,6 +62,8 @@ import ListUser from './ManagementUser/ListUser';
 import UpdateUser from './ManagementUser/UpdateUser';
 import AddUser from './ManagementUser/AddUser';
 import ListMenuAccess from './ManagementUser/ListMenuAccess';
+import RiwayatTopUp from './TopUp/RiwayatTopUp';
+import InvoicePage from './Invoice/InvoicePage';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -140,6 +142,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ListUser.path} component={ListUser}/>
     <RouteWithSidebar exact path={Routes.UpdateUser.path} component={UpdateUser} />
     <RouteWithSidebar exact path={Routes.ListMenuAccess.path} component={ListMenuAccess}/>
+    <RouteWithSidebar exact path={Routes.RiwayatTopUp.path} component={RiwayatTopUp}/>
+    <RouteWithSidebar exact path={Routes.Invoice.path} component={InvoicePage}/>
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
     <RouteWithSidebar exact path={Routes.AddUser.path} component={AddUser}/>
