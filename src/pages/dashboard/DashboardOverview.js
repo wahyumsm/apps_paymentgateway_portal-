@@ -285,7 +285,7 @@ export default () => {
       if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200 && ringkasanData.data.response_new_token.length === 0) {
         setSettlementTransaction(ringkasanData.data.response_data)
       } else {
-        setUserSession(ringkasanData.response_new_token)
+        setUserSession(ringkasanData.data.response_new_token)
         setSettlementTransaction(ringkasanData.data.response_data)
       }
     } catch (error) {

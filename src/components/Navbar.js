@@ -35,7 +35,7 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -95,14 +95,24 @@ export default (props) => {
   const [ topUpResult, setTopUpResult ] = useState({})
   const [iconGagal, setIconGagal] = useState(false)
   const [uploadGagal, setUploadGagal] = useState(false)
-  const convertTimeStamp = (time) => {new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(time*1000))}
-  console.log(convertTimeStamp(1660103016), ' ini log timestamp')
 
   function handleChange(e) {
     setInputHandle({
       ...inputHandle,
       [e.target.name] : e.target.value
     })
+  }
+
+  const startColorNumber = (money) => {  
+    if (money !== 0) {
+      var diSliceAwal = String(money).slice(0, -3)
+    }
+    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".")
+  }
+
+  const endColorNumber = (money) => {
+    var diSliceAkhir = String(money).slice(-3)
+    return "."+diSliceAkhir
   }
 
   const handleClick = () => {
@@ -130,7 +140,6 @@ export default (props) => {
     alert('Text copied');
   };
 
-
   const copyRek = async () => {
     var copyText = document.getElementById('noRek').innerHTML;
     await navigator.clipboard.writeText(copyText);
@@ -151,8 +160,13 @@ export default (props) => {
           'Authorization': auth,
         };
         const topUpBalance = await axios.post("/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
-        console.log(topUpBalance, 'ini topup balance ya');
-        if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200) {
+        // console.log(topUpBalance, 'ini topup balance ya');
+        if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
+          setTopUpBalance(topUpBalance.data.response_data)
+          setShowModalTopUp(false)
+          setShowModalKonfirmasiTopUp(true)
+        } else {
+          setUserSession(topUpBalance.data.response_new_token)
           setTopUpBalance(topUpBalance.data.response_data)
           setShowModalTopUp(false)
           setShowModalKonfirmasiTopUp(true)
@@ -161,10 +175,7 @@ export default (props) => {
         console.log(error)
         if (error.response.status === 401) {
             history.push('/login')
-        } 
-        // else if (error.response.status === 400) {
-        //   alert("Top Up Gagal")
-        // }
+        }
       }
     }
 
@@ -177,7 +188,12 @@ export default (props) => {
           }
           const topUpResult = await axios.post("/Partner/TopupConfirmation", { data: "" }, { headers: headers })
           // console.log(topUp, 'ini topup');
-          if(topUpResult.status === 200 && topUpResult.data.response_code === 200) {
+          if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
+            setTopUpResult(topUpResult.data.response_data)
+            setShowModalKonfirmasiTopUp(false)
+            setShowStatusTopup(true)
+          } else {
+            setUserSession(topUpResult.data.response_new_token)
             setTopUpResult(topUpResult.data.response_data)
             setShowModalKonfirmasiTopUp(false)
             setShowStatusTopup(true)
@@ -187,7 +203,7 @@ export default (props) => {
           if (error.response.status === 401) {
               history.push('/login')
           } else if (error.response.status === 400) {
-            alert("Top Up Gagal")
+            setShowModalKonfirmasiTopUp(false)
           }
         }
       }
@@ -242,9 +258,12 @@ export default (props) => {
           }
           const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
           console.log(getBalance, 'ini data get balance');
-          if (getBalance.data.response_code === 200 && getBalance.status === 200) {
+          if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
+          } else {
+            setUserSession(getBalance.data.response_new_token)
+            setGetBalance(getBalance.data.response_data)
           }
           
       } catch (error) {
@@ -261,9 +280,13 @@ export default (props) => {
           }
           const listRiwayat = await axios.post("/partner/TopUpHistory", { data: "" }, { headers: headers })
           // console.log(listRiwayat, 'ini data user ');
-          if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200) {
+          if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setListRiwayat(listRiwayat.data.response_data)
+          } else {
+            setUserSession(listRiwayat.data.response_new_token)
+            listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
+            setListRiwayat(listRiwayat.data.response_data)
           }
           
       } catch (error) {
@@ -298,7 +321,6 @@ export default (props) => {
       }
     } catch (error) {
       console.log(error);
-      // RouteTo(errorCatch(error.response.status));
       history.push(errorCatch(error.response.status))
     }
   }
@@ -367,17 +389,6 @@ export default (props) => {
     </div>
   );
 
-  const toRiwayatTopup = () => {
-    setShowModalKonfirmasiTopUp(false)
-    setShowStatusTopup(true)
-    // setShowRiwayatTopUp(true)
-  };
-
-  const toKonfirmasiTopup = () => {
-    setShowModalTopUp(false)
-    setShowModalKonfirmasiTopUp(true)
-  }
-
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;
     const readClassName = read ? "" : "text-danger";
@@ -410,11 +421,11 @@ export default (props) => {
   return (
     <>
       <Navbar
-      variant="dark"
-      expanded
-      className="ps-0 pe-4 pb-2 pt-2"
-      style={{ backgroundColor: "#ffffff", boxShadow: "0 2px 7px 0 rgba(0,0,0,.2)", position: "fixed", top: 0, left: 260, right: 0, zIndex: 999 }}
-    >
+        variant="dark"
+        expanded
+        className="ps-0 pe-4 pb-2 pt-2"
+        style={{ backgroundColor: "#ffffff", boxShadow: "0 2px 7px 0 rgba(0,0,0,.2)", position: "fixed", top: 0, left: 260, right: 0, zIndex: 999 }}
+      >
       <Container fluid className="px-0">
         <div className="d-flex justify-content-between w-100">
           <div className="d-flex align-items-center"></div>
@@ -549,7 +560,7 @@ export default (props) => {
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
                 {nominalTopup ? 
-                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="number" /> :
+                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} /> :
                   <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={convertFormatNumber(inputHandle.amounts)} />
                 }
                 {/* {getBalance.topupAmount_temp !== 0 ?
@@ -569,12 +580,7 @@ export default (props) => {
                     </div>
                   </>
                 }
-                {/* <div style={{ color: "#B9121B", fontSize: 12 }}>
-                  <img src={noteIconRed} className="me-2" />
-                  Nominal Top Up wajib diisi
-                </div> */}
-              </Form.Group>
-              
+              </Form.Group>              
             </Form>     
             <div className="d-flex justify-content-center mt-2">
               <button
@@ -653,7 +659,7 @@ export default (props) => {
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
                       <div style={{padding:"unset"}}>Nominal Transfer</div>
-                      <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{convertToCurrency(topUpBalance.amount_transfer)}</div>
+                      <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(topUpBalance.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(topUpBalance.amount_transfer)}</span></div>
                     </div>
                     <div className="d-flex flex-column mt-3">
                       <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
@@ -706,7 +712,7 @@ export default (props) => {
     </Navbar>
     {topUpResult.is_update === true ?
       <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
-        <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="top-center" delay={3000} autohide>
+        <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
           <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Top Up Saldo {convertToRupiah(inputHandle.amounts)} Berhasil</Toast.Body>
         </Toast>
       </div> :
