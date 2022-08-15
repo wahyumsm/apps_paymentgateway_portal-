@@ -57,5 +57,5 @@ export function errorCatch(statusCode) {
 }
 
 export const convertDateTimeStamp = (time) => {
-    return new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(time * 1000))   
+    return new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(time * 1000))
 }

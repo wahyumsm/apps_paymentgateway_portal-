@@ -92,6 +92,8 @@ export default (props) => {
     reffNo: "",
   })
   const [topUpBalance, setTopUpBalance] = useState({})
+  const [ countDown, setCountDown ] = useState(0)
+  const [dateNow, setDateNow] = useState(0)
   const [ topUpResult, setTopUpResult ] = useState({})
   const [iconGagal, setIconGagal] = useState(false)
   const [uploadGagal, setUploadGagal] = useState(false)
@@ -160,9 +162,18 @@ export default (props) => {
           'Authorization': auth,
         };
         const topUpBalance = await axios.post("/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
-        // console.log(topUpBalance, 'ini topup balance ya');
+        console.log(topUpBalance, 'ini topup balance ya');
         if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
           setTopUpBalance(topUpBalance.data.response_data)
+          const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
+          const convertTimeStamps = new Date(timeStamps).getTime()
+          const date = Date.now()
+          const countDown = convertTimeStamps - date
+          console.log(date)
+          console.log(convertTimeStamps)
+          console.log(countDown);
+          setDateNow(date)
+          setCountDown(countDown)
           setShowModalTopUp(false)
           setShowModalKonfirmasiTopUp(true)
         } else {
@@ -625,7 +636,7 @@ export default (props) => {
           <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
               <div className="text-center" style={{fontSize: "14px"}}>Selesaikan Pembayaran Dalam</div> 
               <div className="text-center mt-2">
-                <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={Date.now() + 7199000} daysInHours={true} /></span>
+                <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={dateNow + countDown} daysInHours={true} /></span>
               </div>
               <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-center mt-2">
                 <div>Batas Akhir :</div>

@@ -439,3 +439,11 @@ body {
   .title-topup {
     font-weight: 700;
   }
+
+  .detailStatus:hover {
+    background-color: "#FFFFFF";
+  }
+
+  /* .detailTopUp:hover {
+    background: "#F79421";
+  } */

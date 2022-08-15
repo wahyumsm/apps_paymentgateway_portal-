@@ -504,7 +504,7 @@ export default () => {
     listDataPartner('/Partner/ListPartner')
     ringkasanData()
     partnerChartHandler(queryPartner)
-    feePartnerChartHandler(`${queryBiaya}`)
+    feePartnerChartHandler(queryBiaya)
     feeVaChartHandler(`${queryVa}`)
   }, [access_token, user_role])
 
@@ -632,7 +632,7 @@ export default () => {
                       <button
                           onClick={() => filterPartnerChartHandler(inputHandle.periodePartnerChart, dateRangePartnerChart, queryPartner)}
                           className={(dateRangePartnerChart.length !== 0 && inputHandle.periodePartnerChart.length !== 0 || inputHandle.periodePartnerChart.length !== 0 && queryPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                          disabled={dateRangePartnerChart.length === 0 && inputHandle.periodePartnerChart.length === 0 || inputHandle.periodePartnerChart.length === 0 && queryPartner.length === 0}
+                          disabled={inputHandle.periodePartnerChart === 0 && queryPartner.length === 0}
                       >
                           Terapkan
                       </button>
@@ -641,7 +641,7 @@ export default () => {
                       <button
                           onClick={() => buttonResetPartner("Reset Partner")}
                           className={(dateRangePartnerChart.length !== 0 && inputHandle.periodePartnerChart.length !== 0 || inputHandle.periodePartnerChart.length !== 0 && queryPartner.length !== 0) ? "btn-reset" : "btn-ez"}
-                          disabled={dateRangePartnerChart.length === 0 && inputHandle.periodePartnerChart.length === 0 || inputHandle.periodePartnerChart.length === 0 && queryPartner.length === 0}
+                          disabled={inputHandle.periodePartnerChart === 0 && queryPartner.length === 0}
                       >
                           Atur Ulang
                       </button>
@@ -770,7 +770,7 @@ export default () => {
                         <button
                             onClick={() => filterFeePartnerHandler(inputHandle.periodeFeeChart, dateRangeFeePartner, queryBiaya)}
                             className={(dateRangeFeePartner.length !== 0 && inputHandle.periodeFeeChart.length !== 0 || inputHandle.periodeFeeChart.length !== 0 && queryBiaya.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                            disabled={dateRangeFeePartner.length === 0 && inputHandle.periodeFeeChart.length === 0 || inputHandle.periodeFeeChart.length === 0 && queryBiaya.length === 0}
+                            disabled={ inputHandle.periodeFeeChart === 0 && queryBiaya.length === 0 }
                         >
                             Terapkan
                         </button>
@@ -779,7 +779,7 @@ export default () => {
                         <button
                           onClick={() => buttonResetFee("Reset Fee")}
                           className={(dateRangeFeePartner.length !== 0 && inputHandle.periodeFeeChart.length !== 0 || inputHandle.periodeFeeChart.length !== 0 && queryBiaya.length !== 0) ? "btn-reset" : "btn-ez"}
-                          disabled={dateRangeFeePartner.length === 0 && inputHandle.periodeFeeChart.length === 0 || inputHandle.periodeFeeChart.length === 0 && queryBiaya.length === 0}
+                          disabled={inputHandle.periodeFeeChart === 0 && queryBiaya.length === 0}
                         >
                             Atur Ulang
                         </button>
@@ -906,7 +906,7 @@ export default () => {
                         <button
                             onClick={() => filterVaPartnerHandler(inputHandle.periodeVaChart, dateRangeVaPartner, queryVa)}
                             className={(dateRangeVaPartner.length !== 0 && inputHandle.periodeVaChart.length !== 0 && queryVa.length !== 0 || inputHandle.periodeVaChart.length !== 0 && queryVa.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                            disabled={dateRangeVaPartner.length === 0 && inputHandle.periodeVaChart.length === 0 && queryVa.length === 0 || inputHandle.periodeVaChart.length === 0 && queryVa.length === 0}
+                            disabled={inputHandle.periodeVaChart === 0 && queryVa.length === 0}
                         >
                             Terapkan
                         </button>
@@ -915,7 +915,7 @@ export default () => {
                         <button
                             onClick={() => buttonResetVa("Reset Va")}
                             className={(dateRangeVaPartner.length !== 0 && inputHandle.periodeVaChart.length !== 0 && queryVa.length !== 0 || inputHandle.periodeVaChart.length !== 0 && queryVa.length !== 0) ? "btn-reset" : "btn-ez"}
-                            disabled={dateRangeVaPartner.length === 0 && inputHandle.periodeVaChart.length === 0 && queryVa.length === 0 || inputHandle.periodeVaChart.length === 0 && queryVa.length === 0}
+                            disabled={inputHandle.periodeVaChart === 0 && queryVa.length === 0}
                         >
                             Atur Ulang
                         </button>
