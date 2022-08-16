@@ -64,6 +64,7 @@ import AddUser from './ManagementUser/AddUser';
 import ListMenuAccess from './ManagementUser/ListMenuAccess';
 import RiwayatTopUp from './TopUp/RiwayatTopUp';
 import InvoicePage from './Invoice/InvoicePage';
+import DetailSettlement from './RiwayatTransaksi/DetailSettlement';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -130,6 +131,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} />
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
+    <RouteWithSidebar exact path={Routes.DetailSettlement.path} component={DetailSettlement} />
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
     <RouteWithSidebar exact path={Routes.TambahPartner.path} component={TambahPartner}/>
     <RouteWithSidebar exact path={Routes.DaftarAgen.path} component={DaftarAgen}/>

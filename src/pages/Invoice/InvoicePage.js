@@ -3,8 +3,10 @@ import { Col, Row, Table } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import jsPDF from 'jspdf';
-import { getRole, getToken } from '../../function/helpers';
+import { convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import { useHistory } from 'react-router-dom';
+import encryptData from '../../function/encryptData';
+import axios from 'axios';
 
 function InvoicePage() {
 
@@ -13,32 +15,52 @@ function InvoicePage() {
     const user_role = getRole()
     const [stateSettlement, setStateSettlement] = useState(null)
     const [dateRangeSettlement, setDateRangeSettlement] = useState([])
+    const [dataInvoice, setDataInvoice] = useState({})
 
     function pickDateSettlement(item) {
         setStateSettlement(item)
+        // console.log(item, 'ini item');
         if (item !== null) {
             item = item.map(el => el.toLocaleDateString('en-CA'))
             setDateRangeSettlement(item)
+            // console.log(item, 'ini item2');
         }
     }
 
     async function generateInvoice(dateRange) {
-        console.log(dateRange, 'ini date range');
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}"}`);
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const invoiceData = await axios.post("/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
+            console.log(invoiceData, "ini invoice data");
+            if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token.length === 0) {
+                setDataInvoice(invoiceData.data.response_data)
+            } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token.length !== 0) {
+                setUserSession(invoiceData.data.response_new_token)
+                setDataInvoice(invoiceData.data.response_data)
+            }
+        } catch (error) {
+            console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
     }
 
-    async function downloadPDF(table) {
+    async function downloadPDF(table, dateRange) {
         // const element = document.getElementById('tableInvoice');
         let doc = new jsPDF("l", "pt", "a4");
-        doc.html(document.querySelector("#tableInvoice"), {
+        doc.html(document.querySelector(table), {
             callback: function (pdf) {
-                pdf.save("invoice.pdf");
+                pdf.save(`invoice ${dateRange[0]} - ${dateRange[1]}.pdf`);
             },
         })
     }
 
     useEffect(() => {
         if (!access_token) {
-            // RouteTo("/login")
             history.push('/login');
         }
         if (user_role === 102) {
@@ -65,7 +87,6 @@ function InvoicePage() {
                                     value={stateSettlement}
                                     clearIcon={null}
                                     className='me-3'
-                                    // calendarIcon={null}
                                 />
                                 <button
                                     onClick={() => generateInvoice(dateRangeSettlement)}
@@ -95,8 +116,8 @@ function InvoicePage() {
                                 <tbody className="table-group-divider">
                                     <tr>
                                         <td style={{ paddingLeft: 16, width: 155 }}>1</td>
-                                        <td>lorem ipsum</td>
-                                        <td style={{ textAlign: "end" }}>Rp 100.000.000</td>
+                                        <td>{(Object.keys(dataInvoice).length !== 0) ? dataInvoice.settlement_desc : "-"}</td>
+                                        <td style={{ textAlign: "end" }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.settlement_amount) : "Rp 0"}</td>
                                     </tr>
                                     <tr>
                                         <td style={{ borderRight: "hidden" }}></td>
@@ -112,39 +133,34 @@ function InvoicePage() {
                                     <tr>
                                         <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", borderTop: "solid" }}></td>
                                         <td style={{ fontWeight: 600, textAlign: "end", borderTop: "solid" }}>Sub Total</td>
-                                        <td style={{ textAlign: "end", borderTop: "solid" }}>Rp 100.000.000</td>
+                                        <td style={{ textAlign: "end", borderTop: "solid" }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.settlement_amount) : "Rp 0"}</td>
                                     </tr>
                                     <tr>
                                         <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
                                         <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Transaksi</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>Rp 100.000.000</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
-                                        <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Tax Transaksi</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>Rp 100.000.000</td>
+                                        <td style={{ textAlign: "end", width: 200 }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.transaction_fee) : "Rp 0"}</td>
                                     </tr>
                                     <tr>
                                         <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
                                         <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Bank</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>Rp 100.000.000</td>
+                                        <td style={{ textAlign: "end", width: 200 }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.transaction_fee_bank) : "Rp 0"}</td>
                                     </tr>
                                     <tr>
                                         <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
                                         <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Settlement</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>Rp 100.000.000</td>
+                                        <td style={{ textAlign: "end", width: 200 }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.settlement_fee) : "Rp 0"}</td>
                                     </tr>
                                     <tr>
                                         <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", background: "#077E86", color: "#FFFFFF" }}></td>
                                         <td style={{ fontWeight: 600, textAlign: "end", background: "#077E86", color: "#FFFFFF" }}>Total</td>
-                                        <td style={{ textAlign: "end", width: 200, background: "#077E86", color: "#FFFFFF" }}>Rp 100.000.000</td>
+                                        <td style={{ textAlign: "end", width: 200, background: "#077E86", color: "#FFFFFF" }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.transaction_amount) : "Rp 0"}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
-                                onClick={() => downloadPDF("tableInvoice")}
+                                onClick={() => downloadPDF("#tableInvoice", dateRangeSettlement)}
                                 className='add-button mb-3'
                                 style={{ maxWidth: 'fit-content' }}
                             >

@@ -374,6 +374,7 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const detailListTransfer = await axios.post("/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
+            console.log(detailListTransfer, 'ini detail list transfer');
             if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length === 0) {
                 setDetailTransferDana(detailListTransfer.data.response_data)
                 setShowModalDetailTransferDana(true)
@@ -386,8 +387,14 @@ function RiwayatTransaksi() {
             console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
+        }
     }
-    }
+
+    // function detailListSettlement(settlementId) {
+    //     console.log(settlementId, 'ini settlementId');
+    //     const date = new Date(createDate.slice(8,17).split('/').reverse().join('-')).toLocaleDateString('en-CA')
+    //     history.push(`/detailsettlement/${settlementId}`)
+    // }
 
     // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
     
@@ -476,6 +483,7 @@ function RiwayatTransaksi() {
             selector: row => row.tvasettl_code,
             // sortable: true
             width: "224px",
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
         {
@@ -495,6 +503,14 @@ function RiwayatTransaksi() {
         {
             name: 'Nominal Settlement',
             selector: row => convertToRupiah(row.tvasettl_amount),
+            // sortable: true,
+            width: "224px",
+            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+        },
+        {
+            name: 'Total Transaksi',
+            selector: row => convertToRupiah(row.total_trx),
             // sortable: true,
             width: "224px",
             // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
@@ -955,7 +971,7 @@ function RiwayatTransaksi() {
                     {
                         dataRiwayatSettlement.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0)} className="export-span">Export</Link>
+                            <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
