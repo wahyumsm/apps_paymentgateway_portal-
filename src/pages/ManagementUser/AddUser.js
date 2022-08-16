@@ -62,7 +62,10 @@ function AddUser() {
         { data: "" },
         { headers: headers }
       );
-      if (listRole.data.response_code === 200 && listRole.status === 200) {
+      if (listRole.data.response_code === 200 && listRole.status === 200 && listRole.data.response_new_token.length === 0) {
+        setListRole(listRole.data.response_data);
+      } else if (listRole.data.response_code === 200 && listRole.status === 200 && listRole.data.response_new_token.length !== 0) {
+        setUserSession(listRole.data.response_new_token)
         setListRole(listRole.data.response_data);
       }
     } catch (e) {
@@ -157,8 +160,10 @@ function AddUser() {
         { data: dataParams },
         { headers: headers }
       );
-      if (addUser.data.response_code === 200 && addUser.status === 200) {
+      if (addUser.data.response_code === 200 && addUser.status === 200 && addUser.data.response_new_token.length === 0) {
         setAddUser(addUser.data.response_data);
+      } else if (addUser.data.response_code === 200 && addUser.status === 200 && addUser.data.response_new_token.length !== 0) {
+        
       }
     } catch (e) {
       history.push(errorCatch(e.response.status));

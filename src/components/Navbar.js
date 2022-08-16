@@ -150,7 +150,7 @@ export default (props) => {
 
   async function topUpConfirmation(amounts) {
     try {
-        if (inputHandle.amounts.length === 0 || inputHandle.amounts === undefined || inputHandle.amounts == 0) {
+        if (inputHandle.amounts.length === 0 || inputHandle.amounts === undefined || inputHandle.amounts === 0) {
           setIconGagal(true)
         } else {
           setIconGagal(false)
@@ -176,7 +176,7 @@ export default (props) => {
           setCountDown(countDown)
           setShowModalTopUp(false)
           setShowModalKonfirmasiTopUp(true)
-        } else {
+        } else if (topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length !== 0) {
           setUserSession(topUpBalance.data.response_new_token)
           setTopUpBalance(topUpBalance.data.response_data)
           setShowModalTopUp(false)
@@ -201,7 +201,7 @@ export default (props) => {
             setTopUpResult(topUpResult.data.response_data)
             setShowModalKonfirmasiTopUp(false)
             setShowStatusTopup(true)
-          } else {
+          } else if (topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length !== 0) {
             setUserSession(topUpResult.data.response_new_token)
             setTopUpResult(topUpResult.data.response_data)
             setShowModalKonfirmasiTopUp(false)
@@ -266,7 +266,7 @@ export default (props) => {
           if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
-          } else {
+          } else if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length !== 0) {
             setUserSession(getBalance.data.response_new_token)
             setGetBalance(getBalance.data.response_data)
           }
@@ -289,7 +289,7 @@ export default (props) => {
           if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setListRiwayat(listRiwayat.data.response_data)
-          } else {
+          } else if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length !== 0) {
             setUserSession(listRiwayat.data.response_new_token)
             listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
             setListRiwayat(listRiwayat.data.response_data)
@@ -305,10 +305,8 @@ export default (props) => {
       if (!access_token) {
         history.push('/login');
       }
-      dispatch(GetUserDetail("/Account/GetUserProfile"));     
-      console.log(user_role, "cek userrole");
+      dispatch(GetUserDetail("/Account/GetUserProfile"));
       if (user_role === "102") {
-        console.log('masuk user role');
         GetBalanceHandle()
         listRiwayatTopUp()
       }

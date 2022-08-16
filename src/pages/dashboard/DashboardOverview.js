@@ -229,7 +229,7 @@ export default () => {
             obj = {}
           })  
           setListPartner(newArr)
-        } else {
+        } else if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length !== 0) {
             setUserSession(listDataPartner.data.response_new_token)
             let newArr = []
             var obj = {}
@@ -259,7 +259,7 @@ export default () => {
       console.log(ringkasanData, 'ini ringkasandata');
       if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200 && ringkasanData.data.response_new_token.length === 0) {
         setSettlementTransaction(ringkasanData.data.response_data)
-      } else {
+      } else if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200 && ringkasanData.data.response_new_token.length !== 0) {
         setUserSession(ringkasanData.data.response_new_token)
         setSettlementTransaction(ringkasanData.data.response_data)
       }
@@ -274,7 +274,7 @@ export default () => {
       setPending(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`)
-
+      console.log(dataParams, 'ini data params cart');
       const headers = {
           'Content-Type': 'application/json',
           'Authorization': auth
@@ -284,7 +284,7 @@ export default () => {
       if (partnerChart.status === 200 && partnerChart.data.response_code === 200 && partnerChart.data.response_new_token.length === 0) {
         setPartnerChartData(partnerChart.data.response_data)
         setPending(false)
-      } else {
+      } else if (partnerChart.status === 200 && partnerChart.data.response_code === 200 && partnerChart.data.response_new_token.length !== 0) {
         setUserSession(partnerChart.data.response_new_token)
         setPartnerChartData(partnerChart.data.response_data)
         setPending(false)
@@ -300,17 +300,17 @@ export default () => {
       setPending(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
-
+      console.log(dataParams, 'ini data params cart filter');
       const headers = {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
       const filterPartnerChart = await axios.post("/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
-      console.log(filterPartnerChart, 'partner chart handler');
+      console.log(filterPartnerChart, 'partner chart handler filter');
       if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length === 0) {
         setPartnerChartData(filterPartnerChart.data.response_data)
         setPending(false)
-      } else {
+      } else if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length !== 0) {
         setUserSession(filterPartnerChart.data.response_new_token)
         setPartnerChartData(filterPartnerChart.data.response_data)
         setPending(false)
@@ -335,7 +335,7 @@ export default () => {
       if (feePartnerChart.status === 200 && feePartnerChart.data.response_code === 200 && feePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData(feePartnerChart.data.response_data)
         setPending(false)
-      } else {
+      } else if (feePartnerChart.status === 200 && feePartnerChart.data.response_code === 200 && feePartnerChart.data.response_new_token.length !== 0) {
         setUserSession(feePartnerChart.data.response_new_token)
         setFeePartnerChartData(feePartnerChart.data.response_data)
         setPending(false)
@@ -361,7 +361,7 @@ export default () => {
       if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData(filterFeePartnerChart.data.response_data)
         setPending(false)
-      } else {
+      } else if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length !== 0) {
         setUserSession(filterFeePartnerChart.data.response_new_token)
         setFeePartnerChartData(filterFeePartnerChart.data.response_data)
         setPending(false)
@@ -386,7 +386,7 @@ export default () => {
       if (feeVaChartData.status === 200 && feeVaChartData.data.response_code === 200 && feeVaChartData.data.response_new_token.length === 0) {
         setFeeVaChartData(feeVaChartData.data.response_data)
         setPending(false)
-      } else {
+      } else if (feeVaChartData.status === 200 && feeVaChartData.data.response_code === 200 && feeVaChartData.data.response_new_token.length !== 0) {
         setUserSession(feeVaChartData.data.response_new_token)
         setFeeVaChartData(feeVaChartData.data.response_data)
         setPending(false)
@@ -411,7 +411,7 @@ export default () => {
       if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length === 0) {
         setFeeVaChartData(filterVaPartnerChart.data.response_data)
         setPending(false)
-      } else {
+      } else if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length !== 0) {
         setUserSession(filterVaPartnerChart.data.response_new_token)
         setFeeVaChartData(filterVaPartnerChart.data.response_data)
         setPending(false)
@@ -473,7 +473,7 @@ export default () => {
     if (!access_token) {
       history.push('/login');
     }
-    if (user_role === 102) {
+    if (user_role === "102") {
       history.push('/404');
     }
     listDataPartner('/Partner/ListPartner')

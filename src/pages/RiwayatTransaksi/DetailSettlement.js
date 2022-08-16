@@ -29,7 +29,7 @@ function DetailSettlement() {
         try {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "date":"2022-06-24", "page":1, "row_per_page":10 }`);
+            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page":1, "row_per_page":10 }`);
             console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type': 'application/json',
@@ -72,12 +72,20 @@ function DetailSettlement() {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role === 102) {
+        if (user_role === "102") {
             history.push('/404');
         }
         getDetailSettlement(settlementId)
     }, [settlementId])
     
+    async function ExportReportDetailSettlementHandler(params) {
+        try {
+            
+        } catch (error) {
+            console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
     
     const columnsSettl = [
         {
@@ -223,6 +231,12 @@ function DetailSettlement() {
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>
         </div>
+        {
+            dataSettlement.length !== 0 &&  
+            <div style={{ marginBottom: 30 }}>
+                {/* <Link onClick={() => ExportReportDetailSettlementHandler(inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk)} className="export-span">Export</Link> */}
+            </div>
+        }
         <div className='main-content'>
             <div className='riwayat-dana-masuk-div mt-4'>
                 <div className='base-content mt-3'>

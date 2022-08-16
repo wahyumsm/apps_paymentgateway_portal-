@@ -106,41 +106,42 @@ function ListMenuAccess() {
                                 // console.log(newObj, "ini new obj4");
                                 obj.accUser.push(newObj)
                                 newObj = {}
-                            } else if (item2.detail.length !== 0 && (dataObj[access2] === false || item2.is_access === false)) {
-                                newObj.maccessuser_access_id = item2.id
-                                // newObj.maccessuser_user_id = userId
-                                newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
-                                newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
-                                newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
-                                // console.log(newObj, "ini new obj2");
-                                obj.accUser.push(newObj)
-                                newObj = {}
-                                item2.detail.forEach(item3 => {
-                                    let access3 = `isAccess${item3.label}`
-                                    let insert3 = `isInsertable${item3.label}`
-                                    let update3 = `isUpdateable${item3.label}`
-                                    let deleted3 = `isDeleteable${item3.label}`
-                                    if (dataObj[access3] === false || item3.is_access === false) {
-                                        newObj.maccessuser_access_id = item3.id
-                                        // newObj.maccessuser_user_id = userId
-                                        newObj.maccessuser_is_deletable = (dataObj[deleted3] === undefined) ? item3.is_deletable : dataObj[deleted3]
-                                        newObj.maccessuser_is_insertable = (dataObj[insert3] === undefined) ? item3.is_insertable : dataObj[insert3]
-                                        newObj.maccessuser_is_updatable = (dataObj[update3] === undefined) ? item3.is_updatable : dataObj[update3]
-                                        // console.log(newObj, "ini new obj3");
-                                        obj.accUser.push(newObj)
-                                        newObj = {}
-                                    }
-                                })
-                            } else if (item2.detail.length === 0 && (dataObj[access2] === false || item2.is_access === false)) {
-                                newObj.maccessuser_access_id = item2.id
-                                // newObj.maccessuser_user_id = userId
-                                newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
-                                newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
-                                newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
-                                // console.log(newObj, "ini new obj4");
-                                obj.accUser.push(newObj)
-                                newObj = {}
-                            }
+                            } 
+                            // else if (item2.detail.length !== 0 && (dataObj[access2] === false || item2.is_access === false)) {
+                            //     newObj.maccessuser_access_id = item2.id
+                            //     // newObj.maccessuser_user_id = userId
+                            //     newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
+                            //     newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
+                            //     newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
+                            //     // console.log(newObj, "ini new obj2");
+                            //     obj.accUser.push(newObj)
+                            //     newObj = {}
+                            //     item2.detail.forEach(item3 => {
+                            //         let access3 = `isAccess${item3.label}`
+                            //         let insert3 = `isInsertable${item3.label}`
+                            //         let update3 = `isUpdateable${item3.label}`
+                            //         let deleted3 = `isDeleteable${item3.label}`
+                            //         if (dataObj[access3] === false || item3.is_access === false) {
+                            //             newObj.maccessuser_access_id = item3.id
+                            //             // newObj.maccessuser_user_id = userId
+                            //             newObj.maccessuser_is_deletable = (dataObj[deleted3] === undefined) ? item3.is_deletable : dataObj[deleted3]
+                            //             newObj.maccessuser_is_insertable = (dataObj[insert3] === undefined) ? item3.is_insertable : dataObj[insert3]
+                            //             newObj.maccessuser_is_updatable = (dataObj[update3] === undefined) ? item3.is_updatable : dataObj[update3]
+                            //             // console.log(newObj, "ini new obj3");
+                            //             obj.accUser.push(newObj)
+                            //             newObj = {}
+                            //         }
+                            //     })
+                            // } else if (item2.detail.length === 0 && (dataObj[access2] === false || item2.is_access === false)) {
+                            //     newObj.maccessuser_access_id = item2.id
+                            //     // newObj.maccessuser_user_id = userId
+                            //     newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
+                            //     newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
+                            //     newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
+                            //     // console.log(newObj, "ini new obj4");
+                            //     obj.accUser.push(newObj)
+                            //     newObj = {}
+                            // }
                         })
                     } else if (item.detail.length === 0 && (dataObj[access] === true || item.is_access === true)) {
                         newObj.maccessuser_access_id = item.id
@@ -151,100 +152,101 @@ function ListMenuAccess() {
                         // console.log(newObj, "ini new obj5");
                         obj.accUser.push(newObj)
                         newObj = {}
-                    } else if (item.detail.length !== 0 && (dataObj[access] === false || item.is_access === false)) {
-                        newObj.maccessuser_access_id = item.id
-                        // newObj.maccessuser_user_id = userId
-                        newObj.maccessuser_is_deletable = (dataObj[deleted] === undefined) ? item.is_deletable : dataObj[deleted] //(inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
-                        newObj.maccessuser_is_insertable = (dataObj[insert] === undefined) ? item.is_insertable : dataObj[insert]
-                        newObj.maccessuser_is_updatable = (dataObj[update] === undefined) ? item.is_updatable : dataObj[update]
-                        // console.log(newObj, "ini new obj1");
-                        obj.accUser.push(newObj)
-                        newObj = {}
-                        item.detail.forEach(item2 => {
-                            let access2 = `isAccess${item2.label}`
-                            let insert2 = `isInsertable${item2.label}`
-                            let update2 = `isUpdateable${item2.label}`
-                            let deleted2 = `isDeleteable${item2.label}`
-                            if (item2.detail.length !== 0 && (dataObj[access2] === true || item2.is_access === true)) {
-                                newObj.maccessuser_access_id = item2.id
-                                // newObj.maccessuser_user_id = userId
-                                newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
-                                newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
-                                newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
-                                // console.log(newObj, "ini new obj2");
-                                obj.accUser.push(newObj)
-                                newObj = {}
-                                item2.detail.forEach(item3 => {
-                                    let access3 = `isAccess${item3.label}`
-                                    let insert3 = `isInsertable${item3.label}`
-                                    let update3 = `isUpdateable${item3.label}`
-                                    let deleted3 = `isDeleteable${item3.label}`
-                                    if (dataObj[access3] === true || item3.is_access === true) {
-                                        newObj.maccessuser_access_id = item3.id
-                                        // newObj.maccessuser_user_id = userId
-                                        newObj.maccessuser_is_deletable = (dataObj[deleted3] === undefined) ? item3.is_deletable : dataObj[deleted3]
-                                        newObj.maccessuser_is_insertable = (dataObj[insert3] === undefined) ? item3.is_insertable : dataObj[insert3]
-                                        newObj.maccessuser_is_updatable = (dataObj[update3] === undefined) ? item3.is_updatable : dataObj[update3]
-                                        // console.log(newObj, "ini new obj3");
-                                        obj.accUser.push(newObj)
-                                        newObj = {}
-                                    }
-                                })
-                            } else if (item2.detail.length === 0 && (dataObj[access2] === true || item2.is_access === true)) {
-                                newObj.maccessuser_access_id = item2.id
-                                // newObj.maccessuser_user_id = userId
-                                newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
-                                newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
-                                newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
-                                // console.log(newObj, "ini new obj4");
-                                obj.accUser.push(newObj)
-                                newObj = {}
-                            } else if (item2.detail.length !== 0 && (dataObj[access2] === false || item2.is_access === false)) {
-                                newObj.maccessuser_access_id = item2.id
-                                // newObj.maccessuser_user_id = userId
-                                newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
-                                newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
-                                newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
-                                // console.log(newObj, "ini new obj2");
-                                obj.accUser.push(newObj)
-                                newObj = {}
-                                item2.detail.forEach(item3 => {
-                                    let access3 = `isAccess${item3.label}`
-                                    let insert3 = `isInsertable${item3.label}`
-                                    let update3 = `isUpdateable${item3.label}`
-                                    let deleted3 = `isDeleteable${item3.label}`
-                                    if (dataObj[access3] === false || item3.is_access === false) {
-                                        newObj.maccessuser_access_id = item3.id
-                                        // newObj.maccessuser_user_id = userId
-                                        newObj.maccessuser_is_deletable = (dataObj[deleted3] === undefined) ? item3.is_deletable : dataObj[deleted3]
-                                        newObj.maccessuser_is_insertable = (dataObj[insert3] === undefined) ? item3.is_insertable : dataObj[insert3]
-                                        newObj.maccessuser_is_updatable = (dataObj[update3] === undefined) ? item3.is_updatable : dataObj[update3]
-                                        // console.log(newObj, "ini new obj3");
-                                        obj.accUser.push(newObj)
-                                        newObj = {}
-                                    }
-                                })
-                            } else if (item2.detail.length === 0 && (dataObj[access2] === false || item2.is_access === false)) {
-                                newObj.maccessuser_access_id = item2.id
-                                // newObj.maccessuser_user_id = userId
-                                newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
-                                newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
-                                newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
-                                // console.log(newObj, "ini new obj4");
-                                obj.accUser.push(newObj)
-                                newObj = {}
-                            }
-                        })
-                    } else if (item.detail.length === 0 && (dataObj[access] === false || item.is_access === false)) {
-                        newObj.maccessuser_access_id = item.id
-                        // newObj.maccessuser_user_id = userId
-                        newObj.maccessuser_is_deletable = (dataObj[deleted] === undefined) ? item.is_deletable : dataObj[deleted] //(inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
-                        newObj.maccessuser_is_insertable = (dataObj[insert] === undefined) ? item.is_insertable : dataObj[insert]
-                        newObj.maccessuser_is_updatable = (dataObj[update] === undefined) ? item.is_updatable : dataObj[update]
-                        // console.log(newObj, "ini new obj5");
-                        obj.accUser.push(newObj)
-                        newObj = {}
-                    }
+                    } 
+                    // else if (item.detail.length !== 0 && (dataObj[access] === false || item.is_access === false)) {
+                    //     newObj.maccessuser_access_id = item.id
+                    //     // newObj.maccessuser_user_id = userId
+                    //     newObj.maccessuser_is_deletable = (dataObj[deleted] === undefined) ? item.is_deletable : dataObj[deleted] //(inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                    //     newObj.maccessuser_is_insertable = (dataObj[insert] === undefined) ? item.is_insertable : dataObj[insert]
+                    //     newObj.maccessuser_is_updatable = (dataObj[update] === undefined) ? item.is_updatable : dataObj[update]
+                    //     // console.log(newObj, "ini new obj1");
+                    //     obj.accUser.push(newObj)
+                    //     newObj = {}
+                    //     item.detail.forEach(item2 => {
+                    //         let access2 = `isAccess${item2.label}`
+                    //         let insert2 = `isInsertable${item2.label}`
+                    //         let update2 = `isUpdateable${item2.label}`
+                    //         let deleted2 = `isDeleteable${item2.label}`
+                    //         if (item2.detail.length !== 0 && (dataObj[access2] === true || item2.is_access === true)) {
+                    //             newObj.maccessuser_access_id = item2.id
+                    //             // newObj.maccessuser_user_id = userId
+                    //             newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
+                    //             newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
+                    //             newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
+                    //             // console.log(newObj, "ini new obj2");
+                    //             obj.accUser.push(newObj)
+                    //             newObj = {}
+                    //             item2.detail.forEach(item3 => {
+                    //                 let access3 = `isAccess${item3.label}`
+                    //                 let insert3 = `isInsertable${item3.label}`
+                    //                 let update3 = `isUpdateable${item3.label}`
+                    //                 let deleted3 = `isDeleteable${item3.label}`
+                    //                 if (dataObj[access3] === true || item3.is_access === true) {
+                    //                     newObj.maccessuser_access_id = item3.id
+                    //                     // newObj.maccessuser_user_id = userId
+                    //                     newObj.maccessuser_is_deletable = (dataObj[deleted3] === undefined) ? item3.is_deletable : dataObj[deleted3]
+                    //                     newObj.maccessuser_is_insertable = (dataObj[insert3] === undefined) ? item3.is_insertable : dataObj[insert3]
+                    //                     newObj.maccessuser_is_updatable = (dataObj[update3] === undefined) ? item3.is_updatable : dataObj[update3]
+                    //                     // console.log(newObj, "ini new obj3");
+                    //                     obj.accUser.push(newObj)
+                    //                     newObj = {}
+                    //                 }
+                    //             })
+                    //         } else if (item2.detail.length === 0 && (dataObj[access2] === true || item2.is_access === true)) {
+                    //             newObj.maccessuser_access_id = item2.id
+                    //             // newObj.maccessuser_user_id = userId
+                    //             newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
+                    //             newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
+                    //             newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
+                    //             // console.log(newObj, "ini new obj4");
+                    //             obj.accUser.push(newObj)
+                    //             newObj = {}
+                    //         } else if (item2.detail.length !== 0 && (dataObj[access2] === false || item2.is_access === false)) {
+                    //             newObj.maccessuser_access_id = item2.id
+                    //             // newObj.maccessuser_user_id = userId
+                    //             newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
+                    //             newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
+                    //             newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
+                    //             // console.log(newObj, "ini new obj2");
+                    //             obj.accUser.push(newObj)
+                    //             newObj = {}
+                    //             item2.detail.forEach(item3 => {
+                    //                 let access3 = `isAccess${item3.label}`
+                    //                 let insert3 = `isInsertable${item3.label}`
+                    //                 let update3 = `isUpdateable${item3.label}`
+                    //                 let deleted3 = `isDeleteable${item3.label}`
+                    //                 if (dataObj[access3] === false || item3.is_access === false) {
+                    //                     newObj.maccessuser_access_id = item3.id
+                    //                     // newObj.maccessuser_user_id = userId
+                    //                     newObj.maccessuser_is_deletable = (dataObj[deleted3] === undefined) ? item3.is_deletable : dataObj[deleted3]
+                    //                     newObj.maccessuser_is_insertable = (dataObj[insert3] === undefined) ? item3.is_insertable : dataObj[insert3]
+                    //                     newObj.maccessuser_is_updatable = (dataObj[update3] === undefined) ? item3.is_updatable : dataObj[update3]
+                    //                     // console.log(newObj, "ini new obj3");
+                    //                     obj.accUser.push(newObj)
+                    //                     newObj = {}
+                    //                 }
+                    //             })
+                    //         } else if (item2.detail.length === 0 && (dataObj[access2] === false || item2.is_access === false)) {
+                    //             newObj.maccessuser_access_id = item2.id
+                    //             // newObj.maccessuser_user_id = userId
+                    //             newObj.maccessuser_is_deletable = (dataObj[deleted2] === undefined) ? item2.is_deletable : dataObj[deleted2]
+                    //             newObj.maccessuser_is_insertable = (dataObj[insert2] === undefined) ? item2.is_insertable : dataObj[insert2]
+                    //             newObj.maccessuser_is_updatable = (dataObj[update2] === undefined) ? item2.is_updatable : dataObj[update2]
+                    //             // console.log(newObj, "ini new obj4");
+                    //             obj.accUser.push(newObj)
+                    //             newObj = {}
+                    //         }
+                    //     })
+                    // } else if (item.detail.length === 0 && (dataObj[access] === false || item.is_access === false)) {
+                    //     newObj.maccessuser_access_id = item.id
+                    //     // newObj.maccessuser_user_id = userId
+                    //     newObj.maccessuser_is_deletable = (dataObj[deleted] === undefined) ? item.is_deletable : dataObj[deleted] //(inputCheckData[update3] === undefined) ? item2.is_updatable : inputCheckData[update3]
+                    //     newObj.maccessuser_is_insertable = (dataObj[insert] === undefined) ? item.is_insertable : dataObj[insert]
+                    //     newObj.maccessuser_is_updatable = (dataObj[update] === undefined) ? item.is_updatable : dataObj[update]
+                    //     // console.log(newObj, "ini new obj5");
+                    //     obj.accUser.push(newObj)
+                    //     newObj = {}
+                    // }
                 })
                 console.log(obj, "ini obj");
                 // if (newArr.length !== 0) {
@@ -268,7 +270,7 @@ function ListMenuAccess() {
                 //         // history.push("/managementuser")
                 //     }, 500);
                 // }
-            } 
+            }
             // else if (Object.keys(dataObj).length === 0) {
             //     setTimeout(() => {
             //         history.push("/managementuser")
