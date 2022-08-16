@@ -1,8 +1,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCashRegister, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
-import { Image, Col, Row, Button, Dropdown, ButtonGroup, Form, FormGroup, FormCheck } from '@themesberg/react-bootstrap';
+import { Image, Col, Row, Form } from '@themesberg/react-bootstrap';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,12 +13,8 @@ import {
 } from 'chart.js';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { Line, Pie} from 'react-chartjs-2';
-import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
-import { PageVisitsTable } from "../../components/Tables";
-import { trafficShares, totalOrders } from "../../data/charts";
-import {ReactChart} from '../../components/ReactChart';
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import {default as ReactSelect, components} from "react-select"
 import encryptData from "../../function/encryptData";
@@ -35,22 +29,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-const Option = (props) => {
-  console.log(props.isSelected, "ini props");
-  return (
-    <div>
-      <components.Option {...props}>
-        <input
-          type="checkbox"
-          checked={props.selected}
-          onChange={() => null}
-        />{" "}
-        <label>{props.label}</label>
-      </components.Option>
-    </div>
-  );
-};
 
 export default () => {
 
@@ -98,8 +76,6 @@ export default () => {
       setExpanded(false);
     }
   };
-
-  // console.log(expanded, "ini expand");
 
   const showCheckboxesBiaya = () => {
     if (!biaya) {
@@ -268,7 +244,6 @@ export default () => {
         
     } catch (error) {
         console.log(error)
-        // RouteTo(errorCatch(error.response.status))
         history.push(errorCatch(error.response.status))
     }
 }
@@ -593,17 +568,11 @@ export default () => {
                   </div>
                 </Col>
                 <Col xs={3}>
-                  <span>Pilih Partner</span>                  
-                  {/* <Form > */}
+                  <span>Pilih Partner</span>
                     <div className="dropdown">
-                      {/* <div className="relative" onClick={showCheckboxes}> */}
-                        {/* <Form.Select name="query" className="select font-semibold" onChange={handleQueryChange}>
-                          <option disabled selected hidden style={{display: 'none', backgroundColor: "red"}} value="none">Semua</option>
-                        </Form.Select> */}
                         <button style={{width: "225px", height: "44px", padding: "12px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #C4C4C4"}} className="d-flex justify-content-between align-items-center" name="query" onClick={showCheckboxes} value="none" >
                           <div>Semua</div> <span ><img src={chevron} alt="chevron" style={{fontSize: "5px"}} /></span>
                         </button>
-                      {/* </div> */}
                       {expanded && (
                         <div
                           ref={myRef}
@@ -622,7 +591,6 @@ export default () => {
                         </div>
                       )}
                     </div>
-                  {/* </Form> */}
                 </Col>                
               </Row>
               <Row className='my-3'>
@@ -734,14 +702,7 @@ export default () => {
                   </Col>
                   <Col xs={3}>
                     <span>Pilih Partner</span>
-                    {/* <Form onSubmit={showCheckboxesBiaya}> */}
                       <div>
-                        {/* <div className="relative" onClick={showCheckboxesBiaya}>
-                          <Form.Select className=" font-semibold" onChange={handleQueryChange}>
-                            <option hidden selected disabled value="">Semua</option>
-                          </Form.Select>
-                          <div className="overSelect"></div>
-                        </div> */}
                         <button style={{width: "225px", height: "44px", padding: "12px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #C4C4C4"}} className="d-flex justify-content-between align-items-center" name="query" onClick={showCheckboxesBiaya} value="none" >
                           <div>Semua</div> <span><img src={chevron} alt="chevron"style={{fontSize: "14px"}} /></span>
                         </button>
@@ -762,7 +723,6 @@ export default () => {
                           </div>
                         )}
                       </div>
-                    {/* </Form> */}
                   </Col>                
                 </Row>
                 <Row className='my-3'>
@@ -873,35 +833,25 @@ export default () => {
                   </Col>
                   <Col xs={3}>
                     <span>Pilih Partner</span>
-                    {/* <Form onSubmit={showCheckboxesVa}>
-                      <div>
-                        <div className="relative" onClick={showCheckboxesVa}>
-                          <Form.Select className=" font-semibold" onChange={handleQueryChange}>
-                            <option hidden selected disabled value="">Semua</option>
-                          </Form.Select>
-                          <div className="overSelect"></div>
-                        </div> */}
-                        <button style={{width: "225px", height: "44px", padding: "12px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #C4C4C4"}} className="d-flex justify-content-between align-items-center" name="query" onClick={showCheckboxesVa} value="none" >
-                          <div>Semua</div> <span><img src={chevron} alt="chevron"style={{fontSize: "14px"}} /></span>
-                        </button>
-                        {va && (
-                          <div
-                            ref={myRef}
-                            className="checkboxes border-gray-0 border border-solid position-absolute bg-white"
-                            style={{overflowY: "auto", height: "10rem", width: "14rem"}}
-                          >
-                            {listPartner.map((item, idx) => {
-                              return (
-                                <div key={idx} className="d-flex align-items-center block m-1">  
-                                  <input type="checkbox" name="partnerId" id="partnerId" checked={isCheckedVa[item.value]} value={item.value} onChange={handleQueryVaChange} />
-                                  <label className="mx-2 list" htmlFor="partnerId">{item.label}</label>
-                                </div> 
-                              )
-                            })}
-                          </div>
-                        )}
-                      {/* </div>
-                    </Form> */}
+                    <button style={{width: "225px", height: "44px", padding: "12px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #C4C4C4"}} className="d-flex justify-content-between align-items-center" name="query" onClick={showCheckboxesVa} value="none" >
+                      <div>Semua</div> <span><img src={chevron} alt="chevron"style={{fontSize: "14px"}} /></span>
+                    </button>
+                    {va && (
+                      <div
+                        ref={myRef}
+                        className="checkboxes border-gray-0 border border-solid position-absolute bg-white"
+                        style={{overflowY: "auto", height: "10rem", width: "14rem"}}
+                      >
+                        {listPartner.map((item, idx) => {
+                          return (
+                            <div key={idx} className="d-flex align-items-center block m-1">  
+                              <input type="checkbox" name="partnerId" id="partnerId" checked={isCheckedVa[item.value]} value={item.value} onChange={handleQueryVaChange} />
+                              <label className="mx-2 list" htmlFor="partnerId">{item.label}</label>
+                            </div> 
+                          )
+                        })}
+                      </div>
+                    )}
                   </Col>                
                 </Row>
                 <Row className='my-3'>
