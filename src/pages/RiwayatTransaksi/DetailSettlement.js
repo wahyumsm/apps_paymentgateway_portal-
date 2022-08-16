@@ -88,7 +88,7 @@ function DetailSettlement() {
         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
         let workBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-        XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
+        XLSX.writeFile(workBook, "Detail Settlement.xlsx");
     }
     
     const columnsSettl = [
@@ -235,16 +235,16 @@ function DetailSettlement() {
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>
         </div>
-        {
-            dataSettlement.length !== 0 &&  
-            <div style={{ marginBottom: 30 }}>
-                <Link onClick={() => ExportReportDetailSettlementHandler(dataSettlement)} className="export-span">Export</Link>
-            </div>
-        }
         <div className='main-content'>
             <div className='riwayat-dana-masuk-div mt-4'>
                 <div className='base-content mt-3'>
                     <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
+                    {
+                        dataSettlement.length !== 0 &&  
+                        <div style={{ marginBottom: 30 }}>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(dataSettlement)} className="export-span">Export</Link>
+                        </div>
+                    }
                     <div className="div-table mt-4 pb-4">
                         <DataTable
                             columns={columnsSettl}
