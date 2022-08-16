@@ -21,7 +21,7 @@ import {
   ListGroup,
   InputGroup,
   Modal,
-  Button, Table
+  Button, Table, Alert, Toast
 } from "@themesberg/react-bootstrap";
 
 import NOTIFICATIONS_DATA from "../data/notifications";
@@ -35,7 +35,7 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +45,11 @@ import DataTable from "react-data-table-component";
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 import checklistCircle from '../assets/img/icons/checklist_circle.svg';
 import CopyIcon from '../assets/icon/carbon_copy.svg'
+import Jam from '../assets/icon/jam_icon.svg'
+import noticeIcon from '../assets/icon/notice_icon.svg'
+import Countdown from "react-countdown";
+import Checklist from '../assets/icon/checklist_icon.svg'
+import encryptData from "../function/encryptData";
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -71,20 +76,24 @@ export default (props) => {
 
   const [getBalance, setGetBalance] = useState({})
   const [showModalTopUp, setShowModalTopUp] = useState(false);
-  const [showModalHistoryTopUp, setShowModalHistoryTopUp] = useState(false)
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
+  const [showStatusTopup, setShowStatusTopup] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
-  const handleCloseHistoryTopUp = () => setShowModalHistoryTopUp(false);
   const handleCloseRiwayatTopUp = () => setShowRiwayatTopUp(false)
   const [imageTopUp, setImageTopUp] = useState({});
   const hiddenFileInput = useRef(null);
   const access_token = getToken()
   const [text, setText] = useState('');
+  const [nominalTopup, setNominalTopup] = useState(false)
   const [inputHandle, setInputHandle] = useState({
+    amounts: 0,
     amount: 0,
     reffNo: "",
   })
+  const [topUpBalance, setTopUpBalance] = useState({})
+  const [ countDown, setCountDown ] = useState(0)
+  const [dateNow, setDateNow] = useState(0)
   const [ topUpResult, setTopUpResult ] = useState({})
   const [iconGagal, setIconGagal] = useState(false)
   const [uploadGagal, setUploadGagal] = useState(false)
@@ -94,6 +103,18 @@ export default (props) => {
       ...inputHandle,
       [e.target.name] : e.target.value
     })
+  }
+
+  const startColorNumber = (money) => {  
+    if (money !== 0) {
+      var diSliceAwal = String(money).slice(0, -3)
+    }
+    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".")
+  }
+
+  const endColorNumber = (money) => {
+    var diSliceAkhir = String(money).slice(-3)
+    return "."+diSliceAkhir
   }
 
   const handleClick = () => {
@@ -108,60 +129,130 @@ export default (props) => {
   };
 
   const toHistoryBalance = () => {
-    setShowRiwayatTopUp(true)
+    history.push('/riwayattopup')
   };  
 
   const copyHandler = (event) => {
     setText(event.target.value);
   };
 
-  const copyId = async () => {
-    var copyText = document.getElementById('myInput').innerHTML;
+  const copyPrice = async () => {
+    var copyText = document.getElementById('pricing').innerHTML;
     await navigator.clipboard.writeText(copyText);
     alert('Text copied');
   };
 
+  const copyRek = async () => {
+    var copyText = document.getElementById('noRek').innerHTML;
+    await navigator.clipboard.writeText(copyText);
+    alert('Text copied');
+  };
 
-  async function topUpHandle(imageTopUp, amount, reffNo) {
+  async function topUpConfirmation(amounts) {
     try {
-        if (inputHandle.reffNo.length === 0 || inputHandle.reffNo === undefined) {
+        if (inputHandle.amounts.length === 0 || inputHandle.amounts === undefined || inputHandle.amounts === 0) {
           setIconGagal(true)
         } else {
           setIconGagal(false)
         }
-        if (Object.keys(imageTopUp).length === 0) {
-          setUploadGagal(true)
-        } else {
-          setUploadGagal(false)
-        }
-        const auth = "Bearer " + getToken()        
-        var formData = new FormData()
-        formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
-        formData.append('amount', amount)
-        formData.append('reffNo', reffNo)
-        // for (var pair of formData.entries()) {
-        //     console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
-        // }
+        const auth = "Bearer " + getToken()   
+        const dataParams = encryptData(`{"tparttopup_amount":${amounts}}`)
         const headers = {
-            'Content-Type':'multipart/form-data',
-            'Authorization' : auth
-        }
-        const topUp = await axios.post(BaseURL + "/Partner/TopupConfirmation", formData, { headers: headers })
-        // console.log(topUp, 'ini topup');
-        if(topUp.status === 200 && topUp.data.response_code === 200) {
-          setTopUpResult(topUp.data.response_data.results)
+          "Content-Type": "application/json",
+          'Authorization': auth,
+        };
+        const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
+        // console.log(topUpBalance, 'ini topup balance ya');
+        if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
+          setTopUpBalance(topUpBalance.data.response_data)
+          const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
+          const convertTimeStamps = new Date(timeStamps).getTime()
+          const date = Date.now()
+          const countDown = convertTimeStamps - date
+          // console.log(date)
+          // console.log(convertTimeStamps)
+          // console.log(countDown);
+          setDateNow(date)
+          setCountDown(countDown)
+          setShowModalTopUp(false)
+          setShowModalKonfirmasiTopUp(true)
+        } else if (topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length !== 0) {
+          setUserSession(topUpBalance.data.response_new_token)
+          setTopUpBalance(topUpBalance.data.response_data)
           setShowModalTopUp(false)
           setShowModalKonfirmasiTopUp(true)
         }
       } catch (error) {
         console.log(error)
-        if (error.response.status === 401) {
-            history.push('/login')
-        } else if (error.response.status === 400) {
-          alert("Top Up Gagal")
-        }
+        history.push(errorCatch(error.response.status))
       }
     }
+
+    async function topUpHandleConfirm() {
+      try {
+          const auth = "Bearer " + getToken()        
+          const headers = {
+              'Content-Type':'application/json',
+              'Authorization' : auth
+          }
+          const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
+          // console.log(topUp, 'ini topup');
+          if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
+            setTopUpResult(topUpResult.data.response_data)
+            setShowModalKonfirmasiTopUp(false)
+            setShowStatusTopup(true)
+          } else if (topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length !== 0) {
+            setUserSession(topUpResult.data.response_new_token)
+            setTopUpResult(topUpResult.data.response_data)
+            setShowModalKonfirmasiTopUp(false)
+            setShowStatusTopup(true)
+          }
+        } catch (error) {
+          console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+      }
+
+  // async function topUpHandle(imageTopUp, amount, reffNo) {
+  //   try {
+  //       if (inputHandle.reffNo.length === 0 || inputHandle.reffNo === undefined) {
+  //         setIconGagal(true)
+  //       } else {
+  //         setIconGagal(false)
+  //       }
+  //       if (Object.keys(imageTopUp).length === 0) {
+  //         setUploadGagal(true)
+  //       } else {
+  //         setUploadGagal(false)
+  //       }
+  //       const auth = "Bearer " + getToken()        
+  //       var formData = new FormData()
+  //       formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
+  //       formData.append('amount', amount)
+  //       formData.append('reffNo', reffNo)
+  //       // for (var pair of formData.entries()) {
+  //       //     console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
+  //       // }
+  //       const headers = {
+  //           'Content-Type':'multipart/form-data',
+  //           'Authorization' : auth
+  //       }
+  //       const topUp = await axios.post("/Partner/TopupConfirmation", formData, { headers: headers })
+  //       // console.log(topUp, 'ini topup');
+  //       if(topUp.status === 200 && topUp.data.response_code === 200) {
+  //         setTopUpResult(topUp.data.response_data.results)
+  //         setShowModalTopUp(false)
+  //         setShowModalKonfirmasiTopUp(true)
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //       if (error.response.status === 401) {
+  //           history.push('/login')
+  //       } else if (error.response.status === 400) {
+  //         alert("Top Up Gagal")
+  //       }
+  //     }
+  //   }
 
     async function GetBalanceHandle () {
       try {
@@ -171,15 +262,19 @@ export default (props) => {
               'Authorization' : auth
           }
           const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
-          // console.log(getBalance.data.response_data.topupAmount, 'ini data get balance');
-          if (getBalance.data.response_code === 200 && getBalance.status === 200) {
+          // console.log(getBalance, 'ini data get balance');
+          if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
+          } else if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length !== 0) {
+            setUserSession(getBalance.data.response_new_token)
+            setGetBalance(getBalance.data.response_data)
           }
           
       } catch (error) {
           console.log(error)
-      }
+          history.push(errorCatch(error.response.status))
+        }
     }
 
     async function listRiwayatTopUp () {
@@ -191,14 +286,19 @@ export default (props) => {
           }
           const listRiwayat = await axios.post(BaseURL + "/partner/TopUpHistory", { data: "" }, { headers: headers })
           // console.log(listRiwayat, 'ini data user ');
-          if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200) {
+          if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setListRiwayat(listRiwayat.data.response_data)
+          } else if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length !== 0) {
+            setUserSession(listRiwayat.data.response_new_token)
+            listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
+            setListRiwayat(listRiwayat.data.response_data)
           }
           
       } catch (error) {
           console.log(error)
-      }
+          history.push(errorCatch(error.response.status))
+        }
     }
 
     useEffect(() => {
@@ -206,9 +306,11 @@ export default (props) => {
         history.push('/login');
       }
       dispatch(GetUserDetail("/Account/GetUserProfile"));
-      GetBalanceHandle()
-      listRiwayatTopUp()
-    }, [])
+      if (user_role === "102") {
+        GetBalanceHandle()
+        listRiwayatTopUp()
+      }
+    }, [showModalTopUp])
 
   async function logoutHandler() {
     try {
@@ -228,8 +330,7 @@ export default (props) => {
       }
     } catch (error) {
       console.log(error);
-      // RouteTo(errorCatch(error.response.status));
-      // history.push(errorCatch(error.response.status))
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -297,11 +398,6 @@ export default (props) => {
     </div>
   );
 
-  const modalRiwayat = () => {
-    setShowModalKonfirmasiTopUp(false)
-    setShowModalHistoryTopUp(true)
-  };
-
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;
     const readClassName = read ? "" : "text-danger";
@@ -332,12 +428,13 @@ export default (props) => {
   };
 
   return (
-    <Navbar
-      variant="dark"
-      expanded
-      className="ps-0 pe-4 pb-2 pt-2"
-      style={{ backgroundColor: "#ffffff", boxShadow: "0 2px 7px 0 rgba(0,0,0,.2)", position: "fixed", top: 0, left: 260, right: 0, zIndex: 999 }}
-    >
+    <>
+      <Navbar
+        variant="dark"
+        expanded
+        className="ps-0 pe-4 pb-2 pt-2"
+        style={{ backgroundColor: "#ffffff", boxShadow: "0 2px 7px 0 rgba(0,0,0,.2)", position: "fixed", top: 0, left: 260, right: 0, zIndex: 999 }}
+      >
       <Container fluid className="px-0">
         <div className="d-flex justify-content-between w-100">
           <div className="d-flex align-items-center"></div>
@@ -368,7 +465,7 @@ export default (props) => {
                     onClick={() => toHistoryBalance()}
                     className="fw-bold"
                   >
-                    <img alt="" src={riwayatSaldoIcon} /> Riwayat
+                    <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -463,7 +560,7 @@ export default (props) => {
                 onClick={handleCloseModalTopUp}
               />
               <Modal.Title className="text-center fw-bold mt-3">
-                Konfirmasi Top Up Saldo
+                Top Up Saldo
               </Modal.Title>
             </Col>
           </Modal.Header>
@@ -471,67 +568,30 @@ export default (props) => {
             <Form action="#">
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
-                <Form.Control disabled name="amount" value={convertToRupiah(getBalance.topupAmount)} type="text" />
-              </Form.Group>
-              <Form.Group id="referenceNumber">
-                <Form.Label>Reference Number</Form.Label>
-                <InputGroup className="topup"></InputGroup>
-                <Form.Control className="reff" name="reffNo"  onChange={handleChange} placeholder="Masukkan Reference Number" type="number" />
-              </Form.Group>
-              {iconGagal === true && 
-              <>
-                <div style={{ color: "#B9121B", fontSize: 12 }}>
-                  <img src={noteIconRed} className="me-2" />
-                  Nomor Referensi wajib diisi
-                </div>
-              </>
-            }               
-            </Form>              
-            <div>
-              <img src={noteIcon} className="me-2" />
-              <span className="text-modal">
-                Reference Number dapat dilihat pada bukti transfer
-              </span>
-            </div>
-            <div
-              className="my-2"
-              style={{
-                fontSize: 14,
-                color: "#383838",
-              }}
-            >
-              Upload Bukti Transaksi
-            </div>
-            <div className="mb-4">
-              <u
-                style={{
-                  fontSize: 14,
-                  color: "#077E86",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-                onClick={handleClick}
-              >
-                Upload File
-              </u>
-              <span className="mx-1">{imageTopUp.SlipPaymentFile?.name}</span>
-              {uploadGagal === true && 
-                <span style={{ color: "#B9121B", fontSize: 12 }} className="mx-2">
-                  <img src={noteIconRed} className="me-2" />
-                  Wajib upload bukti top up
-                </span>
-              }                
-              <input
-                type="file"
-                onChange={handleFileChange}
-                accept="image/*"
-                style={{ display: "none" }}
-                ref={hiddenFileInput}
-                id="imageTopUp"
-                name="imageTopUp"
-              />
-            </div>
-            <div className="d-flex justify-content-center">
+                {nominalTopup ? 
+                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} /> :
+                  <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={convertFormatNumber(inputHandle.amounts)} />
+                }
+                {/* {getBalance.topupAmount_temp !== 0 ?
+                  <>
+                    <div style={{ color: "#383838", fontSize: 12 }} className="mt-1">
+                      <img src={noteIcon} className="me-2" />
+                      Update nominal top up sebesar {convertToRupiah(getBalance.topupAmount_temp)} akan di update besok
+                    </div>
+                  </> :
+                  " "
+                } */}
+                {iconGagal === true && 
+                  <>
+                    <div style={{ color: "#B9121B", fontSize: 12 }}>
+                      <img src={noteIconRed} className="me-2" />
+                      Nominal Top Up wajib diisi
+                    </div>
+                  </>
+                }
+              </Form.Group>              
+            </Form>     
+            <div className="d-flex justify-content-center mt-2">
               <button
                 style={{
                   fontFamily: "Exo",
@@ -548,102 +608,81 @@ export default (props) => {
                   borderRadius: 6,
                   textAlign: "center",
                 }}
-                onClick={() => topUpHandle(imageTopUp, getBalance.topupAmount, inputHandle.reffNo)}
+                onClick={() => topUpConfirmation(inputHandle.amounts)}
               >
-                <FontAwesomeIcon style={{ marginRight: 10 }} /> Konfirmasi
+                <FontAwesomeIcon style={{ marginRight: 10 }} /> TOP UP
               </button>
             </div>
           </Modal.Body>
         </Modal>
         
-        <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }}>
-          <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+        {/* Modal Konfirmasi Top Up */}
+        <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }} className="confirm-modal">
+          <Modal.Header className="border-0">
+            <Col>
               <Button
                 className="position-absolute top-0 end-0 m-3"
                 variant="close"
                 aria-label="Close"
                 onClick={() => setShowModalKonfirmasiTopUp(false)}
               />
-              <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 12 }}>
-                  <img src={checklistCircle} alt="logo" />
-              </div>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Top Up Berhasil</p>
-              </div>
-              <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
-                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Kamu telah berhasil top up senilai {convertToRupiah(topUpResult.amount)}</p>
-              </div>
-              <center>
-                  <div style={{ margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
-              </center>
-              <div>
-                  <Table className='detailSave'>
-                    <tr>ID Transaksi</tr>
-                    <tr>
-                        <td onChange={copyHandler} id="myInput" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }} >{topUpResult.IDTrx}</td>
-                        <td onClick={copyId} className="mx-5 text-end" style={{ fontWeight: 600, cursor: "pointer" }} ><img src={CopyIcon} alt="copy" />Salin</td>
-                    </tr>
-                    <tr>
-                        <td>{topUpResult.tglTrx}</td>
-                    </tr>
-                  </Table>
-                  <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Detail Transaksi</p>
-                  <Table >
-                      <tr>
-                          <td>Nominal Top Up</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{convertToRupiah(topUpResult.amount)}</td>
-                      </tr>
-                      <tr>
-                          <td>Sumber Agen</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{topUpResult.partner}</td>
-                      </tr>
-                      <tr>
-                          <td>Kode Unik</td>
-                          <td>:</td>
-                          <td style={{ fontWeight: 600 }}>{topUpResult.uniqueCode}</td>
-                      </tr>
-                      <tr>
-                          <td>Status</td>
-                          <td>:</td>
-                          <td className='active-status-topup' style={{ fontWeight: 600 }}>{topUpResult.statusName}</td>
-                      </tr>
-                  </Table>
-              </div>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <Button variant="primary" onClick={modalRiwayat} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>Lihat Riwayat Top up</Button>
-              </div>
-          </Modal.Body>
-        </Modal>
-
-        <Modal className="history-modal" size="xl" centered show={showModalHistoryTopUp} onHide={handleCloseHistoryTopUp}>
-          <Modal.Header className="border-0">
-            <Button
-              className="position-absolute top-0 end-0 m-3"
-              variant="close"
-              aria-label="Close"
-              onClick={handleCloseHistoryTopUp}
-            />
-            <Modal.Title className="fw-bold mt-3">
-              History Top Up
-            </Modal.Title>
+              <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
+                Selesaikan Proses Topup
+              </Modal.Title>
+            </Col>            
           </Modal.Header>
-          <Modal.Body>
-            {
-              agenLists.length === 0 ?
-              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
-              <div className="div-table">
-                <DataTable
-                  columns={columns}
-                  data={listRiwayat}
-                  customStyles={customStyles}
-                  pagination
-                  highlightOnHover
-                  progressComponent={<CustomLoader />}
-                />
+          <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+              <div className="text-center" style={{fontSize: "14px"}}>Selesaikan Pembayaran Dalam</div> 
+              <div className="text-center mt-2">
+                <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={dateNow + countDown} daysInHours={true} /></span>
               </div>
-            }
+              <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-center mt-2">
+                <div>Batas Akhir :</div>
+                <div className="mx-2 fw-bold">{(topUpBalance.exp_date !== undefined) ? convertDateTimeStamp(topUpBalance.exp_date) + " WIB" : null}</div>
+              </div>
+              <div className="mt-4" style={{border: "1px solid #EBEBEB", borderRadius: "8px", padding: "10px"}}>
+                <Table className='detailSave'>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div>ID Transaksi</div>
+                    <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{topUpBalance.id_transaksi}</div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div className="d-flex flex-column text-left">
+                      <div style={{padding:"unset"}}>Metode Pembayaran</div>
+                      <div style={{padding:"unset"}} className="fw-bold mt-1">Tranfer Bank</div>
+                    </div>
+                    <div className="d-flex flex-column">
+                      <div style={{padding:"unset"}} className="text-end"><img src={topUpBalance.metode_pembayaran} alt="bca" style={{width: "38px", height: "12px"}} /></div>
+                      <div style={{padding:"unset"}} className="mt-1">{topUpBalance.tf_bank}</div>
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div className="d-flex flex-column text-left">
+                      <div style={{padding:"unset"}}>No Rekening</div>
+                      <div onChange={copyHandler} id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{topUpBalance.no_rek}</div>
+                    </div>
+                    <div className="d-flex flex-column mt-3">
+                      <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div className="d-flex flex-column text-left">
+                      <div style={{padding:"unset"}}>Nominal Transfer</div>
+                      <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(topUpBalance.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(topUpBalance.amount_transfer)}</span></div>
+                    </div>
+                    <div className="d-flex flex-column mt-3">
+                      <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                    </div>
+                  </div>
+                </Table>                
+              </div>
+              <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
+                <img src={noticeIcon} alt="notice" />
+                <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga 3 digit terakhir.</div>
+              </Table>
+              <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
+              </div>
           </Modal.Body>
         </Modal>
 
@@ -673,14 +712,6 @@ export default (props) => {
                   highlightOnHover
                   // progressPending={pending}
                   progressComponent={<CustomLoader />}
-                  // paginationResetDefaultPage={resetPaginationToggle}
-                  // subHeader
-                  // subHeaderComponent={subHeaderComponentMemo}
-                  // selectableRows
-                  // persistTableHead
-                  // onRowClicked={(listAgen) => {
-                  //   detailAgenHandler(listAgen.agen_id)
-                  // }}
                 />
               </div>
             }
@@ -688,5 +719,14 @@ export default (props) => {
         </Modal>
       </Container>
     </Navbar>
+    {topUpResult.is_update === true ?
+      <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
+        <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
+          <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Top Up Saldo {convertToRupiah(inputHandle.amounts)} Berhasil</Toast.Body>
+        </Toast>
+      </div> :
+      ""
+    }
+    </>
   );
 };

@@ -62,6 +62,9 @@ import ListUser from './ManagementUser/ListUser';
 import UpdateUser from './ManagementUser/UpdateUser';
 import AddUser from './ManagementUser/AddUser';
 import ListMenuAccess from './ManagementUser/ListMenuAccess';
+import RiwayatTopUp from './TopUp/RiwayatTopUp';
+import InvoicePage from './Invoice/InvoicePage';
+import DetailSettlement from './RiwayatTransaksi/DetailSettlement';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -128,6 +131,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} />
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
+    <RouteWithSidebar exact path={Routes.DetailSettlement.path} component={DetailSettlement} />
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
     <RouteWithSidebar exact path={Routes.TambahPartner.path} component={TambahPartner}/>
     <RouteWithSidebar exact path={Routes.DaftarAgen.path} component={DaftarAgen}/>
@@ -140,6 +144,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ListUser.path} component={ListUser}/>
     <RouteWithSidebar exact path={Routes.UpdateUser.path} component={UpdateUser} />
     <RouteWithSidebar exact path={Routes.ListMenuAccess.path} component={ListMenuAccess}/>
+    <RouteWithSidebar exact path={Routes.RiwayatTopUp.path} component={RiwayatTopUp}/>
+    <RouteWithSidebar exact path={Routes.Invoice.path} component={InvoicePage}/>
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
     <RouteWithSidebar exact path={Routes.AddUser.path} component={AddUser}/>

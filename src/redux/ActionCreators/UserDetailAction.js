@@ -21,7 +21,7 @@ export const GetUserDetail = (url) => {
                         userDetail: userDetail.data.response_data
                     }
                 })
-            } else {
+            } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
                 setUserSession(userDetail.data.response_new_token)
                 dispatch({
                     type: FETCH_GETUSERDETAIL,

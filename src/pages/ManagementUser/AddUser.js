@@ -62,7 +62,10 @@ function AddUser() {
         { data: "" },
         { headers: headers }
       );
-      if (listRole.data.response_code === 200 && listRole.status === 200) {
+      if (listRole.data.response_code === 200 && listRole.status === 200 && listRole.data.response_new_token.length === 0) {
+        setListRole(listRole.data.response_data);
+      } else if (listRole.data.response_code === 200 && listRole.status === 200 && listRole.data.response_new_token.length !== 0) {
+        setUserSession(listRole.data.response_new_token)
         setListRole(listRole.data.response_data);
       }
     } catch (e) {
@@ -88,7 +91,11 @@ function AddUser() {
         listPartner.data.response_new_token.length === 0
       ) {
         setDataListPartner(listPartner.data.response_data);
-      } else {
+      } else if (
+        listPartner.status === 200 &&
+        listPartner.data.response_code === 200 &&
+        listPartner.data.response_new_token.length !== 0
+      ) {
         setUserSession(listPartner.data.response_new_token);
         setDataListPartner(listPartner.data.response_data);
       }
@@ -116,7 +123,11 @@ function AddUser() {
         listAgenFromPartner.data.response_new_token.length === 0
       ) {
         setDataListAgenFromPartner(listAgenFromPartner.data.response_data);
-      } else {
+      } else if (
+        listAgenFromPartner.status === 200 &&
+        listAgenFromPartner.data.response_code === 200 &&
+        listAgenFromPartner.data.response_new_token.length !== 0
+      ) {
         setUserSession(listAgenFromPartner.data.response_new_token);
         setDataListAgenFromPartner(listAgenFromPartner.data.response_data);
       }
@@ -137,7 +148,7 @@ function AddUser() {
   ) {
     try {
       const dataParams = encryptData(
-        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${role == 102 ? partnerId : role == 103 ? agenId : ""
+        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${role === "102" ? partnerId : role === "103" ? agenId : ""
         }"}`
       );
       const headers = {
@@ -149,8 +160,10 @@ function AddUser() {
         { data: dataParams },
         { headers: headers }
       );
-      if (addUser.data.response_code === 200 && addUser.status === 200) {
+      if (addUser.data.response_code === 200 && addUser.status === 200 && addUser.data.response_new_token.length === 0) {
         setAddUser(addUser.data.response_data);
+      } else if (addUser.data.response_code === 200 && addUser.status === 200 && addUser.data.response_new_token.length !== 0) {
+        
       }
     } catch (e) {
       history.push(errorCatch(e.response.status));
@@ -162,17 +175,17 @@ function AddUser() {
       // RouteTo("/login")
       history.push("/login");
     }
-    if (user_role == 102) {
+    if (user_role === "102") {
       history.push('/404');
     }
-    if (inputHandle.role == 102 || inputHandle.role == 103) {
+    if (inputHandle.role === "102" || inputHandle.role === "103") {
       getListPartner();
     }
     getListRole();
-    if (inputHandle.role == 103 && inputHandle.partnerId != "") {
+    if (inputHandle.role === "103" && inputHandle.partnerId !== "") {
       getListAgen(inputHandle.partnerId);
     }
-  }, [inputHandle.role, inputHandle.partnerId, user_role]);
+  }, [access_token, inputHandle.role, inputHandle.partnerId, user_role]);
 
   return (
     <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
@@ -251,7 +264,7 @@ function AddUser() {
               className="mb-3"
               style={{
                 display:
-                  inputHandle.role == 102 || inputHandle.role == 103
+                  inputHandle.role === "102" || inputHandle.role === "103"
                     ? ""
                     : "none",
               }}
@@ -276,7 +289,7 @@ function AddUser() {
               className="mb-3"
               style={{
                 display:
-                  inputHandle.role == 103 && inputHandle.partnerId != ""
+                  inputHandle.role === "103" && inputHandle.partnerId !== ""
                     ? ""
                     : "none",
               }}

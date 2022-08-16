@@ -33,7 +33,7 @@ function DetailAkun() {
             // console.log(userDetailPartner, 'ini data user ');
             if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length === 0) {
                 setDataAkun(userDetailPartner.data.response_data)
-            } else {
+            } else if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length !== 0) {
                 setUserSession(userDetailPartner.data.response_new_token)
                 setDataAkun(userDetailPartner.data.response_data)
             }
@@ -64,7 +64,7 @@ function DetailAkun() {
                 // RouteTo('/detailakun')
                 history.push("/detailakun")
                 // alert("Edit Data Partner Berhasil Ditambahkan")
-            } else {
+            } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
                 setUserSession(editCallback.data.response_new_token)
                 history.push("/detailakun")
             }

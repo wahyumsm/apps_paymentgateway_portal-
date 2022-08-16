@@ -35,9 +35,18 @@ export function convertToRupiah(money) {
 }
 
 export function convertToCurrency(money) {
-    const moneyNum = parseInt(money)
-    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 0}).format(moneyNum)
+    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(money).replace(/\B(?=(\d{4})+(?!\d))/g, ".")
 }
+
+export const convertFormatNumber = (num) => {
+    let rupiah = "";
+    let angkaRev = num.toString().split("").reverse().join("");
+    for (var i = 0; i < angkaRev.length; i++) if (i % 3 === 0) rupiah += angkaRev.substr(i, 3) + ".";
+    return rupiah
+      .split("", rupiah.length - 1)
+      .reverse()
+      .join("");
+};
 
 export function errorCatch(statusCode) {
     const code = {
@@ -45,4 +54,8 @@ export function errorCatch(statusCode) {
         "403": "/404",
     }
     return code[statusCode]
+}
+
+export const convertDateTimeStamp = (time) => {
+    return new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(time * 1000))
 }

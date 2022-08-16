@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Modal, Button, InputGroup } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./EditAgen.css"
@@ -11,21 +11,22 @@ function EditAgen() {
     const history = useHistory()
     const access_token = getToken()
     const { agenId } = useParams()
-    const [detailAgen, setDetailAgen] = useState([])
     const [showModalEdit, setShowModalEdit] = useState(false)
     const [showModalBatalEdit, setShowModalBatalEdit] = useState(false)
     const [showModalNonAktifAgen, setShowModalNonAktifAgen] = useState(false)
     const [showModalAktifAgen, setShowModalAktifAgen] = useState(false)
+    const [edit, setEdit] = useState(false)
+
     const [inputHandle, setInputHandle] = useState({
         id:agenId,
-        namaAgen: detailAgen.agen_name,
-        emailAgen: detailAgen.agen_email,
-        phoneNumber: detailAgen.agen_mobile,
+        namaAgen: "",
+        emailAgen: "",
+        phoneNumber: "",
         bankName: 1,
-        akunBank: detailAgen.agen_bank_number,
-        rekeningOwner: detailAgen.agen_bank_name,
-        active: detailAgen.status,
-        nominal: convertToCurrency(0)
+        akunBank: "",
+        rekeningOwner: "",
+        active: false,
+        nominal: 0
     })
 
     function handleChange(e) {
@@ -65,8 +66,10 @@ function EditAgen() {
                         isActive: "Tidak Aktif"
                     }
                 }
-                setDetailAgen(detailAgen.data.response_data)
-            } else {
+                const dataDetail = detailAgen.data.response_data
+                setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
+                // setDetailAgen(detailAgen.data.response_data)
+            } else if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length !== 0) {
                 setUserSession(detailAgen.data.response_new_token)
                 if (detailAgen.data.response_data.status === true) {
                     detailAgen.data.response_data = {
@@ -79,7 +82,9 @@ function EditAgen() {
                         isActive: "Tidak Aktif"
                     }
                 }
-                setDetailAgen(detailAgen.data.response_data)
+                const dataDetail = detailAgen.data.response_data
+                setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
+                // setDetailAgen(detailAgen.data.response_data)
             }
         } catch (error) {
             console.log(error)
@@ -90,28 +95,6 @@ function EditAgen() {
 
     async function updateDetailAgen(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
         try {
-            if (namaAgen === undefined) {
-                namaAgen = detailAgen.agen_name
-            }
-            if (emailAgen === undefined) {
-                emailAgen = detailAgen.agen_email
-            }
-            if (phoneNumber === undefined) {
-                phoneNumber = detailAgen.agen_mobile
-            }
-            if (akunBank === undefined) {
-                akunBank = detailAgen.agen_bank_number
-            }
-            if (rekeningOwner === undefined) {
-                rekeningOwner = detailAgen.agen_bank_name
-            }
-            if (active === undefined) {
-                active = detailAgen.status
-            }
-            if (nominal === undefined) {
-                nominal = detailAgen.nominal_topup
-            }
-            // console.log(agenId, 'ini agen id di func');
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}", "nominal":${nominal}}`)
             const headers = {
@@ -119,10 +102,10 @@ function EditAgen() {
                 'Authorization' : auth
             }
             const editAgen = await axios.post(BaseURL + "/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
-            // console.log(detailAgen, 'ini detail agen');
+            // console.log(editAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
                 setShowModalEdit(true)
-            } else {
+            } else if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length !== 0) {
                 setUserSession(editAgen.data.response_new_token)
                 setShowModalEdit(true)
             }
@@ -134,7 +117,7 @@ function EditAgen() {
     }
 
     const goDetail = () => {
-        updateDetailAgen(inputHandle.id, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active, inputHandle.nominal)  
+        updateDetailAgen(agenId, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active, inputHandle.nominal)  
         // RouteTo("/daftaragen")
         history.push("/daftaragen")        
         setShowModalEdit(false)       
@@ -146,6 +129,14 @@ function EditAgen() {
         history.push("/daftaragen")
     }
 
+    const goBack = () => {
+        window.history.back();
+    };
+
+    const stayEdit = () => {
+        setShowModalBatalEdit(false)
+    }
+
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
@@ -154,9 +145,6 @@ function EditAgen() {
         getDetailAgen(agenId)
     }, [access_token, agenId])
     
-    const goBack = () => {
-        window.history.back();
-    };
     // console.log(inputHandle.nominal, 'ini detail agen dari input handle');
 
     return (
@@ -178,9 +166,9 @@ function EditAgen() {
                             <Col xs={2}>
                                 <Form.Check
                                     type="switch"
-                                    id="custom-switch"
-                                    label={(inputHandle.active === undefined) ? detailAgen.isActive : (inputHandle.active === true) ? "Aktif" : "Tidak Aktif"}
-                                    checked={(inputHandle.active === undefined) ? detailAgen.status : inputHandle.active}
+                                    id="custom-switch"                                    
+                                    label={(inputHandle.active === true) ? "Aktif" : "Tidak Aktif"}
+                                    checked={(inputHandle.active)}
                                     name="active"
                                     onChange={handleChange}
                                 />
@@ -194,8 +182,8 @@ function EditAgen() {
                             </Col>
                             <Col xs={9}>
                                 <Form.Control
-                                    name='nama'
-                                    value={detailAgen.agen_id}
+                                    name='id'
+                                    value={inputHandle.id}
                                     type='text'
                                     disabled
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
@@ -211,7 +199,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='namaAgen'
-                                    defaultValue={detailAgen.agen_name}
+                                    value={inputHandle.namaAgen}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}
@@ -227,7 +215,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='emailAgen'
-                                    defaultValue={detailAgen.agen_email}
+                                    value={inputHandle.emailAgen}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}
@@ -243,7 +231,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='phoneNumber'
-                                    defaultValue={detailAgen.agen_mobile}
+                                    value={inputHandle.phoneNumber}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
@@ -258,7 +246,7 @@ function EditAgen() {
                             </Col>
                             <Col xs={9}>
                                 <Form.Control
-                                    value={detailAgen.agen_bank_id}
+                                    value={inputHandle.bankName && "BCA (Bank Central Asia)"}
                                     placeholder="BCA (Bank Central Asia)"
                                     type='text'
                                     disabled
@@ -275,7 +263,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='akunBank'
-                                    defaultValue={detailAgen.agen_bank_number}
+                                    value={inputHandle.akunBank}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
@@ -291,7 +279,7 @@ function EditAgen() {
                             <Col xs={9}>
                                 <Form.Control
                                     name='rekeningOwner'
-                                    defaultValue={detailAgen.agen_bank_name}
+                                    value={inputHandle.rekeningOwner}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
@@ -305,14 +293,24 @@ function EditAgen() {
                                 </span>
                             </Col>
                             <Col xs={9}>
-                                <Form.Control
-                                    name='nominal'
-                                    defaultValue={detailAgen.nominal_topup}
-                                    // value={inputHandle.nominal === 0 ? detailAgen.nominal_topup : inputHandle.nominal}
-                                    type='number'
-                                    style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                    onChange={handleChange}    
-                                />
+                                {edit ?
+                                    <Form.Control
+                                        name='nominal'
+                                        value={inputHandle.nominal}
+                                        type='number'
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                        onChange={handleChange}
+                                        onBlur={() => setEdit(!edit)}
+                                    /> :
+                                    <Form.Control
+                                        name='nominal'
+                                        value={convertFormatNumber(inputHandle.nominal)}
+                                        type='text'
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                        onFocus={() => setEdit(!edit)}
+                                        // readOnly
+                                    />
+                                }
                             </Col>
                         </Row>
                     </div>
@@ -366,7 +364,7 @@ function EditAgen() {
                             
                         </p>                
                         <div className="d-flex justify-content-center mb-3">
-                            <Button onClick={goBack} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
+                            <Button onClick={stayEdit} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
                             <Button onClick={batalEdit} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
                         </div>
                     </Modal.Body>
@@ -380,10 +378,10 @@ function EditAgen() {
                 >
                     <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
                         <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu yakin ingin membatalkan perubahan yang dilakukan pada data Partner?</p>
+                            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu yakin ingin menonaktifkan agen?</p>
                         </div>
                         <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Data akan kembali seperti kondisi semula</p>
+                            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Transaksi agen tidak akan tersimpan di dashboard</p>
                         </div>
                         <p>
                             
@@ -403,10 +401,10 @@ function EditAgen() {
                 >
                     <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
                         <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu yakin ingin membatalkan perubahan yang dilakukan pada data Partner?</p>
+                            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu yakin ingin aktifkan agen?</p>
                         </div>
                         <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Data akan kembali seperti kondisi semula</p>
+                            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Transaksi agen  akan tersimpan di dashboard</p>
                         </div>
                         <p>
                             
