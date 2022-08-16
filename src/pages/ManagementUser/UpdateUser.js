@@ -131,7 +131,7 @@ function UpdateUser() {
                 }
             } catch (error) {
                 console.log(error);
-                  history.push(errorCatch(error.response.status))
+                history.push(errorCatch(error.response.status))
             }
         }
 

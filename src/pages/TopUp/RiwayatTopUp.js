@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
 import Pagination from 'react-js-pagination'
 import { Link, useHistory } from 'react-router-dom'
-import { convertDateTimeStamp, convertToRupiah, getToken, setUserSession } from '../../function/helpers'
+import { convertDateTimeStamp, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import axios from 'axios'
@@ -101,6 +101,7 @@ function RiwayatTopUp() {
             
         } catch (error) {
             console.log(error)
+            history.push(errorCatch(error.response.status))
         }
     }
     

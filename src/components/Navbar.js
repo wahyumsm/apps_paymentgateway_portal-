@@ -184,9 +184,7 @@ export default (props) => {
         }
       } catch (error) {
         console.log(error)
-        if (error.response.status === 401) {
-            history.push('/login')
-        }
+        history.push(errorCatch(error.response.status))
       }
     }
 
@@ -211,11 +209,7 @@ export default (props) => {
           }
         } catch (error) {
           console.log(error)
-          if (error.response.status === 401) {
-              history.push('/login')
-          } else if (error.response.status === 400) {
-            setShowModalKonfirmasiTopUp(false)
-          }
+          history.push(errorCatch(error.response.status))
         }
       }
 
@@ -279,7 +273,8 @@ export default (props) => {
           
       } catch (error) {
           console.log(error)
-      }
+          history.push(errorCatch(error.response.status))
+        }
     }
 
     async function listRiwayatTopUp () {
@@ -302,7 +297,8 @@ export default (props) => {
           
       } catch (error) {
           console.log(error)
-      }
+          history.push(errorCatch(error.response.status))
+        }
     }
 
     useEffect(() => {
