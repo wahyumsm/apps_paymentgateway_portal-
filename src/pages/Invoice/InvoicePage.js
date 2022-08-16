@@ -37,9 +37,9 @@ function InvoicePage() {
             }
             const invoiceData = await axios.post("/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
             console.log(invoiceData, "ini invoice data");
-            if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token.length === 0) {
+            if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoice(invoiceData.data.response_data)
-            } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token.length !== 0) {
+            } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
                 setUserSession(invoiceData.data.response_new_token)
                 setDataInvoice(invoiceData.data.response_data)
             }
@@ -63,7 +63,7 @@ function InvoicePage() {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role === 102) {
+        if (user_role === "102") {
             history.push('/404');
         }
     }, [access_token, user_role])

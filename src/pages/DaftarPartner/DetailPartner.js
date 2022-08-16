@@ -128,7 +128,7 @@ function DetailPartner() {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role === 102) {
+        if (user_role === "102") {
             history.push('/404');
         }
         getDetailPartner(partnerId)

@@ -175,7 +175,7 @@ function RiwayatTopUp() {
               const countDown = convertTimeStamps - Date.now()
               setCountDown(countDown)
               setShowModalKonfirmasiTopUp(true)
-            } else {
+            } else if(detailTopUp.status === 200 && detailTopUp.data.response_code === 200 && detailTopUp.data.response_new_token.length !== 0) {
               setUserSession(detailTopUp.data.response_new_token)
               setDetailTopUp(detailTopUp.data.response_data)
               setShowModalKonfirmasiTopUp(true)

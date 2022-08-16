@@ -60,7 +60,7 @@ function EditAgen() {
                         ...detailAgen.data.response_data,
                         isActive: "Aktif"
                     }
-                } else if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length !== 0) {
+                } else {
                     detailAgen.data.response_data = {
                         ...detailAgen.data.response_data,
                         isActive: "Tidak Aktif"
@@ -69,7 +69,7 @@ function EditAgen() {
                 const dataDetail = detailAgen.data.response_data
                 setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
                 // setDetailAgen(detailAgen.data.response_data)
-            } else {
+            } else if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length !== 0) {
                 setUserSession(detailAgen.data.response_new_token)
                 if (detailAgen.data.response_data.status === true) {
                     detailAgen.data.response_data = {

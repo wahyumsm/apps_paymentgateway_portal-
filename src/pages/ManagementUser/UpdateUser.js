@@ -35,7 +35,7 @@ function UpdateUser() {
     function handleChangeToPartner (e) {
         setInputHandle({
             ...inputHandle,
-            [e.target.name] : e.target.value
+            [e.target.name] : parseInt(e.target.value)
         })
     }
 
@@ -192,7 +192,7 @@ function UpdateUser() {
             if (!access_token) {
                 history.push("/login");
             }
-            if (user_role === 102) {
+            if (user_role === "102") {
                 history.push('/404');
             }
             getDetailUser(muserId);
