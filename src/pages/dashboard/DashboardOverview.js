@@ -657,6 +657,7 @@ export default () => {
                         <CustomLoader />
                       </div>
                        :
+                       partnerChartData.length !== 0 ?
                        <Line
                        className="mt-3 mb-3"
                        data={{
@@ -700,8 +701,9 @@ export default () => {
                            }
                          }
                        }}
-                      />
-                      
+                       />  
+                        :
+                       <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
                     }
                   </div>
                 </Col>
@@ -794,6 +796,7 @@ export default () => {
                         <div className="d-flex justify-content-center align-items-center">
                           <CustomLoader />
                         </div> :
+                        feePartnerChartData.length !== 0 ?
                         <Line
                         className="mt-3 mb-3"
                         data={{
@@ -832,12 +835,14 @@ export default () => {
                             yAxes: {
                               beginAtZero: true,
                               ticks: {
-                                stepSize: 2000
+                                stepSize: 2000,
+                                min: 0
                               }
                             }
                           }
                         }}
-                        />
+                        /> :
+                        <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
                       }
                     </div>
                   </Col>
@@ -930,6 +935,7 @@ export default () => {
                         <div className="d-flex justify-content-center align-items-center vh-100">
                           <CustomLoader />
                         </div> :
+                        feeVaChartData.length !== 0 ?
                         <Line
                         className="mt-3 mb-3"
                         data={{
@@ -974,7 +980,8 @@ export default () => {
                             }
                           }
                         }}
-                      />
+                      /> :
+                      <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
                       }
                     </div>
                   </Col>
