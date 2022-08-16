@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
 import Pagination from 'react-js-pagination'
 import { Link, useHistory } from 'react-router-dom'
-import { convertDateTimeStamp, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertDateTimeStamp, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import axios from 'axios'
@@ -70,22 +70,22 @@ function RiwayatTopUp() {
 
     async function listRiwayatTopUp (statusId, transaksiId, dateId, dateRange, currentPage) {
         try {
-            console.log(statusId, 'ini status id');
-            console.log(transaksiId, 'ini transaksi id');
-            console.log(dateId, 'ini date id');
-            console.log(dateRange, 'ini date range');
-            console.log(currentPage, 'ini current page');
+            // console.log(statusId, 'ini status id');
+            // console.log(transaksiId, 'ini transaksi id');
+            // console.log(dateId, 'ini date id');
+            // console.log(dateRange, 'ini date range');
+            // console.log(currentPage, 'ini current page');
             // setActivePageRiwayatTopUp(currentPage)
             setPendingTopup(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
-            console.log(dataParams, 'ini params');
+            // console.log(dataParams, 'ini params');
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const listRiwayat = await axios.post("/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
-            console.log(listRiwayat, 'ini data user ');
+            const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
+            // console.log(listRiwayat, 'ini data user ');
             if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                 listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberRiwayatTopUp(listRiwayat.data.response_data)
@@ -133,29 +133,29 @@ function RiwayatTopUp() {
                 ...inputHandle,
                 [e.target.name] : e.target.value
             })
-            console.log(inputHandle.periodeRiwayatTopUp, 'ini periode handle');
+            // console.log(inputHandle.periodeRiwayatTopUp, 'ini periode handle');
         }
     }
 
     function handlePageChangeSettlement(page) {
-        console.log(page, 'ini page');
+        // console.log(page, 'ini page');
         setActivePageRiwayatTopUp(page)
         listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page)
     }
 
     function resetButtonHandle() {
-        console.log('reset button handle');
+        // console.log('reset button handle');
         setInputHandle({
             ...inputHandle,
             idTransaksiRiwayatTopUp: "",
             statusRiwayatTopUp: [],
             periodeRiwayatTopUp: 0,
         })
-        console.log(inputHandle, 'ini periode');
+        // console.log(inputHandle, 'ini periode');
         setStateRiwayatTopup(null)
         setDateRangeRiwayatTopUp([])
         setShowDateRiwayatTopUp("none")
-        console.log('reset button handle2');
+        // console.log('reset button handle2');
     }
 
     async function detailTopUpHandler(idTransaksi) {
@@ -166,8 +166,8 @@ function RiwayatTopUp() {
               "Content-Type": "application/json",
               'Authorization': auth,
             };
-            const detailTopUp = await axios.post("/Partner/HistoryTopUpPartnerDetail", { data: dataParams }, { headers: headers })
-            console.log(detailTopUp, 'ini topup balance ya');
+            const detailTopUp = await axios.post(BaseURL + "/Partner/HistoryTopUpPartnerDetail", { data: dataParams }, { headers: headers })
+            // console.log(detailTopUp, 'ini topup balance ya');
             if(detailTopUp.status === 200 && detailTopUp.data.response_code === 200 && detailTopUp.data.response_new_token.length === 0) {
               setDetailTopUp(detailTopUp.data.response_data)
               const timeStamps = new Date(detailTopUp.data.response_data.exp_date*1000).toLocaleString()

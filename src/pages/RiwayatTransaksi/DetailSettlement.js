@@ -3,7 +3,7 @@ import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 // import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import { convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
@@ -30,13 +30,13 @@ function DetailSettlement() {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page":1, "row_per_page":10 }`);
-            console.log(dataParams, 'ini data params');
+            // console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const detailsettlement = await axios.post("/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
-            console.log(detailsettlement, 'ini data settlement');
+            const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            // console.log(detailsettlement, 'ini data settlement');
             if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length === 0) {
                 detailsettlement.data.response_data = detailsettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setDataSettlement(detailsettlement.data.response_data)

@@ -3,7 +3,7 @@ import { Col, Row, Table } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import jsPDF from 'jspdf';
-import { convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
@@ -35,8 +35,8 @@ function InvoicePage() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const invoiceData = await axios.post("/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
-            console.log(invoiceData, "ini invoice data");
+            const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
+            // console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoice(invoiceData.data.response_data)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {

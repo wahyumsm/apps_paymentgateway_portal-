@@ -20,13 +20,13 @@ function ListMenuAccess() {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"muser_id":"${userId}"}`)
-            console.log(dataParams, 'ini data params');
+            // console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const listAccessMenu = await axios.post('/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
-            console.log(listAccessMenu, "ini list access menu");
+            const listAccessMenu = await axios.post(BaseURL + '/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
+            // console.log(listAccessMenu, "ini list access menu");
             if (listAccessMenu.status === 200 && listAccessMenu.data.response_code === 200 && listAccessMenu.data.response_new_token.length === 0) {
                 setListAccessMenu(listAccessMenu.data.response_data)
             } else if (listAccessMenu.status === 200 && listAccessMenu.data.response_code === 200 && listAccessMenu.data.response_new_token.length !== 0) {
@@ -41,7 +41,7 @@ function ListMenuAccess() {
 
     async function saveAccessMenu(dataObj, userId, listAccess) {
         try {
-            console.log(dataObj, "ini data obj awal");
+            // console.log(dataObj, "ini data obj awal");
             let obj = {
                 maccessuser_user_id: userId,
                 accUser: []
@@ -160,18 +160,18 @@ function ListMenuAccess() {
                         newObj = {}
                     }
                 })
-                console.log(obj, "ini obj");
+                // console.log(obj, "ini obj");
                 // console.log(dataObjs, "ini data objs");
                 // if (newArr.length !== 0) {
                     const auth = "Bearer " + getToken()
                     const dataParams = encryptData(JSON.stringify(obj))
-                    console.log(dataParams, "ini data params");
+                    // console.log(dataParams, "ini data params");
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth
                     }
-                    const saveAccess = await axios.post("/Account/SaveAccess", {data: dataParams}, {headers: headers})
-                    console.log(saveAccess, "ini save access");
+                    const saveAccess = await axios.post(BaseURL + "/Account/SaveAccess", {data: dataParams}, {headers: headers})
+                    // console.log(saveAccess, "ini save access");
                     if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length === 0) {
                         history.push("/managementuser")
                     } else if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length !== 0) {
@@ -196,10 +196,10 @@ function ListMenuAccess() {
     }
 
     function handleCheck(e, menuName, menuId, details, item, isAccessValue) {
-        console.log(e.target.checked, "ini name");
-        console.log(menuId, "ini menu id");
-        console.log(details, "ini details");
-        console.log(isAccessValue, "ini isAccessValue");
+        // console.log(e.target.checked, "ini name");
+        // console.log(menuId, "ini menu id");
+        // console.log(details, "ini details");
+        // console.log(isAccessValue, "ini isAccessValue");
         const stringMenuId = menuId.toString()
         // console.log(stringMenuId, "ini string menu id");
         let access = `isAccess${menuName}`
@@ -208,7 +208,7 @@ function ListMenuAccess() {
         let deleted = `isDeleteable${menuName}`
         // let visibled = `isVisibled${menuName}`
         if (e.target.name === insert && isAccessValue === false || e.target.name === update && isAccessValue === false || e.target.name === deleted && isAccessValue === false) {
-            console.log("masuk access value false");
+            // console.log("masuk access value false");
             alert("Please checked access menu!")
         } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 6 && details === undefined) {
             setInputCheck({
@@ -322,20 +322,20 @@ function ListMenuAccess() {
                         }
                     })
                 } else if (details.length === 0 && access !== access1) {
-                    console.log('ini tidak sama dengan');
+                    // console.log('ini tidak sama dengan');
                     dataObj[access1] = (inputCheck[access1] === undefined) ? item.is_access : inputCheck[access1]
                     dataObj[insert1] = (inputCheck[insert1] === undefined) ? item.is_insertable : inputCheck[insert1]
                     dataObj[update1] = (inputCheck[update1] === undefined) ? item.is_updatable : inputCheck[update1]
                     dataObj[deleted1] = (inputCheck[deleted1] === undefined) ? item.is_deletable : inputCheck[deleted1]
                 } else if (details.length === 0 && access === access1) {
-                    console.log('ini sama dengan');
+                    // console.log('ini sama dengan');
                     dataObj[access] = e.target.checked
                     dataObj[insert] = e.target.checked
                     dataObj[update] = e.target.checked
                     dataObj[deleted] = e.target.checked
                 }
             })
-            console.log(dataObj, "ini data obj");
+            // console.log(dataObj, "ini data obj");
             if (Object.keys(dataObj).length !== 0) {
                 setInputCheck(dataObj)
             }
@@ -430,8 +430,8 @@ function ListMenuAccess() {
     }
 
     function handleCheckParent(e, listAccessMenu, inputCheckData) {
-        console.log(e.target.name, "ini name parent");
-        console.log(e.target.checked, "ini checked parent");
+        // console.log(e.target.name, "ini name parent");
+        // console.log(e.target.checked, "ini checked parent");
         let dataObj = {}
         listAccessMenu.forEach(el => {
             let access = `isAccess${el.label}`
@@ -487,9 +487,9 @@ function ListMenuAccess() {
                     // dataObj[visibled] = e.target.checked
                 }
             } else if (e.target.name === "#" && e.target.checked === true) {
-                console.log("e.target.name === # && e.target.checked === true");
+                // console.log("e.target.name === # && e.target.checked === true");
                 if (el.detail.length !== 0 && (inputCheckData[insert] === false || inputCheckData[insert] === undefined) && (inputCheckData[update] === false || inputCheckData[update] === undefined) && (inputCheckData[deleted] === false || inputCheckData[deleted] === undefined)) {
-                    console.log("detail tidak nol dan yg lain false");
+                    // console.log("detail tidak nol dan yg lain false");
                     dataObj[access] = e.target.checked
                     dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert] //false
                     dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
@@ -528,7 +528,7 @@ function ListMenuAccess() {
                         }
                     })
                 } else if (el.detail.length === 0 && (inputCheckData[insert] === false || inputCheckData[insert] === undefined) && (inputCheckData[update] === false || inputCheckData[update] === undefined) && (inputCheckData[deleted] === false || inputCheckData[deleted] === undefined)) {
-                    console.log("detail nol dan yg lain false");
+                    // console.log("detail nol dan yg lain false");
                     dataObj[access] = e.target.checked
                     dataObj[insert] = (inputCheckData[insert] === undefined) ? el.is_insertable : inputCheckData[insert] //false
                     dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
@@ -2010,8 +2010,8 @@ function ListMenuAccess() {
             },
         },
     };
-    console.log(listAccessMenu, "ini list access menu di luar function");
-    console.log(inputCheck, "ini input check di luar function 1");
+    // console.log(listAccessMenu, "ini list access menu di luar function");
+    // console.log(inputCheck, "ini input check di luar function 1");
 
     return (
         <div className="content-page mt-6">
