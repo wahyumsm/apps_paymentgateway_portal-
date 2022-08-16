@@ -190,7 +190,6 @@ function RiwayatTopUp() {
 
     useEffect(() => {
         if (!access_token) {
-            // RouteTo("/login")
             history.push('/login');
         }
         listRiwayatTopUp(undefined, undefined, undefined, [], undefined)
@@ -271,7 +270,7 @@ function RiwayatTopUp() {
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
             <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          {/* <div>Loading...</div> */}
+            <div>Loading...</div>
         </div>
     );
 
@@ -351,8 +350,6 @@ function RiwayatTopUp() {
                                 customStyles={customStyles}
                                 progressPending={pendingTopup}
                                 progressComponent={<CustomLoader />}
-                                // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                                // pagination
                             />
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
