@@ -78,7 +78,7 @@ function RiwayatTopUp() {
             // setActivePageRiwayatTopUp(currentPage)
             setPendingTopup(true)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : '${(transaksiId !== undefined) ? transaksiId : ""}', "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
             console.log(dataParams, 'ini params');
             const headers = {
                 'Content-Type':'application/json',

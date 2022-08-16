@@ -145,7 +145,7 @@ function AddUser() {
   ) {
     try {
       const dataParams = encryptData(
-        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${role === 102 ? partnerId : role === 103 ? agenId : ""
+        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${role === "102" ? partnerId : role === "103" ? agenId : ""
         }"}`
       );
       const headers = {
@@ -170,14 +170,14 @@ function AddUser() {
       // RouteTo("/login")
       history.push("/login");
     }
-    if (user_role === 102) {
+    if (user_role === "102") {
       history.push('/404');
     }
-    if (inputHandle.role === 102 || inputHandle.role === 103) {
+    if (inputHandle.role === "102" || inputHandle.role === "103") {
       getListPartner();
     }
     getListRole();
-    if (inputHandle.role === 103 && inputHandle.partnerId !== "") {
+    if (inputHandle.role === "103" && inputHandle.partnerId !== "") {
       getListAgen(inputHandle.partnerId);
     }
   }, [access_token, inputHandle.role, inputHandle.partnerId, user_role]);
@@ -259,7 +259,7 @@ function AddUser() {
               className="mb-3"
               style={{
                 display:
-                  inputHandle.role === 102 || inputHandle.role === 103
+                  inputHandle.role === "102" || inputHandle.role === "103"
                     ? ""
                     : "none",
               }}
@@ -284,7 +284,7 @@ function AddUser() {
               className="mb-3"
               style={{
                 display:
-                  inputHandle.role === 103 && inputHandle.partnerId !== ""
+                  inputHandle.role === "103" && inputHandle.partnerId !== ""
                     ? ""
                     : "none",
               }}

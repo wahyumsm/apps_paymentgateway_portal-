@@ -305,9 +305,13 @@ export default (props) => {
       if (!access_token) {
         history.push('/login');
       }
-      dispatch(GetUserDetail("/Account/GetUserProfile"));
-      GetBalanceHandle()
-      listRiwayatTopUp()
+      dispatch(GetUserDetail("/Account/GetUserProfile"));     
+      console.log(user_role, "cek userrole");
+      if (user_role === "102") {
+        console.log('masuk user role');
+        GetBalanceHandle()
+        listRiwayatTopUp()
+      }
     }, [showModalTopUp])
 
   async function logoutHandler() {

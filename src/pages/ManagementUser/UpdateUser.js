@@ -35,7 +35,7 @@ function UpdateUser() {
     function handleChangeToPartner (e) {
         setInputHandle({
             ...inputHandle,
-            [e.target.name] : e.target.value
+            [e.target.name] : parseInt(e.target.value)
         })
     }
 
@@ -122,7 +122,7 @@ function UpdateUser() {
                     { data: "" },
                     { headers: headers }
                 );
-                // console.log(listRole, "ini role");
+                console.log(listRole, "ini role");
                 if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length === 0) {
                     setListRole(listRole.data.response_data);
                 } else if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length !== 0) {
@@ -187,12 +187,11 @@ function UpdateUser() {
                 history.push(errorCatch(error.response.status))
             }
         }
-
         useEffect(() => {
             if (!access_token) {
                 history.push("/login");
             }
-            if (user_role === 102) {
+            if (user_role === "102") {
                 history.push('/404');
             }
             getDetailUser(muserId);

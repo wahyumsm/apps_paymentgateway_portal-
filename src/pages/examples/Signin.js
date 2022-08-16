@@ -36,7 +36,7 @@ export default () => {
           'Authorization' : auth
       }
       const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
-      // console.log(userDetail.data, "userDetail di login");
+      console.log(userDetail.data, "userDetail di login");
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         setRoleSession(userDetail.data.response_data.muser_role_id)
         if (userDetail.data.response_data.muser_role_id === 102) {

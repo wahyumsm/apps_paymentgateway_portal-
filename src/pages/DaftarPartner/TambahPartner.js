@@ -66,7 +66,7 @@ function TambahPartner() {
         history.push('/login');
         // window.location.reload();
         }
-        if (user_role === 102) {
+        if (user_role === "102") {
             history.push('/404');
         }
     }, [access_token, user_role])
