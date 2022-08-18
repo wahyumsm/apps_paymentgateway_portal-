@@ -20,6 +20,7 @@ import {default as ReactSelect, components} from "react-select"
 import encryptData from "../../function/encryptData";
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import DateRangePicker from "@wojtekmaj/react-daterange-picker/dist/DateRangePicker";
+import context from "@themesberg/react-bootstrap/lib/esm/AccordionContext";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -61,7 +62,9 @@ export default () => {
   const [showDateFeePartner, setShowDateFeePartner] = useState("none")
   const [showDateVaPartner, setShowDateVaPartner] = useState("none")
   const [isSelected, setIsSelected] = useState(null)
-  const [pending, setPending] = useState(false)
+  const [pendingPartner, setPendingPartner] = useState(false)
+  const [pendingFee, setPendingFee] = useState(false)
+  const [pendingVa, setPendingVa] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     partnerId: "",
     periodePartnerChart: 0,
@@ -192,24 +195,6 @@ export default () => {
     }
   }
 
-  // const data = (canvas) => {
-  //   const ctx = canvas.getContext("2d");
-  //   const gradient = ctx.createLinearGradient(0, 0, 100, 0);
-
-  //   return{
-  //     labels,
-  //     datasets: [
-  //       {
-  //         label: 'Dataset 1',
-  //         backgroundColor: gradient,
-  //         fill: 'start',
-  //         data: [parseInt(Math.random() * 100), parseInt(Math.random() * 100), parseInt(Math.random() * 100), parseInt(Math.random() * 100), parseInt(Math.random() * 100), parseInt(Math.random() * 100), parseInt(Math.random() * 100)],
-  //         borderColor: 'rgb(255, 99, 132)',
-  //       },
-  //     ],
-  //   }
-  // }
-
   async function listDataPartner (url) {
     try {
         const auth = "Bearer " + getToken()
@@ -271,7 +256,7 @@ export default () => {
 
   async function partnerChartHandler(query) {
     try {
-      setPending(true)
+      setPendingPartner(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`)
       // console.log(dataParams, 'ini data params cart');
@@ -283,21 +268,21 @@ export default () => {
       // console.log(partnerChart, 'partner chart');
       if (partnerChart.status === 200 && partnerChart.data.response_code === 200 && partnerChart.data.response_new_token.length === 0) {
         setPartnerChartData(partnerChart.data.response_data)
-        setPending(false)
+        setPendingPartner(false)
       } else if (partnerChart.status === 200 && partnerChart.data.response_code === 200 && partnerChart.data.response_new_token.length !== 0) {
         setUserSession(partnerChart.data.response_new_token)
-        setPartnerChartData(partnerChart.data.response_data)
-        setPending(false)
-      }
+        setPartnerChartData([{amount: 0, date: ""}, ...partnerChart.data.response_data])
+        setPendingPartner(false)
+      } 
     } catch (error) {
       console.log(error)
-      history.push(errorCatch(error.response.status))
+      // history.push(errorCatch(error.response.status))
     }
   }
 
   async function filterPartnerChartHandler(dateId, periode, query) {
     try {
-      setPending(true)
+      setPendingPartner(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
       // console.log(dataParams, 'ini data params cart filter');
@@ -309,12 +294,12 @@ export default () => {
       // console.log(filterPartnerChart, 'partner chart handler filter');
       if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length === 0) {
         setPartnerChartData(filterPartnerChart.data.response_data)
-        setPending(false)
+        setPendingPartner(false)
       } else if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length !== 0) {
         setUserSession(filterPartnerChart.data.response_new_token)
-        setPartnerChartData(filterPartnerChart.data.response_data)
-        setPending(false)
-      }
+        setPartnerChartData([{amount: 0, date: ""}, ...filterPartnerChart.data.response_data])
+        setPendingPartner(false)
+      } 
     } catch (error) {
       console.log(error)
       history.push(errorCatch(error.response.status))
@@ -323,7 +308,7 @@ export default () => {
 
   async function feePartnerChartHandler(query) {
     try {
-      setPending(true)
+      setPendingFee(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`)
       const headers = {
@@ -334,11 +319,11 @@ export default () => {
       // console.log(feePartnerChart.data.response_data, 'partner chart');
       if (feePartnerChart.status === 200 && feePartnerChart.data.response_code === 200 && feePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData(feePartnerChart.data.response_data)
-        setPending(false)
+        setPendingFee(false)
       } else if (feePartnerChart.status === 200 && feePartnerChart.data.response_code === 200 && feePartnerChart.data.response_new_token.length !== 0) {
         setUserSession(feePartnerChart.data.response_new_token)
-        setFeePartnerChartData(feePartnerChart.data.response_data)
-        setPending(false)
+        setFeePartnerChartData([{amount: 0, date: ""}, ...feePartnerChart.data.response_data])
+        setPendingFee(false)
       }
     } catch (error) {
       console.log(error)
@@ -348,7 +333,7 @@ export default () => {
 
   async function filterFeePartnerHandler(dateId, periode, query) {
     try {
-      setPending(true)
+      setPendingFee(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
 
@@ -360,11 +345,11 @@ export default () => {
       // console.log(filterFeePartnerChart, 'fee partner handler');
       if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData(filterFeePartnerChart.data.response_data)
-        setPending(false)
+        setPendingFee(false)
       } else if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length !== 0) {
         setUserSession(filterFeePartnerChart.data.response_new_token)
-        setFeePartnerChartData(filterFeePartnerChart.data.response_data)
-        setPending(false)
+        setFeePartnerChartData([{amount: 0, date: ""}, ...filterFeePartnerChart.data.response_data])
+        setPendingFee(false)
       }
     } catch (error) {
       console.log(error)
@@ -374,7 +359,7 @@ export default () => {
 
   async function feeVaChartHandler(query) {
     try {
-      setPending(true)
+      setPendingVa(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`)
       const headers = {
@@ -385,12 +370,12 @@ export default () => {
       // console.log(feeVaChartData.data.response_data, 'partner chart');
       if (feeVaChartData.status === 200 && feeVaChartData.data.response_code === 200 && feeVaChartData.data.response_new_token.length === 0) {
         setFeeVaChartData(feeVaChartData.data.response_data)
-        setPending(false)
+        setPendingVa(false)
       } else if (feeVaChartData.status === 200 && feeVaChartData.data.response_code === 200 && feeVaChartData.data.response_new_token.length !== 0) {
         setUserSession(feeVaChartData.data.response_new_token)
-        setFeeVaChartData(feeVaChartData.data.response_data)
-        setPending(false)
-      }
+        setFeeVaChartData([{amount: 0, date: ""}, ...feeVaChartData.data.response_data])
+        setPendingVa(false)
+      } 
     } catch (error) {
       console.log(error)
       history.push(errorCatch(error.response.status))
@@ -399,7 +384,7 @@ export default () => {
 
   async function filterVaPartnerHandler(dateId, periode, query) {
     try {
-      setPending(true)
+      setPendingVa(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
       const headers = {
@@ -410,13 +395,12 @@ export default () => {
       // console.log(filterVaPartnerChart, 'fee partner handler');
       if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length === 0) {
         setFeeVaChartData(filterVaPartnerChart.data.response_data)
-        setPending(false)
+        setPendingVa(false)
       } else if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length !== 0) {
         setUserSession(filterVaPartnerChart.data.response_new_token)
-        setFeeVaChartData(filterVaPartnerChart.data.response_data)
-        setPending(false)
-      }
-      // setPending(true)
+        setFeeVaChartData([{amount: 0, date: ""}, ...filterVaPartnerChart.data.response_data])
+        setPendingVa(false)
+      } 
     } catch (error) {
       console.log(error)
       history.push(errorCatch(error.response.status))
@@ -620,13 +604,14 @@ export default () => {
               <Row className="justify-content-md-center" style={{backgroundColor: "#FFFFFF"}}>
                 <Col xs={12} className="mb-4 d-none d-sm-block">
                   <div className="div-chart">
-                    {pending ?
+                    {pendingPartner ?
                       <div className="d-flex justify-content-center align-items-center vh-100">
                         <CustomLoader />
                       </div>
                        :
                        partnerChartData.length !== 0 ?
                        <Line
+                       id="myChart"
                        className="mt-3 mb-3"
                        data={{
                          labels: partnerChartData.map(obj => obj.date),
@@ -634,9 +619,15 @@ export default () => {
                            {
                              label: null,
                              fill: true,
-                             // backgroundColor: gradient,
-                             backgroundColor: "rgba(156, 67, 223, 0.38)",
-                             borderColor: "#9C43DF",
+                             backgroundColor: (context) => {
+                              const ctx = context.chart.ctx;
+                              const gradient = ctx.createLinearGradient(0, 0, 0, 900);
+                              gradient.addColorStop(0, "rgba(7, 126, 134, 0.38)");
+                              gradient.addColorStop(0.5, "rgba(7, 126, 134, 0)");
+                              gradient.addColorStop(1, "rgba(0, 124, 194, 0.7)");
+                              return gradient;
+                             },
+                             borderColor: "#077E86",
                              pointBackgroundColor: "rgba(220, 220, 220, 1)",
                              pointBorderColor: "#9C43DF",
                              data: partnerChartData.map(obj => obj.amount)
@@ -752,7 +743,7 @@ export default () => {
                 <Row className="justify-content-md-center" style={{backgroundColor: "#FFFFFF"}}>
                   <Col xs={12} className="mb-4 d-none d-sm-block">
                     <div className="div-chart">
-                      {pending ?
+                      {pendingFee ?
                         <div className="d-flex justify-content-center align-items-center">
                           <CustomLoader />
                         </div> :
@@ -765,9 +756,15 @@ export default () => {
                             {
                               label: null,
                               fill: true,
-                              // backgroundColor: gradient,
-                              backgroundColor: "rgba(156, 67, 223, 0.38)",
-                              borderColor: "#9C43DF",
+                              backgroundColor: (context) => {
+                                const ctx = context.chart.ctx;
+                                const gradient = ctx.createLinearGradient(0, 0, 0, 900);
+                                gradient.addColorStop(0, "rgba(236, 84, 14, 0.38)");
+                                gradient.addColorStop(0.5, "rgba(236, 84, 14, 0)");
+                                gradient.addColorStop(1, "rgba(0, 124, 194, 0.7)");
+                                return gradient;
+                              },
+                              borderColor: "#EC540E",
                               pointBackgroundColor: "rgba(220, 220, 220, 1)",
                               pointBorderColor: "#9C43DF",
                               data: feePartnerChartData.map(obj => obj.amount)
@@ -881,7 +878,7 @@ export default () => {
                 <Row className="justify-content-md-center" style={{backgroundColor: "#FFFFFF"}}>
                   <Col xs={12} className="mb-4 d-none d-sm-block">
                     <div className="div-chart">
-                      {pending ?
+                      {pendingVa ?
                         <div className="d-flex justify-content-center align-items-center vh-100">
                           <CustomLoader />
                         </div> :
@@ -893,9 +890,15 @@ export default () => {
                           datasets: [
                             {
                               label: null,
-                              fill: true,
-                              // backgroundColor: gradient,
-                              backgroundColor: "rgba(156, 67, 223, 0.38)",
+                              fill: true,                              
+                              backgroundColor: (context) => {
+                                const ctx = context.chart.ctx;
+                                const gradient = ctx.createLinearGradient(0, 0, 0, 900);
+                                gradient.addColorStop(0, "rgba(156, 67, 223, 0.38)");
+                                gradient.addColorStop(0.5, "rgba(156, 67, 223, 0)");
+                                gradient.addColorStop(1, "rgba(0, 124, 194, 0.7)");
+                                return gradient;
+                              },
                               borderColor: "#9C43DF",
                               pointBackgroundColor: "rgba(220, 220, 220, 1)",
                               pointBorderColor: "#9C43DF",
