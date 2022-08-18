@@ -575,7 +575,27 @@ function RiwayatTransaksi() {
         },
     ];
 
-    const customStyles = {
+    const customStylesDanaMasuk = {
+        headCells: {
+            style: {
+                backgroundColor: '#F2F2F2',
+                border: '12px',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                display: 'flex',
+                justifyContent: 'flex-start',
+            },
+        },
+        headRow: {
+            style: {
+                borderTopStyle: 'solid',
+                borderTopWidth: '1px',
+                borderTopColor: defaultThemes.default.divider.default,
+            },
+        },
+    };
+    
+    const customStylesSettlement = {
         headCells: {
             style: {
                 backgroundColor: '#F2F2F2',
@@ -898,7 +918,7 @@ function RiwayatTransaksi() {
                         <DataTable
                             columns={columns}
                             data={dataRiwayatDanaMasuk}
-                            customStyles={customStyles}
+                            customStyles={customStylesDanaMasuk}
                             highlightOnHover
                             progressPending={pendingTransfer}
                             progressComponent={<CustomLoader />}
@@ -1022,7 +1042,7 @@ function RiwayatTransaksi() {
                         <DataTable
                             columns={columnsSettl}
                             data={dataRiwayatSettlement}
-                            customStyles={customStyles}
+                            customStyles={customStylesSettlement}
                             progressPending={pendingSettlement}
                             progressComponent={<CustomLoader />}
                             dense
