@@ -33,7 +33,6 @@
     "chartist-plugin-tooltips-updated": "^0.1.4",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.28.0",
-    "faker": "^6.6.6",
     "html2canvas": "^1.4.1",
     "jquery": "^3.6.0",
     "js-base64": "^3.7.2",
