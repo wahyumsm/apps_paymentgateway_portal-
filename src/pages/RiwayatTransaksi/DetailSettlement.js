@@ -5,9 +5,10 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
+import * as XLSX from "xlsx"
 
 function DetailSettlement() {
 
@@ -78,14 +79,18 @@ function DetailSettlement() {
         getDetailSettlement(settlementId)
     }, [settlementId])
     
-    async function ExportReportDetailSettlementHandler(params) {
-        try {
-            
-        } catch (error) {
-            console.log(error)
-            history.push(errorCatch(error.response.status))
+    function ExportReportDetailSettlementHandler(dataSettlement) {
+        const data = dataSettlement
+        let dataExcel = []
+        for (let i = 0; i < data.length; i++) {
+            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
         }
+        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+        let workBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+        XLSX.writeFile(workBook, "Detail Settlement.xlsx");
     }
+    
     
     const columnsSettl = [
         {
@@ -231,16 +236,16 @@ function DetailSettlement() {
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>
         </div>
-        {
-            dataSettlement.length !== 0 &&  
-            <div style={{ marginBottom: 30 }}>
-                {/* <Link onClick={() => ExportReportDetailSettlementHandler(inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk)} className="export-span">Export</Link> */}
-            </div>
-        }
         <div className='main-content'>
             <div className='riwayat-dana-masuk-div mt-4'>
                 <div className='base-content mt-3'>
                     <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
+                    {
+                        dataSettlement.length !== 0 &&  
+                        <div style={{ marginBottom: 30 }}>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(dataSettlement)} className="export-span">Export</Link>
+                        </div>
+                    }
                     <div className="div-table mt-4 pb-4">
                         <DataTable
                             columns={columnsSettl}
