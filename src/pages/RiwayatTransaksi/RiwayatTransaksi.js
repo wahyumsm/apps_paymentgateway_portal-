@@ -584,22 +584,22 @@ function RiwayatTransaksi() {
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                // '&:not(:last-of-type)': {
-                //     borderRightStyle: 'solid',
-                //     borderRightWidth: '1px',
-                //     borderRightColor: defaultThemes.default.divider.default,
-                // },
+                '&:not(:last-of-type)': {
+                    borderRightStyle: 'solid',
+                    borderRightWidth: '1px',
+                    borderRightColor: defaultThemes.default.divider.default,
+                },
             },
         },
-        // cells: {
-        //     style: {
-        //         '&:not(:last-of-type)': {
-        //             borderRightStyle: 'solid',
-        //             borderRightWidth: '1px',
-        //             borderRightColor: defaultThemes.default.divider.default,
-        //         },
-        //     },
-        // },
+        cells: {
+            style: {
+                '&:not(:last-of-type)': {
+                    borderRightStyle: 'solid',
+                    borderRightWidth: '1px',
+                    borderRightColor: defaultThemes.default.divider.default,
+                },
+            },
+        },
         headRow: {
             style: {
                 borderTopStyle: 'solid',
@@ -624,7 +624,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -635,7 +635,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -663,7 +663,7 @@ function RiwayatTransaksi() {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -674,7 +674,7 @@ function RiwayatTransaksi() {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -706,7 +706,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Fee Transaksi": data[i].total_partner_fee, "Fee Tax Transaksi": data[i].total_fee_tax, "Fee Bank": data[i].total_fee_bank, "Fee Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -717,7 +717,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Fee Transaksi": data[i].total_partner_fee, "Fee Tax Transaksi": data[i].total_fee_tax, "Fee Bank": data[i].total_fee_bank, "Fee Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -745,7 +745,7 @@ function RiwayatTransaksi() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Fee Transaksi": data[i].total_partner_fee, "Fee Tax Transaksi": data[i].total_fee_tax, "Fee Bank": data[i].total_fee_bank, "Fee Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -756,7 +756,7 @@ function RiwayatTransaksi() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Fee Transaksi": data[i].total_partner_fee, "Fee Tax Transaksi": data[i].total_fee_tax, "Fee Bank": data[i].total_fee_bank, "Fee Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
