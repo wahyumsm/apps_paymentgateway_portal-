@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, InputGroup, Modal, Button, Table } from '@themesberg/react-bootstrap';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Col, Row, Form, Modal, Button, Table } from '@themesberg/react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertFormatNumber, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, errorCatch, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -48,7 +46,6 @@ function TambahAgen() {
                 'Authorization' : auth
             }
             const addAgen = await axios.post(BaseURL + "/Agen/SaveAgen", { data: dataParams }, { headers: headers })
-            // console.log(addAgen);
             if (addAgen.status === 200 && addAgen.data.response_code === 200 && addAgen.data.response_new_token.length === 0) {
                 setDetailNewAgen(addAgen.data.response_data)
                 setShowModal(true)
@@ -65,17 +62,14 @@ function TambahAgen() {
 
     function successButtonHandle() {
         setShowModal(false)
-        // RouteTo("/daftaragen")
         history.push("/daftaragen")
     }
 
     useEffect(() => {
         if (!access_token) {
-            // RouteTo("/login")
         history.push('/login');
-        // window.location.reload();
         }
-    }, [])
+    }, [access_token])
     
 
     return (
@@ -115,8 +109,6 @@ function TambahAgen() {
                                 placeholder="Masukkan Nama Agen"
                                 type='text'
                                 required
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px'}}
                             />
                         </Col>
@@ -133,13 +125,11 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan Email Agen"
                                 type='email'
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px', borderColor: errorCode === 101 ? "#B9121B" : "" }}
                             />                            
                             {errorCode === 101 &&
                                 <span style={{ color: "#B9121B", fontSize: 12 }}>
-                                    <img src={noteIconRed} className="me-2" />
+                                    <img src={noteIconRed} className="me-2" alt='emailAddress' />
                                     Email sudah terdaftar menjadi agen
                                 </span>
                             }
@@ -158,13 +148,11 @@ function TambahAgen() {
                                 placeholder="Masukkan No Hp Agen"
                                 type='number'
                                 required
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px', borderColor: errorCode === 102 ? "#B9121B" : "" }}
                             />                            
                             {errorCode === 102 && 
                                 <span style={{ color: "#B9121B", fontSize: 12 }}>
-                                    <img src={noteIconRed} className="me-2" />
+                                    <img src={noteIconRed} className="me-2" alt='noHp' />
                                     No Hp sudah terdaftar menjadi agen
                                 </span>
                             }
@@ -183,8 +171,6 @@ function TambahAgen() {
                                 type='text'
                                 disabled
                                 required
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
                         </Col>
@@ -202,8 +188,6 @@ function TambahAgen() {
                                 placeholder="Masukkan No Rekening"
                                 type='number'
                                 required
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
                         </Col>
@@ -220,8 +204,6 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Pemilik Rekening"
                                 type='text'
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
                         </Col>
@@ -238,8 +220,6 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Pemilik Rekening"
                                 type='number'
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
                         </Col>

@@ -5,7 +5,7 @@ import { Image} from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -19,7 +19,6 @@ function DaftarPartner() {
     const [pending, setPending] = useState(true)
 
     function tambahPartner() {
-        // RouteTo("/tambahpartner")
         history.push("/tambahpartner")
     }
 
@@ -44,7 +43,6 @@ function DaftarPartner() {
             
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -60,7 +58,6 @@ function DaftarPartner() {
     },[access_token, user_role])
 
     function detailPartnerHandler(partnerId) {
-        // RouteTo(`/detailpartner/${partnerId}`)
         history.push(`/detailpartner/${partnerId}`)
     }
 

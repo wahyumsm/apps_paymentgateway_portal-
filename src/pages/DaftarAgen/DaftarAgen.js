@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
-import DataTable, { FilterComponent } from 'react-data-table-component';
-import { Col, Row, Button, Form, Image} from '@themesberg/react-bootstrap';
+import DataTable from 'react-data-table-component';
+import { Col, Row, Form, Image} from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, Link } from 'react-router-dom';
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -18,7 +18,6 @@ function DaftarAgen() {
   const [pending, setPending] = useState(true)
 
   function tambahAgen() {
-    // RouteTo("/tambahagen")
     history.push("/tambahagen")
   }
 
@@ -30,7 +29,6 @@ function DaftarAgen() {
         'Authorization' : auth
       }
       const listAgen = await axios.post(BaseURL + "/Agen/ListAgen", { data: "" }, { headers: headers })
-      // console.log(listAgen, "ini list agen di daftar agen")
       if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
@@ -43,13 +41,11 @@ function DaftarAgen() {
       }
     } catch (error) {
       console.log(error)
-      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
   
   function detailAgenHandler(agenId) {
-    // RouteTo(`/detailagen/${agenId}`)
     history.push(`/detailagen/${agenId}`)
   }
 
@@ -106,7 +102,6 @@ function DaftarAgen() {
 
   useEffect(() => {
     if (!access_token) {
-      // RouteTo("/login")
     history.push('/login');
   }
     getDataAgen()
@@ -129,25 +124,6 @@ function DaftarAgen() {
       <div>Loading...</div>
     </div>
   );
-
-  // const [filterText, setFilterText] = useState('');
-	// const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-  // const filteredItems = listAgen.filter(
-	// 	item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
-	// );
-
-  // const subHeaderComponentMemo = React.useMemo(() => {
-	// 	const handleClear = () => {
-	// 		if (filterText) {
-	// 			setResetPaginationToggle(!resetPaginationToggle);
-	// 			setFilterText('');
-	// 		}
-	// 	};
-
-	// 	return (
-	// 		<FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
-	// 	);
-	// }, [filterText, resetPaginationToggle]);
 
   return (
     <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
@@ -177,22 +153,16 @@ function DaftarAgen() {
             </Col>
           </Row>
         </div>
-        {/* {
-          listAgen.length === 0 ?
-          <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
-          <div className="div-table"> */}
-            <DataTable
-              columns={columns}
-              data={listAgen}
-              customStyles={customStyles}
-              noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-              pagination
-              highlightOnHover
-              progressPending={pending}
-              progressComponent={<CustomLoader />}
-            />
-          {/* </div>
-        } */}
+        <DataTable
+          columns={columns}
+          data={listAgen}
+          customStyles={customStyles}
+          noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+          pagination
+          highlightOnHover
+          progressPending={pending}
+          progressComponent={<CustomLoader />}
+        />
       </div>
     </div>
   )

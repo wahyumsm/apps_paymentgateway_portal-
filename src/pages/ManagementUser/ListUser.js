@@ -39,7 +39,6 @@ function ListUser () {
         'Authorization' : auth
       }
       const listManageUser = await axios.post(BaseURL + "/Account/ListUser", { data: "" }, { headers: headers })
-      // console.log(listManageUser, "ini data user")
       if (listManageUser.status === 200 && listManageUser.data.response_code === 200 && listManageUser.data.response_new_token.length === 0) {
         listManageUser.data.response_data = listManageUser.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, icon: <div className="d-flex justify-content-center align-items-center"><FontAwesomeIcon icon={faEye} className="me-2" style={{cursor: "pointer"}} onClick={() => menuAccessHandler(obj.muser_id)} /><FontAwesomeIcon icon={faPencilAlt} className="mx-2" style={{cursor: "pointer"}} onClick={() => detailUserHandler(obj.muser_id)} /></div> }));
         setListManageUser(listManageUser.data.response_data)
@@ -173,11 +172,6 @@ function ListUser () {
                               Cari
                             </button>
                         </Col>
-                        {/* <Col xs={6}>
-                            <button className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0 || dateRange.length !== 0 && inputHandle.namaAgen.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0 || dateRange.length === 0 && inputHandle.namaAgen.length === 0}>
-                              Atur Ulang
-                            </button>
-                        </Col> */}
                     </Row>
                 </Col>
             </Row>

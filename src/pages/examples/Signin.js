@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
@@ -36,7 +35,6 @@ export default () => {
           'Authorization' : auth
       }
       const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
-      // console.log(userDetail.data, "userDetail di login");
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         setRoleSession(userDetail.data.response_data.muser_role_id)
         if (userDetail.data.response_data.muser_role_id === 102) {
@@ -59,15 +57,12 @@ export default () => {
         'Authorization' : auth
       }
       const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
-      // console.log(dataLogin.data, "dataLogin di login");
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         userDetail(dataLogin.data.response_data.access_token)
       }
     } catch (error) {
       console.log(error);
-      // RouteTo(errorCatch(error.response.status))
-      // history.push(errorCatch(error.response.status))
     }
     
   }

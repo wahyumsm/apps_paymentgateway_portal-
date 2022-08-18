@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToCurrency, errorCatch, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./DetailAgen.css"
@@ -32,7 +32,6 @@ function DetailAgen() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -40,13 +39,11 @@ function DetailAgen() {
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
-            // window.location.reload();
         }
         getDetailAgen(agenId)
     }, [agenId])
 
     function editAgen(agenId) {
-        // RouteTo(`/editagen/${agenId}`)
         history.push(`/editagen/${agenId}`)
     }
     
@@ -55,7 +52,6 @@ function DetailAgen() {
             <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
             <div className="head-title">
                 <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
-                {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
             </div>
             <div className='base-content' style={{ width:"93%", padding: 50 }}>
                 <div>

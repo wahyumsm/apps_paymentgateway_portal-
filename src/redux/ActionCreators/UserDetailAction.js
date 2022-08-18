@@ -1,11 +1,8 @@
 import { FETCH_GETUSERDETAIL } from "../ActionType/ActionTypes";
 import axios from "axios";
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from "../../function/helpers";
-import { useHistory } from "react-router-dom";
-
+import { BaseURL, getToken, setUserSession } from "../../function/helpers";
 
 export const GetUserDetail = (url) => {
-    // const history = useHistory()
     return async (dispatch) => {
         try {
             const auth = "Bearer " + getToken()
@@ -32,8 +29,6 @@ export const GetUserDetail = (url) => {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
-            // history.push(errorCatch(error.response.status))
         }
     }
 }

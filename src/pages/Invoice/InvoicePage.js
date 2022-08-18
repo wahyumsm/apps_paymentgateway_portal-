@@ -19,11 +19,9 @@ function InvoicePage() {
 
     function pickDateSettlement(item) {
         setStateSettlement(item)
-        // console.log(item, 'ini item');
         if (item !== null) {
             item = item.map(el => el.toLocaleDateString('en-CA'))
             setDateRangeSettlement(item)
-            // console.log(item, 'ini item2');
         }
     }
 
@@ -36,7 +34,6 @@ function InvoicePage() {
                 'Authorization': auth
             }
             const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
-            // console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoice(invoiceData.data.response_data)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
@@ -78,7 +75,6 @@ function InvoicePage() {
             <div className='main-content'>
                 <div className='riwayat-dana-masuk-div mt-4'>
                     <div className='base-content mt-3 mb-3'>
-                        {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span> */}
                         <Row className='mb-4'>
                             <Col xs={8} className="d-flex justify-content-start align-items-center">
                                 <span className='me-3'>Periode*</span>

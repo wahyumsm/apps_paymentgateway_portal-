@@ -3,10 +3,10 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
-import { useHistory, useParams } from 'react-router-dom';
-import { el } from 'date-fns/locale';
+import { useHistory } from 'react-router-dom';
+// import { el } from 'date-fns/locale';
 function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
@@ -30,7 +30,6 @@ function DetailAkun() {
                 'Authorization' : auth
             }
             const userDetailPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
-            // console.log(userDetailPartner, 'ini data user ');
             if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length === 0) {
                 setDataAkun(userDetailPartner.data.response_data)
             } else if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length !== 0) {
@@ -40,7 +39,6 @@ function DetailAkun() {
             
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -53,17 +51,13 @@ function DetailAkun() {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"mpartner_id":"${id}", "callback_url":"${callbackUrl}"}`)
-            // console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
             const editCallback = await axios.post(BaseURL + "/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
-            // console.log(editCallback, 'ini add Callback');
             if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
-                // RouteTo('/detailakun')
                 history.push("/detailakun")
-                // alert("Edit Data Partner Berhasil Ditambahkan")
             } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
                 setUserSession(editCallback.data.response_new_token)
                 history.push("/detailakun")
@@ -72,7 +66,6 @@ function DetailAkun() {
             alert("Edit URL Berhasil")
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }

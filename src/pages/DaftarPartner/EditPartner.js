@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row } from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
@@ -59,9 +59,7 @@ function EditPartner() {
                 'Authorization' : auth
             }
             const detailPartner = await axios.post(BaseURL + "/Partner/EditPartner", { data: dataParams }, { headers: headers })
-            // console.log(detailPartner, 'ini detail partner');
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
-                // console.log(detailAgen.data.response_data, 'ini detail agen');
                 if (detailPartner.data.response_data.mpartner_is_active === true) {
                     detailPartner.data.response_data = {
                         ...detailPartner.data.response_data,
@@ -91,7 +89,6 @@ function EditPartner() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -107,7 +104,6 @@ function EditPartner() {
           name: 'ID Agen',
           selector: row => row.agen_id,
           sortable: true,
-        //   cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
         },
         {
           name: 'Nama Agen',
@@ -194,17 +190,13 @@ function EditPartner() {
             }
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"mpartner_id":"${id}", "mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "mpartner_fee": ${fee}, "mpartnerdtl_settlement_fee": ${settlementFee}}`)
-            // console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
             const editPartner = await axios.post(BaseURL + "/Partner/UpdatePartner", { data: dataParams }, { headers: headers })
-            // console.log(editPartner, 'ini add partner');
             if(editPartner.status === 200 && editPartner.data.response_code === 200 && editPartner.data.response_new_token.length === 0) {
-                // RouteTo('/daftarpartner')
                 history.push("/daftarpartner")
-                // alert("Edit Data Partner Berhasil Ditambahkan")
             } else if(editPartner.status === 200 && editPartner.data.response_code === 200 && editPartner.data.response_new_token.length !== 0) {
                 setUserSession(editPartner.data.response_new_token)
                 history.push("/daftarpartner")
@@ -213,7 +205,6 @@ function EditPartner() {
             alert("Edit Data Partner Berhasil")
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -223,13 +214,11 @@ function EditPartner() {
         try {
           const auth = "Bearer " + getToken()
           const dataParams = encryptData(`{"partner_id":"${partnerId}"}`)
-        //   console.log(dataParams, 'ini data params');
           const headers = {
             'Content-Type':'application/json',
             'Authorization' : auth
           }
           const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", { data: dataParams }, { headers: headers })
-        //   console.log(listAgen, 'ini data agen');
           if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
@@ -239,14 +228,12 @@ function EditPartner() {
           }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
 
     useEffect(() => {
         if (!access_token) {
-            // RouteTo('/login')
             history.push('/login');
         }
         if (user_role === "102") {
@@ -268,7 +255,6 @@ function EditPartner() {
     };
 
     function detailAgenHandler(agenId) {
-        // RouteTo(`/detailagen/${agenId}`)
         history.push(`/detailagen/${agenId}`)
     }
 
@@ -486,11 +472,6 @@ function EditPartner() {
                             noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                             pagination
                             highlightOnHover
-                            // paginationResetDefaultPage={resetPaginationToggle}
-                            // subHeader
-                            // subHeaderComponent={subHeaderComponentMemo}
-                            // selectableRows
-                            // persistTableHead
                             onRowClicked={(listAgen) => {
                                 detailAgenHandler(listAgen.agen_id)
                             }}

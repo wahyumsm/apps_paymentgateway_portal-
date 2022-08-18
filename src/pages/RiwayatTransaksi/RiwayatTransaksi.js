@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image, Modal, Container} from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-// import { invoiceItems } from '../../data/tables';
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
@@ -122,8 +121,6 @@ function RiwayatTransaksi() {
     }
 
     function handlePageChangeDanaMasuk(page) {
-        // console.log(page, 'ini di gandle change page');
-        // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
         if (isFilterDanaMasuk) {
             setActivePageDanaMasuk(page)
             filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0)
@@ -134,7 +131,6 @@ function RiwayatTransaksi() {
     }
 
     function handlePageChangeSettlement(page) {
-        // console.log(page, 'ini di gandle change page');
         if (isFilterSettlement) {
             setActivePageSettlement(page)
             filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0)
@@ -181,7 +177,6 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const dataRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
@@ -198,7 +193,6 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -212,7 +206,6 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const dataRiwayatSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
@@ -231,7 +224,6 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -257,16 +249,13 @@ function RiwayatTransaksi() {
             setPendingTransfer(true)
             setIsFilterDanaMasuk(true)
             setActivePageDanaMasuk(page)
-            // console.log(page, 'ini di function filter');
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
-            // console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const filterRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
@@ -283,7 +272,6 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -295,13 +283,11 @@ function RiwayatTransaksi() {
             setActivePageSettlement(page)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
-            // console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(filterSettlement, 'ini filter data settlement');
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberSettlement(filterSettlement.data.response_data)
@@ -320,7 +306,6 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
     }
@@ -354,7 +339,6 @@ function RiwayatTransaksi() {
 
     useEffect(() => {
         if (!access_token) {
-            // RouteTo("/login")
             history.push('/login');
         }
         if (user_role === "102") {
@@ -374,7 +358,6 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const detailListTransfer = await axios.post(BaseURL + "/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
-            // console.log(detailListTransfer, 'ini detail list transfer');
             if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length === 0) {
                 setDetailTransferDana(detailListTransfer.data.response_data)
                 setShowModalDetailTransferDana(true)
@@ -385,19 +368,10 @@ function RiwayatTransaksi() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
 
-    // function detailListSettlement(settlementId) {
-    //     console.log(settlementId, 'ini settlementId');
-    //     const date = new Date(createDate.slice(8,17).split('/').reverse().join('-')).toLocaleDateString('en-CA')
-    //     history.push(`/detailsettlement/${settlementId}`)
-    // }
-
-    // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
-    
     const columns = [
         {
             name: 'No',
@@ -409,37 +383,30 @@ function RiwayatTransaksi() {
             selector: row => row.tvatrans_trx_id,
             width: "120px",
             cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
-        // sortable: true
         },
         {
             name: 'Waktu',
             selector: row => row.tvatrans_crtdt_format,
-            // sortable: true,          
             width: "143px",
         },
         {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
-            // sortable: true
             width: "150px",
         },
         {
             name: 'Nama Agen',
             selector: row => row.mpartnerdtl_sub_name,
-            // sortable: true,
             width: "150px",
         },
         {
             name: 'No VA',
             selector: row => row.tvatrans_va_number,
-            // sortable: true,
             width: "173px"
         },
         {
             name: 'Jumlah Diterima',
             selector: row => row.tvatrans_amount,
-            // width: "130px",
-            // sortable: true
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ convertToRupiah(row.tvatrans_amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
@@ -447,7 +414,6 @@ function RiwayatTransaksi() {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
             width: "150px",
-            // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
@@ -475,82 +441,63 @@ function RiwayatTransaksi() {
             name: 'No',
             selector: row => row.number,
             width: "57px",
-            // style: { justifyContent: "center", }
         },
         {
             name: 'ID Transaksi',
             selector: row => row.tvasettl_code,
-            // sortable: true
             width: "224px",
             cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
-            // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
         {
             name: 'Waktu',
             selector: row => row.tvasettl_crtdt_format,
-            // style: { justifyContent: "center", },
             width: "150px",
-            // sortable: true,
         },
         {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             width: "224px",
-            // sortable: true,
         },
         {
             name: 'Nominal Settlement',
             selector: row => convertToRupiah(row.tvasettl_amount),
-            // sortable: true,
             width: "224px",
-            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Total Transaksi',
             selector: row => row.total_trx,
-            // sortable: true,
             width: "224px",
-            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Fee Transaksi',
             selector: row => convertToRupiah(row.total_partner_fee),
-            // sortable: true,
             width: "224px",
-            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Fee Tax Transaksi',
             selector: row => convertToRupiah(row.total_fee_tax),
-            // sortable: true,
             width: "224px",
-            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Fee Bank',
             selector: row => convertToRupiah(row.total_fee_bank),
-            // sortable: true,
             width: "224px",
-            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Fee Settlement',
             selector: row => convertToRupiah(row.tvasettl_fee),
-            // sortable: true,
             width: "224px",
-            // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
             width: "140px",
-            // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
@@ -671,7 +618,6 @@ function RiwayatTransaksi() {
                 try {
                     const auth = 'Bearer ' + getToken();
                     const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
-                    // console.log(dataParams, 'ini data params filter');
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -719,7 +665,6 @@ function RiwayatTransaksi() {
                         'Authorization': auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportFilter, 'ini data filter settlement');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
@@ -758,7 +703,6 @@ function RiwayatTransaksi() {
                         'Authorization': auth
                     }
                     const dataExportSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportSettlement, 'ini data settlement di export');
                     if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length === 0) {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
@@ -797,9 +741,6 @@ function RiwayatTransaksi() {
         </div>
     );
 
-    // console.log(dataRiwayatDanaMasuk, "ini data dana masuk");
-    // console.log(inputHandle.periodeDanaMasuk, "ini data settlement");
-
   return (
     <div className="content-page mt-6">
         <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Transaksi</span>
@@ -815,7 +756,6 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>ID Transaksi</span>
                             <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
-                            {/* <input type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>            */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Partner</span>
@@ -851,14 +791,8 @@ function RiwayatTransaksi() {
                                 <option>Pilih Status</option>
                                 <option value={2}>Berhasil</option>
                                 <option value={1}>In Progress</option>
-                                {/* <option value={3}>Refund</option> */}
-                                {/* <option value={4}>Canceled</option> */}
                                 <option value={7}>Menunggu Pembayaran</option>
-                                {/* <option value={8}>Paid</option> */}
                                 <option value={9}>Kadaluwarsa</option>
-                                {/* <option value={10}>Withdraw</option> */}
-                                {/* <option value={11}>Idle</option> */}
-                                {/* <option value={15}>Expected Success</option> */}
                             </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "30%" : "40%" }}>
@@ -877,7 +811,6 @@ function RiwayatTransaksi() {
                                     onChange={pickDateDanaMasuk}
                                     value={stateDanaMasuk}
                                     clearIcon={null}
-                                    // calendarIcon={null}
                                 />
                             </div>
                         </Col>
@@ -920,7 +853,6 @@ function RiwayatTransaksi() {
                             highlightOnHover
                             progressPending={pendingTransfer}
                             progressComponent={<CustomLoader />}
-                            // pagination
                         />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
@@ -958,8 +890,6 @@ function RiwayatTransaksi() {
                                     })
                                 }
                             </Form.Select>
-                            {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaPartnerSettlement} name="namaPartnerSettlement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/> */}
-                            {/* <input type='text'className='input-text-ez' placeholder='Masukkan Nama Partner'/> */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Status</span>
@@ -967,14 +897,8 @@ function RiwayatTransaksi() {
                                 <option>Pilih Status</option>
                                 <option value={2}>Berhasil</option>
                                 <option value={1}>In Progress</option>
-                                {/* <option value={3}>Refund</option> */}
-                                {/* <option value={4}>Canceled</option> */}
                                 <option value={7}>Menunggu Pembayaran</option>
-                                {/* <option value={8}>Paid</option> */}
                                 <option value={9}>Kadaluwarsa</option>
-                                {/* <option value={10}>Withdraw</option> */}
-                                {/* <option value={11}>Idle</option> */}
-                                {/* <option value={15}>Expected Success</option> */}
                             </Form.Select>
                         </Col>
                     </Row>
@@ -995,7 +919,6 @@ function RiwayatTransaksi() {
                                     onChange={pickDateSettlement}
                                     value={stateSettlement}
                                     clearIcon={null}
-                                    // calendarIcon={null}
                                 />
                             </div>
                         </Col>
@@ -1044,8 +967,6 @@ function RiwayatTransaksi() {
                             progressPending={pendingSettlement}
                             progressComponent={<CustomLoader />}
                             dense
-                            // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                            // pagination
                         />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>

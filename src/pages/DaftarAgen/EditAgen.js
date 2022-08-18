@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, Modal, Button, InputGroup } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Modal, Button } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertFormatNumber, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, errorCatch, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import "./EditAgen.css"
@@ -53,7 +53,6 @@ function EditAgen() {
                 'Authorization' : auth
             }
             const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
-            // console.log(detailAgen, 'ini detail agen');
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
                 if (detailAgen.data.response_data.status === true) {
                     detailAgen.data.response_data = {
@@ -68,7 +67,6 @@ function EditAgen() {
                 }
                 const dataDetail = detailAgen.data.response_data
                 setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
-                // setDetailAgen(detailAgen.data.response_data)
             } else if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length !== 0) {
                 setUserSession(detailAgen.data.response_new_token)
                 if (detailAgen.data.response_data.status === true) {
@@ -84,11 +82,9 @@ function EditAgen() {
                 }
                 const dataDetail = detailAgen.data.response_data
                 setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
-                // setDetailAgen(detailAgen.data.response_data)
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -102,7 +98,6 @@ function EditAgen() {
                 'Authorization' : auth
             }
             const editAgen = await axios.post(BaseURL + "/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
-            // console.log(editAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
                 setShowModalEdit(true)
             } else if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length !== 0) {
@@ -111,21 +106,18 @@ function EditAgen() {
             }
         } catch (error) {
             console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
 
     const goDetail = () => {
         updateDetailAgen(agenId, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active, inputHandle.nominal)  
-        // RouteTo("/daftaragen")
         history.push("/daftaragen")        
         setShowModalEdit(false)       
     }
 
     const batalEdit = () => {
         setShowModalBatalEdit(false)
-        // RouteTo("/daftaragen")
         history.push("/daftaragen")
     }
 
@@ -140,20 +132,16 @@ function EditAgen() {
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
-            // window.location.reload();
         }
         getDetailAgen(agenId)
     }, [access_token, agenId])
     
-    // console.log(inputHandle.nominal, 'ini detail agen dari input handle');
-
     return (
         <>
             <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
                 <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
                 <div className="head-title">
                     <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
-                    {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
                 </div>
                 <div className='base-content' style={{ width:"93%", padding: 50 }}>
                     <div>
@@ -308,7 +296,6 @@ function EditAgen() {
                                         type='text'
                                         style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                         onFocus={() => setEdit(!edit)}
-                                        // readOnly
                                     />
                                 }
                             </Col>

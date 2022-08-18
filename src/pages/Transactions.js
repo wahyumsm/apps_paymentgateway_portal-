@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCheck, faCog, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Form, Modal, Button, Table, ButtonGroup, Breadcrumb, InputGroup, Dropdown, Container, Image } from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
-// import { Chart } from 'react-chartjs-2';
-// import { invoiceItems } from '../data/tables';
 import DataTable from 'react-data-table-component';
-// import { TransactionsTable } from "../components/Tables";
 import { BaseURL, convertToRupiah, errorCatch, getToken, RouteTo, setUserSession } from "../function/helpers";
 import axios from "axios";
 import encryptData from "../function/encryptData";
 import * as XLSX from "xlsx"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
-// import { addDays } from "date-fns";
 import "./Transactions.css";
 import {Line} from 'react-chartjs-2'
 import { max } from "date-fns";
@@ -90,7 +84,6 @@ export default () => {
       }
     } catch (error) {
       console.log(error)
-      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
@@ -104,7 +97,6 @@ export default () => {
         'Authorization' : auth
       }
       const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
-      // console.log(dataSettlement, "ini data settlement");
       if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
         dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(dataSettlement.data.response_data)
@@ -117,7 +109,6 @@ export default () => {
       }
     } catch (error) {
       console.log(error)
-      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
@@ -131,7 +122,6 @@ export default () => {
         'Authorization' : auth
       }
       const dataChartTransfer = await axios.post(BaseURL + "/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
-      // console.log(dataChartTransfer, 'ini data chart transfer ');
       if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length === 0) {
         dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setDataChartTransfer(dataChartTransfer.data.response_data)
@@ -146,25 +136,16 @@ export default () => {
     }
   }
 
-//   var chart    = document.getElementById('chart').getContext('2d'),
-//     gradient = chart.createLinearGradient(0, 0, 0, 450);
-
-// gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)');
-// gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
-// gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
-
   async function filterTransferButtonHandle(idTransaksi, namaAgen, periode, status) {
     try {
       setPendingSettlement(true)
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
-      // console.log(dataParams, "ini data params dana masuk filter");
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const filterTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
-      // console.log(filterTransferDana, "ini data filter transfer dana");
       if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token.length === 0) {
         filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(filterTransferDana.data.response_data.list)
@@ -177,13 +158,11 @@ export default () => {
       }
     } catch (error) {
       console.log(error)
-      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
 
   async function filterSettlementButtonHandle(idTransaksi, periode, status) {
-    // console.log("ini filter settlement");
     try {
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
@@ -192,7 +171,6 @@ export default () => {
         'Authorization' : auth
       }
       const filterSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
-      // console.log(filterSettlement, "ini data filter settlement");
       if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
         filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(filterSettlement.data.response_data)
@@ -203,7 +181,6 @@ export default () => {
       }
     } catch (error) {
       console.log(error)
-      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
@@ -231,7 +208,6 @@ export default () => {
 
   useEffect(() => {
     if (!access_token) {
-      // RouteTo("/login")
       history.push('/login');
     }
     getListTransferDana(oneMonthAgo, currentDate)
@@ -258,7 +234,6 @@ export default () => {
       }
     } catch (error) {
       console.log(error)
-      // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status))
     }
   }
@@ -273,22 +248,18 @@ export default () => {
         name: 'ID Transaksi',
         selector: row => row.id,
         cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
-        // sortable: true
     },
     {
         name: 'Waktu',
         selector: row => row.created_at,
-        // sortable: true
     },
     {
         name: 'Nama Agen',
         selector: row => row.name,
-        // sortable: true
     },
     {
         name: 'Total Akhir',
         selector: row => row.amount,
-        // sortable: true,
         cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
         style: { display: "flex", flexDirection: "row", justifyContent: "center", }
     },
@@ -296,7 +267,6 @@ export default () => {
         name: 'Status',
         selector: row => row.status,
         width: "150px",
-        // sortable: true,
         style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
         conditionalCellStyles: [
           {
@@ -317,19 +287,6 @@ export default () => {
           }
         ],
     },
-    // {
-    //   name: 'Action',
-    //   width: "230px",
-    // //   cell:(row) => 
-    // //     <>
-    // //     <img alt="" src={DeleteIcon} onClick={() => openDeleteModal(row.partner_id)}/>&nbsp;&nbsp;&nbsp;&nbsp;
-    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, true)}>Ubah</span>&nbsp;&nbsp;&nbsp;&nbsp;
-    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, false)}>Detail</span>
-    // //     </>,
-    //   ignoreRowClick: true,
-    //   allowOverflow: true,
-    //   button: true
-    // }
   ];
 
   const columnsSettlement = [
@@ -342,24 +299,20 @@ export default () => {
         name: 'ID Transaksi',
         selector: row => row.tvasettl_code,
         width: "251px"
-        // sortable: true
     },
     {
         name: 'Waktu',
         selector: row => row.tvasettl_crtdt,
-        // sortable: true
     },
     {
         name: 'Jumlah',
         selector: row => row.tvasettl_amount,
-        // sortable: true,
         cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>
     },
     {
         name: 'Status',
         selector: row => row.mstatus_name,
         width: "127px",
-        // sortable: true,
         style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: 6, margin: "6px 16px", width: "50%", borderRadius: 4 },
         conditionalCellStyles: [
           {
@@ -524,14 +477,8 @@ export default () => {
                       <option defaultValue value={0}>Pilih Status</option>
                       <option value={2}>Success</option>
                       <option value={1}>In Progress</option>
-                      {/* <option value={3}>Refund</option> */}
-                      {/* <option value={4}>Canceled</option> */}
                       <option value={7}>Waiting For Payment</option>
-                      {/* <option value={8}>Paid</option> */}
                       <option value={9}>Payment Expired</option>
-                      {/* <option value={10}>Withdraw</option> */}
-                      {/* <option value={11}>Idle</option> */}
-                      {/* <option value={15}>Expected Success</option> */}
                     </Form.Select>
                 </Col>
             </Row>
@@ -542,7 +489,6 @@ export default () => {
                       onChange={pickDateDanaMasuk}
                       value={stateDanaMasuk}
                       clearIcon={null}
-                      // calendarIcon={null}
                     />
                 </Col>
             </Row>
@@ -657,7 +603,6 @@ export default () => {
                         onChange={pickDateSettlement}
                         value={stateSettlement}
                         clearIcon={null}
-                        // calendarIcon={null}
                       />
                 </Col>
                 <Col xs={4}>
@@ -709,7 +654,6 @@ export default () => {
                     data={listSettlement}
                     customStyles={customStyles}
                     pagination
-                    // highlightOnHover
                     progressPending={pendingSettlement}
                     progressComponent={<CustomLoader />}
                 />

@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faCog,
-  faEnvelopeOpen,
-  faSearch,
-  faSignOutAlt,
-  faUserShield,
-} from "@fortawesome/free-solid-svg-icons";
-import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
+// import {
+//   faBell,
+//   faCog,
+//   faEnvelopeOpen,
+//   faSearch,
+//   faSignOutAlt,
+//   faUserShield,
+// } from "@fortawesome/free-solid-svg-icons";
+// import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import {
   Row,
   Col,
@@ -19,9 +19,8 @@ import {
   Dropdown,
   Container,
   ListGroup,
-  InputGroup,
   Modal,
-  Button, Table, Alert, Toast
+  Button, Table, Toast
 } from "@themesberg/react-bootstrap";
 
 import NOTIFICATIONS_DATA from "../data/notifications";
@@ -30,20 +29,20 @@ import iconDetailAkun from "../assets/icon/detail_akun_icon.svg";
 import userIcon from "../assets/icon/akun_icon.svg";
 import logoutIcon from "../assets/icon/logout_icon.svg";
 import topUpSaldoIcon from "../assets/icon/top_up_saldo_icon.svg";
-import noteIcon from "../assets/icon/note_icon.svg";
+// import noteIcon from "../assets/icon/note_icon.svg";
 import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, convertDateTimeStamp, convertFormatNumber, setUserSession } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
-import DropdownToggle from "@themesberg/react-bootstrap/lib/esm/DropdownToggle";
+// import DropdownToggle from "@themesberg/react-bootstrap/lib/esm/DropdownToggle";
 import { agenLists } from "../data/tables";
 import DataTable from "react-data-table-component";
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
-import checklistCircle from '../assets/img/icons/checklist_circle.svg';
+// import checklistCircle from '../assets/img/icons/checklist_circle.svg';
 import CopyIcon from '../assets/icon/carbon_copy.svg'
 import Jam from '../assets/icon/jam_icon.svg'
 import noticeIcon from '../assets/icon/notice_icon.svg'
@@ -96,7 +95,7 @@ export default (props) => {
   const [dateNow, setDateNow] = useState(0)
   const [ topUpResult, setTopUpResult ] = useState({})
   const [iconGagal, setIconGagal] = useState(false)
-  const [uploadGagal, setUploadGagal] = useState(false)
+  // const [uploadGagal, setUploadGagal] = useState(false)
 
   function handleChange(e) {
     setInputHandle({
@@ -121,12 +120,12 @@ export default (props) => {
     hiddenFileInput.current.click();
   };
   
-  const handleFileChange = (event) => {
-    let dataImage = {
-      SlipPaymentFile: event.target.files[0],
-    };
-    setImageTopUp(dataImage);
-  };
+  // const handleFileChange = (event) => {
+  //   let dataImage = {
+  //     SlipPaymentFile: event.target.files[0],
+  //   };
+  //   setImageTopUp(dataImage);
+  // };
 
   const toHistoryBalance = () => {
     history.push('/riwayattopup')
@@ -162,16 +161,12 @@ export default (props) => {
           'Authorization': auth,
         };
         const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
-        // console.log(topUpBalance, 'ini topup balance ya');
         if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
           setTopUpBalance(topUpBalance.data.response_data)
           const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
           const convertTimeStamps = new Date(timeStamps).getTime()
           const date = Date.now()
           const countDown = convertTimeStamps - date
-          // console.log(date)
-          // console.log(convertTimeStamps)
-          // console.log(countDown);
           setDateNow(date)
           setCountDown(countDown)
           setShowModalTopUp(false)
@@ -196,7 +191,6 @@ export default (props) => {
               'Authorization' : auth
           }
           const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
-          // console.log(topUp, 'ini topup');
           if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
             setTopUpResult(topUpResult.data.response_data)
             setShowModalKonfirmasiTopUp(false)
@@ -213,47 +207,6 @@ export default (props) => {
         }
       }
 
-  // async function topUpHandle(imageTopUp, amount, reffNo) {
-  //   try {
-  //       if (inputHandle.reffNo.length === 0 || inputHandle.reffNo === undefined) {
-  //         setIconGagal(true)
-  //       } else {
-  //         setIconGagal(false)
-  //       }
-  //       if (Object.keys(imageTopUp).length === 0) {
-  //         setUploadGagal(true)
-  //       } else {
-  //         setUploadGagal(false)
-  //       }
-  //       const auth = "Bearer " + getToken()        
-  //       var formData = new FormData()
-  //       formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
-  //       formData.append('amount', amount)
-  //       formData.append('reffNo', reffNo)
-  //       // for (var pair of formData.entries()) {
-  //       //     console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
-  //       // }
-  //       const headers = {
-  //           'Content-Type':'multipart/form-data',
-  //           'Authorization' : auth
-  //       }
-  //       const topUp = await axios.post("/Partner/TopupConfirmation", formData, { headers: headers })
-  //       // console.log(topUp, 'ini topup');
-  //       if(topUp.status === 200 && topUp.data.response_code === 200) {
-  //         setTopUpResult(topUp.data.response_data.results)
-  //         setShowModalTopUp(false)
-  //         setShowModalKonfirmasiTopUp(true)
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //       if (error.response.status === 401) {
-  //           history.push('/login')
-  //       } else if (error.response.status === 400) {
-  //         alert("Top Up Gagal")
-  //       }
-  //     }
-  //   }
-
     async function GetBalanceHandle () {
       try {
           const auth = "Bearer " + getToken()
@@ -262,9 +215,7 @@ export default (props) => {
               'Authorization' : auth
           }
           const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
-          // console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
-              // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
           } else if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length !== 0) {
             setUserSession(getBalance.data.response_new_token)
@@ -285,7 +236,6 @@ export default (props) => {
               'Authorization' : auth
           }
           const listRiwayat = await axios.post(BaseURL + "/partner/TopUpHistory", { data: "" }, { headers: headers })
-          // console.log(listRiwayat, 'ini data user ');
           if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setListRiwayat(listRiwayat.data.response_data)
@@ -310,7 +260,7 @@ export default (props) => {
         GetBalanceHandle()
         listRiwayatTopUp()
       }
-    }, [showModalTopUp])
+    }, [access_token, user_role]);
 
   async function logoutHandler() {
     try {
@@ -572,19 +522,10 @@ export default (props) => {
                   <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} /> :
                   <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={convertFormatNumber(inputHandle.amounts)} />
                 }
-                {/* {getBalance.topupAmount_temp !== 0 ?
-                  <>
-                    <div style={{ color: "#383838", fontSize: 12 }} className="mt-1">
-                      <img src={noteIcon} className="me-2" />
-                      Update nominal top up sebesar {convertToRupiah(getBalance.topupAmount_temp)} akan di update besok
-                    </div>
-                  </> :
-                  " "
-                } */}
                 {iconGagal === true && 
                   <>
                     <div style={{ color: "#B9121B", fontSize: 12 }}>
-                      <img src={noteIconRed} className="me-2" />
+                      <img src={noteIconRed} className="me-2" alt="nominalTopUp" />
                       Nominal Top Up wajib diisi
                     </div>
                   </>
