@@ -76,7 +76,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+      const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
 
       if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token.length === 0) {
         listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
@@ -103,7 +103,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
+      const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
       // console.log(dataSettlement, "ini data settlement");
       if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
         dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
@@ -130,7 +130,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataChartTransfer = await axios.post(BaseURL + "/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
+      const dataChartTransfer = await axios.post("/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
       // console.log(dataChartTransfer, 'ini data chart transfer ');
       if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length === 0) {
         dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
@@ -163,7 +163,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const filterTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+      const filterTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
       // console.log(filterTransferDana, "ini data filter transfer dana");
       if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token.length === 0) {
         filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
@@ -191,7 +191,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const filterSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
+      const filterSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
       // console.log(filterSettlement, "ini data filter settlement");
       if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
         filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
@@ -247,7 +247,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const detailTransaksi = await axios.post(BaseURL + "/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
+      const detailTransaksi = await axios.post("/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
       if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200 && detailTransaksi.data.response_new_token.length === 0) {
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)
