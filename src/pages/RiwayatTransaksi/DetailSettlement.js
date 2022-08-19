@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
+import { Image } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
@@ -8,6 +8,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import * as XLSX from "xlsx"
+import Pagination from "react-js-pagination";
 
 function DetailSettlement() {
 
@@ -17,31 +18,43 @@ function DetailSettlement() {
     const { settlementId } = useParams();
     const [dataSettlement, setDataSettlement] = useState([])
     const [pendingSettlement, setPendingSettlement] = useState(false)
+    const [totalPageDetailSettlement, setTotalPageDetailSettlement] = useState(0)
+    const [activePageDetailSettlement, setActivePageDetailSettlement] = useState(1)
+    const [pageNumberDetailSettlement, setPageNumberDetailSettlement] = useState({})
 
-    async function getDetailSettlement(settlementId) {
+    async function getDetailSettlement(settlementId, currentPage) {
         try {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page":1, "row_per_page":10 }`);
+            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length === 0) {
-                detailsettlement.data.response_data = detailsettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-                setDataSettlement(detailsettlement.data.response_data)
+                detailsettlement.data.response_data.results = detailsettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                setPageNumberDetailSettlement(detailsettlement.data.response_data)
+                setTotalPageDetailSettlement(detailsettlement.data.response_data.max_page)
+                setDataSettlement(detailsettlement.data.response_data.results)
                 setPendingSettlement(false)
             } else if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length !== 0) {
-                detailsettlement.data.response_data = detailsettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                detailsettlement.data.response_data.results = detailsettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setUserSession(detailsettlement.data.response_new_token)
-                setDataSettlement(detailsettlement.data.response_data)
+                setPageNumberDetailSettlement(detailsettlement.data.response_data)
+                setTotalPageDetailSettlement(detailsettlement.data.response_data.max_page)
+                setDataSettlement(detailsettlement.data.response_data.results)
                 setPendingSettlement(false)
             }
         } catch (error) {
             console.log(error)
             history.push(errorCatch(error.response.status))
         }
+    }
+
+    function handlePageChangeDetailSettlement(page) {
+        setActivePageDetailSettlement(page)
+        getDetailSettlement(settlementId, page)
     }
 
     useEffect(() => {
@@ -54,18 +67,42 @@ function DetailSettlement() {
         getDetailSettlement(settlementId)
     }, [settlementId])
     
-    function ExportReportDetailSettlementHandler(dataSettlement) {
-        const data = dataSettlement
-        let dataExcel = []
-        for (let i = 0; i < data.length; i++) {
-            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+    async function ExportReportDetailSettlementHandler(settlementId) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": 1, "row_per_page": 1000000 }`);
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const dataDetailSettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length === 0) {
+                const data = dataDetailSettlement.data.response_data.results
+                let dataExcel = []
+                for (let i = 0; i < data.length; i++) {
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                }
+                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                let workBook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                XLSX.writeFile(workBook, "Detail Settlement.xlsx");
+            } else if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length !== 0) {
+                setUserSession(dataDetailSettlement.data.response_new_token)
+                const data = dataDetailSettlement.data.response_data.results
+                let dataExcel = []
+                for (let i = 0; i < data.length; i++) {
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                }
+                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                let workBook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                XLSX.writeFile(workBook, "Detail Settlement.xlsx");
+            }
+        } catch (error) {
+            console.log(error);
+            history.push(errorCatch(error.response.status))
         }
-        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-        let workBook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-        XLSX.writeFile(workBook, "Detail Settlement.xlsx");
-    }
-    
+    }    
     
     const columnsSettl = [
         {
@@ -76,7 +113,6 @@ function DetailSettlement() {
         {
             name: 'ID Transaksi',
             selector: row => row.tvatrans_trx_id,
-            // sortable: true
             width: "224px",
         },
         {
@@ -203,7 +239,7 @@ function DetailSettlement() {
                     {
                         dataSettlement.length !== 0 &&  
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportDetailSettlementHandler(dataSettlement)} className="export-span">Export</Link>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
@@ -214,6 +250,18 @@ function DetailSettlement() {
                             progressPending={pendingSettlement}
                             progressComponent={<CustomLoader />}
                             dense
+                        />
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDetailSettlement}</div>
+                        <Pagination
+                            activePage={activePageDetailSettlement}
+                            itemsCountPerPage={pageNumberDetailSettlement.row_per_page}
+                            totalItemsCount={(pageNumberDetailSettlement.row_per_page*pageNumberDetailSettlement.max_page)}
+                            pageRangeDisplayed={5}
+                            itemClass="page-item"
+                            linkClass="page-link"
+                            onChange={handlePageChangeDetailSettlement}
                         />
                     </div>
                 </div>
