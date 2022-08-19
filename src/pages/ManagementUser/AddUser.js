@@ -13,6 +13,7 @@ import {
 import encryptData from "../../function/encryptData";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import noteIconRed from "../../assets/icon/note_icon_red.svg"
 
 function AddUser() {
   const history = useHistory();
@@ -36,6 +37,7 @@ function AddUser() {
   const passwordInputType = showPassword ? "text" : "password";
   const [isChecked, setIsChecked] = useState(false);
   const passwordIconColor = showPassword ? "#262B40" : "";
+  const [errorMsg, setErrorMsg] = useState("")
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -148,7 +150,7 @@ function AddUser() {
   ) {
     try {
       const dataParams = encryptData(
-        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${role === "102" ? partnerId : role === "103" ? agenId : ""
+        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${role === "102" ? partnerId : role === "104" ? agenId : ""
         }"}`
       );
       const headers = {
@@ -162,12 +164,22 @@ function AddUser() {
       );
       if (addUser.data.response_code === 200 && addUser.status === 200 && addUser.data.response_new_token.length === 0) {
         setAddUser(addUser.data.response_data);
+        alert("Data User Management Berhasil Ditambahkan")
+        history.push("/managementuser")
       } else if (addUser.data.response_code === 200 && addUser.status === 200 && addUser.data.response_new_token.length !== 0) {
-        
+        setUserSession(addUser.data.response_new_token)
+        setAddUser(addUser.data.response_data);
+        alert("Data User Management Berhasil Ditambahkan")
+        history.push("/managementuser")
       }
-    } catch (e) {
-      history.push(errorCatch(e.response.status));
+      
+    } catch (e) {      
       console.log(e);
+      setErrorMsg(e.response.data.response_message)
+      if (e.response.data.response_message === "Failed") {
+        alert(e.response.data.response_message)
+      }
+      history.push(errorCatch(e.response.status));
     }
   }
   useEffect(() => {
@@ -178,11 +190,11 @@ function AddUser() {
     if (user_role === "102") {
       history.push('/404');
     }
-    if (inputHandle.role === "102" || inputHandle.role === "103") {
+    if (inputHandle.role === "102" || inputHandle.role === "104") {
       getListPartner();
     }
     getListRole();
-    if (inputHandle.role === "103" && inputHandle.partnerId !== "") {
+    if (inputHandle.role === "104" && inputHandle.partnerId !== "") {
       getListAgen(inputHandle.partnerId);
     }
   }, [access_token, inputHandle.role, inputHandle.partnerId, user_role]);
@@ -220,7 +232,13 @@ function AddUser() {
                 placeholder="Masukkan Email"
                 style={{ width: "100%", height: 40 }}
               />
-            </Form.Group>
+              {errorMsg === "Email sudah terdaftar" &&
+                <span style={{ color: "#B9121B", fontSize: 12 }}>
+                  <img src={noteIconRed} className="me-2" />
+                  {errorMsg}
+                </span>
+              }
+            </Form.Group>            
             <Form.Group className="mb-3">
               <Form.Label style={{ fontFamily: "Nunito" }}>Password</Form.Label>
               <InputGroup>
@@ -264,7 +282,7 @@ function AddUser() {
               className="mb-3"
               style={{
                 display:
-                  inputHandle.role === "102" || inputHandle.role === "103"
+                  inputHandle.role === "102" || inputHandle.role === "104"
                     ? ""
                     : "none",
               }}
@@ -289,7 +307,7 @@ function AddUser() {
               className="mb-3"
               style={{
                 display:
-                  inputHandle.role === "103" && inputHandle.partnerId !== ""
+                  inputHandle.role === "104" && inputHandle.partnerId !== ""
                     ? ""
                     : "none",
               }}
