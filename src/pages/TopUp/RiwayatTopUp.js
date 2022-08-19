@@ -84,7 +84,7 @@ function RiwayatTopUp() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const listRiwayat = await axios.post("/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
+            const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
             // console.log(listRiwayat, 'ini data user ');
             if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                 listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
@@ -166,7 +166,7 @@ function RiwayatTopUp() {
               "Content-Type": "application/json",
               'Authorization': auth,
             };
-            const detailTopUp = await axios.post("/Partner/HistoryTopUpPartnerDetail", { data: dataParams }, { headers: headers })
+            const detailTopUp = await axios.post(BaseURL + "/Partner/HistoryTopUpPartnerDetail", { data: dataParams }, { headers: headers })
             // console.log(detailTopUp, 'ini topup balance ya');
             if(detailTopUp.status === 200 && detailTopUp.data.response_code === 200 && detailTopUp.data.response_new_token.length === 0) {
               setDetailTopUp(detailTopUp.data.response_data)
