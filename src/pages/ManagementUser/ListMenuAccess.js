@@ -25,7 +25,7 @@ function ListMenuAccess() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const listAccessMenu = await axios.post(BaseURL + '/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
+            const listAccessMenu = await axios.post('/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
             // console.log(listAccessMenu, "ini list access menu");
             if (listAccessMenu.status === 200 && listAccessMenu.data.response_code === 200 && listAccessMenu.data.response_new_token.length === 0) {
                 setListAccessMenu(listAccessMenu.data.response_data)
@@ -136,7 +136,7 @@ function ListMenuAccess() {
                         'Content-Type':'application/json',
                         'Authorization' : auth
                     }
-                    const saveAccess = await axios.post(BaseURL + "/Account/SaveAccess", {data: dataParams}, {headers: headers})
+                    const saveAccess = await axios.post("/Account/SaveAccess", {data: dataParams}, {headers: headers})
                     // console.log(saveAccess, "ini save access");
                     if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length === 0) {
                         history.push("/managementuser")

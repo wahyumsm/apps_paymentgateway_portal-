@@ -13,7 +13,7 @@ export const GetUserDetail = (url) => {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const userDetail = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
+            const userDetail = await axios.post(url, { data: "" }, { headers: headers })
             if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
                 dispatch({
                     type: FETCH_GETUSERDETAIL,

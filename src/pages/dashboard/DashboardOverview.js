@@ -13,14 +13,13 @@ import {
 } from 'chart.js';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { Line, Pie} from 'react-chartjs-2';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, convertToCurrency, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import {default as ReactSelect, components} from "react-select"
 import encryptData from "../../function/encryptData";
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import DateRangePicker from "@wojtekmaj/react-daterange-picker/dist/DateRangePicker";
-import context from "@themesberg/react-bootstrap/lib/esm/AccordionContext";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -202,7 +201,7 @@ export default () => {
             'Content-Type':'application/json',
             'Authorization' : auth
         }
-        const listDataPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
+        const listDataPartner = await axios.post(url, { data: "" }, { headers: headers })
         // console.log(listDataPartner, "list partner di beranda")
         if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length === 0) {
           let newArr = []
@@ -240,7 +239,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const ringkasanData = await axios.post(BaseURL + "/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
+      const ringkasanData = await axios.post("/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
       // console.log(ringkasanData, 'ini ringkasandata');
       if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200 && ringkasanData.data.response_new_token.length === 0) {
         setSettlementTransaction(ringkasanData.data.response_data)
@@ -264,7 +263,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const partnerChart = await axios.post(BaseURL + "/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
+      const partnerChart = await axios.post("/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
       // console.log(partnerChart, 'partner chart');
       if (partnerChart.status === 200 && partnerChart.data.response_code === 200 && partnerChart.data.response_new_token.length === 0) {
         setPartnerChartData([{amount: 0, date: ""}, ...partnerChart.data.response_data])
@@ -290,7 +289,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const filterPartnerChart = await axios.post(BaseURL + "/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
+      const filterPartnerChart = await axios.post("/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
       // console.log(filterPartnerChart, 'partner chart handler filter');
       if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length === 0) {
         setPartnerChartData([{amount: 0, date: ""}, ...filterPartnerChart.data.response_data])
@@ -315,7 +314,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const feePartnerChart = await axios.post(BaseURL + "/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
+      const feePartnerChart = await axios.post("/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
       // console.log(feePartnerChart.data.response_data, 'partner chart');
       if (feePartnerChart.status === 200 && feePartnerChart.data.response_code === 200 && feePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData([{amount: 0, date: ""}, ...feePartnerChart.data.response_data])
@@ -341,7 +340,7 @@ export default () => {
         'Content-Type': 'application/json',
         'Authorization': auth
       }
-      const filterFeePartnerChart = await axios.post(BaseURL + "/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
+      const filterFeePartnerChart = await axios.post("/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
       // console.log(filterFeePartnerChart, 'fee partner handler');
       if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData([{amount: 0, date: ""}, ...filterFeePartnerChart.data.response_data])
@@ -366,7 +365,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const feeVaChartData = await axios.post(BaseURL + "/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
+      const feeVaChartData = await axios.post("/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
       // console.log(feeVaChartData.data.response_data, 'partner chart');
       if (feeVaChartData.status === 200 && feeVaChartData.data.response_code === 200 && feeVaChartData.data.response_new_token.length === 0) {
         setFeeVaChartData([{amount: 0, date: ""}, ...feeVaChartData.data.response_data])
@@ -391,7 +390,7 @@ export default () => {
         'Content-Type': 'application/json',
         'Authorization': auth
       }
-      const filterVaPartnerChart = await axios.post(BaseURL + "/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
+      const filterVaPartnerChart = await axios.post("/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
       // console.log(filterVaPartnerChart, 'fee partner handler');
       if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length === 0) {
         setFeeVaChartData([{amount: 0, date: ""}, ...filterVaPartnerChart.data.response_data])
@@ -609,7 +608,7 @@ export default () => {
                         <CustomLoader />
                       </div>
                        :
-                       partnerChartData.length !== 0 ?
+                       (partnerChartData.length > 1) ?
                        <Line
                        id="myChart"
                        className="mt-3 mb-3"
@@ -641,6 +640,9 @@ export default () => {
                            legend: {
                              display: false
                            },
+                           tooltip: {
+                            displayColors: false,                              
+                          }
                          },
                          responsive: true,
                          scales: {
@@ -655,7 +657,19 @@ export default () => {
                            yAxes: {
                              beginAtZero: true,
                              ticks: {
-                               stepSize: 2000
+                              callback: function(value, index, ticks) {
+                                if(value > 999 && value < 1e6){
+                                  return (value/1000) + ' rb'; // convert to K for number from > 1000 < 1 million 
+                                } else if(value >= 1e6){
+                                    return (value/1e6) + ' jt'; // convert to M for number from > 1 million 
+                                } else if (value >= 1e9) {
+                                  return (value/1e9).toFixed(1) + ' milyar'
+                                } else if (value >= 1e12) {
+                                  return (value/1e12).toFixed(1) + ' milyar'
+                                } else if (value < 1000) {
+                                  return value; // if value < 1000, nothing to do
+                                }
+                              }
                              }
                            }
                          }
@@ -747,7 +761,7 @@ export default () => {
                         <div className="d-flex justify-content-center align-items-center">
                           <CustomLoader />
                         </div> :
-                        feePartnerChartData.length !== 0 ?
+                        feePartnerChartData.length > 1 ?
                         <Line
                         className="mt-3 mb-3"
                         data={{
@@ -778,6 +792,9 @@ export default () => {
                             legend: {
                               display: false
                             },
+                            tooltip: {
+                              displayColors: false,                              
+                            }
                           },
                           responsive: true,
                           scales: {
@@ -792,8 +809,19 @@ export default () => {
                             yAxes: {
                               beginAtZero: true,
                               ticks: {
-                                stepSize: 2000,
-                                min: 0
+                                callback: function(value, index, ticks) {
+                                  if(value > 999 && value < 1e6){
+                                    return (value/1000) + ' rb'; // convert to K for number from > 1000 < 1 million 
+                                  } else if(value >= 1e6){
+                                      return (value/1e6) + ' jt'; // convert to M for number from > 1 million 
+                                  } else if (value >= 1e9) {
+                                    return (value/1e9).toFixed(1) + ' milyar'
+                                  } else if (value >= 1e12) {
+                                    return (value/1e12).toFixed(1) + ' milyar'
+                                  } else if (value < 1000) {
+                                    return value; // if value < 1000, nothing to do
+                                  }
+                                }
                               }
                             }
                           }
@@ -882,8 +910,9 @@ export default () => {
                         <div className="d-flex justify-content-center align-items-center vh-100">
                           <CustomLoader />
                         </div> :
-                        feeVaChartData.length !== 0 ?
+                        feeVaChartData.length > 1 ?
                         <Line
+                        style={{overflowX: "scroll"}}
                         className="mt-3 mb-3"
                         data={{
                           labels: feeVaChartData.map(obj => obj.date),
@@ -914,6 +943,9 @@ export default () => {
                             legend: {
                               display: false
                             },
+                            tooltip: {
+                              displayColors: false,                              
+                            }
                           },
                           responsive: true,
                           scales: {
@@ -928,7 +960,19 @@ export default () => {
                             yAxes: {
                               beginAtZero: true,
                               ticks: {
-                                stepSize: 2000
+                                callback: function(value, index, ticks) {
+                                  if(value > 999 && value < 1e6){
+                                    return (value/1000) + ' rb'; // convert to K for number from > 1000 < 1 million 
+                                  } else if(value >= 1e6){
+                                      return (value/1e6) + ' jt'; // convert to M for number from > 1 million 
+                                  } else if (value >= 1e9) {
+                                    return (value/1e9).toFixed(1) + ' milyar'
+                                  } else if (value >= 1e12) {
+                                    return (value/1e12).toFixed(1) + ' milyar'
+                                  } else if (value < 1000) {
+                                    return value; // if value < 1000, nothing to do
+                                  }
+                                }
                               }
                             }
                           }
