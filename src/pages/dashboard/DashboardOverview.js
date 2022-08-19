@@ -13,14 +13,13 @@ import {
 } from 'chart.js';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { Line, Pie} from 'react-chartjs-2';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, convertToCurrency, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import {default as ReactSelect, components} from "react-select"
 import encryptData from "../../function/encryptData";
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import DateRangePicker from "@wojtekmaj/react-daterange-picker/dist/DateRangePicker";
-import context from "@themesberg/react-bootstrap/lib/esm/AccordionContext";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -609,7 +608,7 @@ export default () => {
                         <CustomLoader />
                       </div>
                        :
-                       partnerChartData.length !== 0 ?
+                       (partnerChartData.length > 1) ?
                        <Line
                        id="myChart"
                        className="mt-3 mb-3"
@@ -641,6 +640,9 @@ export default () => {
                            legend: {
                              display: false
                            },
+                           tooltip: {
+                            displayColors: false,                              
+                          }
                          },
                          responsive: true,
                          scales: {
@@ -655,7 +657,19 @@ export default () => {
                            yAxes: {
                              beginAtZero: true,
                              ticks: {
-                               stepSize: 2000
+                              callback: function(value, index, ticks) {
+                                if(value > 999 && value < 1e6){
+                                  return (value/1000) + ' rb'; // convert to K for number from > 1000 < 1 million 
+                                } else if(value >= 1e6){
+                                    return (value/1e6) + ' jt'; // convert to M for number from > 1 million 
+                                } else if (value >= 1e9) {
+                                  return (value/1e9).toFixed(1) + ' milyar'
+                                } else if (value >= 1e12) {
+                                  return (value/1e12).toFixed(1) + ' milyar'
+                                } else if (value < 1000) {
+                                  return value; // if value < 1000, nothing to do
+                                }
+                              }
                              }
                            }
                          }
@@ -747,7 +761,7 @@ export default () => {
                         <div className="d-flex justify-content-center align-items-center">
                           <CustomLoader />
                         </div> :
-                        feePartnerChartData.length !== 0 ?
+                        feePartnerChartData.length > 1 ?
                         <Line
                         className="mt-3 mb-3"
                         data={{
@@ -778,6 +792,9 @@ export default () => {
                             legend: {
                               display: false
                             },
+                            tooltip: {
+                              displayColors: false,                              
+                            }
                           },
                           responsive: true,
                           scales: {
@@ -792,8 +809,19 @@ export default () => {
                             yAxes: {
                               beginAtZero: true,
                               ticks: {
-                                stepSize: 2000,
-                                min: 0
+                                callback: function(value, index, ticks) {
+                                  if(value > 999 && value < 1e6){
+                                    return (value/1000) + ' rb'; // convert to K for number from > 1000 < 1 million 
+                                  } else if(value >= 1e6){
+                                      return (value/1e6) + ' jt'; // convert to M for number from > 1 million 
+                                  } else if (value >= 1e9) {
+                                    return (value/1e9).toFixed(1) + ' milyar'
+                                  } else if (value >= 1e12) {
+                                    return (value/1e12).toFixed(1) + ' milyar'
+                                  } else if (value < 1000) {
+                                    return value; // if value < 1000, nothing to do
+                                  }
+                                }
                               }
                             }
                           }
@@ -882,8 +910,9 @@ export default () => {
                         <div className="d-flex justify-content-center align-items-center vh-100">
                           <CustomLoader />
                         </div> :
-                        feeVaChartData.length !== 0 ?
+                        feeVaChartData.length > 1 ?
                         <Line
+                        style={{overflowX: "scroll"}}
                         className="mt-3 mb-3"
                         data={{
                           labels: feeVaChartData.map(obj => obj.date),
@@ -914,6 +943,9 @@ export default () => {
                             legend: {
                               display: false
                             },
+                            tooltip: {
+                              displayColors: false,                              
+                            }
                           },
                           responsive: true,
                           scales: {
@@ -928,7 +960,19 @@ export default () => {
                             yAxes: {
                               beginAtZero: true,
                               ticks: {
-                                stepSize: 2000
+                                callback: function(value, index, ticks) {
+                                  if(value > 999 && value < 1e6){
+                                    return (value/1000) + ' rb'; // convert to K for number from > 1000 < 1 million 
+                                  } else if(value >= 1e6){
+                                      return (value/1e6) + ' jt'; // convert to M for number from > 1 million 
+                                  } else if (value >= 1e9) {
+                                    return (value/1e9).toFixed(1) + ' milyar'
+                                  } else if (value >= 1e12) {
+                                    return (value/1e12).toFixed(1) + ' milyar'
+                                  } else if (value < 1000) {
+                                    return value; // if value < 1000, nothing to do
+                                  }
+                                }
                               }
                             }
                           }

@@ -122,7 +122,7 @@ function UpdateUser() {
                     { data: "" },
                     { headers: headers }
                 );
-                // console.log(listRole, "ini role");
+                console.log(listRole, "ini role");
                 if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length === 0) {
                     setListRole(listRole.data.response_data);
                 } else if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length !== 0) {
@@ -259,7 +259,7 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.roleUser === 102 ? "" : (inputHandle.roleUser === 103)  ? "" : "none" }}
+                                style={{ display: inputHandle.roleUser === 102 ? "" : (inputHandle.roleUser === 104)  ? "" : "none" }}
                             >
                                 <h6>Partner</h6>
                                 <Form.Select
@@ -281,7 +281,7 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.partnerId !== undefined && inputHandle.roleUser === 103 ? "" : "none" }}
+                                style={{ display: inputHandle.partnerId !== undefined && inputHandle.roleUser === 104 ? "" : "none" }}
                             >
                                 <h6>Agen</h6>
                                 <Form.Select
