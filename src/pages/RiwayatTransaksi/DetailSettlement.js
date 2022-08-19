@@ -9,6 +9,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import * as XLSX from "xlsx"
+import Pagination from "react-js-pagination";
 
 function DetailSettlement() {
 
@@ -18,6 +19,9 @@ function DetailSettlement() {
     const { settlementId } = useParams();
     const [dataSettlement, setDataSettlement] = useState([])
     const [pendingSettlement, setPendingSettlement] = useState(false)
+    const [totalPageDetailSettlement, setTotalPageDetailSettlement] = useState(0)
+    const [activePageDetailSettlement, setActivePageDetailSettlement] = useState(1)
+    const [pageNumberDetailSettlement, setPageNumberDetailSettlement] = useState({})
     // const [inputHandle, setInputHandle] = useState({
     //     idTransaksiSettlement: "",
     //     namaPartnerSettlement: "",
@@ -25,13 +29,13 @@ function DetailSettlement() {
     //     periodeSettlement: 0,
     // })
 
-    async function getDetailSettlement(settlementId) {
+    async function getDetailSettlement(settlementId, currentPage) {
         // console.log(settlementId, 'ini params in function');
         try {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page":1, "row_per_page":10 }`);
-            // console.log(dataParams, 'ini data params');
+            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
+            console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -39,19 +43,28 @@ function DetailSettlement() {
             const detailsettlement = await axios.post("/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             // console.log(detailsettlement, 'ini data settlement');
             if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length === 0) {
-                detailsettlement.data.response_data = detailsettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-                setDataSettlement(detailsettlement.data.response_data)
+                detailsettlement.data.response_data.results = detailsettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                setPageNumberDetailSettlement(detailsettlement.data.response_data)
+                setTotalPageDetailSettlement(detailsettlement.data.response_data.max_page)
+                setDataSettlement(detailsettlement.data.response_data.results)
                 setPendingSettlement(false)
             } else if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length !== 0) {
-                detailsettlement.data.response_data = detailsettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                detailsettlement.data.response_data.results = detailsettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setUserSession(detailsettlement.data.response_new_token)
-                setDataSettlement(detailsettlement.data.response_data)
+                setPageNumberDetailSettlement(detailsettlement.data.response_data)
+                setTotalPageDetailSettlement(detailsettlement.data.response_data.max_page)
+                setDataSettlement(detailsettlement.data.response_data.results)
                 setPendingSettlement(false)
             }
         } catch (error) {
             console.log(error)
             history.push(errorCatch(error.response.status))
         }
+    }
+
+    function handlePageChangeDetailSettlement(page) {
+        setActivePageDetailSettlement(page)
+        getDetailSettlement(settlementId, page)
     }
 
     // function handleChange(e) {
@@ -79,16 +92,42 @@ function DetailSettlement() {
         getDetailSettlement(settlementId)
     }, [settlementId])
     
-    function ExportReportDetailSettlementHandler(dataSettlement) {
-        const data = dataSettlement
-        let dataExcel = []
-        for (let i = 0; i < data.length; i++) {
-            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+    async function ExportReportDetailSettlementHandler(settlementId) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": 1, "row_per_page": 1000000 }`);
+            console.log(dataParams, 'ini data params export');
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const dataDetailSettlement = await axios.post("/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            console.log(dataDetailSettlement, 'ini data detail settlement export');
+            if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length === 0) {
+                const data = dataDetailSettlement.data.response_data.results
+                let dataExcel = []
+                for (let i = 0; i < data.length; i++) {
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                }
+                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                let workBook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                XLSX.writeFile(workBook, "Detail Settlement.xlsx");
+            } else if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length !== 0) {
+                setUserSession(dataDetailSettlement.data.response_new_token)
+                const data = dataDetailSettlement.data.response_data.results
+                let dataExcel = []
+                for (let i = 0; i < data.length; i++) {
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                }
+                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                let workBook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                XLSX.writeFile(workBook, "Detail Settlement.xlsx");
+            }
+        } catch (error) {
+            console.log(error);
         }
-        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-        let workBook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-        XLSX.writeFile(workBook, "Detail Settlement.xlsx");
     }
     
     
@@ -243,7 +282,7 @@ function DetailSettlement() {
                     {
                         dataSettlement.length !== 0 &&  
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportDetailSettlementHandler(dataSettlement)} className="export-span">Export</Link>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
@@ -258,90 +297,21 @@ function DetailSettlement() {
                             // pagination
                         />
                     </div>
-                    {/* <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlement}</div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDetailSettlement}</div>
                         <Pagination
-                            activePage={activePageSettlement}
-                            itemsCountPerPage={pageNumberSettlement.row_per_page}
-                            totalItemsCount={(pageNumberSettlement.row_per_page*pageNumberSettlement.max_page)}
+                            activePage={activePageDetailSettlement}
+                            itemsCountPerPage={pageNumberDetailSettlement.row_per_page}
+                            totalItemsCount={(pageNumberDetailSettlement.row_per_page*pageNumberDetailSettlement.max_page)}
                             pageRangeDisplayed={5}
                             itemClass="page-item"
                             linkClass="page-link"
-                            onChange={handlePageChangeSettlement}
+                            onChange={handlePageChangeDetailSettlement}
                         />
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </div>
-        {/* <Modal centered show={showModalDetailTransferDana} onHide={() => setShowModalDetailTransferDana(false)} style={{ borderRadius: 8 }}>
-            <Modal.Body style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
-                <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                    <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>Detail Transaksi</p>
-                </div>
-                <div>
-                    <Container style={{ paddingLeft: "unset", paddingRight: "unset" }}>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400 }}>
-                            <Col>ID Transaksi</Col>
-                            <Col style={{ display: "flex", justifyContent: "end" }}>Status</Col>
-                        </Row>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
-                            <Col>{detailTransferDana.mpartnerdtl_partner_id}</Col>
-                            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 160, width: "100%", height: 32, background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }}>{detailTransferDana.mstatus_name}</Col>
-                            <br />
-                        </Row>
-                        <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: -10 }}>{detailTransferDana.tvatrans_crtdt}</div>
-                        <center>
-                            <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
-                        </center>
-                        <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, }}>Detail Pengiriman</div>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>
-                            <Col>Nama Agen</Col>
-                            <Col style={{ display: "flex", justifyContent: "end" }}>ID Agen</Col>
-                        </Row>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
-                            <Col>{detailTransferDana.mpartnerdtl_sub_name}</Col>
-                            <Col style={{ display: "flex", justifyContent: "end" }}>{detailTransferDana.tvatrans_sub_partner_id}</Col>
-                        </Row>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>
-                            <Col>Nama Partner</Col>
-                            <Col style={{ display: "flex", justifyContent: "end" }}>ID Partner</Col>
-                        </Row>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
-                            <Col>{detailTransferDana.mpartner_name}</Col>
-                            <Col style={{ display: "flex", justifyContent: "end" }}>{detailTransferDana.mpartnerdtl_partner_id}</Col>
-                        </Row>
-                        <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: 12 }}>No VA</div>
-                        <div style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>{detailTransferDana.tvatrans_va_number}</div>
-                        <center>
-                            <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
-                        </center>
-                        <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, }}>Rincian Dana</div>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
-                            <Col style={{ fontWeight: 400 }}>Jumlah Dana Diterima</Col>
-                            <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_amount)}</Col>
-                        </Row>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
-                            <Col style={{ fontWeight: 400 }}>Biaya VA</Col>
-                            <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_bank_fee)}</Col>
-                        </Row>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
-                            <Col style={{ fontWeight: 400 }}>Biaya Partner</Col>
-                            <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
-                        </Row>
-                        <center>
-                            <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, padding: "0px 24px", border: "1px dashed #EBEBEB" }} />
-                        </center>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 700, marginTop: 12 }}>
-                            <Col>Total</Col>
-                            <Col style={{ display: "flex", justifyContent: "end" }}>{convertToRupiah((detailTransferDana.tvatrans_amount + detailTransferDana.tvatrans_bank_fee + detailTransferDana.tvatrans_partner_fee))}</Col>
-                        </Row>
-                    </Container>
-                </div>
-                <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                    <Button variant="primary" onClick={() => setShowModalDetailTransferDana(false)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Kembali</Button>
-                </div>
-            </Modal.Body>
-        </Modal> */}
     </div>
     )
 }

@@ -134,7 +134,7 @@ export default (props = {}) => {
                       // image={(item.label === "Dashboard") ? BerandaIcon : (item.label === "Report") ? LaporanIcon : (item.label === "Daftar Agen") ? DaftarAgenIcon : ""}
                       image={item.icon}
                       // link={Routes.Transactions.path}
-                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 16) ? Routes.RiwayatTransaksi.path : (item.id === 13) ? "" : (item.id === 17) ? Routes.Invoice.path : (item.id === 18) ? Routes.ListUser.path :""}
+                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 13) ? Routes.RiwayatTransaksi.path : (item.id === 16) ? Routes.Invoice.path : (item.id === 18) ? Routes.ListUser.path :""}
                     />
                   )
                 })
