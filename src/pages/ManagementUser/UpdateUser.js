@@ -90,7 +90,7 @@ function UpdateUser() {
         async function editUserHandle(idUser, nameUser, emailUser, roleUser, isActive, partnerId, agenId) {
             try {
                 const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser === 102) ? partnerId : (inputHandle.roleUser === 103 ) ? agenId : ""}"}`)
+                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser === 102) ? partnerId : (inputHandle.roleUser === 104 ) ? agenId : ""}"}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
