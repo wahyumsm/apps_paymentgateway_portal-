@@ -138,6 +138,24 @@ export default () => {
       percentage: 10
     },
     {
+      id: "LD6246215",
+      name: "PT Lawred Jaya Amanah5",
+      total: 100888950,
+      percentage: 10
+    },
+    {
+      id: "LD6246216",
+      name: "PT Lawred Jaya Amanah6",
+      total: 100888950,
+      percentage: 10
+    },
+    {
+      id: "LD6246217",
+      name: "PT Lawred Jaya Amanah7",
+      total: 100888950,
+      percentage: 10
+    },
+    {
       id: "LD624621",
       name: "PT Lawred Jaya Amanah",
       total: 100888950,
@@ -149,33 +167,15 @@ export default () => {
       total: 100888950,
       percentage: 10
     },
-    // {
-    //   id: "LD624621",
-    //   name: "PT Lawred Jaya Amanah",
-    //   total: 100888950,
-    //   percentage: 10
-    // },
-    // {
-    //   id: "LD624621",
-    //   name: "PT Lawred Jaya Amanah",
-    //   total: 100888950,
-    //   percentage: 10
-    // },
-    // {
-    //   id: "LD624621",
-    //   name: "PT Lawred Jaya Amanah",
-    //   total: 100888950,
-    //   percentage: 10
-    // },
-    // {
-    //   id: "LD624622",
-    //   name: "Lainnya",
-    //   total: 100888988,
-    //   percentage: 10
-    // }
+    {
+      id: "LD624622",
+      name: "Lainnya",
+      total: 100888988,
+      percentage: 10
+    }
   ]
 
-  // const datas = data.map((obj, id) => ({ ...obj, color: getColors(id+1).slice(-1)}))
+  const datas = data.map((obj, id) => ({ ...obj, color: getColors(id+1).slice(-1)}))
 
   async function getSettlement(oneMonthAgo, currentDate) {
     try {
@@ -524,13 +524,13 @@ export default () => {
         </div>
         <h2 className="h5 mt-3">Dana Masuk</h2>
         <div className='base-content'>
-          <div className='dana-amount'>
+          {/* <div className='dana-amount'>
               <div className="card-information mb-3" style={{border: '1px solid #EBEBEB', width: 250}}>
                   <p className="p-info">Detail Dana Masuk dari Agen</p>
                   <p className="p-amount">Rp. 49.700.000</p>
               </div>
-          </div>
-          <Row>
+          </div> */}
+          {/* <Row>
             <Col xs={4}>
               <Pie
                 id="myChart"
@@ -625,7 +625,7 @@ export default () => {
                 </tbody>
               </table>
             </Col>
-          </Row>
+          </Row> */}
             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
                 <Col xs={4}>
@@ -720,7 +720,7 @@ export default () => {
         <div className='base-content'>
           <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
           {/* {dataChartTransfer.length > 0 ? */}
-            <Line
+            {/* <Line
             className="mt-3 mb-3"
             data={{
               labels: dataChartTransfer.map(obj => obj.dates),
@@ -763,7 +763,7 @@ export default () => {
                 }
               }
             }}
-          /> 
+          />  */}
           {/* :
           <div style={{color: "black"}} className="d-flex justify-content-center align-items-center my-4">There are no records to display</div>
           } */}
