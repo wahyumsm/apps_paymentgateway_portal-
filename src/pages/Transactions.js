@@ -16,15 +16,17 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 // import { addDays } from "date-fns";
 import "./Transactions.css";
-import {Line} from 'react-chartjs-2'
+import {Pie, Line} from 'react-chartjs-2'
 import { max } from "date-fns";
 import breadcrumbsIcon from "../assets/icon/breadcrumbs_icon.svg";
+import { chartColors } from "../data/colors";
 
 export default () => {
 
   const history = useHistory();
   const access_token = getToken();
   const [listTransferDana, setListTransferDana] = useState([])
+  const [topTenTransferDana, setTopTenTransferDana] = useState([])
   const [dataChartTransfer, setDataChartTransfer] = useState([])
   const [listSettlement, setListSettlement] = useState([])
   const [stateDanaMasuk, setStateDanaMasuk] = useState(null)
@@ -67,6 +69,16 @@ export default () => {
       setDateRangeSettlement(item)
     }
   }
+
+  function getColors(length) {
+    let colors = [];
+
+    for (let i = 0; i < length; i++) {
+        colors.push(chartColors[i % (chartColors.length)]);
+    }
+
+    return colors;
+  }
   
   async function getListTransferDana(oneMonthAgo, currentDate) {
     try {
@@ -77,15 +89,19 @@ export default () => {
         'Authorization' : auth
       }
       const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-
+      console.log(listTransferDana, "report transfer");
       if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token.length === 0) {
         listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(listTransferDana.data.response_data.list)
+        listTransferDana.data.response_data.top_ten = listTransferDana.data.response_data.top_ten.map((obj, id) => ({ ...obj, color: getColors(id+1).slice(-1)}) )
+        setTopTenTransferDana(listTransferDana.data.response_data.top_ten)
         setPendingTransfer(false)
       } else if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token.length !== 0) {
         setUserSession(listTransferDana.data.response_new_token)
         listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(listTransferDana.data.response_data.list)
+        listTransferDana.data.response_data.top_ten = listTransferDana.data.response_data.top_ten.map((obj, id) => ({ ...obj, color: getColors(id+1).slice(-1)}) )
+        setTopTenTransferDana(listTransferDana.data.response_data.top_ten)
         setPendingTransfer(false)
       }
     } catch (error) {
@@ -94,6 +110,80 @@ export default () => {
       history.push(errorCatch(error.response.status))
     }
   }
+
+
+  const data = [
+    {
+      id: "LD624621",
+      name: "PT Lawred Jaya Amanah",
+      total: 100888950,
+      percentage: 10
+    },
+    {
+      id: "LD624621",
+      name: "PT Zalfa",
+      total: 100888949,
+      percentage: 10
+    },
+    {
+      id: "LD624621",
+      name: "PT Lawred Jaya Amanah",
+      total: 100888950,
+      percentage: 10
+    },
+    {
+      id: "LD624621",
+      name: "PT Lawred Jaya Amanah",
+      total: 100888950,
+      percentage: 10
+    },
+    {
+      id: "LD624621",
+      name: "PT Lawred Jaya Amanah",
+      total: 100888950,
+      percentage: 10
+    },
+    {
+      id: "LD624621",
+      name: "PT Lawred Jaya Amanah",
+      total: 100888950,
+      percentage: 10
+    },
+    // {
+    //   id: "LD624621",
+    //   name: "PT Lawred Jaya Amanah",
+    //   total: 100888950,
+    //   percentage: 10
+    // },
+    // {
+    //   id: "LD624621",
+    //   name: "PT Lawred Jaya Amanah",
+    //   total: 100888950,
+    //   percentage: 10
+    // },
+    // {
+    //   id: "LD624621",
+    //   name: "PT Lawred Jaya Amanah",
+    //   total: 100888950,
+    //   percentage: 10
+    // },
+    // {
+    //   id: "LD624622",
+    //   name: "Lainnya",
+    //   total: 100888988,
+    //   percentage: 10
+    // }
+  ]
+
+  
+  // console.log(data.slice(5, 10), "top ten dana");
+
+
+
+  const datas = data.map((obj, id) => ({ ...obj, color: getColors(id+1).slice(-1)}))
+
+  // console.log(getColors(10));
+  // console.log(data.map(item => item).slice(5, 10), "ini datas");
 
   async function getSettlement(oneMonthAgo, currentDate) {
     try {
@@ -248,6 +338,7 @@ export default () => {
         'Authorization' : auth
       }
       const detailTransaksi = await axios.post("/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
+      
       if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200 && detailTransaksi.data.response_new_token.length === 0) {
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)
@@ -284,6 +375,11 @@ export default () => {
         name: 'Nama Agen',
         selector: row => row.name,
         // sortable: true
+    },
+    {
+      name: 'Jenis Transaksi',
+      selector: row => row.name,
+      // sortable: true
     },
     {
         name: 'Total Akhir',
@@ -348,6 +444,11 @@ export default () => {
         name: 'Waktu',
         selector: row => row.tvasettl_crtdt,
         // sortable: true
+    },
+    {
+      name: 'Jenis Transaksi',
+      selector: row => row.tvasettl_code,
+      // sortable: true
     },
     {
         name: 'Jumlah',
@@ -422,26 +523,6 @@ export default () => {
     </div>
   );
 
-  const data = {
-      labels: [
-        'Red',
-        'Blue',
-        'Yellow'
-      ],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [40, 50, 100, 120, 22],
-        backgroundColor: [
-          '#DF9C43',
-          '#077E86',
-          '#3DB54A',
-          '#2184F7',
-          '#FFD600'
-        ],
-        hoverOffset: 4
-      }]
-    };
-
   return (
     <>
       <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
@@ -451,63 +532,108 @@ export default () => {
         </div>
         <h2 className="h5 mt-3">Dana Masuk</h2>
         <div className='base-content'>
-          <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Dana Masuk dari Agen</span>
-            {/* <div className='dana-amount'>
-                <div className="card-information mt-3 mb-3" style={{border: '1px solid #EBEBEB', width: 250}}>
-                    <p className="p-info">Detail Dana Masuk dari Agen</p>
-                    <p className="p-amount">Rp. 49.700.000</p>
-                </div>
-            </div> */}
-            {/* <Row>
-              <Col xs={3}>
-                <div className="div-chart" style={{width: 350, height: 350}}>
-                  <Chart type='pie' data={data} />
-                </div>
-              </Col>
-              <Col xs={9} style={{marginTop: 40}}>
-                <table className="report-pie-table">
-                  <thead></thead>
-                  <tbody>
-                    <tr>
-                      <td><div className="circle-data" style={{backgroundColor: '#DF9C43'}}></div></td>
-                      <td>
-                        <span className="p-info" style={{fontSize: 14}}>Agus Dermawan</span><br/>
-                        <span className="p-amount" style={{fontSize: 14}}>Rp 8.000.000 ( 20% )</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><div className="circle-data" style={{backgroundColor: '#077E86'}}></div></td>
-                      <td>
-                        <span className="p-info" style={{fontSize: 14}}>Agus </span><br/>
-                        <span className="p-amount" style={{fontSize: 14}}>Rp 12.000.000 ( 40% )</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><div className="circle-data" style={{backgroundColor: '#3DB54A'}}></div></td>
-                      <td>
-                        <span className="p-info" style={{fontSize: 14}}>Hery</span><br/>
-                        <span className="p-amount" style={{fontSize: 14}}>Rp 8.000.000 ( 20% )</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><div className="circle-data" style={{backgroundColor: '#2184F7'}}></div></td>
-                      <td>
-                        <span className="p-info" style={{fontSize: 14}}>Dermawan</span><br/>
-                        <span className="p-amount" style={{fontSize: 14}}>Rp 10.000.000 ( 16% )</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><div className="circle-data" style={{backgroundColor: '#FFD600'}}></div></td>
-                      <td>
-                        <span className="p-info" style={{fontSize: 14}}>Oden</span><br/>
-                        <span className="p-amount" style={{fontSize: 14}}>Rp 11.000.000 ( 14% )</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <br/>
-              </Col>
-            </Row> */}
+          <div className='dana-amount'>
+              <div className="card-information mb-3" style={{border: '1px solid #EBEBEB', width: 250}}>
+                  <p className="p-info">Detail Dana Masuk dari Agen</p>
+                  <p className="p-amount">Rp. 49.700.000</p>
+              </div>
+          </div>
+          <Row>
+            <Col xs={4}>
+              <Pie
+                id="myChart"
+                className="mt-3 mb-3"
+                data={{
+                  labels: topTenTransferDana.map((item) => item.name),
+                  // labels: data.map(o => o.name),
+                  datasets: [{
+                    label: "chart",
+                    // data: data.map(o => o.total),
+                    data: topTenTransferDana.map((item) => item.total),
+                    fill: true,
+                    backgroundColor: getColors(data.length),
+                    hoverBackgroundColor: getColors(data.length),
+                    hoverOffset: 4,
+                  }]
+                }}
+                height={350}
+                width={700}
+                options= {{
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      display: false
+                    },
+                    tooltip: {
+                      displayColors: false,                              
+                    }
+                  },
+                  responsive: true,
+                  scales: {
+                    xAxes: {
+                      grid: {
+                        display: false,
+                        drawBorder: false
+                      },
+                      beginAtZero: false,
+                      ticks: {
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 45,
+                        display: false
+                      }
+                    },
+                    yAxes: {                        
+                      grid: {
+                        display: false,
+                        drawBorder: false
+                      },
+                      beginAtZero: true,
+                      ticks: {
+                        display: false
+                      }
+                    }
+                  }
+                }}
+              />
+            </Col>
+            <Col xs={4} className="d-flex flex-column justify-content-start py-5 ps-5">
+            <table className="report-pie-table">
+              <thead></thead>
+                <tbody>
+                  {topTenTransferDana.map((item, idx) => {
+                    return (
+                      <tr key={idx}>
+                        <td><div className="circle-data" style={{backgroundColor: item.color}}></div></td>
+                        <td>
+                          <span className="p-info" style={{fontSize: 14}}>{item.name}</span><br/>
+                          <span className="p-amount" style={{fontSize: 14}}>{convertToRupiah(item.total)} ( {item.percentage}% )</span>
+                        </td>
+                      </tr>
+                    )
+                  }).slice(0, 5)}
+                </tbody>
+              </table>
+            </Col>
+            <Col xs={4} className="d-flex flex-column justify-content-start py-5">
+            <table className="report-pie-table">
+              <thead></thead>
+                <tbody>
+                  {topTenTransferDana.map((item, idx) => {
+                    return (
+                      <tr key={idx}>
+                        <td><div className="circle-data" style={{backgroundColor: item.color}}></div></td>
+                        <td>
+                          <span className="p-info" style={{fontSize: 14}}>{item.name}</span><br/>
+                          <span className="p-amount" style={{fontSize: 14}}>{convertToRupiah(item.total)} ( {item.percentage}% )</span>
+                        </td>
+                      </tr>
+                    )
+                  }).slice(5, 10)}
+                </tbody>
+              </table>
+            </Col>
+          </Row>
             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
                 <Col xs={4}>
@@ -544,6 +670,14 @@ export default () => {
                       clearIcon={null}
                       // calendarIcon={null}
                     />
+                </Col>
+                <Col xs={4}>
+                    <span>Jenis Transaksi</span>
+                    <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
+                      <option defaultValue value={0}>Pilih Status</option>
+                      <option value={1}>Payment Link</option>
+                      <option value={2}>Virtual Account</option>
+                    </Form.Select>
                 </Col>
             </Row>
             <Row className='mt-4'>
@@ -593,7 +727,8 @@ export default () => {
         <h2 className="h5 mt-5">Settlement</h2>
         <div className='base-content'>
           <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
-          {/* <Line
+          {/* {dataChartTransfer.length > 0 ? */}
+            <Line
             className="mt-3 mb-3"
             data={{
               labels: dataChartTransfer.map(obj => obj.dates),
@@ -636,15 +771,10 @@ export default () => {
                 }
               }
             }}
-          /> */}
-            {/* <Row>
-              <Col xs={12}>
-                <div className="div-chart">
-                  <Chart type='line' data={data} />
-                </div>
-              </Col>
-            </Row>             */}
-            {/* <br/> */}
+          /> 
+          {/* :
+          <div style={{color: "black"}} className="d-flex justify-content-center align-items-center my-4">There are no records to display</div>
+          } */}
             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
                 <Col xs={4}>
@@ -670,6 +800,16 @@ export default () => {
                       <option value={4}>Failed</option>
                     </Form.Select>
                 </Col>
+            </Row>
+            <Row className='mt-4'>
+              <Col xs={4}>
+                <span>Jenis Transaksi</span>
+                <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
+                  <option defaultValue value={0}>Pilih Status</option>
+                  <option value={1}>Payment Link</option>
+                  <option value={2}>Virtual Account</option>
+                </Form.Select>
+              </Col>
             </Row>
             <Row className='mt-4'>
                 <Col xs={3}>

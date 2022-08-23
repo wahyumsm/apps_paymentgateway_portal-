@@ -608,7 +608,7 @@ export default () => {
                         <CustomLoader />
                       </div>
                        :
-                       (partnerChartData.length > 1) ?
+                      //  (partnerChartData.length > 1) ?
                        <Line
                        id="myChart"
                        className="mt-3 mb-3"
@@ -675,8 +675,8 @@ export default () => {
                          }
                        }}
                        />  
-                        :
-                       <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
+                      //   :
+                      //  <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
                     }
                   </div>
                 </Col>
@@ -761,7 +761,7 @@ export default () => {
                         <div className="d-flex justify-content-center align-items-center">
                           <CustomLoader />
                         </div> :
-                        feePartnerChartData.length > 1 ?
+                        // feePartnerChartData.length > 1 ?
                         <Line
                         className="mt-3 mb-3"
                         data={{
@@ -826,8 +826,9 @@ export default () => {
                             }
                           }
                         }}
-                        /> :
-                        <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
+                        /> 
+                        // :
+                        // <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
                       }
                     </div>
                   </Col>
@@ -910,7 +911,7 @@ export default () => {
                         <div className="d-flex justify-content-center align-items-center vh-100">
                           <CustomLoader />
                         </div> :
-                        feeVaChartData.length > 1 ?
+                        // feeVaChartData.length > 1 ?
                         <Line
                         style={{overflowX: "scroll"}}
                         className="mt-3 mb-3"
@@ -977,8 +978,9 @@ export default () => {
                             }
                           }
                         }}
-                      /> :
-                      <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
+                      /> 
+                      // :
+                      // <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
                       }
                     </div>
                   </Col>
