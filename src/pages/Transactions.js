@@ -665,7 +665,7 @@ export default () => {
                 </Col>
                 <Col xs={4}>
                     <span>Jenis Transaksi</span>
-                    <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
+                    <Form.Select className='input-text-ez' style={{ display: "inline" }}>
                       <option defaultValue value={0}>Pilih Status</option>
                       <option value={1}>Payment Link</option>
                       <option value={2}>Virtual Account</option>
@@ -796,7 +796,7 @@ export default () => {
             <Row className='mt-4'>
               <Col xs={4}>
                 <span>Jenis Transaksi</span>
-                <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
+                <Form.Select className='input-text-ez' style={{ display: "inline" }}>
                   <option defaultValue value={0}>Pilih Status</option>
                   <option value={1}>Payment Link</option>
                   <option value={2}>Virtual Account</option>
