@@ -108,9 +108,11 @@ function ListMenuAccess() {
                 }
                 const saveAccess = await axios.post(BaseURL + "/Account/SaveAccess", {data: dataParams}, {headers: headers})
                 if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length === 0) {
+                        alert("Access Menu berhasil disimpan")
                     history.push("/managementuser")
                 } else if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length !== 0) {
                     setUserSession(saveAccess.data.response_new_token)
+                        alert("Access Menu berhasil disimpan")
                     history.push("/managementuser")
                 }
         } catch (error) {

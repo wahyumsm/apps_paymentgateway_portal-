@@ -4,6 +4,7 @@ import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../fu
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
+import noteIconRed from "../../assets/icon/note_icon_red.svg"
 
 function UpdateUser() {
     const history = useHistory();
@@ -13,6 +14,7 @@ function UpdateUser() {
     const [listRole, setListRole] = useState([]);
     const [listPartner, setListPartner] = useState([]);
     const [listAgen, setListAgen] = useState([]);
+    const [errorMsg, setErrorMsg] = useState("")
     const [inputHandle, setInputHandle] = useState({
         idUser: muserId,
         nameUser: "",
@@ -89,22 +91,26 @@ function UpdateUser() {
         async function editUserHandle(idUser, nameUser, emailUser, roleUser, isActive, partnerId, agenId) {
             try {
                 const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser === 102) ? partnerId : (inputHandle.roleUser === 103 ) ? agenId : ""}"}`)
+                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser === 102) ? partnerId : (inputHandle.roleUser === 104 ) ? agenId : ""}"}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
                 const editUser = await axios.post(BaseURL + "/Account/UpdateUser", { data: dataParams }, { headers: headers })
                 if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length === 0) {
+                    alert("User Management Berhasil Diupdate")
                     history.push("/managementuser")
                 } else if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length !== 0) {
                     setUserSession(editUser.data.response_new_token)
+                    alert("User Management Berhasil Diupdate")
                     history.push("/managementuser")
                 }
-
-                alert("Edit Data User Management Berhasil")
             } catch (error) {
                 console.log(error)
+                setErrorMsg(error.response.data.response_message)
+                if (error.response.data.response_message === "Failed") {
+                    alert(error.response.data.response_message)
+                }
                 history.push(errorCatch(error.response.status))
             }
         }
@@ -231,6 +237,12 @@ function UpdateUser() {
                                     value={inputHandle.emailUser}
                                     placeholder="Input email"
                                 />
+                                {errorMsg === "Email sudah terdaftar" &&
+                                    <span style={{ color: "#B9121B", fontSize: 12 }}>
+                                        <img src={noteIconRed} className="me-2" />
+                                        {errorMsg}
+                                    </span>
+                                }
                             </Col>
                             <Col xs={12} className="mt-2">
                                 <h6>Role</h6>
@@ -255,7 +267,7 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.roleUser === 102 ? "" : (inputHandle.roleUser === 103)  ? "" : "none" }}
+                                style={{ display: inputHandle.roleUser === 102 ? "" : (inputHandle.roleUser === 104)  ? "" : "none" }}
                             >
                                 <h6>Partner</h6>
                                 <Form.Select
@@ -277,7 +289,7 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.partnerId !== undefined && inputHandle.roleUser === 103 ? "" : "none" }}
+                                style={{ display: inputHandle.partnerId !== undefined && inputHandle.roleUser === 104 ? "" : "none" }}
                             >
                                 <h6>Agen</h6>
                                 <Form.Select

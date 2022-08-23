@@ -20,6 +20,7 @@ export default () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("")
   const passwordInputType = showPassword ? "text" : "password";
   const passwordIconColor = showPassword ? "#262B40" : "";
 
@@ -63,8 +64,12 @@ export default () => {
       }
     } catch (error) {
       console.log(error);
+      if (error.response.status === 400) {
+        setErrorMessage(error.response.data.response_message)
+      }
+      // RouteTo(errorCatch(error.response.status))
+      // history.push(errorCatch(error.response.status))
     }
-    
   }
 
   return (
@@ -82,6 +87,10 @@ export default () => {
               <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100" style={{ maxWidth: 440, maxHeight: 459, zIndex: 1, marginTop: 46, marginLeft: 88 }}>
                 <div className="text-center text-md-center mb-4 mt-md-0">
                   <h3 className="mb-0" style={{ fontFamily: "Exo", fontSize: 24, fontWeight: 700 }}>Login ke Ezeelink Payment Gateway</h3>
+                  {
+                    errorMessage.length !== 0 &&
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#B9121B" }}>{ errorMessage }</span>
+                  }
                 </div>
                 <Form className="mt-4">
                   <Form.Group style={{ fontFamily: "Nunito" }} id="email" className="mb-4">
