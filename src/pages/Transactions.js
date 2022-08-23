@@ -175,15 +175,7 @@ export default () => {
     // }
   ]
 
-  
-  // console.log(data.slice(5, 10), "top ten dana");
-
-
-
-  const datas = data.map((obj, id) => ({ ...obj, color: getColors(id+1).slice(-1)}))
-
-  // console.log(getColors(10));
-  // console.log(data.map(item => item).slice(5, 10), "ini datas");
+  // const datas = data.map((obj, id) => ({ ...obj, color: getColors(id+1).slice(-1)}))
 
   async function getSettlement(oneMonthAgo, currentDate) {
     try {
@@ -551,8 +543,8 @@ export default () => {
                     // data: data.map(o => o.total),
                     data: topTenTransferDana.map((item) => item.total),
                     fill: true,
-                    backgroundColor: getColors(data.length),
-                    hoverBackgroundColor: getColors(data.length),
+                    backgroundColor: getColors(topTenTransferDana.length),
+                    hoverBackgroundColor: getColors(topTenTransferDana.length),
                     hoverOffset: 4,
                   }]
                 }}
