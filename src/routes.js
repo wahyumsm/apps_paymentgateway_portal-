@@ -27,7 +27,7 @@ export const Routes = {
     Login: { path: "/login" },
     Signup: { path: "/examples/sign-up" },
     ForgotPassword: { path: "/forgot-password" },
-    ResetPassword: { path: "/reset-password" },
+    ResetPassword: { path: "/profile/changepassword" },
     Lock: { path: "/examples/lock" },
     NotFound: { path: "/404" },
     ServerError: { path: "/examples/500" },

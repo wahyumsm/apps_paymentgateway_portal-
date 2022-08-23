@@ -9,7 +9,7 @@ import sendEmailIcon from "../../assets/img/illustrations/sendEmail.svg";
 import "./ForgotPassword.css"
 
 import { Routes } from "../../routes";
-import { getToken } from "../../function/helpers";
+import { getToken, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 
@@ -31,7 +31,13 @@ export default () => {
         };
         const emailSended = await axios.post("/Account/ForgotPassword", { data: dataParams }, { headers: headers })
         console.log(emailSended, "ini email sended");
-        setShowModal(true)
+        if (emailSended.status === 200 && emailSended.data.response_code === 200 && emailSended.data.response_new_token === null) {
+          setShowModal(true)
+        } else if (emailSended.status === 200 && emailSended.data.response_code === 200 && emailSended.data.response_new_token !== null) {
+          setUserSession(emailSended.data.response_new_token)
+          setShowModal(true)
+        }
+        // setShowModal(true)
       } else {
         console.log('email invalid');
         alert('Silahkan isi alamat email anda')
