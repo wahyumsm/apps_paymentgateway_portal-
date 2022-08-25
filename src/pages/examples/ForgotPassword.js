@@ -6,13 +6,10 @@ import { Col, Row, Form, Card, Button, Container, InputGroup, Modal } from '@the
 import { Link } from 'react-router-dom';
 import validator from "validator";
 import sendEmailIcon from "../../assets/img/illustrations/sendEmail.svg";
-import "./ForgotPassword.css"
-
 import { Routes } from "../../routes";
-import { getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, getToken, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
-
 
 export default () => {
 
@@ -22,15 +19,15 @@ export default () => {
   async function sendEmail(emailLink) {
     try {
       if (validator.isEmail(emailLink)) {
-        console.log('email valid');
+        // console.log('email valid');
         const auth = "Bearer " + getToken()
         const dataParams = encryptData(`{"email": "${emailLink}"}`)
         const headers = {
           "Content-Type": "application/json",
           'Authorization': auth,
         };
-        const emailSended = await axios.post("/Account/ForgotPassword", { data: dataParams }, { headers: headers })
-        console.log(emailSended, "ini email sended");
+        const emailSended = await axios.post(BaseURL + "/Account/ForgotPassword", { data: dataParams }, { headers: headers })
+        // console.log(emailSended, "ini email sended");
         if (emailSended.status === 200 && emailSended.data.response_code === 200 && emailSended.data.response_new_token === null) {
           setShowModal(true)
         } else if (emailSended.status === 200 && emailSended.data.response_code === 200 && emailSended.data.response_new_token !== null) {
@@ -39,7 +36,7 @@ export default () => {
         }
         // setShowModal(true)
       } else {
-        console.log('email invalid');
+        // console.log('email invalid');
         alert('Silahkan isi alamat email anda')
       }
     } catch (error) {

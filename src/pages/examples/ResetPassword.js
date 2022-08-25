@@ -6,7 +6,7 @@ import { Col, Row, Form, Card, Button, Container, InputGroup } from '@themesberg
 import { Link } from 'react-router-dom';
 
 import { Routes } from "../../routes";
-import { getToken } from "../../function/helpers";
+import { BaseURL, getToken } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
@@ -19,8 +19,8 @@ export default ({ location }) => {
   const [newPasswordConfirmation, setNewPasswordConfirmation] = useState("")
   const [isErrorConfirmNewPass, setIsErrorConfirmNewPass] = useState(false)
   const [isNotValid, setIsNotValid] = useState(false)
-  console.log(validateSignature, "ini validateSignature");
-  console.log(validateEmail, "ini validateEmail");
+  // console.log(validateSignature, "ini validateSignature");
+  // console.log(validateEmail, "ini validateEmail");
 
   async function validateResetPassword(signature, email) {
     try {
@@ -30,15 +30,15 @@ export default ({ location }) => {
         "Content-Type": "application/json",
         'Authorization': auth,
       };
-      const validated = await axios.post("/Account/ValidateResetPassword", { data: dataParams }, { headers: headers })
-      console.log(validated, "ini validated");
+      const validated = await axios.post(BaseURL + "/Account/ValidateResetPassword", { data: dataParams }, { headers: headers })
+      // console.log(validated, "ini validated");
     } catch (error) {
       console.log(error);
     }
   }
 
   function handleChange(e) {
-    console.log(e.target.name, "ini name");
+    // console.log(e.target.name, "ini name");
     if (e.target.name === "new-password") {
       setNewPassword(e.target.value)
     } else if (e.target.name === "new-password-confirmation") {
@@ -48,8 +48,8 @@ export default ({ location }) => {
 
   async function ResetNewPassword(email, signature, password, passwordConfirmation) {
     try {
-      console.log(password, "ini password");
-      console.log(passwordConfirmation, "ini passwordConfirmation");
+      // console.log(password, "ini password");
+      // console.log(passwordConfirmation, "ini passwordConfirmation");
       let validasi = 0
         const besarKecil = /[A-Za-z]/g;
         const numbers = /[0-9]/g;
@@ -70,20 +70,20 @@ export default ({ location }) => {
         if (password.match(spChar)) {
             validasi += 1
         }
-        console.log(validasi, "ini validasi");
+        // console.log(validasi, "ini validasi");
         if (validasi <= 2) {
             setIsNotValid(true)
         } else {
           setIsNotValid(false)
           const auth = "Bearer " + getToken()
           const dataParams = encryptData(`{"email": "${email}", "signature": "${signature}", "password": "${password}"}`)
-          console.log(dataParams, "ini dataParams reset password");
+          // console.log(dataParams, "ini dataParams reset password");
           const headers = {
             "Content-Type": "application/json",
             'Authorization': auth,
           };
-          const resetPassword = await axios.post("/Account/ResetPassword", { data: dataParams }, { headers: headers })
-          console.log(resetPassword, "ini resetPassword");
+          const resetPassword = await axios.post(BaseURL + "/Account/ResetPassword", { data: dataParams }, { headers: headers })
+          // console.log(resetPassword, "ini resetPassword");
         }
     } catch (error) {
       console.log(error);

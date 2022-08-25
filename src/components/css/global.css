@@ -447,3 +447,189 @@ body {
   /* .detailTopUp:hover {
     background: "#F79421";
   } */
+
+/* page daftar agen */
+
+.eSTlnH {
+    max-width: 100%;
+}
+
+/* page detail agen */
+
+.form-switch .form-check-input {
+    height: 1.275em;
+}
+
+.form-switch .form-check-input {
+    width: 2.25em;
+    margin-left: -2.75em;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e");
+    background-position: left center;
+    border-radius: 2.25em;
+}
+
+.form-switch .form-check-input:checked {
+    background-position: right center;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e");
+}
+
+.form-check-input {
+    /* background: linear-gradient(180deg, #077E86 0%, #80D8DE 100%); */
+    background-color: #888888;
+    border-color: #262B40;
+}
+
+.form-check-input:checked {
+    /* background: linear-gradient(180deg, #077E86 0%, #80D8DE 100%); */
+    background-color: #077E86;
+    border-color: #262B40;
+}
+
+/* page edit agen */
+
+.modal.show .modal-dialog {
+    display: flex;
+    justify-content: center;
+}
+
+/* page tambah agen */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input { 
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #ccc;
+-webkit-transition: .4s;
+transition: .4s;
+border-radius: 34px;
+}
+
+.slider:before {
+position: absolute;
+content: "";
+height: 26px;
+width: 26px;
+left: 4px;
+bottom: 4px;
+background-color: white;
+-webkit-transition: .4s;
+transition: .4s;
+border-radius: 50%;
+}
+
+input:checked + .slider {
+background-color: #2196F3;
+}
+
+input:focus + .slider {
+box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+-webkit-transform: translateX(26px);
+-ms-transform: translateX(26px);
+transform: translateX(26px);
+}
+
+.add-button {
+font-family: "Exo";
+font-size: 16px;
+font-weight: 700;
+align-items: center;
+padding: 12px 24px;
+gap: 8px;
+max-width: 136px;
+width: 100%;
+height: 45px;
+background: linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%);
+border: 0.6px solid #2C1919;
+border-radius: 6px;
+}
+
+.btn-off {
+height: 40px;
+background: #EBEBEB;
+max-width: 136px;
+width: 100%;
+border-radius: 8px;
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 22px;
+color: #C4C4C4;
+border: unset !important;
+}
+
+.detailSave {
+font-family: Nunito;
+font-size: 14px;
+font-weight: 400;
+}
+
+.detailSave tr td {
+width: 150px;
+}
+
+/* page forgot password */
+
+.modal-content {
+    max-width: 468px;
+    width: 100%;
+}
+
+/* page signin */
+
+.input-group-text {
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    border-right: inset
+}
+
+/* page listUser & transaction */
+
+.react-daterange-picker, .react-daterange-picker *, .react-daterange-picker *:before, .react-daterange-picker *:after {
+    border-radius: 8px;
+}
+
+.react-daterange-picker__inputGroup {
+    min-width: unset;
+}
+
+.react-daterange-picker__range-divider {
+    padding: 7px;
+}
+
+.react-daterange-picker__wrapper {
+    border: thin solid #C4C4C4;
+}
+
+.btn-ez-on {
+    font-family: "Nunito Sans";
+    font-size: 16px;
+    font-weight: 700;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%);
+    border: 0.6px solid #2C1919;
+    border-radius: 6px;
+}
+
