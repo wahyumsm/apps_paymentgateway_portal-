@@ -182,9 +182,10 @@ function RiwayatTopUp() {
             }
           } catch (error) {
             console.log(error)
-            if (error.response.status === 401) {
-                history.push('/login')
-            }
+            history.push(errorCatch(error.response.status))
+            // if (error.response.status === 401) {
+            //     history.push('/login')
+            // }
         }
     }
 

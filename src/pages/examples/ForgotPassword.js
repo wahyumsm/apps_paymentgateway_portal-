@@ -4,33 +4,46 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Form, Card, Button, Container, InputGroup, Modal } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
+import validator from "validator";
 import sendEmailIcon from "../../assets/img/illustrations/sendEmail.svg";
-import "./ForgotPassword.css"
-
 import { Routes } from "../../routes";
-
+import { BaseURL, getToken, setUserSession } from "../../function/helpers";
+import encryptData from "../../function/encryptData";
+import axios from "axios";
 
 export default () => {
 
   const [email, setEmail] = useState('')
   const [showModal, setShowModal] = useState(false)
 
-  function sendEmail(emailLink) {
-    if (emailLink.length > 0) {
-      let isEmail = 0
-      for (let i = 0; i < emailLink.length; i++) {
-        const email = emailLink[i];
-        if (email === "@") {
-          isEmail++
+  async function sendEmail(emailLink) {
+    try {
+      if (validator.isEmail(emailLink)) {
+        // console.log('email valid');
+        const auth = "Bearer " + getToken()
+        const dataParams = encryptData(`{"email": "${emailLink}"}`)
+        const headers = {
+          "Content-Type": "application/json",
+          'Authorization': auth,
+        };
+        const emailSended = await axios.post(BaseURL + "/Account/ForgotPassword", { data: dataParams }, { headers: headers })
+        // console.log(emailSended, "ini email sended");
+        if (emailSended.status === 200 && emailSended.data.response_code === 200 && emailSended.data.response_new_token === null) {
+          setShowModal(true)
+        } else if (emailSended.status === 200 && emailSended.data.response_code === 200 && emailSended.data.response_new_token !== null) {
+          setUserSession(emailSended.data.response_new_token)
+          setShowModal(true)
         }
-      }
-      if (isEmail === 1) {
-        setShowModal(true)
-      } else if (isEmail < 1 || isEmail > 1) {
+        // setShowModal(true)
+      } else {
+        // console.log('email invalid');
         alert('Silahkan isi alamat email anda')
       }
-    } else {
-      alert('Silahkan isi alamat email anda')
+    } catch (error) {
+      // console.log(error)
+      if (error.response.status === 400) {
+        setShowModal(true)
+      }
     }
   }
 

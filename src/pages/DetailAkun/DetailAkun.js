@@ -3,11 +3,13 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import { useHistory, useParams } from 'react-router-dom';
 import { el } from 'date-fns/locale';
 function DetailAkun() {
+
+    const access_token = getRole()
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
     const history = useHistory()
@@ -46,6 +48,9 @@ function DetailAkun() {
     }
 
     useEffect(()=>{
+        if (!access_token) {
+            history.push("/login")
+        }
         userDetailPartner('/Account/GetPartnerDetail')
     },[])
 

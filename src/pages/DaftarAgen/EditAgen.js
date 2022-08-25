@@ -5,7 +5,6 @@ import encryptData from '../../function/encryptData';
 import { BaseURL, convertFormatNumber, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import "./EditAgen.css"
 
 function EditAgen() {
     const history = useHistory()
