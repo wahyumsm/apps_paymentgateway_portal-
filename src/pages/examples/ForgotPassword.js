@@ -16,8 +16,9 @@ export default () => {
   const [email, setEmail] = useState('')
   const [showModal, setShowModal] = useState(false)
 
-  async function sendEmail(emailLink) {
+  async function sendEmail(e, emailLink) {
     try {
+      e.preventDefault()
       if (validator.isEmail(emailLink)) {
         // console.log('email valid');
         const auth = "Bearer " + getToken()
@@ -68,7 +69,7 @@ export default () => {
                       <Form.Control required autoFocus type="email" onChange={e => setEmail(e.target.value)} placeholder="Masukkan Email" />
                     </InputGroup>
                   </div>
-                  <Button variant="primary" onClick={() => sendEmail(email)} className="w-100" style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }}>
+                  <Button variant="primary" onClick={(e) => sendEmail(e, email)} className="w-100" style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }}>
                     Kirim Link
                   </Button>
                 </Form>

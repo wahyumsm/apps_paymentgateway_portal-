@@ -50,8 +50,9 @@ export default () => {
     }
   }
 
-  async function signingInHandler(username, password) {
+  async function signingInHandler(e, username, password) {
     try {
+      e.preventDefault()
       const auth = authorization
       const dataParams = encryptData(`{"username" : '${username}', "password" : '${password}'}`)
       const headers = {
@@ -119,10 +120,10 @@ export default () => {
                       <Card.Link className="small text-end">Lost password?</Card.Link>
                     </div> */}
                   </Form.Group>
+                  <Button onClick={(e) => signingInHandler(e, username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
+                    Login
+                  </Button>
                 </Form>
-                <Button onClick={() => signingInHandler(username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
-                  Login
-                </Button>
                 <div style={{ display: 'none' }}>
                   <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
                     <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>

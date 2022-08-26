@@ -1,6 +1,5 @@
 import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import axios from 'axios';
-import { data } from 'jquery';
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -56,12 +55,14 @@ function ReNotifyVA() {
             const submittedReNotify = await axios.post("/HelpDesk/SubmitReNotifyVA", { data: dataParams }, { headers: headers })
             // console.log(submittedReNotify, "ini submit re notify");
             if (submittedReNotify.status === 200 && submittedReNotify.data.response_code === 200 && submittedReNotify.data.response_new_token === null) {
-                window.location.reload()
+                alert(submittedReNotify.data.response_data.results.Message)
                 setShowModalSubmit(false)
+                window.location.reload()
             } else if (submittedReNotify.status === 200 && submittedReNotify.data.response_code === 200 && submittedReNotify.data.response_new_token !== null) {
                 setUserSession(submittedReNotify.data.response_new_token)
-                window.location.reload()
+                alert(submittedReNotify.data.response_data.results.Message)
                 setShowModalSubmit(false)
+                window.location.reload()
             }
         } catch (error) {
             console.log(error);
