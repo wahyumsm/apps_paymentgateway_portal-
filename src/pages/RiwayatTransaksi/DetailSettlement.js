@@ -40,7 +40,7 @@ function DetailSettlement() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            const detailsettlement = await axios.post("/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             // console.log(detailsettlement, 'ini data settlement');
             if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length === 0) {
                 detailsettlement.data.response_data.results = detailsettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
@@ -101,7 +101,7 @@ function DetailSettlement() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const dataDetailSettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            const dataDetailSettlement = await axios.post("/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             // console.log(dataDetailSettlement, 'ini data detail settlement export');
             if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length === 0) {
                 const data = dataDetailSettlement.data.response_data.results

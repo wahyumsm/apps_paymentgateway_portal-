@@ -29,7 +29,7 @@ function DaftarAgen() {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listAgen = await axios.post(BaseURL + "/Agen/ListAgen", { data: "" }, { headers: headers })
+      const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
       // console.log(listAgen, "ini list agen di daftar agen")
       if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));

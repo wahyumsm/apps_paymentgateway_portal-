@@ -26,7 +26,7 @@ function ReNotifyVA() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const dataVA = await axios.post(BaseURL + "/HelpDesk/GetReNotifyVA", { data: dataParams }, { headers: headers })
+            const dataVA = await axios.post("/HelpDesk/GetReNotifyVA", { data: dataParams }, { headers: headers })
             // console.log(dataVA, "ini data VA");
             if (dataVA.status === 200 && dataVA.data.response_code === 200 && dataVA.data.response_new_token === null) {
                 setDataVirtualAccount(dataVA.data.response_data.results)
@@ -53,7 +53,7 @@ function ReNotifyVA() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const submittedReNotify = await axios.post(BaseURL + "/HelpDesk/SubmitReNotifyVA", { data: dataParams }, { headers: headers })
+            const submittedReNotify = await axios.post("/HelpDesk/SubmitReNotifyVA", { data: dataParams }, { headers: headers })
             // console.log(submittedReNotify, "ini submit re notify");
             if (submittedReNotify.status === 200 && submittedReNotify.data.response_code === 200 && submittedReNotify.data.response_new_token === null) {
                 window.location.reload()
