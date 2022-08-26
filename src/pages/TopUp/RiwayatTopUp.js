@@ -2,7 +2,7 @@ import { Col, Form, Image, Row, Container,
     ListGroup,
     InputGroup,
     Modal,
-    Button, Table } from '@themesberg/react-bootstrap'
+    Button, Table, Toast } from '@themesberg/react-bootstrap'
 import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
 import Pagination from 'react-js-pagination'
@@ -17,6 +17,7 @@ import Countdown from "react-countdown";
 import CopyIcon from '../../assets/icon/carbon_copy.svg'
 import noticeIcon from '../../assets/icon/notice_icon.svg'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker/dist/DateRangePicker'
+import Checklist from '../../assets/icon/checklist_icon.svg'
 
 function RiwayatTopUp() {
 
@@ -34,6 +35,8 @@ function RiwayatTopUp() {
     const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
     const [ countDown, setCountDown ] = useState(0)
     const [text, setText] = useState('');
+    const [ topUpResult, setTopUpResult ] = useState({})
+    const [showStatusTopup, setShowStatusTopup] = useState(false)
     const [inputHandle, setInputHandle] = useState({
         idTransaksiRiwayatTopUp: "",
         statusRiwayatTopUp: [],
@@ -174,6 +177,33 @@ function RiwayatTopUp() {
         }
     }
 
+    async function topUpHandleConfirm() {
+        try {
+            const auth = "Bearer " + getToken()        
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
+            // console.log(topUp, 'ini topup');
+            if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
+                setTopUpResult(topUpResult.data.response_data)
+                setShowModalKonfirmasiTopUp(false)
+                setShowStatusTopup(true)
+                window.location.reload()
+            } else if (topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length !== 0) {
+                setUserSession(topUpResult.data.response_new_token)
+                setTopUpResult(topUpResult.data.response_data)
+                setShowModalKonfirmasiTopUp(false)
+                setShowStatusTopup(true)
+                window.location.reload()
+            }
+            } catch (error) {
+                console.log(error)
+                history.push(errorCatch(error.response.status))
+            }
+    }
+
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
@@ -253,168 +283,177 @@ function RiwayatTopUp() {
     );
 
     return (
-        <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Top Up</span>
-            <div className='main-content'>
-                <div className='riwayat-settlement-div mt-4'>
-                    <span className='mt-4' style={{fontWeight: 600}}>Riwayat Top Up</span>
-                    <div className='base-content mt-3'>
-                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
-                        <Row className='mt-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>ID Transaksi</span>
-                                <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiRiwayatTopUp} name="idTransaksiRiwayatTopUp" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
-                            </Col>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "30%" }}>
-                                <span>Periode*</span>
-                                <Form.Select name='periodeRiwayatTopUp' className="input-text-ez" value={(inputHandle.periodeRiwayatTopUp !== undefined) ? inputHandle.periodeRiwayatTopUp : 0} onChange={(e) => handleChangePeriodeRiwayatTopUp(e)}>
-                                    <option defaultChecked>Pilih Periode</option>
-                                    <option value={2}>Hari Ini</option>
-                                    <option value={3}>Kemarin</option>
-                                    <option value={4}>7 Hari Terakhir</option>
-                                    <option value={5}>Bulan Ini</option>
-                                    <option value={6}>Bulan Kemarin</option>
-                                    <option value={7}>Pilih Range Tanggal</option>
-                                </Form.Select>
-                            </Col>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>Status</span>
-                                <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusRiwayatTopUp} onChange={(e) => handleChange(e)}>
-                                    <option>Pilih Status</option>
-                                    <option value={2}>Berhasil</option>
-                                    <option value={1}>In Progress</option>
-                                    <option value={7}>Menunggu Pembayaran</option>
-                                    <option value={9}>Kadaluwarsa</option>
-                                </Form.Select>
-                            </Col>
-                            <Col xs={12} className="d-flex justify-content-center align-items-center mt-3">
-                                <div style={{ display: showDateRiwayatTopUp }}>
-                                    <DateRangePicker 
-                                        onChange={pickDateRiwayatTopUp}
-                                        value={stateRiwayatTopup}
-                                        clearIcon={null}
-                                    />
-                                </div>
-                            </Col>
-                        </Row>
-                        <Row className='mt-4'>
-                            <Col xs={3}>
-                                <Row>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                        <button
-                                            onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1)}
-                                            className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
-                                            disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
-                                        >
-                                            Terapkan
-                                        </button>
-                                    </Col>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                        <button
-                                            onClick={() => resetButtonHandle()}
-                                            className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
-                                            disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
-                                        >
-                                            Atur Ulang
-                                        </button>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <div className="div-table mt-4 pb-4">
-                            <DataTable
-                                columns={columnsRiwayatTopUp}
-                                data={listRiwayat}
-                                customStyles={customStyles}
-                                progressPending={pendingTopup}
-                                progressComponent={<CustomLoader />}
-                            />
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageRiwayatTopUp}</div>
-                            <Pagination
-                                activePage={activePageRiwayatTopUp}
-                                itemsCountPerPage={pageNumberRiwayatTopUp.row_per_page}
-                                totalItemsCount={(pageNumberRiwayatTopUp.row_per_page*pageNumberRiwayatTopUp.max_page)}
-                                pageRangeDisplayed={5}
-                                itemClass="page-item"
-                                linkClass="page-link"
-                                onChange={handlePageChangeSettlement}
-                            />
+        <>
+            <div className="content-page mt-6">
+                <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Top Up</span>
+                <div className='main-content'>
+                    <div className='riwayat-settlement-div mt-4'>
+                        <span className='mt-4' style={{fontWeight: 600}}>Riwayat Top Up</span>
+                        <div className='base-content mt-3'>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                            <Row className='mt-4'>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <span>ID Transaksi</span>
+                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiRiwayatTopUp} name="idTransaksiRiwayatTopUp" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
+                                </Col>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "30%" }}>
+                                    <span>Periode*</span>
+                                    <Form.Select name='periodeRiwayatTopUp' className="input-text-ez" value={(inputHandle.periodeRiwayatTopUp !== undefined) ? inputHandle.periodeRiwayatTopUp : 0} onChange={(e) => handleChangePeriodeRiwayatTopUp(e)}>
+                                        <option defaultChecked>Pilih Periode</option>
+                                        <option value={2}>Hari Ini</option>
+                                        <option value={3}>Kemarin</option>
+                                        <option value={4}>7 Hari Terakhir</option>
+                                        <option value={5}>Bulan Ini</option>
+                                        <option value={6}>Bulan Kemarin</option>
+                                        <option value={7}>Pilih Range Tanggal</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <span>Status</span>
+                                    <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusRiwayatTopUp} onChange={(e) => handleChange(e)}>
+                                        <option>Pilih Status</option>
+                                        <option value={2}>Berhasil</option>
+                                        <option value={1}>In Progress</option>
+                                        <option value={7}>Menunggu Pembayaran</option>
+                                        <option value={9}>Kadaluwarsa</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col xs={12} className="d-flex justify-content-center align-items-center mt-3">
+                                    <div style={{ display: showDateRiwayatTopUp }}>
+                                        <DateRangePicker 
+                                            onChange={pickDateRiwayatTopUp}
+                                            value={stateRiwayatTopup}
+                                            clearIcon={null}
+                                        />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className='mt-4'>
+                                <Col xs={3}>
+                                    <Row>
+                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1)}
+                                                className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
+                                                disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
+                                            >
+                                                Terapkan
+                                            </button>
+                                        </Col>
+                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => resetButtonHandle()}
+                                                className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
+                                                disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
+                                            >
+                                                Atur Ulang
+                                            </button>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <div className="div-table mt-4 pb-4">
+                                <DataTable
+                                    columns={columnsRiwayatTopUp}
+                                    data={listRiwayat}
+                                    customStyles={customStyles}
+                                    progressPending={pendingTopup}
+                                    progressComponent={<CustomLoader />}
+                                />
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageRiwayatTopUp}</div>
+                                <Pagination
+                                    activePage={activePageRiwayatTopUp}
+                                    itemsCountPerPage={pageNumberRiwayatTopUp.row_per_page}
+                                    totalItemsCount={(pageNumberRiwayatTopUp.row_per_page*pageNumberRiwayatTopUp.max_page)}
+                                    pageRangeDisplayed={5}
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    onChange={handlePageChangeSettlement}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }} className="confirm-modal">
-                <Modal.Header className="border-0">
-                    <Col>
-                    <Button
-                        className="position-absolute top-0 end-0 m-3"
-                        variant="close"
-                        aria-label="Close"
-                        onClick={() => setShowModalKonfirmasiTopUp(false)}
-                    />
-                    <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
-                        Selesaikan Proses Topup
-                    </Modal.Title>
-                    </Col>            
-                </Modal.Header>
-                <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
-                    <div className="text-center" style={{fontSize: "14px"}}>Selesaikan Pembayaran Dalam</div> 
-                    <div className="text-center mt-2">
-                        <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={Date.now() + countDown} daysInHours={true} /></span>
-                    </div>
-                    <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-center mt-2">
-                        <div>Batas Akhir :</div>
-                        <div className="mx-2 fw-bold">{(detailTopUp.exp_date !== undefined) ? convertDateTimeStamp(detailTopUp.exp_date) + " WIB" : null}</div>
-                    </div>
-                    <div className="mt-4" style={{border: "1px solid #EBEBEB", borderRadius: "8px", padding: "10px"}}>
-                        <Table className='detailSave'>
-                        <div className="d-flex justify-content-between align-items-center">
-                            <div>ID Transaksi</div>
-                            <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{detailTopUp.id_transaksi}</div>
+                <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }} className="confirm-modal">
+                    <Modal.Header className="border-0">
+                        <Col>
+                        <Button
+                            className="position-absolute top-0 end-0 m-3"
+                            variant="close"
+                            aria-label="Close"
+                            onClick={() => setShowModalKonfirmasiTopUp(false)}
+                        />
+                        <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
+                            Selesaikan Proses Topup
+                        </Modal.Title>
+                        </Col>            
+                    </Modal.Header>
+                    <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+                        <div className="text-center" style={{fontSize: "14px"}}>Selesaikan Pembayaran Dalam</div> 
+                        <div className="text-center mt-2">
+                            <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={Date.now() + countDown} daysInHours={true} /></span>
                         </div>
-                        <div className="d-flex justify-content-between align-items-center mt-3">
-                            <div className="d-flex flex-column text-left">
-                            <div style={{padding:"unset"}}>Metode Pembayaran</div>
-                            <div style={{padding:"unset"}} className="fw-bold mt-1">Tranfer Bank</div>
-                            </div>
-                            <div className="d-flex flex-column">
-                            <div style={{padding:"unset"}} className="text-end"><img src={detailTopUp.metode_pembayaran} alt="bca" style={{width: "38px", height: "12px"}} /></div>
-                            <div style={{padding:"unset"}} className="mt-1">{detailTopUp.tf_bank}</div>
-                            </div>
+                        <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-center mt-2">
+                            <div>Batas Akhir :</div>
+                            <div className="mx-2 fw-bold">{(detailTopUp.exp_date !== undefined) ? convertDateTimeStamp(detailTopUp.exp_date) + " WIB" : null}</div>
                         </div>
-                        <div className="d-flex justify-content-between align-items-center mt-3">
-                            <div className="d-flex flex-column text-left">
-                            <div style={{padding:"unset"}}>No Rekening</div>
-                            <div onChange={copyHandler} id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{detailTopUp.no_rek}</div>
+                        <div className="mt-4" style={{border: "1px solid #EBEBEB", borderRadius: "8px", padding: "10px"}}>
+                            <Table className='detailSave'>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>ID Transaksi</div>
+                                <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{detailTopUp.id_transaksi}</div>
                             </div>
-                            <div className="d-flex flex-column mt-3">
-                            <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                            <div className="d-flex justify-content-between align-items-center mt-3">
+                                <div className="d-flex flex-column text-left">
+                                <div style={{padding:"unset"}}>Metode Pembayaran</div>
+                                <div style={{padding:"unset"}} className="fw-bold mt-1">Tranfer Bank</div>
+                                </div>
+                                <div className="d-flex flex-column">
+                                <div style={{padding:"unset"}} className="text-end"><img src={detailTopUp.metode_pembayaran} alt="bca" style={{width: "38px", height: "12px"}} /></div>
+                                <div style={{padding:"unset"}} className="mt-1">{detailTopUp.tf_bank}</div>
+                                </div>
                             </div>
+                            <div className="d-flex justify-content-between align-items-center mt-3">
+                                <div className="d-flex flex-column text-left">
+                                <div style={{padding:"unset"}}>No Rekening</div>
+                                <div onChange={copyHandler} id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{detailTopUp.no_rek}</div>
+                                </div>
+                                <div className="d-flex flex-column mt-3">
+                                <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                                </div>
+                            </div>
+                            <div className="d-flex justify-content-between align-items-center mt-3">
+                                <div className="d-flex flex-column text-left">
+                                <div style={{padding:"unset"}}>Nominal Transfer</div>
+                                <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(detailTopUp.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(detailTopUp.amount_transfer)}</span></div>
+                                </div>
+                                <div className="d-flex flex-column mt-3">
+                                <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                                </div>
+                            </div>
+                            </Table>                
                         </div>
-                        <div className="d-flex justify-content-between align-items-center mt-3">
-                            <div className="d-flex flex-column text-left">
-                            <div style={{padding:"unset"}}>Nominal Transfer</div>
-                            <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(detailTopUp.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(detailTopUp.amount_transfer)}</span></div>
-                            </div>
-                            <div className="d-flex flex-column mt-3">
-                            <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
-                            </div>
+                        <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
+                            <img src={noticeIcon} alt="notice" />
+                            <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga 3 digit terakhir.</div>
+                        </Table>
+                        <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                            <Button variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
                         </div>
-                        </Table>                
-                    </div>
-                    <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
-                        <img src={noticeIcon} alt="notice" />
-                        <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga 3 digit terakhir.</div>
-                    </Table>
-                    <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                        <Button variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
-                    </div>
-                </Modal.Body>
-            </Modal>
-        </div>
+                    </Modal.Body>
+                </Modal>
+            </div>
+            {topUpResult.is_update === true &&
+                <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
+                    <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
+                    <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Top Up Saldo {convertToRupiah(inputHandle.amounts)} Berhasil</Toast.Body>
+                    </Toast>
+                </div>
+            }
+        </>
     )
 }
 
