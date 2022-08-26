@@ -441,7 +441,7 @@ function RiwayatTopUp() {
                             <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga 3 digit terakhir.</div>
                         </Table>
                         <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                            <Button variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
+                            <Button onClick={() => topUpHandleConfirm()} variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
                         </div>
                     </Modal.Body>
                 </Modal>
