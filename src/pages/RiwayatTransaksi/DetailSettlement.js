@@ -40,7 +40,7 @@ function DetailSettlement() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            const detailsettlement = await axios.post("/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             // console.log(detailsettlement, 'ini data settlement');
             if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length === 0) {
                 detailsettlement.data.response_data = detailsettlement.data.response_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
@@ -101,7 +101,7 @@ function DetailSettlement() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const dataDetailSettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            const dataDetailSettlement = await axios.post("/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             // console.log(dataDetailSettlement, 'ini data detail settlement export');
             if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length === 0) {
                 const data = dataDetailSettlement.data.response_data.results
@@ -272,7 +272,7 @@ function DetailSettlement() {
 
     return (
         <div className="content-page mt-6">
-        <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
+        <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/riwayattransaksi"}>Riwayat Transaksi</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>
         </div>

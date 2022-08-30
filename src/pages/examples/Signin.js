@@ -35,7 +35,7 @@ export default () => {
           'Content-Type':'application/json',
           'Authorization' : auth
       }
-      const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
+      const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
       // console.log(userDetail.data, "userDetail di login");
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         setRoleSession(userDetail.data.response_data.muser_role_id)
@@ -50,15 +50,16 @@ export default () => {
     }
   }
 
-  async function signingInHandler(username, password) {
+  async function signingInHandler(e, username, password) {
     try {
+      e.preventDefault()
       const auth = authorization
       const dataParams = encryptData(`{"username" : '${username}', "password" : '${password}'}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
+      const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
       // console.log(dataLogin.data, "dataLogin di login");
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
@@ -119,10 +120,10 @@ export default () => {
                       <Card.Link className="small text-end">Lost password?</Card.Link>
                     </div> */}
                   </Form.Group>
+                  <Button onClick={(e) => signingInHandler(e, username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
+                    Login
+                  </Button>
                 </Form>
-                <Button onClick={() => signingInHandler(username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
-                  Login
-                </Button>
                 <div style={{ display: 'none' }}>
                   <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
                     <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>

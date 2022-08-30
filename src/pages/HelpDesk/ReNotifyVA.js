@@ -1,8 +1,7 @@
 import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import axios from 'axios';
-import { data } from 'jquery';
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
@@ -26,7 +25,7 @@ function ReNotifyVA() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const dataVA = await axios.post(BaseURL + "/HelpDesk/GetReNotifyVA", { data: dataParams }, { headers: headers })
+            const dataVA = await axios.post("/HelpDesk/GetReNotifyVA", { data: dataParams }, { headers: headers })
             // console.log(dataVA, "ini data VA");
             if (dataVA.status === 200 && dataVA.data.response_code === 200 && dataVA.data.response_new_token === null) {
                 setDataVirtualAccount(dataVA.data.response_data.results)
@@ -53,15 +52,17 @@ function ReNotifyVA() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const submittedReNotify = await axios.post(BaseURL + "/HelpDesk/SubmitReNotifyVA", { data: dataParams }, { headers: headers })
+            const submittedReNotify = await axios.post("/HelpDesk/SubmitReNotifyVA", { data: dataParams }, { headers: headers })
             // console.log(submittedReNotify, "ini submit re notify");
             if (submittedReNotify.status === 200 && submittedReNotify.data.response_code === 200 && submittedReNotify.data.response_new_token === null) {
-                window.location.reload()
+                alert(submittedReNotify.data.response_data.results.Message)
                 setShowModalSubmit(false)
+                window.location.reload()
             } else if (submittedReNotify.status === 200 && submittedReNotify.data.response_code === 200 && submittedReNotify.data.response_new_token !== null) {
                 setUserSession(submittedReNotify.data.response_new_token)
-                window.location.reload()
+                alert(submittedReNotify.data.response_data.results.Message)
                 setShowModalSubmit(false)
+                window.location.reload()
             }
         } catch (error) {
             console.log(error);
@@ -84,7 +85,7 @@ function ReNotifyVA() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Re-Notify Virtual Account</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Re-Notify Virtual Account</span>
             <div className='head-title'>
                 <h2 className="h5 mb-3 mt-4">Re-Notify Virtual Account</h2>
             </div>

@@ -4,7 +4,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import jsPDF from 'jspdf';
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 
@@ -35,7 +35,7 @@ function InvoicePage() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
+            const invoiceData = await axios.post("/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
             // console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoice(invoiceData.data.response_data)
@@ -71,7 +71,7 @@ function InvoicePage() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Invoice</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Invoice</span>
             <div className='head-title'>
                 <h2 className="h5 mb-3 mt-4">Invoice</h2>
             </div>

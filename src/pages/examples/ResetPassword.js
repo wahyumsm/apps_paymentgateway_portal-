@@ -30,7 +30,7 @@ export default ({ location }) => {
         "Content-Type": "application/json",
         'Authorization': auth,
       };
-      const validated = await axios.post(BaseURL + "/Account/ValidateResetPassword", { data: dataParams }, { headers: headers })
+      const validated = await axios.post("/Account/ValidateResetPassword", { data: dataParams }, { headers: headers })
       // console.log(validated, "ini validated");
     } catch (error) {
       console.log(error);
@@ -46,10 +46,11 @@ export default ({ location }) => {
     }
   }
 
-  async function ResetNewPassword(email, signature, password, passwordConfirmation) {
+  async function ResetNewPassword(e, email, signature, password, passwordConfirmation) {
     try {
       // console.log(password, "ini password");
       // console.log(passwordConfirmation, "ini passwordConfirmation");
+      e.preventDefault()
       let validasi = 0
         const besarKecil = /[A-Za-z]/g;
         const numbers = /[0-9]/g;
@@ -82,7 +83,7 @@ export default ({ location }) => {
             "Content-Type": "application/json",
             'Authorization': auth,
           };
-          const resetPassword = await axios.post(BaseURL + "/Account/ResetPassword", { data: dataParams }, { headers: headers })
+          const resetPassword = await axios.post("/Account/ResetPassword", { data: dataParams }, { headers: headers })
           // console.log(resetPassword, "ini resetPassword");
         }
     } catch (error) {
@@ -150,10 +151,10 @@ export default ({ location }) => {
                       </div>
                     }
                   </Form.Group>
+                  <Button onClick={(e) => ResetNewPassword(e, validateEmail, validateSignature, newPassword, newPasswordConfirmation)} variant="primary" type="submit" className="w-100" style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }}>
+                    Ubah Kata Sandi
+                  </Button>
                 </Form>
-                <Button onClick={() => ResetNewPassword(validateEmail, validateSignature, newPassword, newPasswordConfirmation)} variant="primary" type="submit" className="w-100" style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }}>
-                  Ubah Kata Sandi
-                </Button>
               </div>
             </Col>
           </Row>
