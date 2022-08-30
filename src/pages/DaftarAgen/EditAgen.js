@@ -51,7 +51,7 @@ function EditAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
+            const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
                 if (detailAgen.data.response_data.status === true) {
@@ -100,7 +100,7 @@ function EditAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const editAgen = await axios.post("/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
+            const editAgen = await axios.post(BaseURL + "/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
             // console.log(editAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
                 setShowModalEdit(true)
