@@ -1,10 +1,10 @@
 
 import React, { useEffect, useState } from "react";
 import SimpleBar from 'simplebar-react';
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useHistory, useLocation } from "react-router-dom";
 import { CSSTransition } from 'react-transition-group';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faBoxOpen, faChartPie, faCog, faFileAlt, faHandHoldingUsd, faSignOutAlt, faTable, faTimes, faCalendarAlt, faMapPin, faInbox, faRocket } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faBoxOpen, faChartPie, faCog, faFileAlt, faHandHoldingUsd, faSignOutAlt, faTable, faTimes, faCalendarAlt, faMapPin, faInbox, faRocket, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Nav, Badge, Image, Button, Dropdown, Accordion, Navbar } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
 import './css/global.css'
@@ -21,12 +21,16 @@ import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
 import { GetUserAccessMenu } from "../redux/ActionCreators/UserAccessMenuAction";
 import { useDispatch, useSelector } from "react-redux";
-import { getRole } from "../function/helpers";
+import { getRole, getToken } from "../function/helpers";
+import arrowDown from "../assets/img/icons/arrow_down.svg";
+import arrowRight from "../assets/img/icons/arrow_right_white.png";
 
 export default (props = {}) => {
 
   const location = useLocation();
   const dispatch = useDispatch()
+  const history = useHistory()
+  const access_token = getToken()
   const { pathname } = location;
   const [show, setShow] = useState(false);
   const showClass = show ? "show" : "";
@@ -81,9 +85,14 @@ export default (props = {}) => {
   };
 
   useEffect(() => {
+    if (!access_token) {
+      history.push("/login")
+    }
     dispatch(GetUserAccessMenu("/Account/GetUserAccess"))
   }, [])
   
+  // console.log(userAccessMenu, "ini userAccessMenu");
+
   if (!userAccessMenu) {
     return null
   }
@@ -124,6 +133,7 @@ export default (props = {}) => {
               {
                 userAccessMenu.map((item) => {
                   return (
+                    (item.detail.length === 0) ?
                     <NavItem
                       key={item.id}
                       // className={ (!item.is_visibled) ? "nav-link disabled" : "" }
@@ -132,8 +142,41 @@ export default (props = {}) => {
                       // image={(item.label === "Dashboard") ? BerandaIcon : (item.label === "Report") ? LaporanIcon : (item.label === "Daftar Agen") ? DaftarAgenIcon : ""}
                       image={item.icon}
                       // link={Routes.Transactions.path}
-                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 16) ? Routes.RiwayatTransaksi.path : (item.id === 13) ? "" : (item.id === 17) ? Routes.Invoice.path : (item.id === 18) ? Routes.ListUser.path :""}
-                    />
+                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 16) ? Routes.RiwayatTransaksi.path : (item.id === 17) ? Routes.Invoice.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 21) ? Routes.DisbursementReport.path : (item.id === 22) ? Routes.RiwayatTopUp.path : ""}
+                    /> :
+                    <CollapsableNavItem key={item.id} title={item.label} image={item.icon}>
+                      {
+                        item.detail.map(item2 => {
+                          return (
+                            (item2.detail.length === 0) ?
+                            <NavItem
+                              key={item2.id}
+                              title={item2.label}
+                              // icon={faAngleRight}
+                              image={item2.icon}
+                              link={(item2.id === 1701) ? Routes.NotFound.path : (item2.id === 1702) ? Routes.NotFound.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : ""}
+                            /> :
+                            <CollapsableNavItem key={item2.id} title={item2.label} image={item2.icon}>
+                              {
+                                item2.detail.map(item3 => {
+                                  return (
+                                    <div style={{ marginLeft: 30 }}>
+                                      <NavItem
+                                        key={item3.id}
+                                        title={item3.label}
+                                        // icon={faAngleRight}
+                                        image={item3.icon}
+                                        link={(item2.id === 170201) ? Routes.NotFound.path : (item2.id === 170202) ? Routes.NotFound.path : ""}
+                                      />
+                                    </div>
+                                  )
+                                })
+                              }
+                            </CollapsableNavItem>
+                          )
+                        })
+                      }
+                    </CollapsableNavItem>
                   )
                 })
               }

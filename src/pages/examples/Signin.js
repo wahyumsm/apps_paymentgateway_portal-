@@ -10,7 +10,6 @@ import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
 import { authorization, BaseURL, errorCatch, RouteTo, setRoleSession, setUserSession } from "../../function/helpers";
-import "./Signin.css";
 import { GetUserDetail } from "../../redux/ActionCreators/UserDetailAction";
 
 

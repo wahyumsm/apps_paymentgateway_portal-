@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
@@ -70,7 +70,7 @@ function TambahPartner() {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Tambah Agen</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Tambah Partner</span>
             <div className="head-title">
                 <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Tambah Partner</h4>
                 <h5 style={{ fontFamily: "Exo" }}>Profil Perusahaan</h5>

@@ -9,7 +9,7 @@ import encryptData from "../function/encryptData";
 import * as XLSX from "xlsx"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
-import "./Transactions.css";
+// import { addDays } from "date-fns";
 import {Line} from 'react-chartjs-2'
 import { max } from "date-fns";
 import breadcrumbsIcon from "../assets/icon/breadcrumbs_icon.svg";

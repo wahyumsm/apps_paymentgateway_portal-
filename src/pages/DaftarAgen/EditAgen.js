@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, Modal, Button } from '@themesberg/react-bootstrap';
-import { useHistory, useParams } from 'react-router-dom';
+import { Col, Row, Form, Modal, Button, InputGroup } from '@themesberg/react-bootstrap';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertFormatNumber, errorCatch, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import "./EditAgen.css"
 
 function EditAgen() {
     const history = useHistory()
@@ -139,7 +138,7 @@ function EditAgen() {
     return (
         <>
             <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-                <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
+                <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
                 <div className="head-title">
                     <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
                 </div>
