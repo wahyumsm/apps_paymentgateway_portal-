@@ -161,7 +161,7 @@ function RiwayatTransaksi() {
         } catch (error) {
             console.log(error);
             history.push(errorCatch(error.response.status))
-    }
+        }
     }
 
     async function riwayatDanaMasuk(currentPage) {
@@ -804,7 +804,7 @@ function RiwayatTransaksi() {
 
   return (
     <div className="content-page mt-6">
-        <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Transaksi</span>
+        <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Transaksi</span>
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Riwayat Transaksi</h2>
         </div>

@@ -23,6 +23,7 @@ export const Routes = {
     ListMenuAccess : { path: "/menuaccess/:userId" },
     RiwayatTopUp : { path: "/riwayattopup" },
     ReNotifyVA : { path: "/renotifyva" },
+    DisbursementReport : { path: "/disbursementreport" },
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/invoice" },
     Login: { path: "/login" },

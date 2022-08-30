@@ -56,6 +56,16 @@ export function errorCatch(statusCode) {
     return code[statusCode]
 }
 
+export function convertSimpleTimeStamp(time) {
+    const date = new Date(time*1000)
+    const hours = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours()
+    const minutes = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes()
+    const days = (date.getDate() < 10) ? "0" + date.getDate() : date.getDate()
+    const months = (date.getMonth() + 1 < 10) ? "0" + (date.getMonth() + 1) : date.getMonth() + 1
+    const years = date.getFullYear()
+    return `${hours}:${minutes}, ${days}/${months}/${years}`
+}
+
 export const convertDateTimeStamp = (time) => {
     return new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(time * 1000))
 }

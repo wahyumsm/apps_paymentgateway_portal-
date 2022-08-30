@@ -123,7 +123,7 @@ function DaftarPartner() {
 
   return (
     <div className='main-content mt-5' style={{padding: "37px 27px 37px 27px"}}>
-        <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Partner</span>
+        <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Partner</span>
         <div className="head-title">
             <h2 className="h4 mt-4 mb-5">Daftar Partner</h2>
         </div>

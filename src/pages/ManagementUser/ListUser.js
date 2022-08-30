@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Form, Image } from '@themesberg/react-bootstrap';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
 import DataTable from 'react-data-table-component';
 import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
@@ -8,6 +8,7 @@ import axios from "axios";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faEye, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
 function ListUser () {
 
@@ -132,7 +133,8 @@ function ListUser () {
 
   return (
     <>
-      <div className="main-content" style={{padding: "37px 27px 37px 27px"}}>
+      <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
+        <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Management User</span>
         <div className="head-title">
           <h2 className="h4 mt-5">Management User</h2>
         </div>

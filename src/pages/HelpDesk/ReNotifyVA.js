@@ -1,7 +1,7 @@
 import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
@@ -85,7 +85,7 @@ function ReNotifyVA() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Re-Notify Virtual Account</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Re-Notify Virtual Account</span>
             <div className='head-title'>
                 <h2 className="h5 mb-3 mt-4">Re-Notify Virtual Account</h2>
             </div>

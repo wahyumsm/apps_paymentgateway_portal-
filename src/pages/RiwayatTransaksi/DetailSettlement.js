@@ -272,7 +272,7 @@ function DetailSettlement() {
 
     return (
         <div className="content-page mt-6">
-        <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
+        <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/riwayattransaksi"}>Riwayat Transaksi</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>
         </div>

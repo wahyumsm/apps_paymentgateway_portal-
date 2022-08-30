@@ -2,7 +2,7 @@ import { Alert, Form, Row, Table } from '@themesberg/react-bootstrap'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
-import { useHistory, useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData'
 import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
@@ -1982,7 +1982,7 @@ function ListMenuAccess() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Access Menu User</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/managementuser"}>Management User</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Access Menu User</span>
             <div className='head-title'>
                 <h2 className="h5 mb-3 mt-4">Access User</h2>
             </div>
