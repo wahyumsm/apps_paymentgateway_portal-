@@ -40,7 +40,7 @@ function DetailAkun() {
             }
             
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -70,7 +70,7 @@ function DetailAkun() {
             
             alert("Edit URL Berhasil")
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }

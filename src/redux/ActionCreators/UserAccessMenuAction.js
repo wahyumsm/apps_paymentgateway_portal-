@@ -19,19 +19,12 @@ export const GetUserAccessMenu = (url) => {
                         accessMenu.push(element)
                     }
                 }
-                // console.log(accessMenu, "after filter");
                 dispatch({
                     type: FETCH_GETUSERACCESSMENU,
                     payload: {
                         userAccessMenu: accessMenu
                     }
                 })
-                // dispatch({
-                //     type: FETCH_GETUSERACCESSMENU,
-                //     payload: {
-                //         userAccessMenu: userAccessMenu.data.response_data
-                //     }
-                // })
             } else if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length !== 0) {
                 setUserSession(userAccessMenu.data.response_new_token)
                 const accessMenu = []
@@ -41,22 +34,15 @@ export const GetUserAccessMenu = (url) => {
                         accessMenu.push(element)
                     }
                 }
-                // console.log(accessMenu, "after filter");
                 dispatch({
                     type: FETCH_GETUSERACCESSMENU,
                     payload: {
                         userAccessMenu: accessMenu
                     }
                 })
-                // dispatch({
-                //     type: FETCH_GETUSERACCESSMENU,
-                //     payload: {
-                //         userAccessMenu: userAccessMenu.data.response_data
-                //     }
-                // })
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
 }

@@ -44,7 +44,7 @@ export default () => {
         }
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   }
 
@@ -63,7 +63,7 @@ export default () => {
         userDetail(dataLogin.data.response_data.access_token)
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (error.response.status === 400) {
         setErrorMessage(error.response.data.response_message)
       }

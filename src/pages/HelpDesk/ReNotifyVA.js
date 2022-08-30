@@ -17,16 +17,13 @@ function ReNotifyVA() {
 
     async function searchVA(noVA) {
         try {
-            // console.log(noVA, "ini no va");
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"virtual_account": "${noVA}"}`)
-            // console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const dataVA = await axios.post(BaseURL + "/HelpDesk/GetReNotifyVA", { data: dataParams }, { headers: headers })
-            // console.log(dataVA, "ini data VA");
             if (dataVA.status === 200 && dataVA.data.response_code === 200 && dataVA.data.response_new_token === null) {
                 setDataVirtualAccount(dataVA.data.response_data.results)
             } else if (dataVA.status === 200 && dataVA.data.response_code === 200 && dataVA.data.response_new_token !== null) {
@@ -34,7 +31,7 @@ function ReNotifyVA() {
                 setDataVirtualAccount(dataVA.data.response_data.results)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -47,13 +44,11 @@ function ReNotifyVA() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"virtual_account": "${noVA}"}`)
-            // console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const submittedReNotify = await axios.post(BaseURL + "/HelpDesk/SubmitReNotifyVA", { data: dataParams }, { headers: headers })
-            // console.log(submittedReNotify, "ini submit re notify");
             if (submittedReNotify.status === 200 && submittedReNotify.data.response_code === 200 && submittedReNotify.data.response_new_token === null) {
                 alert(submittedReNotify.data.response_data.results.Message)
                 setShowModalSubmit(false)
@@ -65,7 +60,7 @@ function ReNotifyVA() {
                 window.location.reload()
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 alert(error.response.data.response_message)
             }

@@ -35,7 +35,7 @@ function DetailPartner() {
                 setDetailPartner(detailPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     } 
@@ -113,7 +113,7 @@ function DetailPartner() {
             setListAgen(listAgen.data.response_data)
           }
         } catch (error) {
-          console.log(error)
+        //   console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }

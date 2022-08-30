@@ -83,7 +83,7 @@ function EditAgen() {
                 setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -104,7 +104,7 @@ function EditAgen() {
                 setShowModalEdit(true)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }

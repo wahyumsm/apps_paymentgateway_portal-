@@ -84,7 +84,7 @@ function UpdateUser() {
                 getListAgen(dataDetail.partner_id)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status));
         }
     }        
@@ -107,7 +107,7 @@ function UpdateUser() {
                     history.push("/managementuser")
                 }
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 setErrorMsg(error.response.data.response_message)
                 if (error.response.data.response_message === "Failed") {
                     alert(error.response.data.response_message)
@@ -135,7 +135,7 @@ function UpdateUser() {
                     setListRole(listRole.data.response_data)
                 }
             } catch (error) {
-                console.log(error);
+                // console.log(error);
                 history.push(errorCatch(error.response.status))
             }
         }

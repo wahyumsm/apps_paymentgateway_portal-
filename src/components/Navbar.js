@@ -178,7 +178,7 @@ export default (props) => {
           setShowModalKonfirmasiTopUp(true)
         }
       } catch (error) {
-        console.log(error)
+        // console.log(error)
         history.push(errorCatch(error.response.status))
       }
     }
@@ -202,7 +202,7 @@ export default (props) => {
             setShowStatusTopup(true)
           }
         } catch (error) {
-          console.log(error)
+          // console.log(error)
           history.push(errorCatch(error.response.status))
         }
       }
@@ -223,7 +223,7 @@ export default (props) => {
           }
           
       } catch (error) {
-          console.log(error)
+          // console.log(error)
           history.push(errorCatch(error.response.status))
         }
     }
@@ -246,7 +246,7 @@ export default (props) => {
           }
           
       } catch (error) {
-          console.log(error)
+          // console.log(error)
           history.push(errorCatch(error.response.status))
         }
     }
@@ -279,7 +279,7 @@ export default (props) => {
         history.push("/login");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status))
     }
   }

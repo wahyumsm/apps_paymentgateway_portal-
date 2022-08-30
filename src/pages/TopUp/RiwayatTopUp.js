@@ -91,7 +91,7 @@ function RiwayatTopUp() {
                 setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -104,13 +104,11 @@ function RiwayatTopUp() {
             if (user_role === "102") {
                 const auth = "Bearer " + getToken()
                 const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
-                // console.log(dataParams, 'ini params');
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
                 }
                 const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
-                console.log(listRiwayat, 'ini data user ');
                 if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                     listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                     setPageNumberRiwayatTopUp(listRiwayat.data.response_data)
@@ -126,13 +124,11 @@ function RiwayatTopUp() {
             } else {
                 const auth = "Bearer " + getToken()
                 const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "sub_partner_id": "${(namaPartner !== undefined) ? namaPartner : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
-                // console.log(dataParams, 'ini params');
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
                 }
                 const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
-                console.log(listRiwayat, 'ini data user ');
                 if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                     listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                     setPageNumberRiwayatTopUp(listRiwayat.data.response_data)
@@ -148,7 +144,7 @@ function RiwayatTopUp() {
             }
             
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -185,7 +181,6 @@ function RiwayatTopUp() {
     }
 
     function handlePageChangeTopUp(page) {
-        // console.log(page, 'ini page');
         setActivePageRiwayatTopUp(page)
         listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, inputHandle.namaPartnerRiwayatTopUp, isFilterTopUp)
     }
@@ -224,7 +219,7 @@ function RiwayatTopUp() {
               setShowModalKonfirmasiTopUp(true)
             }
           } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
             // if (error.response.status === 401) {
             //     history.push('/login')
@@ -240,7 +235,6 @@ function RiwayatTopUp() {
                 'Authorization' : auth
             }
             const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
-            // console.log(topUp, 'ini topup');
             if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
                 setTopUpResult(topUpResult.data.response_data)
                 setShowModalKonfirmasiTopUp(false)
@@ -254,7 +248,7 @@ function RiwayatTopUp() {
                 window.location.reload()
             }
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 history.push(errorCatch(error.response.status))
             }
     }
@@ -267,7 +261,6 @@ function RiwayatTopUp() {
                 'Authorization' : auth
             }
             const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
-            // console.log(topUp, 'ini topup');
             if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
                 setTopUpResult(topUpResult.data.response_data)
                 setShowModalKonfirmasiTopUp(false)
@@ -281,7 +274,7 @@ function RiwayatTopUp() {
                 window.location.reload()
             }
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 history.push(errorCatch(error.response.status))
             }
     }
@@ -436,7 +429,6 @@ function RiwayatTopUp() {
                         'Authorization': auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportFilter, 'ini data filter topup partner');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
@@ -460,7 +452,7 @@ function RiwayatTopUp() {
                         XLSX.writeFile(workBook, "Riwayat Top Up Report.xlsx");
                     }
                 } catch (error) {
-                    console.log(error)
+                    // console.log(error)
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -475,7 +467,6 @@ function RiwayatTopUp() {
                         'Authorization': auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportFilter, 'ini data filter topup admin');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
@@ -499,7 +490,7 @@ function RiwayatTopUp() {
                         XLSX.writeFile(workBook, "Riwayat Top Up Report.xlsx");
                     }
                 } catch (error) {
-                    console.log(error)
+                    // console.log(error)
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -514,7 +505,6 @@ function RiwayatTopUp() {
                         'Authorization': auth
                     }
                     const dataExportTopUp = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportTopUp, 'ini data top up partner export');
                     if (dataExportTopUp.status === 200 && dataExportTopUp.data.response_code === 200 && dataExportTopUp.data.response_new_token === null) {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
@@ -538,7 +528,7 @@ function RiwayatTopUp() {
                         XLSX.writeFile(workBook, "Riwayat Top Up Report.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -553,7 +543,6 @@ function RiwayatTopUp() {
                         'Authorization': auth
                     }
                     const dataExportTopUp = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
-                    console.log(dataExportTopUp, 'ini data top up admin export');
                     if (dataExportTopUp.status === 200 && dataExportTopUp.data.response_code === 200 && dataExportTopUp.data.response_new_token.length === 0) {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
@@ -577,7 +566,7 @@ function RiwayatTopUp() {
                         XLSX.writeFile(workBook, "Riwayat Top Up Report.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }

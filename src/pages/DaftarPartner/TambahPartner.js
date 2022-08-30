@@ -53,7 +53,7 @@ function TambahPartner() {
             
             alert("Partner Baru Berhasil Ditambahkan")
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }

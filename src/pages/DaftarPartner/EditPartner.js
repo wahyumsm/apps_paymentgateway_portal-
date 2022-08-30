@@ -88,7 +88,7 @@ function EditPartner() {
                 setDetailPartner(detailPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -204,7 +204,7 @@ function EditPartner() {
             
             alert("Edit Data Partner Berhasil")
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -227,7 +227,7 @@ function EditPartner() {
             setListAgen(listAgen.data.response_data)
           }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }

@@ -41,7 +41,7 @@ function InvoicePage() {
                 setDataInvoice(invoiceData.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }

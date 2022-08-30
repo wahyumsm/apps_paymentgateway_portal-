@@ -83,7 +83,7 @@ export default () => {
         setPendingTransfer(false)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -108,7 +108,7 @@ export default () => {
         setPendingSettlement(false)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -131,7 +131,7 @@ export default () => {
         setDataChartTransfer(dataChartTransfer.data.response_data)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -157,7 +157,7 @@ export default () => {
         setPendingSettlement(false)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -180,7 +180,7 @@ export default () => {
         setListSettlement(filterSettlement.data.response_data)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -233,7 +233,7 @@ export default () => {
         setShowModalDetailTransferDana(true)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }

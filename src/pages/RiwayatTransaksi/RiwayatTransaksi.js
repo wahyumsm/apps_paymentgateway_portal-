@@ -67,7 +67,7 @@ function RiwayatTransaksi() {
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -155,7 +155,7 @@ function RiwayatTransaksi() {
                 setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -192,7 +192,7 @@ function RiwayatTransaksi() {
                 setPendingTransfer(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -223,7 +223,7 @@ function RiwayatTransaksi() {
                 setPendingSettlement(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -271,7 +271,7 @@ function RiwayatTransaksi() {
                 setPendingTransfer(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -305,7 +305,7 @@ function RiwayatTransaksi() {
                 setPendingSettlement(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -367,7 +367,7 @@ function RiwayatTransaksi() {
                 setShowModalDetailTransferDana(true)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -608,7 +608,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Transaksi Dana Masuk.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -646,7 +646,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Transaksi Dana Masuk.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -688,7 +688,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
                     }
                 } catch (error) {
-                    console.log(error)
+                    // console.log(error)
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -726,7 +726,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }

@@ -28,7 +28,7 @@ export const GetUserDetail = (url) => {
                 })
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
 }

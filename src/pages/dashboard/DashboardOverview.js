@@ -226,7 +226,7 @@ export default () => {
         }
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         history.push(errorCatch(error.response.status))
     }
 }
@@ -246,7 +246,7 @@ export default () => {
         setSettlementTransaction(ringkasanData.data.response_data)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -270,7 +270,7 @@ export default () => {
         setPendingPartner(false)
       } 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -294,7 +294,7 @@ export default () => {
         setPendingPartner(false)
       } 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -318,7 +318,7 @@ export default () => {
         setPendingFee(false)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -343,7 +343,7 @@ export default () => {
         setPendingFee(false)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -367,7 +367,7 @@ export default () => {
         setPendingVa(false)
       } 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -391,7 +391,7 @@ export default () => {
         setPendingVa(false)
       } 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }

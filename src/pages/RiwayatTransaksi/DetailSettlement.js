@@ -47,7 +47,7 @@ function DetailSettlement() {
                 setPendingSettlement(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -99,7 +99,7 @@ function DetailSettlement() {
                 XLSX.writeFile(workBook, "Detail Settlement.xlsx");
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }    
