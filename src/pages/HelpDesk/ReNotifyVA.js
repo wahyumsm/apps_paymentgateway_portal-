@@ -221,6 +221,7 @@ function ReNotifyVA() {
                             onClick={() => setShowModalSubmit(true)}
                             className={(dataVirtualAccount.is_success === undefined || dataVirtualAccount.is_success !== false) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}
                             style={{ maxWidth: 'max-content', padding: 7, height: 40, }}
+                            disabled={dataVirtualAccount.is_success === undefined || dataVirtualAccount.is_success !== false}
                         >
                             Submit Re-Notify
                         </button>

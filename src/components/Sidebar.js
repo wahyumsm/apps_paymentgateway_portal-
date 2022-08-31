@@ -39,7 +39,7 @@ export default (props = {}) => {
   const onCollapse = () => setShow(!show);
 
   const CollapsableNavItem = (props) => {
-    const { eventKey, title, icon, children = null } = props;
+    const { eventKey, title, icon, image, children = null } = props;
     const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
 
     return (
@@ -47,7 +47,8 @@ export default (props = {}) => {
         <Accordion.Item eventKey={eventKey}>
           <Accordion.Button as={Nav.Link} className="d-flex justify-content-between align-items-center">
             <span>
-              <span className="sidebar-icon"><FontAwesomeIcon icon={icon} /> </span>
+              {icon ? <span className="sidebar-icon"><FontAwesomeIcon icon={icon} /> </span> : null}
+              {image ? <Image src={image} width={20} height={20} className="sidebar-icon svg-icon" /> : null}
               <span className="sidebar-text">{title}</span>
             </span>
           </Accordion.Button>

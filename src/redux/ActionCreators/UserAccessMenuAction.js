@@ -12,32 +12,18 @@ export const GetUserAccessMenu = (url) => {
             }
             const userAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
             if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length === 0) {
-                const accessMenu = []
-                for (let i = 0; i < userAccessMenu.data.response_data.length; i++) {
-                    const element = userAccessMenu.data.response_data[i];
-                    if (element.id !== 19) {
-                        accessMenu.push(element)
-                    }
-                }
                 dispatch({
                     type: FETCH_GETUSERACCESSMENU,
                     payload: {
-                        userAccessMenu: accessMenu
+                        userAccessMenu: userAccessMenu.data.response_data
                     }
                 })
             } else if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length !== 0) {
                 setUserSession(userAccessMenu.data.response_new_token)
-                const accessMenu = []
-                for (let i = 0; i < userAccessMenu.data.response_data.length; i++) {
-                    const element = userAccessMenu.data.response_data[i];
-                    if (element.id !== 19) {
-                        accessMenu.push(element)
-                    }
-                }
                 dispatch({
                     type: FETCH_GETUSERACCESSMENU,
                     payload: {
-                        userAccessMenu: accessMenu
+                        userAccessMenu: userAccessMenu.data.response_data
                     }
                 })
             }
