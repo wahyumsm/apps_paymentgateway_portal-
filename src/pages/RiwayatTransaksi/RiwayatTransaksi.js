@@ -176,6 +176,7 @@ function RiwayatTransaksi() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+            console.log(dataParams, "ini params");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -207,6 +208,7 @@ function RiwayatTransaksi() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+            console.log(dataParams, "ini params2");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -883,6 +885,14 @@ function RiwayatTransaksi() {
                                 />
                             </div>
                         </Col>
+                        <Col xs={4}>
+                            <span>Jenis Transaksi</span>
+                            <Form.Select className='input-text-ez' style={{ display: "inline" }}>
+                                <option defaultValue value={0}>Pilih Jenis Transaksi</option>
+                                <option value={1}>Payment Link</option>
+                                <option value={2}>Virtual Account</option>
+                            </Form.Select>
+                        </Col>
                     </Row>
                     <Row className='mt-4'>
                         <Col xs={3}>
@@ -1001,6 +1011,14 @@ function RiwayatTransaksi() {
                                 />
                             </div>
                         </Col>
+                        <Col xs={4}>
+                            <span>Jenis Transaksi</span>
+                            <Form.Select className='input-text-ez' style={{ display: "inline" }}>
+                                <option defaultValue value={0}>Pilih Jenis Transaksi</option>
+                                <option value={1}>Payment Link</option>
+                                <option value={2}>Virtual Account</option>
+                            </Form.Select>
+                        </Col>
                     </Row>
                     <Row className='mt-4'>
                         <Col xs={3}>
@@ -1118,6 +1136,10 @@ function RiwayatTransaksi() {
                         </Row>
                         <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
                             <Col style={{ fontWeight: 400 }}>Biaya Partner</Col>
+                            <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
+                        </Row>
+                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                            <Col style={{ fontWeight: 400 }}>Biaya Settlement</Col>
                             <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
                         </Row>
                         <center>

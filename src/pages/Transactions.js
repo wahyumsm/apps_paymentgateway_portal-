@@ -666,7 +666,7 @@ export default () => {
                 <Col xs={4}>
                     <span>Jenis Transaksi</span>
                     <Form.Select className='input-text-ez' style={{ display: "inline" }}>
-                      <option defaultValue value={0}>Pilih Status</option>
+                      <option defaultValue value={0}>Pilih Jenis Transaksi</option>
                       <option value={1}>Payment Link</option>
                       <option value={2}>Virtual Account</option>
                     </Form.Select>
@@ -893,6 +893,10 @@ export default () => {
                 </Row>
                 <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
                   <Col style={{ fontWeight: 400 }}>Biaya Partner</Col>
+                  <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
+                </Row>
+                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                  <Col style={{ fontWeight: 400 }}>Biaya Settlement</Col>
                   <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
                 </Row>
                 <center>

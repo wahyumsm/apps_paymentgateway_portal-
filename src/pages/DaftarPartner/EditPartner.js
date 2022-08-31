@@ -1,12 +1,17 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Form, Row } from '@themesberg/react-bootstrap';
+import { Col, Form, Row, Image } from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
 import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import { useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPlus, faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
+import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import { agenLists } from "../../data/tables";
+import noteIconRed from "../../assets/icon/note_icon_red.svg";
 
 function EditPartner() {
 
@@ -17,6 +22,8 @@ function EditPartner() {
     const { partnerId } = useParams()
     const [listAgen, setListAgen] = useState([])
     const [detailPartner, setDetailPartner] = useState([])
+    const [expanded, setExpanded] = useState(false)
+    const myRef = useRef(null);
     const [inputHandle, setInputHandle] = useState({
         id:partnerId,
         namaPerusahaan: detailPartner.mpartner_name,
@@ -34,6 +41,14 @@ function EditPartner() {
         fee: 0,
         settlementFee: 0,
     })
+
+    const showCheckboxes = () => {
+        if (!expanded) {
+          setExpanded(true);
+        } else {
+          setExpanded(false);
+        }
+    };
 
     function handleChange(e) {
         if (e.target.name === "active") {
@@ -256,6 +271,44 @@ function EditPartner() {
         getDataAgen(partnerId)
     }, [access_token, user_role, partnerId])
 
+    const columnPayment = [
+        {
+            name: 'No',
+            selector: row => row.id,
+            width: '67px'
+        },
+        {
+            name: 'Metode Pembayaran',
+            selector: row => row.noHp,
+            width: "185px"
+        },
+        {
+            name: 'Fitur',
+            selector: row => row.noRekening
+        },
+        {
+            name: 'Fee',
+            selector: row => row.status
+        },
+        {
+            name: 'Settlement Fee',
+            selector: row => row.id,
+            width: "150px"
+        },        
+        {
+            name: 'Aksi',
+            selector: row => row.id,
+            width: "130px"
+        }
+    ]
+
+    const CustomLoader = () => (
+        <div style={{ padding: '24px' }}>
+            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+            <div>Loading...</div>
+        </div>
+    );
+
     const customStyles = {
         headCells: {
             style: {
@@ -435,16 +488,134 @@ function EditPartner() {
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>Fee</td>
-                                    <td><input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_fee} name="fee" style={{width: '100%', marginLeft: 'unset'}}/></td>
-                                </tr>
+                                    <td>
+                                        <input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_fee} name="fee" style={{width: '100%', marginLeft: 'unset'}}/>
+                                        {/* <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                                            <img src={noteIconRed} className="me-2" />
+                                            Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                                        </div> */}
+                                    </td>
+                                </tr>                                
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee</td>
-                                    <td><input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartnerdtl_settlement_fee} name="settlementFee" style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td>
+                                        <input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartnerdtl_settlement_fee} name="settlementFee" style={{width: '100%', marginLeft: 'unset'}}/>
+                                        {/* <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                                            <img src={noteIconRed} className="me-2" />
+                                            Settlement Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                                        </div> */}
+                                    </td>
                                 </tr>
-                                <br/>
                             </tbody>
                         </table>
+                        <table style={{width: '100%', marginLeft: 'unset'}} className="table-form">
+                            <thead></thead>
+                            <tbody>
+                                <tr>
+                                    <td style={{width: 200}}>Metode Pembayaran<span style={{color: "red"}}>*</span></td>
+                                    <td>
+                                        <br/>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Pilih Semua</label>
+                                        </div>                                        
+                                        <br/>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Virtual Account BCA</label>
+                                        </div>
+                                        {/* <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                                            <img src={noteIconRed} className="me-2" />
+                                            Wajib Diisi
+                                        </div> */}
+                                    </td>
+                                    <td>
+                                        <br/>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Gopay</label>
+                                        </div>
+                                        <br/>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">ShopeePay</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <br/>
+                                <tr >
+                                    <td style={{width: 200}}>Fitur<span style={{color: "red"}}>*</span></td>
+                                    <td>
+                                        <br/>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Pilih Semua</label>
+                                        </div>
+                                        <br/>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Virtual Account</label>
+                                        </div>                                        
+                                        {/* <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                                            <img src={noteIconRed} className="me-2" />
+                                            Wajib Diisi
+                                        </div> */}
+                                    </td>
+                                    <td>
+                                        <br/>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Payment Link</label>
+                                        </div>
+                                        <br/>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Transfer</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <div className="mb-4">
+                                            <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 250, height: 48, color: "#077E86", background: "unset", border: "0.6px solid #077E86", borderRadius: 6 }}>
+                                                <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah Skema Baru
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>                                       
+                                        {expanded ?
+                                            <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} className="mb-4">
+                                                <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
+                                                    Sembunyikan tabel skema biaya <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                                                </button>
+                                            </div> :
+                                            <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} className="mb-4">
+                                                <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
+                                                    Lihat tabel skema lainnya <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                                                </button>
+                                            </div>                                            
+                                        }                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {expanded && 
+                            <div className="div-table pb-4" ref={myRef}>
+                                <DataTable
+                                    columns={columnPayment}
+                                    data={agenLists}
+                                    customStyles={customStyles}
+                                    // progressPending={pendingSettlement}
+                                    progressComponent={<CustomLoader />}
+                                    // dense
+                                    // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                                    // pagination
+                                />
+                            </div>
+                        }
                     </div>
                     <div className='mb-5 mt-3' style={{ display: "flex", justifyContent: "end"}}>
                         <button onClick={goBack} className='mx-2' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "#FFFFFF", color:"#888888", border: "0.6px solid #EBEBEB", borderRadius: 6 }}>

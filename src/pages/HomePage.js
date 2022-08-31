@@ -20,6 +20,11 @@ import ResetPassword from "./examples/ResetPassword";
 import Lock from "./examples/Lock";
 import NotFoundPage from "./examples/NotFound";
 import ServerError from "./examples/ServerError";
+import ListPayment from "./PaymentLink/ListPayment"
+import DetailPayment from './PaymentLink/DetailPayment';
+import AddPayment from './PaymentLink/AddPayment';
+import CustomDesignPayment from './PaymentLink/CustomDesignPayment';
+import LamanPayment from './WebPaymentLink/LamanPayment';
 
 // documentation pages
 import DocsOverview from "./documentation/DocsOverview";
@@ -149,6 +154,11 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
     <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
     <RouteWithSidebar exact path={Routes.AddUser.path} component={AddUser}/>
+    <RouteWithSidebar exact path={Routes.ListPayment.path} component={ListPayment} />
+    <RouteWithSidebar exact path={Routes.DetailPayment.path} component={DetailPayment} />
+    <RouteWithSidebar exact path={Routes.AddPayment.path} component={AddPayment} />
+    <RouteWithSidebar exact path={Routes.CustomDesignPayment.path} component={CustomDesignPayment} />
+    <RouteWithSidebar exact path={Routes.LamanPayment.path} component={LamanPayment} />
 
     {/* components */}
     <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} />
