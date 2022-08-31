@@ -34,18 +34,6 @@ export class Button extends React.Component {
         });
     };
   
-    // componentDidMount(){
-    //     console.log("Komponen berhasil ditampilkan!")
-    // }
-      
-    // componentDidUpdate(){
-    //     console.log("Komponen berhasil di update!")
-    // }
-  
-    // componentWillUnmount(){
-    //     console.log("Komponen dihilangkan!")
-    // }
-  
     render(){
       return (
         <div className="d-flex justify-content-center align-items-center">

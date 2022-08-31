@@ -43,7 +43,8 @@ function AddPayment () {
     const handleOnChangeCheckBox = (e) => {
         setChecked(e.target.value);
         if (e.target.value === "2") setShowModalFeeMethod(true)
-    };
+    }
+
 
     const showCheckboxes = () => {
         if (!expanded) {
@@ -107,7 +108,7 @@ function AddPayment () {
           ...inputHandle,
           [e.target.name]: e.target.value,
         });
-      }
+    }
     
 
     useEffect(() => {
@@ -145,52 +146,6 @@ function AddPayment () {
     function toListPay () {
         history.push("/listpayment")
     }
-
-    // const { clamp } = _;
-
-    // const [hour, setHour] = useState(0);
-    // const [minute, setMinute] = useState(0);
-    // const [period, setPeriod] = useState('pm');
-    
-    // function TimePicker(props) {
-    //     const {
-    //         hour,
-    //         minute,
-    //         period,
-    //         setHour,
-    //         setMinute,
-    //         setPeriod,
-    //     } = props;
-        
-    //     return (
-    //     <div className="time-picker">
-    //         <button onClick={() => setHour((hour + 1, 1, 24))}><FontAwesomeIcon icon={faChevronUp} /></button>
-    //         <input
-    //             type="number"
-    //             min="1"
-    //             max="24"
-    //             value={hour}
-    //         />
-    //         <button onClick={() => setHour((hour - 1, 1, 24))}><FontAwesomeIcon icon={faChevronDown} /></button>
-    //         <input
-    //         type="number"
-    //         min="0"
-    //         max="59"
-    //         value={minute}
-    //         />
-    //         <span>
-    //         <button onClick={() => setMinute((minute + 1) % 60)}>+</button>
-    //         </span>
-    //         <select
-    //         value={period}
-    //         onChange={(event) => setPeriod(event.target.period)}
-    //         >
-    //         <option value="am">AM</option>
-    //         <option value="pm">PM</option>
-    //         </select>
-    //     </div>
-    //     );
-    // }
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
