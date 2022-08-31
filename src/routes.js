@@ -32,6 +32,11 @@ export const Routes = {
     NotFound: { path: "/404" },
     ServerError: { path: "/examples/500" },
     AddUser: {path:"/adduser"},
+    ListPayment: {path: "/listpayment"},
+    DetailPayment: {path: "/detailpayment/:paymentId"},
+    AddPayment: {path: "/addpayment"},
+    CustomDesignPayment: {path: "/custom-design-payment"},
+    LamanPayment: {path: "/laman-payment"},
 
     // docs
     DocsOverview: { path: "/documentation/overview" },
