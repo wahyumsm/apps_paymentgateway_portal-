@@ -23,28 +23,16 @@ export class Button extends React.Component {
     
     onPlusMin= () => {
         this.setState({
-          value: this.state.value2 +1
+          value2: this.state.value2 + 1
         });
             
     };  
         
     onMinusMin = () => {
         this.setState({
-          value: this.state.value2 - 1
+          value2: this.state.value2 - 1
         });
     };
-  
-    // componentDidMount(){
-    //     console.log("Komponen berhasil ditampilkan!")
-    // }
-      
-    // componentDidUpdate(){
-    //     console.log("Komponen berhasil di update!")
-    // }
-  
-    // componentWillUnmount(){
-    //     console.log("Komponen dihilangkan!")
-    // }
   
     render(){
       return (

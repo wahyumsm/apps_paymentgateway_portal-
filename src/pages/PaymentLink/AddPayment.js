@@ -40,8 +40,18 @@ function AddPayment () {
         custEmail: "",
     })
 
-    const handleOnChangeCheckBox = () => {
-        setChecked(!checked);
+    // function handleChange(e) {
+    //     setInputHandle({
+    //       ...inputHandle,
+    //       [e.target.name]: e.target.value,
+    //     });
+    // }
+
+    const handleOnChangeCheckBox = (e) => {
+        if (e.target.checked) {
+            setChecked(!checked)
+            setShowModalFeeMethod(true)
+        }
     };
 
     const showCheckboxes = () => {
@@ -106,7 +116,7 @@ function AddPayment () {
           ...inputHandle,
           [e.target.name]: e.target.value,
         });
-      }
+    }
     
 
     useEffect(() => {
@@ -144,52 +154,6 @@ function AddPayment () {
     function toListPay () {
         history.push("/listpayment")
     }
-
-    // const { clamp } = _;
-
-    // const [hour, setHour] = useState(0);
-    // const [minute, setMinute] = useState(0);
-    // const [period, setPeriod] = useState('pm');
-    
-    // function TimePicker(props) {
-    //     const {
-    //         hour,
-    //         minute,
-    //         period,
-    //         setHour,
-    //         setMinute,
-    //         setPeriod,
-    //     } = props;
-        
-    //     return (
-    //     <div className="time-picker">
-    //         <button onClick={() => setHour((hour + 1, 1, 24))}><FontAwesomeIcon icon={faChevronUp} /></button>
-    //         <input
-    //             type="number"
-    //             min="1"
-    //             max="24"
-    //             value={hour}
-    //         />
-    //         <button onClick={() => setHour((hour - 1, 1, 24))}><FontAwesomeIcon icon={faChevronDown} /></button>
-    //         <input
-    //         type="number"
-    //         min="0"
-    //         max="59"
-    //         value={minute}
-    //         />
-    //         <span>
-    //         <button onClick={() => setMinute((minute + 1) % 60)}>+</button>
-    //         </span>
-    //         <select
-    //         value={period}
-    //         onChange={(event) => setPeriod(event.target.period)}
-    //         >
-    //         <option value="am">AM</option>
-    //         <option value="pm">PM</option>
-    //         </select>
-    //     </div>
-    //     );
-    // }
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
@@ -291,7 +255,7 @@ function AddPayment () {
                                 <label className="form-check-label" htmlFor="typePayment" style={{fontWeight: 400, fontSize: "14px"}}>Semua Metode Pembayaran</label>
                             </div>
                             <div className="form-check ms-2">
-                                <input onChange={handleOnChangeCheckBox} className="form-check-input" type="radio" name="typePayment" id="typePayment" checked={checked} />
+                                <input onChange={handleOnChangeCheckBox} className="form-check-input" type="radio" name="typePayment" id="typePayment"  />
                                 <label className="form-check-label" htmlFor="typePayment" style={{fontWeight: 400, fontSize: "14px"}}>Atur Beberapa</label>
                             </div>
                         </div>
