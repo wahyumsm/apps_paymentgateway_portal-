@@ -24,7 +24,7 @@ function AddPayment () {
     const history = useHistory()
     const access_token = getToken()
     const [paymentType, setPaymentType] = useState([])
-    const [checked, setChecked] = useState(false)
+    const [checked, setChecked] = useState("")
     const [expanded, setExpanded] = useState(false)
     const [inputHandle, setInputHandle] = useState ({
         nominal: null,
@@ -40,8 +40,9 @@ function AddPayment () {
         custEmail: "",
     })
 
-    const handleOnChangeCheckBox = () => {
-        setChecked(!checked);
+    const handleOnChangeCheckBox = (e) => {
+        setChecked(e.target.value);
+        if (e.target.value === "2") setShowModalFeeMethod(true)
     };
 
     const showCheckboxes = () => {
@@ -287,11 +288,11 @@ function AddPayment () {
                         <div className="my-1">Metode Pembayaran</div>
                         <div className="d-flex justify-content-start align-items-center">
                             <div className="form-check me-2">
-                                <input onChange={handleOnChangeCheckBox} className="form-check-input" type="radio" name="typePayment" id="typePayment" checked />
+                                <input onChange={handleOnChangeCheckBox} value="1" className="form-check-input" type="radio" name="typePayment" id="typePayment" checked={checked === "1"} />
                                 <label className="form-check-label" htmlFor="typePayment" style={{fontWeight: 400, fontSize: "14px"}}>Semua Metode Pembayaran</label>
                             </div>
                             <div className="form-check ms-2">
-                                <input onChange={handleOnChangeCheckBox} className="form-check-input" type="radio" name="typePayment" id="typePayment" checked={checked} />
+                                <input onChange={handleOnChangeCheckBox} value="2" className="form-check-input" type="radio" name="typePayment" id="typePayment" checked={checked === "2"} />
                                 <label className="form-check-label" htmlFor="typePayment" style={{fontWeight: 400, fontSize: "14px"}}>Atur Beberapa</label>
                             </div>
                         </div>

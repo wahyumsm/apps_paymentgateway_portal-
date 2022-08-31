@@ -23,14 +23,14 @@ export class Button extends React.Component {
     
     onPlusMin= () => {
         this.setState({
-          value: this.state.value2 +1
+          value2: this.state.value2 +1
         });
             
     };  
         
     onMinusMin = () => {
         this.setState({
-          value: this.state.value2 - 1
+          value2: this.state.value2 - 1
         });
     };
   

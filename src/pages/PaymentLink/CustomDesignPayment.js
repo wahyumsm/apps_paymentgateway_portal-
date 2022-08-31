@@ -117,6 +117,8 @@ function CustomDesignPayment () {
                                     <input 
                                         className="input-text-user" 
                                         placeholder="Masukkan nama Anda"
+                                        disabled = {true}
+                                        style={{background: "#FFFFFF"}}
                                     />
                                 </Col>
                                 <Col xs={12} className="mt-1">
@@ -124,6 +126,8 @@ function CustomDesignPayment () {
                                     <input 
                                         className="input-text-user" 
                                         placeholder="Masukkan email Anda"
+                                        disabled = {true}
+                                        style={{background: "#FFFFFF"}}
                                     />
                                 </Col>
                                 <Col xs={12} className="my-3">
