@@ -5,7 +5,7 @@ import {faChevronUp, faChevronDown} from "@fortawesome/free-solid-svg-icons";
 export class Button extends React.Component {
     state = {
       value: 12,
-      value2: 0
+      value2: 10
     };
   
     onPlus= () => {
@@ -39,13 +39,13 @@ export class Button extends React.Component {
         <div className="d-flex justify-content-center align-items-center">
             <div className="counting d-flex flex-column align-items-center">
                 <button className="plus text-center" style={{border: "unset", background: "unset"}} onClick={this.onPlus}><FontAwesomeIcon icon={faChevronUp} color="#848484" /></button>
-                <div type="number" className="count text-center px-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{this.state.value}</div>
+                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{this.state.value}</div>
                 <button className="minus text-center" style={{border: "unset", background: "unset"}} onClick={this.onMinus}><FontAwesomeIcon icon={faChevronDown} color="#848484" /></button>          
             </div>
             <div className="mx-3">:</div>
             <div className="counting d-flex flex-column align-items-center">
                 <button className="plus text-center" style={{border: "unset", background: "unset"}} onClick={this.onPlusMin}><FontAwesomeIcon icon={faChevronUp} color="#848484" /></button>
-                <div type="number" className="count text-center px-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{this.state.value2}</div>
+                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{this.state.value2}</div>
                 <button className="minus text-center" style={{border: "unset", background: "unset"}} onClick={this.onMinusMin}><FontAwesomeIcon icon={faChevronDown} color="#848484" /></button>          
             </div>
         </div>
