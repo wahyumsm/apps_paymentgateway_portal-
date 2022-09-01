@@ -419,7 +419,7 @@ function RiwayatTopUp() {
     };
 
     function ExportReportTopUpHandler(isFilter, userRole, statusId, transId, partnerId, dateId, periode) {
-        if (isFilter && userRole === "102") {
+        if (isFilter === true && userRole === "102") {
             async function dataExportFilter(statusId, transId, dateId, periode) {
                 try {
                     const auth = 'Bearer ' + getToken();
@@ -457,7 +457,7 @@ function RiwayatTopUp() {
                 }
             }
             dataExportFilter(statusId, transId, dateId, periode)
-        } else if (isFilter && userRole !== "102") {
+        } else if (isFilter === true && userRole !== "102") {
             async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
                 try {
                     const auth = 'Bearer ' + getToken();
@@ -495,7 +495,7 @@ function RiwayatTopUp() {
                 }
             }
             dataExportFilter(statusId, transId, partnerId, dateId, periode)
-        }else if (!isFilter && userRole === "102") {
+        }else if (isFilter === false && userRole === "102") {
             async function dataExportTopUp() {
                 try {
                     const auth = 'Bearer ' + getToken();
@@ -533,7 +533,7 @@ function RiwayatTopUp() {
                 }
             }
             dataExportTopUp()
-        } else {
+        } else if (isFilter === false && userRole !== "102") {
             async function dataExportTopUp() {
                 try {
                     const auth = 'Bearer ' + getToken();

@@ -317,6 +317,79 @@ function DisbursementReport() {
             ],
         },
     ];
+
+    const columnsDisbursementPartner = [
+        {
+            name: 'No',
+            selector: row => row.number,
+            width: "57px",
+        },
+        {
+            name: 'ID Transaksi',
+            selector: row => row.tdishburse_code,
+            // sortable: true
+            width: "224px",
+            // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
+        },
+        {
+            name: 'Waktu',
+            selector: row => convertSimpleTimeStamp(row.tdishburse_crtdt),
+            // width: "150px",
+            // sortable: true,
+        },
+        {
+            name: 'Nominal Disbursement',
+            selector: row => convertToRupiah(row.tdishburse_amount),
+            // sortable: true,
+            // width: "224px",
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+        },
+        {
+            name: 'Total Disbursement',
+            selector: row => convertToRupiah(row.tdishburse_total_amount),
+            // sortable: true,
+            // width: "224px",
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+        },
+        {
+            name: 'Tipe Pembayaran',
+            selector: row => row.payment_type,
+            // sortable: true,
+            width: "224px",
+        },
+        {
+            name: 'Nomor Akun',
+            selector: row => row.tdishburse_acc_num,
+            // sortable: true,
+            width: "224px",
+        },
+        {
+            name: 'Status',
+            selector: row => row.mstatus_name_ind,
+            minWidth: "140px",
+            maxWidth: "195px",
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.tdishburse_status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", paddingLeft: "unset" }
+                },
+                {
+                    when: row => row.tdishburse_status_id === 1 || row.tdishburse_status_id === 7,
+                    style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
+                },
+                {
+                    when: row => row.tdishburse_status_id === 4 || row.tdishburse_status_id === 9,
+                    style: { background: "#FDEAEA", color: "#EE2E2C", paddingLeft: "unset" }
+                },
+                {
+                    when: row => row.tdishburse_status_id === 3 || row.tdishburse_status_id === 5 || row.tdishburse_status_id === 6 || row.tdishburse_status_id === 8 || row.tdishburse_status_id === 10 || row.tdishburse_status_id === 11 || row.tdishburse_status_id === 12 || row.tdishburse_status_id === 13 || row.tdishburse_status_id === 14 || row.tdishburse_status_id === 15,
+                    style: { background: "#F0F0F0", color: "#888888", paddingLeft: "unset" }
+                }
+            ],
+        },
+    ];
     
     const customStylesDisbursement = {
         headCells: {
@@ -352,8 +425,46 @@ function DisbursementReport() {
         },
     };
 
-    function ExportReportDisbursementHandler(isFilter, statusId, transId, partnerId, dateId, periode) {
-        if (isFilter) {
+    function ExportReportDisbursementHandler(isFilter, userRole, statusId, transId, partnerId, dateId, periode) {
+        if (isFilter === true && userRole === "102") {
+            async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
+                try {
+                    const auth = 'Bearer ' + getToken();
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth
+                    }
+                    const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
+                        const data = dataExportFilter.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                    } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token !== null) {
+                        setUserSession(dataExportFilter.data.response_new_token)
+                        const data = dataExportFilter.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                    }
+                } catch (error) {
+                    // console.log(error)
+                    history.push(errorCatch(error.response.status))
+                }
+            }
+            dataExportFilter(statusId, transId, partnerId, dateId, periode)
+        } else if (isFilter === true && userRole !== "102") {
             async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
                 try {
                     const auth = 'Bearer ' + getToken();
@@ -391,7 +502,45 @@ function DisbursementReport() {
                 }
             }
             dataExportFilter(statusId, transId, partnerId, dateId, periode)
-        } else {
+        }else if (isFilter === false && userRole === "102") {
+            async function dataExportFilter() {
+                try {
+                    const auth = 'Bearer ' + getToken();
+                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth
+                    }
+                    const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
+                        const data = dataExportFilter.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                    } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token !== null) {
+                        setUserSession(dataExportFilter.data.response_new_token)
+                        const data = dataExportFilter.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                    }
+                } catch (error) {
+                    // console.log(error)
+                    history.push(errorCatch(error.response.status))
+                }
+            }
+            dataExportFilter()
+        } else if (isFilter === false && userRole !== "102") {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
@@ -574,12 +723,12 @@ function DisbursementReport() {
                         {
                             dataDisbursement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, 0)} className="export-span">Export</Link>
+                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, 0)} className="export-span">Export</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
                             <DataTable
-                                columns={columnsDisbursement}
+                                columns={(user_role === "100") ? columnsDisbursement : columnsDisbursementPartner}
                                 data={dataDisbursement}
                                 customStyles={customStylesDisbursement}
                                 progressPending={pendingDisbursement}
