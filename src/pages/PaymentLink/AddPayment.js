@@ -24,7 +24,7 @@ function AddPayment () {
     const history = useHistory()
     const access_token = getToken()
     const [paymentType, setPaymentType] = useState([])
-    const [checked, setChecked] = useState("")
+    const [checked, setChecked] = useState("1")
     const [expanded, setExpanded] = useState(false)
     const [inputHandle, setInputHandle] = useState ({
         nominal: null,
@@ -190,7 +190,7 @@ function AddPayment () {
                 </Row>
                 <Row className="mt-2">
                     <Col xs={6}>
-                        <div className="my-1">Tanggal</div>
+                        <div className="my-3">Tanggal</div>
                         <DateRangePicker 
                             clearIcon={null}
                             className="input-date-user"
@@ -198,19 +198,22 @@ function AddPayment () {
                             value={new Date()}
                         />
                     </Col>
-                    <Col xs={6} >
+                    <Col xs={6} className="position-relative">
                         <div className="my-1">Atur Waktu<span style={{color: "red"}}>*</span></div>
                         <div className="position-relative d-flex justify-content-between align-items-center ">
                             <input
                                 className="input-text-user"
                                 placeholder="Masukkan ID Referensi"
-                                // value="15:43"
                             />
-                            <div className="position-absolute right-1" style={{cursor: "pointer"}}>
+                            <div onClick={showCheckboxes} className="position-absolute right-1" style={{cursor: "pointer"}}>
                                 <img src={time} alt="time" />
-                            </div>
+                            </div>                            
                         </div>
-                        <Buttons />
+                        {expanded && (
+                            <div className="right-2 border-black-0 border border-solid position-absolute bg-white mx-1 pt-4" style={{borderRadius: 8, height: "10rem", width: "10rem"}}>
+                                <Buttons />
+                            </div>
+                        )}
                         {/* <TimePicker 
                             hour={hour}
                             minute={minute}
@@ -243,7 +246,7 @@ function AddPayment () {
                         <div className="my-1">Metode Pembayaran</div>
                         <div className="d-flex justify-content-start align-items-center">
                             <div className="form-check me-2">
-                                <input onChange={handleOnChangeCheckBox} value="1" className="form-check-input" type="radio" name="typePayment" id="typePayment" checked={checked === "1"} />
+                                <input onChange={handleOnChangeCheckBox} value="1" className="form-check-input" type="radio" name="typePayment" id="typePayment" checked={checked === "1" && true} />
                                 <label className="form-check-label" htmlFor="typePayment" style={{fontWeight: 400, fontSize: "14px"}}>Semua Metode Pembayaran</label>
                             </div>
                             <div className="form-check ms-2">
