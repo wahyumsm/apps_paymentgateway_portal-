@@ -82,7 +82,7 @@ function DisbursementReport() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
+            const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
                 setDataListPartner(listPartner.data.response_data)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
@@ -595,7 +595,7 @@ function DisbursementReport() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    const dataExportDisbursement = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
