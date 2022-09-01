@@ -82,8 +82,7 @@ function DisbursementReport() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
-            console.log(listPartner, 'ini list partner');
+            const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
                 setDataListPartner(listPartner.data.response_data)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
@@ -91,7 +90,7 @@ function DisbursementReport() {
                 setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -339,21 +338,21 @@ function DisbursementReport() {
         {
             name: 'Waktu',
             selector: row => convertSimpleTimeStamp(row.tdishburse_crtdt),
-            width: "150px",
+            // width: "150px",
             // sortable: true,
         },
         {
             name: 'Nominal Disbursement',
             selector: row => convertToRupiah(row.tdishburse_amount),
             // sortable: true,
-            width: "224px",
+            // width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Total Disbursement',
             selector: row => convertToRupiah(row.tdishburse_total_amount),
             // sortable: true,
-            width: "224px",
+            // width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
@@ -371,7 +370,8 @@ function DisbursementReport() {
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
-            width: "140px",
+            minWidth: "140px",
+            maxWidth: "195px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
@@ -473,7 +473,7 @@ function DisbursementReport() {
             async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -551,13 +551,51 @@ function DisbursementReport() {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
                     const dataExportDisbursement = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     console.log(dataExportDisbursement, 'ini data settlement di export');
+                    if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
+                        const data = dataExportDisbursement.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                    } else if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token !== null) {
+                        setUserSession(dataExportDisbursement.data.response_new_token)
+                        const data = dataExportDisbursement.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                    }
+                } catch (error) {
+                    console.log(error);
+                    history.push(errorCatch(error.response.status))
+                }
+            }
+            dataExportDisbursement()
+        } else if (isFilter === false && userRole !== "102") {
+            async function dataExportDisbursement() {
+                try {
+                    const auth = 'Bearer ' + getToken();
+                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth
+                    }
+                    const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
@@ -735,29 +773,16 @@ function DisbursementReport() {
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
-                            {
-                                user_role !== "102" ?
-                                <DataTable
-                                    columns={columnsDisbursement}
-                                    data={dataDisbursement}
-                                    customStyles={customStylesDisbursement}
-                                    progressPending={pendingDisbursement}
-                                    progressComponent={<CustomLoader />}
-                                    dense
-                                    // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                                    // pagination
-                                /> :
-                                <DataTable
-                                    columns={columnsDisbursementPartner}
-                                    data={dataDisbursement}
-                                    customStyles={customStylesDisbursement}
-                                    progressPending={pendingDisbursement}
-                                    progressComponent={<CustomLoader />}
-                                    dense
-                                    // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                                    // pagination
-                                />
-                            }
+                            <DataTable
+                                columns={(user_role !== "102") ? columnsDisbursement : columnsDisbursementPartner}
+                                data={dataDisbursement}
+                                customStyles={customStylesDisbursement}
+                                progressPending={pendingDisbursement}
+                                progressComponent={<CustomLoader />}
+                                dense
+                                // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                                // pagination
+                            />
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
                         <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDisbursement}</div>

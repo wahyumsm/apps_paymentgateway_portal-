@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
@@ -10,9 +9,7 @@ import axios from "axios";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
-import { authorization, BaseURL, errorCatch, RouteTo, setRoleSession, setUserSession } from "../../function/helpers";
-import { GetUserDetail } from "../../redux/ActionCreators/UserDetailAction";
-
+import { authorization, BaseURL, setRoleSession, setUserSession } from "../../function/helpers";
 
 export default () => {
 
@@ -28,6 +25,53 @@ export default () => {
     setShowPassword(!showPassword);
   };
 
+  async function userAccessMenu(url, token) {
+    try {
+      const auth = "Bearer " + token
+        const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+      }
+      const dataUserAccessMenu = await axios.post(url, { data: "" }, { headers: headers })
+      if (dataUserAccessMenu.status === 200 && dataUserAccessMenu.data.response_code === 200) {
+        switch (dataUserAccessMenu.data.response_data[0].id) {
+          case 10:
+            history.push("/")
+          break;
+          case 11:
+            history.push("/laporan")
+          break;
+          case 14:
+            history.push("/daftaragen")
+          break;
+          case 15:
+            history.push("/daftarpartner")
+          break;
+          case 16:
+            history.push("/riwayattransaksi")
+          break;
+          case 17:
+            history.push("/invoice")
+          break;
+          case 18:
+            history.push("/managementuser")
+          break;
+          case 19:
+            history.push("/renotifyva")
+          break;
+          case 21:
+            history.push("/disbursementreport")
+          break;
+          case 22:
+            history.push("/riwayattopup")
+          break;
+        }
+      }
+    } catch (error) {
+      // console.log(error);
+    }
+  }
+
   async function userDetail(token) {
     try {
       const auth = "Bearer " + token
@@ -36,17 +80,12 @@ export default () => {
           'Authorization' : auth
       }
       const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
-      // console.log(userDetail.data, "userDetail di login");
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         setRoleSession(userDetail.data.response_data.muser_role_id)
-        if (userDetail.data.response_data.muser_role_id === 102) {
-          history.push("/laporan")
-        } else {
-          history.push("/")
-        }
+        userAccessMenu("/Account/GetUserAccess", token)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   }
 
@@ -60,17 +99,15 @@ export default () => {
         'Authorization' : auth
       }
       const dataLogin = await axios.post("/Account/Login", { data: dataParams }, { headers: headers })
-      // console.log(dataLogin.data, "dataLogin di login");
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
         setUserSession(dataLogin.data.response_data.access_token)
         userDetail(dataLogin.data.response_data.access_token)
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (error.response.status === 400) {
         setErrorMessage(error.response.data.response_message)
       }
-      // RouteTo(errorCatch(error.response.status))
       // history.push(errorCatch(error.response.status))
     }
   }
