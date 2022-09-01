@@ -41,14 +41,22 @@ function CustomDesignPayment () {
         }
     }
 
-    console.log(image, "ini image");
+    function cancelChange(){
+        setShowModalBatal(false)
+        setInputHandle({
+            namaPerusahaan: ""
+        })
+        setImage(null)
+        setImageFile(null)
+    }
 
     async function saveCustomDesignHandler (namaPerusahaan, image) {
+        setShowModalSave(false)
         try {
             const auth = "Bearer " + getToken()
             var formData = new FormData()
-            formData.append('image', image)
-            formData.append('namaPerusahaan', namaPerusahaan)
+            formData.append('mpaylink_corporate_name', namaPerusahaan)
+            formData.append('mpaylink_logo_url', image)
             const headers = {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
@@ -56,11 +64,13 @@ function CustomDesignPayment () {
             const customDesign = await axios.post("/PaymentLink/CustomDesignPaymentLink", formData, { headers: headers })
             if(customDesign.status === 200 && customDesign.data.response_code === 200 && customDesign.data.response_new_token.length === 0) {
                 setInputHandle(customDesign.data.response_data)
-                setShowModalSave(false)
+                console.log(customDesign.data.response_data);
+                history.push("/listpayment")
             } else if (customDesign.status === 200 && customDesign.data.response_code === 200 && customDesign.data.response_new_token.length !== 0) {
                 setUserSession(customDesign.data.response_new_token)
                 setInputHandle(customDesign.data.response_data)
-                setShowModalSave(false)
+                console.log(customDesign.data.response_data);
+                history.push("/listpayment")
             }
         } catch (e) {
             history.push(errorCatch(e.response.status))
@@ -223,7 +233,7 @@ function CustomDesignPayment () {
                     </div>              
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSave(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Batal</Button>
-                        <Button onClick={() => setShowModalSave(false)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Simpan</Button>
+                        <Button onClick={() => saveCustomDesignHandler(inputHandle.namaPerusahaan, image)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Simpan</Button>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -243,7 +253,7 @@ function CustomDesignPayment () {
                     </div>              
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalBatal(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => setShowModalBatal(false)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Batalkan</Button>
+                        <Button onClick={cancelChange} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Batalkan</Button>
                     </div>
                 </Modal.Body>
             </Modal>
