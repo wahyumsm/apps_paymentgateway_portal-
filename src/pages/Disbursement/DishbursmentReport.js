@@ -106,7 +106,7 @@ function DisbursementReport() {
 
     async function disbursementReport(currentPage, userRole) {
         try {
-            if (userRole === "100") {
+            if (userRole !== "102") {
                 const auth = 'Bearer ' + getToken();
                 const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
@@ -220,7 +220,7 @@ function DisbursementReport() {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role === "100") {
+        if (user_role !== "102") {
             listPartner()
         }
         disbursementReport(activePageDisbursement, user_role)
@@ -599,7 +599,7 @@ function DisbursementReport() {
                     <div className='base-content mt-3'>
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         {
-                            user_role === "100" ?
+                            user_role !== "102" ?
                             <>
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
@@ -728,7 +728,7 @@ function DisbursementReport() {
                         }
                         <div className="div-table mt-4 pb-4">
                             <DataTable
-                                columns={(user_role === "100") ? columnsDisbursement : columnsDisbursementPartner}
+                                columns={(user_role !== "102") ? columnsDisbursement : columnsDisbursementPartner}
                                 data={dataDisbursement}
                                 customStyles={customStylesDisbursement}
                                 progressPending={pendingDisbursement}

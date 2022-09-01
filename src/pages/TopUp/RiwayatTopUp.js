@@ -247,43 +247,17 @@ function RiwayatTopUp() {
                 setShowStatusTopup(true)
                 window.location.reload()
             }
-            } catch (error) {
-                // console.log(error)
-                history.push(errorCatch(error.response.status))
-            }
-    }
-
-    async function topUpHandleConfirm() {
-        try {
-            const auth = "Bearer " + getToken()        
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
-            }
-            const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
-            if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
-                setTopUpResult(topUpResult.data.response_data)
-                setShowModalKonfirmasiTopUp(false)
-                setShowStatusTopup(true)
-                window.location.reload()
-            } else if (topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length !== 0) {
-                setUserSession(topUpResult.data.response_new_token)
-                setTopUpResult(topUpResult.data.response_data)
-                setShowModalKonfirmasiTopUp(false)
-                setShowStatusTopup(true)
-                window.location.reload()
-            }
-            } catch (error) {
-                // console.log(error)
-                history.push(errorCatch(error.response.status))
-            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
     }
 
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role === "100") {
+        if (user_role !== "102") {
             listPartner()
         }
         listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false)
