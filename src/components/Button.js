@@ -4,7 +4,7 @@ import {faChevronUp, faChevronDown} from "@fortawesome/free-solid-svg-icons";
 
 function Button () {
     const [value, setValue] = useState(20)
-    const [value2, setValue2] = useState(10)
+    const [value2, setValue2] = useState(57)
 
     const onPlus = () => {
         if(value < 23) {
@@ -15,15 +15,27 @@ function Button () {
     }
 
     const onMinus = () => {
-        setValue(value-1)
+        if (value > 0) {
+          setValue(value-1)
+        } else {
+          setValue(23)
+        }
     }
 
     const onPlusMin = () => {
-        setValue2(value2 + 1)
+        if(value2 < 59) {
+          setValue2(value2 + 1)
+        } else {
+          setValue2(0)
+        }
     }
 
     const onMinusMin = () => {
-        setValue2(value2 - 1)
+        if (value2 > 0) {
+          setValue2(value2 - 1)
+        } else {
+          setValue2(59)
+        }
     }
 
     return (
