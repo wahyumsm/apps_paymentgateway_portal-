@@ -461,8 +461,8 @@ export default () => {
                 <br/>
               </Col>
             </Row> */}
-            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
+            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
                     <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
@@ -591,8 +591,8 @@ export default () => {
               </Col>
             </Row>             */}
             {/* <br/> */}
-            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
+            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
                     <input name="idTransaksiSettlement" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
