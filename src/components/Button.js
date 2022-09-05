@@ -1,40 +1,39 @@
 import React, { useState } from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronUp, faChevronDown} from "@fortawesome/free-solid-svg-icons";
+import { convertTimeDigit } from "../function/helpers";
 
-function Button () {
-    const [value, setValue] = useState(20)
-    const [value2, setValue2] = useState(57)
+function Button ({v1, v2, onSetHour, onSetMinute}) {
 
     const onPlus = () => {
-        if(value < 23) {
-            setValue(value+1)
+        if(v1 < 23) {
+            onSetHour(v1+1)
         } else {
-            setValue(0)
+            onSetHour(0)
         }
     }
 
     const onMinus = () => {
-        if (value > 0) {
-          setValue(value-1)
+        if (v1 > 0) {
+          onSetHour(v1-1)
         } else {
-          setValue(23)
+          onSetHour(23)
         }
     }
 
     const onPlusMin = () => {
-        if(value2 < 59) {
-          setValue2(value2 + 1)
+        if(v2 < 59) {
+          onSetMinute(v2 + 1)
         } else {
-          setValue2(0)
+          onSetMinute(0)
         }
     }
 
     const onMinusMin = () => {
-        if (value2 > 0) {
-          setValue2(value2 - 1)
+        if (v2 > 0) {
+          onSetMinute(v2 - 1)
         } else {
-          setValue2(59)
+          onSetMinute(59)
         }
     }
 
@@ -42,17 +41,24 @@ function Button () {
         <div className="d-flex justify-content-center align-items-center">
             <div className="counting d-flex flex-column align-items-center">
                 <button className="plus text-center" style={{border: "unset", background: "unset"}} onClick={onPlus}><FontAwesomeIcon icon={faChevronUp} color="#848484" /></button>
-                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{(value < 10 ? "0" : "") + value}</div>
+                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{convertTimeDigit(v1)}</div>
                 <button className="minus text-center" style={{border: "unset", background: "unset"}} onClick={onMinus}><FontAwesomeIcon icon={faChevronDown} color="#848484" /></button>          
             </div>
             <div className="mx-3">:</div>
             <div className="counting d-flex flex-column align-items-center">
                 <button className="plus text-center" style={{border: "unset", background: "unset"}} onClick={onPlusMin}><FontAwesomeIcon icon={faChevronUp} color="#848484" /></button>
-                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{(value2 < 10 ? "0" : "") + value2}</div>
+                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{convertTimeDigit(v2)}</div>
                 <button className="minus text-center" style={{border: "unset", background: "unset"}} onClick={onMinusMin}><FontAwesomeIcon icon={faChevronDown} color="#848484" /></button>          
             </div>
         </div>
     )
+}
+
+Button.prototype = {
+  v1: Number.isRequired,
+  v2: Number.isRequired,
+  onSetHour: Function.isRequired,
+  onSetMinute: Function.isRequired
 }
 
 export default Button
