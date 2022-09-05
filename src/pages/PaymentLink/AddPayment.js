@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import { Row, Col, Modal, Button } from "@themesberg/react-bootstrap";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker/dist/DateRangePicker";
@@ -20,31 +20,22 @@ import encryptData from "../../function/encryptData";
 import time from "../../assets/icon/time_icon.svg";
 import { clamp } from "date-fns";
 import Buttons from "../../components/Button";
+import { it } from "date-fns/locale";
 
 function AddPayment() {
   const [showModal, setShowModal] = useState(false);
   const [showModalBatal, setShowModalBatal] = useState(false);
   const [showModalFeeMethod, setShowModalFeeMethod] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [text, setText] = useState("");
   const [save, setSave] = useState(false);
   const history = useHistory();
   const access_token = getToken();
   const [paymentType, setPaymentType] = useState([]);
+  const [choosenPaymentCode, setChoosenPaymentCode] = useState([]);
   const [checked, setChecked] = useState("1");
   const [expanded, setExpanded] = useState(false);
-  const [inputHandle, setInputHandle] = useState({
-    nominal: null,
-    paymentId: 0,
-    refId: "",
-    expDate: "",
-    useLimit: 0,
-    countLimit: 0,
-    vaNumber: "",
-    typePayment: 0,
-    desc: "",
-    custName: "",
-    custEmail: "",
-  });
+  
 
   const date = new Date();
   const minutes = date.getMinutes();
@@ -53,7 +44,6 @@ function AddPayment() {
   const hourDefault = minutes + 5 >= 60 ? hour + 1 : hour;
   var nextDay = new Date(date);
   nextDay.setDate(date.getDate() + 1);
-  console.log(nextDay, "nextdayyy");
   const [inputHourHandle, setInputHourHandle] = useState(hourDefault);
   const [inputMinuteHandle, setInputMinuteHandle] = useState(minutesDefault);
   const [dateDay, setDateDay] = useState({
@@ -62,14 +52,21 @@ function AddPayment() {
     year: 0,
   });
 
-  const paymentId = (
-    date.getFullYear().toString() +
-    (convertTimeDigit(date.getMonth()+1)).toString() +
+  const [inputHandle, setInputHandle] = useState({
+    nominal: null,
+    refId: "",
+    expDate: "",
+    useLimit: 0,
+    typePayment: 0,
+    desc: "",
+    paymentId: date.getFullYear().toString() +
+    convertTimeDigit(date.getMonth() + 1).toString() +
     date.getDate().toString() +
     hour.toString() +
     minutes.toString() +
     date.getSeconds().toString() +
-    date.getMilliseconds().toString())
+    date.getMilliseconds().toString()
+  });
 
   function handleSetDay() {
     if (
@@ -78,13 +75,13 @@ function AddPayment() {
     ) {
       setDateDay({
         day: nextDay.getDate(),
-        month: nextDay.getMonth(),
+        month: nextDay.getMonth() + 1,
         year: nextDay.getFullYear(),
       });
     } else
       setDateDay({
         day: date.getDate(),
-        month: date.getMonth(),
+        month: date.getMonth() + 1,
         year: date.getFullYear(),
       });
   }
@@ -93,6 +90,26 @@ function AddPayment() {
     setChecked(e.target.value);
     if (e.target.value === "2") setShowModalFeeMethod(true);
   };
+
+  const handleChoosenPaymentCode = useCallback(
+    (e, payCode) => {
+      if (e.target.checked) {
+        setShowAlert(false);
+        setChoosenPaymentCode((value) => [...value, payCode]);
+      } else {
+        setChoosenPaymentCode((value) => value.filter((it) => it !== payCode));
+      }
+    },
+    [setChoosenPaymentCode]
+  );
+
+  const stringChoosenPayCode = choosenPaymentCode.toString();
+
+  function onSaveChoosenPayment() {
+    stringChoosenPayCode != ""
+      ? setShowModalFeeMethod(false)
+      : setShowAlert(true);
+  }
 
   const showCheckboxes = () => {
     if (!expanded) {
@@ -114,7 +131,6 @@ function AddPayment() {
         { data: "" },
         { headers: headers }
       );
-      // console.log(getPaymentType, "ini payment type");
       if (
         getPaymentType.data.response_code === 200 &&
         getPaymentType.status === 200 &&
@@ -142,17 +158,13 @@ function AddPayment() {
     nominal,
     expDate,
     useLimit,
-    countLimit,
-    vaNumber,
-    typePayment,
-    custName,
-    custEmail,
+    stringChoosenPayCode,
     desc
   ) {
     try {
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
-        `{"tpaylink_code": "${paymentId}", "tpaylink_ref_id": "${refId}", "tpaylink_amount": ${nominal}, "tpaylink_exp_date": "${expDate}", "tpaylink_use_limit": ${useLimit}, "tpaylink_count_limit": ${countLimit}, "tpaylink_va_number": "${vaNumber}", "tpaylink_mpatype_id": "${typePayment}", "tpaylink_cust_name": "${custName}", "tpaylink_cust_email": "${custEmail}", "tpaylink_desc": "${desc}"}`
+        `{"tpaylink_code": "${paymentId}", "tpaylink_ref_id": "${refId}", "tpaylink_amount": ${nominal}, "tpaylink_exp_date": "${expDate}", "tpaylink_use_limit": ${useLimit}, "tpaylink_mpaytype_id": "${stringChoosenPayCode}", "tpaylink_desc": "${desc}"}`
       );
       const headers = {
         "Content-Type": "application/json",
@@ -187,7 +199,9 @@ function AddPayment() {
     }
   }
 
+  
   function handleChange(e) {
+    e.preventDefault()
     setInputHandle({
       ...inputHandle,
       [e.target.name]: e.target.value,
@@ -273,7 +287,7 @@ function AddPayment() {
               className="input-text-user"
               placeholder="Masukkan Nominal Tagihan"
               value={inputHandle.nominal}
-            />
+              />
             <div className="my-1" style={{ fontSize: "12px" }}>
               *Biaya Admin: Rp 0 ( Dibebankan kepada partner )
             </div>
@@ -286,7 +300,7 @@ function AddPayment() {
               name="paymentId"
               className="input-text-user"
               disabled
-              value={paymentId}
+              value={inputHandle.paymentId}
             />
           </Col>
           <Col xs={6}>
@@ -297,6 +311,8 @@ function AddPayment() {
               name="refId"
               className="input-text-user"
               placeholder="Masukkan ID Referensi"
+              value={inputHandle.refId}
+              onChange={handleChange}
             />
             <div className="my-1" style={{ fontSize: "12px" }}>
               Catatan: ID Referensi bisa berupa kata atau digit angka
@@ -313,7 +329,7 @@ function AddPayment() {
                 value={
                   convertTimeDigit(dateDay.day) +
                   "/" +
-                  convertTimeDigit(dateDay.month + 1) +
+                  convertTimeDigit(dateDay.month) +
                   "/" +
                   dateDay.year
                 }
@@ -385,7 +401,7 @@ function AddPayment() {
             ) : (
               <div className="my-1" style={{ fontSize: "12px" }}>
                 Kadaluarsa : {convertTimeDigit(dateDay.day)} -{" "}
-                {convertTimeDigit(dateDay.month + 1)} - {dateDay.year}{" "}
+                {convertTimeDigit(dateDay.month)} - {dateDay.year}{" "}
                 {convertTimeDigit(inputHourHandle)}:
                 {convertTimeDigit(inputMinuteHandle)}
               </div>
@@ -399,7 +415,10 @@ function AddPayment() {
               onChange={handleChange}
               name="useLimit"
               type="number"
+              min="0" 
+              step="1"
               className="input-text-user"
+              value={inputHandle.useLimit}
             />
             <div className="my-1" style={{ fontSize: "12px" }}>
               Catatan: Batas Pemakaian adalah seberapa banyak link anda dapat di
@@ -491,7 +510,23 @@ function AddPayment() {
         style={{ display: "flex", justifyContent: "end" }}
       >
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() =>
+            addPaylinkHandler(
+              inputHandle.paymentId,
+              inputHandle.refId,
+              parseInt(inputHandle.nominal),
+              (
+                dateDay.year +
+                "-" +
+                convertTimeDigit(dateDay.month) +
+                "-" +
+                convertTimeDigit(dateDay.day)
+              ).toString(),
+              inputHandle.useLimit,
+              stringChoosenPayCode,
+              inputHandle.desc
+            )
+          }
           style={{
             fontFamily: "Exo",
             fontSize: 16,
@@ -780,17 +815,20 @@ function AddPayment() {
                   {item.mpaytype_icon !== "" ? (
                     <>
                       <input
+                        key={idx}
                         className="form-check-input mt-4"
                         type="checkbox"
-                        value=""
                         id="flexCheckDefault"
+                        onChange={(e) =>
+                          handleChoosenPaymentCode(e, item.mpaytype_id)
+                        }
                       />
                       <label
                         className="form-check-label ms-2"
                         for="flexCheckDefault"
                       >
                         <img
-                        className="mt-2"
+                          className="mt-2"
                           src={item.mpaytype_icon}
                           style={{ width: 120 }}
                         />
@@ -803,10 +841,17 @@ function AddPayment() {
               );
             })}
           </div>
-          <div style={{ color: "#B9121B", fontSize: 12 }} className="mb-2">
-            <img src={noteIconRed} className="me-2" />
-            Metode pembayaran harus dipilih.
-          </div>
+          {showAlert
+            ? true && (
+                <div
+                  style={{ color: "#B9121B", fontSize: 12 }}
+                  className="mb-2"
+                >
+                  <img src={noteIconRed} className="me-2" />
+                  Metode pembayaran harus dipilih.
+                </div>
+              )
+            : ""}
           <div className="d-flex justify-content-center mb-3">
             <Button
               onClick={() => setShowModalFeeMethod(false)}
@@ -826,7 +871,7 @@ function AddPayment() {
               Batal
             </Button>
             <Button
-              onClick={() => setShowModalFeeMethod(false)}
+              onClick={onSaveChoosenPayment}
               style={{
                 fontFamily: "Exo",
                 color: "black",
