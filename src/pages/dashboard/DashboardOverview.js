@@ -506,25 +506,25 @@ export default () => {
             <Col lg={3}>
               <div className="card-information base-content-beranda">
                 <p className="p-info">Total Dana Masuk</p>
-                <p className="p-amount">{convertToRupiah(settlementTransaction.total_dana_masuk)}</p>
+                <p className="p-amount">{convertToRupiah((settlementTransaction.total_dana_masuk !== undefined) ? settlementTransaction.total_dana_masuk : 0)}</p>
               </div>
             </Col>
             <Col lg={3}>
               <div className="card-information base-content-beranda">
                 <p className="p-info">Total Biaya Partner</p>
-                <p className="p-amount">{convertToRupiah(settlementTransaction.total_biaya_partner)}</p>
+                <p className="p-amount">{convertToRupiah((settlementTransaction.total_biaya_partner !== undefined) ? settlementTransaction.total_biaya_partner : 0)}</p>
               </div>
             </Col>
             <Col lg={3}>
               <div className="card-information base-content-beranda">
                 <p className="p-info">Total Biaya VA</p>
-                <p className="p-amount">{convertToRupiah(settlementTransaction.total_biaya_va)}</p>
+                <p className="p-amount">{convertToRupiah((settlementTransaction.total_biaya_va !== undefined) ? settlementTransaction.total_biaya_va : 0)}</p>
               </div>
             </Col>
             <Col lg={3}>
               <div className="card-information base-content">
                 <p className="p-info">Total Biaya Settlement</p>
-                <p className="p-amount">{convertToRupiah(settlementTransaction.total_biaya_settlement)}</p>
+                <p className="p-amount">{convertToRupiah((settlementTransaction.total_biaya_settlement !== undefined) ? settlementTransaction.total_biaya_settlement : 0)}</p>
               </div>
             </Col>
           </Row>

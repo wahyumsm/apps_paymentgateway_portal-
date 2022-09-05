@@ -8,26 +8,26 @@ import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 
-function InvoicePage() {
+function InvoiceDisbursement() {
 
     const history = useHistory()
     const access_token = getToken()
     const user_role = getRole()
-    const [stateSettlement, setStateSettlement] = useState(null)
-    const [dateRangeSettlement, setDateRangeSettlement] = useState([])
-    const [dataInvoice, setDataInvoice] = useState({})
+    const [stateInvoiceDisbursement, setStateInvoiceDisbursement] = useState(null)
+    const [dateRangeInvoiceDisbursement, setDateRangeInvoiceDisbursement] = useState([])
+    const [dataInvoiceDisbursement, setDataInvoiceDisbursement] = useState({})
 
-    function pickDateSettlement(item) {
-        setStateSettlement(item)
+    function pickDateInvoiceDisbursement(item) {
+        setStateInvoiceDisbursement(item)
         // console.log(item, 'ini item');
         if (item !== null) {
             item = item.map(el => el.toLocaleDateString('en-CA'))
-            setDateRangeSettlement(item)
+            setDateRangeInvoiceDisbursement(item)
             // console.log(item, 'ini item2');
         }
     }
 
-    async function generateInvoice(dateRange) {
+    async function generateInvoiceDisbursement(dateRange) {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}"}`);
@@ -39,10 +39,10 @@ function InvoicePage() {
             const invoiceData = await axios.post("/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
             console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
-                setDataInvoice(invoiceData.data.response_data)
+                setDataInvoiceDisbursement(invoiceData.data.response_data)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
                 setUserSession(invoiceData.data.response_new_token)
-                setDataInvoice(invoiceData.data.response_data)
+                setDataInvoiceDisbursement(invoiceData.data.response_data)
             }
         } catch (error) {
             console.log(error)
@@ -64,36 +64,35 @@ function InvoicePage() {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role === "102") {
-            history.push('/404');
-        }
+        // if (user_role === "102") {
+        //     history.push('/404');
+        // }
     }, [access_token, user_role])
     
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Invoice</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Invoice Disbursement</span>
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4">Invoice</h2>
+                <h2 className="h5 mb-3 mt-4">Invoice Disbursement</h2>
             </div>
             <div className='main-content'>
-                <div className='riwayat-dana-masuk-div mt-4'>
+                <div className='mt-4'>
                     <div className='base-content mt-3 mb-3'>
-                        {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span> */}
                         <Row className='mb-4'>
                             <Col xs={8} className="d-flex justify-content-start align-items-center">
                                 <span className='me-3'>Periode*</span>
                                 <DateRangePicker 
-                                    onChange={pickDateSettlement}
-                                    value={stateSettlement}
+                                    onChange={pickDateInvoiceDisbursement}
+                                    value={stateInvoiceDisbursement}
                                     clearIcon={null}
                                     className='me-3'
                                 />
                                 <button
-                                    onClick={() => generateInvoice(dateRangeSettlement)}
-                                    className={(stateSettlement === null) ? 'btn-off' : 'add-button'}
+                                    onClick={() => generateInvoiceDisbursement(dateRangeInvoiceDisbursement)}
+                                    className={(stateInvoiceDisbursement === null) ? 'btn-off' : 'add-button'}
                                     style={{ maxWidth: 'fit-content', padding: 7, height: 40 }}
-                                    disabled={(stateSettlement === null) ? true : false}
+                                    disabled={(stateInvoiceDisbursement === null) ? true : false}
                                 >
                                     Generate
                                 </button>
@@ -115,9 +114,6 @@ function InvoicePage() {
                                         <th colSpan={2} style={{ textAlign: "center" }}>
                                             Harga (Rp)
                                         </th>
-                                        {/* <th>
-                                            
-                                        </th> */}
                                     </tr>
                                     <tr>
                                         <th style={{ textAlign: "center" }}>
@@ -130,8 +126,8 @@ function InvoicePage() {
                                 </thead>
                                 <tbody className="table-group-divider">
                                     {
-                                        dataInvoice.inv_products ?
-                                        dataInvoice.inv_products.map((item, idx) => {
+                                        dataInvoiceDisbursement.inv_products ?
+                                        dataInvoiceDisbursement.inv_products.map((item, idx) => {
                                             return (
                                                 <tr key={idx}>
                                                     <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>{ idx + 1 }</td>
@@ -164,94 +160,23 @@ function InvoicePage() {
                                         <br />
                                     </tr>
                                     <tr>
-                                        {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", borderTop: "solid" }}></td> */}
                                         <td colSpan={3} style={{ fontWeight: 600, textAlign: "end", borderTop: "solid" }}>Harga Jual :</td>
-                                        <td colSpan={2} style={{ textAlign: "end", borderTop: "solid" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp) : "Rp 0"}</td>
+                                        <td colSpan={2} style={{ textAlign: "end", borderTop: "solid" }}>{(dataInvoiceDisbursement.inv_dpp !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_dpp) : "Rp 0"}</td>
                                     </tr>
                                     <tr>
-                                        {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
                                         <td colSpan={3} style={{ fontWeight: 600, textAlign: "end" }}>PPN 11% :</td>
-                                        <td colSpan={2} style={{ textAlign: "end", width: 200 }}>{(dataInvoice.inv_ppn !== undefined) ? convertToRupiah(dataInvoice.inv_ppn) : "Rp 0"}</td>
-                                    </tr>
-                                    {/* <tr>
-                                        <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
-                                        <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Bank</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.transaction_fee_bank) : "Rp 0"}</td>
+                                        <td colSpan={2} style={{ textAlign: "end", width: 200 }}>{(dataInvoiceDisbursement.inv_ppn !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_ppn) : "Rp 0"}</td>
                                     </tr>
                                     <tr>
-                                        <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
-                                        <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Settlement</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.settlement_fee) : "Rp 0"}</td>
-                                    </tr> */}
-                                    <tr>
-                                        {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", background: "#077E86", color: "#FFFFFF" }}></td> */}
                                         <td colSpan={3} style={{ fontWeight: 600, textAlign: "end", background: "#077E86", color: "#FFFFFF" }}>Total :</td>
-                                        <td colSpan={2} style={{ textAlign: "end", width: 200, background: "#077E86", color: "#FFFFFF" }}>{(dataInvoice.inv_total !== undefined) ? convertToRupiah(dataInvoice.inv_total) : "Rp 0"}</td>
+                                        <td colSpan={2} style={{ textAlign: "end", width: 200, background: "#077E86", color: "#FFFFFF" }}>{(dataInvoiceDisbursement.inv_total !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_total) : "Rp 0"}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            {/* <table className='table table-bordered mt-2' id='tableInvoice' style={{ width: "87%" }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: 155 }}>
-                                            No
-                                        </th>
-                                        <th>
-                                            Description
-                                        </th>
-                                        <th style={{ textAlign: "end" }}>
-                                            Amount
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="table-group-divider">
-                                    <tr>
-                                        <td style={{ paddingLeft: 16, width: 155 }}>1</td>
-                                        <td>{(Object.keys(dataInvoice).length !== 0) ? dataInvoice.settlement_desc : "-"}</td>
-                                        <td style={{ textAlign: "end" }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.settlement_amount) : "Rp 0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ borderRight: "hidden" }}></td>
-                                        <td style={{ borderRight: "hidden" }}></td>
-                                        <td style={{  }}></td>
-                                        <br />
-                                        <br />
-                                        <br />
-                                        <br />
-                                        <br />
-                                        <br />
-                                    </tr>
-                                    <tr>
-                                        <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", borderTop: "solid" }}></td>
-                                        <td style={{ fontWeight: 600, textAlign: "end", borderTop: "solid" }}>Sub Total</td>
-                                        <td style={{ textAlign: "end", borderTop: "solid" }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.settlement_amount) : "Rp 0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
-                                        <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Transaksi</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.transaction_fee) : "Rp 0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
-                                        <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Bank</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.transaction_fee_bank) : "Rp 0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td>
-                                        <td style={{ fontWeight: 600, textAlign: "end" }}>Fee Settlement</td>
-                                        <td style={{ textAlign: "end", width: 200 }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.settlement_fee) : "Rp 0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", background: "#077E86", color: "#FFFFFF" }}></td>
-                                        <td style={{ fontWeight: 600, textAlign: "end", background: "#077E86", color: "#FFFFFF" }}>Total</td>
-                                        <td style={{ textAlign: "end", width: 200, background: "#077E86", color: "#FFFFFF" }}>{(Object.keys(dataInvoice).length !== 0) ? convertToRupiah(dataInvoice.transaction_amount) : "Rp 0"}</td>
-                                    </tr>
-                                </tbody>
-                            </table> */}
                         </div>
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
-                                onClick={() => downloadPDF("#tableInvoice", dateRangeSettlement)}
+                                onClick={() => downloadPDF("#tableInvoice", dateRangeInvoiceDisbursement)}
                                 className='add-button mb-3'
                                 style={{ maxWidth: 'fit-content' }}
                             >
@@ -265,4 +190,4 @@ function InvoicePage() {
     )
 }
 
-export default InvoicePage
+export default InvoiceDisbursement
