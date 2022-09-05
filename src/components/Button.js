@@ -42,13 +42,13 @@ function Button () {
         <div className="d-flex justify-content-center align-items-center">
             <div className="counting d-flex flex-column align-items-center">
                 <button className="plus text-center" style={{border: "unset", background: "unset"}} onClick={onPlus}><FontAwesomeIcon icon={faChevronUp} color="#848484" /></button>
-                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{value}</div>
+                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{(value < 10 ? "0" : "") + value}</div>
                 <button className="minus text-center" style={{border: "unset", background: "unset"}} onClick={onMinus}><FontAwesomeIcon icon={faChevronDown} color="#848484" /></button>          
             </div>
             <div className="mx-3">:</div>
             <div className="counting d-flex flex-column align-items-center">
                 <button className="plus text-center" style={{border: "unset", background: "unset"}} onClick={onPlusMin}><FontAwesomeIcon icon={faChevronUp} color="#848484" /></button>
-                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{value2}</div>
+                <div type="number" className="count text-center px-2 my-2" style={{background: "#F0F0F0", borderRadius: 4}} name="qty">{(value2 < 10 ? "0" : "") + value2}</div>
                 <button className="minus text-center" style={{border: "unset", background: "unset"}} onClick={onMinusMin}><FontAwesomeIcon icon={faChevronDown} color="#848484" /></button>          
             </div>
         </div>

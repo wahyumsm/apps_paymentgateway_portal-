@@ -259,7 +259,7 @@ function AddPayment () {
                                 return (
                                     <div key={idx} className="mx-2" >
                                         {item.mpaytype_icon !== "" ?
-                                            <img src={item.mpaytype_icon} alt={item.mpaytype_name} width={128} height={64} /> :
+                                            <img src={item.mpaytype_icon} alt={item.mpaytype_name} width={96} /> :
                                             ""
                                         }
                                     </div>

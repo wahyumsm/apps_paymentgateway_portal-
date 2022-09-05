@@ -200,14 +200,14 @@ export default () => {
     } catch (error) {
       console.log(error)
       // RouteTo(errorCatch(error.response.status))
-      history.push(errorCatch(error.response.status))
+      // history.push(errorCatch(error.response.status))
     }
   }
 
   async function getSettlementChart(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_from":"${oneMonthAgo}", "tvasettl_to":"${currentDate}"}`)
+      const dataParams = encryptData(`{"tvasettl_code":"", "tvasettl_from":"${oneMonthAgo}", "tvasettl_to":"${currentDate}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -224,7 +224,7 @@ export default () => {
       }
     } catch (error) {
       console.log(error)
-      history.push(errorCatch(error.response.status))
+      // history.push(errorCatch(error.response.status))
     }
   }
 

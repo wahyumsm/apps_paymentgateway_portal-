@@ -214,7 +214,7 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const dataRiwayatSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
+            console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
