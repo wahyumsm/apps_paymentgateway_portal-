@@ -30,7 +30,7 @@ export default ({ location }) => {
         "Content-Type": "application/json",
         'Authorization': auth,
       };
-      const validated = await axios.post("/Account/ValidateResetPassword", { data: dataParams }, { headers: headers })
+      const validated = await axios.post(BaseURL + "/Account/ValidateResetPassword", { data: dataParams }, { headers: headers })
       // console.log(validated, "ini validated");
     } catch (error) {
       console.log(error);
