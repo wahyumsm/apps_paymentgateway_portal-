@@ -38,6 +38,8 @@ function RiwayatTransaksi() {
         statusSettlement: [],
         periodeDanaMasuk: 0,
         periodeSettlement: 0,
+        fiturDanaMasuk: 0,
+        fiturSettlement: 0
     })
     const [pendingTransfer, setPendingTransfer] = useState(true)
     const [pendingSettlement, setPendingSettlement] = useState(true)
@@ -126,7 +128,7 @@ function RiwayatTransaksi() {
         // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
         if (isFilterDanaMasuk) {
             setActivePageDanaMasuk(page)
-            filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0)
+            filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.fiturDanaMasuk)
         } else {
             setActivePageDanaMasuk(page)
             riwayatDanaMasuk(page)
@@ -137,7 +139,7 @@ function RiwayatTransaksi() {
         // console.log(page, 'ini di gandle change page');
         if (isFilterSettlement) {
             setActivePageSettlement(page)
-            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0)
+            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement)
         } else {
             setActivePageSettlement(page)
             riwayatSettlement(page)
@@ -175,14 +177,14 @@ function RiwayatTransaksi() {
         // 7 -> pilih tanggal
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0}`)
             console.log(dataParams, "ini params");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const dataRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
+            console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
@@ -207,7 +209,7 @@ function RiwayatTransaksi() {
     async function riwayatSettlement(currentPage) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0}`)
             console.log(dataParams, "ini params2");
             const headers = {
                 'Content-Type': 'application/json',
@@ -254,21 +256,21 @@ function RiwayatTransaksi() {
         }
     }
 
-    async function filterRiwayatDanaMasuk(page, statusId, transId, partnerId, subPartnerId, dateId, periode, rowPerPage) {
+    async function filterRiwayatDanaMasuk(page, statusId, transId, partnerId, subPartnerId, dateId, periode, rowPerPage, fiturDanaMasuk) {
         try {
             setPendingTransfer(true)
             setIsFilterDanaMasuk(true)
             setActivePageDanaMasuk(page)
             // console.log(page, 'ini di function filter');
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturDanaMasuk}}`)
             // console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const filterRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
+            console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
@@ -290,20 +292,20 @@ function RiwayatTransaksi() {
     }
     }
 
-    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage) {
+    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement) {
         try {
             setPendingSettlement(true)
             setIsFilterSettlement(true)
             setActivePageSettlement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}}`)
             // console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const filterSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(filterSettlement, 'ini filter data settlement');
+            console.log(filterSettlement, 'ini filter data settlement');
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberSettlement(filterSettlement.data.response_data)
@@ -336,6 +338,7 @@ function RiwayatTransaksi() {
                 namaAgenDanaMasuk: "",
                 statusDanaMasuk: [],
                 periodeDanaMasuk: 0,
+                fiturDanaMasuk: 0
             })
             setStateDanaMasuk(null)
             setDateRangeDanaMasuk([])
@@ -347,6 +350,7 @@ function RiwayatTransaksi() {
                 namaPartnerSettlement: "",
                 statusSettlement: [],
                 periodeSettlement: 0,
+                fiturSettlement: 0
             })
             setStateSettlement(null)
             setDateRangeSettlement([])
@@ -433,6 +437,13 @@ function RiwayatTransaksi() {
             width: "150px",
         },
         {
+            name: 'Jenis Transaksi',
+            selector: row => row.mfitur_desc,
+            // sortable: true,
+            // width: "175px"
+            width: "150px",
+        },
+        {
             name: 'No VA',
             selector: row => row.tvatrans_va_number,
             // sortable: true,
@@ -498,6 +509,13 @@ function RiwayatTransaksi() {
         {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
+            width: "224px",
+            // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
+            // sortable: true,
+        },
+        {
+            name: 'Jenis Transaksi',
+            selector: row => row.mfitur_desc,
             width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
             // sortable: true,
@@ -865,9 +883,9 @@ function RiwayatTransaksi() {
                                 {/* <option value={15}>Expected Success</option> */}
                             </Form.Select>
                         </Col>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "30%" : "40%" }}>
+                        <Col xs={4} >
                             <span>Periode*</span>
-                            <Form.Select name='periodeDanaMasuk' className="input-text-ez me-4" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
+                            <Form.Select name='periodeDanaMasuk' className="input-text-ez" style={{ display: "inline" }} value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                                 <option defaultChecked>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
                                 <option value={3}>Kemarin</option>
@@ -875,7 +893,20 @@ function RiwayatTransaksi() {
                                 <option value={5}>Bulan Ini</option>
                                 <option value={6}>Bulan Kemarin</option>
                                 <option value={7}>Pilih Range Tanggal</option>
+                            </Form.Select>                            
+                        </Col>
+                        <Col xs={4}>
+                            <span>Jenis Transaksi</span>
+                            <Form.Select name='fiturDanaMasuk' className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturDanaMasuk} onChange={(e) => handleChange(e)}>
+                                <option defaultValue value={0}>Pilih Jenis Transaksi</option>
+                                <option value={104}>Payment Link</option>
+                                <option value={100}>Virtual Account</option>
                             </Form.Select>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={4}></Col>
+                        <Col xs={4} className="mt-3 ms-5">
                             <div style={{ display: showDateDanaMasuk }}>
                                 <DateRangePicker 
                                     onChange={pickDateDanaMasuk}
@@ -885,21 +916,13 @@ function RiwayatTransaksi() {
                                 />
                             </div>
                         </Col>
-                        <Col xs={4}>
-                            <span>Jenis Transaksi</span>
-                            <Form.Select className='input-text-ez' style={{ display: "inline" }}>
-                                <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                <option value={1}>Payment Link</option>
-                                <option value={2}>Virtual Account</option>
-                            </Form.Select>
-                        </Col>
                     </Row>
                     <Row className='mt-4'>
                         <Col xs={3}>
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0)}
+                                        onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.fiturDanaMasuk)}
                                         className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                         disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
                                     >
@@ -991,9 +1014,9 @@ function RiwayatTransaksi() {
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "30%" : "40%" }}>
+                        <Col xs={4} >
                             <span>Periode*</span>
-                            <Form.Select name='periodeSettlement' className="input-text-ez me-4" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
+                            <Form.Select name='periodeSettlement' style={{ display: "inline" }} className="input-text-ez" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                                 <option defaultChecked>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
                                 <option value={3}>Kemarin</option>
@@ -1001,8 +1024,10 @@ function RiwayatTransaksi() {
                                 <option value={5}>Bulan Ini</option>
                                 <option value={6}>Bulan Kemarin</option>
                                 <option value={7}>Pilih Range Tanggal</option>
-                            </Form.Select>
-                            <div style={{ display: showDateSettlement }}>
+                            </Form.Select>                            
+                        </Col>
+                        <Col xs={4} style={{ display: showDateSettlement }}>
+                            <div>
                                 <DateRangePicker 
                                     onChange={pickDateSettlement}
                                     value={stateSettlement}
@@ -1013,10 +1038,10 @@ function RiwayatTransaksi() {
                         </Col>
                         <Col xs={4}>
                             <span>Jenis Transaksi</span>
-                            <Form.Select className='input-text-ez' style={{ display: "inline" }}>
+                            <Form.Select name='fiturSettlement' className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                <option value={1}>Payment Link</option>
-                                <option value={2}>Virtual Account</option>
+                                <option value={104}>Payment Link</option>
+                                <option value={100}>Virtual Account</option>
                             </Form.Select>
                         </Col>
                     </Row>
@@ -1025,9 +1050,9 @@ function RiwayatTransaksi() {
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0)}
-                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0}
+                                        onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement)}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0}
                                     >
                                         Terapkan
                                     </button>
@@ -1035,8 +1060,8 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Settlement")}
-                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0}
                                     >
                                         Atur Ulang
                                     </button>

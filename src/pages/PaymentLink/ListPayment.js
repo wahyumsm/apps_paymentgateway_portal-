@@ -16,6 +16,7 @@ import { errorCatch, getToken, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import Pagination from "react-js-pagination";
+import { pageVisits } from "../../data/tables";
 
 function ListPayment() {
   const history = useHistory();
@@ -27,13 +28,14 @@ function ListPayment() {
   const [activePagePaylink, setActivePagePaylink] = useState(1);
   const [pageNumberPaylink, setPageNumberPaylink] = useState({});
   const [totalPagePaylink, setTotalPagePaylink] = useState(0);
-  const [pendingPaylink, setPendingPaylink] = useState(false)
+  const [pendingPaylink, setPendingPaylink] = useState(false);
   const [isFilterPaylink, setIsFilterPaylink] = useState(false);
   const [inputHandle, setInputHandle] = useState({
     paymentId: "",
     refId: "",
     periodePaylink: 0,
     statusPaylink: "",
+    rowPerPage: 10
   });
 
   function handleChange(e) {
@@ -41,6 +43,51 @@ function ListPayment() {
       ...inputHandle,
       [e.target.name]: e.target.value,
     });
+  }
+
+  function handlePageChangePaylink(page) {
+    // console.log(page, 'ini di handle change page');
+    if (isFilterPaylink) {
+      setActivePagePaylink(page);
+      filterPaymentLinkHandler(
+        inputHandle.paymentId,
+        inputHandle.refId,
+        dateRangePaylink,
+        inputHandle.periodePaylink,
+        1,
+        inputHandle.rowPerPage,
+        0,
+        "",
+        inputHandle.statusPaylink
+      );
+    } else {
+      setActivePagePaylink(page);
+      getListPaymentLink(page, inputHandle.rowPerPage);
+    }
+  }
+
+  function handleChangeEntries(e) {
+    console.log(e.target.name, "ini name");
+    console.log(e.target.value, "ini value");
+    setInputHandle({
+      ...inputHandle,
+      [e.target.name]: e.target.value,
+    });
+    if (isFilterPaylink) {
+      filterPaymentLinkHandler(
+        inputHandle.paymentId,
+        inputHandle.refId,
+        dateRangePaylink,
+        inputHandle.periodePaylink,
+        1,
+        e.target.value,
+        0,
+        "",
+        inputHandle.statusPaylink
+      );
+    } else {
+      getListPaymentLink(1, e.target.value);
+    }
   }
 
   function pickDatePaylink(item) {
@@ -68,15 +115,30 @@ function ListPayment() {
     console.log(rows, "ini rows");
     console.log(direction, "ini direction");
     console.log(String(selector).slice(11), "ini selector");
-    async function sorted(
-      selector,
-      direction,
-      paymentId,
-      refId,
-      dateRangePaylink,
-      periodePaylink,
-      statusPaylink
-    ) {
+    // async function sorted(
+    //   selector,
+    //   direction,
+    //   paymentId,
+    //   refId,
+    //   dateRangePaylink,
+    //   periodePaylink,
+    //   statusPaylink
+    // ) {
+      
+    // }
+    // sorted(
+    //   selector,
+    //   direction,
+    //   paymentId,
+    //   refId,
+    //   dateRangePaylink,
+    //   periodePaylink,
+    //   statusPaylink
+    // );
+    return rows.sort(async (a, b) => {
+      console.log(selector(a), "ini a");
+      console.log(selector(b), "ini b");
+      console.log(inputHandle.paymentId, ";ini payment id");
       try {
         const auth = "Bearer " + getToken();
         const dataParams = encryptData(
@@ -108,40 +170,26 @@ function ListPayment() {
           sortedData.data.response_code === 200 &&
           sortedData.data.response_new_token.length === 0
         ) {
-          setPageNumberPaylink(sortedData.data.response_data);
-          setPageNumberPaylink(sortedData.data.response_data);
-          setListPaylink(sortedData.data.response_data.results);
-          return;
+          // setPageNumberPaylink(sortedData.data.response_data);
+          // setTotalPagePaylink(sortedData.data.response_data.max_page);
+          // setListPaylink(sortedData.data.response_data.results);
+          // return;
           // setPending(false)
         } else if (
           sortedData.status === 200 &&
           sortedData.data.response_code === 200 &&
           sortedData.data.response_new_token.length !== 0
         ) {
-          setUserSession(sortedData.data.response_new_token);
-          setPageNumberPaylink(sortedData.data.response_data);
-          setPageNumberPaylink(sortedData.data.response_data);
-          setListPaylink(sortedData.data.response_data.results);
-          return;
+          // setUserSession(sortedData.data.response_new_token);
+          // setPageNumberPaylink(sortedData.data.response_data);
+          // setTotalPagePaylink(sortedData.data.response_data.max_page);
+          // setListPaylink(sortedData.data.response_data.results);
+          // return;
           // setPending(false)
         }
       } catch (error) {
         console.log(error);
       }
-    }
-    sorted(
-      selector,
-      direction,
-      paymentId,
-      refId,
-      dateRangePaylink,
-      periodePaylink,
-      statusPaylink
-    );
-    return rows.sort((a, b) => {
-      console.log(selector(a), "ini a");
-      console.log(selector(b), "ini b");
-      console.log(inputHandle.paymentId, ";ini payment id");
     });
   }
 
@@ -240,33 +288,109 @@ function ListPayment() {
     },
   ];
 
-  function handlePageChangePaylink(page) {
-    // console.log(page, 'ini di gandle change page');
-    if (isFilterPaylink) {
-      setActivePagePaylink(page);
-      filterPaymentLinkHandler(
-        page,
-        inputHandle.paymentId,
-        inputHandle.refId,
-        dateRangePaylink,
-        inputHandle.periodePaylink,
-        1,
-        0,
-        0,
-        "mstatus_name",
-        inputHandle.statusPaylink
-      );
-    } else {
-      setActivePagePaylink(page);
-      getListPaymentLink(page);
-    }
-  }
+  const columnDummy = [
+    {
+      name: "Payment ID",
+      selector: (row) => row.id,
+      sortable: true,
+    },
+    {
+      name: "ID Referensi",
+      selector: (row) => row.views,
+    },
+    {
+      name: "Tanggal Pembuatan",
+      selector: (row) => row.returnValue,
+      // cell: (row) => (
+      //   <div>
+      //     {row.tpaylink_crtdt.slice(0, 10).replace(/-/g, "/") +
+      //       ", " +
+      //       row.tpaylink_crtdt.slice(11, 16)}
+      //   </div>
+      // ),
+      // sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => row.bounceRate,
+      // sortable: true,
+      // style: {
+      //   display: "flex",
+      //   flexDirection: "row",
+      //   justifyContent: "center",
+      //   alignItem: "center",
+      //   padding: "6px 0px",
+      //   margin: "6px",
+      //   width: "100%",
+      //   borderRadius: 4,
+      // },
+      // conditionalCellStyles: [
+      //   {
+      //     when: (row) => row.tvatrans_status_id === 2,
+      //     style: {
+      //       background: "rgba(7, 126, 134, 0.08)",
+      //       color: "#077E86",
+      //       paddingLeft: "unset",
+      //     },
+      //   },
+      //   {
+      //     when: (row) =>
+      //       row.tvatrans_status_id === 7 || row.tvatrans_status_id === 16,
+      //     style: {
+      //       background: "rgba(185, 18, 27, 0.08)",
+      //       color: "#B9121B",
+      //       paddingLeft: "unset",
+      //     },
+      //   },
+      //   {
+      //     when: (row) => row.tvatrans_status_id === 17,
+      //     style: {
+      //       background: "#EBF8EC",
+      //       color: "#3DB54A",
+      //       paddingLeft: "unset",
+      //     },
+      //   },
+      //   {
+      //     when: (row) => row.tvatrans_status_id === 18,
+      //     style: {
+      //       background: "#F0F0F0",
+      //       color: "#888888;",
+      //       paddingLeft: "unset",
+      //     },
+      //   },
+      // ],
+    },
+    {
+      name: "Aksi",
+      selector: (row) => row.pageName
+      // selector: (row) => (
+      //   <div className="d-flex justify-content-center align-items-center">
+      //     <FontAwesomeIcon
+      //       icon={faEye}
+      //       onClick={() => detailPaymentHandler(row.tpaylink_id)}
+      //       className="me-2"
+      //       style={{ cursor: "pointer" }}
+      //     />
+      //     <FontAwesomeIcon
+      //       icon={faClone}
+      //       className="mx-2"
+      //       style={{
+      //         cursor: "pointer",
+      //         display: row.tvatrans_status_id === 17 ? "" : "none",
+      //       }}
+      //     />
+      //   </div>
+      // ),
+    },
+  ];
 
-  async function getListPaymentLink() {
+  async function getListPaymentLink(page, rowPerPage) {
     try {
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
-        `{"payment_code":"", "date_from": "", "date_to":"", "dateID": 1, "page": 1, "row_per_page": 3, "order_id": 0, "order_field": "mstatus_name", "statusID": ["2,7,9,16,17,18"] }`
+        `{"payment_code":"", "date_from": "", "date_to":"", "dateID": 1, "page": ${
+          page !== 0 ? page : 1
+        }, "row_per_page": ${rowPerPage !== 0 ? rowPerPage : 10}, "order_id": 0, "order_field": "mstatus_name", "statusID": ["2,7,9,16,17,18"] }`
       );
       const headers = {
         "Content-Type": "application/json",
@@ -286,7 +410,7 @@ function ListPayment() {
         setPageNumberPaylink(listPaylink.data.response_data);
         setTotalPagePaylink(listPaylink.data.response_data.max_page);
         setListPaylink(listPaylink.data.response_data.results);
-        setPendingPaylink(false)
+        setPendingPaylink(false);
       } else if (
         listPaylink.status === 200 &&
         listPaylink.data.response_code === 200 &&
@@ -296,7 +420,7 @@ function ListPayment() {
         setPageNumberPaylink(listPaylink.data.response_data);
         setTotalPagePaylink(listPaylink.data.response_data.max_page);
         setListPaylink(listPaylink.data.response_data.results);
-        setPendingPaylink(false)
+        setPendingPaylink(false);
       }
     } catch (error) {
       console.log(error);
@@ -316,8 +440,8 @@ function ListPayment() {
     statusId
   ) {
     try {
-      setPendingPaylink(true)
-      setIsFilterPaylink(true)
+      setPendingPaylink(true);
+      setIsFilterPaylink(true);
       setActivePagePaylink(page);
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
@@ -351,9 +475,9 @@ function ListPayment() {
         filterPaylink.data.response_new_token.length === 0
       ) {
         setPageNumberPaylink(filterPaylink.data.response_data);
-        setPageNumberPaylink(filterPaylink.data.response_data);
+        setTotalPagePaylink(filterPaylink.data.response_data.max_page);
         setListPaylink(filterPaylink.data.response_data.results);
-        setPendingPaylink(false)
+        setPendingPaylink(false);
       } else if (
         filterPaylink.status === 200 &&
         filterPaylink.data.response_code === 200 &&
@@ -361,15 +485,17 @@ function ListPayment() {
       ) {
         setUserSession(filterPaylink.data.response_new_token);
         setPageNumberPaylink(filterPaylink.data.response_data);
-        setPageNumberPaylink(filterPaylink.data.response_data);
+        setTotalPagePaylink(filterPaylink.data.response_data.max_page);
         setListPaylink(filterPaylink.data.response_data.results);
-        setPendingPaylink(false)
+        setPendingPaylink(false);
       }
     } catch (error) {
       console.log(error);
       history.push(errorCatch(error.response.status));
     }
   }
+
+  console.log(inputHandle.rowPerPage, "ini row per page");
 
   function resetButtonHandle(param) {
     if (param === "Reset Filter") {
@@ -435,7 +561,7 @@ function ListPayment() {
       // RouteTo("/login")
       history.push("/login");
     }
-    getListPaymentLink();
+    getListPaymentLink(activePagePaylink, inputHandle.rowPerPage);
   }, [access_token]);
 
   const CustomLoader = () => (
@@ -617,7 +743,7 @@ function ListPayment() {
                       dateRangePaylink,
                       inputHandle.periodePaylink,
                       1,
-                      0,
+                      inputHandle.rowPerPage,
                       0,
                       "",
                       inputHandle.statusPaylink
@@ -681,16 +807,19 @@ function ListPayment() {
         </Row>
         <div className="d-flex justify-content-start align-items-center mt-3">
           <div>Show</div>
-            <Form.Select
-              className="ms-3"
-              style={{ display: "inline", width: "7%" }}
-            >
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-              <option value={150}>150</option>
-            </Form.Select>
+          <Form.Select
+            className="ms-3"
+            style={{ display: "inline", width: "7%" }}
+            value={inputHandle.rowPerPage}
+            onChange={(e) => handleChangeEntries(e)}
+            name="rowPerPage"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+            <option value={150}>150</option>
+          </Form.Select>
           <div className="ms-3">entries</div>
         </div>
         <div className="div-table mt-4 pb-4">

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import {Row, Col, Modal, Button} from '@themesberg/react-bootstrap'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 import axios from "axios"
 
 function CustomDesignPayment () {
+    const access_token = getToken()
     const [showModalSave, setShowModalSave] = useState(false)
     const [showModalBatal, setShowModalBatal] = useState(false)
     const [image, setImage] = useState(null)
@@ -41,6 +42,9 @@ function CustomDesignPayment () {
         }
     }
 
+    console.log(image, "ini image");
+    console.log(String(imageFile).slice(27), "ini image file");
+
     function cancelChange(){
         setShowModalBatal(false)
         setInputHandle({
@@ -53,6 +57,12 @@ function CustomDesignPayment () {
     async function saveCustomDesignHandler (namaPerusahaan, image) {
         setShowModalSave(false)
         try {
+            if (namaPerusahaan === undefined) {
+                namaPerusahaan = inputHandle.namaPerusahaan
+            }
+            if (image === undefined) {
+                image = null
+            }
             const auth = "Bearer " + getToken()
             var formData = new FormData()
             formData.append('mpaylink_corporate_name', namaPerusahaan)
@@ -62,6 +72,7 @@ function CustomDesignPayment () {
                 'Authorization' : auth
             }
             const customDesign = await axios.post("/PaymentLink/CustomDesignPaymentLink", formData, { headers: headers })
+            console.log(customDesign, "edit custom design");
             if(customDesign.status === 200 && customDesign.data.response_code === 200 && customDesign.data.response_new_token.length === 0) {
                 setInputHandle(customDesign.data.response_data)
                 console.log(customDesign.data.response_data);
@@ -76,6 +87,43 @@ function CustomDesignPayment () {
             history.push(errorCatch(e.response.status))
         }
     }
+
+    async function getDetailCustomHandler () {
+        try {
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const getDetailCustom = await axios.post("/PaymentLink/GetCustomDesignPaymentLink", {data: ""}, { headers: headers })
+            console.log(getDetailCustom, "ini detail custom");
+            if(getDetailCustom.status === 200 && getDetailCustom.data.response_code === 200 && getDetailCustom.data.response_new_token.length === 0) {
+                // setInputHandle(getDetailCustom.data.response_data)
+                // console.log(getDetailCustom.data.response_data);
+                // history.push("/listpayment")
+                const dataDetailCustom = getDetailCustom.data.response_data
+                setInputHandle({namaPerusahaan: dataDetailCustom.mpaylink_corporate_name})
+                setImageFile(dataDetailCustom.mpaylink_logo_url)
+            } else if (getDetailCustom.status === 200 && getDetailCustom.data.response_code === 200 && getDetailCustom.data.response_new_token.length !== 0) {
+                setUserSession(getDetailCustom.data.response_new_token)
+                // setInputHandle(getDetailCustom.data.response_data)
+                console.log(getDetailCustom.data.response_data);
+                const dataDetailCustom = getDetailCustom.data.response_data
+                setInputHandle({namaPerusahaan: dataDetailCustom.mpaylink_corporate_name})
+                setImageFile(dataDetailCustom.mpaylink_logo_url)
+            }
+        } catch (e) {
+            console.log(e);
+            // history.push(errorCatch(e.response.status))
+        }
+    }
+
+    useEffect(() => {
+        if(!access_token) {
+            history.push('/login')
+        }
+        getDetailCustomHandler()
+    }, [access_token])
     
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>

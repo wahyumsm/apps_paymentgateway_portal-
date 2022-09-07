@@ -32,6 +32,7 @@ function AddPayment() {
   const history = useHistory();
   const access_token = getToken();
   const [paymentType, setPaymentType] = useState([]);
+  const [addPaylink, setAddPaylink] = useState({})
   const [choosenPaymentCode, setChoosenPaymentCode] = useState([]);
   const [checked, setChecked] = useState("1");
   const [expanded, setExpanded] = useState(false);
@@ -181,16 +182,16 @@ function AddPayment() {
         addPaymentLink.status === 200 &&
         addPaymentLink.data.response_new_token.length === 0
       ) {
-        // setInputHandle(addPaymentLink.data.response_data)
-        alert("Data User Management Berhasil Ditambahkan");
+        setAddPaylink(addPaymentLink.data.response_data)
+        setShowModal(true)
       } else if (
         addPaymentLink.data.response_code === 200 &&
         addPaymentLink.status === 200 &&
         addPaymentLink.data.response_new_token.length !== 0
       ) {
         setUserSession(addPaymentLink.data.response_new_token);
-        // setInputHandle(addPaymentLink.data.response_data)
-        alert("Data User Management Berhasil Ditambahkan");
+        setAddPaylink(addPaymentLink.data.response_data)
+        setShowModal(true)
       }
     } catch (error) {
       console.log(error);
@@ -235,6 +236,7 @@ function AddPayment() {
   const closeModal = () => {
     setShowModal(false);
     setSave(false);
+    window.location.reload()
   };
 
   function toDashboard() {
@@ -341,12 +343,6 @@ function AddPayment() {
                 <img src={calendar} alt="calendar" />
               </div>
             </div>
-            {/* <DateRangePicker
-              clearIcon={null}
-              className="input-date-user"
-              disabled
-              value={(dateDay) - (month+1) - (year)}
-            /> */}
           </Col>
           <Col xs={6} className="position-relative">
             <div>
@@ -591,8 +587,9 @@ function AddPayment() {
                 id="copied"
                 className="input-text-user"
                 placeholder="Masukkan Nominal Tagihan"
-                value="https://ezeelink.co.id/paymentlink/idpaymentlink"
+                value={addPaylink.payment_link}
                 onChange={copyHandler}
+                disabled
               />
             </Col>
           </Row>

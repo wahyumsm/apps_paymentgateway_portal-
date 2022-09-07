@@ -155,17 +155,6 @@ function ListUser () {
                 </Col>
             </Row>
             <Row className='mt-4'>
-                <Col className="font-weight-bold mb-3" xs={12}>Tampilkan Per</Col>
-                <Col xs={6}>
-                    <Form.Select name="statusDanaMasuk" className='input-text-user' style={{ display: "inline" }} >
-                        <option defaultValue value={1}>10</option>
-                        <option value={2}>20</option>
-                        <option value={3}>50</option>
-                        <option value={4}>100</option>
-                    </Form.Select>
-                </Col>
-            </Row>
-            <Row className='mt-4'>
                 <Col xs={3}>
                     <Row>
                         <Col xs={6}>

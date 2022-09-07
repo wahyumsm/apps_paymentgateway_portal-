@@ -98,7 +98,7 @@ function DetailPayment() {
                         </tr>
                         <tr>
                             <td><div style={{color: "#888888"}}>Status</div></td>
-                            <td><div className="mx-5" style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", color: "#3DB54A", fontWeight: 600, background: "#EBF8EC", borderRadius: 4, fontFamily: "Nunito"}}>{detailPayment.status_name}</div></td>
+                            <td><div className="mx-5 px-3" style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", color: "#3DB54A", fontWeight: 600, background: "#EBF8EC", borderRadius: 4, fontFamily: "Nunito"}}>{detailPayment.status_name}</div></td>
                         </tr>
                     </tbody>
                 </table>

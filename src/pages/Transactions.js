@@ -39,6 +39,8 @@ export default () => {
     namaAgenDanaMasuk: "",
     statusDanaMasuk: "",
     statusSettlement: "",
+    fiturSettlement: 0,
+    fiturDanaMasuk: 0
   })
   const [pendingTransfer, setPendingTransfer] = useState(true)
   const [pendingSettlement, setPendingSettlement] = useState(true)
@@ -83,7 +85,7 @@ export default () => {
   async function getListTransferDana(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"start_time": "${currentDate}", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": ""}`)
+      const dataParams = encryptData(`{"start_time": "${currentDate}", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": "", "fitur_id": 0}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -180,7 +182,7 @@ export default () => {
   async function getSettlement(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_code":"", "tvasettl_status_id":0, "tvasettl_from":"${currentDate}", "tvasettl_to":"${currentDate}"}`)
+      const dataParams = encryptData(`{"tvasettl_code":"", "tvasettl_status_id":0, "tvasettl_from":"${currentDate}", "tvasettl_to":"${currentDate}", "fitur_id": 0}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -235,18 +237,18 @@ export default () => {
 // gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
 // gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
 
-  async function filterTransferButtonHandle(idTransaksi, namaAgen, periode, status) {
+  async function filterTransferButtonHandle(idTransaksi, namaAgen, periode, status, fiturDanaMasuk) {
     try {
       setPendingSettlement(true)
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
+      const dataParams = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}", "fitur_id": ${fiturDanaMasuk}}`)
       // console.log(dataParams, "ini data params dana masuk filter");
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const filterTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-      // console.log(filterTransferDana, "ini data filter transfer dana");
+      console.log(filterTransferDana, "ini data filter transfer dana");
       if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token.length === 0) {
         filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListTransferDana(filterTransferDana.data.response_data.list)
@@ -264,11 +266,11 @@ export default () => {
     }
   }
 
-  async function filterSettlementButtonHandle(idTransaksi, periode, status) {
+  async function filterSettlementButtonHandle(idTransaksi, periode, status, fitur) {
     // console.log("ini filter settlement");
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}"}`)
+      const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}", "fitur_id":${fitur}}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -297,6 +299,7 @@ export default () => {
           idTransaksiDanaMasuk: "",
           namaAgenDanaMasuk: "",
           statusDanaMasuk: "",
+          fiturDanaMasuk: 0,
       })
       setStateDanaMasuk(null)
       setDateRangeDanaMasuk([])
@@ -305,6 +308,7 @@ export default () => {
           ...inputHandle,
           idTransaksiSettlement: "",
           statusSettlement: "",
+          fiturSettlement: 0
       })
       setStateSettlement(null)
       setDateRangeSettlement([])
@@ -370,7 +374,7 @@ export default () => {
     },
     {
       name: 'Jenis Transaksi',
-      selector: row => row.name,
+      selector: row => row.fiturID,
       // sortable: true
     },
     {
@@ -439,7 +443,7 @@ export default () => {
     },
     {
       name: 'Jenis Transaksi',
-      selector: row => row.tvasettl_code,
+      selector: row => row.fitur_desc,
       // sortable: true
     },
     {
@@ -665,10 +669,10 @@ export default () => {
                 </Col>
                 <Col xs={4}>
                     <span>Jenis Transaksi</span>
-                    <Form.Select className='input-text-ez' style={{ display: "inline" }}>
+                    <Form.Select name='fiturDanaMasuk' onChange={(e) => handleChange(e)} value={inputHandle.fiturDanaMasuk} className='input-text-ez' style={{ display: "inline" }}>
                       <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                      <option value={1}>Payment Link</option>
-                      <option value={2}>Virtual Account</option>
+                      <option value={104}>Payment Link</option>
+                      <option value={100}>Virtual Account</option>
                     </Form.Select>
                 </Col>
             </Row>
@@ -677,9 +681,9 @@ export default () => {
                     <Row>
                         <Col xs={6}>
                             <button
-                              onClick={() => filterTransferButtonHandle(inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk)}
-                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                              onClick={() => filterTransferButtonHandle(inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.fiturDanaMasuk)}
+                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
                             >
                               Terapkan
                             </button>
@@ -687,8 +691,8 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Dana Masuk")}
-                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
                             >
                               Atur Ulang
                             </button>
@@ -796,10 +800,10 @@ export default () => {
             <Row className='mt-4'>
               <Col xs={4}>
                 <span>Jenis Transaksi</span>
-                <Form.Select className='input-text-ez' style={{ display: "inline" }}>
+                <Form.Select name="fiturSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
                   <option defaultValue value={0}>Pilih Status</option>
-                  <option value={1}>Payment Link</option>
-                  <option value={2}>Virtual Account</option>
+                  <option value={104}>Payment Link</option>
+                  <option value={100}>VA Partner</option>
                 </Form.Select>
               </Col>
             </Row>
@@ -808,9 +812,9 @@ export default () => {
                     <Row>
                         <Col xs={6}>
                             <button
-                              onClick={() => filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, dateRangeSettlement, inputHandle.statusSettlement)}
-                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0}
+                              onClick={() => filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, dateRangeSettlement, inputHandle.statusSettlement, inputHandle.fiturSettlement)}
+                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.fiturSettlement.length === 0}
                             >
                               Terapkan
                             </button>
@@ -818,8 +822,8 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Settlement")}
-                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0}
+                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.fiturSettlement.length === 0}
                             >
                               Atur Ulang
                             </button>
