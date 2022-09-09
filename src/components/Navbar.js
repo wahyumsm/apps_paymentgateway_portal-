@@ -456,7 +456,7 @@ export default (props) => {
                 <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                   <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
                     <span className="mb-0 font-small">Saldo: </span>
-                    <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
+                    <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
                     <img
                       src={arrowDown}
                       alt="arrow_down"
