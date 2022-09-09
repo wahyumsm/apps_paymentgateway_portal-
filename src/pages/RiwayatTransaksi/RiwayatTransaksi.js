@@ -1078,7 +1078,12 @@ function RiwayatTransaksi() {
                         </Row>
                         <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
                             <Col>{detailTransferDana.mpartnerdtl_partner_id}</Col>
-                            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 160, width: "100%", height: 32, background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }}>{detailTransferDana.mstatus_name}</Col>
+                            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 175, width: "100%", height: 32, fontWeight: 400,
+                                background: (detailTransferDana.tvatrans_status_id === 2) ? "rgba(7, 126, 134, 0.08)" : (detailTransferDana.tvatrans_status_id === 1 || detailTransferDana.tvatrans_status_id === 7) ? "#FEF4E9" : (detailTransferDana.tvatrans_status_id === 4) ? "#FDEAEA" : (detailTransferDana.tvatrans_status_id === 3 || detailTransferDana.tvatrans_status_id === 5 || detailTransferDana.tvatrans_status_id === 6 || detailTransferDana.tvatrans_status_id === 8 || detailTransferDana.tvatrans_status_id === 9 || detailTransferDana.tvatrans_status_id === 10 || detailTransferDana.tvatrans_status_id === 11 || detailTransferDana.tvatrans_status_id === 12 || detailTransferDana.tvatrans_status_id === 13 || detailTransferDana.tvatrans_status_id === 14 || detailTransferDana.tvatrans_status_id === 15) ? "#F0F0F0" : "",
+                                color: (detailTransferDana.tvatrans_status_id === 2) ? "#077E86" : (detailTransferDana.tvatrans_status_id === 1 || detailTransferDana.tvatrans_status_id === 7) ? "#F79421" : (detailTransferDana.tvatrans_status_id === 4) ? "#EE2E2C" : (detailTransferDana.tvatrans_status_id === 3 || detailTransferDana.tvatrans_status_id === 5 || detailTransferDana.tvatrans_status_id === 6 || detailTransferDana.tvatrans_status_id === 8 || detailTransferDana.tvatrans_status_id === 9 || detailTransferDana.tvatrans_status_id === 10 || detailTransferDana.tvatrans_status_id === 11 || detailTransferDana.tvatrans_status_id === 12 || detailTransferDana.tvatrans_status_id === 13 || detailTransferDana.tvatrans_status_id === 14 || detailTransferDana.tvatrans_status_id === 15) ? "#888888" : "" }}
+                            >
+                                {detailTransferDana.mstatus_name_ind}
+                            </Col>
                             <br />
                         </Row>
                         <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: -10 }}>{detailTransferDana.tvatrans_crtdt}</div>
