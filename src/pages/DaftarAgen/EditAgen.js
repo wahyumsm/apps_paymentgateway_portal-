@@ -95,7 +95,8 @@ function EditAgen() {
     async function updateDetailAgen(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}", "nominal":${nominal}}`)
+            // const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}", "nominal":${nominal}}`)
+            const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -285,7 +286,7 @@ function EditAgen() {
                                 />
                             </Col>
                         </Row>
-                        <Row className='mt-2'>
+                        {/* <Row className='mt-2'>
                             <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                                 <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                     Nominal Top up
@@ -311,7 +312,7 @@ function EditAgen() {
                                     />
                                 }
                             </Col>
-                        </Row>
+                        </Row> */}
                     </div>
                 </div>
                 <div className='mb-5 mt-4 me-4 pe-5' style={{ display: "flex", justifyContent: "end"}}>

@@ -52,12 +52,12 @@ function RiwayatTopUp() {
         if (money !== 0) {
           var diSliceAwal = String(money).slice(0, -3)
         }
-        return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".")
+        return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".") + "."
     }
     
     const endColorNumber = (money) => {
         var diSliceAkhir = String(money).slice(-3)
-        return "."+diSliceAkhir
+        return diSliceAkhir
     }
 
     const copyHandler = (event) => {
@@ -65,8 +65,8 @@ function RiwayatTopUp() {
       };
     
     const copyPrice = async () => {
-        var copyText = document.getElementById('pricing').innerHTML;
-        await navigator.clipboard.writeText(copyText);
+        var copyText = document.getElementById('pricing').innerHTML.split("<")
+        await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
         alert('Text copied');
     };
     
@@ -313,7 +313,7 @@ function RiwayatTopUp() {
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
-            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4 || row.tparttopup_status_id === 9) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
+            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
             // width: "150px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -329,11 +329,11 @@ function RiwayatTopUp() {
                     option: {'&:hover': {backgroundColor: "#FFFFFF"} }
                 },
                 {
-                    when: row => row.tparttopup_status_id === 4 || row.tparttopup_status_id === 9,
+                    when: row => row.tparttopup_status_id === 4,
                     style: { background: "rgba(185, 18, 27, 0.08)", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15,
+                    when: row => row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15,
                     style: { background: "#F0F0F0", paddingLeft: "unset" }
                 }
             ],
@@ -378,7 +378,7 @@ function RiwayatTopUp() {
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
-            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4 || row.tparttopup_status_id === 9) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
+            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
             // width: "150px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -394,11 +394,11 @@ function RiwayatTopUp() {
                     option: {'&:hover': {backgroundColor: "#FFFFFF"} }
                 },
                 {
-                    when: row => row.tparttopup_status_id === 4 || row.tparttopup_status_id === 9,
+                    when: row => row.tparttopup_status_id === 4,
                     style: { background: "rgba(185, 18, 27, 0.08)", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15,
+                    when: row => row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15,
                     style: { background: "#F0F0F0", paddingLeft: "unset" }
                 }
             ],
@@ -797,7 +797,7 @@ function RiwayatTopUp() {
                             <div className="d-flex justify-content-between align-items-center mt-3">
                                 <div className="d-flex flex-column text-left">
                                 <div style={{padding:"unset"}}>No Rekening</div>
-                                <div onChange={copyHandler} id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{detailTopUp.no_rek}</div>
+                                <div id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{detailTopUp.no_rek}</div>
                                 </div>
                                 <div className="d-flex flex-column mt-3">
                                 <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
@@ -806,7 +806,7 @@ function RiwayatTopUp() {
                             <div className="d-flex justify-content-between align-items-center mt-3">
                                 <div className="d-flex flex-column text-left">
                                 <div style={{padding:"unset"}}>Nominal Transfer</div>
-                                <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(detailTopUp.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(detailTopUp.amount_transfer)}</span></div>
+                                <div id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(detailTopUp.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(detailTopUp.amount_transfer)}</span></div>
                                 </div>
                                 <div className="d-flex flex-column mt-3">
                                 <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>

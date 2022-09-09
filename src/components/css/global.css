@@ -611,7 +611,7 @@ width: 150px;
 }
 
 .react-daterange-picker__inputGroup {
-    min-width: unset;
+    min-width: unset !important;
 }
 
 .react-daterange-picker__range-divider {
@@ -635,3 +635,31 @@ width: 150px;
     border-radius: 6px;
 }
 
+/* select option in dashboard */
+
+.dropPartner .css-b62m3t-container {
+    min-width: 260px;
+    max-width: 500px;
+    width: max-content;
+}
+
+.dropPartner .css-1pahdxg-control {
+    min-height: 43px;
+    border-radius: 8px;
+}
+
+.dropPartner .css-1pahdxg-control:hover {
+    border-color: #888888;
+    box-shadow: 0 0 0 1px #888888;
+}
+
+.dropPartner .css-1s2u09g-control {
+    min-height: 43px;
+    border-radius: 8px;
+}
+
+.dropPartner .css-g1d714-ValueContainer {
+    overflow-y: auto;
+    max-height: 43px;
+    max-width: 400px;
+}

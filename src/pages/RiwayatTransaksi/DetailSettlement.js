@@ -208,11 +208,11 @@ function DetailSettlement() {
                     style: { background: "#FEF4E9", color: "#F79421", }
                 },
                 {
-                    when: row => row.tvatrans_status_id === 4 || row.tvatrans_status_id === 9,
+                    when: row => row.tvatrans_status_id === 4,
                     style: { background: "#FDEAEA", color: "#EE2E2C", }
                 },
                 {
-                    when: row => row.tvatrans_status_id === 3 || row.tvatrans_status_id === 5 || row.tvatrans_status_id === 6 || row.tvatrans_status_id === 8 || row.tvatrans_status_id === 10 || row.tvatrans_status_id === 11 || row.tvatrans_status_id === 12 || row.tvatrans_status_id === 13 || row.tvatrans_status_id === 14 || row.tvatrans_status_id === 15,
+                    when: row => row.tvatrans_status_id === 3 || row.tvatrans_status_id === 5 || row.tvatrans_status_id === 6 || row.tvatrans_status_id === 8 || row.tvatrans_status_id === 9 || row.tvatrans_status_id === 10 || row.tvatrans_status_id === 11 || row.tvatrans_status_id === 12 || row.tvatrans_status_id === 13 || row.tvatrans_status_id === 14 || row.tvatrans_status_id === 15,
                     style: { background: "#F0F0F0", color: "#888888", }
                 }
             ],

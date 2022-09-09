@@ -311,11 +311,11 @@ function DisbursementReport() {
                     style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tdishburse_status_id === 4 || row.tdishburse_status_id === 9,
+                    when: row => row.tdishburse_status_id === 4,
                     style: { background: "#FDEAEA", color: "#EE2E2C", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tdishburse_status_id === 3 || row.tdishburse_status_id === 5 || row.tdishburse_status_id === 6 || row.tdishburse_status_id === 8 || row.tdishburse_status_id === 10 || row.tdishburse_status_id === 11 || row.tdishburse_status_id === 12 || row.tdishburse_status_id === 13 || row.tdishburse_status_id === 14 || row.tdishburse_status_id === 15,
+                    when: row => row.tdishburse_status_id === 3 || row.tdishburse_status_id === 5 || row.tdishburse_status_id === 6 || row.tdishburse_status_id === 8 || row.tdishburse_status_id === 9 || row.tdishburse_status_id === 10 || row.tdishburse_status_id === 11 || row.tdishburse_status_id === 12 || row.tdishburse_status_id === 13 || row.tdishburse_status_id === 14 || row.tdishburse_status_id === 15,
                     style: { background: "#F0F0F0", color: "#888888", paddingLeft: "unset" }
                 }
             ],
@@ -384,11 +384,11 @@ function DisbursementReport() {
                     style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tdishburse_status_id === 4 || row.tdishburse_status_id === 9,
+                    when: row => row.tdishburse_status_id === 4,
                     style: { background: "#FDEAEA", color: "#EE2E2C", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tdishburse_status_id === 3 || row.tdishburse_status_id === 5 || row.tdishburse_status_id === 6 || row.tdishburse_status_id === 8 || row.tdishburse_status_id === 10 || row.tdishburse_status_id === 11 || row.tdishburse_status_id === 12 || row.tdishburse_status_id === 13 || row.tdishburse_status_id === 14 || row.tdishburse_status_id === 15,
+                    when: row => row.tdishburse_status_id === 3 || row.tdishburse_status_id === 5 || row.tdishburse_status_id === 6 || row.tdishburse_status_id === 8 || row.tdishburse_status_id === 9 || row.tdishburse_status_id === 10 || row.tdishburse_status_id === 11 || row.tdishburse_status_id === 12 || row.tdishburse_status_id === 13 || row.tdishburse_status_id === 14 || row.tdishburse_status_id === 15,
                     style: { background: "#F0F0F0", color: "#888888", paddingLeft: "unset" }
                 }
             ],
