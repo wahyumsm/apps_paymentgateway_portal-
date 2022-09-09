@@ -62,7 +62,7 @@ function AddPayment() {
     desc: "",
     paymentId: date.getFullYear().toString() +
     convertTimeDigit(date.getMonth() + 1).toString() +
-    date.getDate().toString() +
+    convertTimeDigit(date.getDate()).toString() +
     hour.toString() +
     minutes.toString() +
     date.getSeconds().toString() +
@@ -104,7 +104,8 @@ function AddPayment() {
     [setChoosenPaymentCode]
   );
 
-  const stringChoosenPayCode = choosenPaymentCode.toString();
+  const stringChoosenPayCode = choosenPaymentCode.toString() == "" ? "0" : choosenPaymentCode.toString();
+  console.log(stringChoosenPayCode, "ssss");
 
   function onSaveChoosenPayment() {
     stringChoosenPayCode != ""
@@ -515,10 +516,12 @@ function AddPayment() {
               (
                 dateDay.year +
                 "-" +
-                convertTimeDigit(dateDay.month) +
+                convertTimeDigit(dateDay.month)  +
                 "-" +
-                convertTimeDigit(dateDay.day)
-              ).toString(),
+                convertTimeDigit(dateDay.day) + " " + convertTimeDigit(inputHourHandle) +
+                ":" +
+                convertTimeDigit(inputMinuteHandle)
+              ).toString() ,
               inputHandle.useLimit,
               stringChoosenPayCode,
               inputHandle.desc
