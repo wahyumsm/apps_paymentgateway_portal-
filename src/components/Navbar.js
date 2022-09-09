@@ -144,16 +144,24 @@ export default (props) => {
   };
 
   const copyPrice = async () => {
-    var copyText = document.getElementById('pricing').innerHTML.split("<")
-    // await navigator.clipboard.writeText(copyText);
-    await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
-    alert('Text copied');
+    try {
+      var copyText = document.getElementById('pricing').innerHTML.split("<")
+      // await navigator.clipboard.writeText(copyText);
+      await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
+      alert('Text copied');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const copyRek = async () => {
-    var copyText = document.getElementById('noRek').innerHTML;
-    await navigator.clipboard.writeText(copyText);
-    alert('Text copied');
+    try {
+      var copyText = document.getElementById('noRek').innerHTML;
+      await navigator.clipboard.writeText(copyText);
+      alert('Text copied');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   async function topUpConfirmation(amounts) {

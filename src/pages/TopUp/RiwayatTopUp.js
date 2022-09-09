@@ -65,15 +65,23 @@ function RiwayatTopUp() {
       };
     
     const copyPrice = async () => {
-        var copyText = document.getElementById('pricing').innerHTML.split("<")
-        await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
-        alert('Text copied');
+        try {
+            var copyText = document.getElementById('pricing').innerHTML.split("<")
+            await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
+            alert('Text copied');
+        } catch (error) {
+            console.log(error);
+        }
     };
     
     const copyRek = async () => {
-        var copyText = document.getElementById('noRek').innerHTML;
-        await navigator.clipboard.writeText(copyText);
-        alert('Text copied');
+        try {
+            var copyText = document.getElementById('noRek').innerHTML;
+            await navigator.clipboard.writeText(copyText);
+            alert('Text copied');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     async function listPartner() {
@@ -797,7 +805,7 @@ function RiwayatTopUp() {
                             <div className="d-flex justify-content-between align-items-center mt-3">
                                 <div className="d-flex flex-column text-left">
                                 <div style={{padding:"unset"}}>No Rekening</div>
-                                <div id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{detailTopUp.no_rek}</div>
+                                <div onChange={copyHandler} id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{detailTopUp.no_rek}</div>
                                 </div>
                                 <div className="d-flex flex-column mt-3">
                                 <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
@@ -806,7 +814,7 @@ function RiwayatTopUp() {
                             <div className="d-flex justify-content-between align-items-center mt-3">
                                 <div className="d-flex flex-column text-left">
                                 <div style={{padding:"unset"}}>Nominal Transfer</div>
-                                <div id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(detailTopUp.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(detailTopUp.amount_transfer)}</span></div>
+                                <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(detailTopUp.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(detailTopUp.amount_transfer)}</span></div>
                                 </div>
                                 <div className="d-flex flex-column mt-3">
                                 <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>

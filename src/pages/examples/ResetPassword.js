@@ -83,7 +83,7 @@ export default ({ location }) => {
             "Content-Type": "application/json",
             'Authorization': auth,
           };
-          const resetPassword = await axios.post("/Account/ResetPassword", { data: dataParams }, { headers: headers })
+          const resetPassword = await axios.post(BaseURL + "/Account/ResetPassword", { data: dataParams }, { headers: headers })
           // console.log(resetPassword, "ini resetPassword");
         }
     } catch (error) {
