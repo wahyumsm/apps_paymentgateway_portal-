@@ -266,7 +266,7 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const filterRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
+            console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
@@ -460,11 +460,11 @@ function RiwayatTransaksi() {
                     style: { background: "#FEF4E9", color: "#F79421", }
                 },
                 {
-                    when: row => row.tvatrans_status_id === 4 || row.tvatrans_status_id === 9,
+                    when: row => row.tvatrans_status_id === 4,
                     style: { background: "#FDEAEA", color: "#EE2E2C", }
                 },
                 {
-                    when: row => row.tvatrans_status_id === 3 || row.tvatrans_status_id === 5 || row.tvatrans_status_id === 6 || row.tvatrans_status_id === 8 || row.tvatrans_status_id === 10 || row.tvatrans_status_id === 11 || row.tvatrans_status_id === 12 || row.tvatrans_status_id === 13 || row.tvatrans_status_id === 14 || row.tvatrans_status_id === 15,
+                    when: row => row.tvatrans_status_id === 3 || row.tvatrans_status_id === 5 || row.tvatrans_status_id === 6 || row.tvatrans_status_id === 8 || row.tvatrans_status_id === 9 || row.tvatrans_status_id === 10 || row.tvatrans_status_id === 11 || row.tvatrans_status_id === 12 || row.tvatrans_status_id === 13 || row.tvatrans_status_id === 14 || row.tvatrans_status_id === 15,
                     style: { background: "#F0F0F0", color: "#888888", }
                 }
             ],
@@ -564,11 +564,11 @@ function RiwayatTransaksi() {
                     style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tvasettl_status_id === 4 || row.tvasettl_status_id === 9,
+                    when: row => row.tvasettl_status_id === 4,
                     style: { background: "#FDEAEA", color: "#EE2E2C", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tvasettl_status_id === 3 || row.tvasettl_status_id === 5 || row.tvasettl_status_id === 6 || row.tvasettl_status_id === 8 || row.tvasettl_status_id === 10 || row.tvasettl_status_id === 11 || row.tvasettl_status_id === 12 || row.tvasettl_status_id === 13 || row.tvasettl_status_id === 14 || row.tvasettl_status_id === 15,
+                    when: row => row.tvasettl_status_id === 3 || row.tvasettl_status_id === 5 || row.tvasettl_status_id === 6 || row.tvasettl_status_id === 8 || row.tvasettl_status_id === 9 || row.tvasettl_status_id === 10 || row.tvasettl_status_id === 11 || row.tvasettl_status_id === 12 || row.tvasettl_status_id === 13 || row.tvasettl_status_id === 14 || row.tvasettl_status_id === 15,
                     style: { background: "#F0F0F0", color: "#888888", paddingLeft: "unset" }
                 }
             ],
@@ -848,7 +848,7 @@ function RiwayatTransaksi() {
                     </Row>
                     <Row className='mt-4'>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Status</span>
+                            <span style={{ marginRight: 40 }}>Status</span>
                             <Form.Select name="statusDanaMasuk" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
                                 <option>Pilih Status</option>
                                 <option value={2}>Berhasil</option>
@@ -863,8 +863,8 @@ function RiwayatTransaksi() {
                                 {/* <option value={15}>Expected Success</option> */}
                             </Form.Select>
                         </Col>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "30%" : "40%" }}>
-                            <span>Periode*</span>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "30%" : "45%" }}>
+                            <span style={{ marginRight: 40 }}>Periode*</span>
                             <Form.Select name='periodeDanaMasuk' className="input-text-ez me-4" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                                 <option defaultChecked>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
@@ -890,7 +890,7 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0)}
-                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                         disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
                                     >
                                         Terapkan
@@ -981,8 +981,8 @@ function RiwayatTransaksi() {
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "30%" : "40%" }}>
-                            <span>Periode*</span>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "30%" : "41%" }}>
+                            <span style={{ marginRight: 26 }}>Periode*</span>
                             <Form.Select name='periodeSettlement' className="input-text-ez me-4" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                                 <option defaultChecked>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>

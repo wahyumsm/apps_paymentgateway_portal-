@@ -345,7 +345,7 @@ function EditPartner() {
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Nomor Telepon</td>
-                                    <td><input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_telp} name="phoneNumber" style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='number'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_telp} name="phoneNumber" style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
@@ -366,7 +366,7 @@ function EditPartner() {
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>No NPWP</td>
-                                    <td><input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_npwp !== null ? detailPartner.mpartner_npwp : "-"} name="noNpwp" style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='number'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_npwp !== null ? detailPartner.mpartner_npwp : "-"} name="noNpwp" style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
@@ -392,7 +392,7 @@ function EditPartner() {
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>No Hp Direktur</td>
-                                    <td><input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_direktur_telp} name="noHp" style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='number'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_direktur_telp} name="noHp" style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                             </tbody>
@@ -413,7 +413,7 @@ function EditPartner() {
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>No. Rekening</td>
-                                    <td><input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartnerdtl_account_number} name="akunBank" style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='number'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartnerdtl_account_number} name="akunBank" style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
@@ -435,12 +435,12 @@ function EditPartner() {
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>Fee</td>
-                                    <td><input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_fee} name="fee" style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='number'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartner_fee} name="fee" style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee</td>
-                                    <td><input type='text'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartnerdtl_settlement_fee} name="settlementFee" style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='number'className='input-text-ez' onChange={handleChange} defaultValue={detailPartner.mpartnerdtl_settlement_fee} name="settlementFee" style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                             </tbody>

@@ -18,11 +18,17 @@ import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg
 import {Line} from 'react-chartjs-2'
 import { max } from "date-fns";
 import breadcrumbsIcon from "../assets/icon/breadcrumbs_icon.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
+import Pagination from "react-js-pagination";
 
 export default () => {
 
   const history = useHistory();
+  const dispatch = useDispatch()
   const access_token = getToken();
+  const [partnerId, setPartnerId] = useState("")
+  const [listAgen, setListAgen] = useState([])
   const [listTransferDana, setListTransferDana] = useState([])
   const [dataChartTransfer, setDataChartTransfer] = useState([])
   const [listSettlement, setListSettlement] = useState([])
@@ -30,17 +36,23 @@ export default () => {
   const [stateSettlement, setStateSettlement] = useState(null)
   const [dateRangeDanaMasuk, setDateRangeDanaMasuk] = useState([])
   const [dateRangeSettlement, setDateRangeSettlement] = useState([])
+  const [showDateDanaMasuk, setShowDateDanaMasuk] = useState("none")
   const [inputHandle, setInputHandle] = useState({
     idTransaksiDanaMasuk: "",
     idTransaksiSettlement: "",
     namaAgenDanaMasuk: "",
-    statusDanaMasuk: "",
+    statusDanaMasuk: [],
     statusSettlement: "",
+    periodeDanaMasuk: 0,
   })
   const [pendingTransfer, setPendingTransfer] = useState(true)
   const [pendingSettlement, setPendingSettlement] = useState(true)
   const [detailTransferDana, setDetailTransferDana] = useState({})
   const [showModalDetailTransferDana, setShowModalDetailTransferDana] = useState(false)
+  const [activePageDanaMasuk, setActivePageDanaMasuk] = useState(1)
+  const [pageNumberDanaMasuk, setPageNumberDanaMasuk] = useState({})
+  const [totalPageDanaMasuk, setTotalPageDanaMasuk] = useState(0)
+  const [isFilterDanaMasuk, setIsFilterDanaMasuk] = useState(false)
   const currentDate = new Date().toISOString().split('T')[0]
   const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
 
@@ -49,6 +61,22 @@ export default () => {
         ...inputHandle,
         [e.target.name] : e.target.value
     })
+  }
+
+  function handleChangePeriodeTransfer(e) {
+    if (e.target.value === "7") {
+        setShowDateDanaMasuk("")
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    } else {
+        setShowDateDanaMasuk("none")
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    }
   }
 
   function pickDateDanaMasuk(item) {
@@ -66,25 +94,87 @@ export default () => {
       setDateRangeSettlement(item)
     }
   }
-  
-  async function getListTransferDana(oneMonthAgo, currentDate) {
+
+  function handlePageChangeDanaMasuk(page) {
+    // console.log(page, 'ini di gandle change page');
+    // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
+    if (isFilterDanaMasuk) {
+        setActivePageDanaMasuk(page)
+        filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0)
+    } else {
+        setActivePageDanaMasuk(page)
+        getListTransferDana(partnerId, page)
+    }
+  }
+
+  async function getDataAgen(partnerId) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"start_time": "${currentDate}", "end_time": "${currentDate}", "sub_name": "", "id": "", "status": ""}`)
+      const dataParams = encryptData(`{"partner_id":"${partnerId}"}`)
+      console.log(dataParams, 'ini data params list agen');
+      const headers = {
+        'Content-Type':'application/json',
+        'Authorization' : auth
+      }
+      const listAgen = await axios.post("/Partner/GetListAgen", { data: dataParams }, { headers: headers })
+      console.log(listAgen, 'ini list agen');
+      if (listAgen.status === 200 && listAgen.data.response_code == 200 && listAgen.data.response_new_token.length === 0) {
+        setListAgen(listAgen.data.response_data)
+      } else if (listAgen.status === 200 && listAgen.data.response_code == 200 && listAgen.data.response_new_token.length !== 0) {
+        setUserSession(listAgen.data.response_new_token)
+        setListAgen(listAgen.data.response_data)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function userDetails() {
+    try {
+      const auth = "Bearer " + access_token
+      const headers = {
+          'Content-Type':'application/json',
+          'Authorization' : auth
+      }
+      const userDetail = await axios.post("/Account/GetUserProfile", { data: "" }, { headers: headers })
+      console.log(userDetail, 'ini user detal funct');
+      if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
+        setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
+        getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1)
+        getDataAgen(userDetail.data.response_data.muser_partnerdtl_id)
+      } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
+        setUserSession(userDetail.data.response_new_token)
+        setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
+        getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1)
+        getDataAgen(userDetail.data.response_data.muser_partnerdtl_id)
+      }
+  } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  async function getListTransferDana(partnerId, currentPage) {
+    try {
+      const auth = "Bearer " + getToken()
+      const dataParams = encryptData(`{"partner_id": "${partnerId}}", "date_from": "", "date_to": "", "period": 2, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "fitur_id": 0,}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const listTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-
-      if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token.length === 0) {
-        listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListTransferDana(listTransferDana.data.response_data.list)
+      console.log(listTransferDana, 'ini list transfer dana');
+      if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token === null) {
+        listTransferDana.data.response_data.results.list = listTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+        setPageNumberDanaMasuk(listTransferDana.data.response_data)
+        setTotalPageDanaMasuk(listTransferDana.data.response_data.max_page)
+        setListTransferDana(listTransferDana.data.response_data.results.list)
         setPendingTransfer(false)
-      } else if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token.length !== 0) {
+      } else if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token !== null) {
         setUserSession(listTransferDana.data.response_new_token)
-        listTransferDana.data.response_data.list = listTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListTransferDana(listTransferDana.data.response_data.list)
+        listTransferDana.data.response_data.results.list = listTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+        setPageNumberDanaMasuk(listTransferDana.data.response_data)
+        setTotalPageDanaMasuk(listTransferDana.data.response_data.max_page)
+        setListTransferDana(listTransferDana.data.response_data.results.list)
         setPendingTransfer(false)
       }
     } catch (error) {
@@ -103,7 +193,7 @@ export default () => {
         'Authorization' : auth
       }
       const dataSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      // console.log(dataSettlement, "ini data settlement");
+      console.log(dataSettlement, "ini data settlement");
       if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
         dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(dataSettlement.data.response_data)
@@ -130,7 +220,7 @@ export default () => {
         'Authorization' : auth
       }
       const dataChartTransfer = await axios.post("/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
-      // console.log(dataChartTransfer, 'ini data chart transfer ');
+      console.log(dataChartTransfer, 'ini data chart transfer ');
       if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length === 0) {
         dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setDataChartTransfer(dataChartTransfer.data.response_data)
@@ -152,26 +242,33 @@ export default () => {
 // gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
 // gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
 
-  async function filterTransferButtonHandle(idTransaksi, namaAgen, periode, status) {
+  async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage) {
     try {
+      console.log(idTransaksi, 'ini id trans');
       setPendingSettlement(true)
+      setIsFilterDanaMasuk(true)
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
-      // console.log(dataParams, "ini data params dana masuk filter");
+      const dataParams = encryptData(`{"partner_id": "${partnerId}}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "fitur_id": 0,}`)
+      // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
+      console.log(dataParams, "ini data params dana masuk filter");
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const filterTransferDana = await axios.post("/report/transferreport", { data: dataParams }, { headers: headers })
-      // console.log(filterTransferDana, "ini data filter transfer dana");
-      if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token.length === 0) {
-        filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListTransferDana(filterTransferDana.data.response_data.list)
+      console.log(filterTransferDana, "ini data filter transfer dana");
+      if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token === null) {
+        filterTransferDana.data.response_data.results.list = filterTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
+        setPageNumberDanaMasuk(filterTransferDana.data.response_data)
+        setTotalPageDanaMasuk(filterTransferDana.data.response_data.max_page)
+        setListTransferDana(filterTransferDana.data.response_data.results.list)
         setPendingSettlement(false)
-      } else if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token.length !== 0) {
+      } else if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token !== null) {
         setUserSession(filterTransferDana.data.response_new_token)
-        filterTransferDana.data.response_data.list = filterTransferDana.data.response_data.list.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListTransferDana(filterTransferDana.data.response_data.list)
+        filterTransferDana.data.response_data.results.list = filterTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
+        setPageNumberDanaMasuk(filterTransferDana.data.response_data)
+        setTotalPageDanaMasuk(filterTransferDana.data.response_data.max_page)
+        setListTransferDana(filterTransferDana.data.response_data.results.list)
         setPendingSettlement(false)
       }
     } catch (error) {
@@ -191,7 +288,7 @@ export default () => {
         'Authorization' : auth
       }
       const filterSettlement = await axios.post("/report/GetSettlement", { data: dataParams }, { headers: headers })
-      // console.log(filterSettlement, "ini data filter settlement");
+      console.log(filterSettlement, "ini data filter settlement");
       if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
         filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(filterSettlement.data.response_data)
@@ -213,10 +310,12 @@ export default () => {
           ...inputHandle,
           idTransaksiDanaMasuk: "",
           namaAgenDanaMasuk: "",
-          statusDanaMasuk: "",
+          statusDanaMasuk: [],
+          periodeDanaMasuk: 0,
       })
       setStateDanaMasuk(null)
       setDateRangeDanaMasuk([])
+      setShowDateDanaMasuk("none")
     } else {
       setInputHandle({
           ...inputHandle,
@@ -233,10 +332,13 @@ export default () => {
       // RouteTo("/login")
       history.push('/login');
     }
-    getListTransferDana(oneMonthAgo, currentDate)
+    userDetails()
     getSettlement(oneMonthAgo, currentDate)
     getSettlementChart(oneMonthAgo, currentDate)
-  }, [access_token])
+  }, [access_token, ])
+
+  // console.log(userDetail, 'user detail');
+  console.log(pageNumberDanaMasuk, 'page number');
 
   async function detailListTransferHandler(trxId) {
     try {
@@ -247,6 +349,7 @@ export default () => {
         'Authorization' : auth
       }
       const detailTransaksi = await axios.post("/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
+      console.log(detailTransaksi, 'ini detail transaksi');
       if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200 && detailTransaksi.data.response_new_token.length === 0) {
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)
@@ -370,11 +473,11 @@ export default () => {
             style: { background: "#FEF4E9", color: "#F79421" }
           },
           {
-            when: row => row.tvasettl_status_id === 4 || row.tvasettl_status_id === 9,
+            when: row => row.tvasettl_status_id === 4,
             style: { background: "#FDEAEA", color: "#EE2E2C" }
           },
           {
-            when: row => row.tvasettl_status_id === 3 || row.tvasettl_status_id === 5 || row.tvasettl_status_id === 6 || row.tvasettl_status_id === 8 || row.tvasettl_status_id === 10 || row.tvasettl_status_id === 11 || row.tvasettl_status_id === 12 || row.tvasettl_status_id === 13 || row.tvasettl_status_id === 14 || row.tvasettl_status_id === 15,
+            when: row => row.tvasettl_status_id === 3 || row.tvasettl_status_id === 5 || row.tvasettl_status_id === 6 || row.tvasettl_status_id === 8 || row.tvasettl_status_id === 9 || row.tvasettl_status_id === 10 || row.tvasettl_status_id === 11 || row.tvasettl_status_id === 12 || row.tvasettl_status_id === 13 || row.tvasettl_status_id === 14 || row.tvasettl_status_id === 15,
             style: { background: "#F0F0F0", color: "#888888" }
           }
         ],
@@ -450,7 +553,7 @@ export default () => {
         </div>
         <h2 className="h5 mt-3">Dana Masuk</h2>
         <div className='base-content'>
-          <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Dana Masuk dari Agen</span>
+          {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Dana Masuk dari Agen</span> */}
             {/* <div className='dana-amount'>
                 <div className="card-information mt-3 mb-3" style={{border: '1px solid #EBEBEB', width: 250}}>
                     <p className="p-info">Detail Dana Masuk dari Agen</p>
@@ -515,7 +618,18 @@ export default () => {
                 </Col>
                 <Col xs={4}>
                     <span>Nama Agen</span>
-                    <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgenDanaMasuk} name="namaAgenDanaMasuk" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/>
+                    <Form.Select name="namaAgenDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
+                      <option defaultValue value="">Pilih Nama Agen</option>
+                      {
+                        listAgen.length !== 0 &&
+                        listAgen.map((item, idx) => {
+                          return (
+                            <option key={idx} value={item.agen_id}>{ item.agen_name }</option>
+                          )
+                        })
+                      }
+                    </Form.Select>
+                    {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgenDanaMasuk} name="namaAgenDanaMasuk" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/> */}
                 </Col>
                 <Col xs={4}>
                     <span>Status</span>
@@ -535,24 +649,35 @@ export default () => {
                 </Col>
             </Row>
             <Row className='mt-4'>
-                <Col xs={4}>
-                    <span style={{ marginRight: 20 }}>Periode*</span>
-                    <DateRangePicker
-                      onChange={pickDateDanaMasuk}
-                      value={stateDanaMasuk}
-                      clearIcon={null}
-                      // calendarIcon={null}
-                    />
-                </Col>
+            <Col xs={5} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "30%" : "40%" }}>
+              <span>Periode*</span>
+              <Form.Select name='periodeDanaMasuk' className="input-text-ez me-4" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
+                  <option defaultChecked>Pilih Periode</option>
+                  <option value={2}>Hari Ini</option>
+                  <option value={3}>Kemarin</option>
+                  <option value={4}>7 Hari Terakhir</option>
+                  <option value={5}>Bulan Ini</option>
+                  <option value={6}>Bulan Kemarin</option>
+                  <option value={7}>Pilih Range Tanggal</option>
+              </Form.Select>
+              <div style={{ display: showDateDanaMasuk }}>
+                <DateRangePicker 
+                  onChange={pickDateDanaMasuk}
+                  value={stateDanaMasuk}
+                  clearIcon={null}
+                  // calendarIcon={null}
+                />
+              </div>
+            </Col>
             </Row>
             <Row className='mt-4'>
                 <Col xs={3}>
                     <Row>
                         <Col xs={6}>
                             <button
-                              onClick={() => filterTransferButtonHandle(inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk)}
-                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                              onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0)}
+                              className={(inputHandle.periodeDanaMasuk !== 0 || (inputHandle.periodeDanaMasuk === 7 && dateRangeDanaMasuk.length !== 0) || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
                             >
                               Terapkan
                             </button>
@@ -560,8 +685,8 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Dana Masuk")}
-                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                              className={(inputHandle.periodeDanaMasuk !== 0 || (inputHandle.periodeDanaMasuk === 7 && dateRangeDanaMasuk.length !== 0) || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
                             >
                               Atur Ulang
                             </button>
@@ -570,7 +695,8 @@ export default () => {
                 </Col>
             </Row>
             {
-              listTransferDana.length !== 0 &&
+              // listTransferDana.length !== 0 &&
+              listTransferDana !== undefined &&
               <div>
                 <Link onClick={() => exportReportTransferDanaMasukHandler(listTransferDana)} className="export-span">Export</Link>
               </div>
@@ -582,16 +708,28 @@ export default () => {
                     columns={columnstransferDana}
                     data={listTransferDana}
                     customStyles={customStyles}
-                    pagination
+                    // pagination
                     highlightOnHover
                     progressPending={pendingTransfer}
                     progressComponent={<CustomLoader />}
                 />
             </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDanaMasuk}</div>
+              <Pagination
+                  activePage={activePageDanaMasuk}
+                  itemsCountPerPage={pageNumberDanaMasuk.row_per_page}
+                  totalItemsCount={(pageNumberDanaMasuk.row_per_page*pageNumberDanaMasuk.max_page)}
+                  pageRangeDisplayed={5}
+                  itemClass="page-item"
+                  linkClass="page-link"
+                  onChange={handlePageChangeDanaMasuk}
+              />
+            </div>
         </div>
         <h2 className="h5 mt-5">Settlement</h2>
         <div className='base-content'>
-          <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
+          {/* <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span> */}
           {/* <Line
             className="mt-3 mb-3"
             data={{
@@ -726,9 +864,15 @@ export default () => {
                   <Col>ID Transaksi</Col>
                   <Col style={{ display: "flex", justifyContent: "end" }}>Status</Col>
                 </Row>
-                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
+                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                   <Col>{detailTransferDana.tvatrans_trx_id}</Col>
-                  <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 160, width: "100%", height: 32, background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }}>{detailTransferDana.mstatus_name}</Col>
+                  <Col
+                    style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 160, width: "100%", height: 32,
+                      background: (detailTransferDana.tvatrans_status_id === 2) ? "rgba(7, 126, 134, 0.08)" : (detailTransferDana.tvatrans_status_id === 1 || detailTransferDana.tvatrans_status_id === 7) ? "#FEF4E9" : (detailTransferDana.tvatrans_status_id === 4) ? "#FDEAEA" : (detailTransferDana.tvatrans_status_id === 3 || detailTransferDana.tvatrans_status_id === 5 || detailTransferDana.tvatrans_status_id === 6 || detailTransferDana.tvatrans_status_id === 8 || detailTransferDana.tvatrans_status_id === 9 || detailTransferDana.tvatrans_status_id === 10 || detailTransferDana.tvatrans_status_id === 11 || detailTransferDana.tvatrans_status_id === 12 || detailTransferDana.tvatrans_status_id === 13 || detailTransferDana.tvatrans_status_id === 14 || detailTransferDana.tvatrans_status_id === 15) ? "#F0F0F0" : "",
+                      color: (detailTransferDana.tvatrans_status_id === 2) ? "#077E86" : (detailTransferDana.tvatrans_status_id === 1 || detailTransferDana.tvatrans_status_id === 7) ? "#F79421" : (detailTransferDana.tvatrans_status_id === 4) ? "#EE2E2C" : (detailTransferDana.tvatrans_status_id === 3 || detailTransferDana.tvatrans_status_id === 5 || detailTransferDana.tvatrans_status_id === 6 || detailTransferDana.tvatrans_status_id === 8 || detailTransferDana.tvatrans_status_id === 9 || detailTransferDana.tvatrans_status_id === 10 || detailTransferDana.tvatrans_status_id === 11 || detailTransferDana.tvatrans_status_id === 12 || detailTransferDana.tvatrans_status_id === 13 || detailTransferDana.tvatrans_status_id === 14 || detailTransferDana.tvatrans_status_id === 15) ? "#888888" : "" }}
+                  >
+                    {detailTransferDana.mstatus_name}
+                  </Col>
                   <br />
                 </Row>
                 <div style={{ fontFamily: "Nunito", fontSize: 12, fontWeight: 400, marginTop: -10 }}>{detailTransferDana.tvatrans_crtdt}</div>

@@ -41,7 +41,8 @@ function TambahAgen() {
     async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee, nominal) {
         try {         
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
+            // const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
+            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -263,7 +264,7 @@ function TambahAgen() {
                             }
                         </Col>
                     </Row>
-                    <Row className='mt-4'>
+                    {/* <Row className='mt-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nominal Top up
@@ -291,7 +292,7 @@ function TambahAgen() {
                                 />
                             }
                         </Col>
-                    </Row>
+                    </Row> */}
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>

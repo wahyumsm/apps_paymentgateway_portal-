@@ -30,14 +30,14 @@ function DaftarAgen() {
         'Authorization' : auth
       }
       const listAgen = await axios.post("/Agen/ListAgen", { data: "" }, { headers: headers })
-      // console.log(listAgen, "ini list agen di daftar agen")
+      console.log(listAgen, "ini list agen di daftar agen")
       if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
-        listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
+        listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? "Aktif" : "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
         setPending(false)
       } else if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length !== 0) {
         setUserSession(listAgen.data.response_new_token)
-        listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? obj.status = "Aktif" : obj.status = "Tidak Aktif" }));
+        listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? "Aktif" : "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
         setPending(false)
       }

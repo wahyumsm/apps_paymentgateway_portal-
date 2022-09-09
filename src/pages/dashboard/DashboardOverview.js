@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Image, Col, Row, Form } from '@themesberg/react-bootstrap';
 import {
@@ -70,57 +69,32 @@ export default () => {
     periodeFeeChart: 0,
     periodeVaChart: 0,
   })
+  const [selectedOptionSettlementPartner, setSelectedOptionSettlementPartner] = useState([])
+  const [selectedOptionBiayaPartner, setSelectedOptionBiayaPartner] = useState([])
+  const [selectedOptionBiayaVA, setSelectedOptionBiayaVA] = useState([])
 
-  const showCheckboxes = () => {
-    if (!expanded) {
-      setExpanded(true);
-    } else {
-      setExpanded(false);
-    }
+  const Option = (props) => {
+    return (
+      <div>
+        <components.Option {...props}>
+          <input
+            type="checkbox"
+            checked={props.isSelected}
+            onChange={() => null}
+          />{" "}
+          <label>{props.label}</label>
+        </components.Option>
+      </div>
+    );
   };
 
-  const showCheckboxesBiaya = () => {
-    if (!biaya) {
-      setBiaya(true);
-    } else {
-      setBiaya(false);
-    }
-  };
-
-  const showCheckboxesVa = () => {
-    if (!va) {
-      setVa(true);
-    } else {
-      setVa(false);
-    }
-  };
-
-  const handleQueryPartnerChange = event => {
-    if (event.target.checked && !queryPartner.includes(event.target.value)) {
-      setQueryPartner([...queryPartner, event.target.value])
-    } else if (!event.target.checked && queryPartner.includes(event.target.value)) {
-      setQueryPartner(queryPartner.filter(q => q !== event.target.value))
-    }    
-    setIsCheckedPartner(!isCheckedPartner)
-  };
-
-  const handleQueryBiayaChange = event => {
-    if (event.target.checked && !queryBiaya.includes(event.target.value)) {
-      setQueryBiaya([...queryBiaya, event.target.value])
-    } else if (!event.target.checked && queryBiaya.includes(event.target.value)) {
-      setQueryBiaya(queryBiaya.filter(q => q !== event.target.value))
-    }
-    setIsCheckedBiaya(!isCheckedBiaya)
-  };
-
-  const handleQueryVaChange = event => {
-    if (event.target.checked && !queryVa.includes(event.target.value)) {
-      setQueryVa([...queryVa, event.target.value])
-    } else if (!event.target.checked && queryVa.includes(event.target.value)) {
-      setQueryVa(queryVa.filter(q => q !== event.target.value))
-    }
-    setIsCheckedVa(!isCheckedVa)
-  };
+  const customStylesSelectedOption = {
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: "none",
+      color: "black"
+    })
+  }
 
   function handleChangePeriodeChart(e) {
     if (e.target.value === "7") {
@@ -202,7 +176,7 @@ export default () => {
             'Authorization' : auth
         }
         const listDataPartner = await axios.post(url, { data: "" }, { headers: headers })
-        // console.log(listDataPartner, "list partner di beranda")
+        console.log(listDataPartner, "list partner di beranda")
         if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length === 0) {
           let newArr = []
           var obj = {}
@@ -281,16 +255,18 @@ export default () => {
 
   async function filterPartnerChartHandler(dateId, periode, query) {
     try {
+      let partnerId = []
+      query.forEach(item => partnerId.push(item.value))
       setPendingPartner(true)
       const auth = 'Bearer ' + getToken();
-      const dataParams = encryptData(`{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
+      const dataParams = encryptData(`{"partner_id":["${partnerId}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
       // console.log(dataParams, 'ini data params cart filter');
       const headers = {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
       const filterPartnerChart = await axios.post("/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
-      // console.log(filterPartnerChart, 'partner chart handler filter');
+      console.log(filterPartnerChart, 'partner chart handler filter');
       if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length === 0) {
         setPartnerChartData([{amount: 0, date: ""}, ...filterPartnerChart.data.response_data])
         setPendingPartner(false)
@@ -298,7 +274,7 @@ export default () => {
         setUserSession(filterPartnerChart.data.response_new_token)
         setPartnerChartData([{amount: 0, date: ""}, ...filterPartnerChart.data.response_data])
         setPendingPartner(false)
-      } 
+      }
     } catch (error) {
       console.log(error)
       history.push(errorCatch(error.response.status))
@@ -332,16 +308,18 @@ export default () => {
 
   async function filterFeePartnerHandler(dateId, periode, query) {
     try {
+      let partnerId = []
+      query.forEach(item => partnerId.push(item.value))
       setPendingFee(true)
       const auth = 'Bearer ' + getToken();
-      const dataParams = encryptData(`{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
+      const dataParams = encryptData(`{"partner_id":["${partnerId}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
 
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': auth
       }
       const filterFeePartnerChart = await axios.post("/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
-      // console.log(filterFeePartnerChart, 'fee partner handler');
+      console.log(filterFeePartnerChart, 'fee partner handler');
       if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData([{amount: 0, date: ""}, ...filterFeePartnerChart.data.response_data])
         setPendingFee(false)
@@ -383,15 +361,17 @@ export default () => {
 
   async function filterVaPartnerHandler(dateId, periode, query) {
     try {
+      let partnerId = []
+      query.forEach(item => partnerId.push(item.value))
       setPendingVa(true)
       const auth = 'Bearer ' + getToken();
-      const dataParams = encryptData(`{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
+      const dataParams = encryptData(`{"partner_id":["${partnerId}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': auth
       }
       const filterVaPartnerChart = await axios.post("/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
-      // console.log(filterVaPartnerChart, 'fee partner handler');
+      console.log(filterVaPartnerChart, 'fee partner handler');
       if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length === 0) {
         setFeeVaChartData([{amount: 0, date: ""}, ...filterVaPartnerChart.data.response_data])
         setPendingVa(false)
@@ -415,13 +395,12 @@ export default () => {
       setInputHandle({
         ...inputHandle,
         periodePartnerChart: 0,
-        queryPartner: []
       })
     }
     setStatePartnerChart(null)
     setDateRangePartnerChart([])
     setShowDatePartnerChart("none")
-    setQueryPartner([])
+    setSelectedOptionSettlementPartner([])
   }
 
   function buttonResetFee(param) {
@@ -429,13 +408,12 @@ export default () => {
       setInputHandle({
         ...inputHandle,
         periodeFeeChart: 0,
-        queryBiaya: []
       })
     }
     setStateFeePartner(null)
     setDateRangeFeePartner([])
     setShowDateFeePartner("none")
-    setQueryBiaya([])
+    setSelectedOptionBiayaPartner([])
   }
 
   function buttonResetVa(param) {
@@ -443,13 +421,12 @@ export default () => {
       setInputHandle({
         ...inputHandle,
         periodeVaChart: 0,
-        queryVa: []
       })
     }
     setStateVaPartner(null)
     setDateRangeVaPartner([])
     setShowDateVaPartner("none")
-    setQueryVa([])
+    setSelectedOptionBiayaVA([])
   }
   
   useEffect(() => {
@@ -473,7 +450,7 @@ export default () => {
   // console.log(queryBiaya, "ini query biaya");
   // console.log(settlementTransaction, "sett");
   // console.log(inputHandle.periodeFeeChart, "fee chart input");
-  
+  console.log(selectedOptionBiayaVA, 'ini selected option');
 
   if(!access_token) {
     return (
@@ -552,27 +529,19 @@ export default () => {
                 </Col>
                 <Col xs={3}>
                   <span>Pilih Partner</span>
-                    <div className="dropdown">
-                        <button style={{width: "225px", height: "44px", padding: "12px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #C4C4C4"}} className="d-flex justify-content-between align-items-center" name="query" onClick={showCheckboxes} value="none" >
-                          <div>Semua</div> <span ><img src={chevron} alt="chevron" style={{fontSize: "5px"}} /></span>
-                        </button>
-                      {expanded && (
-                        <div
-                          ref={myRef}
-                          className="checkboxes border-black-0 border border-solid position-absolute bg-white"
-                          style={{overflowY: "auto", height: "10rem", width: "14rem"}}
-                          
-                        >
-                          {listPartner.map((item, idx) => {
-                            return (
-                              <div key={idx} className="d-flex align-items-center block m-1">  
-                                <input type="checkbox" name="query" checked={isCheckedPartner[item.value]} value={item.value} onChange={handleQueryPartnerChange} />
-                                <label className="mx-1 list" htmlFor="query">{item.label}</label>
-                              </div> 
-                            )
-                          })}
-                        </div>
-                      )}
+                    <div className="dropdown dropPartner">
+                      <ReactSelect
+                        isMulti
+                        closeMenuOnSelect={false}
+                        hideSelectedOptions={false}
+                        options={listPartner}
+                        // allowSelectAll={true}
+                        value={selectedOptionSettlementPartner}
+                        onChange={(selected) => setSelectedOptionSettlementPartner(selected)}
+                        placeholder="Pilih Partner"
+                        components={{ Option }}
+                        styles={customStylesSelectedOption}
+                      />
                     </div>
                 </Col>                
               </Row>
@@ -581,7 +550,7 @@ export default () => {
                   <Row>
                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                       <button
-                          onClick={() => filterPartnerChartHandler(inputHandle.periodePartnerChart, dateRangePartnerChart, queryPartner)}
+                          onClick={() => filterPartnerChartHandler(inputHandle.periodePartnerChart, dateRangePartnerChart, selectedOptionSettlementPartner)}
                           className={(inputHandle.periodePartnerChart !== 0) ? "btn-ez-on" : "btn-ez"}
                           disabled={inputHandle.periodePartnerChart === 0}
                       >
@@ -707,26 +676,19 @@ export default () => {
                   </Col>
                   <Col xs={3}>
                     <span>Pilih Partner</span>
-                      <div>
-                        <button style={{width: "225px", height: "44px", padding: "12px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #C4C4C4"}} className="d-flex justify-content-between align-items-center" name="query" onClick={showCheckboxesBiaya} value="none" >
-                          <div>Semua</div> <span><img src={chevron} alt="chevron"style={{fontSize: "14px"}} /></span>
-                        </button>
-                        {biaya && (
-                          <div
-                            ref={myRef}
-                            className="checkboxes border-gray-0 border border-solid position-absolute bg-white"
-                            style={{overflowY: "auto", height: "10rem", width: "14rem"}}
-                          >
-                            {listPartner.map((item, idx) => {
-                              return (
-                                <div key={idx} className="d-flex align-items-center block m-1">  
-                                  <input type="checkbox" name="partnerId" id="partnerId" checked={isCheckedBiaya[item.value]} value={item.value} onChange={handleQueryBiayaChange} />
-                                  <label className="mx-1 list" htmlFor="partnerId">{item.label}</label>
-                                </div> 
-                              )
-                            })}
-                          </div>
-                        )}
+                      <div className="dropdown dropPartner">
+                        <ReactSelect
+                          isMulti
+                          closeMenuOnSelect={false}
+                          hideSelectedOptions={false}
+                          options={listPartner}
+                          // allowSelectAll={true}
+                          value={selectedOptionBiayaPartner}
+                          onChange={(selected) => setSelectedOptionBiayaPartner(selected)}
+                          placeholder="Pilih Partner"
+                          components={{ Option }}
+                          styles={customStylesSelectedOption}
+                        />
                       </div>
                   </Col>                
                 </Row>
@@ -735,7 +697,7 @@ export default () => {
                     <Row>
                       <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                         <button
-                            onClick={() => filterFeePartnerHandler(inputHandle.periodeFeeChart, dateRangeFeePartner, queryBiaya)}
+                            onClick={() => filterFeePartnerHandler(inputHandle.periodeFeeChart, dateRangeFeePartner, selectedOptionBiayaPartner)}
                             className={(inputHandle.periodeFeeChart !== 0) ? "btn-ez-on" : "btn-ez"}
                             disabled={inputHandle.periodeFeeChart === 0}
                         >
@@ -858,25 +820,20 @@ export default () => {
                   </Col>
                   <Col xs={3}>
                     <span>Pilih Partner</span>
-                    <button style={{width: "225px", height: "44px", padding: "12px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #C4C4C4"}} className="d-flex justify-content-between align-items-center" name="query" onClick={showCheckboxesVa} value="none" >
-                      <div>Semua</div> <span><img src={chevron} alt="chevron"style={{fontSize: "14px"}} /></span>
-                    </button>
-                    {va && (
-                      <div
-                        ref={myRef}
-                        className="checkboxes border-gray-0 border border-solid position-absolute bg-white"
-                        style={{overflowY: "auto", height: "10rem", width: "14rem"}}
-                      >
-                        {listPartner.map((item, idx) => {
-                          return (
-                            <div key={idx} className="d-flex align-items-center block m-1">  
-                              <input type="checkbox" name="partnerId" id="partnerId" checked={isCheckedVa[item.value]} value={item.value} onChange={handleQueryVaChange} />
-                              <label className="mx-2 list" htmlFor="partnerId">{item.label}</label>
-                            </div> 
-                          )
-                        })}
-                      </div>
-                    )}
+                    <div className="dropdown dropPartner">
+                      <ReactSelect
+                            isMulti
+                            closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            options={listPartner}
+                            // allowSelectAll={true}
+                            value={selectedOptionBiayaVA}
+                            onChange={(selected) => setSelectedOptionBiayaVA(selected)}
+                            placeholder="Pilih Partner"
+                            components={{ Option }}
+                            styles={customStylesSelectedOption}
+                          />
+                    </div>
                   </Col>                
                 </Row>
                 <Row className='my-3'>
@@ -884,7 +841,7 @@ export default () => {
                     <Row>
                       <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                         <button
-                            onClick={() => filterVaPartnerHandler(inputHandle.periodeVaChart, dateRangeVaPartner, queryVa)}
+                            onClick={() => filterVaPartnerHandler(inputHandle.periodeVaChart, dateRangeVaPartner, selectedOptionBiayaVA)}
                             className={(inputHandle.periodeVaChart !== 0) ? "btn-ez-on" : "btn-ez"}
                             disabled={inputHandle.periodeVaChart === 0}
                         >
@@ -937,7 +894,6 @@ export default () => {
                         }}
                         height={100}
                         width={200}
-                        onProgress={<CustomLoader />}
                         options= {{
                           plugins: {
                             legend: {

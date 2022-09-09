@@ -35,7 +35,7 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -105,16 +105,23 @@ export default (props) => {
     })
   }
 
+  function handleChangeTopUp(e) {
+    setInputHandle({
+      ...inputHandle,
+      [e.target.name] : Number(e.target.value).toString()
+    })
+  }
+
   const startColorNumber = (money) => {  
     if (money !== 0) {
       var diSliceAwal = String(money).slice(0, -3)
     }
-    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".")
+    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".") + "."
   }
 
   const endColorNumber = (money) => {
     var diSliceAkhir = String(money).slice(-3)
-    return "."+diSliceAkhir
+    return diSliceAkhir
   }
 
   const handleClick = () => {
@@ -137,8 +144,9 @@ export default (props) => {
   };
 
   const copyPrice = async () => {
-    var copyText = document.getElementById('pricing').innerHTML;
-    await navigator.clipboard.writeText(copyText);
+    var copyText = document.getElementById('pricing').innerHTML.split("<")
+    // await navigator.clipboard.writeText(copyText);
+    await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
     alert('Text copied');
   };
 
@@ -196,7 +204,7 @@ export default (props) => {
               'Authorization' : auth
           }
           const topUpResult = await axios.post("/Partner/TopupConfirmation", { data: "" }, { headers: headers })
-          // console.log(topUp, 'ini topup');
+          console.log(topUpResult, 'ini topup');
           if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
             setTopUpResult(topUpResult.data.response_data)
             setShowModalKonfirmasiTopUp(false)
@@ -262,7 +270,7 @@ export default (props) => {
               'Authorization' : auth
           }
           const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
-          // console.log(getBalance, 'ini data get balance');
+          console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
@@ -427,6 +435,8 @@ export default (props) => {
     );
   };
 
+  // console.log(deleteZero("000123456"), 'ini delete zero');
+
   return (
     <>
       <Navbar
@@ -569,8 +579,8 @@ export default (props) => {
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
                 {nominalTopup ? 
-                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} /> :
-                  <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={convertFormatNumber(inputHandle.amounts)} />
+                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChangeTopUp} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} /> :
+                  <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={inputHandle.amounts === 0 ? "Rp" : convertFormatNumber(inputHandle.amounts)} />
                 }
                 {/* {getBalance.topupAmount_temp !== 0 ?
                   <>

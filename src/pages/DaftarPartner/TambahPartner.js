@@ -124,7 +124,7 @@ function TambahPartner() {
                                 name='phoneNumber'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor Telepon"
-                                type='text'
+                                type='number'
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -163,7 +163,7 @@ function TambahPartner() {
                                 name='noNpwp'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor NPWP"
-                                type='text'
+                                type='number'
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -218,7 +218,7 @@ function TambahPartner() {
                                 name='noHp'
                                 onChange={handleChange}
                                 placeholder="Masukkan No HP Direktur"
-                                type='text'
+                                type='number'
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -258,7 +258,7 @@ function TambahPartner() {
                                 name='akunBank'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor Rekening"
-                                type='text'
+                                type='number'
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -314,7 +314,7 @@ function TambahPartner() {
                                 name='settlementFee'
                                 onChange={handleChange}
                                 placeholder="Rp."
-                                type='text'
+                                type='number'
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>

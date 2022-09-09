@@ -29,7 +29,7 @@ function DetailPartner() {
                 'Authorization' : auth
             }
             const detailPartner = await axios.post("/Partner/EditPartner", { data: dataParams }, { headers: headers })
-            // console.log(detailPartner, 'ini detail partner');
+            console.log(detailPartner, 'ini detail partner');
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
                 // console.log(detailPartner.data, 'ini detail agen');
                 setDetailPartner(detailPartner.data.response_data)
