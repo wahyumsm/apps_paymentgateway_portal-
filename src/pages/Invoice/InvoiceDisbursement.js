@@ -36,7 +36,7 @@ function InvoiceDisbursement() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const invoiceData = await axios.post("/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
+            const invoiceData = await axios.post("/Report/GetInvoiceDisbursement", { data: dataParams }, { headers: headers })
             console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoiceDisbursement(invoiceData.data.response_data)
@@ -55,7 +55,7 @@ function InvoiceDisbursement() {
         let doc = new jsPDF("l", "pt", "a4");
         doc.html(document.querySelector(table), {
             callback: function (pdf) {
-                pdf.save(`invoice ${dateRange[0]} - ${dateRange[1]}.pdf`);
+                pdf.save(`invoice disbursement ${dateRange[0]} - ${dateRange[1]}.pdf`);
             },
         })
     }
@@ -64,9 +64,9 @@ function InvoiceDisbursement() {
         if (!access_token) {
             history.push('/login');
         }
-        // if (user_role === "102") {
-        //     history.push('/404');
-        // }
+        if (user_role === "102") {
+            history.push('/404');
+        }
     }, [access_token, user_role])
     
 
@@ -100,7 +100,7 @@ function InvoiceDisbursement() {
                         </Row>
                         <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
                             <table className='table table-bordered mt-2' id='tableInvoice' style={{ width: "87%" }}>
-                                <thead style={{ backgroundColor: "#F2F2F2" }}>
+                                <thead style={{ backgroundColor: "#F2F2F2", border: "transparent" }}>
                                     <tr>
                                         <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
                                             No
@@ -152,9 +152,9 @@ function InvoiceDisbursement() {
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{  }}></td>
+                                        {/* <br />
                                         <br />
-                                        <br />
-                                        <br />
+                                        <br /> */}
                                         <br />
                                         <br />
                                         <br />

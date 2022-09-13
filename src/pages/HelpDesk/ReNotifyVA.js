@@ -200,6 +200,21 @@ function ReNotifyVA() {
                         <Row className='mb-4'>
                             <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                                 <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                    Status
+                                </span>
+                            </Col>
+                            <Col xs={10}>
+                                <Form.Control
+                                    value={(dataVirtualAccount.mstatus_name_ind !== undefined) ? dataVirtualAccount.mstatus_name_ind : null}
+                                    disabled
+                                    type='text'
+                                    style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                    />
+                            </Col>
+                        </Row>
+                        <Row className='mb-4'>
+                            <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
+                                <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                     Notes
                                 </span>
                             </Col>

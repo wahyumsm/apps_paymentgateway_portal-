@@ -822,7 +822,7 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Partner</span>
                             <Form.Select name='namaPartnerDanaMasuk' className="input-text-ez me-4" value={inputHandle.namaPartnerDanaMasuk} onChange={(e) => handleChangeNamaPartner(e)}>
-                                <option defaultChecked value="">Pilih Nama Partner</option>
+                                <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                 {
                                     dataListPartner.map((item, index) => {
                                         return (
@@ -835,7 +835,7 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Agen</span>
                             <Form.Select name='namaAgenDanaMasuk' className="input-text-ez me-4" value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
-                                <option defaultChecked value="">Pilih Nama Agen</option>
+                                <option defaultChecked disabled value="">Pilih Nama Agen</option>
                                 {
                                     dataListAgenFromPartner.map((item, index) => {
                                         return (
@@ -850,7 +850,7 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span style={{ marginRight: 40 }}>Status</span>
                             <Form.Select name="statusDanaMasuk" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
-                                <option>Pilih Status</option>
+                                <option defaultChecked disabled value="">Pilih Status</option>
                                 <option value={2}>Berhasil</option>
                                 <option value={1}>In Progress</option>
                                 {/* <option value={3}>Refund</option> */}
@@ -866,7 +866,7 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "30%" : "45%" }}>
                             <span style={{ marginRight: 40 }}>Periode*</span>
                             <Form.Select name='periodeDanaMasuk' className="input-text-ez me-4" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
-                                <option defaultChecked>Pilih Periode</option>
+                                <option defaultChecked disabled value={0}>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
                                 <option value={3}>Kemarin</option>
                                 <option value={4}>7 Hari Terakhir</option>
@@ -899,7 +899,7 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Dana Masuk")}
-                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
                                         disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
                                     >
                                         Atur Ulang
@@ -951,7 +951,7 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Partner</span>
                             <Form.Select name='namaPartnerSettlement' className="input-text-ez me-4" value={inputHandle.namaPartnerSettlement} onChange={(e) => handleChange(e)}>
-                                <option defaultChecked value="">Pilih Nama Partner</option>
+                                <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                 {
                                     dataListPartner.map((item, index) => {
                                         return (
@@ -966,7 +966,7 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Status</span>
                             <Form.Select name="statusSettlement" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
-                                <option>Pilih Status</option>
+                                <option defaultChecked disabled value="">Pilih Status</option>
                                 <option value={2}>Berhasil</option>
                                 <option value={1}>In Progress</option>
                                 {/* <option value={3}>Refund</option> */}
@@ -984,7 +984,7 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "30%" : "41%" }}>
                             <span style={{ marginRight: 26 }}>Periode*</span>
                             <Form.Select name='periodeSettlement' className="input-text-ez me-4" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
-                                <option defaultChecked>Pilih Periode</option>
+                                <option defaultChecked disabled value={0}>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
                                 <option value={3}>Kemarin</option>
                                 <option value={4}>7 Hari Terakhir</option>
@@ -1017,7 +1017,7 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Settlement")}
-                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-reset" : "btn-ez"}
                                         disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0}
                                     >
                                         Atur Ulang
@@ -1078,7 +1078,7 @@ function RiwayatTransaksi() {
                         </Row>
                         <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
                             <Col>{detailTransferDana.mpartnerdtl_partner_id}</Col>
-                            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 160, width: "100%", height: 32,
+                            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 175, width: "100%", height: 32, fontWeight: 400,
                                 background: (detailTransferDana.tvatrans_status_id === 2) ? "rgba(7, 126, 134, 0.08)" : (detailTransferDana.tvatrans_status_id === 1 || detailTransferDana.tvatrans_status_id === 7) ? "#FEF4E9" : (detailTransferDana.tvatrans_status_id === 4) ? "#FDEAEA" : (detailTransferDana.tvatrans_status_id === 3 || detailTransferDana.tvatrans_status_id === 5 || detailTransferDana.tvatrans_status_id === 6 || detailTransferDana.tvatrans_status_id === 8 || detailTransferDana.tvatrans_status_id === 9 || detailTransferDana.tvatrans_status_id === 10 || detailTransferDana.tvatrans_status_id === 11 || detailTransferDana.tvatrans_status_id === 12 || detailTransferDana.tvatrans_status_id === 13 || detailTransferDana.tvatrans_status_id === 14 || detailTransferDana.tvatrans_status_id === 15) ? "#F0F0F0" : "",
                                 color: (detailTransferDana.tvatrans_status_id === 2) ? "#077E86" : (detailTransferDana.tvatrans_status_id === 1 || detailTransferDana.tvatrans_status_id === 7) ? "#F79421" : (detailTransferDana.tvatrans_status_id === 4) ? "#EE2E2C" : (detailTransferDana.tvatrans_status_id === 3 || detailTransferDana.tvatrans_status_id === 5 || detailTransferDana.tvatrans_status_id === 6 || detailTransferDana.tvatrans_status_id === 8 || detailTransferDana.tvatrans_status_id === 9 || detailTransferDana.tvatrans_status_id === 10 || detailTransferDana.tvatrans_status_id === 11 || detailTransferDana.tvatrans_status_id === 12 || detailTransferDana.tvatrans_status_id === 13 || detailTransferDana.tvatrans_status_id === 14 || detailTransferDana.tvatrans_status_id === 15) ? "#888888" : "" }}
                             >

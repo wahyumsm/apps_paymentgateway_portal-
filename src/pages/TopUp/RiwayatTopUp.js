@@ -605,7 +605,7 @@ function RiwayatTopUp() {
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "30%" }}>
                                         <span className='me-4'>Periode*</span>
                                         <Form.Select name='periodeRiwayatTopUp' className="input-text-ez" value={(inputHandle.periodeRiwayatTopUp !== undefined) ? inputHandle.periodeRiwayatTopUp : 0} onChange={(e) => handleChangePeriodeRiwayatTopUp(e)}>
-                                            <option defaultChecked>Pilih Periode</option>
+                                            <option defaultChecked disabled value={0}>Pilih Periode</option>
                                             <option value={2}>Hari Ini</option>
                                             <option value={3}>Kemarin</option>
                                             <option value={4}>7 Hari Terakhir</option>
@@ -617,7 +617,7 @@ function RiwayatTopUp() {
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>Status</span>
                                         <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusRiwayatTopUp} onChange={(e) => handleChange(e)}>
-                                            <option>Pilih Status</option>
+                                            <option defaultChecked disabled value="">Pilih Status</option>
                                             <option value={2}>Berhasil</option>
                                             <option value={1}>In Progress</option>
                                             <option value={7}>Menunggu Pembayaran</option>
@@ -644,7 +644,7 @@ function RiwayatTopUp() {
                                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                                             <span>Nama Partner</span>
                                             <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={inputHandle.namaPartnerRiwayatTopUp} onChange={(e) => handleChange(e)}>
-                                                <option defaultChecked value="">Pilih Nama Partner</option>
+                                                <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                                 {
                                                     dataListPartner.map((item, index) => {
                                                         return (
@@ -657,7 +657,7 @@ function RiwayatTopUp() {
                                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                                             <span>Status</span>
                                             <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusRiwayatTopUp} onChange={(e) => handleChange(e)}>
-                                                <option>Pilih Status</option>
+                                                <option defaultChecked disabled value="">Pilih Status</option>
                                                 <option value={2}>Berhasil</option>
                                                 <option value={1}>In Progress</option>
                                                 <option value={7}>Menunggu Pembayaran</option>
@@ -669,7 +669,7 @@ function RiwayatTopUp() {
                                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "30%" }}>
                                             <span className='me-4'>Periode*</span>
                                             <Form.Select name='periodeRiwayatTopUp' className="input-text-ez" value={(inputHandle.periodeRiwayatTopUp !== undefined) ? inputHandle.periodeRiwayatTopUp : 0} onChange={(e) => handleChangePeriodeRiwayatTopUp(e)}>
-                                                <option defaultChecked>Pilih Periode</option>
+                                                <option defaultChecked disabled value={0}>Pilih Periode</option>
                                                 <option value={2}>Hari Ini</option>
                                                 <option value={3}>Kemarin</option>
                                                 <option value={4}>7 Hari Terakhir</option>
@@ -705,7 +705,7 @@ function RiwayatTopUp() {
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => resetButtonHandle()}
-                                                className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
+                                                className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-reset" : "btn-ez"}
                                                 disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
                                             >
                                                 Atur Ulang
@@ -816,7 +816,7 @@ function RiwayatTopUp() {
                         </div>
                         <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
                             <img src={noticeIcon} alt="notice" />
-                            <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga 3 digit terakhir.</div>
+                            <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga <span style={{ fontWeight: 600 }}>3 digit terakhir.</span></div>
                         </Table>
                         <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
                             <Button onClick={() => topUpHandleConfirm()} variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>

@@ -512,7 +512,7 @@ export default () => {
                 <Col xs={3}>
                   <span>Pilih Periode</span>
                   <Form.Select name='periodePartnerChart' value={inputHandle.periodePartnerChart} onChange={(e) => handleChangePeriodeChart(e)}>
-                    <option defaultChecked>Pilih Periode</option>
+                    <option defaultChecked disabled value={0}>Pilih Periode</option>
                     {periodik.map((times, idx) => {
                       return (
                         <option key={idx} value={times.value}>{times.time}</option>
@@ -659,7 +659,7 @@ export default () => {
                   <Col xs={3}>
                     <span>Pilih Periode</span>
                     <Form.Select name='periodeFeeChart' value={inputHandle.periodeFeeChart} onChange={(e) => handleChangeFeePartner(e)}>
-                        <option defaultChecked>Pilih Periode</option>
+                        <option defaultChecked disabled value={0} >Pilih Periode</option>
                         {periodik.map((times, idx) => {
                           return (
                             <option key={idx} value={times.value}>{times.time}</option>
@@ -803,7 +803,7 @@ export default () => {
                   <Col xs={3}>
                     <span>Pilih Periode</span>
                     <Form.Select name='periodeVaChart' value={inputHandle.periodeVaChart} onChange={(e) => handleChangeVaPartner(e)} >
-                        <option defaultChecked>Pilih Periode</option>
+                        <option defaultChecked disabled value={0}>Pilih Periode</option>
                         {periodik.map((times, idx) => {
                           return (
                             <option key={idx} value={times.value}>{times.time}</option>
