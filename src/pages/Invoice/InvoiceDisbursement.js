@@ -36,7 +36,7 @@ function InvoiceDisbursement() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const invoiceData = await axios.post("/Report/GetInvoiceDisbursement", { data: dataParams }, { headers: headers })
+            const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceDisbursement", { data: dataParams }, { headers: headers })
             // console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoiceDisbursement(invoiceData.data.response_data)
@@ -152,9 +152,6 @@ function InvoiceDisbursement() {
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{  }}></td>
-                                        {/* <br />
-                                        <br />
-                                        <br /> */}
                                         <br />
                                         <br />
                                         <br />
