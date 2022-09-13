@@ -8,7 +8,7 @@ import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 
-function InvoicePage() {
+function InvoiceVA() {
 
     const history = useHistory()
     const access_token = getToken()
@@ -170,4 +170,4 @@ function InvoicePage() {
     )
 }
 
-export default InvoicePage
+export default InvoiceVA

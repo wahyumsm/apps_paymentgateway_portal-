@@ -63,7 +63,8 @@ import UpdateUser from './ManagementUser/UpdateUser';
 import AddUser from './ManagementUser/AddUser';
 import ListMenuAccess from './ManagementUser/ListMenuAccess';
 import RiwayatTopUp from './TopUp/RiwayatTopUp';
-import InvoicePage from './Invoice/InvoicePage';
+import InvoiceVA from './Invoice/InvoiceVA';
+import InvoiceDisbursement from './Invoice/InvoiceDisbursement';
 import DetailSettlement from './RiwayatTransaksi/DetailSettlement';
 import ReNotifyVA from './HelpDesk/ReNotifyVA';
 import DisbursementReport from './Disbursement/DishbursmentReport';
@@ -147,7 +148,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.UpdateUser.path} component={UpdateUser} />
     <RouteWithSidebar exact path={Routes.ListMenuAccess.path} component={ListMenuAccess}/>
     <RouteWithSidebar exact path={Routes.RiwayatTopUp.path} component={RiwayatTopUp}/>
-    <RouteWithSidebar exact path={Routes.Invoice.path} component={InvoicePage}/>
+    <RouteWithSidebar exact path={Routes.InvoiceVA.path} component={InvoiceVA}/>
+    <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
     <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/>
     <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
