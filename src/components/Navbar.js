@@ -7,6 +7,7 @@ import {
   faSearch,
   faSignOutAlt,
   faUserShield,
+  faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -21,7 +22,7 @@ import {
   ListGroup,
   InputGroup,
   Modal,
-  Button, Table, Alert, Toast
+  Button, Table, Alert, Toast, Tooltip, OverlayTrigger
 } from "@themesberg/react-bootstrap";
 
 import NOTIFICATIONS_DATA from "../data/notifications";
@@ -34,6 +35,7 @@ import noteIcon from "../assets/icon/note_icon.svg";
 import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
+import circleInfo from "../assets/icon/circle-info.svg"
 import { useHistory } from "react-router-dom";
 import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero } from "../function/helpers";
 import axios from "axios";
@@ -452,33 +454,48 @@ export default (props) => {
 
             {
               (user_role === "102") && 
-              <Dropdown as={Nav.Item}>
-                <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
-                  <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
-                    <span className="mb-0 font-small">Saldo: </span>
-                    <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
-                    <img
-                      src={arrowDown}
-                      alt="arrow_down"
-                      style={{ marginLeft: 10 }}
-                    />
-                  </div>
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
-                  <Dropdown.Item
-                    onClick={() => setShowModalTopUp(true)}
-                    className="fw-bold"
-                  >
-                    <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    onClick={() => toHistoryBalance()}
-                    className="fw-bold"
-                  >
-                    <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              <>
+              <OverlayTrigger
+                placement="bottom"
+                trigger={["hover", "focus"]}
+                overlay={
+                  <Tooltip style={{ maxWidth: 200, width: "100%" }}>Saldo Tersedia adalah saldo yang mengendap dari hasil Top Up. Untuk menggunakan saldo ini kamu harus alokasikan saldo terlebih dulu pada laman “Alokasi Saldo” didalam menu “Saldo Tersedia”.</Tooltip>
+                }
+              >
+                <img
+                  src={circleInfo}
+                  alt="circle_info"
+                  style={{ marginTop: -5 }}
+                />
+              </OverlayTrigger>
+                <Dropdown as={Nav.Item}>
+                  <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
+                    <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
+                      <span className="mb-0 font-small">Saldo Tersedia: </span>
+                      <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
+                      <img
+                        src={arrowDown}
+                        alt="arrow_down"
+                        style={{ marginLeft: 10 }}
+                      />
+                    </div>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
+                    <Dropdown.Item
+                      onClick={() => setShowModalTopUp(true)}
+                      className="fw-bold"
+                    >
+                      <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => toHistoryBalance()}
+                      className="fw-bold"
+                    >
+                      <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </>
             }
 
             {/* notification */}
