@@ -105,7 +105,6 @@ function AddPayment() {
   );
 
   const stringChoosenPayCode = choosenPaymentCode.toString() == "" ? "0" : choosenPaymentCode.toString();
-  console.log(stringChoosenPayCode, "ssss");
 
   function onSaveChoosenPayment() {
     stringChoosenPayCode != ""
@@ -177,7 +176,6 @@ function AddPayment() {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(addPaymentLink, "ini payment type");
       if (
         addPaymentLink.data.response_code === 200 &&
         addPaymentLink.status === 200 &&
