@@ -148,6 +148,7 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan No Hp Agen"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 required
                                 style={{ width: "100%", height: 40, marginTop: '-7px', borderColor: errorCode === 102 ? "#B9121B" : "" }}
                             />                            
@@ -188,6 +189,7 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan No Rekening"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 required
                                 style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                 />
@@ -232,6 +234,7 @@ function TambahAgen() {
                                     placeholder="Masukkan Jumlah Settlement Fee"
                                     value={inputHandle.settlementFee}
                                     type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onBlur={() => setAdd(!add)}
                                 /> :
@@ -247,7 +250,7 @@ function TambahAgen() {
                             }
                         </Col>
                     </Row>
-                    <Row className='mt-4'>
+                    {/* <Row className='mt-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nominal Top up
@@ -261,6 +264,7 @@ function TambahAgen() {
                                     placeholder="Masukkan Nominal Top up (Optional)"
                                     value={inputHandle.nominal}
                                     type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onBlur={() => setAdd(!add)}
                                 /> :
@@ -275,7 +279,7 @@ function TambahAgen() {
                                 />
                             }
                         </Col>
-                    </Row>
+                    </Row> */}
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>

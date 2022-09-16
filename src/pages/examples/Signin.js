@@ -10,6 +10,7 @@ import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
 import { authorization, BaseURL, setRoleSession, setUserSession } from "../../function/helpers";
+import validator from "validator";
 
 export default () => {
 
@@ -92,6 +93,19 @@ export default () => {
   async function signingInHandler(e, username, password) {
     try {
       e.preventDefault()
+      if (username.length === 0 && password.length === 0) {
+        setErrorMessage("Silahkan masukkan alamat email & password")
+        return
+      } else if (username.length !== 0 && validator.isEmail(username) === true && password.length === 0) {
+        setErrorMessage("Silahkan masukkan password")
+        return
+      } else if (username.length !== 0 && validator.isEmail(username) === false && password.length === 0) {
+        setErrorMessage("Format email yang dimasukkan salah")
+        return
+      } else if (username.length === 0 && password.length !== 0) {
+        setErrorMessage("Silahkan masukkan alamat email")
+        return
+      }
       const auth = authorization
       const dataParams = encryptData(`{"username" : '${username}', "password" : '${password}'}`)
       const headers = {

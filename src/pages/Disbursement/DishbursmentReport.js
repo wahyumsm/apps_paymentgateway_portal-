@@ -609,7 +609,7 @@ function DisbursementReport() {
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>Nama Partner</span>
                                         <Form.Select name='namaPartnerDisbursement' className="input-text-ez me-4" value={inputHandle.namaPartnerDisbursement} onChange={(e) => handleChange(e)}>
-                                            <option defaultChecked value="">Pilih Nama Partner</option>
+                                            <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                             {
                                                 dataListPartner.map((item, index) => {
                                                     return (
@@ -622,7 +622,7 @@ function DisbursementReport() {
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>Status</span>
                                         <Form.Select name="statusDisbursement" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
-                                            <option>Pilih Status</option>
+                                            <option defaultChecked disabled value="">Pilih Status</option>
                                             <option value={2}>Berhasil</option>
                                             <option value={1}>In Progress</option>
                                             <option value={4}>Gagal</option>
@@ -632,10 +632,10 @@ function DisbursementReport() {
                                     </Col>
                                 </Row>
                                 <Row className='mt-4'>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDisbursement === "none") ? "30%" : "50%" }}>
-                                        <span>Periode*</span>
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDisbursement === "none") ? "33.2%" : "44.4%" }}>
+                                        <span style={{ marginRight: 26 }}>Periode*</span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez me-4" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
-                                            <option defaultChecked>Pilih Periode</option>
+                                            <option defaultChecked disabled value={0}>Pilih Periode</option>
                                             <option value={2}>Hari Ini</option>
                                             <option value={3}>Kemarin</option>
                                             <option value={4}>7 Hari Terakhir</option>
@@ -660,10 +660,10 @@ function DisbursementReport() {
                                         <span>ID Transaksi</span>
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "30%" }}>
-                                        <span>Periode*</span>
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "34%" }}>
+                                        <span style={{ marginRight: 26 }}>Periode*</span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez me-4" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
-                                            <option defaultChecked>Pilih Periode</option>
+                                            <option defaultChecked disabled value={0}>Pilih Periode</option>
                                             <option value={2}>Hari Ini</option>
                                             <option value={3}>Kemarin</option>
                                             <option value={4}>7 Hari Terakhir</option>
@@ -672,10 +672,10 @@ function DisbursementReport() {
                                             <option value={7}>Pilih Range Tanggal</option>
                                         </Form.Select>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "30%"}}>
                                         <span>Status</span>
                                         <Form.Select name="statusDisbursement" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
-                                            <option>Pilih Status</option>
+                                            <option defaultChecked disabled value="">Pilih Status</option>
                                             <option value={2}>Berhasil</option>
                                             <option value={1}>In Progress</option>
                                             <option value={4}>Gagal</option>
@@ -683,7 +683,7 @@ function DisbursementReport() {
                                             {/* <option value={9}>Kadaluwarsa</option> */}
                                         </Form.Select>
                                     </Col>
-                                    <Col xs={11} className="d-flex justify-content-center align-items-center mt-3 ms-3">
+                                    <Col xs={11} className="d-flex justify-content-center align-items-center mt-3" style={{ marginLeft: 81 }}>
                                         <div style={{ display: showDateDisbursement }}>
                                             <DateRangePicker 
                                                 onChange={pickDateDisbursement}
@@ -711,7 +711,7 @@ function DisbursementReport() {
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => resetButtonHandle()}
-                                            className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                            className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0) ? "btn-reset" : "btn-ez"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0}
                                         >
                                             Atur Ulang

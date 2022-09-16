@@ -474,7 +474,7 @@ export default () => {
                 <Col xs={4}>
                     <span>Status</span>
                     <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
-                      <option defaultValue value={0}>Pilih Status</option>
+                      <option defaultChecked disabled value="">Pilih Status</option>
                       <option value={2}>Success</option>
                       <option value={1}>In Progress</option>
                       <option value={7}>Waiting For Payment</option>
@@ -484,7 +484,7 @@ export default () => {
             </Row>
             <Row className='mt-4'>
                 <Col xs={4}>
-                    <span style={{ marginRight: 20 }}>Periode*</span>
+                    <span style={{ marginRight: 57 }}>Periode*</span>
                     <DateRangePicker
                       onChange={pickDateDanaMasuk}
                       value={stateDanaMasuk}
@@ -507,7 +507,7 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Dana Masuk")}
-                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
                               disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
                             >
                               Atur Ulang
@@ -608,7 +608,7 @@ export default () => {
                 <Col xs={4}>
                     <span>Status</span>
                     <Form.Select name="statusSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
-                      <option defaultValue value={0}>Pilih Status</option>
+                      <option defaultChecked disabled value="">Pilih Status</option>
                       <option value={2}>Success</option>
                       <option value={1}>In Progress</option>
                       <option value={3}>Pending</option>
@@ -631,7 +631,7 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Settlement")}
-                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-reset" : "btn-ez"}
                               disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0}
                             >
                               Atur Ulang

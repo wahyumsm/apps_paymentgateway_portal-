@@ -104,6 +104,13 @@ export default (props) => {
     })
   }
 
+  function handleChangeTopUp(e) {
+    setInputHandle({
+      ...inputHandle,
+      [e.target.name] : Number(e.target.value).toString()
+    })
+  }
+
   const startColorNumber = (money) => {  
     if (money !== 0) {
       var diSliceAwal = String(money).slice(0, -3)
@@ -396,7 +403,7 @@ export default (props) => {
                 <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                   <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
                     <span className="mb-0 font-small">Saldo: </span>
-                    <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
+                    <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
                     <img
                       src={arrowDown}
                       alt="arrow_down"
@@ -519,8 +526,8 @@ export default (props) => {
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
                 {nominalTopup ? 
-                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} /> :
-                  <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={convertFormatNumber(inputHandle.amounts)} />
+                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChangeTopUp} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} /> :
+                  <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={inputHandle.amounts === 0 ? "Rp" : convertFormatNumber(inputHandle.amounts)} />
                 }
                 {iconGagal === true && 
                   <>

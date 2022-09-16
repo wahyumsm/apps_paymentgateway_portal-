@@ -16,6 +16,7 @@ function InvoiceDisbursement() {
     const [stateInvoiceDisbursement, setStateInvoiceDisbursement] = useState(null)
     const [dateRangeInvoiceDisbursement, setDateRangeInvoiceDisbursement] = useState([])
     const [dataInvoiceDisbursement, setDataInvoiceDisbursement] = useState({})
+    const [errorMessage, setErrorMessage] = useState("")
 
     function pickDateInvoiceDisbursement(item) {
         setStateInvoiceDisbursement(item)
@@ -45,8 +46,12 @@ function InvoiceDisbursement() {
                 setDataInvoiceDisbursement(invoiceData.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
+            if (error.response.status === 400 && error.response.data.response_code === 400 && error.response.data.response_message === "Data not found!") {
+                setErrorMessage(error.response.data.response_message)
+                setDataInvoiceDisbursement({})
+            }
         }
     }
 
@@ -140,7 +145,7 @@ function InvoiceDisbursement() {
                                         }) :
                                         <tr>
                                             <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>1</td>
-                                            <td>-</td>
+                                            <td>{(errorMessage.length !== 0) ? errorMessage : "-"}</td>
                                             <td style={{ textAlign: "center" }}>0</td>
                                             <td style={{ textAlign: "end" }}>Rp 0</td>
                                             <td style={{ textAlign: "end" }}>Rp 0</td>
@@ -174,8 +179,9 @@ function InvoiceDisbursement() {
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
                                 onClick={() => downloadPDF("#tableInvoice", dateRangeInvoiceDisbursement)}
-                                className='add-button mb-3'
+                                className={(Object.keys(dataInvoiceDisbursement).length === 0) ? "btn-off mb-3" : 'add-button mb-3'}
                                 style={{ maxWidth: 'fit-content' }}
+                                disabled={Object.keys(dataInvoiceDisbursement).length === 0}
                             >
                                 Download PDF
                             </button>

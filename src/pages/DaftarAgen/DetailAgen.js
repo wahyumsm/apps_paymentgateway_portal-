@@ -174,7 +174,7 @@ function DetailAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row className='mt-2'>
+                    {/* <Row className='mt-2'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nominal Top up
@@ -188,7 +188,7 @@ function DetailAgen() {
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                             />
                         </Col>
-                    </Row>
+                    </Row> */}
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>

@@ -16,6 +16,7 @@ function InvoiceVA() {
     const [stateSettlement, setStateSettlement] = useState(null)
     const [dateRangeSettlement, setDateRangeSettlement] = useState([])
     const [dataInvoice, setDataInvoice] = useState({})
+    const [errorMessage, setErrorMessage] = useState("")
 
     function pickDateSettlement(item) {
         setStateSettlement(item)
@@ -43,6 +44,10 @@ function InvoiceVA() {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
+            if (error.response.status === 400 && error.response.data.response_code === 400 && error.response.data.response_message === "Data not found!") {
+                setErrorMessage(error.response.data.response_message)
+                setDataInvoice({})
+            }
         }
     }
 
@@ -136,7 +141,7 @@ function InvoiceVA() {
                                         }) :
                                         <tr>
                                             <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>1</td>
-                                            <td>-</td>
+                                            <td>{(errorMessage.length !== 0) ? errorMessage : "-"}</td>
                                             <td style={{ textAlign: "center" }}>0</td>
                                             <td style={{ textAlign: "end" }}>Rp 0</td>
                                             <td style={{ textAlign: "end" }}>Rp 0</td>
@@ -170,8 +175,9 @@ function InvoiceVA() {
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
                                 onClick={() => downloadPDF("#tableInvoice", dateRangeSettlement)}
-                                className='add-button mb-3'
+                                className={(Object.keys(dataInvoice).length === 0) ? "btn-off mb-3" : 'add-button mb-3'}
                                 style={{ maxWidth: 'fit-content' }}
+                                disabled={Object.keys(dataInvoice).length === 0}
                             >
                                 Download PDF
                             </button>

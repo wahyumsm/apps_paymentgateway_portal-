@@ -56,7 +56,7 @@ function DetailPartner() {
           name: 'Nama Agen',
           selector: row => row.agen_name,
           sortable: true,
-          width: "120px"
+          width: "150px"
         },
         {
           name: 'Email',
