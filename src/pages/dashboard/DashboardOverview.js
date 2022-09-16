@@ -15,10 +15,12 @@ import { Line, Pie} from 'react-chartjs-2';
 import { BaseURL, convertToCurrency, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import {default as ReactSelect, components} from "react-select"
+// import {default as ReactSelect, components} from "react-select"
 import encryptData from "../../function/encryptData";
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import DateRangePicker from "@wojtekmaj/react-daterange-picker/dist/DateRangePicker";
+import context from "@themesberg/react-bootstrap/lib/esm/AccordionContext";
+import ReactSelect, { components } from "react-select";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -69,6 +71,7 @@ export default () => {
     periodeFeeChart: 0,
     periodeVaChart: 0,
   })
+
   const [selectedOptionSettlementPartner, setSelectedOptionSettlementPartner] = useState([])
   const [selectedOptionBiayaPartner, setSelectedOptionBiayaPartner] = useState([])
   const [selectedOptionBiayaVA, setSelectedOptionBiayaVA] = useState([])
@@ -512,7 +515,7 @@ export default () => {
                 <Col xs={3}>
                   <span>Pilih Periode</span>
                   <Form.Select name='periodePartnerChart' value={inputHandle.periodePartnerChart} onChange={(e) => handleChangePeriodeChart(e)}>
-                    <option defaultChecked>Pilih Periode</option>
+                    <option defaultChecked disabled value={0}>Pilih Periode</option>
                     {periodik.map((times, idx) => {
                       return (
                         <option key={idx} value={times.value}>{times.time}</option>
@@ -659,7 +662,7 @@ export default () => {
                   <Col xs={3}>
                     <span>Pilih Periode</span>
                     <Form.Select name='periodeFeeChart' value={inputHandle.periodeFeeChart} onChange={(e) => handleChangeFeePartner(e)}>
-                        <option defaultChecked>Pilih Periode</option>
+                        <option defaultChecked disabled value={0}>Pilih Periode</option>
                         {periodik.map((times, idx) => {
                           return (
                             <option key={idx} value={times.value}>{times.time}</option>
@@ -803,7 +806,7 @@ export default () => {
                   <Col xs={3}>
                     <span>Pilih Periode</span>
                     <Form.Select name='periodeVaChart' value={inputHandle.periodeVaChart} onChange={(e) => handleChangeVaPartner(e)} >
-                        <option defaultChecked>Pilih Periode</option>
+                        <option defaultChecked disabled value={0}>Pilih Periode</option>
                         {periodik.map((times, idx) => {
                           return (
                             <option key={idx} value={times.value}>{times.time}</option>

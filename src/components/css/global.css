@@ -659,7 +659,7 @@ width: 150px;
 }
 
 .dropPartner .css-g1d714-ValueContainer {
-    overflow-y: auto;
-    max-height: 43px;
-    max-width: 400px;
-}
+    overflow-y: auto !important;
+    max-height: 43px !important;
+    max-width: 400px !important;
+}   

@@ -232,7 +232,8 @@ function EditAgen() {
                                 <Form.Control
                                     name='phoneNumber'
                                     value={inputHandle.phoneNumber}
-                                    type='text'
+                                    type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
                                 />
@@ -264,7 +265,8 @@ function EditAgen() {
                                 <Form.Control
                                     name='akunBank'
                                     value={inputHandle.akunBank}
-                                    type='text'
+                                    type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
                                 />
@@ -298,6 +300,7 @@ function EditAgen() {
                                         name='nominal'
                                         value={inputHandle.nominal}
                                         type='number'
+                                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                         style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                         onChange={handleChange}
                                         onBlur={() => setEdit(!edit)}

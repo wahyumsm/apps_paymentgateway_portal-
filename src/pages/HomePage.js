@@ -64,10 +64,10 @@ import AddUser from './ManagementUser/AddUser';
 import ListMenuAccess from './ManagementUser/ListMenuAccess';
 import RiwayatTopUp from './TopUp/RiwayatTopUp';
 import InvoiceVA from './Invoice/InvoiceVA';
+import InvoiceDisbursement from './Invoice/InvoiceDisbursement';
 import DetailSettlement from './RiwayatTransaksi/DetailSettlement';
 import ReNotifyVA from './HelpDesk/ReNotifyVA';
 import DisbursementReport from './Disbursement/DishbursmentReport';
-import InvoiceDisbursement from './Invoice/InvoiceDisbursement';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);

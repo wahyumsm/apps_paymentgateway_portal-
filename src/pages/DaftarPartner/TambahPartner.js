@@ -125,6 +125,7 @@ function TambahPartner() {
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor Telepon"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -164,6 +165,7 @@ function TambahPartner() {
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor NPWP"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -219,6 +221,7 @@ function TambahPartner() {
                                 onChange={handleChange}
                                 placeholder="Masukkan No HP Direktur"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -259,6 +262,7 @@ function TambahPartner() {
                                 onChange={handleChange}
                                 placeholder="Masukkan Nomor Rekening"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -299,6 +303,7 @@ function TambahPartner() {
                                 placeholder="Rp."
                                 // value={convertToRupiah(inputHandle.fee)}
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>
@@ -315,6 +320,7 @@ function TambahPartner() {
                                 onChange={handleChange}
                                 placeholder="Rp."
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
                         </Col>

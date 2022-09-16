@@ -157,6 +157,7 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan No Hp Agen"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 required
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
@@ -201,6 +202,7 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan No Rekening"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 required
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
@@ -249,6 +251,7 @@ function TambahAgen() {
                                     placeholder="Masukkan Jumlah Settlement Fee"
                                     value={inputHandle.settlementFee}
                                     type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onBlur={() => setAdd(!add)}
                                 /> :
@@ -278,6 +281,7 @@ function TambahAgen() {
                                     placeholder="Masukkan Nominal Top up (Optional)"
                                     value={inputHandle.nominal}
                                     type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onBlur={() => setAdd(!add)}
                                 /> :

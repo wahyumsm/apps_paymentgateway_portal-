@@ -16,6 +16,7 @@ function InvoiceDisbursement() {
     const [stateInvoiceDisbursement, setStateInvoiceDisbursement] = useState(null)
     const [dateRangeInvoiceDisbursement, setDateRangeInvoiceDisbursement] = useState([])
     const [dataInvoiceDisbursement, setDataInvoiceDisbursement] = useState({})
+    const [errorMessage, setErrorMessage] = useState("")
 
     function pickDateInvoiceDisbursement(item) {
         setStateInvoiceDisbursement(item)
@@ -31,13 +32,13 @@ function InvoiceDisbursement() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}"}`);
-            console.log(dataParams, 'ini data params');
+            // console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
-            console.log(invoiceData, "ini invoice data");
+            const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceDisbursement", { data: dataParams }, { headers: headers })
+            // console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoiceDisbursement(invoiceData.data.response_data)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
@@ -45,8 +46,12 @@ function InvoiceDisbursement() {
                 setDataInvoiceDisbursement(invoiceData.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
+            if (error.response.status === 400 && error.response.data.response_code === 400 && error.response.data.response_message === "Data not found!") {
+                setErrorMessage(error.response.data.response_message)
+                setDataInvoiceDisbursement({})
+            }
         }
     }
 
@@ -55,7 +60,7 @@ function InvoiceDisbursement() {
         let doc = new jsPDF("l", "pt", "a4");
         doc.html(document.querySelector(table), {
             callback: function (pdf) {
-                pdf.save(`invoice ${dateRange[0]} - ${dateRange[1]}.pdf`);
+                pdf.save(`invoice disbursement ${dateRange[0]} - ${dateRange[1]}.pdf`);
             },
         })
     }
@@ -64,9 +69,9 @@ function InvoiceDisbursement() {
         if (!access_token) {
             history.push('/login');
         }
-        // if (user_role === "102") {
-        //     history.push('/404');
-        // }
+        if (user_role === "102") {
+            history.push('/404');
+        }
     }, [access_token, user_role])
     
 
@@ -100,7 +105,7 @@ function InvoiceDisbursement() {
                         </Row>
                         <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
                             <table className='table table-bordered mt-2' id='tableInvoice' style={{ width: "87%" }}>
-                                <thead style={{ backgroundColor: "#F2F2F2" }}>
+                                <thead style={{ backgroundColor: "#F2F2F2", border: "transparent" }}>
                                     <tr>
                                         <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
                                             No
@@ -140,7 +145,7 @@ function InvoiceDisbursement() {
                                         }) :
                                         <tr>
                                             <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>1</td>
-                                            <td>-</td>
+                                            <td>{(errorMessage.length !== 0) ? errorMessage : "-"}</td>
                                             <td style={{ textAlign: "center" }}>0</td>
                                             <td style={{ textAlign: "end" }}>Rp 0</td>
                                             <td style={{ textAlign: "end" }}>Rp 0</td>
@@ -152,9 +157,6 @@ function InvoiceDisbursement() {
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{  }}></td>
-                                        <br />
-                                        <br />
-                                        <br />
                                         <br />
                                         <br />
                                         <br />
@@ -177,8 +179,9 @@ function InvoiceDisbursement() {
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
                                 onClick={() => downloadPDF("#tableInvoice", dateRangeInvoiceDisbursement)}
-                                className='add-button mb-3'
+                                className={(Object.keys(dataInvoiceDisbursement).length === 0) ? "btn-off mb-3" : 'add-button mb-3'}
                                 style={{ maxWidth: 'fit-content' }}
+                                disabled={Object.keys(dataInvoiceDisbursement).length === 0}
                             >
                                 Download PDF
                             </button>

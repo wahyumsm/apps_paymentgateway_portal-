@@ -609,8 +609,8 @@ export default () => {
                 <br/>
               </Col>
             </Row> */}
-            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
+            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
                     <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
@@ -633,7 +633,7 @@ export default () => {
                 <Col xs={4}>
                     <span>Status</span>
                     <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
-                      <option defaultValue value={0}>Pilih Status</option>
+                      <option defaultChecked disabled value="">Pilih Status</option>
                       <option value={2}>Success</option>
                       <option value={1}>In Progress</option>
                       {/* <option value={3}>Refund</option> */}
@@ -648,26 +648,14 @@ export default () => {
                 </Col>
             </Row>
             <Row className='mt-4'>
-            <Col xs={5} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "30%" : "40%" }}>
-              <span>Periode*</span>
-              <Form.Select name='periodeDanaMasuk' className="input-text-ez me-4" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
-                  <option defaultChecked>Pilih Periode</option>
-                  <option value={2}>Hari Ini</option>
-                  <option value={3}>Kemarin</option>
-                  <option value={4}>7 Hari Terakhir</option>
-                  <option value={5}>Bulan Ini</option>
-                  <option value={6}>Bulan Kemarin</option>
-                  <option value={7}>Pilih Range Tanggal</option>
-              </Form.Select>
-              <div style={{ display: showDateDanaMasuk }}>
-                <DateRangePicker 
-                  onChange={pickDateDanaMasuk}
-                  value={stateDanaMasuk}
-                  clearIcon={null}
-                  // calendarIcon={null}
-                />
-              </div>
-            </Col>
+                <Col xs={4}>
+                    <span style={{ marginRight: 57 }}>Periode*</span>
+                    <DateRangePicker
+                      onChange={pickDateDanaMasuk}
+                      value={stateDanaMasuk}
+                      clearIcon={null}
+                    />
+                </Col>
             </Row>
             <Row className='mt-4'>
                 <Col xs={3}>
@@ -684,8 +672,8 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Dana Masuk")}
-                              className={(inputHandle.periodeDanaMasuk !== 0 || (inputHandle.periodeDanaMasuk === 7 && dateRangeDanaMasuk.length !== 0) || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
+                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
                             >
                               Atur Ulang
                             </button>
@@ -781,8 +769,8 @@ export default () => {
               </Col>
             </Row>             */}
             {/* <br/> */}
-            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
+            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
                     <input name="idTransaksiSettlement" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
@@ -799,7 +787,7 @@ export default () => {
                 <Col xs={4}>
                     <span>Status</span>
                     <Form.Select name="statusSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
-                      <option defaultValue value={0}>Pilih Status</option>
+                      <option defaultChecked disabled value="">Pilih Status</option>
                       <option value={2}>Success</option>
                       <option value={1}>In Progress</option>
                       <option value={3}>Pending</option>
@@ -822,7 +810,7 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Settlement")}
-                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-reset" : "btn-ez"}
                               disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0}
                             >
                               Atur Ulang
