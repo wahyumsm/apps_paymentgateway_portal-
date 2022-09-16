@@ -60,7 +60,7 @@ function InvoiceVA() {
         let doc = new jsPDF("l", "pt", "a4");
         doc.html(document.querySelector(table), {
             callback: function (pdf) {
-                pdf.save(`invoice ${dateRange[0]} - ${dateRange[1]}.pdf`);
+                pdf.save(`invoice settlement va ${dateRange[0]} - ${dateRange[1]}.pdf`);
             },
         })
     }
@@ -106,7 +106,7 @@ function InvoiceVA() {
                         </Row>
                         <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
                             <table className='table table-bordered mt-2' id='tableInvoice' style={{ width: "87%" }}>
-                                <thead style={{ backgroundColor: "#F2F2F2" }}>
+                                <thead style={{ backgroundColor: "#F2F2F2", border: "transparent" }}>
                                     <tr>
                                         <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
                                             No
@@ -161,9 +161,9 @@ function InvoiceVA() {
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{  }}></td>
+                                        {/* <br />
                                         <br />
-                                        <br />
-                                        <br />
+                                        <br /> */}
                                         <br />
                                         <br />
                                         <br />
