@@ -46,7 +46,7 @@ function EditPartner() {
   const [numbering, setNumbering] = useState(0);
   const [edited, setEdited] = useState(false);
   const [editInput, setEditInput] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [inputHandle, setInputHandle] = useState({
     id: detailPartner.mpartner_id,
     namaPerusahaan: detailPartner.mpartner_name,
@@ -66,6 +66,8 @@ function EditPartner() {
     paymentType: [],
     fiturs: 0,
   });
+
+  // console.log(payment, "payment");
 
   const showCheckboxes = () => {
     if (!expanded) {
@@ -93,24 +95,27 @@ function EditPartner() {
     (e, payTypeId, payTypeName, listMethod) => {
       if (e.target.checked) {
         if (payTypeId === 0) {
-          const allId = Object.values(listMethod).map(val => val.payment_id)          
-          const allName = Object.values(listMethod).map(val => val.payment_name )
-          setPaymentMethod(allId)
-          setPaymentNameMethod(allName)
+          const allId = Object.values(listMethod).map((val) => val.payment_id);
+          const allName = Object.values(listMethod).map(
+            (val) => val.payment_name
+          );
+          setPaymentMethod(allId);
+          setPaymentNameMethod(allName);
         } else {
           setPaymentMethod((value) => [...value, payTypeId]);
           setPaymentNameMethod((item) => [...item, payTypeName]);
         }
-        
       } else {
         if (payTypeId === 0) {
-          setPaymentMethod([])
-          setPaymentNameMethod([])
+          setPaymentMethod([]);
+          setPaymentNameMethod([]);
         } else {
-          setPaymentMethod((item) => item.filter((value) => value !== payTypeId));
+          setPaymentMethod((item) =>
+            item.filter((value) => value !== payTypeId)
+          );
           setPaymentNameMethod((item) =>
-          item.filter((items) => items !== payTypeName)
-        );
+            item.filter((items) => items !== payTypeName)
+          );
         }
       }
     },
@@ -118,23 +123,24 @@ function EditPartner() {
   );
 
   const handleChangeFitur = (e) => {
-    setLoading(true)
-    getTypeMethod(e.target.value);    
+    setLoading(true);
+    getTypeMethod(e.target.value);
     if (e.target.checked) {
       setFitur([e.target.value, e.target.name]);
-      setLoading(false)
+      setLoading(false);
       setPaymentMethod([]);
       setPaymentNameMethod([]);
     }
   };
 
-    // console.log(paymentMethod.filter(it => it !== 0), "ini metode payment");
+  // console.log(paymentMethod,"ini metode payment");
   //   console.log(paymentNameMethod, "ini name methodnya");
   //   console.log(payment, "ini payment");
   //   console.log(fitur[0], "ini fitur id");
   //   console.log(fitur[1], "ini fitur id");
   // console.log(inputHandle.fee, "ini fee");
   // console.log(inputHandle.settlementFee, "ini settle");
+  // console.log(listMethodMenu.length, "ini list method menu");
 
   function editInTableHandler(numberId) {
     setEdited(true);
@@ -144,7 +150,6 @@ function EditPartner() {
       fee: result.fee,
       settlementFee: result.fee_settle,
     });
-    // console.log(Object.keys(result.mpaytype_id).push([0]), "ini id type");
     if (result.fitur_id) {
       setFitur([result.fitur_id, result.fitur_name]);
       setPaymentMethod(result.mpaytype_id);
@@ -319,32 +324,32 @@ function EditPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const paymentMethod = await axios.post(
+      const paymentMethodType = await axios.post(
         "/PaymentLink/GetMetodePembayaran",
         { data: dataParams },
         { headers: headers }
       );
       if (
-        paymentMethod.status === 200 &&
-        paymentMethod.data.response_code === 200 &&
-        paymentMethod.data.response_new_token.length === 0
+        paymentMethodType.status === 200 &&
+        paymentMethodType.data.response_code === 200 &&
+        paymentMethodType.data.response_new_token.length === 0
       ) {
-        paymentMethod.data.response_data.unshift({
+        paymentMethodType.data.response_data.unshift({
           payment_name: "Pilih Semua",
           payment_id: 0,
         });
-        setListTypeMethod(paymentMethod.data.response_data);
+        setListTypeMethod(paymentMethodType.data.response_data);
       } else if (
-        paymentMethod.status === 200 &&
-        paymentMethod.data.response_code === 200 &&
-        paymentMethod.data.response_new_token.length !== 0
+        paymentMethodType.status === 200 &&
+        paymentMethodType.data.response_code === 200 &&
+        paymentMethodType.data.response_new_token.length !== 0
       ) {
-        setUserSession(paymentMethod.data.response_new_token);
-        paymentMethod.data.response_data.unshift({
+        setUserSession(paymentMethodType.data.response_new_token);
+        paymentMethodType.data.response_data.unshift({
           payment_name: "Pilih Semua",
           payment_id: 0,
         });
-        setListTypeMethod(paymentMethod.data.response_data);
+        setListTypeMethod(paymentMethodType.data.response_data);
       }
     } catch (error) {
       // RouteTo(errorCatch(error.response.status))
@@ -1302,10 +1307,11 @@ function EditPartner() {
               <Col className="ms-2">
                 {equalTypeMethod === 0 ? (
                   <>
-                    {loading ?
+                    {loading ? (
                       <div className="d-flex justify-content-center align-items-center vh-100">
                         <CustomLoader />
-                      </div> :
+                      </div>
+                    ) : (
                       <>
                         <Row style={{ flexWrap: "nowrap" }}>
                           {dataAtasMethod(atasTypeMethod).map((item) => {
@@ -1318,9 +1324,14 @@ function EditPartner() {
                                     id="inlineCheckbox1"
                                     name={item.payment_name}
                                     value={item.payment_id}
-                                    checked={paymentMethod.includes(
-                                      item.payment_id
-                                    )}
+                                    checked={
+                                      listTypeMethod.length - 1 ===
+                                      paymentMethod.length
+                                        ? true
+                                        : paymentMethod.includes(
+                                            item.payment_id
+                                          )
+                                    }
                                     onChange={(e) =>
                                       handleChoosenPaymentType(
                                         e,
@@ -1332,7 +1343,10 @@ function EditPartner() {
                                   />
                                   <label
                                     className="form-check-label"
-                                    style={{ fontWeight: 400, fontSize: "14px" }}
+                                    style={{
+                                      fontWeight: 400,
+                                      fontSize: "14px",
+                                    }}
                                     for="inlineCheckbox1"
                                   >
                                     {item.payment_name}
@@ -1353,10 +1367,14 @@ function EditPartner() {
                                     id="inlineCheckbox1"
                                     name={item.payment_name}
                                     value={item.payment_id}
-                                    checked={paymentMethod.includes(
-                                      item.payment_id
-                                    )}
-                                    // checked={edited === true ? payInTable : paymentMethod}
+                                    checked={
+                                      listTypeMethod.length - 1 ===
+                                      paymentMethod.length
+                                        ? true
+                                        : paymentMethod.includes(
+                                            item.payment_id
+                                          )
+                                    }
                                     onChange={(e) =>
                                       handleChoosenPaymentType(
                                         e,
@@ -1368,7 +1386,10 @@ function EditPartner() {
                                   />
                                   <label
                                     className="form-check-label"
-                                    style={{ fontWeight: 400, fontSize: "14px" }}
+                                    style={{
+                                      fontWeight: 400,
+                                      fontSize: "14px",
+                                    }}
                                     for="inlineCheckbox1"
                                   >
                                     {item.payment_name}
@@ -1379,14 +1400,15 @@ function EditPartner() {
                           })}
                         </Row>
                       </>
-                    }
+                    )}
                   </>
                 ) : (
                   <>
-                    {loading ?                       
+                    {loading ? (
                       <div className="d-flex justify-content-center align-items-center vh-100">
                         <CustomLoader />
-                      </div>: 
+                      </div>
+                    ) : (
                       <>
                         <Row>
                           {dataAtasEqualMethod(equalTypeMethod).map((item) => {
@@ -1399,9 +1421,14 @@ function EditPartner() {
                                     id="inlineCheckbox1"
                                     name={item.payment_name}
                                     value={item.payment_id}
-                                    checked={paymentMethod.includes(
-                                      item.payment_id
-                                    )}
+                                    checked={
+                                      listTypeMethod.length - 1 ===
+                                      paymentMethod.length
+                                        ? true
+                                        : paymentMethod.includes(
+                                            item.payment_id
+                                          )
+                                    }
                                     onChange={(e) =>
                                       handleChoosenPaymentType(
                                         e,
@@ -1413,7 +1440,10 @@ function EditPartner() {
                                   />
                                   <label
                                     className="form-check-label"
-                                    style={{ fontWeight: 400, fontSize: "14px" }}
+                                    style={{
+                                      fontWeight: 400,
+                                      fontSize: "14px",
+                                    }}
                                     for="inlineCheckbox1"
                                   >
                                     {item.payment_name}
@@ -1434,13 +1464,14 @@ function EditPartner() {
                                     id="inlineCheckbox1"
                                     name={item.payment_name}
                                     value={item.payment_id}
-                                    checked={paymentMethod.includes(
-                                      item.payment_id
-                                    )}
-                                    // checked={
-                                    //   paymentMethod.map((itm) => (itm == item.payment_id ))
-                                    // }
-                                    // checked={edited === true && paymentMethod}
+                                    checked={
+                                      listTypeMethod.length - 1 ===
+                                      paymentMethod.length
+                                        ? true
+                                        : paymentMethod.includes(
+                                            item.payment_id
+                                          )
+                                    }
                                     onChange={(e) =>
                                       handleChoosenPaymentType(
                                         e,
@@ -1452,7 +1483,10 @@ function EditPartner() {
                                   />
                                   <label
                                     className="form-check-label"
-                                    style={{ fontWeight: 400, fontSize: "14px" }}
+                                    style={{
+                                      fontWeight: 400,
+                                      fontSize: "14px",
+                                    }}
                                     for="inlineCheckbox1"
                                   >
                                     {item.payment_name}
@@ -1463,9 +1497,9 @@ function EditPartner() {
                           })}
                         </Row>
                       </>
-                    }
+                    )}
                   </>
-                )}                
+                )}
               </Col>
             </Row>
             <div className="d-flex justify-content-between align-items-center">
@@ -1485,8 +1519,8 @@ function EditPartner() {
                         inputHandle.settlementFee,
                         fitur[0],
                         fitur[1],
-                        paymentMethod.filter(it => it !== 0),
-                        paymentNameMethod.filter(it => it !== "Pilih Semua"),
+                        paymentMethod.filter((it) => it !== 0),
+                        paymentNameMethod.filter((it) => it !== "Pilih Semua"),
                         payment.length + 1
                       )
                     }
@@ -1555,8 +1589,8 @@ function EditPartner() {
                           inputHandle.settlementFee,
                           fitur[0],
                           fitur[1],
-                          paymentMethod.filter(it => it !== 0),
-                          paymentNameMethod.filter(it => it !== "Pilih Semua")
+                          paymentMethod.filter((it) => it !== 0),
+                          paymentNameMethod.filter((it) => it !== "Pilih Semua")
                         )
                       }
                     >

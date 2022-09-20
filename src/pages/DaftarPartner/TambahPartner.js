@@ -1049,9 +1049,14 @@ function TambahPartner() {
                                   id="inlineCheckbox1"
                                   name={item.payment_name}
                                   value={item.payment_id}
-                                  checked={paymentMethod.includes(
-                                    item.payment_id
-                                  )}
+                                  checked={
+                                    listTypeMethod.length - 1 ===
+                                    paymentMethod.length
+                                      ? true
+                                      : paymentMethod.includes(
+                                          item.payment_id
+                                        )
+                                  }
                                   onChange={(e) =>
                                     handleChoosenPaymentType(
                                       e,
@@ -1084,9 +1089,14 @@ function TambahPartner() {
                                   id="inlineCheckbox1"
                                   name={item.payment_name}
                                   value={item.payment_id}
-                                  checked={paymentMethod.includes(
-                                    item.payment_id
-                                  )}
+                                  checked={
+                                    listTypeMethod.length - 1 ===
+                                    paymentMethod.length
+                                      ? true
+                                      : paymentMethod.includes(
+                                          item.payment_id
+                                        )
+                                  }
                                   onChange={(e) =>
                                     handleChoosenPaymentType(
                                       e,
@@ -1130,9 +1140,14 @@ function TambahPartner() {
                                   id="inlineCheckbox1"
                                   name={item.payment_name}
                                   value={item.payment_id}
-                                  checked={paymentMethod.includes(
-                                    item.payment_id
-                                  )}
+                                  checked={
+                                    listTypeMethod.length - 1 ===
+                                    paymentMethod.length
+                                      ? true
+                                      : paymentMethod.includes(
+                                          item.payment_id
+                                        )
+                                  }
                                   onChange={(e) =>
                                     handleChoosenPaymentType(
                                       e,
@@ -1165,9 +1180,14 @@ function TambahPartner() {
                                   id="inlineCheckbox1"
                                   name={item.payment_name}
                                   value={item.payment_id}
-                                  checked={paymentMethod.includes(
-                                    item.payment_id
-                                  )}
+                                  checked={
+                                    listTypeMethod.length - 1 ===
+                                    paymentMethod.length
+                                      ? true
+                                      : paymentMethod.includes(
+                                          item.payment_id
+                                        )
+                                  }
                                   onChange={(e) =>
                                     handleChoosenPaymentType(
                                       e,
