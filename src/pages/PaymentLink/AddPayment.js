@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import { Row, Col, Modal, Button } from "@themesberg/react-bootstrap";
-import DateRangePicker from "@wojtekmaj/react-daterange-picker/dist/DateRangePicker";
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import checklistCircle from "../../assets/img/icons/checklist_circle.svg";
 import CopyIcon from "../../assets/icon/iconcopy_icon.svg";
@@ -18,9 +17,8 @@ import {
 import axios from "axios";
 import encryptData from "../../function/encryptData";
 import time from "../../assets/icon/time_icon.svg";
-import { clamp } from "date-fns";
 import Buttons from "../../components/Button";
-import { it } from "date-fns/locale";
+
 
 function AddPayment() {
   const [showModal, setShowModal] = useState(false);
@@ -32,11 +30,10 @@ function AddPayment() {
   const history = useHistory();
   const access_token = getToken();
   const [paymentType, setPaymentType] = useState([]);
-  const [addPaylink, setAddPaylink] = useState({})
+  const [addPaylink, setAddPaylink] = useState({});
   const [choosenPaymentCode, setChoosenPaymentCode] = useState([]);
   const [checked, setChecked] = useState("1");
   const [expanded, setExpanded] = useState(false);
-  
 
   const date = new Date();
   const minutes = date.getMinutes();
@@ -53,20 +50,26 @@ function AddPayment() {
     year: 0,
   });
 
+  const [isNotCompleteData, setNotCompleteData] = useState({
+    nominal: false,
+    refId: false,
+  });
+
   const [inputHandle, setInputHandle] = useState({
     nominal: null,
     refId: "",
     expDate: "",
-    useLimit: 0,
+    useLimit: 1,
     typePayment: 0,
     desc: "",
-    paymentId: date.getFullYear().toString() +
-    convertTimeDigit(date.getMonth() + 1).toString() +
-    date.getDate().toString() +
-    hour.toString() +
-    minutes.toString() +
-    date.getSeconds().toString() +
-    date.getMilliseconds().toString()
+    paymentId:
+      date.getFullYear().toString() +
+      convertTimeDigit(date.getMonth() + 1).toString() +
+      convertTimeDigit(date.getDate()).toString() +
+      hour.toString() +
+      minutes.toString() +
+      date.getSeconds().toString() +
+      date.getMilliseconds().toString(),
   });
 
   function handleSetDay() {
@@ -104,7 +107,8 @@ function AddPayment() {
     [setChoosenPaymentCode]
   );
 
-  const stringChoosenPayCode = choosenPaymentCode.toString();
+  const stringChoosenPayCode =
+    choosenPaymentCode.toString() == "" ? "0" : choosenPaymentCode.toString();
 
   function onSaveChoosenPayment() {
     stringChoosenPayCode != ""
@@ -176,22 +180,21 @@ function AddPayment() {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(addPaymentLink, "ini payment type");
       if (
         addPaymentLink.data.response_code === 200 &&
         addPaymentLink.status === 200 &&
         addPaymentLink.data.response_new_token.length === 0
       ) {
-        setAddPaylink(addPaymentLink.data.response_data)
-        setShowModal(true)
+        setAddPaylink(addPaymentLink.data.response_data);
+        setShowModal(true);
       } else if (
         addPaymentLink.data.response_code === 200 &&
         addPaymentLink.status === 200 &&
         addPaymentLink.data.response_new_token.length !== 0
       ) {
         setUserSession(addPaymentLink.data.response_new_token);
-        setAddPaylink(addPaymentLink.data.response_data)
-        setShowModal(true)
+        setAddPaylink(addPaymentLink.data.response_data);
+        setShowModal(true);
       }
     } catch (error) {
       console.log(error);
@@ -200,14 +203,28 @@ function AddPayment() {
     }
   }
 
-  
   function handleChange(e) {
-    e.preventDefault()
+    e.preventDefault();
     setInputHandle({
       ...inputHandle,
       [e.target.name]: e.target.value,
     });
+    setNotCompleteData({
+      nominal: false,
+      refId: false,
+    });
   }
+
+  const goToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    setNotCompleteData({
+      nominal: inputHandle.nominal == null,
+      refId: inputHandle.refId == "",
+    });
+  };
 
   useEffect(() => {
     if (!access_token) {
@@ -236,7 +253,7 @@ function AddPayment() {
   const closeModal = () => {
     setShowModal(false);
     setSave(false);
-    window.location.reload()
+    window.location.reload();
   };
 
   function toDashboard() {
@@ -284,12 +301,18 @@ function AddPayment() {
               Amount <span style={{ color: "red" }}>*</span>
             </div>
             <input
-              onChange={handleChange}
+              type="number"
               name="nominal"
-              className="input-text-user"
+              onChange={handleChange}
+              class={
+                isNotCompleteData.nominal == true
+                  ? "form-control is-invalid"
+                  : "input-text-user"
+              }
               placeholder="Masukkan Nominal Tagihan"
               value={inputHandle.nominal}
-              />
+              required
+            />
             <div className="my-1" style={{ fontSize: "12px" }}>
               *Biaya Admin: Rp 0 ( Dibebankan kepada partner )
             </div>
@@ -311,7 +334,11 @@ function AddPayment() {
             </div>
             <input
               name="refId"
-              className="input-text-user"
+              class={
+                isNotCompleteData.refId == true
+                  ? "form-control is-invalid"
+                  : "input-text-user"
+              }
               placeholder="Masukkan ID Referensi"
               value={inputHandle.refId}
               onChange={handleChange}
@@ -412,7 +439,7 @@ function AddPayment() {
               onChange={handleChange}
               name="useLimit"
               type="number"
-              min="0" 
+              min="1"
               step="1"
               className="input-text-user"
               value={inputHandle.useLimit}
@@ -508,21 +535,27 @@ function AddPayment() {
       >
         <button
           onClick={() =>
-            addPaylinkHandler(
-              inputHandle.paymentId,
-              inputHandle.refId,
-              parseInt(inputHandle.nominal),
-              (
-                dateDay.year +
-                "-" +
-                convertTimeDigit(dateDay.month) +
-                "-" +
-                convertTimeDigit(dateDay.day)
-              ).toString(),
-              inputHandle.useLimit,
-              stringChoosenPayCode,
-              inputHandle.desc
-            )
+            inputHandle.refId == "" || inputHandle.nominal == null
+              ? goToTop()
+              : addPaylinkHandler(
+                  inputHandle.paymentId,
+                  inputHandle.refId,
+                  parseInt(inputHandle.nominal),
+                  (
+                    dateDay.year +
+                    "-" +
+                    convertTimeDigit(dateDay.month) +
+                    "-" +
+                    convertTimeDigit(dateDay.day) +
+                    " " +
+                    convertTimeDigit(inputHourHandle) +
+                    ":" +
+                    convertTimeDigit(inputMinuteHandle)
+                  ).toString(),
+                  inputHandle.useLimit,
+                  stringChoosenPayCode,
+                  inputHandle.desc
+                )
           }
           style={{
             fontFamily: "Exo",
