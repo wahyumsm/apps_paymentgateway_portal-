@@ -379,6 +379,16 @@ function ListPayment() {
     history.push("/listpayment");
   }
 
+  const copyLink = async (url) => {
+    var copyText = url;
+    if ("clipboard" in navigator) {
+      await navigator.clipboard.writeText(copyText);
+    } else {
+      document.execCommand("copy", true, copyText);
+    }
+    alert("Text copied");
+};
+
   useEffect(() => {
     if (!access_token) {
       // RouteTo("/login")
@@ -858,23 +868,18 @@ function ListPayment() {
                                 style={{ cursor: "pointer" }}
                               />
                             </OverlayTrigger>
-                            {/* <FontAwesomeIcon
-                              icon={faEye}
-                              onClick={() =>
-                                detailPaymentHandler(item.tpaylink_id)
-                              }
-                              className="me-2"
-                              style={{ cursor: "pointer" }}
-                            /> */}
-                            <FontAwesomeIcon
-                              icon={faClone}
-                              className="mx-2"
-                              style={{
-                                cursor: "pointer",
-                                display:
-                                  item.tvatrans_status_id === 17 ? "" : "none",
-                              }}
-                            />
+                            <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip style={{ maxWidth: 200, width: 105 }}>Salin Link</Tooltip>}>
+                              <FontAwesomeIcon
+                                icon={faClone}
+                                className="mx-2"
+                                onClick={() => copyLink(item.tpaylink_url)}
+                                style={{
+                                  cursor: "pointer",
+                                  display:
+                                    item.tvatrans_status_id === 17 ? "" : "none",
+                                }}
+                              />
+                            </OverlayTrigger>
                           </div>
                         </td>
                       </tr>

@@ -67,8 +67,6 @@ function EditPartner() {
     fiturs: 0,
   });
 
-  console.log(inputHandle.namaPerusahaan, "ini nama perusahaan");
-
   const showCheckboxes = () => {
     if (!expanded) {
       setExpanded(true);
@@ -92,19 +90,36 @@ function EditPartner() {
   }
 
   const handleChoosenPaymentType = useCallback(
-    (e, payTypeId, payTypeName) => {
+    (e, payTypeId, payTypeName, listMethod) => {
       if (e.target.checked) {
-        setPaymentMethod((value) => [...value, payTypeId]);
-        setPaymentNameMethod((item) => [...item, payTypeName]);
+        if (payTypeId === 0) {
+          const allId = Object.values(listMethod).map(val => val.payment_id)          
+          const allName = Object.values(listMethod).map(val => val.payment_name )
+          setPaymentMethod(allId)
+          setPaymentNameMethod(allName)
+        } else {
+          console.log("mbawah");
+          setPaymentMethod((value) => [...value, payTypeId]);
+          setPaymentNameMethod((item) => [...item, payTypeName]);
+        }
+        
       } else {
-        setPaymentMethod((item) => item.filter((value) => value !== payTypeId));
-        setPaymentNameMethod((item) =>
+        if (payTypeId === 0) {
+          setPaymentMethod([])
+          setPaymentNameMethod([])
+        } else {
+          setPaymentMethod((item) => item.filter((value) => value !== payTypeId));
+          setPaymentNameMethod((item) =>
           item.filter((items) => items !== payTypeName)
         );
+        }
       }
     },
     [setPaymentMethod, setPaymentNameMethod]
   );
+
+  console.log(listTypeMethod, "ini listTypeMethod")
+  console.log(Object.values(listTypeMethod).map(val => val.payment_id), "ini all")
 
   const handleChangeFitur = (e) => {
     setLoading(true)
@@ -118,7 +133,7 @@ function EditPartner() {
     }
   };
 
-  //   console.log(paymentMethod, "ini metode payment");
+    console.log(paymentMethod.filter(it => it !== 0), "ini metode payment");
   //   console.log(paymentNameMethod, "ini name methodnya");
   //   console.log(payment, "ini payment");
   //   console.log(fitur[0], "ini fitur id");
@@ -1321,7 +1336,8 @@ function EditPartner() {
                                       handleChoosenPaymentType(
                                         e,
                                         item.payment_id,
-                                        item.payment_name
+                                        item.payment_name,
+                                        listTypeMethod
                                       )
                                     }
                                   />
@@ -1356,7 +1372,8 @@ function EditPartner() {
                                       handleChoosenPaymentType(
                                         e,
                                         item.payment_id,
-                                        item.payment_name
+                                        item.payment_name,
+                                        listTypeMethod
                                       )
                                     }
                                   />
@@ -1400,7 +1417,8 @@ function EditPartner() {
                                       handleChoosenPaymentType(
                                         e,
                                         item.payment_id,
-                                        item.payment_name
+                                        item.payment_name,
+                                        listTypeMethod
                                       )
                                     }
                                   />
@@ -1438,7 +1456,8 @@ function EditPartner() {
                                       handleChoosenPaymentType(
                                         e,
                                         item.payment_id,
-                                        item.payment_name
+                                        item.payment_name,
+                                        listTypeMethod
                                       )
                                     }
                                   />
@@ -1477,8 +1496,8 @@ function EditPartner() {
                         inputHandle.settlementFee,
                         fitur[0],
                         fitur[1],
-                        paymentMethod,
-                        paymentNameMethod,
+                        paymentMethod.filter(it => it !== 0),
+                        paymentNameMethod.filter(it => it !== "Pilih Semua"),
                         payment.length + 1
                       )
                     }
@@ -1547,8 +1566,8 @@ function EditPartner() {
                           inputHandle.settlementFee,
                           fitur[0],
                           fitur[1],
-                          paymentMethod,
-                          paymentNameMethod
+                          paymentMethod.filter(it => it !== 0),
+                          paymentNameMethod.filter(it => it !== "Pilih Semua")
                         )
                       }
                     >
