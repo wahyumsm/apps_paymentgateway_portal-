@@ -6,8 +6,10 @@ import {
   faCog,
   faEye,
   faClone,
+  faSortUp,
+  faSortDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { Row, Col, Form, Image } from "@themesberg/react-bootstrap";
+import { Row, Col, Form, Image, OverlayTrigger, Tooltip } from "@themesberg/react-bootstrap";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DataTable from "react-data-table-component";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
@@ -21,7 +23,7 @@ import { pageVisits } from "../../data/tables";
 function ListPayment() {
   const history = useHistory();
   const access_token = getToken();
-  const [listPaylink, setListPaylink] = useState({});
+  const [listPaylink, setListPaylink] = useState([]);
   const [showDatePaylink, setShowDatePaylink] = useState("none");
   const [statePaylink, setStatePaylink] = useState(null);
   const [dateRangePaylink, setDateRangePaylink] = useState([]);
@@ -30,13 +32,51 @@ function ListPayment() {
   const [totalPagePaylink, setTotalPagePaylink] = useState(0);
   const [pendingPaylink, setPendingPaylink] = useState(false);
   const [isFilterPaylink, setIsFilterPaylink] = useState(false);
+  const [orderField, setOrderField] = useState("tpaylink_crtdt");
+  const [orderId, setOrderId] = useState(0);
   const [inputHandle, setInputHandle] = useState({
     paymentId: "",
     refId: "",
     periodePaylink: 0,
     statusPaylink: "",
-    rowPerPage: 10
+    rowPerPage: 10,
   });
+  const [payment, setPayment] = useState({
+    isDesc: false,
+    id: 1,
+  });
+  const [dates, setDates] = useState({
+    isDesc: false,
+    id: 1,
+  });
+  const [status, setStatus] = useState({
+    isDesc: false,
+    id: 1,
+  });
+
+  const showPayment = () => {
+    if (!payment.isDesc) {
+      setPayment({ isDesc: true, id: 0 });
+    } else {
+      setPayment({ isDesc: false, id: 1 });
+    }
+  };
+
+  const showDate = () => {
+    if (!dates.isDesc) {
+      setDates({ isDesc: true, id: 0 });
+    } else {
+      setDates({ isDesc: false, id: 1 });
+    }
+  };
+
+  const showStatus = () => {
+    if (!status.isDesc) {
+      setStatus({ isDesc: true, id: 0 });
+    } else {
+      setStatus({ isDesc: false, id: 1 });
+    }
+  };
 
   function handleChange(e) {
     setInputHandle({
@@ -45,8 +85,71 @@ function ListPayment() {
     });
   }
 
+  function handleClickSort(orderId, orderField, isFilterPaylink) {
+    if (orderField === "tpaylink_code" && isFilterPaylink === false) {
+      setOrderField("tpaylink_code");
+      showPayment();
+      setOrderId(orderId);
+      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
+    } else if (orderField === "tpaylink_code" && isFilterPaylink === true) {
+      setOrderField("tpaylink_code");
+      showPayment();
+      setOrderId(orderId);
+      filterPaymentLinkHandler(
+        inputHandle.paymentId,
+        inputHandle.refId,
+        dateRangePaylink,
+        inputHandle.periodePaylink,
+        1,
+        inputHandle.rowPerPage,
+        orderId,
+        orderField,
+        inputHandle.statusPaylink
+      );
+    } else if (orderField === "tpaylink_crtdt" && isFilterPaylink === false) {
+      setOrderField("tpaylink_code");
+      showDate();
+      setOrderId(orderId);
+      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
+    } else if (orderField === "tpaylink_crtdt" && isFilterPaylink === true) {
+      setOrderField("tpaylink_code");
+      showDate();
+      setOrderId(orderId);
+      filterPaymentLinkHandler(
+        inputHandle.paymentId,
+        inputHandle.refId,
+        dateRangePaylink,
+        inputHandle.periodePaylink,
+        1,
+        inputHandle.rowPerPage,
+        orderId,
+        orderField,
+        inputHandle.statusPaylink
+      );
+    } else if (orderField === "mstatus_name" && isFilterPaylink === false) {
+      setOrderField("mstatus_name");
+      showStatus();
+      setOrderId(orderId);
+      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
+    } else if (orderField === "mstatus_name" && isFilterPaylink === true) {
+      setOrderField("mstatus_name");
+      showStatus();
+      setOrderId(orderId);
+      filterPaymentLinkHandler(
+        inputHandle.paymentId,
+        inputHandle.refId,
+        dateRangePaylink,
+        inputHandle.periodePaylink,
+        1,
+        inputHandle.rowPerPage,
+        orderId,
+        orderField,
+        inputHandle.statusPaylink
+      );
+    }
+  }
+
   function handlePageChangePaylink(page) {
-    // console.log(page, 'ini di handle change page');
     if (isFilterPaylink) {
       setActivePagePaylink(page);
       filterPaymentLinkHandler(
@@ -56,24 +159,24 @@ function ListPayment() {
         inputHandle.periodePaylink,
         1,
         inputHandle.rowPerPage,
-        0,
-        "",
+        orderId,
+        orderField,
         inputHandle.statusPaylink
       );
     } else {
       setActivePagePaylink(page);
-      getListPaymentLink(page, inputHandle.rowPerPage);
+      getListPaymentLink(page, inputHandle.rowPerPage, orderId, orderField);
     }
   }
 
   function handleChangeEntries(e) {
-    console.log(e.target.name, "ini name");
-    console.log(e.target.value, "ini value");
+    // console.log(e.target.name, "ini name");
+    // console.log(e.target.value, "ini value");
     setInputHandle({
       ...inputHandle,
       [e.target.name]: e.target.value,
     });
-    if (isFilterPaylink) {
+    if (isFilterPaylink === true) {
       filterPaymentLinkHandler(
         inputHandle.paymentId,
         inputHandle.refId,
@@ -81,12 +184,12 @@ function ListPayment() {
         inputHandle.periodePaylink,
         1,
         e.target.value,
-        0,
-        "",
+        orderId,
+        orderField,
         inputHandle.statusPaylink
       );
     } else {
-      getListPaymentLink(1, e.target.value);
+      getListPaymentLink(1, e.target.value, orderId, orderField);
     }
   }
 
@@ -102,302 +205,22 @@ function ListPayment() {
     history.push(`/detailpayment/${paymentId}`);
   }
 
-  function sortHandle(
-    rows,
-    selector,
-    direction,
-    paymentId,
-    refId,
-    dateRangePaylink,
-    periodePaylink,
-    statusPaylink
-  ) {
-    console.log(rows, "ini rows");
-    console.log(direction, "ini direction");
-    console.log(String(selector).slice(11), "ini selector");
-    // async function sorted(
-    //   selector,
-    //   direction,
-    //   paymentId,
-    //   refId,
-    //   dateRangePaylink,
-    //   periodePaylink,
-    //   statusPaylink
-    // ) {
-      
-    // }
-    // sorted(
-    //   selector,
-    //   direction,
-    //   paymentId,
-    //   refId,
-    //   dateRangePaylink,
-    //   periodePaylink,
-    //   statusPaylink
-    // );
-    return rows.sort(async (a, b) => {
-      console.log(selector(a), "ini a");
-      console.log(selector(b), "ini b");
-      console.log(inputHandle.paymentId, ";ini payment id");
-      try {
-        const auth = "Bearer " + getToken();
-        const dataParams = encryptData(
-          `{"payment_code":"${
-            paymentId.length !== 0 ? paymentId : ""
-          }", "ref_id": "${refId.length !== 0 ? refId : ""}", "date_from": "${
-            dateRangePaylink.length !== 0 ? dateRangePaylink[0] : ""
-          }", "date_to":"${
-            dateRangePaylink.length !== 0 ? dateRangePaylink[1] : ""
-          }", "dateID": ${periodePaylink}, "page": ${1}, "row_per_page": 10, "order_id": ${
-            direction === "desc" ? 0 : 1
-          }, "order_field": "${String(selector).slice(11)}", "statusID": [${
-            statusPaylink.length !== 0 ? statusPaylink : ["2,7,9,16,17,18"]
-          }] }`
-        );
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: auth,
-        };
-        console.log(dataParams);
-        const sortedData = await axios.post(
-          "/PaymentLink/PayametListGetOrder",
-          { data: dataParams },
-          { headers: headers }
-        );
-        console.log(sortedData, "ini sorted data");
-        if (
-          sortedData.status === 200 &&
-          sortedData.data.response_code === 200 &&
-          sortedData.data.response_new_token.length === 0
-        ) {
-          // setPageNumberPaylink(sortedData.data.response_data);
-          // setTotalPagePaylink(sortedData.data.response_data.max_page);
-          // setListPaylink(sortedData.data.response_data.results);
-          // return;
-          // setPending(false)
-        } else if (
-          sortedData.status === 200 &&
-          sortedData.data.response_code === 200 &&
-          sortedData.data.response_new_token.length !== 0
-        ) {
-          // setUserSession(sortedData.data.response_new_token);
-          // setPageNumberPaylink(sortedData.data.response_data);
-          // setTotalPagePaylink(sortedData.data.response_data.max_page);
-          // setListPaylink(sortedData.data.response_data.results);
-          // return;
-          // setPending(false)
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    });
-  }
-
-  const columnPayment = [
-    {
-      name: "Payment ID",
-      selector: (row) => row.tpaylink_code,
-      sortable: true,
-    },
-    {
-      name: "ID Referensi",
-      selector: (row) => row.tpaylink_ref_id,
-    },
-    {
-      name: "Tanggal Pembuatan",
-      selector: (row) => row.tpaylink_crtdt,
-      cell: (row) => (
-        <div>
-          {row.tpaylink_crtdt.slice(0, 10).replace(/-/g, "/") +
-            ", " +
-            row.tpaylink_crtdt.slice(11, 16)}
-        </div>
-      ),
-      sortable: true,
-    },
-    {
-      name: "Status",
-      selector: (row) => row.mstatus_name,
-      sortable: true,
-      style: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItem: "center",
-        padding: "6px 0px",
-        margin: "6px",
-        width: "100%",
-        borderRadius: 4,
-      },
-      conditionalCellStyles: [
-        {
-          when: (row) => row.tvatrans_status_id === 2,
-          style: {
-            background: "rgba(7, 126, 134, 0.08)",
-            color: "#077E86",
-            paddingLeft: "unset",
-          },
-        },
-        {
-          when: (row) =>
-            row.tvatrans_status_id === 7 || row.tvatrans_status_id === 16,
-          style: {
-            background: "rgba(185, 18, 27, 0.08)",
-            color: "#B9121B",
-            paddingLeft: "unset",
-          },
-        },
-        {
-          when: (row) => row.tvatrans_status_id === 17,
-          style: {
-            background: "#EBF8EC",
-            color: "#3DB54A",
-            paddingLeft: "unset",
-          },
-        },
-        {
-          when: (row) => row.tvatrans_status_id === 18,
-          style: {
-            background: "#F0F0F0",
-            color: "#888888;",
-            paddingLeft: "unset",
-          },
-        },
-      ],
-    },
-    {
-      name: "Aksi",
-      selector: (row) => (
-        <div className="d-flex justify-content-center align-items-center">
-          <FontAwesomeIcon
-            icon={faEye}
-            onClick={() => detailPaymentHandler(row.tpaylink_id)}
-            className="me-2"
-            style={{ cursor: "pointer" }}
-          />
-          <FontAwesomeIcon
-            icon={faClone}
-            className="mx-2"
-            style={{
-              cursor: "pointer",
-              display: row.tvatrans_status_id === 17 ? "" : "none",
-            }}
-          />
-        </div>
-      ),
-    },
-  ];
-
-  const columnDummy = [
-    {
-      name: "Payment ID",
-      selector: (row) => row.id,
-      sortable: true,
-    },
-    {
-      name: "ID Referensi",
-      selector: (row) => row.views,
-    },
-    {
-      name: "Tanggal Pembuatan",
-      selector: (row) => row.returnValue,
-      // cell: (row) => (
-      //   <div>
-      //     {row.tpaylink_crtdt.slice(0, 10).replace(/-/g, "/") +
-      //       ", " +
-      //       row.tpaylink_crtdt.slice(11, 16)}
-      //   </div>
-      // ),
-      // sortable: true,
-    },
-    {
-      name: "Status",
-      selector: (row) => row.bounceRate,
-      // sortable: true,
-      // style: {
-      //   display: "flex",
-      //   flexDirection: "row",
-      //   justifyContent: "center",
-      //   alignItem: "center",
-      //   padding: "6px 0px",
-      //   margin: "6px",
-      //   width: "100%",
-      //   borderRadius: 4,
-      // },
-      // conditionalCellStyles: [
-      //   {
-      //     when: (row) => row.tvatrans_status_id === 2,
-      //     style: {
-      //       background: "rgba(7, 126, 134, 0.08)",
-      //       color: "#077E86",
-      //       paddingLeft: "unset",
-      //     },
-      //   },
-      //   {
-      //     when: (row) =>
-      //       row.tvatrans_status_id === 7 || row.tvatrans_status_id === 16,
-      //     style: {
-      //       background: "rgba(185, 18, 27, 0.08)",
-      //       color: "#B9121B",
-      //       paddingLeft: "unset",
-      //     },
-      //   },
-      //   {
-      //     when: (row) => row.tvatrans_status_id === 17,
-      //     style: {
-      //       background: "#EBF8EC",
-      //       color: "#3DB54A",
-      //       paddingLeft: "unset",
-      //     },
-      //   },
-      //   {
-      //     when: (row) => row.tvatrans_status_id === 18,
-      //     style: {
-      //       background: "#F0F0F0",
-      //       color: "#888888;",
-      //       paddingLeft: "unset",
-      //     },
-      //   },
-      // ],
-    },
-    {
-      name: "Aksi",
-      selector: (row) => row.pageName
-      // selector: (row) => (
-      //   <div className="d-flex justify-content-center align-items-center">
-      //     <FontAwesomeIcon
-      //       icon={faEye}
-      //       onClick={() => detailPaymentHandler(row.tpaylink_id)}
-      //       className="me-2"
-      //       style={{ cursor: "pointer" }}
-      //     />
-      //     <FontAwesomeIcon
-      //       icon={faClone}
-      //       className="mx-2"
-      //       style={{
-      //         cursor: "pointer",
-      //         display: row.tvatrans_status_id === 17 ? "" : "none",
-      //       }}
-      //     />
-      //   </div>
-      // ),
-    },
-  ];
-
-  async function getListPaymentLink(page, rowPerPage) {
+  async function getListPaymentLink(page, rowPerPage, orderId, orderField) {
     try {
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
         `{"payment_code":"", "date_from": "", "date_to":"", "dateID": 1, "page": ${
           page !== 0 ? page : 1
-        }, "row_per_page": ${rowPerPage !== 0 ? rowPerPage : 10}, "order_id": 0, "order_field": "mstatus_name", "statusID": ["2,7,9,16,17,18"] }`
+        }, "row_per_page": ${
+          rowPerPage !== 0 ? rowPerPage : 10
+        }, "order_id": ${orderId}, "order_field": "${orderField}", "statusID": ["2,7,9,16,17,18"] }`
       );
       const headers = {
         "Content-Type": "application/json",
         Authorization: auth,
       };
       const listPaylink = await axios.post(
-        "/PaymentLink/PayametListGetOrder",
+        "/PaymentLink/PaymentListGetOrder",
         { data: dataParams },
         { headers: headers }
       );
@@ -464,7 +287,7 @@ function ListPayment() {
         Authorization: auth,
       };
       const filterPaylink = await axios.post(
-        "/PaymentLink/PayametListGetOrder",
+        "/PaymentLink/PaymentListGetOrder",
         { data: dataParams },
         { headers: headers }
       );
@@ -561,7 +384,12 @@ function ListPayment() {
       // RouteTo("/login")
       history.push("/login");
     }
-    getListPaymentLink(activePagePaylink, inputHandle.rowPerPage);
+    getListPaymentLink(
+      activePagePaylink,
+      inputHandle.rowPerPage,
+      orderId,
+      orderField
+    );
   }, [access_token]);
 
   const CustomLoader = () => (
@@ -744,8 +572,8 @@ function ListPayment() {
                       inputHandle.periodePaylink,
                       1,
                       inputHandle.rowPerPage,
-                      0,
-                      "",
+                      orderId,
+                      orderField,
                       inputHandle.statusPaylink
                     )
                   }
@@ -822,7 +650,245 @@ function ListPayment() {
           </Form.Select>
           <div className="ms-3">entries</div>
         </div>
-        <div className="div-table mt-4 pb-4">
+        <div
+          className="div-table"
+          style={{
+            paddingBottom: 20,
+            marginBottom: 20,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <table
+            className="table table-bordered mt-3"
+            id="tableInvoice"
+            style={{ width: "100%" }}
+          >
+            <thead>
+              <tr>
+                {!payment.isDesc ? (
+                  <th
+                    onClick={() =>
+                      handleClickSort(
+                        payment.id,
+                        "tpaylink_code",
+                        isFilterPaylink
+                      )
+                    }
+                    style={{ width: 155, background: "#F3F4F5" }}
+                    className="align-items-center"
+                  >
+                    Payment ID
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faSortUp}
+                        size="lg"
+                        className="ms-2"
+                      />
+                    </span>
+                  </th>
+                ) : (
+                  <th
+                    onClick={() =>
+                      handleClickSort(
+                        payment.id,
+                        "tpaylink_code",
+                        isFilterPaylink
+                      )
+                    }
+                    style={{ width: 155, background: "#F3F4F5" }}
+                    className="align-items-center"
+                  >
+                    Payment ID
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faSortDown}
+                        size="lg"
+                        className="ms-2"
+                      />
+                    </span>
+                  </th>
+                )}
+                <th style={{ background: "#F3F4F5" }}>ID Referensi</th>
+                {!dates.isDesc ? (
+                  <th
+                    onClick={() =>
+                      handleClickSort(
+                        dates.id,
+                        "tpaylink_crtdt",
+                        isFilterPaylink
+                      )
+                    }
+                    style={{ background: "#F3F4F5" }}
+                  >
+                    Tanggal Pembuatan
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faSortUp}
+                        size="lg"
+                        className="ms-2"
+                      />
+                    </span>
+                  </th>
+                ) : (
+                  <th
+                    onClick={() =>
+                      handleClickSort(
+                        dates.id,
+                        "tpaylink_crtdt",
+                        isFilterPaylink
+                      )
+                    }
+                    style={{ background: "#F3F4F5" }}
+                  >
+                    Tanggal Pembuatan
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faSortDown}
+                        size="lg"
+                        className="ms-2"
+                      />
+                    </span>
+                  </th>
+                )}
+                {!status.isDesc ? (
+                  <th
+                    onClick={() =>
+                      handleClickSort(
+                        status.id,
+                        "mstatus_name",
+                        isFilterPaylink
+                      )
+                    }
+                    style={{ background: "#F3F4F5" }}
+                  >
+                    Status
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faSortUp}
+                        size="lg"
+                        className="ms-2"
+                      />
+                    </span>
+                  </th>
+                ) : (
+                  <th
+                    onClick={() =>
+                      handleClickSort(
+                        status.id,
+                        "mstatus_name",
+                        isFilterPaylink
+                      )
+                    }
+                    style={{ background: "#F3F4F5" }}
+                  >
+                    Status
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faSortDown}
+                        size="lg"
+                        className="ms-2"
+                      />
+                    </span>
+                  </th>
+                )}
+                <th style={{ background: "#F3F4F5" }}>Aksi</th>
+              </tr>
+            </thead>
+            {!pendingPaylink ? (
+              <tbody className="table-group-divider">
+                {listPaylink !== 0 &&
+                  listPaylink.map((item) => {
+                    return (
+                      <tr>
+                        <td style={{ paddingLeft: 18, width: 155 }}>
+                          {item.tpaylink_code}
+                        </td>
+                        <td style={{ paddingLeft: 18, width: 155 }}>
+                          {item.tpaylink_ref_id}
+                        </td>
+                        <td style={{ paddingLeft: 16, width: 155 }}>
+                          {item.tpaylink_crtdt.slice(0, 10).replace(/-/g, "/") +
+                            ", " +
+                            item.tpaylink_crtdt.slice(11, 16)}
+                        </td>
+                        <td
+                          style={{
+                            background:
+                              (item.tvatrans_status_id === 2 &&
+                                "rgba(7, 126, 134, 0.08)") ||
+                              (item.tvatrans_status_id === 1 && "#EBF8EC") ||
+                              (item.tvatrans_status_id === 7 &&
+                                "rgba(247, 148, 33, 0.08)") ||
+                              ((item.tvatrans_status_id === 9 ||
+                                item.tvatrans_status_id === 16) &&
+                                "rgba(185, 18, 27, 0.08)") ||
+                              (item.tvatrans_status_id === 17 && "#EBF8EC") ||
+                              (item.tvatrans_status_id === 18 && "#F0F0F0"),
+                            color:
+                              (item.tvatrans_status_id === 2 && "#077E86") ||
+                              (item.tvatrans_status_id === 1 && "#3DB54A") ||
+                              (item.tvatrans_status_id === 7 && "#F79421") ||
+                              ((item.tvatrans_status_id === 9 ||
+                                item.tvatrans_status_id === 16) &&
+                                "#B9121B") ||
+                              (item.tvatrans_status_id === 17 && "#3DB54A") ||
+                              (item.tvatrans_status_id === 18 && "#888888"),
+                            margin: 6,
+                            padding: "6px 0px",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItem: "center",
+                            borderRadius: 4,
+                          }}
+                          className="ms-2"
+                        >
+                          {item.mstatus_name}
+                        </td>
+                        <td>
+                          <div className=" ms-2 d-flex justify-content-start align-items-center">
+                            <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip style={{ maxWidth: 200, width: 105 }}>Lihat Detail</Tooltip>}>
+                              <FontAwesomeIcon
+                                icon={faEye}
+                                onClick={() =>
+                                  detailPaymentHandler(item.tpaylink_id)
+                                }
+                                className="me-2"
+                                style={{ cursor: "pointer" }}
+                              />
+                            </OverlayTrigger>
+                            {/* <FontAwesomeIcon
+                              icon={faEye}
+                              onClick={() =>
+                                detailPaymentHandler(item.tpaylink_id)
+                              }
+                              className="me-2"
+                              style={{ cursor: "pointer" }}
+                            /> */}
+                            <FontAwesomeIcon
+                              icon={faClone}
+                              className="mx-2"
+                              style={{
+                                cursor: "pointer",
+                                display:
+                                  item.tvatrans_status_id === 17 ? "" : "none",
+                              }}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            ) : (
+              <tbody>
+                <CustomLoader />
+              </tbody>
+            )}
+          </table>
+        </div>
+        {/* <div className="div-table mt-4 pb-4">
           <DataTable
             columns={columnPayment}
             data={listPaylink}
@@ -843,7 +909,7 @@ function ListPayment() {
             progressComponent={<CustomLoader />}
             dense
           />
-        </div>
+        </div> */}
         <div
           style={{
             display: "flex",

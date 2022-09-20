@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState, useCallback} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row, Image} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
@@ -10,7 +10,8 @@ import encryptData from '../../function/encryptData';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { agenLists } from "../../data/tables";
+import edit from '../../assets/icon/edit_icon.svg';
+import deleted from '../../assets/icon/delete_icon.svg'
 
 function DetailPartner() {
 
@@ -21,6 +22,8 @@ function DetailPartner() {
     const { partnerId } = useParams()
     const [listAgen, setListAgen] = useState([])
     const [detailPartner, setDetailPartner] = useState([])
+    const [payment, setPayment] = useState([])
+    const [fiturType, setFiturType] = useState({})
     const [expanded, setExpanded] = useState(false)
     const myRef = useRef(null)
 
@@ -31,7 +34,49 @@ function DetailPartner() {
           setExpanded(false);
         }
     };
-    // console.log(partnerId, 'ini agen id');
+
+    let atasFitur = 0
+    let bawahFitur = 0
+    let equalFitur = 0
+
+    if(fiturType.length % 2 === 1) {
+        atasFitur = Math.ceil(fiturType.length / 2)
+        bawahFitur = fiturType.length - atasFitur
+    } else {
+        equalFitur = fiturType.length / 2
+    }
+
+    function dataAtasFitur(params1) {
+        let dataFitur = []
+        for (let i = 0; i < params1; i++) {
+            dataFitur.push(fiturType[i])
+        }
+        return dataFitur
+    }
+
+    function dataBawahFitur(params2) {
+        let dataFitur = []
+        for (let i = params2 + 1; i < fiturType.length; i++) {
+            dataFitur.push(fiturType[i])
+        }
+        return dataFitur
+    }
+
+    function dataAtasEqualFitur(params1) {
+        let dataFitur = []
+        for (let i = 0; i < params1; i++) {
+            dataFitur.push(fiturType[i])
+        }
+        return dataFitur
+    }
+
+    function dataBawahEqualFitur(params2) {
+        let dataFitur = []
+        for (let i = params2; i < fiturType.length; i++) {
+            dataFitur.push(fiturType[i])
+        }
+        return dataFitur
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getDetailPartner(partnerId) {
@@ -45,11 +90,14 @@ function DetailPartner() {
             const detailPartner = await axios.post("/Partner/EditPartner", { data: dataParams }, { headers: headers })
             // console.log(detailPartner, 'ini detail partner');
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
-                // console.log(detailPartner.data, 'ini detail agen');
+                detailPartner.data.response_data.payment_method = detailPartner.data.response_data.payment_method.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
                 setDetailPartner(detailPartner.data.response_data)
+                setPayment(detailPartner.data.response_data.payment_method)
             } else if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length !== 0) {
                 setUserSession(detailPartner.data.response_new_token)
+                detailPartner.data.response_data.payment_method = detailPartner.data.response_data.payment_method.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
                 setDetailPartner(detailPartner.data.response_data)
+                setPayment(detailPartner.data.response_data.payment_method)
             }
         } catch (error) {
             console.log(error)
@@ -138,6 +186,28 @@ function DetailPartner() {
         }
     }
 
+    async function getTypeFitur() {
+        try {
+          const auth = "Bearer " + getToken()
+          const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+          }
+          const listFitur = await axios.post("/Partner/GetFitur", { data: "" }, { headers: headers })
+          console.log(listFitur, 'ini data list fitur');
+          if (listFitur.status === 200 && listFitur.data.response_code === 200 && listFitur.data.response_new_token.length === 0) {
+            setFiturType(listFitur.data.response_data)
+          } else if (listFitur.status === 200 && listFitur.data.response_code === 200 && listFitur.data.response_new_token.length !== 0) {
+            setUserSession(listFitur.data.response_new_token)
+            setFiturType(listFitur.data.response_data)
+          }
+        } catch (error) {
+          console.log(error)
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
@@ -147,35 +217,36 @@ function DetailPartner() {
         }
         getDetailPartner(partnerId)
         getDataAgen(partnerId)
+        getTypeFitur()
     }, [access_token, user_role, partnerId])
 
     const columnPayment = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.number,
             width: '67px'
         },
         {
             name: 'Metode Pembayaran',
-            selector: row => row.noHp,
-            width: "185px"
+            selector: row => row.mpaytype_name.join(", "),
+            width: "200px"
         },
         {
             name: 'Fitur',
-            selector: row => row.noRekening
+            selector: row => row.fitur_name
         },
         {
             name: 'Fee',
-            selector: row => row.status
+            selector: row => row.fee,
         },
         {
             name: 'Settlement Fee',
-            selector: row => row.id,
+            selector: row => row.fee_settle,
             width: "150px"
         },        
         {
             name: 'Aksi',
-            selector: row => row.id,
+            selector: row => row.icon,
             width: "130px"
         }
     ]
@@ -366,99 +437,94 @@ function DetailPartner() {
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>Fee<span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(detailPartner.mpartner_fee)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee<span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(detailPartner.mpartnerdtl_settlement_fee)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <table style={{width: '100%', marginLeft: 'unset'}} className="table-form mb-5">
-                            <thead></thead>
-                            <tbody>
-                                <tr>
-                                    <td style={{width: 200}}>Metode Pembayaran<span style={{color: "red"}}>*</span></td>
-                                    <td>
-                                        <br/>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" disabled />
-                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Pilih Semua</label>
-                                        </div>
-                                        <br/>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" disabled />
-                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Virtual Account BCA</label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <br/>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" disabled />
-                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Gopay</label>
-                                        </div>
-                                        <br/>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" disabled />
-                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">ShopeePay</label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <br/>
-                                <tr >
-                                    <td style={{width: 200}}>Fitur<span style={{color: "red"}}>*</span></td>
-                                    <td>
-                                        <br/>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" disabled />
-                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Pilih Semua</label>
-                                        </div>
-                                        <br/>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" disabled />
-                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Virtual Account</label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <br/>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" disabled />
-                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Payment Link</label>
-                                        </div>
-                                        <br/>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" disabled />
-                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">Transfer</label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <br/>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>                                       
-                                        {expanded ?
-                                            <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
-                                                <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
-                                                    Sembunyikan tabel skema biaya <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
-                                                </button>
-                                            </div> :
-                                            <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} className="mb-2">
-                                                <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
-                                                    Lihat tabel skema lainnya <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
-                                                </button>
-                                            </div>                                            
-                                        }  
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <Row className="mt-4">
+                            <Col xs={3} style={{paddingLeft: 20}}>
+                                Fitur<span style={{color: "red"}}>*</span>
+                            </Col>
+                            <Col className="ms-2">
+                                {equalFitur === 0 ? (
+                                    <>
+                                        <Row>
+                                            {dataAtasFitur(atasFitur).map((item) => {
+                                                return (
+                                                    <Col  key={item.fitur_id} xs={2}>
+                                                        <div className="form-check form-check-inline">
+                                                            <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled />
+                                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
+                                                        </div>
+                                                    </Col>
+                                                )
+                                            })}
+                                        </Row>
+                                        <Row>                                            
+                                            {dataBawahFitur(bawahFitur).map((item) => {
+                                                return (
+                                                    <Col key={item.fitur_id} xs={2}>
+                                                        <div className="form-check form-check-inline">
+                                                            <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled />
+                                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
+                                                        </div>
+                                                    </Col>
+                                                )
+                                            })}
+                                        </Row>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Row>
+                                            {dataAtasEqualFitur(equalFitur).map((item) => {
+                                                return (
+                                                    <Col key={item.fitur_id} xs={2}>
+                                                        <div className="form-check form-check-inline">
+                                                            <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled/>
+                                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
+                                                        </div>
+                                                    </Col>
+                                                )
+                                            })}                                            
+                                        </Row>
+                                        <Row>
+                                            {dataBawahEqualFitur(equalFitur).map((item) => {
+                                                return (
+                                                    <Col  key={item.fitur_id} xs={2}>
+                                                        <div className="form-check form-check-inline">
+                                                            <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled/>
+                                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
+                                                        </div>
+                                                    </Col>
+                                                )
+                                            })}
+                                        </Row>
+                                    </>
+                                )}
+                            </Col>
+                        </Row>
+                        {expanded ?
+                            <div className='my-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
+                                <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
+                                    Sembunyikan tabel skema biaya <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                                </button>
+                            </div> :
+                            <div className='my-4 mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
+                                <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
+                                    Lihat tabel skema lainnya <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                                </button>
+                            </div>                                            
+                        }
                         {expanded && 
                             <div className="div-table pb-4" ref={myRef}>
                                 <DataTable
                                     columns={columnPayment}
-                                    data={agenLists}
+                                    data={payment}
                                     customStyles={customStyles}
                                     // progressPending={pendingSettlement}
                                     progressComponent={<CustomLoader />}

@@ -33,7 +33,9 @@ import topUpSaldoIcon from "../assets/icon/top_up_saldo_icon.svg";
 import noteIcon from "../assets/icon/note_icon.svg";
 import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
+import alokasiIcon from "../assets/icon/alokasi_icon.svg"
 import arrowDown from "../assets/img/icons/arrow_down.svg";
+import arrowUp from "../assets/img/icons/arrow_up.svg";
 import { useHistory } from "react-router-dom";
 import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession } from "../function/helpers";
 import axios from "axios";
@@ -85,6 +87,7 @@ export default (props) => {
   const hiddenFileInput = useRef(null);
   const access_token = getToken()
   const [text, setText] = useState('');
+  const [expanded, setExpanded] = useState(false)
   const [nominalTopup, setNominalTopup] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     amounts: 0,
@@ -147,6 +150,14 @@ export default (props) => {
     await navigator.clipboard.writeText(copyText);
     alert('Text copied');
   };
+
+  const showCheckboxes = () => {
+    if (!expanded) {
+      setExpanded(true);
+    } else {
+      setExpanded(false);
+    }
+  }
 
   async function topUpConfirmation(amounts) {
     try {
@@ -444,29 +455,56 @@ export default (props) => {
               (user_role === "102") && 
               <Dropdown as={Nav.Item}>
                 <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
-                  <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
+                  <div onClick={showCheckboxes} className="media-body ms-2 text-dark align-items-center d-block d-lg-block">                    
                     <span className="mb-0 font-small">Saldo: </span>
                     <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
                     <img
                       src={arrowDown}
-                      alt="arrow_down"
-                      style={{ marginLeft: 10 }}
-                    />
+                      alt="arrow_up"
+                      className="ms-2"
+                    />                    
                   </div>
                 </Dropdown.Toggle>
-                <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
-                  <Dropdown.Item
-                    onClick={() => setShowModalTopUp(true)}
-                    className="fw-bold"
-                  >
-                    <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    onClick={() => toHistoryBalance()}
-                    className="fw-bold"
-                  >
-                    <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
-                  </Dropdown.Item>
+                <Dropdown.Menu onClick={showCheckboxes} className="user-dropdown dropdown-menu-right mt-2 d-flex justify-content-center align-items-center">
+                  <div className="pe-2">
+                    <Dropdown.Item
+                      className="fw-bold"
+                    >
+                      <div className="mt-1 d-flex justify-content-center align-items-center">
+                        <div className="me-2" style={{borderRadius: "50%", background: "#077E86", width: 10, height: 10}}></div>
+                        <div style={{fontSize: 14, fontFamily: "Nunito", fontWeight: 400, color: "#383838"}}>Alokasi Saldo di BCA</div>
+                      </div>
+                      <div style={{fontSize: 14, fontFamily: "Exo", fontWeight: 700, color: "#383838"}}>Rp 0</div>
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className="fw-bold"
+                    >
+                      <div className="mt-1 d-flex justify-content-center align-items-center">
+                        <div className="me-2" style={{borderRadius: "50%", background: "#2184F7", width: 10, height: 10}}></div>
+                        <div style={{fontSize: 14, fontFamily: "Nunito", fontWeight: 400, color: "#383838"}}>Alokasi Saldo di Dana</div>
+                      </div>
+                      <div style={{fontSize: 14, fontFamily: "Exo", fontWeight: 700, color: "#383838"}}>Rp 0</div>
+                    </Dropdown.Item>
+                  </div>
+                  <div style={{border:"1px solid #EBEBEB", width: 0, height: 136}}></div>
+                  <div  className="ps-2">
+                    <Dropdown.Item
+                      className="fw-bold" style={{width: 160}}
+                    >
+                      <div className="pe-2"><img alt="" src={topUpSaldoIcon}  /> <span>Top Up Saldo</span></div>
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => toHistoryBalance()}
+                      className="fw-bold"
+                    >
+                      <div className="pe-2"><img alt="" src={riwayatSaldoIcon}  /> Riwayat Top Up</div>
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className="fw-bold"
+                    >
+                      <div className="pe-2"><img alt="" src={alokasiIcon} /> Alokasi Salso</div>
+                    </Dropdown.Item>
+                  </div>
                 </Dropdown.Menu>
               </Dropdown>
             }
