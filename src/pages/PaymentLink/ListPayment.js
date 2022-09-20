@@ -224,7 +224,7 @@ function ListPayment() {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(listPaylink, "ini data list paylink");
+      // console.log(listPaylink, "ini data list paylink");
       if (
         listPaylink.status === 200 &&
         listPaylink.data.response_code === 200 &&
@@ -291,7 +291,7 @@ function ListPayment() {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(filterPaylink, "ini data list paylink filter");
+      // console.log(filterPaylink, "ini data list paylink filter");
       if (
         filterPaylink.status === 200 &&
         filterPaylink.data.response_code === 200 &&
@@ -318,7 +318,7 @@ function ListPayment() {
     }
   }
 
-  console.log(inputHandle.rowPerPage, "ini row per page");
+  // console.log(inputHandle.rowPerPage, "ini row per page");
 
   function resetButtonHandle(param) {
     if (param === "Reset Filter") {

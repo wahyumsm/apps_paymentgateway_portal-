@@ -100,7 +100,7 @@ function DetailPartner() {
                 setPayment(detailPartner.data.response_data.payment_method)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
@@ -180,7 +180,7 @@ function DetailPartner() {
             setListAgen(listAgen.data.response_data)
           }
         } catch (error) {
-          console.log(error)
+        //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
@@ -194,7 +194,7 @@ function DetailPartner() {
             'Authorization' : auth
           }
           const listFitur = await axios.post("/Partner/GetFitur", { data: "" }, { headers: headers })
-          console.log(listFitur, 'ini data list fitur');
+        //   console.log(listFitur, 'ini data list fitur');
           if (listFitur.status === 200 && listFitur.data.response_code === 200 && listFitur.data.response_new_token.length === 0) {
             setFiturType(listFitur.data.response_data)
           } else if (listFitur.status === 200 && listFitur.data.response_code === 200 && listFitur.data.response_new_token.length !== 0) {
@@ -202,7 +202,7 @@ function DetailPartner() {
             setFiturType(listFitur.data.response_data)
           }
         } catch (error) {
-          console.log(error)
+        //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }

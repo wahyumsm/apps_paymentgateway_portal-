@@ -85,15 +85,28 @@ function TambahPartner() {
   }
 
   const handleChoosenPaymentType = useCallback(
-    (e, payTypeId, payTypeName) => {
+    (e, payTypeId, payTypeName, listMethod) => {
       if (e.target.checked) {
-        setPaymentMethod((value) => [...value, payTypeId]);
-        setPaymentNameMethod((item) => [...item, payTypeName]);
+        if (payTypeId === 0) {
+          const allId = Object.values(listMethod).map(val => val.payment_id)          
+          const allName = Object.values(listMethod).map(val => val.payment_name )
+          setPaymentMethod(allId)
+          setPaymentNameMethod(allName)
+        } else {
+          setPaymentMethod((value) => [...value, payTypeId]);
+          setPaymentNameMethod((item) => [...item, payTypeName]);
+        }
+        
       } else {
-        setPaymentMethod((item) => item.filter((value) => value !== payTypeId));
-        setPaymentNameMethod((item) =>
+        if (payTypeId === 0) {
+          setPaymentMethod([])
+          setPaymentNameMethod([])
+        } else {
+          setPaymentMethod((item) => item.filter((value) => value !== payTypeId));
+          setPaymentNameMethod((item) =>
           item.filter((items) => items !== payTypeName)
         );
+        }
       }
     },
     [setPaymentMethod, setPaymentNameMethod]
@@ -103,7 +116,6 @@ function TambahPartner() {
     setLoading(true);
     getTypeMethod(e.target.value);
     if (e.target.checked) {
-      console.log(listTypeMethod);
       setFitur([e.target.value, e.target.name]);
       setLoading(false);
       setPaymentMethod([]);
@@ -257,7 +269,7 @@ function TambahPartner() {
     setPaymentNameMethod([]);
   }
 
-  console.log(payment, "ini payment");
+  // console.log(payment, "ini payment");
 
   async function getTypeFitur() {
     try {
@@ -271,7 +283,7 @@ function TambahPartner() {
         { data: "" },
         { headers: headers }
       );
-      console.log(listFitur, "ini data list fitur");
+      // console.log(listFitur, "ini data list fitur");
       if (
         listFitur.status === 200 &&
         listFitur.data.response_code === 200 &&
@@ -287,7 +299,7 @@ function TambahPartner() {
         setFiturType(listFitur.data.response_data);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -306,7 +318,7 @@ function TambahPartner() {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(paymentMethod, "ini data payment method");
+      // console.log(paymentMethod, "ini data payment method");
       if (
         paymentMethod.status === 200 &&
         paymentMethod.data.response_code === 200 &&
@@ -330,7 +342,7 @@ function TambahPartner() {
         setListTypeMethod(paymentMethod.data.response_data);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -458,7 +470,6 @@ function TambahPartner() {
           paymentData
         )}}`
       );
-      console.log(dataParams, "ini data params");
       const headers = {
         "Content-Type": "application/json",
         Authorization: auth,
@@ -486,13 +497,11 @@ function TambahPartner() {
 
       alert("Partner Baru Berhasil Ditambahkan");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
   }
-
-  console.log(inputHandle.namaPerusahaan, "ini nama perusahaan");
 
   const CustomLoader = () => (
     <div style={{ padding: "24px" }}>
@@ -1047,7 +1056,8 @@ function TambahPartner() {
                                     handleChoosenPaymentType(
                                       e,
                                       item.payment_id,
-                                      item.payment_name
+                                      item.payment_name,
+                                      listTypeMethod
                                     )
                                   }
                                 />
@@ -1081,7 +1091,8 @@ function TambahPartner() {
                                     handleChoosenPaymentType(
                                       e,
                                       item.payment_id,
-                                      item.payment_name
+                                      item.payment_name,
+                                      listTypeMethod
                                     )
                                   }
                                 />
@@ -1126,7 +1137,8 @@ function TambahPartner() {
                                     handleChoosenPaymentType(
                                       e,
                                       item.payment_id,
-                                      item.payment_name
+                                      item.payment_name,
+                                      listTypeMethod
                                     )
                                   }
                                 />
@@ -1160,7 +1172,8 @@ function TambahPartner() {
                                     handleChoosenPaymentType(
                                       e,
                                       item.payment_id,
-                                      item.payment_name
+                                      item.payment_name,
+                                      listTypeMethod
                                     )
                                   }
                                 />
@@ -1193,8 +1206,8 @@ function TambahPartner() {
                       biayaHandle.settlementFee,
                       fitur[0],
                       fitur[1],
-                      paymentMethod,
-                      paymentNameMethod,
+                      paymentMethod.filter(it => it !== 0),
+                      paymentNameMethod.filter(it => it !== "Pilih Semua"),
                       payment.length + 1
                     )
                   }
@@ -1260,8 +1273,8 @@ function TambahPartner() {
                         biayaHandle.settlementFee,
                         fitur[0],
                         fitur[1],
-                        paymentMethod,
-                        paymentNameMethod
+                        paymentMethod.filter(it => it !== 0),
+                        paymentNameMethod.filter(it => it !== "Pilih Semua")
                       )
                     }
                   >

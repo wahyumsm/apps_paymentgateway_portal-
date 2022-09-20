@@ -98,7 +98,6 @@ function EditPartner() {
           setPaymentMethod(allId)
           setPaymentNameMethod(allName)
         } else {
-          console.log("mbawah");
           setPaymentMethod((value) => [...value, payTypeId]);
           setPaymentNameMethod((item) => [...item, payTypeName]);
         }
@@ -118,14 +117,10 @@ function EditPartner() {
     [setPaymentMethod, setPaymentNameMethod]
   );
 
-  console.log(listTypeMethod, "ini listTypeMethod")
-  console.log(Object.values(listTypeMethod).map(val => val.payment_id), "ini all")
-
   const handleChangeFitur = (e) => {
     setLoading(true)
     getTypeMethod(e.target.value);    
     if (e.target.checked) {
-      console.log(listTypeMethod);
       setFitur([e.target.value, e.target.name]);
       setLoading(false)
       setPaymentMethod([]);
@@ -133,7 +128,7 @@ function EditPartner() {
     }
   };
 
-    console.log(paymentMethod.filter(it => it !== 0), "ini metode payment");
+    // console.log(paymentMethod.filter(it => it !== 0), "ini metode payment");
   //   console.log(paymentNameMethod, "ini name methodnya");
   //   console.log(payment, "ini payment");
   //   console.log(fitur[0], "ini fitur id");
@@ -149,6 +144,7 @@ function EditPartner() {
       fee: result.fee,
       settlementFee: result.fee_settle,
     });
+    // console.log(Object.keys(result.mpaytype_id).push([0]), "ini id type");
     if (result.fitur_id) {
       setFitur([result.fitur_id, result.fitur_name]);
       setPaymentMethod(result.mpaytype_id);
@@ -227,7 +223,7 @@ function EditPartner() {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(detailPartner, "ini detail partner");
+      // console.log(detailPartner, "ini detail partner");
       if (
         detailPartner.status === 200 &&
         detailPartner.data.response_code === 200 &&
@@ -277,7 +273,6 @@ function EditPartner() {
         setPayment(detailPartner.data.response_data.payment_method);
       }
     } catch (error) {
-      console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -295,7 +290,7 @@ function EditPartner() {
         { data: "" },
         { headers: headers }
       );
-      console.log(listFitur, "ini data list fitur");
+      // console.log(listFitur, "ini data list fitur");
       if (
         listFitur.status === 200 &&
         listFitur.data.response_code === 200 &&
@@ -311,7 +306,6 @@ function EditPartner() {
         setFiturType(listFitur.data.response_data);
       }
     } catch (error) {
-      console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -330,7 +324,6 @@ function EditPartner() {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(paymentMethod, "ini data payment method");
       if (
         paymentMethod.status === 200 &&
         paymentMethod.data.response_code === 200 &&
@@ -354,7 +347,6 @@ function EditPartner() {
         setListTypeMethod(paymentMethod.data.response_data);
       }
     } catch (error) {
-      console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -653,7 +645,6 @@ function EditPartner() {
           delete item.fitur_name
         )
       );
-      console.log(paymentData, "ini payment id ya");
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
         `{"mpartner_id":"${id}", "mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "payment_method": ${JSON.stringify(
@@ -669,7 +660,7 @@ function EditPartner() {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(editPartner, "ini add partner");
+      // console.log(editPartner, "ini add partner");
       if (
         editPartner.status === 200 &&
         editPartner.data.response_code === 200 &&
@@ -688,7 +679,6 @@ function EditPartner() {
 
       alert("Edit Data Partner Berhasil");
     } catch (error) {
-      console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -727,7 +717,6 @@ function EditPartner() {
         setListAgen(listAgen.data.response_data);
       }
     } catch (error) {
-      console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }

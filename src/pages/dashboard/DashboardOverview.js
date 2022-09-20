@@ -633,7 +633,7 @@ export default () => {
         { data: dataParams },
         { headers: headers }
       );
-      console.log(paylinkChartData.data.response_data, "paylink chart");
+      // console.log(paylinkChartData.data.response_data, "paylink chart");
       if (
         paylinkChartData.status === 200 &&
         paylinkChartData.data.response_code === 200 &&

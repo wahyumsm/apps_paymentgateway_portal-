@@ -26,7 +26,7 @@ function DetailPayment() {
                 'Authorization' : auth
             }
             const detailPayment = await axios.post("/PaymentLink/PaymentLinkDetails", { data: dataParams }, { headers: headers })
-            console.log(detailPayment, "ini detail payment");
+            // console.log(detailPayment, "ini detail payment");
             if (detailPayment.status === 200 && detailPayment.data.response_code === 200 && detailPayment.data.response_new_token.length === 0) {
                 setDetailPayment(detailPayment.data.response_data)
             } else if (detailPayment.status === 200 && detailPayment.data.response_code === 200 && detailPayment.data.response_new_token.length !== 0) {
@@ -49,7 +49,7 @@ function DetailPayment() {
                 'Authorization' : auth
             }
             const getCloseLink = await axios.post("/PaymentLink/PaylinkUpdateStatus", { data: dataParams }, { headers: headers })
-            console.log(getCloseLink, "ini close link payment");
+            // console.log(getCloseLink, "ini close link payment");
             if (getCloseLink.status === 200 && getCloseLink.data.response_code === 200 && getCloseLink.data.response_new_token.length === 0) {
                 history.push('/listpayment')
             } else if (getCloseLink.status === 200 && getCloseLink.data.response_code === 200 && getCloseLink.data.response_new_token.length !== 0) {

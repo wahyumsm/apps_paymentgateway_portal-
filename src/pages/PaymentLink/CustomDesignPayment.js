@@ -42,8 +42,8 @@ function CustomDesignPayment () {
         }
     }
 
-    console.log(image, "ini image");
-    console.log(String(imageFile).slice(27), "ini image file");
+    // console.log(image, "ini image");
+    // console.log(String(imageFile).slice(27), "ini image file");
 
     function cancelChange(){
         setShowModalBatal(false)
@@ -72,15 +72,12 @@ function CustomDesignPayment () {
                 'Authorization' : auth
             }
             const customDesign = await axios.post("/PaymentLink/CustomDesignPaymentLink", formData, { headers: headers })
-            console.log(customDesign, "edit custom design");
             if(customDesign.status === 200 && customDesign.data.response_code === 200 && customDesign.data.response_new_token.length === 0) {
                 setInputHandle(customDesign.data.response_data)
-                console.log(customDesign.data.response_data);
                 history.push("/listpayment")
             } else if (customDesign.status === 200 && customDesign.data.response_code === 200 && customDesign.data.response_new_token.length !== 0) {
                 setUserSession(customDesign.data.response_new_token)
                 setInputHandle(customDesign.data.response_data)
-                console.log(customDesign.data.response_data);
                 history.push("/listpayment")
             }
         } catch (e) {
@@ -96,18 +93,14 @@ function CustomDesignPayment () {
                 'Authorization' : auth
             }
             const getDetailCustom = await axios.post("/PaymentLink/GetCustomDesignPaymentLink", {data: ""}, { headers: headers })
-            console.log(getDetailCustom, "ini detail custom");
+            // console.log(getDetailCustom, "ini detail custom");
             if(getDetailCustom.status === 200 && getDetailCustom.data.response_code === 200 && getDetailCustom.data.response_new_token.length === 0) {
-                // setInputHandle(getDetailCustom.data.response_data)
-                // console.log(getDetailCustom.data.response_data);
-                // history.push("/listpayment")
                 const dataDetailCustom = getDetailCustom.data.response_data
                 setInputHandle({namaPerusahaan: dataDetailCustom.mpaylink_corporate_name})
                 setImageFile(dataDetailCustom.mpaylink_logo_url)
             } else if (getDetailCustom.status === 200 && getDetailCustom.data.response_code === 200 && getDetailCustom.data.response_new_token.length !== 0) {
                 setUserSession(getDetailCustom.data.response_new_token)
                 // setInputHandle(getDetailCustom.data.response_data)
-                console.log(getDetailCustom.data.response_data);
                 const dataDetailCustom = getDetailCustom.data.response_data
                 setInputHandle({namaPerusahaan: dataDetailCustom.mpaylink_corporate_name})
                 setImageFile(dataDetailCustom.mpaylink_logo_url)
