@@ -36,6 +36,7 @@ import noteIconRed from "../assets/icon/note_icon_red.svg";
 import riwayatSaldoIcon from "../assets/icon/riwayat_saldo_icon.svg";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import circleInfo from "../assets/icon/circle-info.svg"
+import alokasiIcon from "../assets/icon/alokasi_icon.svg"
 import { useHistory } from "react-router-dom";
 import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero } from "../function/helpers";
 import axios from "axios";
@@ -77,6 +78,7 @@ export default (props) => {
   };
 
   const [getBalance, setGetBalance] = useState({})
+  const [balanceDetail, setBalanceDetail] = useState([])
   const [showModalTopUp, setShowModalTopUp] = useState(false);
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
@@ -137,9 +139,9 @@ export default (props) => {
     setImageTopUp(dataImage);
   };
 
-  const toHistoryBalance = () => {
-    history.push('/riwayattopup')
-  };  
+  // const toHistoryBalance = () => {
+  //   history.push('/riwayattopup')
+  // };  
 
   const copyHandler = (event) => {
     setText(event.target.value);
@@ -179,7 +181,7 @@ export default (props) => {
           "Content-Type": "application/json",
           'Authorization': auth,
         };
-        const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
+        const topUpBalance = await axios.post("/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
         console.log(topUpBalance, 'ini topup balance ya');
         if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
           setTopUpBalance(topUpBalance.data.response_data)
@@ -213,7 +215,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
+          const topUpResult = await axios.post("/Partner/TopupConfirmation", { data: "" }, { headers: headers })
           // console.log(topUp, 'ini topup');
           if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
             setTopUpResult(topUpResult.data.response_data)
@@ -279,14 +281,16 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
-          // console.log(getBalance, 'ini data get balance');
+          const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
+          console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
+              setBalanceDetail(getBalance.data.response_data.balance_detail)
           } else if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length !== 0) {
             setUserSession(getBalance.data.response_new_token)
             setGetBalance(getBalance.data.response_data)
+            setBalanceDetail(getBalance.data.response_data.balance_detail)
           }
           
       } catch (error) {
@@ -302,7 +306,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const listRiwayat = await axios.post(BaseURL + "/partner/TopUpHistory", { data: "" }, { headers: headers })
+          const listRiwayat = await axios.post("/partner/TopUpHistory", { data: "" }, { headers: headers })
           // console.log(listRiwayat, 'ini data user ');
           if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
@@ -330,6 +334,8 @@ export default (props) => {
       }
     }, [showModalTopUp])
 
+    console.log(nominalTopup, 'ini nominal topup');
+
   async function logoutHandler() {
     try {
       const auth = "Bearer " + getToken();
@@ -338,7 +344,7 @@ export default (props) => {
         Authorization: auth,
       };
       const logout = await axios.post(
-        BaseURL + "/Account/Logout",
+        "/Account/Logout",
         { data: "" },
         { headers: headers }
       );
@@ -465,9 +471,9 @@ export default (props) => {
               <>
               <OverlayTrigger
                 placement="bottom"
-                trigger={["hover", "focus"]}
+                trigger={["click"]}
                 overlay={
-                  <Tooltip style={{ maxWidth: 200, width: "100%" }}>Saldo Tersedia adalah saldo yang mengendap dari hasil Top Up. Untuk menggunakan saldo ini kamu harus alokasikan saldo terlebih dulu pada laman “Alokasi Saldo” didalam menu “Saldo Tersedia”.</Tooltip>
+                  <Tooltip>Saldo Tersedia adalah saldo yang mengendap dari hasil Top Up. Untuk menggunakan saldo ini kamu harus alokasikan saldo terlebih dulu pada laman “Alokasi Saldo” didalam menu “Saldo Tersedia”.</Tooltip>
                 }
               >
                 <img
@@ -488,19 +494,54 @@ export default (props) => {
                       />
                     </div>
                   </Dropdown.Toggle>
-                  <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2">
-                    <Dropdown.Item
-                      onClick={() => setShowModalTopUp(true)}
-                      className="fw-bold"
-                    >
-                      <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => toHistoryBalance()}
-                      className="fw-bold"
-                    >
-                      <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
-                    </Dropdown.Item>
+                  <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2 d-flex justify-content-center align-items-center">
+                    <div className="pe-2">
+                      {
+                        balanceDetail.length !==0 &&
+                        balanceDetail.map(item => {
+                          return (
+                            <Dropdown.Item
+                              key={item.mpartballchannel_id}
+                              className="fw-bold"
+                            >
+                              <div className="mt-1 d-flex justify-content-center align-items-center">
+                                <div className="me-2" style={{borderRadius: "50%", background: "#077E86", width: 10, height: 10}}></div>
+                                <div style={{fontSize: 14, fontFamily: "Nunito", fontWeight: 400, color: "#383838"}}>Alokasi Saldo di {item.mpaytype_name}</div>
+                              </div>
+                              <div style={{fontSize: 15, fontFamily: "Exo", fontWeight: 700, color: "#383838", marginLeft: 10}}>{convertToRupiah(item.mpartballchannel_balance)}</div>
+                            </Dropdown.Item>
+                          )
+                        })
+                      }
+                    </div>
+                    <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 135}}></div>
+                    <div className="ps-2">
+                      <Dropdown.Item
+                        onClick={() => setShowModalTopUp(true)}
+                        className="fw-bold"
+                        style={{width: 160}}
+                      >
+                        <div className="pe-2">
+                          <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
+                        </div>
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => history.push('/riwayattopup')}
+                        className="fw-bold"
+                      >
+                        <div className="pe-2">
+                          <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
+                        </div>
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        className="fw-bold"
+                        onClick={() => history.push("/alokasisaldo")}
+                      >
+                        <div className="pe-2">
+                          <img alt="" src={alokasiIcon} /> Alokasi Saldo
+                        </div>
+                      </Dropdown.Item>
+                    </div>
                   </Dropdown.Menu>
                 </Dropdown>
               </>
@@ -604,7 +645,7 @@ export default (props) => {
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
                 {nominalTopup ? 
-                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChangeTopUp} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} /> :
+                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChangeTopUp} placeholder="Rp" name="amounts" type='number' min={0} value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} /> :
                   <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={inputHandle.amounts === 0 ? "Rp" : convertFormatNumber(inputHandle.amounts)} />
                 }
                 {/* {getBalance.topupAmount_temp !== 0 ?

@@ -44,7 +44,7 @@ function TambahPartner() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const addPartner = await axios.post(BaseURL + "/Partner/SavePartner", { data: dataParams }, { headers: headers })
+            const addPartner = await axios.post("/Partner/SavePartner", { data: dataParams }, { headers: headers })
             // console.log(addPartner, 'ini add partner');
             if(addPartner.status === 200 && addPartner.data.response_code === 200 && addPartner.data.response_new_token.length === 0) {
                 history.push("/daftarpartner")
@@ -303,6 +303,7 @@ function TambahPartner() {
                                 placeholder="Rp."
                                 // value={convertToRupiah(inputHandle.fee)}
                                 type='number'
+                                min={0}
                                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
@@ -320,6 +321,7 @@ function TambahPartner() {
                                 onChange={handleChange}
                                 placeholder="Rp."
                                 type='number'
+                                min={0}
                                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />

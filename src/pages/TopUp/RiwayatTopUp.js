@@ -91,7 +91,7 @@ function RiwayatTopUp() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
+            const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
                 setDataListPartner(listPartner.data.response_data)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
@@ -124,7 +124,7 @@ function RiwayatTopUp() {
                     'Content-Type':'application/json',
                     'Authorization' : auth
                 }
-                const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
+                const listRiwayat = await axios.post("/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
                 console.log(listRiwayat, 'ini data user ');
                 if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                     listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
@@ -146,7 +146,7 @@ function RiwayatTopUp() {
                     'Content-Type':'application/json',
                     'Authorization' : auth
                 }
-                const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
+                const listRiwayat = await axios.post("/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
                 console.log(listRiwayat, 'ini data user ');
                 if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                     listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
@@ -229,7 +229,7 @@ function RiwayatTopUp() {
               "Content-Type": "application/json",
               'Authorization': auth,
             };
-            const detailTopUp = await axios.post(BaseURL + "/Partner/HistoryTopUpPartnerDetail", { data: dataParams }, { headers: headers })
+            const detailTopUp = await axios.post("/Partner/HistoryTopUpPartnerDetail", { data: dataParams }, { headers: headers })
             console.log(detailTopUp, 'ini topup balance ya');
             if(detailTopUp.status === 200 && detailTopUp.data.response_code === 200 && detailTopUp.data.response_new_token.length === 0) {
               setDetailTopUp(detailTopUp.data.response_data)
@@ -259,7 +259,7 @@ function RiwayatTopUp() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
+            const topUpResult = await axios.post("/Partner/TopupConfirmation", { data: "" }, { headers: headers })
             // console.log(topUp, 'ini topup');
             if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
                 setTopUpResult(topUpResult.data.response_data)
@@ -436,7 +436,7 @@ function RiwayatTopUp() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post("/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
                     // console.log(dataExportFilter, 'ini data filter topup partner');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
@@ -475,7 +475,7 @@ function RiwayatTopUp() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post("/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
                     // console.log(dataExportFilter, 'ini data filter topup admin');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
@@ -514,7 +514,7 @@ function RiwayatTopUp() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportTopUp = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
+                    const dataExportTopUp = await axios.post("/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
                     // console.log(dataExportTopUp, 'ini data top up partner export');
                     if (dataExportTopUp.status === 200 && dataExportTopUp.data.response_code === 200 && dataExportTopUp.data.response_new_token === null) {
                         const data = dataExportTopUp.data.response_data.results
@@ -553,7 +553,7 @@ function RiwayatTopUp() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportTopUp = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
+                    const dataExportTopUp = await axios.post("/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
                     console.log(dataExportTopUp, 'ini data top up admin export');
                     if (dataExportTopUp.status === 200 && dataExportTopUp.data.response_code === 200 && dataExportTopUp.data.response_new_token.length === 0) {
                         const data = dataExportTopUp.data.response_data.results
@@ -834,7 +834,7 @@ function RiwayatTopUp() {
             </div>
             {topUpResult.is_update === true &&
                 <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
-                    <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
+                    <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={true} className="text-center" position="bottom-center" delay={3000} autohide>
                     <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Top Up Saldo {convertToRupiah(inputHandle.amounts)} Berhasil</Toast.Body>
                     </Toast>
                 </div>

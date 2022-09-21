@@ -27,7 +27,7 @@ export default () => {
           "Content-Type": "application/json",
           'Authorization': auth,
         };
-        const emailSended = await axios.post(BaseURL + "/Account/ForgotPassword", { data: dataParams }, { headers: headers })
+        const emailSended = await axios.post("/Account/ForgotPassword", { data: dataParams }, { headers: headers })
         // console.log(emailSended, "ini email sended");
         if (emailSended.status === 200 && emailSended.data.response_code === 200 && emailSended.data.response_new_token === null) {
           setShowModal(true)
