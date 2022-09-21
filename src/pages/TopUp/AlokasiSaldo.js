@@ -389,19 +389,19 @@ function AlokasiSaldo() {
                                                 } */}
                                                 {
                                                     item.mpaytype_id === 31 && disburseDana.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
-                                                    <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : item.min_topup_allocation}</span> :
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
                                                     item.mpaytype_id === 31 && disburseDana.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
                                                     item.mpaytype_id === 31 && disburseDana.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
                                                     item.mpaytype_id === 32 && disburseBCA.minAlokasi === true && showAlertSaldoTidakCukup === false ?// kena minimal alokasi & saldo cukup
-                                                    <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : item.min_topup_allocation}</span> :
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
                                                     item.mpaytype_id === 32 && disburseBCA.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
                                                     item.mpaytype_id === 32 && disburseBCA.minAlokasi === false && showAlertSaldoTidakCukup === true ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
                                                     item.mpaytype_id === 33 && disburseMandiri.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
-                                                    <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : item.min_topup_allocation}</span> :
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
                                                     item.mpaytype_id === 33 && disburseMandiri.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
                                                     item.mpaytype_id === 33 && disburseMandiri.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
