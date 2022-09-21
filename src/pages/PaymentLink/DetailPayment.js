@@ -74,6 +74,18 @@ function DetailPayment() {
         alert("Text copied");
     };
 
+    function toDashboard() {
+        history.push("/");
+      }
+    
+    function toListPay() {
+        history.push("/listpayment");
+    }
+
+    function toDetailPayment(paymentId) {
+        history.push(`/detailpayment/${paymentId}`);
+    }
+
     useEffect(() => {
         if(!access_token) {
             history.push('/login')
@@ -82,7 +94,7 @@ function DetailPayment() {
     }, [paymentId])
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Payment Link &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Payment Link Detail</span>
+            <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toListPay()}>Payment Link</span> &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{cursor: "pointer"}} onClick={() => toDetailPayment(paymentId)}>Payment Link Detail</span></span>
             <div className="head-title">
                 <h2 className="h4 mt-4 mb-4" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 18, color: "#383838"}}>Payment Link Detail</h2>
             </div>

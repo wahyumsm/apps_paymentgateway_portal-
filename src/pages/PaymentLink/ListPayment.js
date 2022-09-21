@@ -685,7 +685,7 @@ function ListPayment() {
                         isFilterPaylink
                       )
                     }
-                    style={{ width: 155, background: "#F3F4F5" }}
+                    style={{ width: 155, background: "#F3F4F5", cursor: "pointer" }}
                     className="align-items-center"
                   >
                     Payment ID
@@ -706,7 +706,7 @@ function ListPayment() {
                         isFilterPaylink
                       )
                     }
-                    style={{ width: 155, background: "#F3F4F5" }}
+                    style={{ width: 155, background: "#F3F4F5", cursor: "pointer" }}
                     className="align-items-center"
                   >
                     Payment ID
@@ -729,7 +729,7 @@ function ListPayment() {
                         isFilterPaylink
                       )
                     }
-                    style={{ background: "#F3F4F5" }}
+                    style={{ background: "#F3F4F5", cursor: "pointer" }}
                   >
                     Tanggal Pembuatan
                     <span>
@@ -749,7 +749,7 @@ function ListPayment() {
                         isFilterPaylink
                       )
                     }
-                    style={{ background: "#F3F4F5" }}
+                    style={{ background: "#F3F4F5", cursor: "pointer" }}
                   >
                     Tanggal Pembuatan
                     <span>
@@ -770,7 +770,7 @@ function ListPayment() {
                         isFilterPaylink
                       )
                     }
-                    style={{ background: "#F3F4F5" }}
+                    style={{ background: "#F3F4F5", cursor: "pointer" }}
                   >
                     Status
                     <span>
@@ -790,7 +790,7 @@ function ListPayment() {
                         isFilterPaylink
                       )
                     }
-                    style={{ background: "#F3F4F5" }}
+                    style={{ background: "#F3F4F5", cursor: "pointer" }}
                   >
                     Status
                     <span>

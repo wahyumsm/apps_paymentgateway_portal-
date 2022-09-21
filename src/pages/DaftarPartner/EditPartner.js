@@ -46,7 +46,10 @@ function EditPartner() {
   const [numbering, setNumbering] = useState(0);
   const [edited, setEdited] = useState(false);
   const [editInput, setEditInput] = useState(false);
+  const [editFee, setEditFee] = useState(false)
   const [loading, setLoading] = useState(false);
+  const [redFlag, setRedFlag] = useState(false)
+  const [mustFill, setMustFill] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     id: detailPartner.mpartner_id,
     namaPerusahaan: detailPartner.mpartner_name,
@@ -67,7 +70,7 @@ function EditPartner() {
     fiturs: 0,
   });
 
-  // console.log(payment, "payment");
+  console.log(payment, "payment");
 
   const showCheckboxes = () => {
     if (!expanded) {
@@ -105,6 +108,8 @@ function EditPartner() {
           setPaymentMethod((value) => [...value, payTypeId]);
           setPaymentNameMethod((item) => [...item, payTypeName]);
         }
+        setRedFlag(false)
+        setMustFill(false)
       } else {
         if (payTypeId === 0) {
           setPaymentMethod([]);
@@ -117,6 +122,8 @@ function EditPartner() {
             item.filter((items) => items !== payTypeName)
           );
         }
+        setRedFlag(false)
+        setMustFill(false)
       }
     },
     [setPaymentMethod, setPaymentNameMethod]
@@ -124,6 +131,7 @@ function EditPartner() {
 
   const handleChangeFitur = (e) => {
     setLoading(true);
+    setRedFlag(false)
     getTypeMethod(e.target.value);
     if (e.target.checked) {
       setFitur([e.target.value, e.target.name]);
@@ -167,26 +175,47 @@ function EditPartner() {
     typeId,
     typeName
   ) {
-    const source = {
-      fee: fee,
-      fee_settle: settleFee,
-      fitur_id: fiturId,
-      fitur_name: fiturName,
-      mpaytype_id: typeId,
-      mpaytype_name: typeName,
-      number: numberId,
-    };
-    const target = payment.find((item) => item.number === numberId);
-    Object.assign(target, source);
-    setPayment([...payment]);
-    setEdited(false);
-    setInputHandle({
-      fee: 0,
-      settlementFee: 0,
-    });
-    setFitur("", "");
-    setPaymentMethod([]);
-    setPaymentNameMethod([]);
+    if (typeId.length === 0) {
+      setMustFill(true)
+    } else {
+      let sameFlag = 0
+      const result = payment.filter(res => res.number !== numberId)
+      result.forEach((val) => {
+        if (val.fitur_id === Number(fiturId)) {
+          val.mpaytype_id.forEach(item => {
+            typeId.forEach(item2 => {
+              if (item === item2) {
+                sameFlag++
+              }
+            })
+          })
+        }
+      })
+      if (sameFlag === 0) {
+        const source = {
+          fee: Number(fee),
+          fee_settle: Number(settleFee),
+          fitur_id: Number(fiturId),
+          fitur_name: fiturName,
+          mpaytype_id: typeId,
+          mpaytype_name: typeName,
+          number: numberId,
+        };
+        const target = payment.find((item) => item.number === numberId);
+        Object.assign(target, source);
+        setPayment([...payment]);
+        setEdited(false);
+        setInputHandle({
+          fee: 0,
+          settlementFee: 0,
+        });
+        setFitur("", "");
+        setPaymentMethod([]);
+        setPaymentNameMethod([]);
+      } else {
+        setRedFlag(true)
+      }
+    }    
   }
 
   function batalEdit() {
@@ -567,23 +596,45 @@ function EditPartner() {
     typeName,
     number
   ) {
-    const newData = {
-      fee: fee,
-      fee_settle: fee_settle,
-      fitur_id: fiturId,
-      fitur_name: fiturName,
-      mpaytype_id: typeId,
-      mpaytype_name: typeName,
-      number: number,
-    };
-    setPayment([...payment, newData]);
-    setInputHandle({
-      fee: 0,
-      settlementFee: 0,
-    });
-    setFitur("", "");
-    setPaymentMethod([]);
-    setPaymentNameMethod([]);
+    let sameFlag = 0
+    payment.forEach((val) => {
+      if (val.fitur_id === Number(fiturId)) {
+        val.mpaytype_id.forEach(item => {
+          typeId.forEach(item2 => {
+            if (item === item2) {
+              sameFlag++
+            }
+          })
+        })
+      }      
+    })
+    if (sameFlag === 0) {
+      if (typeId.length === 0) {
+        setMustFill(true)
+      } else {
+        setMustFill(false)
+        const newData = {
+          fee: Number(fee),
+          fee_settle: Number(fee_settle),
+          fitur_id: Number(fiturId),
+          fitur_name: fiturName,
+          mpaytype_id: typeId,
+          mpaytype_name: typeName,
+          number: number,
+        };
+        setPayment([...payment, newData]);
+        setRedFlag(false)
+        setInputHandle({
+          fee: 0,
+          settlementFee: 0,
+        });
+        setFitur("", "");
+        setPaymentMethod([]);
+        setPaymentNameMethod([]);
+      }
+    } else {      
+      setRedFlag(true)
+    }
   }
 
   async function editDetailPartner(
@@ -1102,15 +1153,28 @@ function EditPartner() {
                 <tr>
                   <td style={{ width: 200 }}>Fee</td>
                   <td>
-                    <input
-                      type="number"
-                      className="input-text-ez"
-                      onChange={handleChange}
-                      value={inputHandle.fee}
-                      name="fee"
-                      placeholder="Rp 0"
-                      style={{ width: "100%", marginLeft: "unset" }}
-                    />
+                    {editFee ?
+                      <input
+                        type="number"
+                        className="input-text-ez"
+                        onChange={handleChange}
+                        value={parseInt(inputHandle.fee)}
+                        name="fee"
+                        placeholder="Rp 0"
+                        style={{ width: "100%", marginLeft: "unset" }}
+                        onBlur={() => setEditFee(!editFee)}
+                      /> :
+                      <input
+                        type="text"
+                        className="input-text-ez"
+                        onChange={handleChange}
+                        value={convertFormatNumber(parseInt(inputHandle.fee))}
+                        name="fee"
+                        placeholder="Rp 0"
+                        style={{ width: "100%", marginLeft: "unset" }}
+                        onFocus={() => setEditFee(!editFee)}
+                      />
+                    }
                     {/* <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
                         <img src={noteIconRed} className="me-2" />
                         Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
@@ -1502,6 +1566,18 @@ function EditPartner() {
                 )}
               </Col>
             </Row>
+            {mustFill === true ?
+              <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 216 }} className="mt-3">
+                <img src={noteIconRed} className="me-2" />
+                Wajib Dipilih
+              </div> : ""
+            }
+            {redFlag === true ?
+              <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 210 }} className="mt-1">
+                <img src={noteIconRed} className="me-2" />
+                Metode Pembayaran tidak boleh sama dalam satu Fitur
+              </div> : ""
+            }
             <div className="d-flex justify-content-between align-items-center">
               <div></div>
               <div></div>

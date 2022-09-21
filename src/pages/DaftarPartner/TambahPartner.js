@@ -25,6 +25,7 @@ import {
 import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
 import { useRef } from "react";
+import noteIconRed from "../../assets/icon/note_icon_red.svg";
 
 function TambahPartner() {
   const [addPartner, setAddPartner] = useState({});
@@ -42,6 +43,8 @@ function TambahPartner() {
   const [numbering, setNumbering] = useState(0);
   const myRef = useRef(null);
   const [payment, setPayment] = useState([]);
+  const [redFlag, setRedFlag] = useState(false)
+  const [mustFill, setMustFill] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     namaPerusahaan: "",
     emailPerusahaan: "",
@@ -96,7 +99,8 @@ function TambahPartner() {
           setPaymentMethod((value) => [...value, payTypeId]);
           setPaymentNameMethod((item) => [...item, payTypeName]);
         }
-        
+        setRedFlag(false)
+        setMustFill(false)
       } else {
         if (payTypeId === 0) {
           setPaymentMethod([])
@@ -107,6 +111,8 @@ function TambahPartner() {
           item.filter((items) => items !== payTypeName)
         );
         }
+        setRedFlag(false)
+        setMustFill(false)
       }
     },
     [setPaymentMethod, setPaymentNameMethod]
@@ -114,6 +120,7 @@ function TambahPartner() {
 
   const handleChangeFitur = (e) => {
     setLoading(true);
+    setRedFlag(false)
     getTypeMethod(e.target.value);
     if (e.target.checked) {
       setFitur([e.target.value, e.target.name]);
@@ -194,26 +201,48 @@ function TambahPartner() {
     typeId,
     typeName
   ) {
-    const source = {
-      fee: fee,
-      fee_settle: settleFee,
-      fitur_id: fiturId,
-      fitur_name: fiturName,
-      mpaytype_id: typeId,
-      mpaytype_name: typeName,
-      number: numberId,
-    };
-    const target = payment.find((item) => item.number === numberId);
-    Object.assign(target, source);
-    setPayment([...payment]);
-    setEdited(false);
-    setBiayaHandle({
-      fee: 0,
-      settlementFee: 0,
-    });
-    setFitur("", "");
-    setPaymentMethod([]);
-    setPaymentNameMethod([]);
+    if (typeId.length === 0) {
+      setMustFill(true)
+    } else {
+      let sameFlag = 0
+      const result = payment.filter(res => res.number !== numberId)
+      result.forEach((val) => {
+        if (val.fitur_id === Number(fiturId)) {
+          val.mpaytype_id.forEach(item => {
+            typeId.forEach(item2 => {
+              if (item === item2) {
+                sameFlag++
+              }
+            })
+          })
+        }      
+      })
+      if (sameFlag === 0) {
+        const source = {
+          fee: fee,
+          fee_settle: settleFee,
+          fitur_id: fiturId,
+          fitur_name: fiturName,
+          mpaytype_id: typeId,
+          mpaytype_name: typeName,
+          number: numberId,
+        };
+        const target = payment.find((item) => item.number === numberId);
+        Object.assign(target, source);
+        setPayment([...payment]);
+        setEdited(false);
+        setBiayaHandle({
+          fee: 0,
+          settlementFee: 0,
+        });
+        setFitur("", "");
+        setPaymentMethod([]);
+        setPaymentNameMethod([]);
+      } else {
+        setRedFlag(true)
+      }
+    }   
+    
   }
 
   function deleteDataHandler(numberId) {
@@ -250,26 +279,50 @@ function TambahPartner() {
     typeName,
     number
   ) {
-    const newData = {
-      fee: fee,
-      fee_settle: fee_settle,
-      fitur_id: fiturId,
-      fitur_name: fiturName,
-      mpaytype_id: typeId,
-      mpaytype_name: typeName,
-      number: Number(number),
-    };
-    setPayment((values) => [...values, newData]);
-    setBiayaHandle({
-      fee: 0,
-      settlementFee: 0,
-    });
-    setFitur("", "");
-    setPaymentMethod([]);
-    setPaymentNameMethod([]);
+    let sameFlag = 0
+    payment.forEach((val) => {
+      console.log(val.fitur_id);
+      if (val.fitur_id === fiturId) {
+        val.mpaytype_id.forEach(item => {
+          console.log(item, "item");
+          typeId.forEach(item2 => {
+            if (item === item2) {
+              sameFlag++
+            }
+          })
+        })
+      }      
+    })
+    if (sameFlag === 0) {
+      if (typeId.length === 0) {
+        setMustFill(true)
+      } else {
+        setMustFill(false)
+        const newData = {
+          fee: fee,
+          fee_settle: fee_settle,
+          fitur_id: fiturId,
+          fitur_name: fiturName,
+          mpaytype_id: typeId,
+          mpaytype_name: typeName,
+          number: Number(number),
+        };
+        setPayment((values) => [...values, newData]);
+        setRedFlag(false)
+        setBiayaHandle({
+          fee: 0,
+          settlementFee: 0,
+        });
+        setFitur("", "");
+        setPaymentMethod([]);
+        setPaymentNameMethod([]);
+      }
+    } else {
+      setRedFlag(true)
+    }
   }
 
-  // console.log(payment, "ini payment");
+  console.log(payment, "ini payment");
 
   async function getTypeFitur() {
     try {
@@ -513,6 +566,17 @@ function TambahPartner() {
       <div>Loading...</div>
     </div>
   );
+
+  const customStyles = {
+    headCells: {
+      style: {
+        backgroundColor: "#F2F2F2",
+        border: "12px",
+        fontWeight: "bold",
+        fontSize: "16px",
+      },
+    },
+  };
 
   useEffect(() => {
     if (!access_token) {
@@ -1215,6 +1279,18 @@ function TambahPartner() {
               )}
             </Col>
           </Row>
+          {mustFill === true ?
+            <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 133 }} className="mt-3">
+              <img src={noteIconRed} className="me-2" />
+              Wajib Dipilih
+            </div> : ""
+          }
+          {redFlag === true ?
+            <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 133 }} className="mt-2">
+              <img src={noteIconRed} className="me-2" />
+              Metode Pembayaran tidak boleh sama dalam satu Fitur
+            </div> : ""
+          }
           <Row className="d-flex justify-content-between align-items-center">
             <Col xs={1}></Col>
             <Col className="ms-5">
@@ -1370,7 +1446,7 @@ function TambahPartner() {
               <DataTable
                 columns={columnPayment}
                 data={payment}
-                // customStyles={customStyles}
+                customStyles={customStyles}
                 // progressPending={pendingSettlement}
                 progressComponent={<CustomLoader />}
               />
