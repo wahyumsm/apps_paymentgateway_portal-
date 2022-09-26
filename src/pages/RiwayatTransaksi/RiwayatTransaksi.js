@@ -60,7 +60,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listAgenFromPartner = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
+            const listAgenFromPartner = await axios.post(BaseURL + "/Partner/GetListAgen", {data: dataParams}, {headers: headers})
             if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length === 0) {
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
             } else if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length !== 0) {
@@ -68,7 +68,7 @@ function RiwayatTransaksi() {
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -151,7 +151,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
+            const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
                 setDataListPartner(listPartner.data.response_data)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
@@ -159,7 +159,7 @@ function RiwayatTransaksi() {
                 setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -180,7 +180,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const dataRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+            const dataRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
             // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
@@ -197,7 +197,7 @@ function RiwayatTransaksi() {
                 setPendingTransfer(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
@@ -211,7 +211,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const dataRiwayatSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+            const dataRiwayatSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             // console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
@@ -230,7 +230,7 @@ function RiwayatTransaksi() {
                 setPendingSettlement(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
@@ -265,7 +265,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const filterRiwayatDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+            const filterRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
             // console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
@@ -282,7 +282,7 @@ function RiwayatTransaksi() {
                 setPendingTransfer(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
@@ -300,7 +300,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const filterSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+            const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             // console.log(filterSettlement, 'ini filter data settlement');
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
@@ -319,7 +319,7 @@ function RiwayatTransaksi() {
                 setPendingSettlement(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
@@ -373,7 +373,7 @@ function RiwayatTransaksi() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const detailListTransfer = await axios.post("/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
+            const detailListTransfer = await axios.post(BaseURL + "/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
             // console.log(detailListTransfer, 'ini detail list transfer');
             if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length === 0) {
                 setDetailTransferDana(detailListTransfer.data.response_data)
@@ -384,7 +384,7 @@ function RiwayatTransaksi() {
                 setShowModalDetailTransferDana(true)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
@@ -639,7 +639,7 @@ function RiwayatTransaksi() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
@@ -663,7 +663,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Transaksi Dana Masuk.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -678,7 +678,7 @@ function RiwayatTransaksi() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportDanaMasuk = await axios.post("/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
+                    const dataExportDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
                     if (dataExportDanaMasuk.status === 200 && dataExportDanaMasuk.data.response_code === 200 && dataExportDanaMasuk.data.response_new_token.length === 0) {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
@@ -702,7 +702,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Transaksi Dana Masuk.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -720,7 +720,7 @@ function RiwayatTransaksi() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
                     // console.log(dataExportFilter, 'ini data filter settlement');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results.list_data
@@ -745,7 +745,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
                     }
                 } catch (error) {
-                    console.log(error)
+                    // console.log(error)
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -759,7 +759,7 @@ function RiwayatTransaksi() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportSettlement = await axios.post("/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+                    const dataExportSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
                     // console.log(dataExportSettlement, 'ini data settlement di export');
                     if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length === 0) {
                         const data = dataExportSettlement.data.response_data.results.list_data
@@ -784,7 +784,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }

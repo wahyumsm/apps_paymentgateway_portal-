@@ -178,7 +178,7 @@ export default () => {
             'Content-Type':'application/json',
             'Authorization' : auth
         }
-        const listDataPartner = await axios.post(url, { data: "" }, { headers: headers })
+        const listDataPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
         // console.log(listDataPartner, "list partner di beranda")
         if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length === 0) {
           let newArr = []
@@ -204,7 +204,7 @@ export default () => {
         }
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         history.push(errorCatch(error.response.status))
     }
 }
@@ -216,7 +216,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const ringkasanData = await axios.post("/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
+      const ringkasanData = await axios.post(BaseURL + "/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
       // console.log(ringkasanData, 'ini ringkasandata');
       if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200 && ringkasanData.data.response_new_token.length === 0) {
         setSettlementTransaction(ringkasanData.data.response_data)
@@ -225,7 +225,7 @@ export default () => {
         setSettlementTransaction(ringkasanData.data.response_data)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -240,7 +240,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const partnerChart = await axios.post("/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
+      const partnerChart = await axios.post(BaseURL + "/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
       // console.log(partnerChart, 'partner chart');
       if (partnerChart.status === 200 && partnerChart.data.response_code === 200 && partnerChart.data.response_new_token.length === 0) {
         setPartnerChartData([{amount: 0, date: ""}, ...partnerChart.data.response_data])
@@ -251,7 +251,7 @@ export default () => {
         setPendingPartner(false)
       } 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -268,7 +268,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const filterPartnerChart = await axios.post("/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
+      const filterPartnerChart = await axios.post(BaseURL + "/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
       // console.log(filterPartnerChart, 'partner chart handler filter');
       if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length === 0) {
         setPartnerChartData([{amount: 0, date: ""}, ...filterPartnerChart.data.response_data])
@@ -279,7 +279,7 @@ export default () => {
         setPendingPartner(false)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -293,7 +293,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const feePartnerChart = await axios.post("/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
+      const feePartnerChart = await axios.post(BaseURL + "/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
       // console.log(feePartnerChart.data.response_data, 'partner chart');
       if (feePartnerChart.status === 200 && feePartnerChart.data.response_code === 200 && feePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData([{amount: 0, date: ""}, ...feePartnerChart.data.response_data])
@@ -304,7 +304,7 @@ export default () => {
         setPendingFee(false)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -321,7 +321,7 @@ export default () => {
         'Content-Type': 'application/json',
         'Authorization': auth
       }
-      const filterFeePartnerChart = await axios.post("/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
+      const filterFeePartnerChart = await axios.post(BaseURL + "/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
       // console.log(filterFeePartnerChart, 'fee partner handler');
       if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length === 0) {
         setFeePartnerChartData([{amount: 0, date: ""}, ...filterFeePartnerChart.data.response_data])
@@ -332,7 +332,7 @@ export default () => {
         setPendingFee(false)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -346,7 +346,7 @@ export default () => {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
-      const feeVaChartData = await axios.post("/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
+      const feeVaChartData = await axios.post(BaseURL + "/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
       // console.log(feeVaChartData.data.response_data, 'partner chart');
       if (feeVaChartData.status === 200 && feeVaChartData.data.response_code === 200 && feeVaChartData.data.response_new_token.length === 0) {
         setFeeVaChartData([{amount: 0, date: ""}, ...feeVaChartData.data.response_data])
@@ -357,7 +357,7 @@ export default () => {
         setPendingVa(false)
       } 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -373,7 +373,7 @@ export default () => {
         'Content-Type': 'application/json',
         'Authorization': auth
       }
-      const filterVaPartnerChart = await axios.post("/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
+      const filterVaPartnerChart = await axios.post(BaseURL + "/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
       // console.log(filterVaPartnerChart, 'fee partner handler');
       if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length === 0) {
         setFeeVaChartData([{amount: 0, date: ""}, ...filterVaPartnerChart.data.response_data])
@@ -384,7 +384,7 @@ export default () => {
         setPendingVa(false)
       } 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -453,7 +453,7 @@ export default () => {
   // console.log(queryBiaya, "ini query biaya");
   // console.log(settlementTransaction, "sett");
   // console.log(inputHandle.periodeFeeChart, "fee chart input");
-  console.log(selectedOptionBiayaVA, 'ini selected option');
+  // console.log(selectedOptionBiayaVA, 'ini selected option');
 
   if(!access_token) {
     return (

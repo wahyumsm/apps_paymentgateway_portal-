@@ -61,7 +61,7 @@ function AddUser() {
     };
     try {
       const listRole = await axios.post(
-        "/Account/GetAccessRole",
+        BaseURL + "/Account/GetAccessRole",
         { data: "" },
         { headers: headers }
       );
@@ -73,7 +73,7 @@ function AddUser() {
       }
     } catch (e) {
       history.push(errorCatch(e.response.status));
-      console.log(e);
+      // console.log(e);
     }
   }
 
@@ -84,7 +84,7 @@ function AddUser() {
         Authorization: auth,
       };
       const listPartner = await axios.post(
-        "/Partner/ListPartner",
+        BaseURL + "/Partner/ListPartner",
         { data: "" },
         { headers: headers }
       );
@@ -103,7 +103,7 @@ function AddUser() {
         setDataListPartner(listPartner.data.response_data);
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       history.push(errorCatch(e.response.status));
     }
   }
@@ -116,7 +116,7 @@ function AddUser() {
         Authorization: auth,
       };
       const listAgenFromPartner = await axios.post(
-        "/Partner/GetListAgen",
+        BaseURL + "/Partner/GetListAgen",
         { data: dataParams },
         { headers: headers }
       );
@@ -135,7 +135,7 @@ function AddUser() {
         setDataListAgenFromPartner(listAgenFromPartner.data.response_data);
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       history.push(errorCatch(e.response.status));
     }
   }
@@ -159,7 +159,7 @@ function AddUser() {
         Authorization: auth,
       };
       const addUser = await axios.post(
-        "/Account/AddUser",
+        BaseURL + "/Account/AddUser",
         { data: dataParams },
         { headers: headers }
       );
@@ -175,7 +175,7 @@ function AddUser() {
       }
       
     } catch (e) {      
-      console.log(e);
+      // console.log(e);
       setErrorMsg(e.response.data.response_message)
       if (e.response.data.response_message === "Failed") {
         alert(e.response.data.response_message)

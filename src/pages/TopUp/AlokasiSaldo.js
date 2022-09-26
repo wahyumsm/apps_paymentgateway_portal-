@@ -69,8 +69,8 @@ function AlokasiSaldo() {
     }
 
     function handleChecklist(e, catId) {
-        console.log(e.target.name.slice(9));
-        console.log(e.target.checked);
+        // console.log(e.target.name.slice(9));
+        // console.log(e.target.checked);
         // if (e.target.checked === true) {
         //     setaddedDisbursementChannels([
         //         ...addedDisbursementChannels,
@@ -219,8 +219,8 @@ function AlokasiSaldo() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const balance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
-            console.log(balance, 'ini balance alokasi');
+            const balance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
+            // console.log(balance, 'ini balance alokasi');
             if (balance.status === 200 && balance.data.response_code === 200 && balance.data.response_new_token.length === 0) {
                 setBalance(balance.data.response_data)
                 setBalanceDetail(balance.data.response_data.balance_detail)
@@ -230,7 +230,7 @@ function AlokasiSaldo() {
                 setBalanceDetail(balance.data.response_data.balance_detail)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -241,8 +241,8 @@ function AlokasiSaldo() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const disbursementChannel = await axios.post("/Partner/ListDisburseChannel", { data: "" }, { headers: headers })
-            console.log(disbursementChannel, "disburse channel");
+            const disbursementChannel = await axios.post(BaseURL + "/Partner/ListDisburseChannel", { data: "" }, { headers: headers })
+            // console.log(disbursementChannel, "disburse channel");
             if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length === 0) {
                 setDisbursementChannel(disbursementChannel.data.response_data)
             } else if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length !== 0) {
@@ -250,7 +250,7 @@ function AlokasiSaldo() {
                 setDisbursementChannel(disbursementChannel.data.response_data)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -281,13 +281,13 @@ function AlokasiSaldo() {
             }
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(JSON.stringify(newArr))
-            console.log(dataParams);
+            // console.log(dataParams);
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const savedAlokasiSaldo = await axios.post("/Partner/SplitDisburseChannel", { data: dataParams }, { headers: headers })
-            console.log(savedAlokasiSaldo, 'ini saved');
+            const savedAlokasiSaldo = await axios.post(BaseURL + "/Partner/SplitDisburseChannel", { data: dataParams }, { headers: headers })
+            // console.log(savedAlokasiSaldo, 'ini saved');
             if (savedAlokasiSaldo.status === 200 && savedAlokasiSaldo.data.response_code === 200 && savedAlokasiSaldo.data.response_new_token.length === 0) {
                 setShowAlertSuccess(true)
                 setTimeout(() => {
@@ -303,7 +303,7 @@ function AlokasiSaldo() {
                 }, 2000);
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -312,12 +312,12 @@ function AlokasiSaldo() {
         getDisbursementChannel()
     }, [])
     
-    console.log(inputHandle, 'ini inputhandle');
-    console.log(disburseBCA, 'ini disburseBCA');
-    console.log(disburseDana, 'ini disburseDana');
-    console.log(disburseMandiri, 'ini disburseMandiri');
-    console.log(balance, "balance");
-    console.log(showAlertSaldoTidakCukup, "showAlertSaldoTidakCukup");
+    // console.log(inputHandle, 'ini inputhandle');
+    // console.log(disburseBCA, 'ini disburseBCA');
+    // console.log(disburseDana, 'ini disburseDana');
+    // console.log(disburseMandiri, 'ini disburseMandiri');
+    // console.log(balance, "balance");
+    // console.log(showAlertSaldoTidakCukup, "showAlertSaldoTidakCukup");
 
     return (
         <div className="py-5 mt-5 content-page">

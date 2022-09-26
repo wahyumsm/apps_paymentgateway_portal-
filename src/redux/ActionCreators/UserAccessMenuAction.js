@@ -13,7 +13,7 @@ export const GetUserAccessMenu = (url) => {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const userAccessMenu = await axios.post(url, { data: "" }, { headers: headers })
+            const userAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
             if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length === 0) {
                 dispatch({
                     type: FETCH_GETUSERACCESSMENU,
@@ -31,7 +31,7 @@ export const GetUserAccessMenu = (url) => {
                 })
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             // history.push(errorCatch(error.response.status))
         }

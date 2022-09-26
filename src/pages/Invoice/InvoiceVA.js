@@ -32,13 +32,13 @@ function InvoiceVA() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}"}`);
-            console.log(dataParams, 'ini data params');
+            // console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const invoiceData = await axios.post("/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
-            console.log(invoiceData, "ini invoice data");
+            const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
+            // console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoice(invoiceData.data.response_data)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
@@ -46,7 +46,7 @@ function InvoiceVA() {
                 setDataInvoice(invoiceData.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
             if (error.response.status === 400 && error.response.data.response_code === 400 && error.response.data.response_message === "Data not found!") {
                 setErrorMessage(error.response.data.response_message)

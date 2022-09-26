@@ -154,7 +154,7 @@ export default (props) => {
       await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
       alert('Text copied');
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -164,7 +164,7 @@ export default (props) => {
       await navigator.clipboard.writeText(copyText);
       alert('Text copied');
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -181,8 +181,8 @@ export default (props) => {
           "Content-Type": "application/json",
           'Authorization': auth,
         };
-        const topUpBalance = await axios.post("/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
-        console.log(topUpBalance, 'ini topup balance ya');
+        const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
+        // console.log(topUpBalance, 'ini topup balance ya');
         if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
           setTopUpBalance(topUpBalance.data.response_data)
           const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
@@ -203,7 +203,7 @@ export default (props) => {
           setShowModalKonfirmasiTopUp(true)
         }
       } catch (error) {
-        console.log(error)
+        // console.log(error)
         history.push(errorCatch(error.response.status))
       }
     }
@@ -215,7 +215,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const topUpResult = await axios.post("/Partner/TopupConfirmation", { data: "" }, { headers: headers })
+          const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
           // console.log(topUp, 'ini topup');
           if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
             setTopUpResult(topUpResult.data.response_data)
@@ -228,7 +228,7 @@ export default (props) => {
             setShowStatusTopup(true)
           }
         } catch (error) {
-          console.log(error)
+          // console.log(error)
           history.push(errorCatch(error.response.status))
         }
       }
@@ -257,7 +257,7 @@ export default (props) => {
   //           'Content-Type':'multipart/form-data',
   //           'Authorization' : auth
   //       }
-  //       const topUp = await axios.post("/Partner/TopupConfirmation", formData, { headers: headers })
+  //       const topUp = await axios.post(BaseURL + "/Partner/TopupConfirmation", formData, { headers: headers })
   //       // console.log(topUp, 'ini topup');
   //       if(topUp.status === 200 && topUp.data.response_code === 200) {
   //         setTopUpResult(topUp.data.response_data.results)
@@ -265,7 +265,7 @@ export default (props) => {
   //         setShowModalKonfirmasiTopUp(true)
   //       }
   //     } catch (error) {
-  //       console.log(error)
+        // console.log(error)
   //       if (error.response.status === 401) {
   //           history.push('/login')
   //       } else if (error.response.status === 400) {
@@ -281,8 +281,8 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
-          console.log(getBalance, 'ini data get balance');
+          const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
+          // console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
@@ -294,7 +294,7 @@ export default (props) => {
           }
           
       } catch (error) {
-          console.log(error)
+          // console.log(error)
           history.push(errorCatch(error.response.status))
         }
     }
@@ -306,7 +306,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const listRiwayat = await axios.post("/partner/TopUpHistory", { data: "" }, { headers: headers })
+          const listRiwayat = await axios.post(BaseURL + "/partner/TopUpHistory", { data: "" }, { headers: headers })
           // console.log(listRiwayat, 'ini data user ');
           if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
@@ -318,7 +318,7 @@ export default (props) => {
           }
           
       } catch (error) {
-          console.log(error)
+          // console.log(error)
           history.push(errorCatch(error.response.status))
         }
     }
@@ -334,7 +334,7 @@ export default (props) => {
       }
     }, [showModalTopUp])
 
-    console.log(nominalTopup, 'ini nominal topup');
+    // console.log(nominalTopup, 'ini nominal topup');
 
   async function logoutHandler() {
     try {
@@ -344,7 +344,7 @@ export default (props) => {
         Authorization: auth,
       };
       const logout = await axios.post(
-        "/Account/Logout",
+        BaseURL + "/Account/Logout",
         { data: "" },
         { headers: headers }
       );
@@ -353,7 +353,7 @@ export default (props) => {
         history.push("/login");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status))
     }
   }

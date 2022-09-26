@@ -31,7 +31,7 @@ function DetailAkun() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const userDetailPartner = await axios.post(url, { data: "" }, { headers: headers })
+            const userDetailPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
             // console.log(userDetailPartner, 'ini data user ');
             if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length === 0) {
                 setDataAkun(userDetailPartner.data.response_data)
@@ -41,7 +41,7 @@ function DetailAkun() {
             }
             
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
     }
@@ -63,7 +63,7 @@ function DetailAkun() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const editCallback = await axios.post("/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
+            const editCallback = await axios.post(BaseURL + "/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
             // console.log(editCallback, 'ini add Callback');
             if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
                 // RouteTo('/detailakun')
@@ -76,7 +76,7 @@ function DetailAkun() {
             
             alert("Edit URL Berhasil")
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
