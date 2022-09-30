@@ -58,7 +58,7 @@ function EditPartner() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const detailPartner = await axios.post("/Partner/EditPartner", { data: dataParams }, { headers: headers })
+            const detailPartner = await axios.post(BaseURL + "/Partner/EditPartner", { data: dataParams }, { headers: headers })
             // console.log(detailPartner, 'ini detail partner');
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
                 // console.log(detailAgen.data.response_data, 'ini detail agen');
@@ -199,7 +199,7 @@ function EditPartner() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const editPartner = await axios.post("/Partner/UpdatePartner", { data: dataParams }, { headers: headers })
+            const editPartner = await axios.post(BaseURL + "/Partner/UpdatePartner", { data: dataParams }, { headers: headers })
             // console.log(editPartner, 'ini add partner');
             if(editPartner.status === 200 && editPartner.data.response_code === 200 && editPartner.data.response_new_token.length === 0) {
                 // RouteTo('/daftarpartner')
@@ -228,7 +228,7 @@ function EditPartner() {
             'Content-Type':'application/json',
             'Authorization' : auth
           }
-          const listAgen = await axios.post("/Partner/GetListAgen", { data: dataParams }, { headers: headers })
+          const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", { data: dataParams }, { headers: headers })
         //   console.log(listAgen, 'ini data agen');
           if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));

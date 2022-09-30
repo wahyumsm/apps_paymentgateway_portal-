@@ -2,7 +2,6 @@
   "name": "@themesberg/volt-react-dashboard",
   "description": "Payment Gateway CRM React Dashboard",
   "author": "",
-  "proxy": "https://api.ezeelink.co.id/ezpaygateway/portal",
   "keywords": [
     "bootstrap 5",
     "react",
@@ -14,7 +13,7 @@
     "bootstrap 5 dashboard"
   ],
   "version": "1.0.1",
-  "homepage": "/dev2/",
+  "homepage": "/ezeepg/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",

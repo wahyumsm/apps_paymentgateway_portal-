@@ -82,7 +82,7 @@ function DisbursementReport() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listPartner = await axios.post("/Partner/ListPartner", {data: ""}, {headers: headers})
+            const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
                 setDataListPartner(listPartner.data.response_data)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
@@ -113,7 +113,7 @@ function DisbursementReport() {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                const dataDisbursement = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                const dataDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                 console.log(dataDisbursement, 'ini data disbursement admin');
                 if (dataDisbursement.status === 200 && dataDisbursement.data.response_code === 200 && dataDisbursement.data.response_new_token === null) {
                     dataDisbursement.data.response_data.results = dataDisbursement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
@@ -138,7 +138,7 @@ function DisbursementReport() {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                const dataDisbursement = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                const dataDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                 console.log(dataDisbursement, 'ini data disbursement partner');
                 if (dataDisbursement.status === 200 && dataDisbursement.data.response_code === 200 && dataDisbursement.data.response_new_token === null) {
                     dataDisbursement.data.response_data.results = dataDisbursement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
@@ -183,7 +183,7 @@ function DisbursementReport() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const filterDisbursement = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+            const filterDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
             console.log(filterDisbursement, 'ini filter data settlement');
             if (filterDisbursement.status === 200 && filterDisbursement.data.response_code === 200 && filterDisbursement.data.response_new_token === null) {
                 filterDisbursement.data.response_data.results = filterDisbursement.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
@@ -439,7 +439,7 @@ function DisbursementReport() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     // console.log(dataExportFilter, 'ini data filter settlement');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
                         const data = dataExportFilter.data.response_data.results
@@ -478,7 +478,7 @@ function DisbursementReport() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     // console.log(dataExportFilter, 'ini data filter settlement');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
                         const data = dataExportFilter.data.response_data.results
@@ -517,7 +517,7 @@ function DisbursementReport() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportDisbursement = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     console.log(dataExportDisbursement, 'ini data settlement di export');
                     if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
                         const data = dataExportDisbursement.data.response_data.results
@@ -556,7 +556,7 @@ function DisbursementReport() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportDisbursement = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     console.log(dataExportDisbursement, 'ini data settlement di export');
                     if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
                         const data = dataExportDisbursement.data.response_data.results
@@ -595,7 +595,7 @@ function DisbursementReport() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportDisbursement = await axios.post("/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []

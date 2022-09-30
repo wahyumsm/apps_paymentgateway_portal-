@@ -685,3 +685,7 @@ width: 150px;
     min-width: 255px;
     text-align: left;
 }
+
+/* .table > :not(caption) > * > * {
+    border-bottom-width: inherit
+} */
