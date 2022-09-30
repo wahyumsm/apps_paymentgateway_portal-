@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Form } from "@themesberg/react-bootstrap";
 import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
 function UpdateUser() {
     const history = useHistory();
@@ -59,7 +60,7 @@ function UpdateUser() {
                 Authorization: auth,
             };
             const detailUser = await axios.post(
-                "/Account/DetailUserAccess",
+                BaseURL + "/Account/DetailUserAccess",
                 { data: dataParams },
                 { headers: headers }
             );
@@ -97,7 +98,7 @@ function UpdateUser() {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                const editUser = await axios.post("/Account/UpdateUser", { data: dataParams }, { headers: headers })
+                const editUser = await axios.post(BaseURL + "/Account/UpdateUser", { data: dataParams }, { headers: headers })
                 if (editUser.status === 200 && editUser.data.response_code === 200 && editUser.data.response_new_token.length === 0) {
                     alert("User Management Berhasil Diupdate")
                     history.push("/managementuser")
@@ -124,11 +125,11 @@ function UpdateUser() {
                     Authorization: auth,
                 };
                 const listRole = await axios.post(
-                    "/Account/GetAccessRole",
+                    BaseURL + "/Account/GetAccessRole",
                     { data: "" },
                     { headers: headers }
                 );
-                console.log(listRole, "ini role");
+                // console.log(listRole, "ini role");
                 if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length === 0) {
                     setListRole(listRole.data.response_data);
                 } else if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length !== 0) {
@@ -149,7 +150,7 @@ function UpdateUser() {
                     Authorization: auth,
                 };
                 const listPartner = await axios.post(
-                    "/Partner/ListPartner",
+                    BaseURL + "/Partner/ListPartner",
                     { data: "" },
                     { headers: headers }
                 );
@@ -182,7 +183,7 @@ function UpdateUser() {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                const listAgen = await axios.post("/Partner/GetListAgen", {data: dataParams}, {headers: headers})
+                const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", {data: dataParams}, {headers: headers})
                 if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
                     setListAgen(listAgen.data.response_data)
                 } else if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length !== 0) {
@@ -211,9 +212,10 @@ function UpdateUser() {
 
         return (
             <>
-                <div className="main-content" style={{ padding: "37px 27px 37px 27px" }}>
+                <div className="main-content mt-5" style={{ padding: "37px 27px 37px 27px" }}>
+                    <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/managementuser"}>Management User</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Edit User</span>
                     <div className="head-title">
-                        <h2 className="h4 mt-5">Edit User</h2>
+                        <h2 className="h4 mt-3 mb-3">Edit User</h2>
                     </div>
                     <div className="base-content">
                         <span className="mt-4" style={{ fontWeight: 600 }}>

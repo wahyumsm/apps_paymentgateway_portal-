@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Modal, Button, InputGroup } from '@themesberg/react-bootstrap';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertFormatNumber, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import "./EditAgen.css"
 
 function EditAgen() {
     const history = useHistory()
@@ -52,7 +51,7 @@ function EditAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
+            const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, 'ini detail agen');
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
                 if (detailAgen.data.response_data.status === true) {
@@ -96,12 +95,13 @@ function EditAgen() {
     async function updateDetailAgen(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}", "nominal":${nominal}}`)
+            // const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}", "nominal":${nominal}}`)
+            const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const editAgen = await axios.post("/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
+            const editAgen = await axios.post(BaseURL + "/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
             // console.log(editAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
                 setShowModalEdit(true)
@@ -150,7 +150,7 @@ function EditAgen() {
     return (
         <>
             <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-                <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
+                <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
                 <div className="head-title">
                     <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
                     {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
@@ -232,7 +232,8 @@ function EditAgen() {
                                 <Form.Control
                                     name='phoneNumber'
                                     value={inputHandle.phoneNumber}
-                                    type='text'
+                                    type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
                                 />
@@ -264,7 +265,8 @@ function EditAgen() {
                                 <Form.Control
                                     name='akunBank'
                                     value={inputHandle.akunBank}
-                                    type='text'
+                                    type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                     onChange={handleChange}    
                                 />
@@ -286,7 +288,7 @@ function EditAgen() {
                                 />
                             </Col>
                         </Row>
-                        <Row className='mt-2'>
+                        {/* <Row className='mt-2'>
                             <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                                 <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                     Nominal Top up
@@ -298,6 +300,7 @@ function EditAgen() {
                                         name='nominal'
                                         value={inputHandle.nominal}
                                         type='number'
+                                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                         style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                         onChange={handleChange}
                                         onBlur={() => setEdit(!edit)}
@@ -312,7 +315,7 @@ function EditAgen() {
                                     />
                                 }
                             </Col>
-                        </Row>
+                        </Row> */}
                     </div>
                 </div>
                 <div className='mb-5 mt-4 me-4 pe-5' style={{ display: "flex", justifyContent: "end"}}>

@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, InputGroup, Modal, Button, Table } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertFormatNumber, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import "./TambahAgen.css";
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
 
 function TambahAgen() {
@@ -23,8 +22,8 @@ function TambahAgen() {
         akunBank: "",
         rekeningOwner: "",
         status: "true",
-        settlementFee: 0,
-        nominal: 0,
+        settlementFee: "",
+        nominal: "",
     })
     const [showModal, setShowModal] = useState(false)
     const [detailNewAgen, setDetailNewAgen] = useState({})
@@ -42,12 +41,13 @@ function TambahAgen() {
     async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee, nominal) {
         try {         
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
+            // const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
+            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const addAgen = await axios.post("/Agen/SaveAgen", { data: dataParams }, { headers: headers })
+            const addAgen = await axios.post(BaseURL + "/Agen/SaveAgen", { data: dataParams }, { headers: headers })
             // console.log(addAgen);
             if (addAgen.status === 200 && addAgen.data.response_code === 200 && addAgen.data.response_new_token.length === 0) {
                 setDetailNewAgen(addAgen.data.response_data)
@@ -80,7 +80,7 @@ function TambahAgen() {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Tambah Agen</span>
+            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Tambah Agen</span>
             <div className="head-title">
                 <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Tambah Agen Baru</h4>
                 <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5>
@@ -157,6 +157,7 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan No Hp Agen"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 required
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
@@ -201,6 +202,7 @@ function TambahAgen() {
                                 onChange={handleChange}
                                 placeholder="Masukkan No Rekening"
                                 type='number'
+                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 required
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
@@ -233,18 +235,39 @@ function TambahAgen() {
                             </span>
                         </Col>
                         <Col xs={10}>
-                            <Form.Control
+                            {/* <Form.Control
                                 name='settlementFee'
                                 onChange={handleChange}
-                                placeholder="Masukkan Nama Pemilik Rekening"
+                                placeholder="Masukkan Jumlah Settlement Fee"
                                 type='number'
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px' }}
+                                /> */}
+                            {add ?
+                                <Form.Control
+                                    name='settlementFee'
+                                    onChange={handleChange}
+                                    placeholder="Masukkan Jumlah Settlement Fee"
+                                    value={inputHandle.settlementFee}
+                                    type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                                    style={{ width: "100%", height: 40, marginTop: '-7px' }}
+                                    onBlur={() => setAdd(!add)}
+                                /> :
+                                <Form.Control
+                                    name='settlementFee'
+                                    onChange={handleChange}
+                                    value={convertFormatNumber(inputHandle.settlementFee)}
+                                    placeholder="Masukkan Jumlah Settlement Fee"
+                                    type='text'
+                                    style={{ width: "100%", height: 40, marginTop: '-7px' }}
+                                    onFocus={() => setAdd(!add)}
                                 />
+                            }
                         </Col>
                     </Row>
-                    <Row className='mt-4'>
+                    {/* <Row className='mt-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nominal Top up
@@ -258,6 +281,7 @@ function TambahAgen() {
                                     placeholder="Masukkan Nominal Top up (Optional)"
                                     value={inputHandle.nominal}
                                     type='number'
+                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onBlur={() => setAdd(!add)}
                                 /> :
@@ -272,11 +296,11 @@ function TambahAgen() {
                                 />
                             }
                         </Col>
-                    </Row>
+                    </Row> */}
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
-                <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee, inputHandle.nominal)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 }>
+                <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee, inputHandle.nominal)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.settlementFee === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.settlementFee === 0 }>
                     Tambahkan
                 </button>
             </div>

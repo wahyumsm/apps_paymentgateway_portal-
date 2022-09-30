@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import "./DetailAgen.css"
 
 function DetailAgen() {
 
@@ -22,7 +21,7 @@ function DetailAgen() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const detailAgen = await axios.post("/Agen/EditAgen", { data: dataParams }, { headers: headers })
+            const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
             // console.log(detailAgen, "ini detail agen");
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
                 setDetailAgen(detailAgen.data.response_data)
@@ -52,7 +51,7 @@ function DetailAgen() {
     
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
+            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
             <div className="head-title">
                 <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
                 {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
@@ -180,7 +179,7 @@ function DetailAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row className='mt-2'>
+                    {/* <Row className='mt-2'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nominal Top up
@@ -194,7 +193,7 @@ function DetailAgen() {
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                             />
                         </Col>
-                    </Row>
+                    </Row> */}
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>

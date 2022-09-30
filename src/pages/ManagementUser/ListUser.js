@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Form, Image } from '@themesberg/react-bootstrap';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
 import DataTable from 'react-data-table-component';
 import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
 import axios from "axios";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import "./ListUser.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faEye, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
 function ListUser () {
 
@@ -38,7 +38,7 @@ function ListUser () {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const listManageUser = await axios.post("/Account/ListUser", { data: "" }, { headers: headers })
+      const listManageUser = await axios.post(BaseURL + "/Account/ListUser", { data: "" }, { headers: headers })
       // console.log(listManageUser, "ini data user")
       if (listManageUser.status === 200 && listManageUser.data.response_code === 200 && listManageUser.data.response_new_token.length === 0) {
         listManageUser.data.response_data = listManageUser.data.response_data.map((obj, id) => ({ ...obj, number: id + 1, icon: <div className="d-flex justify-content-center align-items-center"><FontAwesomeIcon icon={faEye} className="me-2" style={{cursor: "pointer"}} onClick={() => menuAccessHandler(obj.muser_id)} /><FontAwesomeIcon icon={faPencilAlt} className="mx-2" style={{cursor: "pointer"}} onClick={() => detailUserHandler(obj.muser_id)} /></div> }));
@@ -127,17 +127,18 @@ function ListUser () {
     </div>
   );
 
-    const tambahPartner = () => {
+    const tambahUser = () => {
         history.push("/adduser")
     }
 
   return (
     <>
-      <div className="main-content" style={{padding: "37px 27px 37px 27px"}}>
+      <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
+        <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Management User</span>
         <div className="head-title">
           <h2 className="h4 mt-5">Management User</h2>
         </div>
-        <button className="my-3" onClick={() => tambahPartner()} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 201, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+        <button className="my-3" onClick={() => tambahUser()} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 201, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
             <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah Data
         </button>
         <div className='base-content'>

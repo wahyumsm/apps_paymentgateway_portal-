@@ -1,5 +1,5 @@
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile1"
-export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
+export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
+// export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
 
 export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms="
 
@@ -54,6 +54,16 @@ export function errorCatch(statusCode) {
         "403": "/404",
     }
     return code[statusCode]
+}
+
+export function convertSimpleTimeStamp(time) {
+    const date = new Date(time*1000)
+    const hours = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours()
+    const minutes = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes()
+    const days = (date.getDate() < 10) ? "0" + date.getDate() : date.getDate()
+    const months = (date.getMonth() + 1 < 10) ? "0" + (date.getMonth() + 1) : date.getMonth() + 1
+    const years = date.getFullYear()
+    return `${hours}:${minutes}, ${days}/${months}/${years}`
 }
 
 export const convertDateTimeStamp = (time) => {

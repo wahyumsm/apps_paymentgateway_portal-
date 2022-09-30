@@ -28,6 +28,8 @@ import { default as ReactSelect, components } from "react-select";
 import encryptData from "../../function/encryptData";
 import chevron from "../../assets/icon/chevron_down_icon.svg";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker/dist/DateRangePicker";
+import context from "@themesberg/react-bootstrap/lib/esm/AccordionContext";
+import ReactSelect, { components } from "react-select";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -91,82 +93,100 @@ export default () => {
     periodePaylinkChart: 0,
   });
 
-  const showCheckboxes = () => {
-    if (!expanded) {
-      setExpanded(true);
-    } else {
-      setExpanded(false);
-    }
+  const [selectedOptionSettlementPartner, setSelectedOptionSettlementPartner] = useState([])
+  const [selectedOptionBiayaPartner, setSelectedOptionBiayaPartner] = useState([])
+  const [selectedOptionBiayaVA, setSelectedOptionBiayaVA] = useState([])
+
+  const Option = (props) => {
+    return (
+      <div>
+        <components.Option {...props}>
+          <input
+            type="checkbox"
+            checked={props.isSelected}
+            onChange={() => null}
+          />{" "}
+          <label>{props.label}</label>
+        </components.Option>
+      </div>
+    );
   };
 
-  const showCheckboxesBiaya = () => {
-    if (!biaya) {
-      setBiaya(true);
-    } else {
-      setBiaya(false);
-    }
-  };
+  // const showCheckboxesBiaya = () => {
+  //   if (!biaya) {
+  //     setBiaya(true);
+  //   } else {
+  //     setBiaya(false);
+  //   }
+  // };
 
-  const showCheckboxesVa = () => {
-    if (!va) {
-      setVa(true);
-    } else {
-      setVa(false);
-    }
-  };
+  // const showCheckboxesVa = () => {
+  //   if (!va) {
+  //     setVa(true);
+  //   } else {
+  //     setVa(false);
+  //   }
+  // };
 
-  const showCheckboxesPaylink = () => {
-    if (!paylink) {
-      setPaylink(true);
-    } else {
-      setPaylink(false);
-    }
-  };
+  // const showCheckboxesPaylink = () => {
+  //   if (!paylink) {
+  //     setPaylink(true);
+  //   } else {
+  //     setPaylink(false);
+  //   }
+  // };
 
-  const handleQueryPartnerChange = (event) => {
-    if (event.target.checked && !queryPartner.includes(event.target.value)) {
-      setQueryPartner([...queryPartner, event.target.value]);
-    } else if (
-      !event.target.checked &&
-      queryPartner.includes(event.target.value)
-    ) {
-      setQueryPartner(queryPartner.filter((q) => q !== event.target.value));
-    }
-    setIsCheckedPartner(!isCheckedPartner);
-  };
+  // const handleQueryPartnerChange = (event) => {
+  //   if (event.target.checked && !queryPartner.includes(event.target.value)) {
+  //     setQueryPartner([...queryPartner, event.target.value]);
+  //   } else if (
+  //     !event.target.checked &&
+  //     queryPartner.includes(event.target.value)
+  //   ) {
+  //     setQueryPartner(queryPartner.filter((q) => q !== event.target.value));
+  //   }
+  //   setIsCheckedPartner(!isCheckedPartner);
+  // };
 
-  const handleQueryBiayaChange = (event) => {
-    if (event.target.checked && !queryBiaya.includes(event.target.value)) {
-      setQueryBiaya([...queryBiaya, event.target.value]);
-    } else if (
-      !event.target.checked &&
-      queryBiaya.includes(event.target.value)
-    ) {
-      setQueryBiaya(queryBiaya.filter((q) => q !== event.target.value));
-    }
-    setIsCheckedBiaya(!isCheckedBiaya);
-  };
+  // const handleQueryBiayaChange = (event) => {
+  //   if (event.target.checked && !queryBiaya.includes(event.target.value)) {
+  //     setQueryBiaya([...queryBiaya, event.target.value]);
+  //   } else if (
+  //     !event.target.checked &&
+  //     queryBiaya.includes(event.target.value)
+  //   ) {
+  //     setQueryBiaya(queryBiaya.filter((q) => q !== event.target.value));
+  //   }
+  //   setIsCheckedBiaya(!isCheckedBiaya);
+  // };
 
-  const handleQueryVaChange = (event) => {
-    if (event.target.checked && !queryVa.includes(event.target.value)) {
-      setQueryVa([...queryVa, event.target.value]);
-    } else if (!event.target.checked && queryVa.includes(event.target.value)) {
-      setQueryVa(queryVa.filter((q) => q !== event.target.value));
-    }
-    setIsCheckedVa(!isCheckedVa);
-  };
+  // const handleQueryVaChange = (event) => {
+  //   if (event.target.checked && !queryVa.includes(event.target.value)) {
+  //     setQueryVa([...queryVa, event.target.value]);
+  //   } else if (!event.target.checked && queryVa.includes(event.target.value)) {
+  //     setQueryVa(queryVa.filter((q) => q !== event.target.value));
+  //   }
+  //   setIsCheckedVa(!isCheckedVa);
+  // };
 
-  const handleQueryPaylinkChange = (event) => {
-    if (event.target.checked && !queryPaylink.includes(event.target.value)) {
-      setQueryPaylink([...queryPaylink, event.target.value]);
-    } else if (
-      !event.target.checked &&
-      queryPaylink.includes(event.target.value)
-    ) {
-      setQueryPaylink(queryPaylink.filter((q) => q !== event.target.value));
-    }
-    setIsCheckedPaylink(!isCheckedPaylink);
-  };
+  // const handleQueryPaylinkChange = (event) => {
+  //   if (event.target.checked && !queryPaylink.includes(event.target.value)) {
+  //     setQueryPaylink([...queryPaylink, event.target.value]);
+  //   } else if (
+  //     !event.target.checked &&
+  //     queryPaylink.includes(event.target.value)
+  //   ) {
+  //     setQueryPaylink(queryPaylink.filter((q) => q !== event.target.value));
+  //   }
+  //   setIsCheckedPaylink(!isCheckedPaylink);
+  // };
+  const customStylesSelectedOption = {
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: "none",
+      color: "black"
+    })
+  }
 
   function handleChangePeriodeChart(e) {
     if (e.target.value === "7") {
@@ -237,6 +257,44 @@ export default () => {
     if (item !== null) {
       item = item.map((el) => el.toLocaleDateString("en-CA"));
       setDateRangeVaPartner(item);
+    }
+  }
+  
+  async function listDataPartner (url) {
+    try {
+        const auth = "Bearer " + getToken()
+        const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+        }
+        const listDataPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
+        // console.log(listDataPartner, "list partner di beranda")
+        if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length === 0) {
+          let newArr = []
+          var obj = {}
+          listDataPartner.data.response_data.forEach((item) => {
+            obj.value = item.partner_id
+            obj.label = item.nama_perusahaan
+            newArr.push(obj)
+            obj = {}
+          })  
+          setListPartner(newArr)
+        } else if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length !== 0) {
+            setUserSession(listDataPartner.data.response_new_token)
+            let newArr = []
+            var obj = {}
+            listDataPartner.data.response_data.forEach((item) => {
+              obj.value = item.partner_id
+              obj.label = item.nama_perusahaan
+              newArr.push(obj)
+              obj = {}
+            })  
+          setListPartner(newArr)
+        }
+        
+    } catch (error) {
+        console.log(error)
+        history.push(errorCatch(error.response.status))
     }
   }
 
@@ -317,14 +375,10 @@ export default () => {
     try {
       const auth = "Bearer " + getToken();
       const headers = {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      };
-      const ringkasanData = await axios.post(
-        "/Home/GetSummaryTransaction",
-        { data: "" },
-        { headers: headers }
-      );
+          'Content-Type': 'application/json',
+          'Authorization': auth
+      }
+      const ringkasanData = await axios.post(BaseURL + "/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
       // console.log(ringkasanData, 'ini ringkasandata');
       if (
         ringkasanData.status === 200 &&
@@ -353,14 +407,10 @@ export default () => {
       const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`);
       // console.log(dataParams, 'ini data params cart');
       const headers = {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      };
-      const partnerChart = await axios.post(
-        "/Home/GetSettlementPartnerChart",
-        { data: dataParams },
-        { headers: headers }
-      );
+          'Content-Type': 'application/json',
+          'Authorization': auth
+      }
+      const partnerChart = await axios.post(BaseURL + "/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
       // console.log(partnerChart, 'partner chart');
       if (
         partnerChart.status === 200 &&
@@ -385,52 +435,32 @@ export default () => {
         setPendingPartner(false);
       }
     } catch (error) {
-      console.log(error);
-      // history.push(errorCatch(error.response.status))
+      console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
   async function filterPartnerChartHandler(dateId, periode, query) {
     try {
-      setPendingPartner(true);
-      const auth = "Bearer " + getToken();
-      const dataParams = encryptData(
-        `{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${
-          periode.length !== 0 ? periode[0] : ""
-        }", "date_to": "${periode.length !== 0 ? periode[1] : ""}"}`
-      );
+      let partnerId = []
+      query.forEach(item => partnerId.push(item.value))
+      setPendingPartner(true)
+      const auth = 'Bearer ' + getToken();
+      const dataParams = encryptData(`{"partner_id":["${partnerId}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
       // console.log(dataParams, 'ini data params cart filter');
       const headers = {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      };
-      const filterPartnerChart = await axios.post(
-        "/Home/GetSettlementPartnerChart",
-        { data: dataParams },
-        { headers: headers }
-      );
+          'Content-Type': 'application/json',
+          'Authorization': auth
+      }
+      const filterPartnerChart = await axios.post(BaseURL + "/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
       // console.log(filterPartnerChart, 'partner chart handler filter');
-      if (
-        filterPartnerChart.status === 200 &&
-        filterPartnerChart.data.response_code === 200 &&
-        filterPartnerChart.data.response_new_token.length === 0
-      ) {
-        setPartnerChartData([
-          { amount: 0, date: "" },
-          ...filterPartnerChart.data.response_data,
-        ]);
-        setPendingPartner(false);
-      } else if (
-        filterPartnerChart.status === 200 &&
-        filterPartnerChart.data.response_code === 200 &&
-        filterPartnerChart.data.response_new_token.length !== 0
-      ) {
-        setUserSession(filterPartnerChart.data.response_new_token);
-        setPartnerChartData([
-          { amount: 0, date: "" },
-          ...filterPartnerChart.data.response_data,
-        ]);
-        setPendingPartner(false);
+      if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length === 0) {
+        setPartnerChartData([{amount: 0, date: ""}, ...filterPartnerChart.data.response_data])
+        setPendingPartner(false)
+      } else if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length !== 0) {
+        setUserSession(filterPartnerChart.data.response_new_token)
+        setPartnerChartData([{amount: 0, date: ""}, ...filterPartnerChart.data.response_data])
+        setPendingPartner(false)
       }
     } catch (error) {
       console.log(error);
@@ -444,14 +474,10 @@ export default () => {
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`);
       const headers = {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      };
-      const feePartnerChart = await axios.post(
-        "/Home/GetFeePartnerChart",
-        { data: dataParams },
-        { headers: headers }
-      );
+          'Content-Type': 'application/json',
+          'Authorization': auth
+      }
+      const feePartnerChart = await axios.post(BaseURL + "/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
       // console.log(feePartnerChart.data.response_data, 'partner chart');
       if (
         feePartnerChart.status === 200 &&
@@ -483,23 +509,17 @@ export default () => {
 
   async function filterFeePartnerHandler(dateId, periode, query) {
     try {
-      setPendingFee(true);
-      const auth = "Bearer " + getToken();
-      const dataParams = encryptData(
-        `{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${
-          periode.length !== 0 ? periode[0] : ""
-        }", "date_to": "${periode.length !== 0 ? periode[1] : ""}"}`
-      );
+      let partnerId = []
+      query.forEach(item => partnerId.push(item.value))
+      setPendingFee(true)
+      const auth = 'Bearer ' + getToken();
+      const dataParams = encryptData(`{"partner_id":["${partnerId}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
 
       const headers = {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      };
-      const filterFeePartnerChart = await axios.post(
-        "/Home/GetFeePartnerChart",
-        { data: dataParams },
-        { headers: headers }
-      );
+        'Content-Type': 'application/json',
+        'Authorization': auth
+      }
+      const filterFeePartnerChart = await axios.post(BaseURL + "/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
       // console.log(filterFeePartnerChart, 'fee partner handler');
       if (
         filterFeePartnerChart.status === 200 &&
@@ -535,14 +555,10 @@ export default () => {
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`);
       const headers = {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      };
-      const feeVaChartData = await axios.post(
-        "/Home/GetFeeVAChart",
-        { data: dataParams },
-        { headers: headers }
-      );
+          'Content-Type': 'application/json',
+          'Authorization': auth
+      }
+      const feeVaChartData = await axios.post(BaseURL + "/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
       // console.log(feeVaChartData.data.response_data, 'partner chart');
       if (
         feeVaChartData.status === 200 &&
@@ -574,22 +590,16 @@ export default () => {
 
   async function filterVaPartnerHandler(dateId, periode, query) {
     try {
-      setPendingVa(true);
-      const auth = "Bearer " + getToken();
-      const dataParams = encryptData(
-        `{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${
-          periode.length !== 0 ? periode[0] : ""
-        }", "date_to": "${periode.length !== 0 ? periode[1] : ""}"}`
-      );
+      let partnerId = []
+      query.forEach(item => partnerId.push(item.value))
+      setPendingVa(true)
+      const auth = 'Bearer ' + getToken();
+      const dataParams = encryptData(`{"partner_id":["${partnerId}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
       const headers = {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      };
-      const filterVaPartnerChart = await axios.post(
-        "/Home/GetFeeVAChart",
-        { data: dataParams },
-        { headers: headers }
-      );
+        'Content-Type': 'application/json',
+        'Authorization': auth
+      }
+      const filterVaPartnerChart = await axios.post(BaseURL + "/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
       // console.log(filterVaPartnerChart, 'fee partner handler');
       if (
         filterVaPartnerChart.status === 200 &&
@@ -723,13 +733,12 @@ export default () => {
       setInputHandle({
         ...inputHandle,
         periodePartnerChart: 0,
-        queryPartner: [],
-      });
+      })
     }
-    setStatePartnerChart(null);
-    setDateRangePartnerChart([]);
-    setShowDatePartnerChart("none");
-    setQueryPartner([]);
+    setStatePartnerChart(null)
+    setDateRangePartnerChart([])
+    setShowDatePartnerChart("none")
+    setSelectedOptionSettlementPartner([])
   }
 
   function buttonResetFee(param) {
@@ -737,13 +746,12 @@ export default () => {
       setInputHandle({
         ...inputHandle,
         periodeFeeChart: 0,
-        queryBiaya: [],
-      });
+      })
     }
-    setStateFeePartner(null);
-    setDateRangeFeePartner([]);
-    setShowDateFeePartner("none");
-    setQueryBiaya([]);
+    setStateFeePartner(null)
+    setDateRangeFeePartner([])
+    setShowDateFeePartner("none")
+    setSelectedOptionBiayaPartner([])
   }
 
   function buttonResetVa(param) {
@@ -751,13 +759,12 @@ export default () => {
       setInputHandle({
         ...inputHandle,
         periodeVaChart: 0,
-        queryVa: [],
-      });
+      })
     }
-    setStateVaPartner(null);
-    setDateRangeVaPartner([]);
-    setShowDateVaPartner("none");
-    setQueryVa([]);
+    setStateVaPartner(null)
+    setDateRangeVaPartner([])
+    setShowDateVaPartner("none")
+    setSelectedOptionBiayaVA([])
   }
 
   function buttonResetPaylink(param) {
@@ -840,25 +847,19 @@ export default () => {
             <Col lg={3}>
               <div className="card-information base-content-beranda">
                 <p className="p-info">Total Dana Masuk</p>
-                <p className="p-amount">
-                  {convertToRupiah(settlementTransaction.total_dana_masuk)}
-                </p>
+                <p className="p-amount">{convertToRupiah((settlementTransaction.total_dana_masuk !== undefined) ? settlementTransaction.total_dana_masuk : 0)}</p>
               </div>
             </Col>
             <Col lg={3}>
               <div className="card-information base-content-beranda">
                 <p className="p-info">Total Biaya Partner</p>
-                <p className="p-amount">
-                  {convertToRupiah(settlementTransaction.total_biaya_partner)}
-                </p>
+                <p className="p-amount">{convertToRupiah((settlementTransaction.total_biaya_partner !== undefined) ? settlementTransaction.total_biaya_partner : 0)}</p>
               </div>
             </Col>
             <Col lg={3}>
               <div className="card-information base-content-beranda">
                 <p className="p-info">Total Biaya VA</p>
-                <p className="p-amount">
-                  {convertToRupiah(settlementTransaction.total_biaya_va)}
-                </p>
+                <p className="p-amount">{convertToRupiah((settlementTransaction.total_biaya_va !== undefined) ? settlementTransaction.total_biaya_va : 0)}</p>
               </div>
             </Col>
             <Col lg={3}>
@@ -874,11 +875,7 @@ export default () => {
             <Col lg={3} className="mt-3">
               <div className="card-information base-content">
                 <p className="p-info">Total Biaya Settlement</p>
-                <p className="p-amount">
-                  {convertToRupiah(
-                    settlementTransaction.total_biaya_settlement
-                  )}
-                </p>
+                <p className="p-amount">{convertToRupiah((settlementTransaction.total_biaya_settlement !== undefined) ? settlementTransaction.total_biaya_settlement : 0)}</p>
               </div>
             </Col>
           </Row>
@@ -888,12 +885,8 @@ export default () => {
               <Row className="mt-4">
                 <Col xs={3}>
                   <span>Pilih Periode</span>
-                  <Form.Select
-                    name="periodePartnerChart"
-                    value={inputHandle.periodePartnerChart}
-                    onChange={(e) => handleChangePeriodeChart(e)}
-                  >
-                    <option defaultChecked>Pilih Periode</option>
+                  <Form.Select name='periodePartnerChart' value={inputHandle.periodePartnerChart} onChange={(e) => handleChangePeriodeChart(e)}>
+                    <option defaultChecked disabled value={0}>Pilih Periode</option>
                     {periodik.map((times, idx) => {
                       return (
                         <option key={idx} value={times.value}>
@@ -915,95 +908,39 @@ export default () => {
                 </Col>
                 <Col xs={3}>
                   <span>Pilih Partner</span>
-                  <div className="dropdown">
-                    <button
-                      style={{
-                        width: "225px",
-                        height: "44px",
-                        padding: "12px",
-                        borderRadius: "8px",
-                        backgroundColor: "#ffffff",
-                        border: "1px solid #C4C4C4",
-                      }}
-                      className="d-flex justify-content-between align-items-center"
-                      name="query"
-                      onClick={showCheckboxes}
-                      value="none"
-                    >
-                      <div>Semua</div>{" "}
-                      <span>
-                        <img
-                          src={chevron}
-                          alt="chevron"
-                          style={{ fontSize: "5px" }}
-                        />
-                      </span>
-                    </button>
-                    {expanded && (
-                      <div
-                        ref={myRef}
-                        className="checkboxes border-black-0 border border-solid position-absolute bg-white"
-                        style={{
-                          overflowY: "auto",
-                          height: "10rem",
-                          width: "14rem",
-                        }}
-                      >
-                        {listPartner.map((item, idx) => {
-                          return (
-                            <div
-                              key={idx}
-                              className="d-flex align-items-center block m-1"
-                            >
-                              <input
-                                type="checkbox"
-                                name="query"
-                                checked={isCheckedPartner[item.value]}
-                                value={item.value}
-                                onChange={handleQueryPartnerChange}
-                              />
-                              <label className="mx-1 list" htmlFor="query">
-                                {item.label}
-                              </label>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </Col>
+                    <div className="dropdown dropPartner">
+                      <ReactSelect
+                        isMulti
+                        closeMenuOnSelect={false}
+                        hideSelectedOptions={false}
+                        options={listPartner}
+                        // allowSelectAll={true}
+                        value={selectedOptionSettlementPartner}
+                        onChange={(selected) => setSelectedOptionSettlementPartner(selected)}
+                        placeholder="Pilih Partner"
+                        components={{ Option }}
+                        styles={customStylesSelectedOption}
+                      />
+                    </div>
+                </Col>                
               </Row>
               <Row className="my-3">
                 <Col xs={3}>
                   <Row>
                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                       <button
-                        onClick={() =>
-                          filterPartnerChartHandler(
-                            inputHandle.periodePartnerChart,
-                            dateRangePartnerChart,
-                            queryPartner
-                          )
-                        }
-                        className={
-                          inputHandle.periodePartnerChart !== 0
-                            ? "btn-ez-on"
-                            : "btn-ez"
-                        }
-                        disabled={inputHandle.periodePartnerChart === 0}
+                          onClick={() => filterPartnerChartHandler(inputHandle.periodePartnerChart, dateRangePartnerChart, selectedOptionSettlementPartner)}
+                          className={(inputHandle.periodePartnerChart !== 0) ? "btn-ez-on" : "btn-ez"}
+                          disabled={inputHandle.periodePartnerChart === 0}
                       >
                         Terapkan
                       </button>
                     </Col>
                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                       <button
-                        onClick={() => buttonResetPartner("Reset Partner")}
-                        className={
-                          inputHandle.periodePartnerChart !== 0
-                            ? "btn-reset"
-                            : "btn-ez"
-                        }
-                        disabled={inputHandle.periodePartnerChart === 0}
+                          onClick={() => buttonResetPartner("Reset Partner")}
+                          className={(inputHandle.periodePartnerChart !== 0) ? "btn-reset" : "btn-ez"}
+                          disabled={inputHandle.periodePartnerChart === 0}
                       >
                         Atur Ulang
                       </button>
@@ -1118,380 +1055,221 @@ export default () => {
             </div>
           </div>
           <div className="partner-section">
-            <p className="h5 mb-2 mt-4">Grafik Biaya Partner</p>
-            <div className="base-content mt-3">
-              <Row className="mt-4">
-                <Col xs={3}>
-                  <span>Pilih Periode</span>
-                  <Form.Select
-                    name="periodeFeeChart"
-                    value={inputHandle.periodeFeeChart}
-                    onChange={(e) => handleChangeFeePartner(e)}
-                  >
-                    <option defaultChecked>Pilih Periode</option>
-                    {periodik.map((times, idx) => {
-                      return (
-                        <option key={idx} value={times.value}>
-                          {times.time}
-                        </option>
-                      );
-                    })}
-                  </Form.Select>
-                  <div className="my-2" style={{ display: showDateFeePartner }}>
-                    <DateRangePicker
-                      onChange={pickFeePartnerChart}
-                      value={stateFeePartner}
-                      clearIcon={null}
-                    />
-                  </div>
-                </Col>
-                <Col xs={3}>
-                  <span>Pilih Partner</span>
-                  <div>
-                    <button
-                      style={{
-                        width: "225px",
-                        height: "44px",
-                        padding: "12px",
-                        borderRadius: "8px",
-                        backgroundColor: "#ffffff",
-                        border: "1px solid #C4C4C4",
-                      }}
-                      className="d-flex justify-content-between align-items-center"
-                      name="query"
-                      onClick={showCheckboxesBiaya}
-                      value="none"
-                    >
-                      <div>Semua</div>{" "}
-                      <span>
-                        <img
-                          src={chevron}
-                          alt="chevron"
-                          style={{ fontSize: "14px" }}
-                        />
-                      </span>
-                    </button>
-                    {biaya && (
-                      <div
-                        ref={myRef}
-                        className="checkboxes border-gray-0 border border-solid position-absolute bg-white"
-                        style={{
-                          overflowY: "auto",
-                          height: "10rem",
-                          width: "14rem",
-                        }}
-                      >
-                        {listPartner.map((item, idx) => {
+              <p className="h5 mb-2 mt-4">Grafik Biaya Partner</p>
+              <div className="base-content mt-3">
+                <Row className="mt-4">
+                  <Col xs={3}>
+                    <span>Pilih Periode</span>
+                    <Form.Select name='periodeFeeChart' value={inputHandle.periodeFeeChart} onChange={(e) => handleChangeFeePartner(e)}>
+                        <option defaultChecked disabled value={0}>Pilih Periode</option>
+                        {periodik.map((times, idx) => {
                           return (
-                            <div
-                              key={idx}
-                              className="d-flex align-items-center block m-1"
-                            >
-                              <input
-                                type="checkbox"
-                                name="partnerId"
-                                id="partnerId"
-                                checked={isCheckedBiaya[item.value]}
-                                value={item.value}
-                                onChange={handleQueryBiayaChange}
-                              />
-                              <label className="mx-1 list" htmlFor="partnerId">
-                                {item.label}
-                              </label>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </Col>
-              </Row>
-              <Row className="my-3">
-                <Col xs={3}>
-                  <Row>
-                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                      <button
-                        onClick={() =>
-                          filterFeePartnerHandler(
-                            inputHandle.periodeFeeChart,
-                            dateRangeFeePartner,
-                            queryBiaya
+                            <option key={idx} value={times.value}>{times.time}</option>
                           )
-                        }
-                        className={
-                          inputHandle.periodeFeeChart !== 0
-                            ? "btn-ez-on"
-                            : "btn-ez"
-                        }
-                        disabled={inputHandle.periodeFeeChart === 0}
-                      >
-                        Terapkan
-                      </button>
-                    </Col>
-                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                      <button
-                        onClick={() => buttonResetFee("Reset Fee")}
-                        className={
-                          inputHandle.periodeFeeChart !== 0
-                            ? "btn-reset"
-                            : "btn-ez"
-                        }
-                        disabled={inputHandle.periodeFeeChart === 0}
-                      >
-                        Atur Ulang
-                      </button>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-              <Row
-                className="justify-content-md-center"
-                style={{ backgroundColor: "#FFFFFF" }}
-              >
-                <Col xs={12} className="mb-4 d-none d-sm-block">
-                  <div className="div-chart">
-                    {
-                      pendingFee ? (
+                        }) }
+                    </Form.Select>
+                    <div className="my-2" style={{ display: showDateFeePartner }}>
+                      <DateRangePicker 
+                        onChange={pickFeePartnerChart}
+                        value={stateFeePartner}
+                        clearIcon={null}
+                      />
+                    </div>
+                  </Col>
+                  <Col xs={3}>
+                    <span>Pilih Partner</span>
+                      <div className="dropdown dropPartner">
+                        <ReactSelect
+                          isMulti
+                          closeMenuOnSelect={false}
+                          hideSelectedOptions={false}
+                          options={listPartner}
+                          // allowSelectAll={true}
+                          value={selectedOptionBiayaPartner}
+                          onChange={(selected) => setSelectedOptionBiayaPartner(selected)}
+                          placeholder="Pilih Partner"
+                          components={{ Option }}
+                          styles={customStylesSelectedOption}
+                        />
+                      </div>
+                  </Col>                
+                </Row>
+                <Row className='my-3'>
+                  <Col xs={3}>
+                    <Row>
+                      <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                        <button
+                            onClick={() => filterFeePartnerHandler(inputHandle.periodeFeeChart, dateRangeFeePartner, selectedOptionBiayaPartner)}
+                            className={(inputHandle.periodeFeeChart !== 0) ? "btn-ez-on" : "btn-ez"}
+                            disabled={inputHandle.periodeFeeChart === 0}
+                        >
+                            Terapkan
+                        </button>
+                      </Col>
+                      <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                        <button
+                          onClick={() => buttonResetFee("Reset Fee")}
+                          className={(inputHandle.periodeFeeChart !== 0) ? "btn-reset" : "btn-ez"}
+                          disabled={inputHandle.periodeFeeChart === 0}
+                        >
+                            Atur Ulang
+                        </button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row className="justify-content-md-center" style={{backgroundColor: "#FFFFFF"}}>
+                  <Col xs={12} className="mb-4 d-none d-sm-block">
+                    <div className="div-chart">
+                      {pendingFee ?
                         <div className="d-flex justify-content-center align-items-center">
                           <CustomLoader />
-                        </div>
-                      ) : (
-                        // feePartnerChartData.length > 1 ?
+                        </div> :
+                        feePartnerChartData.length > 1 ?
                         <Line
-                          className="mt-3 mb-3"
-                          data={{
-                            labels: feePartnerChartData.map((obj) => obj.date),
-                            datasets: [
-                              {
-                                label: null,
-                                fill: true,
-                                backgroundColor: (context) => {
-                                  const ctx = context.chart.ctx;
-                                  const gradient = ctx.createLinearGradient(
-                                    0,
-                                    0,
-                                    0,
-                                    900
-                                  );
-                                  gradient.addColorStop(
-                                    0,
-                                    "rgba(236, 84, 14, 0.38)"
-                                  );
-                                  gradient.addColorStop(
-                                    0.5,
-                                    "rgba(236, 84, 14, 0)"
-                                  );
-                                  gradient.addColorStop(
-                                    1,
-                                    "rgba(0, 124, 194, 0.7)"
-                                  );
-                                  return gradient;
-                                },
-                                borderColor: "#EC540E",
-                                pointBackgroundColor: "rgba(220, 220, 220, 1)",
-                                pointBorderColor: "#9C43DF",
-                                data: feePartnerChartData.map(
-                                  (obj) => obj.amount
-                                ),
+                        className="mt-3 mb-3"
+                        data={{
+                          labels: feePartnerChartData.map(obj => obj.date),
+                          datasets: [
+                            {
+                              label: null,
+                              fill: true,
+                              backgroundColor: (context) => {
+                                const ctx = context.chart.ctx;
+                                const gradient = ctx.createLinearGradient(0, 0, 0, 900);
+                                gradient.addColorStop(0, "rgba(236, 84, 14, 0.38)");
+                                gradient.addColorStop(0.5, "rgba(236, 84, 14, 0)");
+                                gradient.addColorStop(1, "rgba(0, 124, 194, 0.7)");
+                                return gradient;
                               },
-                            ],
-                          }}
-                          height={100}
-                          width={200}
-                          options={{
-                            plugins: {
-                              legend: {
-                                display: false,
-                              },
-                              tooltip: {
-                                displayColors: false,
-                              },
+                              borderColor: "#EC540E",
+                              pointBackgroundColor: "rgba(220, 220, 220, 1)",
+                              pointBorderColor: "#9C43DF",
+                              data: feePartnerChartData.map(obj => obj.amount)
                             },
-                            responsive: true,
-                            scales: {
-                              xAxes: {
-                                beginAtZero: false,
-                                ticks: {
-                                  autoSkip: false,
-                                  maxRotation: 45,
-                                  minRotation: 45,
-                                },
-                              },
-                              yAxes: {
-                                beginAtZero: true,
-                                ticks: {
-                                  callback: function (value, index, ticks) {
-                                    if (value > 999 && value < 1e6) {
-                                      return value / 1000 + " rb"; // convert to K for number from > 1000 < 1 million
-                                    } else if (value >= 1e6) {
-                                      return value / 1e6 + " jt"; // convert to M for number from > 1 million
-                                    } else if (value >= 1e9) {
-                                      return (
-                                        (value / 1e9).toFixed(1) + " milyar"
-                                      );
-                                    } else if (value >= 1e12) {
-                                      return (
-                                        (value / 1e12).toFixed(1) + " milyar"
-                                      );
-                                    } else if (value < 1000) {
-                                      return value; // if value < 1000, nothing to do
-                                    }
-                                  },
-                                },
-                              },
+                          ],
+                        }}
+                        height={100}
+                        width={200}
+                        options= {{
+                          plugins: {
+                            legend: {
+                              display: false
                             },
-                          }}
-                        />
-                      )
-                      // :
-                      // <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
-                    }
-                  </div>
-                </Col>
-              </Row>
-            </div>
+                            tooltip: {
+                              displayColors: false,                              
+                            }
+                          },
+                          responsive: true,
+                          scales: {
+                            xAxes: {
+                              beginAtZero: false,
+                              ticks: {
+                                autoSkip: false,
+                                maxRotation: 45,
+                                minRotation: 45
+                              }
+                            },
+                            yAxes: {
+                              beginAtZero: true,
+                              ticks: {
+                                callback: function(value, index, ticks) {
+                                  if(value > 999 && value < 1e6){
+                                    return (value/1000) + ' rb'; // convert to K for number from > 1000 < 1 million 
+                                  } else if(value >= 1e6){
+                                      return (value/1e6) + ' jt'; // convert to M for number from > 1 million 
+                                  } else if (value >= 1e9) {
+                                    return (value/1e9).toFixed(1) + ' milyar'
+                                  } else if (value >= 1e12) {
+                                    return (value/1e12).toFixed(1) + ' milyar'
+                                  } else if (value < 1000) {
+                                    return value; // if value < 1000, nothing to do
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }}
+                        /> :
+                        <div style={{color: "black"}} className="d-flex justify-content-center align-items-center">There are no records to display</div>
+                      }
+                    </div>
+                  </Col>
+                </Row>
+              </div>
           </div>
           <div className="va-section">
-            <p className="h5 mb-2 mt-4">Grafik Biaya VA</p>
-            <div className="base-content mt-3">
-              <Row className="mt-4">
-                <Col xs={3}>
-                  <span>Pilih Periode</span>
-                  <Form.Select
-                    name="periodeVaChart"
-                    value={inputHandle.periodeVaChart}
-                    onChange={(e) => handleChangeVaPartner(e)}
-                  >
-                    <option defaultChecked>Pilih Periode</option>
-                    {periodik.map((times, idx) => {
-                      return (
-                        <option key={idx} value={times.value}>
-                          {times.time}
-                        </option>
-                      );
-                    })}
-                  </Form.Select>
-                  <div className="my-2" style={{ display: showDateVaPartner }}>
-                    <DateRangePicker
-                      onChange={pickVaPartnerChart}
-                      value={stateVaPartner}
-                      clearIcon={null}
-                    />
-                  </div>
-                </Col>
-                <Col xs={3}>
-                  <span>Pilih Partner</span>
-                  <button
-                    style={{
-                      width: "225px",
-                      height: "44px",
-                      padding: "12px",
-                      borderRadius: "8px",
-                      backgroundColor: "#ffffff",
-                      border: "1px solid #C4C4C4",
-                    }}
-                    className="d-flex justify-content-between align-items-center"
-                    name="query"
-                    onClick={showCheckboxesVa}
-                    value="none"
-                  >
-                    <div>Semua</div>{" "}
-                    <span>
-                      <img
-                        src={chevron}
-                        alt="chevron"
-                        style={{ fontSize: "14px" }}
-                      />
-                    </span>
-                  </button>
-                  {va && (
-                    <div
-                      ref={myRef}
-                      className="checkboxes border-gray-0 border border-solid position-absolute bg-white"
-                      style={{
-                        overflowY: "auto",
-                        height: "10rem",
-                        width: "14rem",
-                      }}
-                    >
-                      {listPartner.map((item, idx) => {
-                        return (
-                          <div
-                            key={idx}
-                            className="d-flex align-items-center block m-1"
-                          >
-                            <input
-                              type="checkbox"
-                              name="partnerId"
-                              id="partnerId"
-                              checked={isCheckedVa[item.value]}
-                              value={item.value}
-                              onChange={handleQueryVaChange}
-                            />
-                            <label className="mx-2 list" htmlFor="partnerId">
-                              {item.label}
-                            </label>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </Col>
-              </Row>
-              <Row className="my-3">
-                <Col xs={3}>
-                  <Row>
-                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                      <button
-                        onClick={() =>
-                          filterVaPartnerHandler(
-                            inputHandle.periodeVaChart,
-                            dateRangeVaPartner,
-                            queryVa
+              <p className="h5 mb-2 mt-4">Grafik Biaya VA</p>
+              <div className="base-content mt-3">
+                <Row className="mt-4">
+                  <Col xs={3}>
+                    <span>Pilih Periode</span>
+                    <Form.Select name='periodeVaChart' value={inputHandle.periodeVaChart} onChange={(e) => handleChangeVaPartner(e)} >
+                        <option defaultChecked disabled value={0}>Pilih Periode</option>
+                        {periodik.map((times, idx) => {
+                          return (
+                            <option key={idx} value={times.value}>{times.time}</option>
                           )
-                        }
-                        className={
-                            inputHandle.periodeVaChart !== 0
-                            ? "btn-ez-on"
-                            : "btn-ez"
-                        }
-                        disabled={
-                          inputHandle.periodeVaChart === 0
-                        }
-                      >
-                        Terapkan
-                      </button>
-                    </Col>
-                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                      <button
-                        onClick={() => buttonResetVa("Reset Va")}
-                        className={
-                          inputHandle.periodeVaChart !== 0
-                            ? "btn-reset"
-                            : "btn-ez"
-                        }
-                        disabled={
-                          inputHandle.periodeVaChart === 0
-                        }
-                      >
-                        Atur Ulang
-                      </button>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-              <Row
-                className="justify-content-md-center"
-                style={{ backgroundColor: "#FFFFFF" }}
-              >
-                <Col xs={12} className="mb-4 d-none d-sm-block">
-                  <div className="div-chart">
-                    {
-                      pendingVa ? (
+                        }) }
+                    </Form.Select>
+                    <div className="my-2" style={{ display: showDateVaPartner }}>
+                      <DateRangePicker 
+                        onChange={pickVaPartnerChart}
+                        value={stateVaPartner}
+                        clearIcon={null}
+                      />
+                  </div>
+                  </Col>
+                  <Col xs={3}>
+                    <span>Pilih Partner</span>
+                    <div className="dropdown dropPartner">
+                      <ReactSelect
+                            isMulti
+                            closeMenuOnSelect={false}
+                            hideSelectedOptions={false}
+                            options={listPartner}
+                            // allowSelectAll={true}
+                            value={selectedOptionBiayaVA}
+                            onChange={(selected) => setSelectedOptionBiayaVA(selected)}
+                            placeholder="Pilih Partner"
+                            components={{ Option }}
+                            styles={customStylesSelectedOption}
+                          />
+                    </div>
+                  </Col>                
+                </Row>
+                <Row className='my-3'>
+                  <Col xs={3}>
+                    <Row>
+                      <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                        <button
+                            onClick={() => filterVaPartnerHandler(inputHandle.periodeVaChart, dateRangeVaPartner, selectedOptionBiayaVA)}
+                            className={(inputHandle.periodeVaChart !== 0) ? "btn-ez-on" : "btn-ez"}
+                            disabled={inputHandle.periodeVaChart === 0}
+                        >
+                            Terapkan
+                        </button>
+                      </Col>
+                      <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                        <button
+                            onClick={() => buttonResetVa("Reset Va")}
+                            className={(inputHandle.periodeVaChart !== 0) ? "btn-reset" : "btn-ez"}
+                            disabled={inputHandle.periodeVaChart === 0}
+                        >
+                            Atur Ulang
+                        </button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row className="justify-content-md-center" style={{backgroundColor: "#FFFFFF"}}>
+                  <Col xs={12} className="mb-4 d-none d-sm-block">
+                    <div className="div-chart">
+                      {pendingVa ?
                         <div className="d-flex justify-content-center align-items-center vh-100">
                           <CustomLoader />
                         </div>
-                      ) : (
+                      : (
                         // feeVaChartData.length > 1 ?
                         <Line
                           style={{ overflowX: "scroll" }}

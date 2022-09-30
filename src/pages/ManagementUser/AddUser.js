@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, InputGroup } from "@themesberg/react-bootstrap";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   BaseURL,
   errorCatch,
@@ -14,6 +14,7 @@ import encryptData from "../../function/encryptData";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
 function AddUser() {
   const history = useHistory();
@@ -60,7 +61,7 @@ function AddUser() {
     };
     try {
       const listRole = await axios.post(
-        "/Account/GetAccessRole",
+        BaseURL + "/Account/GetAccessRole",
         { data: "" },
         { headers: headers }
       );
@@ -83,7 +84,7 @@ function AddUser() {
         Authorization: auth,
       };
       const listPartner = await axios.post(
-        "/Partner/ListPartner",
+        BaseURL + "/Partner/ListPartner",
         { data: "" },
         { headers: headers }
       );
@@ -115,7 +116,7 @@ function AddUser() {
         Authorization: auth,
       };
       const listAgenFromPartner = await axios.post(
-        "/Partner/GetListAgen",
+        BaseURL + "/Partner/GetListAgen",
         { data: dataParams },
         { headers: headers }
       );
@@ -158,7 +159,7 @@ function AddUser() {
         Authorization: auth,
       };
       const addUser = await axios.post(
-        "/Account/AddUser",
+        BaseURL + "/Account/AddUser",
         { data: dataParams },
         { headers: headers }
       );
@@ -201,7 +202,8 @@ function AddUser() {
 
   return (
     <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
-      <div className="d-flex">
+      <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/managementuser"}>Management User</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Tambah Data User</span>
+      <div className="d-flex mt-3">
         <h3 className="text-black">Tambah Data</h3>
         <small className="my-2 py-1 mx-2">User</small>
       </div>

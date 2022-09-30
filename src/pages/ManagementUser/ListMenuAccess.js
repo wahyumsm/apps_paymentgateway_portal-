@@ -2,7 +2,7 @@ import { Alert, Form, Row, Table } from '@themesberg/react-bootstrap'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
-import { useHistory, useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData'
 import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
@@ -25,7 +25,7 @@ function ListMenuAccess() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const listAccessMenu = await axios.post('/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
+            const listAccessMenu = await axios.post(BaseURL + '/Account/GetListMenuAccess', { data: dataParams }, { headers: headers })
             // console.log(listAccessMenu, "ini list access menu");
             if (listAccessMenu.status === 200 && listAccessMenu.data.response_code === 200 && listAccessMenu.data.response_new_token.length === 0) {
                 setListAccessMenu(listAccessMenu.data.response_data)
@@ -136,7 +136,7 @@ function ListMenuAccess() {
                         'Content-Type':'application/json',
                         'Authorization' : auth
                     }
-                    const saveAccess = await axios.post("/Account/SaveAccess", {data: dataParams}, {headers: headers})
+                    const saveAccess = await axios.post(BaseURL + "/Account/SaveAccess", {data: dataParams}, {headers: headers})
                     // console.log(saveAccess, "ini save access");
                     if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length === 0) {
                         alert("Access Menu berhasil disimpan")
@@ -1982,7 +1982,7 @@ function ListMenuAccess() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Access Menu User</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/managementuser"}>Management User</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Access Menu User</span>
             <div className='head-title'>
                 <h2 className="h5 mb-3 mt-4">Access User</h2>
             </div>

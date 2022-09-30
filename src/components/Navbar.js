@@ -37,7 +37,7 @@ import alokasiIcon from "../assets/icon/alokasi_icon.svg"
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import arrowUp from "../assets/img/icons/arrow_up.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -108,16 +108,23 @@ export default (props) => {
     })
   }
 
+  function handleChangeTopUp(e) {
+    setInputHandle({
+      ...inputHandle,
+      [e.target.name] : Number(e.target.value).toString()
+    })
+  }
+
   const startColorNumber = (money) => {  
     if (money !== 0) {
       var diSliceAwal = String(money).slice(0, -3)
     }
-    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".")
+    return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".") + "."
   }
 
   const endColorNumber = (money) => {
     var diSliceAkhir = String(money).slice(-3)
-    return "."+diSliceAkhir
+    return diSliceAkhir
   }
 
   const handleClick = () => {
@@ -140,15 +147,24 @@ export default (props) => {
   };
 
   const copyPrice = async () => {
-    var copyText = document.getElementById('pricing').innerHTML;
-    await navigator.clipboard.writeText(copyText);
-    alert('Text copied');
+    try {
+      var copyText = document.getElementById('pricing').innerHTML.split("<")
+      // await navigator.clipboard.writeText(copyText);
+      await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
+      alert('Text copied');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const copyRek = async () => {
-    var copyText = document.getElementById('noRek').innerHTML;
-    await navigator.clipboard.writeText(copyText);
-    alert('Text copied');
+    try {
+      var copyText = document.getElementById('noRek').innerHTML;
+      await navigator.clipboard.writeText(copyText);
+      alert('Text copied');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const showCheckboxes = () => {
@@ -172,8 +188,8 @@ export default (props) => {
           "Content-Type": "application/json",
           'Authorization': auth,
         };
-        const topUpBalance = await axios.post("/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
-        // console.log(topUpBalance, 'ini topup balance ya');
+        const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
+        console.log(topUpBalance, 'ini topup balance ya');
         if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
           setTopUpBalance(topUpBalance.data.response_data)
           const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
@@ -206,7 +222,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const topUpResult = await axios.post("/Partner/TopupConfirmation", { data: "" }, { headers: headers })
+          const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
           // console.log(topUp, 'ini topup');
           if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
             setTopUpResult(topUpResult.data.response_data)
@@ -272,7 +288,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const getBalance = await axios.post("/Partner/GetBalance", { data: "" }, { headers: headers })
+          const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
           // console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
               // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
@@ -295,7 +311,7 @@ export default (props) => {
               'Content-Type':'application/json',
               'Authorization' : auth
           }
-          const listRiwayat = await axios.post("/partner/TopUpHistory", { data: "" }, { headers: headers })
+          const listRiwayat = await axios.post(BaseURL + "/partner/TopUpHistory", { data: "" }, { headers: headers })
           // console.log(listRiwayat, 'ini data user ');
           if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
@@ -331,7 +347,7 @@ export default (props) => {
         Authorization: auth,
       };
       const logout = await axios.post(
-        "/Account/Logout",
+        BaseURL + "/Account/Logout",
         { data: "" },
         { headers: headers }
       );
@@ -438,6 +454,8 @@ export default (props) => {
     );
   };
 
+  // console.log(deleteZero("000123456"), 'ini delete zero');
+
   return (
     <>
       <Navbar
@@ -457,7 +475,7 @@ export default (props) => {
                 <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                   <div onClick={showCheckboxes} className="media-body ms-2 text-dark align-items-center d-block d-lg-block">                    
                     <span className="mb-0 font-small">Saldo: </span>
-                    <span className="mb-0 font-small fw-bold">{convertToRupiah(getBalance.balance)}</span>
+                    <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
                     <img
                       src={arrowDown}
                       alt="arrow_up"
@@ -607,8 +625,8 @@ export default (props) => {
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
                 {nominalTopup ? 
-                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} /> :
-                  <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={convertFormatNumber(inputHandle.amounts)} />
+                  <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChangeTopUp} placeholder="Rp" name="amounts" type="number" value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} /> :
+                  <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={inputHandle.amounts === 0 ? "Rp" : convertFormatNumber(inputHandle.amounts)} />
                 }
                 {/* {getBalance.topupAmount_temp !== 0 ?
                   <>
@@ -716,7 +734,7 @@ export default (props) => {
               </div>
               <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
                 <img src={noticeIcon} alt="notice" />
-                <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga 3 digit terakhir.</div>
+                <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga <span style={{ fontWeight: 600 }}>3 digit terakhir.</span></div>
               </Table>
               <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
                   <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
