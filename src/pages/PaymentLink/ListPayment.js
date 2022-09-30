@@ -14,15 +14,18 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DataTable from "react-data-table-component";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
 import { useHistory } from "react-router-dom";
-import { errorCatch, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, setUserSession, styleStatusPaylink } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import Pagination from "react-js-pagination";
 import { pageVisits } from "../../data/tables";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { useCallback } from "react";
 
 function ListPayment() {
   const history = useHistory();
   const access_token = getToken();
+  const user_role = getRole()
   const [listPaylink, setListPaylink] = useState([]);
   const [showDatePaylink, setShowDatePaylink] = useState("none");
   const [statePaylink, setStatePaylink] = useState(null);
@@ -34,6 +37,7 @@ function ListPayment() {
   const [isFilterPaylink, setIsFilterPaylink] = useState(false);
   const [orderField, setOrderField] = useState("tpaylink_crtdt");
   const [orderId, setOrderId] = useState(0);
+  const [isClick, setIsClick] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     paymentId: "",
     refId: "",
@@ -41,6 +45,24 @@ function ListPayment() {
     statusPaylink: "",
     rowPerPage: 10,
   });
+
+  function hoverHandler(e) {
+    e.target.style.background = "#3DB54A";
+    e.target.style.color = "#FFFFFF"
+  }
+
+  function normalHandler(e) {
+    e.target.style.background = "#EBF8EC";
+    e.target.style.color = "#3DB54A"
+  }
+
+  function clickHandler(e, id) {
+    e.target.style.background = "red";
+    e.target.style.color = "black"
+    setIsClick(true)
+    detailPaymentHandler(id)
+  }
+
   const [payment, setPayment] = useState({
     isDesc: false,
     id: 1,
@@ -90,11 +112,13 @@ function ListPayment() {
       setOrderField("tpaylink_code");
       showPayment();
       setOrderId(orderId);
+      setActivePagePaylink(1)
       getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
     } else if (orderField === "tpaylink_code" && isFilterPaylink === true) {
       setOrderField("tpaylink_code");
       showPayment();
       setOrderId(orderId);
+      setActivePagePaylink(1)
       filterPaymentLinkHandler(
         inputHandle.paymentId,
         inputHandle.refId,
@@ -110,11 +134,13 @@ function ListPayment() {
       setOrderField("tpaylink_code");
       showDate();
       setOrderId(orderId);
+      setActivePagePaylink(1)
       getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
     } else if (orderField === "tpaylink_crtdt" && isFilterPaylink === true) {
       setOrderField("tpaylink_code");
       showDate();
       setOrderId(orderId);
+      setActivePagePaylink(1)
       filterPaymentLinkHandler(
         inputHandle.paymentId,
         inputHandle.refId,
@@ -130,11 +156,13 @@ function ListPayment() {
       setOrderField("mstatus_name");
       showStatus();
       setOrderId(orderId);
+      setActivePagePaylink(1)
       getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
     } else if (orderField === "mstatus_name" && isFilterPaylink === true) {
       setOrderField("mstatus_name");
       showStatus();
       setOrderId(orderId);
+      setActivePagePaylink(1)
       filterPaymentLinkHandler(
         inputHandle.paymentId,
         inputHandle.refId,
@@ -219,12 +247,12 @@ function ListPayment() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const listPaylink = await axios.post(
+      const listPaylink = await axios.post(BaseURL +
         "/PaymentLink/PaymentListGetOrder",
         { data: dataParams },
         { headers: headers }
       );
-      // console.log(listPaylink, "ini data list paylink");
+      console.log(listPaylink, "ini data list paylink");
       if (
         listPaylink.status === 200 &&
         listPaylink.data.response_code === 200 &&
@@ -286,7 +314,7 @@ function ListPayment() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const filterPaylink = await axios.post(
+      const filterPaylink = await axios.post(BaseURL +
         "/PaymentLink/PaymentListGetOrder",
         { data: dataParams },
         { headers: headers }
@@ -371,8 +399,23 @@ function ListPayment() {
     }
   }
 
+  const [copied, setCopied] = useState(false);
+
+  const onCopy = useCallback(() => {
+      setCopied(true);
+  }, [])
+
+  const onClick = useCallback(({target: {innerText}}) => {
+      console.log(`Clicked on "${innerText}"!`);
+      alert("Copied!")
+  }, [])
+
   function toDashboard() {
     history.push("/");
+  }
+
+  function toLaporan() {
+    history.push("/laporan");
   }
 
   function toListPay() {
@@ -387,7 +430,15 @@ function ListPayment() {
       document.execCommand("copy", true, copyText);
     }
     alert("Text copied");
-};
+  };
+
+  // const handleMouseEnter = () => {
+  //   setIsHover(true);
+  // };
+ 
+  // const handleMouseLeave = () => {
+  //   setIsHover(false);
+  // };
 
   useEffect(() => {
     if (!access_token) {
@@ -418,9 +469,14 @@ function ListPayment() {
       style={{ padding: "37px 27px 37px 27px" }}
     >
       <span className="breadcrumbs-span">
-        <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>
-          Beranda
-        </span>{" "}
+        {user_role === "102" ?
+          <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>
+            Laporan
+          </span> :
+          <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>
+            Beranda
+          </span>
+        }{" "}
         &nbsp;
         <img alt="" src={breadcrumbsIcon} /> &nbsp;
         <span style={{ cursor: "pointer" }} onClick={() => toListPay()}>
@@ -527,7 +583,7 @@ function ListPayment() {
               value={inputHandle.periodePaylink}
               onChange={(e) => handleChangePeriodePaylink(e)}
             >
-              <option defaultValue>Pilih Periode</option>
+              {inputHandle.periodePaylink === 0 && <option value={0}>Pilih Periode</option>}
               <option value={2}>Hari Ini</option>
               <option value={3}>Kemarin</option>
               <option value={4}>7 Hari Terakhir</option>
@@ -547,7 +603,7 @@ function ListPayment() {
               className="input-text-ez ms-5"
               style={{ display: "inline" }}
             >
-              <option defaultValue>Pilih Status</option>
+              {inputHandle.statusPaylink === "" && <option value={""}>Pilih Status</option>}
               <option value={"17"}>Active</option>
               <option value={"2"}>Success</option>
               <option value={"18"}>Settled</option>
@@ -673,6 +729,7 @@ function ListPayment() {
             className="table table-bordered mt-3"
             id="tableInvoice"
             style={{ width: "100%" }}
+            hover
           >
             <thead>
               <tr>
@@ -833,7 +890,7 @@ function ListPayment() {
                               ((item.tvatrans_status_id === 9 ||
                                 item.tvatrans_status_id === 16) &&
                                 "rgba(185, 18, 27, 0.08)") ||
-                              (item.tvatrans_status_id === 17 && "#EBF8EC") ||
+                              (item.tvatrans_status_id === 17 && isClick ? "red" : "#EBF8EC" ) ||
                               (item.tvatrans_status_id === 18 && "#F0F0F0"),
                             color:
                               (item.tvatrans_status_id === 2 && "#077E86") ||
@@ -844,6 +901,8 @@ function ListPayment() {
                                 "#B9121B") ||
                               (item.tvatrans_status_id === 17 && "#3DB54A") ||
                               (item.tvatrans_status_id === 18 && "#888888"),
+                            textDecoration: (item.tvatrans_status_id === 17 ? "underline" : "unset" ),
+                            cursor: (item.tvatrans_status_id === 17 ? "pointer" : "unset"),
                             margin: 6,
                             padding: "6px 0px",
                             display: "flex",
@@ -852,7 +911,10 @@ function ListPayment() {
                             alignItem: "center",
                             borderRadius: 4,
                           }}
+                          onMouseEnter={item.tvatrans_status_id === 17 ? hoverHandler : null}
+                          onMouseLeave={item.tvatrans_status_id === 17 ? normalHandler : null}
                           className="ms-2"
+                          onClick={(e) => item.mstatus_name === "Active" ? clickHandler(e, item.tpaylink_id) : "" }
                         >
                           {item.mstatus_name}
                         </td>
@@ -869,16 +931,18 @@ function ListPayment() {
                               />
                             </OverlayTrigger>
                             <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip style={{ maxWidth: 200, width: 105 }}>Salin Link</Tooltip>}>
-                              <FontAwesomeIcon
-                                icon={faClone}
-                                className="mx-2"
-                                onClick={() => copyLink(item.tpaylink_url)}
-                                style={{
-                                  cursor: "pointer",
-                                  display:
-                                    item.tvatrans_status_id === 17 ? "" : "none",
-                                }}
-                              />
+                              <CopyToClipboard onCopy={onCopy} text={item.tpaylink_url}>
+                                <FontAwesomeIcon
+                                  icon={faClone}
+                                  className="mx-2"
+                                  onClick={onClick}
+                                  style={{
+                                    cursor: "pointer",
+                                    display:
+                                      item.tvatrans_status_id === 17 ? "" : "none",
+                                  }}
+                                />
+                              </CopyToClipboard>
                             </OverlayTrigger>
                           </div>
                         </td>

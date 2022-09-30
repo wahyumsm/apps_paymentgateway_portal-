@@ -73,3 +73,14 @@ export const convertDateTimeStamp = (time) => {
 export const convertTimeDigit = (num) => {
     return (num < 10 ? "0" : "") + num
 }
+
+export const styleStatusPaylink = {
+    normal: {
+        background: "#EBF8EC",
+        color: "#3DB54A"
+    }, 
+    hover: {
+        background: "#3DB54A",
+        color: "#FFFFFF"
+    }
+}

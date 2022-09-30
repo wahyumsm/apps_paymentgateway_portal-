@@ -8,14 +8,14 @@ import 'chart.js/auto';
 // import { invoiceItems } from '../data/tables';
 import DataTable from 'react-data-table-component';
 // import { TransactionsTable } from "../components/Tables";
-import { BaseURL, convertToRupiah, errorCatch, getToken, RouteTo, setUserSession } from "../function/helpers";
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from "../function/helpers";
 import axios from "axios";
 import encryptData from "../function/encryptData";
 import * as XLSX from "xlsx"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 // import { addDays } from "date-fns";
-import "./Transactions.css";
+// import "./Transactions.css";
 import {Pie, Line} from 'react-chartjs-2'
 import { max } from "date-fns";
 import breadcrumbsIcon from "../assets/icon/breadcrumbs_icon.svg";
@@ -29,6 +29,7 @@ export default () => {
   const history = useHistory();
   const dispatch = useDispatch()
   const access_token = getToken();
+  const user_role = getRole()
   const [partnerId, setPartnerId] = useState("")
   const [listAgen, setListAgen] = useState([])
   const [listTransferDana, setListTransferDana] = useState([])
@@ -47,8 +48,8 @@ export default () => {
     statusDanaMasuk: [],
     statusSettlement: "",
     fiturSettlement: 0,
-    fiturDanaMasuk: 0
-    periodeDanaMasuk: 0,
+    fiturDanaMasuk: 0,
+    periodeDanaMasuk: 0
   })
   const [pendingTransfer, setPendingTransfer] = useState(true)
   const [pendingSettlement, setPendingSettlement] = useState(true)
@@ -105,11 +106,21 @@ export default () => {
     // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
     if (isFilterDanaMasuk) {
         setActivePageDanaMasuk(page)
-        filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0)
+        filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.fiturDanaMasuk)
     } else {
         setActivePageDanaMasuk(page)
         getListTransferDana(partnerId, page)
     }
+  }
+
+  function getColors(length) {
+    let colors = [];
+
+    for (let i = 0; i < length; i++) {
+        colors.push(chartColors[i % (chartColors.length)]);
+    }
+
+    return colors;
   }
 
   async function getDataAgen(partnerId) {
@@ -161,7 +172,7 @@ export default () => {
   async function getListTransferDana(partnerId, currentPage) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"partner_id": "${partnerId}}", "date_from": "", "date_to": "", "period": 2, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "fitur_id": 0,}`)
+      const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "fitur_id": 0}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -319,7 +330,7 @@ export default () => {
       setPendingSettlement(true)
       setIsFilterDanaMasuk(true)
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"partner_id": "${partnerId}}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "fitur_id": 0,}`)
+      const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "fitur_id": ${fiturDanaMasuk}}`)
       // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
       console.log(dataParams, "ini data params dana masuk filter");
       const headers = {
@@ -382,7 +393,8 @@ export default () => {
           idTransaksiDanaMasuk: "",
           namaAgenDanaMasuk: "",
           statusDanaMasuk: [],
-          periodeDanaMasuk: 0,
+          periodeDanaMasuk: 0,          
+          fiturDanaMasuk: 0
       })
       setStateDanaMasuk(null)
       setDateRangeDanaMasuk([])
@@ -399,6 +411,14 @@ export default () => {
     }
   }
 
+  function toDashboard() {
+    history.push("/");
+  }
+
+  function toLaporan() {
+    history.push("/laporan");
+  }
+
   useEffect(() => {
     if (!access_token) {
       // RouteTo("/login")
@@ -410,7 +430,7 @@ export default () => {
   }, [access_token, ])
 
   // console.log(userDetail, 'user detail');
-  console.log(pageNumberDanaMasuk, 'page number');
+  // console.log(pageNumberDanaMasuk, 'page number');
 
   async function detailListTransferHandler(trxId) {
     try {
@@ -421,6 +441,7 @@ export default () => {
         'Authorization' : auth
       }
       const detailTransaksi = await axios.post(BaseURL + "/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
+      console.log(detailTransaksi, "ini detail transaksi");
       if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200 && detailTransaksi.data.response_new_token.length === 0) {
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)
@@ -608,7 +629,7 @@ export default () => {
   return (
     <>
       <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-        <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Laporan</span>
+        <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>Laporan</span></span>
         <div className="head-title">
           <h2 className="h4 mt-4">Laporan</h2>
         </div>
@@ -717,6 +738,8 @@ export default () => {
             </Col>
           </Row> */}
             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+            <Row className='mt-4'>
+            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4}>
                     <span>ID Transaksi</span>
                     <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
@@ -755,7 +778,7 @@ export default () => {
             </Row>
             <Row className='mt-4'>
                 <Col xs={4}>
-                    <span style={{ marginRight: 57 }}>Periode*</span>
+                    <span style={{ marginRight: 35 }}>Periode*</span>
                     <DateRangePicker
                       onChange={pickDateDanaMasuk}
                       value={stateDanaMasuk}
@@ -777,8 +800,11 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.fiturDanaMasuk)}
-                              className={(inputHandle.periodeDanaMasuk !== 0 || (inputHandle.periodeDanaMasuk === 7 && dateRangeDanaMasuk.length !== 0) || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || inputHandle.periodeDanaMasuk !== 0 && dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                              // className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              // disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                              // onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0)}
+                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
                             >
                               Terapkan
                             </button>
@@ -786,8 +812,8 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Dana Masuk")}
-                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
-                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                              className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
+                              disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
                             >
                               Atur Ulang
                             </button>
@@ -875,10 +901,15 @@ export default () => {
                 }
               }
             }}
-          />  */}
-          {/* :
-          <div style={{color: "black"}} className="d-flex justify-content-center align-items-center my-4">There are no records to display</div>
-          } */}
+          /> */}
+            {/* <Row>
+              <Col xs={12}>
+                <div className="div-chart">
+                  <Chart type='line' data={data} />
+                </div>
+              </Col>
+            </Row>             */}
+            {/* <br/> */}
             <Row className='mt-4'>
             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4}>
@@ -930,8 +961,8 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Settlement")}
-                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.fiturSettlement.length === 0}
+                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-reset" : "btn-ez"}
+                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0}
                             >
                               Atur Ulang
                             </button>
@@ -1006,23 +1037,23 @@ export default () => {
                   <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_amount)}</Col>
                 </Row>
                 <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
-                  <Col style={{ fontWeight: 400 }}>Biaya VA</Col>
+                  <Col style={{ fontWeight: 400 }}>{detailTransferDana.mfitur_name === "Payment Link" ? "Biaya Payment Link" : "Biaya VA"}</Col>
                   <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_bank_fee)}</Col>
                 </Row>
                 <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
                   <Col style={{ fontWeight: 400 }}>Biaya Partner</Col>
                   <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
                 </Row>
-                <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                {/* <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
                   <Col style={{ fontWeight: 400 }}>Biaya Settlement</Col>
-                  <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
-                </Row>
+                  <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.mpartnerdtl_settlement_fee)}</Col>
+                </Row> */}
                 <center>
                   <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, padding: "0px 24px", border: "1px dashed #EBEBEB" }} />
                 </center>
                 <Row style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 700, marginTop: 12 }}>
                   <Col>Total</Col>
-                  <Col style={{ display: "flex", justifyContent: "end" }}>{convertToRupiah((detailTransferDana.tvatrans_amount + detailTransferDana.tvatrans_bank_fee + detailTransferDana.tvatrans_partner_fee))}</Col>
+                  <Col style={{ display: "flex", justifyContent: "end" }}>{convertToRupiah((detailTransferDana.tvatrans_amount + detailTransferDana.tvatrans_bank_fee + detailTransferDana.tvatrans_partner_fee ))}</Col>
                 </Row>
               </Container>
             </div>

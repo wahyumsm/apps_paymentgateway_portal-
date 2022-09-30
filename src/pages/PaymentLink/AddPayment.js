@@ -9,8 +9,10 @@ import calendar from "../../assets/icon/calendar_icon.svg";
 import $ from "jquery";
 import { useHistory } from "react-router-dom";
 import {
+  BaseURL,
   convertTimeDigit,
   errorCatch,
+  getRole,
   getToken,
   setUserSession,
 } from "../../function/helpers";
@@ -18,21 +20,26 @@ import axios from "axios";
 import encryptData from "../../function/encryptData";
 import time from "../../assets/icon/time_icon.svg";
 import Buttons from "../../components/Button";
+import { useRef } from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 
 function AddPayment() {
   const [showModal, setShowModal] = useState(false);
   const [showModalBatal, setShowModalBatal] = useState(false);
   const [showModalFeeMethod, setShowModalFeeMethod] = useState(false);
+  const [showModalExit, setShowModalExit] = useState(false)
   const [showAlert, setShowAlert] = useState(false);
-  const [text, setText] = useState("");
   const [save, setSave] = useState(false);
   const history = useHistory();
   const access_token = getToken();
+  const user_role = getRole()
   const [paymentType, setPaymentType] = useState([]);
   const [addPaylink, setAddPaylink] = useState({});
   const [choosenPaymentCode, setChoosenPaymentCode] = useState([]);
-  const [checked, setChecked] = useState("1");
+  const [choosenPaymentIcon, setChoosenPaymentIcon] = useState([])
+  const [checked, setChecked] = useState("1");  
+  const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
   const date = new Date();
@@ -92,23 +99,36 @@ function AddPayment() {
 
   const handleOnChangeCheckBox = (e) => {
     setChecked(e.target.value);
-    if (e.target.value === "2") setShowModalFeeMethod(true);
+    if (e.target.value === "2") {
+      setShowModalFeeMethod(true) 
+      setChoosenPaymentCode([])
+    } else {
+      setChoosenPaymentIcon([])
+      setChoosenPaymentCode([])
+    }
   };
 
   const handleChoosenPaymentCode = useCallback(
-    (e, payCode) => {
+    (e, payCode, payIcon, payName) => {
       if (e.target.checked) {
         setShowAlert(false);
         setChoosenPaymentCode((value) => [...value, payCode]);
+        setChoosenPaymentIcon((item) => [...item, {payIcon, payName}])
       } else {
         setChoosenPaymentCode((value) => value.filter((it) => it !== payCode));
+        setChoosenPaymentIcon((item) => item.filter((val) => val.payIcon !== payIcon))
       }
     },
     [setChoosenPaymentCode]
   );
 
+  console.log(choosenPaymentCode, "paymentcode");
+  console.log(choosenPaymentIcon, "paymenticon");
+
   const stringChoosenPayCode =
     choosenPaymentCode.toString() == "" ? "0" : choosenPaymentCode.toString();
+
+  console.log(stringChoosenPayCode, "codee");
 
   function onSaveChoosenPayment() {
     stringChoosenPayCode != ""
@@ -131,11 +151,12 @@ function AddPayment() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const getPaymentType = await axios.post(
+      const getPaymentType = await axios.post(BaseURL +
         "/PaymentLink/GetListPaymentType",
         { data: "" },
         { headers: headers }
       );
+      // console.log(getPaymentType, "typepayment");
       if (
         getPaymentType.data.response_code === 200 &&
         getPaymentType.status === 200 &&
@@ -175,7 +196,7 @@ function AddPayment() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const addPaymentLink = await axios.post(
+      const addPaymentLink = await axios.post(BaseURL +
         "/PaymentLink/PaymentLinkCreate",
         { data: dataParams },
         { headers: headers }
@@ -198,6 +219,9 @@ function AddPayment() {
       }
     } catch (error) {
       console.log(error);
+      if (error.response.status === 400) {
+        alert(error.response.data.response_message)
+      }
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -205,6 +229,11 @@ function AddPayment() {
 
   function handleChange(e) {
     e.preventDefault();
+    if (e.target.name === "useLimit") {
+      if (e.target.value < 1 && e.target.value !== "") {
+        e.target.value = 1
+      }
+    }
     setInputHandle({
       ...inputHandle,
       [e.target.name]: e.target.value,
@@ -226,6 +255,13 @@ function AddPayment() {
     });
   };
 
+  function toCancel() {
+    setShowModalFeeMethod(false)
+    setChecked("1")
+    setChoosenPaymentIcon([])
+    setChoosenPaymentCode([0])
+  }
+
   useEffect(() => {
     if (!access_token) {
       history.push("/login");
@@ -240,15 +276,14 @@ function AddPayment() {
     current.text(characterCount);
   });
 
-  const copyHandler = (event) => {
-    setText(event.target.value);
-  };
+  const onCopy = React.useCallback(() => {
+    setCopied(true);
+  }, [])
 
-  const copyUrl = async () => {
-    var copyText = document.getElementById("copied");
-    await navigator.clipboard.writeText(copyText.value);
-    setSave(true);
-  };
+  const onClick = useCallback(({target: {innerText}}) => {
+    // console.log(`Clicked on "${innerText}"!`);
+    setSave(true)
+  }, [])
 
   const closeModal = () => {
     setShowModal(false);
@@ -256,13 +291,26 @@ function AddPayment() {
     window.location.reload();
   };
 
+  function toLaporan() {
+    history.push("/laporan");
+  }
+
   function toDashboard() {
     history.push("/");
+  }
+
+  function ModalEditHandler() {
+    setShowModalExit(true)
   }
 
   function toListPay() {
     history.push("/listpayment");
   }
+
+  // const dateNow = 
+  // console.log();
+
+
 
   return (
     <div
@@ -270,12 +318,17 @@ function AddPayment() {
       style={{ padding: "37px 27px 37px 27px" }}
     >
       <span className="breadcrumbs-span">
-        <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>
-          Beranda
-        </span>{" "}
+        {user_role === "102" ?
+          <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>
+            Laporan
+          </span> :
+          <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>
+            Beranda
+          </span>
+        }{" "}
         &nbsp;
         <img alt="" src={breadcrumbsIcon} /> &nbsp;
-        <span style={{ cursor: "pointer" }} onClick={() => toListPay()}>
+        <span style={{ cursor: "pointer" }} onClick={() => ModalEditHandler()}>
           Payment Link
         </span>{" "}
         &nbsp;
@@ -375,7 +428,7 @@ function AddPayment() {
             <div>
               Atur Waktu<span style={{ color: "red" }}>*</span>
             </div>
-            <div className="position-relative d-flex justify-content-between align-items-center ">
+            <div className="position-relative d-flex justify-content-between align-items-center" onClick={showCheckboxes}>
               <input
                 className="input-text-user"
                 placeholder="Silahkan atur waktu"
@@ -386,17 +439,17 @@ function AddPayment() {
                 }
               />
               <div
-                onClick={showCheckboxes}
                 className="position-absolute right-1"
                 style={{ cursor: "pointer" }}
               >
                 <img src={time} alt="time" />
               </div>
             </div>
-            {expanded && (
+            {expanded ? (
               <div
                 className="right-2 border-black-0 border border-solid position-absolute bg-white mx-1 pt-4"
                 style={{ borderRadius: 8, height: "10rem", width: "10rem" }}
+                onBlur={() => setExpanded(!expanded)}
               >
                 <Buttons
                   v1={inputHourHandle}
@@ -405,15 +458,15 @@ function AddPayment() {
                   onSetMinute={setInputMinuteHandle}
                 />
               </div>
-            )}
+            ) : ""}
             {/* <TimePicker 
-                            hour={hour}
-                            minute={minute}
-                            period={period}
-                            setHour={setHour}
-                            setMinute={setMinute}
-                            setPeriod={setPeriod}
-                        /> */}
+                hour={hour}
+                minute={minute}
+                period={period}
+                setHour={setHour}
+                setMinute={setMinute}
+                setPeriod={setPeriod}
+            /> */}
 
             {inputHourHandle == hour &&
             inputMinuteHandle > minutes &&
@@ -439,8 +492,8 @@ function AddPayment() {
               onChange={handleChange}
               name="useLimit"
               type="number"
-              min="1"
-              step="1"
+              min={1}
+              step={1}
               className="input-text-user"
               value={inputHandle.useLimit}
             />
@@ -453,61 +506,88 @@ function AddPayment() {
         <Row className="mt-4">
           <Col xs={12}>
             <div className="my-1">Metode Pembayaran</div>
-            <div className="d-flex justify-content-start align-items-center">
-              <div className="form-check me-2">
-                <input
-                  onChange={handleOnChangeCheckBox}
-                  value="1"
-                  className="form-check-input"
-                  type="radio"
-                  name="typePayment"
-                  id="typePayment"
-                  checked={checked === "1" && true}
-                />
-                <label
-                  className="form-check-label"
-                  htmlFor="typePayment"
-                  style={{ fontWeight: 400, fontSize: "14px" }}
-                >
-                  Semua Metode Pembayaran
-                </label>
+            {paymentType.length !== 0 ?
+              <div className="d-flex justify-content-start align-items-center">
+                <div className="form-check me-2">
+                  <input
+                    onChange={handleOnChangeCheckBox}
+                    value="1"
+                    className="form-check-input"
+                    type="radio"
+                    name="typePayment"
+                    id="typePayment"
+                    checked={checked === "1" && true}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="typePayment"
+                    style={{ fontWeight: 400, fontSize: "14px" }}
+                  >
+                    Semua Metode Pembayaran
+                  </label>
+                </div>
+                <div className="form-check ms-2">
+                  <input
+                    onChange={handleOnChangeCheckBox}
+                    value="2"
+                    className="form-check-input"
+                    type="radio"
+                    name="typePayment"
+                    id="typePayment"
+                    checked={checked === "2"}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="typePayment"
+                    style={{ fontWeight: 400, fontSize: "14px" }}
+                  >
+                    Atur Beberapa
+                  </label>
+                </div>
+              </div> : 
+              <div style={{ color: "#B9121B", fontSize: 12 }}>
+                <img src={noteIconRed} className="me-2" />
+                Silahkan hubungi Customer Service untuk mengatur metode pembayaran
               </div>
-              <div className="form-check ms-2">
-                <input
-                  onChange={handleOnChangeCheckBox}
-                  value="2"
-                  className="form-check-input"
-                  type="radio"
-                  name="typePayment"
-                  id="typePayment"
-                  checked={checked === "2"}
-                />
-                <label
-                  className="form-check-label"
-                  htmlFor="typePayment"
-                  style={{ fontWeight: 400, fontSize: "14px" }}
-                >
-                  Atur Beberapa
-                </label>
-              </div>
-            </div>
-            <div className="d-flex flex-row justify-content-start align-items-center my-2">
-              {paymentType.map((item, idx) => {
-                return (
-                  <div key={idx} className="mx-2">
-                    {item.mpaytype_icon !== "" ? (
-                      <img
-                        src={item.mpaytype_icon}
-                        alt={item.mpaytype_name}
-                        width={96}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            }
+            {/* <div className="d-flex flex-row justify-content-start align-items-center my-2"> */}
+              {choosenPaymentIcon.length === 0 ?
+                <div className="d-flex flex-row justify-content-start align-items-center my-2">
+                  {paymentType.map((item, idx) => {
+                    return (
+                      <div key={idx} className="mx-2">
+                        {item.mpaytype_icon !== "" ? (
+                          <img
+                            src={item.mpaytype_icon}
+                            alt={item.mpaytype_name}
+                            width={96}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    );
+                  })}
+                </div> :
+                <div className="d-flex flex-row justify-content-start align-items-center my-2">
+                  {choosenPaymentIcon.map((item, idx) => {
+                    return (
+                      <div key={idx} className="mx-2">
+                        {item.payIcon !== "" ? (
+                          <img
+                            src={item.payIcon}
+                            alt={item.payName}
+                            width={96}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              }
+            {/* </div> */}
           </Col>
         </Row>
         <Row className="mt-3 mb-5">
@@ -541,7 +621,7 @@ function AddPayment() {
                   inputHandle.paymentId,
                   inputHandle.refId,
                   parseInt(inputHandle.nominal),
-                  (
+                  ( 
                     dateDay.year +
                     "-" +
                     convertTimeDigit(dateDay.month) +
@@ -612,16 +692,17 @@ function AddPayment() {
             >
               Selamat, Payment Link Kamu Berhasil Dibuat
             </p>
-          </div>
+          </div>          
           <Row>
             <Col xs={12}>
               <div className="my-1">Payment Link</div>
               <input
-                id="copied"
+                // id="copied"
+                // ref={textAreaRef}
                 className="input-text-user"
                 placeholder="Masukkan Nominal Tagihan"
                 value={addPaylink.payment_link}
-                onChange={copyHandler}
+                // onChange={copyHandler}
                 disabled
               />
             </Col>
@@ -661,24 +742,26 @@ function AddPayment() {
                 marginBottom: 12,
               }}
             >
-              <Button
-                onClick={copyUrl}
-                variant="primary"
-                style={{
-                  fontFamily: "Exo",
-                  color: "black",
-                  background:
-                    "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
-                  maxHeight: 45,
-                  width: 500,
-                  height: "100%",
-                }}
-              >
-                <span>
-                  <img src={CopyIcon} alt="copy" className="me-2" />
-                </span>
-                Salin Link
-              </Button>
+              <CopyToClipboard onCopy={onCopy} text={addPaylink.payment_link}>
+                <Button
+                  onClick={onClick}
+                  variant="primary"
+                  style={{
+                    fontFamily: "Exo",
+                    color: "black",
+                    background:
+                      "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                    maxHeight: 45,
+                    width: 500,
+                    height: "100%",
+                  }}
+                >
+                  <span>
+                    <img src={CopyIcon} alt="copy" className="me-2" />
+                  </span>
+                  Salin Link
+                </Button>
+              </CopyToClipboard>
             </div>
           )}
           <div className="my-2" style={{ fontSize: 14, textAlign: "center" }}>
@@ -851,7 +934,7 @@ function AddPayment() {
                         type="checkbox"
                         id="flexCheckDefault"
                         onChange={(e) =>
-                          handleChoosenPaymentCode(e, item.mpaytype_id)
+                          handleChoosenPaymentCode(e, item.mpaytype_id, item.mpaytype_icon, item.mpaytype_name)
                         }
                       />
                       <label
@@ -885,7 +968,7 @@ function AddPayment() {
             : ""}
           <div className="d-flex justify-content-center mb-3">
             <Button
-              onClick={() => setShowModalFeeMethod(false)}
+              onClick={() => toCancel()}
               style={{
                 fontFamily: "Exo",
                 color: "#888888",
@@ -917,6 +1000,29 @@ function AddPayment() {
             </Button>
           </div>
         </Modal.Body>
+      </Modal>
+      <Modal
+          size="lg"
+          centered
+          show={showModalExit}
+          onHide={() => setShowModalExit(false)}
+          style={{ display: "flex", borderRadius: 8, justifyContent: "center" }}
+      >
+          <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
+              <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
+                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu Yakin Ingin Keluar dari Halaman ini?</p>
+              </div>
+              <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
+                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Semua perubahan yang kamu buat akan terhapus</p>
+              </div>
+              <p>
+                  
+              </p>                
+              <div className="d-flex justify-content-center mb-3">
+                  <Button onClick={() => setShowModalExit(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
+                  <Button onClick={() => toListPay()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
+              </div>
+          </Modal.Body>
       </Modal>
     </div>
   );

@@ -690,4 +690,14 @@ width: 150px;
     overflow-y: auto !important;
     max-height: 43px !important;
     max-width: 400px !important;
-}   
+}
+
+.hoverActive:hover {
+    background: "#3DB54A" !important;
+    color: "#FFFFFF" !important;
+}
+
+/* .hoverActive {
+    background: "#3DB54A";
+    color: "#FFFFFF";
+} */

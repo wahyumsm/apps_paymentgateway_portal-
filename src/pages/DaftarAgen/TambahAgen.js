@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertFormatNumber, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, convertToCurrency, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -14,6 +14,7 @@ function TambahAgen() {
 
     const history = useHistory()
     const access_token = getToken()
+    const user_role = getRole()
     const [inputHandle, setInputHandle] = useState({
         nama: "",
         email: "",
@@ -69,6 +70,18 @@ function TambahAgen() {
         history.push("/daftaragen")
     }
 
+    function toDashboard() {
+        history.push("/");
+    }
+    
+    function toLaporan() {
+        history.push("/laporan");
+    }
+
+    function toDaftarAgen() {
+        history.push("/daftaragen");
+    }
+
     useEffect(() => {
         if (!access_token) {
             // RouteTo("/login")
@@ -80,7 +93,7 @@ function TambahAgen() {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Tambah Agen</span>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toDaftarAgen()}>Daftar Agen</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah Agen</span> </span>
             <div className="head-title">
                 <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Tambah Agen Baru</h4>
                 <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5>

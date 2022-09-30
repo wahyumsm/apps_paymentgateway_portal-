@@ -193,7 +193,7 @@ function DetailPartner() {
             'Content-Type':'application/json',
             'Authorization' : auth
           }
-          const listFitur = await axios.post("/Partner/GetFitur", { data: "" }, { headers: headers })
+          const listFitur = await axios.post(BaseURL + "/Partner/GetFitur", { data: "" }, { headers: headers })
         //   console.log(listFitur, 'ini data list fitur');
           if (listFitur.status === 200 && listFitur.data.response_code === 200 && listFitur.data.response_new_token.length === 0) {
             setFiturType(listFitur.data.response_data)
@@ -227,13 +227,13 @@ function DetailPartner() {
             width: '67px'
         },
         {
-            name: 'Metode Pembayaran',
-            selector: row => row.mpaytype_name.join(", "),
-            width: "200px"
-        },
-        {
             name: 'Fitur',
             selector: row => row.fitur_name
+        },
+        {
+            name: 'Metode Pembayaran',
+            selector: row => row.mpaytype_name.join(", "),
+            width: "230px"
         },
         {
             name: 'Fee',
@@ -436,19 +436,19 @@ function DetailPartner() {
                             <thead></thead>
                             <tbody>
                                 <tr>
-                                    <td style={{width: 200}}>Fee<span style={{color: "red"}}>*</span></td>
+                                    <td style={{width: 200}}>Fee <span style={{color: "red"}}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>Settlement Fee<span style={{color: "red"}}>*</span></td>
+                                    <td style={{width: 200}}>Settlement Fee <span style={{color: "red"}}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                             </tbody>
                         </table>
                         <Row className="mt-4">
                             <Col xs={3} style={{paddingLeft: 20}}>
-                                Fitur<span style={{color: "red"}}>*</span>
+                                Fitur <span style={{color: "red"}}>*</span>
                             </Col>
                             <Col className="ms-2">
                                 {equalFitur === 0 ? (

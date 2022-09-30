@@ -883,7 +883,7 @@ function RiwayatTransaksi() {
                                 {/* <option value={15}>Expected Success</option> */}
                             </Form.Select>
                         </Col>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "45.2%" }}>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
                             <span style={{ marginRight: 40 }}>Periode*</span>
                             <Form.Select name='periodeDanaMasuk' className="input-text-ez me-4" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
@@ -906,7 +906,7 @@ function RiwayatTransaksi() {
                     </Row>
                     <Row>
                         <Col xs={4}></Col>
-                        <Col xs={4} className="mt-3 ms-5">
+                        <Col xs={4} className="mt-3">
                             <div style={{ display: showDateDanaMasuk }}>
                                 <DateRangePicker 
                                     onChange={pickDateDanaMasuk}
@@ -1014,7 +1014,7 @@ function RiwayatTransaksi() {
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "33.2%" : "44.4%" }}>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "33.2%" : "33.2%" }}>
                             <span style={{ marginRight: 26 }}>Periode*</span>
                             <Form.Select name='periodeSettlement' className="input-text-ez me-4" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                                 <option defaultChecked disabled value={0}>Pilih Periode</option>

@@ -4,9 +4,10 @@ import {Row, Col, Modal, Button} from '@themesberg/react-bootstrap'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons"
 import Upload from "../../assets/icon/upload_icon.svg"
-import { errorCatch, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 import axios from "axios"
+import noteIconRed from "../../assets/icon/note_icon_red.svg";
 
 function CustomDesignPayment () {
     const access_token = getToken()
@@ -16,6 +17,8 @@ function CustomDesignPayment () {
     const [imageFile, setImageFile] = useState(null)
     const hiddenFileInput = useRef(null)
     const history = useHistory()
+    const user_role = getRole()
+    const [upload, setUpload] = useState(false)
     const [inputHandle, setInputHandle] = useState({
         namaPerusahaan: ""
     })
@@ -34,15 +37,22 @@ function CustomDesignPayment () {
     const handleFileChange = (event) => {
         if(event.target.files[0]) {
             setImage(event.target.files[0])
-            const reader = new FileReader()
-            reader.addEventListener("load", () => {
-                setImageFile(reader.result)
-            })
-            reader.readAsDataURL(event.target.files[0])
+            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                setUpload(true)
+                setImageFile(imageFile)
+            } 
+            else {
+                setUpload(false)
+                const reader = new FileReader()
+                reader.addEventListener("load", () => {
+                    setImageFile(reader.result)
+                })
+                reader.readAsDataURL(event.target.files[0])
+            }
         }
     }
 
-    // console.log(image, "ini image");
+    // console.log(parseFloat(image.size / 1024).toFixed(2), "ini image");
     // console.log(String(imageFile).slice(27), "ini image file");
 
     function cancelChange(){
@@ -71,7 +81,7 @@ function CustomDesignPayment () {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
             }
-            const customDesign = await axios.post("/PaymentLink/CustomDesignPaymentLink", formData, { headers: headers })
+            const customDesign = await axios.post(BaseURL + "/PaymentLink/CustomDesignPaymentLink", formData, { headers: headers })
             if(customDesign.status === 200 && customDesign.data.response_code === 200 && customDesign.data.response_new_token.length === 0) {
                 setInputHandle(customDesign.data.response_data)
                 history.push("/listpayment")
@@ -92,7 +102,7 @@ function CustomDesignPayment () {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const getDetailCustom = await axios.post("/PaymentLink/GetCustomDesignPaymentLink", {data: ""}, { headers: headers })
+            const getDetailCustom = await axios.post(BaseURL + "/PaymentLink/GetCustomDesignPaymentLink", {data: ""}, { headers: headers })
             // console.log(getDetailCustom, "ini detail custom");
             if(getDetailCustom.status === 200 && getDetailCustom.data.response_code === 200 && getDetailCustom.data.response_new_token.length === 0) {
                 const dataDetailCustom = getDetailCustom.data.response_data
@@ -111,6 +121,22 @@ function CustomDesignPayment () {
         }
     }
 
+    function toLaporan() {
+        history.push("/laporan");
+    }
+
+    function toDashboard() {
+        history.push("/");
+      }
+    
+    function toListPay() {
+        history.push("/listpayment");
+    }
+
+    function toCustomDesign() {
+        history.push("/custom-design-payment");
+    }
+
     useEffect(() => {
         if(!access_token) {
             history.push('/login')
@@ -120,7 +146,7 @@ function CustomDesignPayment () {
     
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-            <span className="breadcrumbs-span">Beranda &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Payment Link  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Custom Design Laman Bayar</span>
+            <span className="breadcrumbs-span">{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>} &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toListPay()}>Payment Link</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toCustomDesign()}>Custom Design Laman Bayar</span> </span>
             <div className="head-title">
                 <h2 className="h4 mt-4 mb-4" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 18, color: "#383838"}}>Custom Design Laman Bayar</h2>
             </div>
@@ -234,6 +260,14 @@ function CustomDesignPayment () {
                                     <div style={{color: "#C4C4C4", fontSize: 12}} className="my-1">Ukuran 2:1, size maks 500 kb</div>
                                 </div>
                             </div>
+                            {upload === true ?
+                                <>
+                                    <div style={{ color: "#B9121B", fontSize: 12 }}>
+                                        <img src={noteIconRed} className="me-2" />
+                                        Ukuran file melebihi 500 kb
+                                    </div>
+                                </> : ""
+                            }
                             <Row>
                                 <Col xs={12}>
                                     <div className="my-2">Nama Perusahaan</div>

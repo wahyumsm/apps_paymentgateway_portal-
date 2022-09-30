@@ -5,7 +5,7 @@ import { Col, Row, Button, Form, Image} from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, Link } from 'react-router-dom';
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -14,6 +14,7 @@ function DaftarAgen() {
 
   const history = useHistory()
   const access_token = getToken()
+  const user_role = getRole()
   const [listAgen, setListAgen] = useState([])
   const [pending, setPending] = useState(true)
 
@@ -104,6 +105,14 @@ function DaftarAgen() {
     }
   ]
 
+  function toDashboard() {
+    history.push("/");
+  }
+
+  function toLaporan() {
+    history.push("/laporan");
+  }
+
   useEffect(() => {
     if (!access_token) {
       // RouteTo("/login")
@@ -151,7 +160,7 @@ function DaftarAgen() {
 
   return (
     <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-      <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen</span>
+      <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen</span>
       <div className="head-title">
         <h2 className="h4 mt-4 mb-5">Daftar Agen</h2>
       </div>

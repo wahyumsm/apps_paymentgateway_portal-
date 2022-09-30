@@ -24,7 +24,6 @@ import {
 } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import { default as ReactSelect, components } from "react-select";
 import encryptData from "../../function/encryptData";
 import chevron from "../../assets/icon/chevron_down_icon.svg";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker/dist/DateRangePicker";
@@ -96,6 +95,7 @@ export default () => {
   const [selectedOptionSettlementPartner, setSelectedOptionSettlementPartner] = useState([])
   const [selectedOptionBiayaPartner, setSelectedOptionBiayaPartner] = useState([])
   const [selectedOptionBiayaVA, setSelectedOptionBiayaVA] = useState([])
+  const [selectedOptionPaymentLink, setSelectedOptionPaymentLink] = useState([])
 
   const Option = (props) => {
     return (
@@ -180,6 +180,7 @@ export default () => {
   //   }
   //   setIsCheckedPaylink(!isCheckedPaylink);
   // };
+
   const customStylesSelectedOption = {
     option: (provided, state) => ({
       ...provided,
@@ -259,44 +260,6 @@ export default () => {
       setDateRangeVaPartner(item);
     }
   }
-  
-  async function listDataPartner (url) {
-    try {
-        const auth = "Bearer " + getToken()
-        const headers = {
-            'Content-Type':'application/json',
-            'Authorization' : auth
-        }
-        const listDataPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
-        // console.log(listDataPartner, "list partner di beranda")
-        if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length === 0) {
-          let newArr = []
-          var obj = {}
-          listDataPartner.data.response_data.forEach((item) => {
-            obj.value = item.partner_id
-            obj.label = item.nama_perusahaan
-            newArr.push(obj)
-            obj = {}
-          })  
-          setListPartner(newArr)
-        } else if (listDataPartner.data.response_code === 200 && listDataPartner.status === 200 && listDataPartner.data.response_new_token.length !== 0) {
-            setUserSession(listDataPartner.data.response_new_token)
-            let newArr = []
-            var obj = {}
-            listDataPartner.data.response_data.forEach((item) => {
-              obj.value = item.partner_id
-              obj.label = item.nama_perusahaan
-              newArr.push(obj)
-              obj = {}
-            })  
-          setListPartner(newArr)
-        }
-        
-    } catch (error) {
-        console.log(error)
-        history.push(errorCatch(error.response.status))
-    }
-  }
 
   function handleChangePaylinkChart(e) {
     if (e.target.value === "7") {
@@ -329,7 +292,7 @@ export default () => {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const listDataPartner = await axios.post(
+      const listDataPartner = await axios.post(BaseURL +
         url,
         { data: "" },
         { headers: headers }
@@ -638,7 +601,7 @@ export default () => {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const paylinkChartData = await axios.post(
+      const paylinkChartData = await axios.post(BaseURL +
         "/Home/GetFeePaymentLinkChart",
         { data: dataParams },
         { headers: headers }
@@ -674,10 +637,12 @@ export default () => {
 
   async function filterPaylinkHandler(dateId, periode, query) {
     try {
+      let partnerId = []
+      query.forEach(item => partnerId.push(item.value))
       setPendingPaylink(true);
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
-        `{"partner_id":["${query}"], "dateID": ${dateId}, "date_from":"${
+        `{"partner_id":["${partnerId}"], "dateID": ${dateId}, "date_from":"${
           periode.length !== 0 ? periode[0] : ""
         }", "date_to": "${periode.length !== 0 ? periode[1] : ""}"}`
       );
@@ -685,7 +650,7 @@ export default () => {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const filterPaylinkChart = await axios.post(
+      const filterPaylinkChart = await axios.post(BaseURL +
         "/Home/GetFeePaymentLinkChart",
         { data: dataParams },
         { headers: headers }
@@ -775,10 +740,11 @@ export default () => {
         queryPaylink: [],
       });
     }
-    setStateVaPartner(null);
-    setDateRangeVaPartner([]);
-    setShowDateVaPartner("none");
-    setQueryVa([]);
+    setStatePaylink(null);
+    setDateRangePaylink([]);
+    setShowDatePaylink("none");
+    setSelectedOptionPaymentLink([])
+    // setQueryVa([]);
   }
 
   useEffect(() => {
@@ -867,7 +833,7 @@ export default () => {
                 <p className="p-info">Total Biaya Payment Link</p>
                 <p className="p-amount">
                   {convertToRupiah(
-                    settlementTransaction.total_biaya_payment_link
+                    (settlementTransaction.total_biaya_payment_link !== undefined) ? settlementTransaction.total_biaya_payment_link : 0
                   )}
                 </p>
               </div>
@@ -1218,23 +1184,23 @@ export default () => {
                         value={stateVaPartner}
                         clearIcon={null}
                       />
-                  </div>
+                    </div>
                   </Col>
                   <Col xs={3}>
                     <span>Pilih Partner</span>
                     <div className="dropdown dropPartner">
                       <ReactSelect
-                            isMulti
-                            closeMenuOnSelect={false}
-                            hideSelectedOptions={false}
-                            options={listPartner}
-                            // allowSelectAll={true}
-                            value={selectedOptionBiayaVA}
-                            onChange={(selected) => setSelectedOptionBiayaVA(selected)}
-                            placeholder="Pilih Partner"
-                            components={{ Option }}
-                            styles={customStylesSelectedOption}
-                          />
+                        isMulti
+                        closeMenuOnSelect={false}
+                        hideSelectedOptions={false}
+                        options={listPartner}
+                        // allowSelectAll={true}
+                        value={selectedOptionBiayaVA}
+                        onChange={(selected) => setSelectedOptionBiayaVA(selected)}
+                        placeholder="Pilih Partner"
+                        components={{ Option }}
+                        styles={customStylesSelectedOption}
+                      />
                     </div>
                   </Col>                
                 </Row>
@@ -1376,7 +1342,7 @@ export default () => {
                     value={inputHandle.periodePaylinkChart}
                     onChange={(e) => handleChangePaylinkChart(e)}
                   >
-                    <option defaultChecked>Pilih Periode</option>
+                    <option defaultChecked disabled value={0}>Pilih Periode</option>
                     {periodik.map((times, idx) => {
                       return (
                         <option key={idx} value={times.value}>
@@ -1395,8 +1361,20 @@ export default () => {
                 </Col>
                 <Col xs={3}>
                   <span>Pilih Partner</span>
-                  <div className="dropdown">
-                    <button
+                  <div className="dropdown dropPartner">
+                    <ReactSelect
+                      isMulti
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      options={listPartner}
+                      // allowSelectAll={true}
+                      value={selectedOptionPaymentLink}
+                      onChange={(selected) => setSelectedOptionPaymentLink(selected)}
+                      placeholder="Pilih Partner"
+                      components={{ Option }}
+                      styles={customStylesSelectedOption}
+                    />
+                    {/* <button
                       style={{
                         width: "225px",
                         height: "44px",
@@ -1449,7 +1427,7 @@ export default () => {
                           );
                         })}
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </Col>
               </Row>
@@ -1462,11 +1440,11 @@ export default () => {
                           filterPaylinkHandler(
                             inputHandle.periodePaylinkChart,
                             dateRangePaylink,
-                            queryPaylink
+                            selectedOptionPaymentLink
                           )
                         }
                         className={
-                            inputHandle.periodePaylinkChart !== 0
+                            (inputHandle.periodePaylinkChart !== 0)
                             ? "btn-ez-on"
                             : "btn-ez"
                         }
@@ -1481,7 +1459,7 @@ export default () => {
                       <button
                         onClick={() => buttonResetPaylink("Reset Paylink")}
                         className={                          
-                          inputHandle.periodePaylinkChart !== 0
+                          (inputHandle.periodePaylinkChart !== 0)
                             ? "btn-reset"
                             : "btn-ez"
                         }
@@ -1502,14 +1480,14 @@ export default () => {
                 <Col xs={12} className="mb-4 d-none d-sm-block">
                   <div className="div-chart">
                     {
-                      pendingPaylink ? (
+                      pendingPaylink ? 
                         <div className="d-flex justify-content-center align-items-center vh-100">
                           <CustomLoader />
                         </div>
-                      ) : (
-                        //  (partnerChartData.length > 1) ?
+                       : (
+                        //  (paylinkChartData.length > 1) ?
                         <Line
-                          id="myChart"
+                          style={{ overflowX: "scroll" }}
                           className="mt-3 mb-3"
                           data={{
                             labels: paylinkChartData.map((obj) => obj.date),

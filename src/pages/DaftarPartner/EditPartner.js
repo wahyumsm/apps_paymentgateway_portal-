@@ -50,6 +50,8 @@ function EditPartner() {
   const [loading, setLoading] = useState(false);
   const [redFlag, setRedFlag] = useState(false)
   const [mustFill, setMustFill] = useState(false)
+  const [alertFee, setAlertFee] = useState(false)
+  const [alertSettlement, setAlertSettlement] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     id: detailPartner.mpartner_id,
     namaPerusahaan: detailPartner.mpartner_name,
@@ -91,6 +93,44 @@ function EditPartner() {
         ...inputHandle,
         [e.target.name]: e.target.value,
       });
+    }
+  }
+
+  function handleChangeFee (e) {  
+    if (e.target.name === "active") {
+      setAlertFee(false)
+      setInputHandle({
+        ...inputHandle,
+        [e.target.name]: !inputHandle.active,
+      });
+    } else {
+      setAlertFee(false)
+      setInputHandle({
+        ...inputHandle,
+        [e.target.name]: e.target.value,
+      });
+    }
+    if (e.target.value.length === 0) {
+      setAlertFee(true)
+    } 
+  }
+
+  function handleChangeSettle (e) {
+    if (e.target.name === "active") {
+      setAlertSettlement(false)
+      setInputHandle({
+        ...inputHandle,
+        [e.target.name]: !inputHandle.active,
+      });
+    } else {
+      setAlertSettlement(false)
+      setInputHandle({
+        ...inputHandle,
+        [e.target.name]: e.target.value,
+      });
+    }
+    if (e.target.value.length === 0) {
+      setAlertSettlement(true)
     }
   }
 
@@ -227,6 +267,8 @@ function EditPartner() {
     setPaymentMethod([]);
     setPaymentNameMethod([]);
     setEdited(false);
+    setRedFlag(false)
+    setMustFill(false)
   }
 
   function deleteDataHandler(numberId) {
@@ -252,7 +294,7 @@ function EditPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const detailPartner = await axios.post(
+      const detailPartner = await axios.post(BaseURL +
         "/Partner/EditPartner",
         { data: dataParams },
         { headers: headers }
@@ -319,7 +361,7 @@ function EditPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const listFitur = await axios.post(
+      const listFitur = await axios.post(BaseURL +
         "/Partner/GetFitur",
         { data: "" },
         { headers: headers }
@@ -353,7 +395,7 @@ function EditPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const paymentMethodType = await axios.post(
+      const paymentMethodType = await axios.post(BaseURL +
         "/PaymentLink/GetMetodePembayaran",
         { data: dataParams },
         { headers: headers }
@@ -548,13 +590,13 @@ function EditPartner() {
       width: "67px",
     },
     {
-      name: "Metode Pembayaran",
-      selector: (row) => row.mpaytype_name.join(", "),
-      width: "200px",
-    },
-    {
       name: "Fitur",
       selector: (row) => row.fitur_name,
+    },
+    {
+      name: "Metode Pembayaran",
+      selector: (row) => row.mpaytype_name.join(", "),
+      width: "230px",
     },
     {
       name: "Fee",
@@ -613,24 +655,34 @@ function EditPartner() {
         setMustFill(true)
       } else {
         setMustFill(false)
-        const newData = {
-          fee: Number(fee),
-          fee_settle: Number(fee_settle),
-          fitur_id: Number(fiturId),
-          fitur_name: fiturName,
-          mpaytype_id: typeId,
-          mpaytype_name: typeName,
-          number: number,
-        };
-        setPayment([...payment, newData]);
-        setRedFlag(false)
-        setInputHandle({
-          fee: 0,
-          settlementFee: 0,
-        });
-        setFitur("", "");
-        setPaymentMethod([]);
-        setPaymentNameMethod([]);
+        if (inputHandle.fee === "") {
+          setAlertFee(true)
+        } else {
+          setAlertFee(false)
+          if (inputHandle.settlementFee === "") {
+            setAlertSettlement(true)
+          } else {
+            setAlertSettlement(false)
+            const newData = {
+              fee: Number(fee),
+              fee_settle: Number(fee_settle),
+              fitur_id: Number(fiturId),
+              fitur_name: fiturName,
+              mpaytype_id: typeId,
+              mpaytype_name: typeName,
+              number: number,
+            };
+            setPayment([...payment, newData]);
+            setRedFlag(false)
+            setInputHandle({
+              fee: 0,
+              settlementFee: 0,
+            });
+            setFitur("", "");
+            setPaymentMethod([]);
+            setPaymentNameMethod([]);
+          }
+        }
       }
     } else {      
       setRedFlag(true)
@@ -711,7 +763,7 @@ function EditPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const editPartner = await axios.post(
+      const editPartner = await axios.post(BaseURL +
         "/Partner/UpdatePartner",
         { data: dataParams },
         { headers: headers }
@@ -749,7 +801,7 @@ function EditPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const listAgen = await axios.post(
+      const listAgen = await axios.post(BaseURL +
         "/Partner/GetListAgen",
         { data: dataParams },
         { headers: headers }
@@ -1151,76 +1203,83 @@ function EditPartner() {
               <thead></thead>
               <tbody>
                 <tr>
-                  <td style={{ width: 200 }}>Fee</td>
+                  <td style={{ width: 200 }}>Fee <span style={{ color: "red" }}>*</span></td>
                   <td>
                     {editFee ?
                       <input
                         type="number"
                         className="input-text-ez"
-                        onChange={handleChange}
-                        value={parseInt(inputHandle.fee)}
+                        onChange={handleChangeFee}
+                        value={(inputHandle.fee.length === 0) ? "" : parseInt(inputHandle.fee)}
                         name="fee"
                         placeholder="Rp 0"
-                        style={{ width: "100%", marginLeft: "unset" }}
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
                         onBlur={() => setEditFee(!editFee)}
+                        min={0}
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                       /> :
                       <input
                         type="text"
                         className="input-text-ez"
-                        onChange={handleChange}
-                        value={convertFormatNumber(parseInt(inputHandle.fee))}
+                        onChange={handleChangeFee}
+                        value={(inputHandle.fee.length === 0) ? "" : convertFormatNumber(parseInt(inputHandle.fee))}
                         name="fee"
                         placeholder="Rp 0"
-                        style={{ width: "100%", marginLeft: "unset" }}
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
                         onFocus={() => setEditFee(!editFee)}
+                        min={0}
                       />
                     }
-                    {/* <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                    {alertFee === true ?
+                    <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
                         <img src={noteIconRed} className="me-2" />
                         Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
-                    </div> */}
+                    </div> : ""}
                   </td>
                 </tr>
                 <br />
                 <tr>
-                  <td style={{ width: 200 }}>Settlement Fee</td>
+                  <td style={{ width: 200 }}>Settlement Fee <span style={{ color: "red" }}>*</span></td>
                   <td>
                     {editInput ? (
                       <input
                         type="number"
                         className="input-text-ez"
-                        onChange={handleChange}
-                        value={parseInt(inputHandle.settlementFee)}
+                        onChange={handleChangeSettle}
+                        value={(inputHandle.settlementFee.length === 0) ? "" : parseInt(inputHandle.settlementFee)}
                         name="settlementFee"
                         placeholder={"Rp 0"}
-                        style={{ width: "100%", marginLeft: "unset" }}
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
                         onBlur={() => setEditInput(!editInput)}
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                       />
                     ) : (
                       <input
                         type="text"
                         className="input-text-ez"
-                        onChange={handleChange}
-                        value={convertFormatNumber(
+                        onChange={handleChangeSettle}
+                        value={(inputHandle.settlementFee.length === 0) ? "" : convertFormatNumber(
                           parseInt(inputHandle.settlementFee)
                         )}
                         name="settlementFee"
                         placeholder={"Rp 0"}
-                        style={{ width: "100%", marginLeft: "unset" }}
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
                         onFocus={() => setEditInput(!editInput)}
                       />
                     )}
-                    {/* <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
-                        <img src={noteIconRed} className="me-2" />
-                        Settlement Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
-                    </div> */}
+                    {alertSettlement === true ?
+                      <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                          <img src={noteIconRed} className="me-2" />
+                          Settlement Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                      </div> : ""
+                    }
                   </td>
                 </tr>
               </tbody>
             </table>
             <Row className="mt-4">
               <Col xs={3} style={{ paddingLeft: 20 }}>
-                Fitur<span style={{ color: "red" }}>*</span>
+                Fitur <span style={{ color: "red" }}>*</span>
               </Col>
               <Col className="ms-2">
                 {equalFitur === 0 ? (

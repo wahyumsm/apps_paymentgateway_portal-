@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToCurrency, errorCatch, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToCurrency, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
@@ -10,6 +10,7 @@ function DetailAgen() {
 
     const history = useHistory()
     const access_token = getToken()
+    const user_role = getRole()
     const { agenId } = useParams()
     const [detailAgen, setDetailAgen] = useState([])
 
@@ -36,6 +37,19 @@ function DetailAgen() {
         }
     }
 
+    function editAgen(agenId) {
+        // RouteTo(`/editagen/${agenId}`)
+        history.push(`/editagen/${agenId}`)
+    }
+
+    function toDashboard() {
+        history.push("/");
+    }
+    
+    function toLaporan() {
+        history.push("/laporan");
+    }
+
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
@@ -43,15 +57,10 @@ function DetailAgen() {
         }
         getDetailAgen(agenId)
     }, [agenId])
-
-    function editAgen(agenId) {
-        // RouteTo(`/editagen/${agenId}`)
-        history.push(`/editagen/${agenId}`)
-    }
     
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
+            <span className='breadcrumbs-span'>{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
             <div className="head-title">
                 <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
                 {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}

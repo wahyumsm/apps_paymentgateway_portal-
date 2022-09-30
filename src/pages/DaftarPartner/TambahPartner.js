@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import encryptData from "../../function/encryptData";
 import {
   BaseURL,
+  convertFormatNumber,
   convertToRupiah,
   errorCatch,
   getRole,
@@ -45,6 +46,10 @@ function TambahPartner() {
   const [payment, setPayment] = useState([]);
   const [redFlag, setRedFlag] = useState(false)
   const [mustFill, setMustFill] = useState(false)
+  const [alertFee, setAlertFee] = useState(false)
+  const [alertSettlement, setAlertSettlement] = useState(false)
+  const [editFee, setEditFee] = useState(false)
+  const [editSettle, setEditSettle] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     namaPerusahaan: "",
     emailPerusahaan: "",
@@ -80,11 +85,26 @@ function TambahPartner() {
     });
   }
 
-  function handleChangeBiaya(e) {
+  function handleChangeFee(e) {
+    setAlertFee(false)
     setBiayaHandle({
       ...biayaHandle,
       [e.target.name]: e.target.value,
     });
+    if (e.target.value.length === 0) {
+      setAlertFee(true)
+    }
+  }
+
+  function handleChangeSettlement(e) {
+    setAlertSettlement(false)
+    setBiayaHandle({
+      ...biayaHandle,
+      [e.target.name]: e.target.value,
+    });
+    if (e.target.value.length === 0) {
+      setAlertSettlement(true)
+    }
   }
 
   const handleChoosenPaymentType = useCallback(
@@ -219,13 +239,13 @@ function TambahPartner() {
       })
       if (sameFlag === 0) {
         const source = {
-          fee: fee,
-          fee_settle: settleFee,
+          fee: Number(fee),
+          fee_settle: Number(settleFee),
           fitur_id: fiturId,
           fitur_name: fiturName,
           mpaytype_id: typeId,
           mpaytype_name: typeName,
-          number: numberId,
+          number: Number(numberId),
         };
         const target = payment.find((item) => item.number === numberId);
         Object.assign(target, source);
@@ -298,24 +318,34 @@ function TambahPartner() {
         setMustFill(true)
       } else {
         setMustFill(false)
-        const newData = {
-          fee: fee,
-          fee_settle: fee_settle,
-          fitur_id: fiturId,
-          fitur_name: fiturName,
-          mpaytype_id: typeId,
-          mpaytype_name: typeName,
-          number: Number(number),
-        };
-        setPayment((values) => [...values, newData]);
-        setRedFlag(false)
-        setBiayaHandle({
-          fee: 0,
-          settlementFee: 0,
-        });
-        setFitur("", "");
-        setPaymentMethod([]);
-        setPaymentNameMethod([]);
+        if (biayaHandle.fee === "") {
+          setAlertFee(true)
+        } else {
+          setAlertFee(false)
+          if (biayaHandle.settlementFee === "") {
+            setAlertSettlement(true)
+          } else {
+            setAlertSettlement(false)
+            const newData = {
+              fee: Number(fee),
+              fee_settle: Number(fee_settle),
+              fitur_id: fiturId,
+              fitur_name: fiturName,
+              mpaytype_id: typeId,
+              mpaytype_name: typeName,
+              number: Number(number),
+            };
+            setPayment((values) => [...values, newData]);
+            setRedFlag(false)
+            setBiayaHandle({
+              fee: 0,
+              settlementFee: 0,
+            });
+            setFitur("", "");
+            setPaymentMethod([]);
+            setPaymentNameMethod([]);
+          }
+        }
       }
     } else {
       setRedFlag(true)
@@ -331,7 +361,7 @@ function TambahPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const listFitur = await axios.post(
+      const listFitur = await axios.post(BaseURL +
         "/Partner/GetFitur",
         { data: "" },
         { headers: headers }
@@ -366,7 +396,7 @@ function TambahPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const paymentMethod = await axios.post(
+      const paymentMethod = await axios.post(BaseURL +
         "/PaymentLink/GetMetodePembayaran",
         { data: dataParams },
         { headers: headers }
@@ -527,7 +557,7 @@ function TambahPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      const addPartner = await axios.post(
+      const addPartner = await axios.post(BaseURL +
         "/Partner/SavePartner",
         { data: dataParams },
         { headers: headers }
@@ -555,6 +585,14 @@ function TambahPartner() {
       history.push(errorCatch(error.response.status));
     }
   }
+
+  function toDaftarPartner() {
+    history.push("/daftarpartner");
+}
+
+function toDashboard() {
+  history.push("/");
+}
 
   const CustomLoader = () => (
     <div style={{ padding: "24px" }}>
@@ -592,9 +630,9 @@ function TambahPartner() {
   return (
     <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
       <span className="breadcrumbs-span">
-        Beranda &nbsp;
-        <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen &nbsp;
-        <img alt="" src={breadcrumbsIcon} /> &nbsp;Tambah Agen
+        <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span> &nbsp;
+        <img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toDaftarPartner()}>Daftar Partner</span> &nbsp;
+        <img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah Partner</span>
       </span>
       <div className="head-title">
         <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>
@@ -899,23 +937,51 @@ function TambahPartner() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Fee*
+                Fee <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
-              <Form.Control
-                name="fee"
-                onChange={handleChangeBiaya}
-                value={biayaHandle.fee}
-                placeholder="Rp."
-                type="number"
-                style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
-                  marginLeft: "unset",
-                }}
-              />
+              {editFee ?
+                <Form.Control
+                  name="fee"
+                  onChange={handleChangeFee}
+                  value={biayaHandle.fee.length === 0 ? "" : parseInt(biayaHandle.fee)}
+                  placeholder="Rp. 0"
+                  type="number"
+                  style={{
+                    width: "100%",
+                    height: 40,
+                    marginTop: "-7px",
+                    marginLeft: "unset",
+                    borderColor: alertFee ? "red" : ""
+                  }}
+                  onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                  min={0}
+                  onBlur={() => setEditFee(!editFee)}                  
+                /> :
+                <Form.Control
+                  name="fee"
+                  onChange={handleChangeFee}
+                  value={biayaHandle.fee.length === 0 ? "" : convertFormatNumber(parseInt(biayaHandle.fee))}
+                  placeholder="Rp. 0"
+                  type="text"
+                  style={{
+                    width: "100%",
+                    height: 40,
+                    marginTop: "-7px",
+                    marginLeft: "unset",
+                    borderColor: alertFee ? "red" : ""
+                  }}
+                  min={0}
+                  onFocus={() => setEditFee(!editFee)}
+                />
+              }
+              {alertFee === true ?
+                <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                  <img src={noteIconRed} className="me-2" />
+                  Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                </div> : ""
+              }
             </Col>
           </Row>
           <Row className="mb-4">
@@ -923,23 +989,51 @@ function TambahPartner() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Settlement Fee*
+                Settlement Fee <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
-              <Form.Control
-                name="settlementFee"
-                onChange={handleChangeBiaya}
-                value={biayaHandle.settlementFee}
-                placeholder="Rp."
-                type="number"
-                style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
-                  marginLeft: "unset",
-                }}
-              />
+              {editSettle ?
+                <Form.Control
+                  name="settlementFee"
+                  onChange={handleChangeSettlement}
+                  value={(biayaHandle.settlementFee.length === 0) ? "" : parseInt(biayaHandle.settlementFee)}
+                  placeholder="Rp. 0"
+                  type="number"
+                  style={{
+                    width: "100%",
+                    height: 40,
+                    marginTop: "-7px",
+                    marginLeft: "unset",
+                    borderColor: alertSettlement ? "red" : ""
+                  }}
+                  onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                  // min={0}
+                  onBlur={() => setEditSettle(!editSettle)}
+                /> :
+                <Form.Control
+                  name="settlementFee"
+                  onChange={handleChangeSettlement}
+                  value={(biayaHandle.settlementFee.length === 0) ? "" : convertFormatNumber(parseInt(biayaHandle.settlementFee))}
+                  placeholder="Rp. 0"
+                  type="text"
+                  style={{
+                    width: "100%",
+                    height: 40,
+                    marginTop: "-7px",
+                    marginLeft: "unset",
+                    borderColor: alertSettlement ? "red" : ""
+                  }}
+                  // min={0}
+                  onFocus={() => setEditSettle(!editSettle)}
+                />
+              }
+              {alertSettlement === true ?
+                <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                  <img src={noteIconRed} className="me-2" />
+                  Settlement Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                </div> : ""
+              }
             </Col>
           </Row>
           <Row>
@@ -1482,8 +1576,8 @@ function TambahPartner() {
           }
           style={{ width: 136 }}
         //   className="btn-ez-on"
-          className={(inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && inputHandle.payment !== 0 ) ? 'btn-ez-on' : 'btn-ez'}
-          disabled={inputHandle.namaPerusahaan.length === 0 && inputHandle.emailPerusahaan.length === 0 && inputHandle.phoneNumber.length === 0 && inputHandle.alamat.length === 0 && inputHandle.noNpwp.length === 0 && inputHandle.namaNpwp.length === 0 && inputHandle.nama.length === 0 && inputHandle.noHp.length === 0 && inputHandle.active.length === 0 && inputHandle.bankName.length === 0 && inputHandle.akunBank.length === 0 && inputHandle.rekeningOwner.length === 0 && inputHandle.payment === 0 }
+          className={(inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && payment.length !== 0 ) ? 'btn-ez-on' : 'btn-ez'}
+          disabled={inputHandle.namaPerusahaan.length === 0 && inputHandle.emailPerusahaan.length === 0 && inputHandle.phoneNumber.length === 0 && inputHandle.alamat.length === 0 && inputHandle.noNpwp.length === 0 && inputHandle.namaNpwp.length === 0 && inputHandle.nama.length === 0 && inputHandle.noHp.length === 0 && inputHandle.active.length === 0 && inputHandle.bankName.length === 0 && inputHandle.akunBank.length === 0 && inputHandle.rekeningOwner.length === 0 && payment.length === 0 }
         >
           Tambahkan
         </button>
