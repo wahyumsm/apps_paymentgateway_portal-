@@ -32,7 +32,6 @@ export const GetUserAccessMenu = (url) => {
             }
         } catch (error) {
             // console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             // history.push(errorCatch(error.response.status))
         }
     }

@@ -182,16 +182,12 @@ export default (props) => {
           'Authorization': auth,
         };
         const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
-        // console.log(topUpBalance, 'ini topup balance ya');
         if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
           setTopUpBalance(topUpBalance.data.response_data)
           const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
           const convertTimeStamps = new Date(timeStamps).getTime()
           const date = Date.now()
           const countDown = convertTimeStamps - date
-          // console.log(date)
-          // console.log(convertTimeStamps)
-          // console.log(countDown);
           setDateNow(date)
           setCountDown(countDown)
           setShowModalTopUp(false)
@@ -216,7 +212,6 @@ export default (props) => {
               'Authorization' : auth
           }
           const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
-          // console.log(topUp, 'ini topup');
           if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
             setTopUpResult(topUpResult.data.response_data)
             setShowModalKonfirmasiTopUp(false)
@@ -233,47 +228,6 @@ export default (props) => {
         }
       }
 
-  // async function topUpHandle(imageTopUp, amount, reffNo) {
-  //   try {
-  //       if (inputHandle.reffNo.length === 0 || inputHandle.reffNo === undefined) {
-  //         setIconGagal(true)
-  //       } else {
-  //         setIconGagal(false)
-  //       }
-  //       if (Object.keys(imageTopUp).length === 0) {
-  //         setUploadGagal(true)
-  //       } else {
-  //         setUploadGagal(false)
-  //       }
-  //       const auth = "Bearer " + getToken()        
-  //       var formData = new FormData()
-  //       formData.append('SlipPaymentFile', imageTopUp.SlipPaymentFile)
-  //       formData.append('amount', amount)
-  //       formData.append('reffNo', reffNo)
-  //       // for (var pair of formData.entries()) {
-  //       //     console.log(pair[0]+ ', ' + pair[1], "ini logfor"); 
-  //       // }
-  //       const headers = {
-  //           'Content-Type':'multipart/form-data',
-  //           'Authorization' : auth
-  //       }
-  //       const topUp = await axios.post(BaseURL + "/Partner/TopupConfirmation", formData, { headers: headers })
-  //       // console.log(topUp, 'ini topup');
-  //       if(topUp.status === 200 && topUp.data.response_code === 200) {
-  //         setTopUpResult(topUp.data.response_data.results)
-  //         setShowModalTopUp(false)
-  //         setShowModalKonfirmasiTopUp(true)
-  //       }
-  //     } catch (error) {
-        // console.log(error)
-  //       if (error.response.status === 401) {
-  //           history.push('/login')
-  //       } else if (error.response.status === 400) {
-  //         alert("Top Up Gagal")
-  //       }
-  //     }
-  //   }
-
     async function GetBalanceHandle () {
       try {
           const auth = "Bearer " + getToken()
@@ -282,9 +236,7 @@ export default (props) => {
               'Authorization' : auth
           }
           const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
-          // console.log(getBalance, 'ini data get balance');
           if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
-              // getBalance.data.response_data = getBalance.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setGetBalance(getBalance.data.response_data)
               setBalanceDetail(getBalance.data.response_data.balance_detail)
           } else if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length !== 0) {
@@ -307,7 +259,6 @@ export default (props) => {
               'Authorization' : auth
           }
           const listRiwayat = await axios.post(BaseURL + "/partner/TopUpHistory", { data: "" }, { headers: headers })
-          // console.log(listRiwayat, 'ini data user ');
           if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
               listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
               setListRiwayat(listRiwayat.data.response_data)
@@ -333,8 +284,6 @@ export default (props) => {
         listRiwayatTopUp()
       }
     }, [showModalTopUp])
-
-    // console.log(nominalTopup, 'ini nominal topup');
 
   async function logoutHandler() {
     try {
@@ -450,8 +399,6 @@ export default (props) => {
       </ListGroup.Item>
     );
   };
-
-  // console.log(deleteZero("000123456"), 'ini delete zero');
 
   return (
     <>

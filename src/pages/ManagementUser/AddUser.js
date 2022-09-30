@@ -185,7 +185,6 @@ function AddUser() {
   }
   useEffect(() => {
     if (!access_token) {
-      // RouteTo("/login")
       history.push("/login");
     }
     if (user_role === "102") {

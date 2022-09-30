@@ -19,7 +19,6 @@ function DaftarPartner() {
     const [pending, setPending] = useState(true)
 
     function tambahPartner() {
-        // RouteTo("/tambahpartner")
         history.push("/tambahpartner")
     }
 
@@ -44,7 +43,6 @@ function DaftarPartner() {
             
         } catch (error) {
             // console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }

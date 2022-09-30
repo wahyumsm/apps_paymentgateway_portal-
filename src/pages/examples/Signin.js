@@ -122,7 +122,6 @@ export default () => {
       if (error.response.status === 400) {
         setErrorMessage(error.response.data.response_message)
       }
-      // history.push(errorCatch(error.response.status))
     }
   }
 

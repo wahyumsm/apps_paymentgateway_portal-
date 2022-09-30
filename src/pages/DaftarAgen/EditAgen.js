@@ -52,7 +52,6 @@ function EditAgen() {
                 'Authorization' : auth
             }
             const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
-            // console.log(detailAgen, 'ini detail agen');
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
                 if (detailAgen.data.response_data.status === true) {
                     detailAgen.data.response_data = {
@@ -102,7 +101,6 @@ function EditAgen() {
                 'Authorization' : auth
             }
             const editAgen = await axios.post(BaseURL + "/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
-            // console.log(editAgen, 'ini detail agen');
             if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
                 setShowModalEdit(true)
             } else if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length !== 0) {
@@ -111,7 +109,6 @@ function EditAgen() {
             }
         } catch (error) {
             // console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -140,13 +137,10 @@ function EditAgen() {
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
-            // window.location.reload();
         }
         getDetailAgen(agenId)
     }, [access_token, agenId])
     
-    // console.log(inputHandle.nominal, 'ini detail agen dari input handle');
-
     return (
         <>
             <div className='main-content mt-5' style={{ padding: "37px 27px" }}>

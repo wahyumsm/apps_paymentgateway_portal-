@@ -17,7 +17,6 @@ function DetailPartner() {
     const { partnerId } = useParams()
     const [listAgen, setListAgen] = useState([])
     const [detailPartner, setDetailPartner] = useState([])
-    // console.log(partnerId, 'ini agen id');
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getDetailPartner(partnerId) {
@@ -29,9 +28,7 @@ function DetailPartner() {
                 'Authorization' : auth
             }
             const detailPartner = await axios.post(BaseURL + "/Partner/EditPartner", { data: dataParams }, { headers: headers })
-            // console.log(detailPartner, 'ini detail partner');
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
-                // console.log(detailPartner.data, 'ini detail agen');
                 setDetailPartner(detailPartner.data.response_data)
             } else if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length !== 0) {
                 setUserSession(detailPartner.data.response_new_token)
@@ -39,7 +36,6 @@ function DetailPartner() {
             }
         } catch (error) {
             // console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     } 
@@ -108,7 +104,6 @@ function DetailPartner() {
             'Authorization' : auth
           }
           const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", { data: dataParams }, { headers: headers })
-        //   console.log(listAgen, 'ini data agen');
           if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
             listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAgen(listAgen.data.response_data)
@@ -119,7 +114,6 @@ function DetailPartner() {
           }
         } catch (error) {
         //   console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }

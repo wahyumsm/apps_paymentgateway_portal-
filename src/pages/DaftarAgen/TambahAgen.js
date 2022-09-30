@@ -48,7 +48,6 @@ function TambahAgen() {
                 'Authorization' : auth
             }
             const addAgen = await axios.post(BaseURL + "/Agen/SaveAgen", { data: dataParams }, { headers: headers })
-            // console.log(addAgen);
             if (addAgen.status === 200 && addAgen.data.response_code === 200 && addAgen.data.response_new_token.length === 0) {
                 setDetailNewAgen(addAgen.data.response_data)
                 setShowModal(true)
@@ -65,15 +64,12 @@ function TambahAgen() {
 
     function successButtonHandle() {
         setShowModal(false)
-        // RouteTo("/daftaragen")
         history.push("/daftaragen")
     }
 
     useEffect(() => {
         if (!access_token) {
-            // RouteTo("/login")
         history.push('/login');
-        // window.location.reload();
         }
     }, [])
     

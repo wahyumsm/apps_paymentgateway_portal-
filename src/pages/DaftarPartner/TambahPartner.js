@@ -39,13 +39,11 @@ function TambahPartner() {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_id": ${bankName}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "mpartner_fee": ${fee}, "mpartnerdtl_settlement_fee": ${settlementFee}}`)
-            // console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
             const addPartner = await axios.post(BaseURL + "/Partner/SavePartner", { data: dataParams }, { headers: headers })
-            // console.log(addPartner, 'ini add partner');
             if(addPartner.status === 200 && addPartner.data.response_code === 200 && addPartner.data.response_new_token.length === 0) {
                 history.push("/daftarpartner")
             } else if(addPartner.status === 200 && addPartner.data.response_code === 200 && addPartner.data.response_new_token.length !== 0) {
@@ -56,7 +54,6 @@ function TambahPartner() {
             alert("Partner Baru Berhasil Ditambahkan")
         } catch (error) {
             // console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -64,7 +61,6 @@ function TambahPartner() {
     useEffect(() => {
         if (!access_token) {
         history.push('/login');
-        // window.location.reload();
         }
         if (user_role === "102") {
             history.push('/404');

@@ -22,7 +22,6 @@ function DetailAgen() {
                 'Authorization' : auth
             }
             const detailAgen = await axios.post(BaseURL + "/Agen/EditAgen", { data: dataParams }, { headers: headers })
-            // console.log(detailAgen, "ini detail agen");
             if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length === 0) {
                 setDetailAgen(detailAgen.data.response_data)
             } else if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length !== 0) {
@@ -31,7 +30,6 @@ function DetailAgen() {
             }
         } catch (error) {
             // console.log(error)
-            // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
     }
@@ -39,13 +37,11 @@ function DetailAgen() {
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
-            // window.location.reload();
         }
         getDetailAgen(agenId)
     }, [agenId])
 
     function editAgen(agenId) {
-        // RouteTo(`/editagen/${agenId}`)
         history.push(`/editagen/${agenId}`)
     }
     
