@@ -438,7 +438,7 @@ function AddPayment() {
             </div>
             <div className="position-relative d-flex justify-content-between align-items-center" onClick={showCheckboxes}>
               <input
-                className={(dateDefault.getTime() + 300000) < timeRun ? "form-control is-invalid" : "input-text-user"}
+                className="input-text-user"
                 placeholder="Silahkan atur waktu"
                 value={
                   convertTimeDigit(inputHourHandle) +
@@ -446,15 +446,12 @@ function AddPayment() {
                   convertTimeDigit(inputMinuteHandle)
                 }
               />
-              {(dateDefault.getTime() + 300000) < timeRun ?
-                "" :
-                <div
-                  className="position-absolute right-1"
-                  style={{ cursor: "pointer" }}
-                >
-                  <img src={time} alt="time" />
-                </div>
-              }
+              <div
+                className="position-absolute right-1"
+                style={{ cursor: "pointer" }}
+              >
+                <img src={time} alt="time" />
+              </div>
             </div>
             {expanded ? (
               <div
