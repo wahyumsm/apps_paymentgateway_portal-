@@ -102,7 +102,7 @@ function DetailSettlement() {
                 const data = dataDetailSettlement.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reimbursement by VA": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -113,7 +113,7 @@ function DetailSettlement() {
                 const data = dataDetailSettlement.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Fee Transaksi": data[i].tvatrans_partner_fee, "Fee Tax Transaksi": data[i].tvatrans_fee_tax, "Fee Bank": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reimbursement by VA": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
