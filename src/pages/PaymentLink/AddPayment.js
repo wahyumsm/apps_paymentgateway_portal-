@@ -14,7 +14,7 @@ import {
   errorCatch,
   getRole,
   getToken,
-  isEnableButton,
+  isNotEnableButton,
   setUserSession,
 } from "../../function/helpers";
 import axios from "axios";
@@ -629,7 +629,7 @@ function AddPayment() {
       >
         <button
           onClick={() =>
-            inputHandle.refId == "" || inputHandle.nominal == null || isEnableButton(inputMinuteHandle, inputHourHandle)
+            inputHandle.refId == "" || inputHandle.nominal == null || isNotEnableButton(inputMinuteHandle, inputHourHandle)
               ? goToTop()
               : addPaylinkHandler(
                   inputHandle.paymentId,

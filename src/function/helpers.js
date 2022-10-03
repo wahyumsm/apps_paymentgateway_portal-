@@ -106,7 +106,7 @@ export const styleStatusPaylink = {
   },
 };
 
-export function isEnableButton(minutes, hour) {
+export function isNotEnableButton(minutes, hour) {
   var now = new Date();
   var user = new Date();
   var nowMinutes = now.getMinutes();
