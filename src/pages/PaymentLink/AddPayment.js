@@ -14,6 +14,7 @@ import {
   errorCatch,
   getRole,
   getToken,
+  isEnableButton,
   setUserSession,
 } from "../../function/helpers";
 import axios from "axios";
@@ -60,12 +61,12 @@ function AddPayment() {
   
   
   var timeRun = date.getTime()
-  console.log(timeRun, "time run");
-  console.log(dateDefault.getTime() + 300000, "default date");
-  console.log(dateDefault.getTime(), "default time no");
-  console.log(date, "ini date");
-  console.log(minutes, "ini minutes");
-  console.log(minutesDefault, "minutes default");
+  // console.log(timeRun, "time run");
+  // console.log(dateDefault.getTime() + 300000, "default date");
+  // console.log(dateDefault.getTime(), "default time no");
+  // console.log(date, "ini date");
+  // console.log(minutes, "ini minutes");
+  // console.log(minutesDefault, "minutes default");
 
   const [isNotCompleteData, setNotCompleteData] = useState({
     nominal: false,
@@ -254,11 +255,16 @@ function AddPayment() {
     });
   }
 
+  // console.log(isEnableButton, "isEn");
+
   const goToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
+    var a = date.getMinutes()
+    var b = date.getHours()
+    console.log(a, "mmmm");
     setNotCompleteData({
       nominal: inputHandle.nominal == null,
       refId: inputHandle.refId == ""
@@ -626,7 +632,7 @@ function AddPayment() {
       >
         <button
           onClick={() =>
-            inputHandle.refId == "" || inputHandle.nominal == null 
+            inputHandle.refId == "" || inputHandle.nominal == null || isEnableButton(inputMinuteHandle, inputHourHandle)
               ? goToTop()
               : addPaylinkHandler(
                   inputHandle.paymentId,
