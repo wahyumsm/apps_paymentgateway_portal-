@@ -358,6 +358,10 @@ function TambahAgen() {
                                 <td>Nama Pemilik Rekening</td>
                                 <td style={{ fontWeight: 600 }}>: {detailNewAgen.agen_bank_name}</td>
                             </tr>
+                            <tr>
+                                <td>Settlement Fee</td>
+                                <td style={{ fontWeight: 600 }}>: {detailNewAgen.settlement_fee}</td>
+                            </tr>
                         </Table>
                         <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>ID Agen & Kode Unik</p>
                         <Table className='detailSave'>

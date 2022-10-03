@@ -572,9 +572,6 @@ function DetailPartner() {
                             noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                             pagination
                             highlightOnHover
-                            onRowClicked={(listAgen) => {
-                                detailAgenHandler(listAgen.agen_id)
-                            }}
                             />
                         </div>
                         }
