@@ -352,8 +352,6 @@ function TambahPartner() {
     }
   }
 
-  console.log(payment, "ini payment");
-
   async function getTypeFitur() {
     try {
       const auth = "Bearer " + getToken();
@@ -515,7 +513,10 @@ function TambahPartner() {
       dataTypeMethod.push(listTypeMethod[i]);
     }
     return dataTypeMethod;
-  }
+  }  
+
+  console.log(payment.length, "ini payment length");
+  console.log(payment, "ini payment");
 
   async function tambahPartner(
     namaPerusahaan,
@@ -1574,10 +1575,9 @@ function toDashboard() {
               payment
             )
           }
-          style={{ width: 136 }}
-        //   className="btn-ez-on"
+          style={{ width: 136, cursor: (inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && payment.length !== 0 ) ? "pointer" : "unset" }}
           className={(inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && payment.length !== 0 ) ? 'btn-ez-on' : 'btn-ez'}
-          disabled={inputHandle.namaPerusahaan.length === 0 && inputHandle.emailPerusahaan.length === 0 && inputHandle.phoneNumber.length === 0 && inputHandle.alamat.length === 0 && inputHandle.noNpwp.length === 0 && inputHandle.namaNpwp.length === 0 && inputHandle.nama.length === 0 && inputHandle.noHp.length === 0 && inputHandle.active.length === 0 && inputHandle.bankName.length === 0 && inputHandle.akunBank.length === 0 && inputHandle.rekeningOwner.length === 0 && payment.length === 0 }
+          disabled={inputHandle.namaPerusahaan.length === 0 || inputHandle.emailPerusahaan.length === 0 || inputHandle.phoneNumber.length === 0 || inputHandle.alamat.length === 0 || inputHandle.noNpwp.length === 0 || inputHandle.namaNpwp.length === 0 || inputHandle.nama.length === 0 || inputHandle.noHp.length === 0 || inputHandle.active.length === 0 || inputHandle.bankName.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.rekeningOwner.length === 0 || payment.length === 0  }
         >
           Tambahkan
         </button>

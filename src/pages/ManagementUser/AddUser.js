@@ -367,14 +367,18 @@ function AddUser() {
               ? "btn-off"
               : "add-button"
           }
-          dis={
+          disabled={
             inputHandle.name.length === 0 ||
               inputHandle.email.length === 0 ||
               inputHandle.password.length === 0 ||
               inputHandle.role.length === 0
-              ? "btn-off"
-              : "add-button"
           }
+          style={{
+            cursor: (inputHandle.name.length !== 0 &&
+              inputHandle.email.length !== 0 &&
+              inputHandle.password.length !== 0 &&
+              inputHandle.role.length !== 0) ? "pointer" : "unset"
+          }}
         >
           Save
         </button>

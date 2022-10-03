@@ -836,12 +836,12 @@ function RiwayatTransaksi() {
                     <Row className='mt-4'>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>ID Transaksi</span>
-                            <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
-                            {/* <input type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>            */}
+                            <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                            {/* <input type='text'className='input-text-riwayat me-2' placeholder='Masukkan ID Transaksi'/>            */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Partner</span>
-                            <Form.Select name='namaPartnerDanaMasuk' className="input-text-ez me-4" value={inputHandle.namaPartnerDanaMasuk} onChange={(e) => handleChangeNamaPartner(e)}>
+                            <Form.Select name='namaPartnerDanaMasuk' className="input-text-riwayat ms-3" value={inputHandle.namaPartnerDanaMasuk} onChange={(e) => handleChangeNamaPartner(e)}>
                                 <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                 {
                                     dataListPartner.map((item, index) => {
@@ -853,8 +853,8 @@ function RiwayatTransaksi() {
                             </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Nama Agen</span>
-                            <Form.Select name='namaAgenDanaMasuk' className="input-text-ez me-4" value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
+                            <span className="me-2">Nama Agen</span>
+                            <Form.Select name='namaAgenDanaMasuk' style={{ display: "inline" }} className="input-text-riwayat ms-4" value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Nama Agen</option>
                                 {
                                     dataListAgenFromPartner.map((item, index) => {
@@ -869,7 +869,7 @@ function RiwayatTransaksi() {
                     <Row className='mt-4'>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span style={{ marginRight: 41 }}>Status</span>
-                            <Form.Select name="statusDanaMasuk" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
+                            <Form.Select name="statusDanaMasuk" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Status</option>
                                 <option value={2}>Berhasil</option>
                                 <option value={1}>In Progress</option>
@@ -885,7 +885,7 @@ function RiwayatTransaksi() {
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
                             <span style={{ marginRight: 40 }}>Periode*</span>
-                            <Form.Select name='periodeDanaMasuk' className="input-text-ez me-4" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
+                            <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-3" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
                                 <option value={3}>Kemarin</option>
@@ -897,7 +897,7 @@ function RiwayatTransaksi() {
                         </Col>
                         <Col xs={4}>
                             <span>Jenis Transaksi</span>
-                            <Form.Select name='fiturDanaMasuk' className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturDanaMasuk} onChange={(e) => handleChange(e)}>
+                            <Form.Select name='fiturDanaMasuk' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturDanaMasuk} onChange={(e) => handleChange(e)}>
                                 <option defaultValue value={0}>Pilih Jenis Transaksi</option>
                                 <option value={104}>Payment Link</option>
                                 <option value={100}>Virtual Account</option>
@@ -979,11 +979,11 @@ function RiwayatTransaksi() {
                     <Row className='mt-4'>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>ID Transaksi</span>
-                            <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} name="idTransaksiSettlement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
+                            <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} name="idTransaksiSettlement" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Partner</span>
-                            <Form.Select name='namaPartnerSettlement' className="input-text-ez me-4" value={inputHandle.namaPartnerSettlement} onChange={(e) => handleChange(e)}>
+                            <Form.Select name='namaPartnerSettlement' className="input-text-riwayat ms-3" value={inputHandle.namaPartnerSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                 {
                                     dataListPartner.map((item, index) => {
@@ -993,12 +993,12 @@ function RiwayatTransaksi() {
                                     })
                                 }
                             </Form.Select>
-                            {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaPartnerSettlement} name="namaPartnerSettlement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/> */}
-                            {/* <input type='text'className='input-text-ez' placeholder='Masukkan Nama Partner'/> */}
+                            {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaPartnerSettlement} name="namaPartnerSettlement" type='text'className='input-text-riwayat me-2' placeholder='Masukkan ID Transaksi'/> */}
+                            {/* <input type='text'className='input-text-riwayat' placeholder='Masukkan Nama Partner'/> */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Status</span>
-                            <Form.Select name="statusSettlement" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
+                            <Form.Select name="statusSettlement" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Status</option>
                                 <option value={2}>Berhasil</option>
                                 <option value={1}>In Progress</option>
@@ -1016,7 +1016,7 @@ function RiwayatTransaksi() {
                     <Row className='mt-4'>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "33.2%" : "33.2%" }}>
                             <span style={{ marginRight: 26 }}>Periode*</span>
-                            <Form.Select name='periodeSettlement' className="input-text-ez me-4" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
+                            <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
                                 <option value={3}>Kemarin</option>
@@ -1038,7 +1038,7 @@ function RiwayatTransaksi() {
                         </Col>
                         <Col xs={4}>
                             <span>Jenis Transaksi</span>
-                            <Form.Select name='fiturSettlement' className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
+                            <Form.Select name='fiturSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultValue value={0}>Pilih Jenis Transaksi</option>
                                 <option value={104}>Payment Link</option>
                                 <option value={100}>Virtual Account</option>

@@ -43,6 +43,7 @@ function AddPayment() {
   const [expanded, setExpanded] = useState(false);
 
   const date = new Date();
+  const [dateDefault, setDateDefault] = useState(date)
   const minutes = date.getMinutes();
   const minutesDefault = minutes + 5 >= 60 ? minutes + 5 - 60 : minutes + 5;
   const hour = date.getHours();
@@ -56,10 +57,19 @@ function AddPayment() {
     month: 0,
     year: 0,
   });
+  
+  
+  var timeRun = date.getTime()
+  console.log(timeRun, "time run");
+  console.log(dateDefault.getTime() + 300000, "default date");
+  console.log(dateDefault.getTime(), "default time no");
+  console.log(date, "ini date");
+  console.log(minutes, "ini minutes");
+  console.log(minutesDefault, "minutes default");
 
   const [isNotCompleteData, setNotCompleteData] = useState({
     nominal: false,
-    refId: false,
+    refId: false
   });
 
   const [inputHandle, setInputHandle] = useState({
@@ -240,7 +250,7 @@ function AddPayment() {
     });
     setNotCompleteData({
       nominal: false,
-      refId: false,
+      refId: false
     });
   }
 
@@ -251,7 +261,7 @@ function AddPayment() {
     });
     setNotCompleteData({
       nominal: inputHandle.nominal == null,
-      refId: inputHandle.refId == "",
+      refId: inputHandle.refId == ""
     });
   };
 
@@ -309,8 +319,6 @@ function AddPayment() {
 
   // const dateNow = 
   // console.log();
-
-
 
   return (
     <div
@@ -387,7 +395,7 @@ function AddPayment() {
             </div>
             <input
               name="refId"
-              class={
+              className={
                 isNotCompleteData.refId == true
                   ? "form-control is-invalid"
                   : "input-text-user"
@@ -430,7 +438,7 @@ function AddPayment() {
             </div>
             <div className="position-relative d-flex justify-content-between align-items-center" onClick={showCheckboxes}>
               <input
-                className="input-text-user"
+                className={(dateDefault.getTime() + 300000) < timeRun ? "form-control is-invalid" : "input-text-user"}
                 placeholder="Silahkan atur waktu"
                 value={
                   convertTimeDigit(inputHourHandle) +
@@ -438,12 +446,15 @@ function AddPayment() {
                   convertTimeDigit(inputMinuteHandle)
                 }
               />
-              <div
-                className="position-absolute right-1"
-                style={{ cursor: "pointer" }}
-              >
-                <img src={time} alt="time" />
-              </div>
+              {(dateDefault.getTime() + 300000) < timeRun ?
+                "" :
+                <div
+                  className="position-absolute right-1"
+                  style={{ cursor: "pointer" }}
+                >
+                  <img src={time} alt="time" />
+                </div>
+              }
             </div>
             {expanded ? (
               <div
@@ -615,7 +626,7 @@ function AddPayment() {
       >
         <button
           onClick={() =>
-            inputHandle.refId == "" || inputHandle.nominal == null
+            inputHandle.refId == "" || inputHandle.nominal == null 
               ? goToTop()
               : addPaylinkHandler(
                   inputHandle.paymentId,
