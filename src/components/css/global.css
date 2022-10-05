@@ -710,6 +710,13 @@ width: 150px;
     color: "#FFFFFF" !important;
 }
 
+header.sc-dIouRR.TUEFO {
+    padding: unset;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 /* .hoverActive {
     background: "#3DB54A";
     color: "#FFFFFF";

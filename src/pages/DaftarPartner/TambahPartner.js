@@ -157,13 +157,13 @@ function TambahPartner() {
       width: "67px",
     },
     {
-      name: "Metode Pembayaran",
-      selector: (row) => row.mpaytype_name.join(", "),
-      width: "200px",
-    },
-    {
       name: "Fitur",
       selector: (row) => row.fitur_name,
+    },
+    {
+      name: "Metode Pembayaran",
+      selector: (row) => row.mpaytype_name.join(", "),
+      width: "230px",
     },
     {
       name: "Fee",

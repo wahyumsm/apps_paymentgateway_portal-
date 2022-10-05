@@ -1275,358 +1275,356 @@ function EditPartner() {
                     }
                   </td>
                 </tr>
+                <br/>
+                <tr>
+                  <td style={{ width: 200 }}>Fitur <span style={{ color: "red" }}>*</span></td>
+                  <td>
+                    {equalFitur === 0 ? (
+                      <>
+                        <Row>
+                          {dataAtasFitur(atasFitur).map((item) => {
+                            return (
+                              <Col key={item.fitur_id} xs={2}>
+                                <div className="form-check form-check-inline">
+                                  <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="inlineCheckbox1"
+                                    name={item.fitur_name}
+                                    value={item.fitur_id}
+                                    onChange={(e) => handleChangeFitur(e)}
+                                    checked={
+                                      edited === true
+                                        ? fitur[0] &&
+                                          fitur.includes(item.fitur_name)
+                                        : fitur.includes(item.fitur_name)
+                                    }
+                                    // checked={edited === true ? fitur[0] : inputHandle.fiturs ? inputHandle.fiturs : 0}
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    style={{ fontWeight: 400, fontSize: "14px" }}
+                                    for="inlineCheckbox1"
+                                  >
+                                    {item.fitur_name}
+                                  </label>
+                                </div>
+                              </Col>
+                            );
+                          })}
+                        </Row>
+                        <Row>
+                          {dataBawahFitur(bawahFitur).map((item) => {
+                            return (
+                              <Col key={item.fitur_id} xs={2}>
+                                <div className="form-check form-check-inline">
+                                  <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="inlineCheckbox1"
+                                    name={item.fitur_name}
+                                    value={item.fitur_id}
+                                    onChange={(e) => handleChangeFitur(e)}
+                                    // checked={edited === true ? fitur[0] : inputHandle.fiturs ? inputHandle.fiturs : 0}
+                                    checked={
+                                      edited === true
+                                        ? fitur[0] &&
+                                          fitur.includes(item.fitur_name)
+                                        : fitur.includes(item.fitur_name)
+                                    }
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    style={{ fontWeight: 400, fontSize: "14px" }}
+                                    for="inlineCheckbox1"
+                                  >
+                                    {item.fitur_name}
+                                  </label>
+                                </div>
+                              </Col>
+                            );
+                          })}
+                        </Row>
+                      </>
+                    ) : (
+                      <>
+                        <Row>
+                          {dataAtasEqualFitur(equalFitur).map((item) => {
+                            return (
+                              <Col key={item.fitur_id} xs={2}>
+                                <div className="form-check form-check-inline">
+                                  <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="inlineCheckbox1"
+                                    name={item.fitur_name}
+                                    value={item.fitur_id}
+                                    onChange={(e) => handleChangeFitur(e)}
+                                    checked={
+                                      edited === true
+                                        ? fitur[0] &&
+                                          fitur.includes(item.fitur_name)
+                                        : fitur.includes(item.fitur_name)
+                                    }
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    style={{ fontWeight: 400, fontSize: "14px" }}
+                                    for="inlineCheckbox1"
+                                  >
+                                    {item.fitur_name}
+                                  </label>
+                                </div>
+                              </Col>
+                            );
+                          })}
+                        </Row>
+                        <Row>
+                          {dataBawahEqualFitur(equalFitur).map((item) => {
+                            return (
+                              <Col key={item.fitur_id} xs={2}>
+                                <div className="form-check form-check-inline">
+                                  <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="inlineCheckbox1"
+                                    name={item.fitur_name}
+                                    value={item.fitur_id}
+                                    onChange={(e) => handleChangeFitur(e)}
+                                    checked={
+                                      edited === true
+                                        ? fitur[0] &&
+                                          fitur.includes(item.fitur_name)
+                                        : fitur.includes(item.fitur_name)
+                                    }
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    style={{ fontWeight: 400, fontSize: "14px" }}
+                                    for="inlineCheckbox1"
+                                  >
+                                    {item.fitur_name}
+                                  </label>
+                                </div>
+                              </Col>
+                            );
+                          })}
+                        </Row>
+                      </>
+                    )}
+                  </td>
+                </tr>
+                <br/>
+                <tr 
+                  className="mt-4"
+                  style={{
+                    display:
+                      fitur[0] !== undefined || edited === true ? "" : "none",
+                  }}
+                >
+                  <td style={{ width: 200 }}>Metode Pembayaran <span style={{ color: "red" }}>*</span></td>
+                  <td>
+                    {equalTypeMethod === 0 ? (
+                      <>
+                        {loading ? (
+                          <div className="d-flex justify-content-center align-items-center vh-100">
+                            <CustomLoader />
+                          </div>
+                        ) : (
+                          <>
+                            <Row style={{ flexWrap: "nowrap" }}>
+                              {dataAtasMethod(atasTypeMethod).map((item) => {
+                                return (
+                                  <Col key={item.payment_id} xs={2}>
+                                    <div className="form-check form-check-inline">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id="inlineCheckbox1"
+                                        name={item.payment_name}
+                                        value={item.payment_id}
+                                        checked={
+                                          listTypeMethod.length - 1 ===
+                                          paymentMethod.length
+                                            ? true
+                                            : paymentMethod.includes(
+                                                item.payment_id
+                                              )
+                                        }
+                                        onChange={(e) =>
+                                          handleChoosenPaymentType(
+                                            e,
+                                            item.payment_id,
+                                            item.payment_name,
+                                            listTypeMethod
+                                          )
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        style={{
+                                          fontWeight: 400,
+                                          fontSize: "14px",
+                                        }}
+                                        for="inlineCheckbox1"
+                                      >
+                                        {item.payment_name}
+                                      </label>
+                                    </div>
+                                  </Col>
+                                );
+                              })}
+                            </Row>
+                            <Row>
+                              {dataBawahMethod(bawahTypeMethod).map((item) => {
+                                return (
+                                  <Col key={item.payment_id} xs={2}>
+                                    <div className="form-check form-check-inline">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id="inlineCheckbox1"
+                                        name={item.payment_name}
+                                        value={item.payment_id}
+                                        checked={
+                                          listTypeMethod.length - 1 ===
+                                          paymentMethod.length
+                                            ? true
+                                            : paymentMethod.includes(
+                                                item.payment_id
+                                              )
+                                        }
+                                        onChange={(e) =>
+                                          handleChoosenPaymentType(
+                                            e,
+                                            item.payment_id,
+                                            item.payment_name,
+                                            listTypeMethod
+                                          )
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        style={{
+                                          fontWeight: 400,
+                                          fontSize: "14px",
+                                        }}
+                                        for="inlineCheckbox1"
+                                      >
+                                        {item.payment_name}
+                                      </label>
+                                    </div>
+                                  </Col>
+                                );
+                              })}
+                            </Row>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {loading ? (
+                          <div className="d-flex justify-content-center align-items-center vh-100">
+                            <CustomLoader />
+                          </div>
+                        ) : (
+                          <>
+                            <Row>
+                              {dataAtasEqualMethod(equalTypeMethod).map((item) => {
+                                return (
+                                  <Col key={item.payment_id} xs={2}>
+                                    <div className="form-check form-check-inline">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id="inlineCheckbox1"
+                                        name={item.payment_name}
+                                        value={item.payment_id}
+                                        checked={
+                                          listTypeMethod.length - 1 ===
+                                          paymentMethod.length
+                                            ? true
+                                            : paymentMethod.includes(
+                                                item.payment_id
+                                              )
+                                        }
+                                        onChange={(e) =>
+                                          handleChoosenPaymentType(
+                                            e,
+                                            item.payment_id,
+                                            item.payment_name,
+                                            listTypeMethod
+                                          )
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        style={{
+                                          fontWeight: 400,
+                                          fontSize: "14px",
+                                        }}
+                                        for="inlineCheckbox1"
+                                      >
+                                        {item.payment_name}
+                                      </label>
+                                    </div>
+                                  </Col>
+                                );
+                              })}
+                            </Row>
+                            <Row>
+                              {dataBawahEqualMethod(equalTypeMethod).map((item) => {
+                                return (
+                                  <Col key={item.payment_id} xs={2}>
+                                    <div className="form-check form-check-inline">
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id="inlineCheckbox1"
+                                        name={item.payment_name}
+                                        value={item.payment_id}
+                                        checked={
+                                          listTypeMethod.length - 1 ===
+                                          paymentMethod.length
+                                            ? true
+                                            : paymentMethod.includes(
+                                                item.payment_id
+                                              )
+                                        }
+                                        onChange={(e) =>
+                                          handleChoosenPaymentType(
+                                            e,
+                                            item.payment_id,
+                                            item.payment_name,
+                                            listTypeMethod
+                                          )
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        style={{
+                                          fontWeight: 400,
+                                          fontSize: "14px",
+                                        }}
+                                        for="inlineCheckbox1"
+                                      >
+                                        {item.payment_name}
+                                      </label>
+                                    </div>
+                                  </Col>
+                                );
+                              })}
+                            </Row>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </td>
+                </tr>
               </tbody>
-            </table>
-            <Row className="mt-4">
-              <Col xs={3} style={{ paddingLeft: 20 }}>
-                Fitur <span style={{ color: "red" }}>*</span>
-              </Col>
-              <Col className="ms-2">
-                {equalFitur === 0 ? (
-                  <>
-                    <Row>
-                      {dataAtasFitur(atasFitur).map((item) => {
-                        return (
-                          <Col key={item.fitur_id} xs={2}>
-                            <div className="form-check form-check-inline">
-                              <input
-                                className="form-check-input"
-                                type="radio"
-                                id="inlineCheckbox1"
-                                name={item.fitur_name}
-                                value={item.fitur_id}
-                                onChange={(e) => handleChangeFitur(e)}
-                                checked={
-                                  edited === true
-                                    ? fitur[0] &&
-                                      fitur.includes(item.fitur_name)
-                                    : fitur.includes(item.fitur_name)
-                                }
-                                // checked={edited === true ? fitur[0] : inputHandle.fiturs ? inputHandle.fiturs : 0}
-                              />
-                              <label
-                                className="form-check-label"
-                                style={{ fontWeight: 400, fontSize: "14px" }}
-                                for="inlineCheckbox1"
-                              >
-                                {item.fitur_name}
-                              </label>
-                            </div>
-                          </Col>
-                        );
-                      })}
-                    </Row>
-                    <Row>
-                      {dataBawahFitur(bawahFitur).map((item) => {
-                        return (
-                          <Col key={item.fitur_id} xs={2}>
-                            <div className="form-check form-check-inline">
-                              <input
-                                className="form-check-input"
-                                type="radio"
-                                id="inlineCheckbox1"
-                                name={item.fitur_name}
-                                value={item.fitur_id}
-                                onChange={(e) => handleChangeFitur(e)}
-                                // checked={edited === true ? fitur[0] : inputHandle.fiturs ? inputHandle.fiturs : 0}
-                                checked={
-                                  edited === true
-                                    ? fitur[0] &&
-                                      fitur.includes(item.fitur_name)
-                                    : fitur.includes(item.fitur_name)
-                                }
-                              />
-                              <label
-                                className="form-check-label"
-                                style={{ fontWeight: 400, fontSize: "14px" }}
-                                for="inlineCheckbox1"
-                              >
-                                {item.fitur_name}
-                              </label>
-                            </div>
-                          </Col>
-                        );
-                      })}
-                    </Row>
-                  </>
-                ) : (
-                  <>
-                    <Row>
-                      {dataAtasEqualFitur(equalFitur).map((item) => {
-                        return (
-                          <Col key={item.fitur_id} xs={2}>
-                            <div className="form-check form-check-inline">
-                              <input
-                                className="form-check-input"
-                                type="radio"
-                                id="inlineCheckbox1"
-                                name={item.fitur_name}
-                                value={item.fitur_id}
-                                onChange={(e) => handleChangeFitur(e)}
-                                checked={
-                                  edited === true
-                                    ? fitur[0] &&
-                                      fitur.includes(item.fitur_name)
-                                    : fitur.includes(item.fitur_name)
-                                }
-                              />
-                              <label
-                                className="form-check-label"
-                                style={{ fontWeight: 400, fontSize: "14px" }}
-                                for="inlineCheckbox1"
-                              >
-                                {item.fitur_name}
-                              </label>
-                            </div>
-                          </Col>
-                        );
-                      })}
-                    </Row>
-                    <Row>
-                      {dataBawahEqualFitur(equalFitur).map((item) => {
-                        return (
-                          <Col key={item.fitur_id} xs={2}>
-                            <div className="form-check form-check-inline">
-                              <input
-                                className="form-check-input"
-                                type="radio"
-                                id="inlineCheckbox1"
-                                name={item.fitur_name}
-                                value={item.fitur_id}
-                                onChange={(e) => handleChangeFitur(e)}
-                                checked={
-                                  edited === true
-                                    ? fitur[0] &&
-                                      fitur.includes(item.fitur_name)
-                                    : fitur.includes(item.fitur_name)
-                                }
-                              />
-                              <label
-                                className="form-check-label"
-                                style={{ fontWeight: 400, fontSize: "14px" }}
-                                for="inlineCheckbox1"
-                              >
-                                {item.fitur_name}
-                              </label>
-                            </div>
-                          </Col>
-                        );
-                      })}
-                    </Row>
-                  </>
-                )}
-              </Col>
-            </Row>
-            <Row
-              className="mt-4"
-              style={{
-                display:
-                  fitur[0] !== undefined || edited === true ? "" : "none",
-              }}
-            >
-              <Col xs={3} style={{ paddingLeft: 20 }}>
-                Metode Pembayaran<span style={{ color: "red" }}>*</span>
-              </Col>
-              <Col className="ms-2">
-                {equalTypeMethod === 0 ? (
-                  <>
-                    {loading ? (
-                      <div className="d-flex justify-content-center align-items-center vh-100">
-                        <CustomLoader />
-                      </div>
-                    ) : (
-                      <>
-                        <Row style={{ flexWrap: "nowrap" }}>
-                          {dataAtasMethod(atasTypeMethod).map((item) => {
-                            return (
-                              <Col key={item.payment_id} xs={2}>
-                                <div className="form-check form-check-inline">
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id="inlineCheckbox1"
-                                    name={item.payment_name}
-                                    value={item.payment_id}
-                                    checked={
-                                      listTypeMethod.length - 1 ===
-                                      paymentMethod.length
-                                        ? true
-                                        : paymentMethod.includes(
-                                            item.payment_id
-                                          )
-                                    }
-                                    onChange={(e) =>
-                                      handleChoosenPaymentType(
-                                        e,
-                                        item.payment_id,
-                                        item.payment_name,
-                                        listTypeMethod
-                                      )
-                                    }
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    style={{
-                                      fontWeight: 400,
-                                      fontSize: "14px",
-                                    }}
-                                    for="inlineCheckbox1"
-                                  >
-                                    {item.payment_name}
-                                  </label>
-                                </div>
-                              </Col>
-                            );
-                          })}
-                        </Row>
-                        <Row>
-                          {dataBawahMethod(bawahTypeMethod).map((item) => {
-                            return (
-                              <Col key={item.payment_id} xs={2}>
-                                <div className="form-check form-check-inline">
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id="inlineCheckbox1"
-                                    name={item.payment_name}
-                                    value={item.payment_id}
-                                    checked={
-                                      listTypeMethod.length - 1 ===
-                                      paymentMethod.length
-                                        ? true
-                                        : paymentMethod.includes(
-                                            item.payment_id
-                                          )
-                                    }
-                                    onChange={(e) =>
-                                      handleChoosenPaymentType(
-                                        e,
-                                        item.payment_id,
-                                        item.payment_name,
-                                        listTypeMethod
-                                      )
-                                    }
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    style={{
-                                      fontWeight: 400,
-                                      fontSize: "14px",
-                                    }}
-                                    for="inlineCheckbox1"
-                                  >
-                                    {item.payment_name}
-                                  </label>
-                                </div>
-                              </Col>
-                            );
-                          })}
-                        </Row>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    {loading ? (
-                      <div className="d-flex justify-content-center align-items-center vh-100">
-                        <CustomLoader />
-                      </div>
-                    ) : (
-                      <>
-                        <Row>
-                          {dataAtasEqualMethod(equalTypeMethod).map((item) => {
-                            return (
-                              <Col key={item.payment_id} xs={2}>
-                                <div className="form-check form-check-inline">
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id="inlineCheckbox1"
-                                    name={item.payment_name}
-                                    value={item.payment_id}
-                                    checked={
-                                      listTypeMethod.length - 1 ===
-                                      paymentMethod.length
-                                        ? true
-                                        : paymentMethod.includes(
-                                            item.payment_id
-                                          )
-                                    }
-                                    onChange={(e) =>
-                                      handleChoosenPaymentType(
-                                        e,
-                                        item.payment_id,
-                                        item.payment_name,
-                                        listTypeMethod
-                                      )
-                                    }
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    style={{
-                                      fontWeight: 400,
-                                      fontSize: "14px",
-                                    }}
-                                    for="inlineCheckbox1"
-                                  >
-                                    {item.payment_name}
-                                  </label>
-                                </div>
-                              </Col>
-                            );
-                          })}
-                        </Row>
-                        <Row>
-                          {dataBawahEqualMethod(equalTypeMethod).map((item) => {
-                            return (
-                              <Col key={item.payment_id} xs={2}>
-                                <div className="form-check form-check-inline">
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id="inlineCheckbox1"
-                                    name={item.payment_name}
-                                    value={item.payment_id}
-                                    checked={
-                                      listTypeMethod.length - 1 ===
-                                      paymentMethod.length
-                                        ? true
-                                        : paymentMethod.includes(
-                                            item.payment_id
-                                          )
-                                    }
-                                    onChange={(e) =>
-                                      handleChoosenPaymentType(
-                                        e,
-                                        item.payment_id,
-                                        item.payment_name,
-                                        listTypeMethod
-                                      )
-                                    }
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    style={{
-                                      fontWeight: 400,
-                                      fontSize: "14px",
-                                    }}
-                                    for="inlineCheckbox1"
-                                  >
-                                    {item.payment_name}
-                                  </label>
-                                </div>
-                              </Col>
-                            );
-                          })}
-                        </Row>
-                      </>
-                    )}
-                  </>
-                )}
-              </Col>
-            </Row>
+            </table>                        
             {mustFill === true ?
-              <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 216 }} className="mt-3">
+              <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 210 }} className="mt-3">
                 <img src={noteIconRed} className="me-2" />
                 Wajib Dipilih
               </div> : ""
@@ -1637,165 +1635,169 @@ function EditPartner() {
                 Metode Pembayaran tidak boleh sama dalam satu Fitur
               </div> : ""
             }
-            <div className="d-flex justify-content-between align-items-center">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div>
-                {edited === false ? (
-                  <button
-                    onClick={() =>
-                      saveNewSchemaHandle(
-                        inputHandle.fee,
-                        inputHandle.settlementFee,
-                        fitur[0],
-                        fitur[1],
-                        paymentMethod.filter((it) => it !== 0),
-                        paymentNameMethod.filter((it) => it !== "Pilih Semua"),
-                        payment.length + 1
-                      )
-                    }
-                    style={{
-                      fontFamily: "Exo",
-                      fontSize: 16,
-                      fontWeight: 700,
-                      alignItems: "center",
-                      padding: "12px 24px",
-                      gap: 8,
-                      width: 250,
-                      height: 48,
-                      color: "#077E86",
-                      background: "unset",
-                      border: "0.6px solid #077E86",
-                      borderRadius: 6,
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPlus}
-                      style={{ marginRight: 10 }}
-                    />{" "}
-                    Tambah Skema Baru
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      className="mx-2"
-                      onClick={() => batalEdit()}
-                      style={{
-                        fontFamily: "Exo",
-                        fontSize: 16,
-                        fontWeight: 900,
-                        alignItems: "center",
-                        padding: "12px 24px",
-                        gap: 8,
-                        width: 136,
-                        height: 45,
-                        background: "#FFFFFF",
-                        color: "#888888",
-                        border: "0.6px solid #EBEBEB",
-                        borderRadius: 6,
-                      }}
-                    >
-                      Batal
-                    </button>
-                    <button
-                      style={{
-                        fontFamily: "Exo",
-                        fontSize: 16,
-                        fontWeight: 700,
-                        alignItems: "center",
-                        padding: "12px 24px",
-                        gap: 8,
-                        width: 136,
-                        height: 45,
-                        color: "#077E86",
-                        background: "transparent",
-                        border: "1px solid #077E86",
-                        borderRadius: 6,
-                      }}
-                      onClick={() =>
-                        saveEditInTableHandler(
-                          numbering,
-                          inputHandle.fee,
-                          inputHandle.settlementFee,
-                          fitur[0],
-                          fitur[1],
-                          paymentMethod.filter((it) => it !== 0),
-                          paymentNameMethod.filter((it) => it !== "Pilih Semua")
-                        )
-                      }
-                    >
-                      Simpan
-                    </button>
-                  </>
-                )}
-              </div>
-              <div>
-                {expanded ? (
-                  <div
-                    className="my-4"
-                    style={{
-                      display: "flex",
-                      justifyContent: "end",
-                      alignItems: "center",
-                      padding: "unset",
-                    }}
-                  >
-                    <button
-                      style={{
-                        fontFamily: "Exo",
-                        fontSize: 16,
-                        fontWeight: 700,
-                        alignItems: "center",
-                        gap: 8,
-                        width: 300,
-                        height: 48,
-                        color: "#077E86",
-                        background: "unset",
-                        border: "unset",
-                      }}
-                      onClick={showCheckboxes}
-                    >
-                      Sembunyikan tabel skema biaya{" "}
-                      <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    className="my-4 mb-4"
-                    style={{
-                      display: "flex",
-                      justifyContent: "end",
-                      alignItems: "center",
-                      padding: "unset",
-                    }}
-                  >
-                    <button
-                      style={{
-                        fontFamily: "Exo",
-                        fontSize: 16,
-                        fontWeight: 700,
-                        alignItems: "center",
-                        gap: 8,
-                        width: 300,
-                        height: 48,
-                        color: "#077E86",
-                        background: "unset",
-                        border: "unset",
-                      }}
-                      onClick={showCheckboxes}
-                    >
-                      Lihat tabel skema lainnya{" "}
-                      <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+            <table >              
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td style={{ width: 200 }}></td>
+                  <td>
+                    {edited === false ? (
+                      <button
+                        onClick={() =>
+                          saveNewSchemaHandle(
+                            inputHandle.fee,
+                            inputHandle.settlementFee,
+                            fitur[0],
+                            fitur[1],
+                            paymentMethod.filter((it) => it !== 0),
+                            paymentNameMethod.filter((it) => it !== "Pilih Semua"),
+                            payment.length + 1
+                          )
+                        }
+                        style={{
+                          fontFamily: "Exo",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          alignItems: "center",
+                          padding: "12px 24px",
+                          gap: 8,
+                          width: 250,
+                          height: 48,
+                          color: "#077E86",
+                          background: "unset",
+                          border: "0.6px solid #077E86",
+                          borderRadius: 6,
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          style={{ marginRight: 10 }}
+                        />{" "}
+                        Tambah Skema Baru
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          className="mx-2"
+                          onClick={() => batalEdit()}
+                          style={{
+                            fontFamily: "Exo",
+                            fontSize: 16,
+                            fontWeight: 900,
+                            alignItems: "center",
+                            padding: "12px 24px",
+                            gap: 8,
+                            width: 136,
+                            height: 45,
+                            background: "#FFFFFF",
+                            color: "#888888",
+                            border: "0.6px solid #EBEBEB",
+                            borderRadius: 6,
+                          }}
+                        >
+                          Batal
+                        </button>
+                        <button
+                          style={{
+                            fontFamily: "Exo",
+                            fontSize: 16,
+                            fontWeight: 700,
+                            alignItems: "center",
+                            padding: "12px 24px",
+                            gap: 8,
+                            width: 136,
+                            height: 45,
+                            color: "#077E86",
+                            background: "transparent",
+                            border: "1px solid #077E86",
+                            borderRadius: 6,
+                          }}
+                          onClick={() =>
+                            saveEditInTableHandler(
+                              numbering,
+                              inputHandle.fee,
+                              inputHandle.settlementFee,
+                              fitur[0],
+                              fitur[1],
+                              paymentMethod.filter((it) => it !== 0),
+                              paymentNameMethod.filter((it) => it !== "Pilih Semua")
+                            )
+                          }
+                        >
+                          Simpan
+                        </button>
+                      </>
+                    )}
+                  </td>
+                  <td style={{ width: "13%"}}></td>
+                  <td className="d-flex justify-content-end align-items-center text-end">
+                    {expanded ? (
+                      <div
+                        className="my-4 text-end"
+                        style={{
+                          // display: "flex",
+                          // justifyContent: "end",
+                          // alignItems: "center",
+                          // padding: "unset",
+                          // width:"100%"
+                        }}
+                      >
+                        <button
+                          style={{
+                            fontFamily: "Exo",
+                            fontSize: 16,
+                            fontWeight: 700,
+                            alignItems: "center",
+                            gap: 8,
+                            // width: "100%",
+                            height: 48,
+                            color: "#077E86",
+                            background: "unset",
+                            border: "unset",
+                          }}
+                          onClick={showCheckboxes}
+                          className="text-end"
+                        >
+                          Sembunyikan tabel skema biaya{" "}
+                          <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        className="my-4 mb-4 text-end"
+                        style={{
+                          // display: "flex",
+                          // justifyContent: "end",
+                          // alignItems: "center",
+                          // padding: "unset",
+                          // width:"100%"
+                        }}
+                      >
+                        <button
+                          style={{
+                            fontFamily: "Exo",
+                            fontSize: 16,
+                            fontWeight: 700,
+                            alignItems: "center",
+                            gap: 8,
+                            // width: "100%",
+                            height: 48,
+                            color: "#077E86",
+                            background: "unset",
+                            border: "unset",
+                          }}
+                          onClick={showCheckboxes}
+                          className="text-end"
+                        >
+                          Lihat tabel skema lainnya{" "}
+                          <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             {expanded && (
               <div className="div-table pb-4" ref={myRef}>
                 <DataTable

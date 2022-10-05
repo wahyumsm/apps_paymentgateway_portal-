@@ -14,8 +14,8 @@ import {
   errorCatch,
   getRole,
   getToken,
-  isNotEnableButton,
   setUserSession,
+  isNotEnableButton
 } from "../../function/helpers";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
@@ -44,7 +44,6 @@ function AddPayment() {
   const [expanded, setExpanded] = useState(false);
 
   const date = new Date();
-  const [dateDefault, setDateDefault] = useState(date)
   const minutes = date.getMinutes();
   const minutesDefault = minutes + 5 >= 60 ? minutes + 5 - 60 : minutes + 5;
   const hour = date.getHours();
@@ -58,15 +57,6 @@ function AddPayment() {
     month: 0,
     year: 0,
   });
-  
-  
-  var timeRun = date.getTime()
-  // console.log(timeRun, "time run");
-  // console.log(dateDefault.getTime() + 300000, "default date");
-  // console.log(dateDefault.getTime(), "default time no");
-  // console.log(date, "ini date");
-  // console.log(minutes, "ini minutes");
-  // console.log(minutesDefault, "minutes default");
 
   const [isNotCompleteData, setNotCompleteData] = useState({
     nominal: false,
@@ -133,13 +123,8 @@ function AddPayment() {
     [setChoosenPaymentCode]
   );
 
-  console.log(choosenPaymentCode, "paymentcode");
-  console.log(choosenPaymentIcon, "paymenticon");
-
   const stringChoosenPayCode =
     choosenPaymentCode.toString() == "" ? "0" : choosenPaymentCode.toString();
-
-  console.log(stringChoosenPayCode, "codee");
 
   function onSaveChoosenPayment() {
     stringChoosenPayCode != ""
@@ -254,8 +239,6 @@ function AddPayment() {
       refId: false
     });
   }
-
-  // console.log(isEnableButton, "isEn");
 
   const goToTop = () => {
     window.scrollTo({
@@ -444,7 +427,7 @@ function AddPayment() {
             </div>
             <div className="position-relative d-flex justify-content-between align-items-center" onClick={showCheckboxes}>
               <input
-                className="input-text-user"
+                className={(isNotEnableButton(inputMinuteHandle, inputHourHandle) === false) ? "input-text-user" : "form-control is-invalid" }
                 placeholder="Silahkan atur waktu"
                 value={
                   convertTimeDigit(inputHourHandle) +
@@ -452,12 +435,14 @@ function AddPayment() {
                   convertTimeDigit(inputMinuteHandle)
                 }
               />
-              <div
-                className="position-absolute right-1"
-                style={{ cursor: "pointer" }}
-              >
-                <img src={time} alt="time" />
-              </div>
+              {(isNotEnableButton(inputMinuteHandle, inputHourHandle) === true) ? "" : <div
+                  className="position-absolute right-1"
+                  style={{ cursor: "pointer" }}
+                >
+                  <img src={time} alt="time" />
+                </div>
+                
+              }
             </div>
             {expanded ? (
               <div

@@ -52,6 +52,8 @@ import noticeIcon from '../assets/icon/notice_icon.svg'
 import Countdown from "react-countdown";
 import Checklist from '../assets/icon/checklist_icon.svg'
 import encryptData from "../function/encryptData";
+import { useCallback } from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -64,6 +66,7 @@ export default (props) => {
   const history = useHistory();
   const userDetail = useSelector((state) => state.userDetailReducer.userDetail);
   const dispatch = useDispatch();
+  const [copied, setCopied] = useState(false);
 
   const markNotificationsAsRead = () => {
     setTimeout(() => {
@@ -140,32 +143,50 @@ export default (props) => {
 
   const toHistoryBalance = () => {
     history.push('/riwayattopup')
-  };  
-
-  const copyHandler = (event) => {
-    setText(event.target.value);
   };
 
-  const copyPrice = async () => {
-    try {
-      var copyText = document.getElementById('pricing').innerHTML.split("<")
-      // await navigator.clipboard.writeText(copyText);
-      await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
-      alert('Text copied');
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const onCopyRek = React.useCallback(() => {
+    setCopied(true);
+  }, [])
 
-  const copyRek = async () => {
-    try {
-      var copyText = document.getElementById('noRek').innerHTML;
-      await navigator.clipboard.writeText(copyText);
-      alert('Text copied');
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const onClickRek = useCallback(({target: {innerText}}) => {
+    // console.log(`Clicked on "${innerText}"!`);
+    alert('Text copied');
+  }, [])
+
+  const onCopyPrice = React.useCallback(() => {
+    setCopied(true);
+  }, [])
+
+  const onClickPrice = useCallback(({target: {innerText}}) => {
+    // console.log(`Clicked on "${innerText}"!`);
+    alert('Text copied');
+  }, [])
+
+  // const copyHandler = (event) => {
+  //   setText(event.target.value);
+  // };
+
+  // const copyPrice = async () => {
+  //   try {
+  //     var copyText = document.getElementById('pricing').innerHTML.split("<")
+  //     // await navigator.clipboard.writeText(copyText);
+  //     await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
+  //     alert('Text copied');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const copyRek = async () => {
+  //   try {
+  //     var copyText = document.getElementById('noRek').innerHTML;
+  //     await navigator.clipboard.writeText(copyText);
+  //     alert('Text copied');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const showCheckboxes = () => {
     if (!expanded) {
@@ -715,19 +736,19 @@ export default (props) => {
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
                       <div style={{padding:"unset"}}>No Rekening</div>
-                      <div onChange={copyHandler} id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{topUpBalance.no_rek}</div>
+                      <div id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{topUpBalance.no_rek}</div>
                     </div>
                     <div className="d-flex flex-column mt-3">
-                      <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                      <CopyToClipboard onCopy={onCopyRek} text={topUpBalance.no_rek}><div onClick={onClickRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div></CopyToClipboard>
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
                       <div style={{padding:"unset"}}>Nominal Transfer</div>
-                      <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(topUpBalance.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(topUpBalance.amount_transfer)}</span></div>
+                      <div id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(topUpBalance.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(topUpBalance.amount_transfer)}</span></div>
                     </div>
                     <div className="d-flex flex-column mt-3">
-                      <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
+                      <CopyToClipboard onCopy={onCopyPrice} text={topUpBalance.amount_transfer}><div onClick={onClickPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div></CopyToClipboard>
                     </div>
                   </div>
                 </Table>                

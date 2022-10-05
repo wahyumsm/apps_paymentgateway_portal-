@@ -9,6 +9,8 @@ import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from 
 import axios from 'axios';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import FilterComponent from '../../components/FilterComponent';
+import { useMemo } from 'react';
 
 function DaftarPartner() {
 
@@ -17,6 +19,23 @@ function DaftarPartner() {
     const user_role = getRole()
     const [listPartner, setListPartner] = useState([])
     const [pending, setPending] = useState(true)
+    const [filterText, setFilterText] = React.useState('');
+    const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
+    const filteredItems = listPartner.filter(
+        item => item.nama_perusahaan && item.nama_perusahaan.toLowerCase().includes(filterText.toLowerCase()),
+    );
+
+    const subHeaderComponentMemo = useMemo(() => {
+        const handleClear = () => {
+            if (filterText) {
+                setResetPaginationToggle(!resetPaginationToggle);
+                setFilterText('');
+            }
+        };
+        return (
+            <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Daftar Partner :" placeholder="Masukkan Nama Partner" />
+        );	}, [filterText, resetPaginationToggle]
+    );
 
     function tambahPartner() {
         // RouteTo("/tambahpartner")
@@ -154,12 +173,16 @@ function DaftarPartner() {
             <div className="div-table">
                 <DataTable
                     columns={columns}
-                    data={listPartner}
+                    data={filteredItems}
                     customStyles={customStyles}
                     pagination
                     highlightOnHover
                     progressPending={pending}
+                    paginationResetDefaultPage={resetPaginationToggle}
                     progressComponent={<CustomLoader />}
+                    subHeader
+                    subHeaderComponent={subHeaderComponentMemo}
+                    persistTableHead
                 />
             </div>
         </div>

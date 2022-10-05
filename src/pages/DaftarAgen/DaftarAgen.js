@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
-import DataTable, { FilterComponent } from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
 import { Col, Row, Button, Form, Image} from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -9,6 +9,8 @@ import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from 
 import axios from 'axios';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import { useMemo } from 'react';
+import FilterComponent from '../../components/FilterComponent';
 
 function DaftarAgen() {
 
@@ -17,6 +19,23 @@ function DaftarAgen() {
   const user_role = getRole()
   const [listAgen, setListAgen] = useState([])
   const [pending, setPending] = useState(true)
+  const [filterText, setFilterText] = React.useState('');
+  const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
+  const filteredItems = listAgen.filter(
+    item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
+  );
+  
+  const subHeaderComponentMemo = useMemo(() => {
+    const handleClear = () => {
+        if (filterText) {
+            setResetPaginationToggle(!resetPaginationToggle);
+            setFilterText('');
+        }
+    };
+    return (
+        <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Nama Agen :" placeholder="Masukkan Nama Agen" />
+    );	}, [filterText, resetPaginationToggle]
+  );
 
   function tambahAgen() {
     // RouteTo("/tambahagen")
@@ -137,26 +156,7 @@ function DaftarAgen() {
       <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
       <div>Loading...</div>
     </div>
-  );
-
-  // const [filterText, setFilterText] = useState('');
-	// const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-  // const filteredItems = listAgen.filter(
-	// 	item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
-	// );
-
-  // const subHeaderComponentMemo = React.useMemo(() => {
-	// 	const handleClear = () => {
-	// 		if (filterText) {
-	// 			setResetPaginationToggle(!resetPaginationToggle);
-	// 			setFilterText('');
-	// 		}
-	// 	};
-
-	// 	return (
-	// 		<FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
-	// 	);
-	// }, [filterText, resetPaginationToggle]);
+  );  
 
   return (
     <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
@@ -170,9 +170,9 @@ function DaftarAgen() {
         </button>
       </div>
       <div className='base-content'>   
-        <div className='search-bar mb-5' style={{ display: 'none' }}>
+        {/* <div className='search-bar mb-5' >
           <Row>
-            <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+            <Col xs={2} style={{  paddingRight: "unset" }}>
               <span className='h5'>
                 Cari Data Agen :
               </span>
@@ -185,20 +185,24 @@ function DaftarAgen() {
                 />
             </Col>
           </Row>
-        </div>
+        </div> */}
         {/* {
           listAgen.length === 0 ?
           <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
           <div className="div-table"> */}
             <DataTable
               columns={columns}
-              data={listAgen}
+              data={filteredItems}
               customStyles={customStyles}
-              noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+              // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
               pagination
               highlightOnHover
+              paginationResetDefaultPage={resetPaginationToggle}
               progressPending={pending}
               progressComponent={<CustomLoader />}
+              subHeader
+              subHeaderComponent={subHeaderComponentMemo}
+              persistTableHead
             />
           {/* </div>
         } */}

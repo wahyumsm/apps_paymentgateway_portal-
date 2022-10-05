@@ -444,70 +444,69 @@ function DetailPartner() {
                                     <td style={{width: 200}}>Settlement Fee <span style={{color: "red"}}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{ width: 200 }}>Fitur <span style={{ color: "red" }}>*</span></td>
+                                    <td>
+                                        {equalFitur === 0 ? (
+                                            <>
+                                                <Row>
+                                                    {dataAtasFitur(atasFitur).map((item) => {
+                                                        return (
+                                                            <Col  key={item.fitur_id} xs={2}>
+                                                                <div className="form-check form-check-inline">
+                                                                    <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled />
+                                                                    <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
+                                                                </div>
+                                                            </Col>
+                                                        )
+                                                    })}
+                                                </Row>
+                                                <Row>                                            
+                                                    {dataBawahFitur(bawahFitur).map((item) => {
+                                                        return (
+                                                            <Col key={item.fitur_id} xs={2}>
+                                                                <div className="form-check form-check-inline">
+                                                                    <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled />
+                                                                    <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
+                                                                </div>
+                                                            </Col>
+                                                        )
+                                                    })}
+                                                </Row>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Row>
+                                                    {dataAtasEqualFitur(equalFitur).map((item) => {
+                                                        return (
+                                                            <Col key={item.fitur_id} xs={2}>
+                                                                <div className="form-check form-check-inline">
+                                                                    <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled/>
+                                                                    <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
+                                                                </div>
+                                                            </Col>
+                                                        )
+                                                    })}                                            
+                                                </Row>
+                                                <Row>
+                                                    {dataBawahEqualFitur(equalFitur).map((item) => {
+                                                        return (
+                                                            <Col  key={item.fitur_id} xs={2}>
+                                                                <div className="form-check form-check-inline">
+                                                                    <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled/>
+                                                                    <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
+                                                                </div>
+                                                            </Col>
+                                                        )
+                                                    })}
+                                                </Row>
+                                            </>
+                                        )}
+                                    </td>
+                                </tr>
                             </tbody>
-                        </table>
-                        <Row className="mt-4">
-                            <Col xs={3} style={{paddingLeft: 20}}>
-                                Fitur <span style={{color: "red"}}>*</span>
-                            </Col>
-                            <Col className="ms-2">
-                                {equalFitur === 0 ? (
-                                    <>
-                                        <Row>
-                                            {dataAtasFitur(atasFitur).map((item) => {
-                                                return (
-                                                    <Col  key={item.fitur_id} xs={2}>
-                                                        <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled />
-                                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
-                                                        </div>
-                                                    </Col>
-                                                )
-                                            })}
-                                        </Row>
-                                        <Row>                                            
-                                            {dataBawahFitur(bawahFitur).map((item) => {
-                                                return (
-                                                    <Col key={item.fitur_id} xs={2}>
-                                                        <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled />
-                                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
-                                                        </div>
-                                                    </Col>
-                                                )
-                                            })}
-                                        </Row>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Row>
-                                            {dataAtasEqualFitur(equalFitur).map((item) => {
-                                                return (
-                                                    <Col key={item.fitur_id} xs={2}>
-                                                        <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled/>
-                                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
-                                                        </div>
-                                                    </Col>
-                                                )
-                                            })}                                            
-                                        </Row>
-                                        <Row>
-                                            {dataBawahEqualFitur(equalFitur).map((item) => {
-                                                return (
-                                                    <Col  key={item.fitur_id} xs={2}>
-                                                        <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" id="inlineCheckbox1" name={item.fitur_name} disabled/>
-                                                            <label className="form-check-label" style={{fontWeight: 400, fontSize: "14px"}} for="inlineCheckbox1">{item.fitur_name}</label>
-                                                        </div>
-                                                    </Col>
-                                                )
-                                            })}
-                                        </Row>
-                                    </>
-                                )}
-                            </Col>
-                        </Row>
+                        </table>                        
                         {expanded ?
                             <div className='my-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
                                 <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
