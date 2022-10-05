@@ -541,7 +541,7 @@ export default (props) => {
                     <Dropdown.Item
                       className="fw-bold"
                     >
-                      <div className="pe-2"><img alt="" src={alokasiIcon} /> Alokasi Salso</div>
+                      <div className="pe-2"><img alt="" src={alokasiIcon} /> Alokasi Saldo</div>
                     </Dropdown.Item>
                   </div>
                 </Dropdown.Menu>
