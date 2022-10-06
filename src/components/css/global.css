@@ -705,6 +705,28 @@ width: 150px;
     max-width: 400px !important;
 }
 
+/* Alokasi saldo */
+.alokasi-saldo .form-check-input {
+    background-color: #FFFFFF;
+}
+
+/* .alokasi-saldo .form-check-input:checked[type="checkbox"] {
+    background-image: url("../../assets/icon/checklist_white.png");
+} */
+
+.alokasi-saldo .form-check-input:checked {
+    /* background: linear-gradient(180deg, #077E86 0%, #80D8DE 100%); */
+    background-color: #077E86;
+    border-color: #262B40;
+}
+
+/* Tooltip navbar */
+
+.tooltip-inner {
+    min-width: 255px;
+    text-align: left;
+}
+
 .hoverActive:hover {
     background: "#3DB54A" !important;
     color: "#FFFFFF" !important;

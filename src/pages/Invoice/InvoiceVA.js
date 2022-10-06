@@ -20,11 +20,9 @@ function InvoiceVA() {
 
     function pickDateSettlement(item) {
         setStateSettlement(item)
-        // console.log(item, 'ini item');
         if (item !== null) {
             item = item.map(el => el.toLocaleDateString('en-CA'))
             setDateRangeSettlement(item)
-            // console.log(item, 'ini item2');
         }
     }
 
@@ -32,13 +30,11 @@ function InvoiceVA() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}"}`);
-            console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
-            console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoice(invoiceData.data.response_data)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
@@ -46,7 +42,7 @@ function InvoiceVA() {
                 setDataInvoice(invoiceData.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
             if (error.response.status === 400 && error.response.data.response_code === 400 && error.response.data.response_message === "Data not found!") {
                 setErrorMessage(error.response.data.response_message)
@@ -60,7 +56,7 @@ function InvoiceVA() {
         let doc = new jsPDF("l", "pt", "a4");
         doc.html(document.querySelector(table), {
             callback: function (pdf) {
-                pdf.save(`invoice ${dateRange[0]} - ${dateRange[1]}.pdf`);
+                pdf.save(`invoice settlement va ${dateRange[0]} - ${dateRange[1]}.pdf`);
             },
         })
     }
@@ -106,7 +102,7 @@ function InvoiceVA() {
                         </Row>
                         <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
                             <table className='table table-bordered mt-2' id='tableInvoice' style={{ width: "87%" }}>
-                                <thead style={{ backgroundColor: "#F2F2F2" }}>
+                                <thead style={{ backgroundColor: "#F2F2F2", border: "transparent" }}>
                                     <tr>
                                         <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
                                             No
@@ -161,9 +157,9 @@ function InvoiceVA() {
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{  }}></td>
+                                        {/* <br />
                                         <br />
-                                        <br />
-                                        <br />
+                                        <br /> */}
                                         <br />
                                         <br />
                                         <br />

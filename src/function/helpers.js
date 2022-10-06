@@ -1,4 +1,5 @@
-export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2";
+export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
+// export const BaseURL = "https://apid.ezeelink.co.id/snap/api2"
 // export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
 
 export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms=";
@@ -118,7 +119,6 @@ export function isNotEnableButton(minutes, hour) {
   user.setHours(value_user[0], value_user[1], value_user[2], 0);
 
   const diff = Math.abs(now - user);
-  console.log(diff);
   if (diff < 300000 && diff > 0) {
     return true;
   } else {

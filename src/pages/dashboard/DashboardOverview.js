@@ -342,63 +342,38 @@ export default () => {
           'Authorization': auth
       }
       const ringkasanData = await axios.post(BaseURL + "/Home/GetSummaryTransaction", {data: ""}, { headers: headers });
-      // console.log(ringkasanData, 'ini ringkasandata');
-      if (
-        ringkasanData.status === 200 &&
-        ringkasanData.data.response_code === 200 &&
-        ringkasanData.data.response_new_token.length === 0
-      ) {
-        setSettlementTransaction(ringkasanData.data.response_data);
-      } else if (
-        ringkasanData.status === 200 &&
-        ringkasanData.data.response_code === 200 &&
-        ringkasanData.data.response_new_token.length !== 0
-      ) {
-        setUserSession(ringkasanData.data.response_new_token);
-        setSettlementTransaction(ringkasanData.data.response_data);
+      if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200 && ringkasanData.data.response_new_token.length === 0) {
+        setSettlementTransaction(ringkasanData.data.response_data)
+      } else if (ringkasanData.status === 200 && ringkasanData.data.response_code === 200 && ringkasanData.data.response_new_token.length !== 0) {
+        setUserSession(ringkasanData.data.response_new_token)
+        setSettlementTransaction(ringkasanData.data.response_data)
       }
     } catch (error) {
-      console.log(error);
-      history.push(errorCatch(error.response.status));
+      // console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
   async function partnerChartHandler(query) {
     try {
-      setPendingPartner(true);
-      const auth = "Bearer " + getToken();
-      const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`);
-      // console.log(dataParams, 'ini data params cart');
+      setPendingPartner(true)
+      const auth = 'Bearer ' + getToken();
+      const dataParams = encryptData(`{"partner_id":[${query}], "dateID": 4}`)
       const headers = {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
       const partnerChart = await axios.post(BaseURL + "/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
-      // console.log(partnerChart, 'partner chart');
-      if (
-        partnerChart.status === 200 &&
-        partnerChart.data.response_code === 200 &&
-        partnerChart.data.response_new_token.length === 0
-      ) {
-        setPartnerChartData([
-          { amount: 0, date: "" },
-          ...partnerChart.data.response_data,
-        ]);
-        setPendingPartner(false);
-      } else if (
-        partnerChart.status === 200 &&
-        partnerChart.data.response_code === 200 &&
-        partnerChart.data.response_new_token.length !== 0
-      ) {
-        setUserSession(partnerChart.data.response_new_token);
-        setPartnerChartData([
-          { amount: 0, date: "" },
-          ...partnerChart.data.response_data,
-        ]);
-        setPendingPartner(false);
-      }
+      if (partnerChart.status === 200 && partnerChart.data.response_code === 200 && partnerChart.data.response_new_token.length === 0) {
+        setPartnerChartData([{amount: 0, date: ""}, ...partnerChart.data.response_data])
+        setPendingPartner(false)
+      } else if (partnerChart.status === 200 && partnerChart.data.response_code === 200 && partnerChart.data.response_new_token.length !== 0) {
+        setUserSession(partnerChart.data.response_new_token)
+        setPartnerChartData([{amount: 0, date: ""}, ...partnerChart.data.response_data])
+        setPendingPartner(false)
+      } 
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -410,13 +385,11 @@ export default () => {
       setPendingPartner(true)
       const auth = 'Bearer ' + getToken();
       const dataParams = encryptData(`{"partner_id":["${partnerId}"], "dateID": ${dateId}, "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}"}`)
-      // console.log(dataParams, 'ini data params cart filter');
       const headers = {
           'Content-Type': 'application/json',
           'Authorization': auth
       }
       const filterPartnerChart = await axios.post(BaseURL + "/Home/GetSettlementPartnerChart", {data: dataParams}, { headers: headers });
-      // console.log(filterPartnerChart, 'partner chart handler filter');
       if (filterPartnerChart.status === 200 && filterPartnerChart.data.response_code === 200 && filterPartnerChart.data.response_new_token.length === 0) {
         setPartnerChartData([{amount: 0, date: ""}, ...filterPartnerChart.data.response_data])
         setPendingPartner(false)
@@ -426,8 +399,8 @@ export default () => {
         setPendingPartner(false)
       }
     } catch (error) {
-      console.log(error);
-      history.push(errorCatch(error.response.status));
+      // console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -441,32 +414,17 @@ export default () => {
           'Authorization': auth
       }
       const feePartnerChart = await axios.post(BaseURL + "/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
-      // console.log(feePartnerChart.data.response_data, 'partner chart');
-      if (
-        feePartnerChart.status === 200 &&
-        feePartnerChart.data.response_code === 200 &&
-        feePartnerChart.data.response_new_token.length === 0
-      ) {
-        setFeePartnerChartData([
-          { amount: 0, date: "" },
-          ...feePartnerChart.data.response_data,
-        ]);
-        setPendingFee(false);
-      } else if (
-        feePartnerChart.status === 200 &&
-        feePartnerChart.data.response_code === 200 &&
-        feePartnerChart.data.response_new_token.length !== 0
-      ) {
-        setUserSession(feePartnerChart.data.response_new_token);
-        setFeePartnerChartData([
-          { amount: 0, date: "" },
-          ...feePartnerChart.data.response_data,
-        ]);
-        setPendingFee(false);
+      if (feePartnerChart.status === 200 && feePartnerChart.data.response_code === 200 && feePartnerChart.data.response_new_token.length === 0) {
+        setFeePartnerChartData([{amount: 0, date: ""}, ...feePartnerChart.data.response_data])
+        setPendingFee(false)
+      } else if (feePartnerChart.status === 200 && feePartnerChart.data.response_code === 200 && feePartnerChart.data.response_new_token.length !== 0) {
+        setUserSession(feePartnerChart.data.response_new_token)
+        setFeePartnerChartData([{amount: 0, date: ""}, ...feePartnerChart.data.response_data])
+        setPendingFee(false)
       }
     } catch (error) {
-      console.log(error);
-      history.push(errorCatch(error.response.status));
+      // console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -483,32 +441,17 @@ export default () => {
         'Authorization': auth
       }
       const filterFeePartnerChart = await axios.post(BaseURL + "/Home/GetFeePartnerChart", {data: dataParams}, { headers: headers });
-      // console.log(filterFeePartnerChart, 'fee partner handler');
-      if (
-        filterFeePartnerChart.status === 200 &&
-        filterFeePartnerChart.data.response_code === 200 &&
-        filterFeePartnerChart.data.response_new_token.length === 0
-      ) {
-        setFeePartnerChartData([
-          { amount: 0, date: "" },
-          ...filterFeePartnerChart.data.response_data,
-        ]);
-        setPendingFee(false);
-      } else if (
-        filterFeePartnerChart.status === 200 &&
-        filterFeePartnerChart.data.response_code === 200 &&
-        filterFeePartnerChart.data.response_new_token.length !== 0
-      ) {
-        setUserSession(filterFeePartnerChart.data.response_new_token);
-        setFeePartnerChartData([
-          { amount: 0, date: "" },
-          ...filterFeePartnerChart.data.response_data,
-        ]);
-        setPendingFee(false);
+      if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length === 0) {
+        setFeePartnerChartData([{amount: 0, date: ""}, ...filterFeePartnerChart.data.response_data])
+        setPendingFee(false)
+      } else if (filterFeePartnerChart.status === 200 && filterFeePartnerChart.data.response_code === 200 && filterFeePartnerChart.data.response_new_token.length !== 0) {
+        setUserSession(filterFeePartnerChart.data.response_new_token)
+        setFeePartnerChartData([{amount: 0, date: ""}, ...filterFeePartnerChart.data.response_data])
+        setPendingFee(false)
       }
     } catch (error) {
-      console.log(error);
-      history.push(errorCatch(error.response.status));
+      // console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -522,32 +465,17 @@ export default () => {
           'Authorization': auth
       }
       const feeVaChartData = await axios.post(BaseURL + "/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
-      // console.log(feeVaChartData.data.response_data, 'partner chart');
-      if (
-        feeVaChartData.status === 200 &&
-        feeVaChartData.data.response_code === 200 &&
-        feeVaChartData.data.response_new_token.length === 0
-      ) {
-        setFeeVaChartData([
-          { amount: 0, date: "" },
-          ...feeVaChartData.data.response_data,
-        ]);
-        setPendingVa(false);
-      } else if (
-        feeVaChartData.status === 200 &&
-        feeVaChartData.data.response_code === 200 &&
-        feeVaChartData.data.response_new_token.length !== 0
-      ) {
-        setUserSession(feeVaChartData.data.response_new_token);
-        setFeeVaChartData([
-          { amount: 0, date: "" },
-          ...feeVaChartData.data.response_data,
-        ]);
-        setPendingVa(false);
-      }
+      if (feeVaChartData.status === 200 && feeVaChartData.data.response_code === 200 && feeVaChartData.data.response_new_token.length === 0) {
+        setFeeVaChartData([{amount: 0, date: ""}, ...feeVaChartData.data.response_data])
+        setPendingVa(false)
+      } else if (feeVaChartData.status === 200 && feeVaChartData.data.response_code === 200 && feeVaChartData.data.response_new_token.length !== 0) {
+        setUserSession(feeVaChartData.data.response_new_token)
+        setFeeVaChartData([{amount: 0, date: ""}, ...feeVaChartData.data.response_data])
+        setPendingVa(false)
+      } 
     } catch (error) {
-      console.log(error);
-      history.push(errorCatch(error.response.status));
+      // console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -563,32 +491,17 @@ export default () => {
         'Authorization': auth
       }
       const filterVaPartnerChart = await axios.post(BaseURL + "/Home/GetFeeVAChart", {data: dataParams}, { headers: headers });
-      // console.log(filterVaPartnerChart, 'fee partner handler');
-      if (
-        filterVaPartnerChart.status === 200 &&
-        filterVaPartnerChart.data.response_code === 200 &&
-        filterVaPartnerChart.data.response_new_token.length === 0
-      ) {
-        setFeeVaChartData([
-          { amount: 0, date: "" },
-          ...filterVaPartnerChart.data.response_data,
-        ]);
-        setPendingVa(false);
-      } else if (
-        filterVaPartnerChart.status === 200 &&
-        filterVaPartnerChart.data.response_code === 200 &&
-        filterVaPartnerChart.data.response_new_token.length !== 0
-      ) {
-        setUserSession(filterVaPartnerChart.data.response_new_token);
-        setFeeVaChartData([
-          { amount: 0, date: "" },
-          ...filterVaPartnerChart.data.response_data,
-        ]);
-        setPendingVa(false);
-      }
+      if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length === 0) {
+        setFeeVaChartData([{amount: 0, date: ""}, ...filterVaPartnerChart.data.response_data])
+        setPendingVa(false)
+      } else if (filterVaPartnerChart.status === 200 && filterVaPartnerChart.data.response_code === 200 && filterVaPartnerChart.data.response_new_token.length !== 0) {
+        setUserSession(filterVaPartnerChart.data.response_new_token)
+        setFeeVaChartData([{amount: 0, date: ""}, ...filterVaPartnerChart.data.response_data])
+        setPendingVa(false)
+      } 
     } catch (error) {
-      console.log(error);
-      history.push(errorCatch(error.response.status));
+      // console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -762,15 +675,7 @@ export default () => {
     paylinkChartHandler(queryPaylink);
   }, [access_token, user_role]);
 
-  // console.log(inputHandle.partnerId);
-  // console.log(listPartner, "list partner value");
-  // console.log(isSelected, "ini select");
-  // console.log(queryPartner, "ini query partner");
-  // console.log(queryBiaya, "ini query biaya");
-  // console.log(settlementTransaction, "sett");
-  // console.log(inputHandle.periodeFeeChart, "fee chart input");
-
-  if (!access_token) {
+  if(!access_token) {
     return (
       <div className="py-4 mt-6 content-page">
         <div className="head-title">
@@ -1027,7 +932,7 @@ export default () => {
                   <Col xs={3}>
                     <span>Pilih Periode</span>
                     <Form.Select name='periodeFeeChart' value={inputHandle.periodeFeeChart} onChange={(e) => handleChangeFeePartner(e)}>
-                        <option defaultChecked disabled value={0}>Pilih Periode</option>
+                        <option defaultChecked disabled value={0} >Pilih Periode</option>
                         {periodik.map((times, idx) => {
                           return (
                             <option key={idx} value={times.value}>{times.time}</option>

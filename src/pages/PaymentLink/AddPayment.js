@@ -247,7 +247,6 @@ function AddPayment() {
     });
     var a = date.getMinutes()
     var b = date.getHours()
-    console.log(a, "mmmm");
     setNotCompleteData({
       nominal: inputHandle.nominal == null,
       refId: inputHandle.refId == ""

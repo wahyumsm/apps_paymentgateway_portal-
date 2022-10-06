@@ -301,10 +301,8 @@ function TambahPartner() {
   ) {
     let sameFlag = 0
     payment.forEach((val) => {
-      console.log(val.fitur_id);
       if (val.fitur_id === fiturId) {
         val.mpaytype_id.forEach(item => {
-          console.log(item, "item");
           typeId.forEach(item2 => {
             if (item === item2) {
               sameFlag++
@@ -513,10 +511,7 @@ function TambahPartner() {
       dataTypeMethod.push(listTypeMethod[i]);
     }
     return dataTypeMethod;
-  }  
-
-  console.log(payment.length, "ini payment length");
-  console.log(payment, "ini payment");
+  }
 
   async function tambahPartner(
     namaPerusahaan,

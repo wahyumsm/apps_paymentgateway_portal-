@@ -72,8 +72,6 @@ function EditPartner() {
     fiturs: 0,
   });
 
-  console.log(payment, "payment");
-
   const showCheckboxes = () => {
     if (!expanded) {
       setExpanded(true);
@@ -1729,8 +1727,8 @@ function EditPartner() {
                       </>
                     )}
                   </td>
-                  <td style={{ width: "13%"}}></td>
-                  <td className="d-flex justify-content-end align-items-center text-end">
+                  {/* <td style={{ width: "13%"}}></td> */}
+                  <td className="d-flex justify-content-end align-items-center text-end ms-5">
                     {expanded ? (
                       <div
                         className="my-4 text-end"

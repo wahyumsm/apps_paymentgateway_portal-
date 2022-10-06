@@ -33,7 +33,7 @@ export default ({ location }) => {
       const validated = await axios.post(BaseURL + "/Account/ValidateResetPassword", { data: dataParams }, { headers: headers })
       // console.log(validated, "ini validated");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -87,7 +87,7 @@ export default ({ location }) => {
           // console.log(resetPassword, "ini resetPassword");
         }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 

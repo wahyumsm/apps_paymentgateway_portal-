@@ -70,7 +70,7 @@ function RiwayatTopUp() {
             await navigator.clipboard.writeText(copyText[0]+copyText[1].slice(-3));
             alert('Text copied');
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     };
     
@@ -80,7 +80,7 @@ function RiwayatTopUp() {
             await navigator.clipboard.writeText(copyText);
             alert('Text copied');
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     };
 
@@ -99,33 +99,24 @@ function RiwayatTopUp() {
                 setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
 
     async function listRiwayatTopUp (statusId, transaksiId, dateId, dateRange, currentPage, namaPartner, isFilter) {
         try {
-            // console.log(statusId, 'ini status id');
-            // console.log(transaksiId, 'ini transaksi id');
-            // console.log(dateId, 'ini date id');
-            // console.log(dateRange, 'ini date range');
-            // console.log(currentPage, 'ini current page');
-            // setActivePageRiwayatTopUp(currentPage)
-            console.log(isFilter, 'ini is filter');
             setPendingTopup(true)
             setIsFilterTopUp(isFilter)
             setActivePageRiwayatTopUp(currentPage)
             if (user_role === "102") {
                 const auth = "Bearer " + getToken()
                 const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
-                // console.log(dataParams, 'ini params');
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
                 }
                 const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
-                console.log(listRiwayat, 'ini data user ');
                 if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                     listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                     setPageNumberRiwayatTopUp(listRiwayat.data.response_data)
@@ -141,13 +132,11 @@ function RiwayatTopUp() {
             } else {
                 const auth = "Bearer " + getToken()
                 const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "sub_partner_id": "${(namaPartner !== undefined) ? namaPartner : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
-                // console.log(dataParams, 'ini params');
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
                 }
                 const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
-                console.log(listRiwayat, 'ini data user ');
                 if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                     listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                     setPageNumberRiwayatTopUp(listRiwayat.data.response_data)
@@ -163,7 +152,7 @@ function RiwayatTopUp() {
             }
             
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -196,29 +185,24 @@ function RiwayatTopUp() {
                 ...inputHandle,
                 [e.target.name] : e.target.value
             })
-            // console.log(inputHandle.periodeRiwayatTopUp, 'ini periode handle');
         }
     }
 
     function handlePageChangeTopUp(page) {
-        // console.log(page, 'ini page');
         setActivePageRiwayatTopUp(page)
         listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, inputHandle.namaPartnerRiwayatTopUp, isFilterTopUp)
     }
 
     function resetButtonHandle() {
-        // console.log('reset button handle');
         setInputHandle({
             ...inputHandle,
             idTransaksiRiwayatTopUp: "",
             statusRiwayatTopUp: [],
             periodeRiwayatTopUp: 0,
         })
-        // console.log(inputHandle, 'ini periode');
         setStateRiwayatTopup(null)
         setDateRangeRiwayatTopUp([])
         setShowDateRiwayatTopUp("none")
-        // console.log('reset button handle2');
     }
 
     async function detailTopUpHandler(idTransaksi) {
@@ -230,7 +214,6 @@ function RiwayatTopUp() {
               'Authorization': auth,
             };
             const detailTopUp = await axios.post(BaseURL + "/Partner/HistoryTopUpPartnerDetail", { data: dataParams }, { headers: headers })
-            console.log(detailTopUp, 'ini topup balance ya');
             if(detailTopUp.status === 200 && detailTopUp.data.response_code === 200 && detailTopUp.data.response_new_token.length === 0) {
               setDetailTopUp(detailTopUp.data.response_data)
               const timeStamps = new Date(detailTopUp.data.response_data.exp_date*1000).toLocaleString()
@@ -244,11 +227,8 @@ function RiwayatTopUp() {
               setShowModalKonfirmasiTopUp(true)
             }
           } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
-            // if (error.response.status === 401) {
-            //     history.push('/login')
-            // }
         }
     }
 
@@ -260,7 +240,6 @@ function RiwayatTopUp() {
                 'Authorization' : auth
             }
             const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
-            // console.log(topUp, 'ini topup');
             if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
                 setTopUpResult(topUpResult.data.response_data)
                 setShowModalKonfirmasiTopUp(false)
@@ -274,7 +253,7 @@ function RiwayatTopUp() {
                 window.location.reload()
             }
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 history.push(errorCatch(error.response.status))
             }
     }
@@ -437,7 +416,6 @@ function RiwayatTopUp() {
                         'Authorization': auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportFilter, 'ini data filter topup partner');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
@@ -461,7 +439,7 @@ function RiwayatTopUp() {
                         XLSX.writeFile(workBook, "Riwayat Top Up Report.xlsx");
                     }
                 } catch (error) {
-                    console.log(error)
+                    // console.log(error)
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -476,7 +454,6 @@ function RiwayatTopUp() {
                         'Authorization': auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportFilter, 'ini data filter topup admin');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
@@ -500,7 +477,7 @@ function RiwayatTopUp() {
                         XLSX.writeFile(workBook, "Riwayat Top Up Report.xlsx");
                     }
                 } catch (error) {
-                    console.log(error)
+                    // console.log(error)
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -515,7 +492,6 @@ function RiwayatTopUp() {
                         'Authorization': auth
                     }
                     const dataExportTopUp = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportTopUp, 'ini data top up partner export');
                     if (dataExportTopUp.status === 200 && dataExportTopUp.data.response_code === 200 && dataExportTopUp.data.response_new_token === null) {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
@@ -539,7 +515,7 @@ function RiwayatTopUp() {
                         XLSX.writeFile(workBook, "Riwayat Top Up Report.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -554,7 +530,6 @@ function RiwayatTopUp() {
                         'Authorization': auth
                     }
                     const dataExportTopUp = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
-                    console.log(dataExportTopUp, 'ini data top up admin export');
                     if (dataExportTopUp.status === 200 && dataExportTopUp.data.response_code === 200 && dataExportTopUp.data.response_new_token.length === 0) {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
@@ -578,7 +553,7 @@ function RiwayatTopUp() {
                         XLSX.writeFile(workBook, "Riwayat Top Up Report.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -834,7 +809,7 @@ function RiwayatTopUp() {
             </div>
             {topUpResult.is_update === true &&
                 <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
-                    <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
+                    <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={true} className="text-center" position="bottom-center" delay={3000} autohide>
                     <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Top Up Saldo {convertToRupiah(inputHandle.amounts)} Berhasil</Toast.Body>
                     </Toast>
                 </div>

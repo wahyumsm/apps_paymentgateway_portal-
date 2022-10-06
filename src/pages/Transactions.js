@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCheck, faCog, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Col, Row, Form, Modal, Button, Table, ButtonGroup, Breadcrumb, InputGroup, Dropdown, Container, Image } from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
-// import { Chart } from 'react-chartjs-2';
-// import { invoiceItems } from '../data/tables';
 import DataTable from 'react-data-table-component';
 // import { TransactionsTable } from "../components/Tables";
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from "../function/helpers";
@@ -27,7 +23,6 @@ import Pagination from "react-js-pagination";
 export default () => {
 
   const history = useHistory();
-  const dispatch = useDispatch()
   const access_token = getToken();
   const user_role = getRole()
   const [partnerId, setPartnerId] = useState("")
@@ -41,6 +36,7 @@ export default () => {
   const [dateRangeDanaMasuk, setDateRangeDanaMasuk] = useState([])
   const [dateRangeSettlement, setDateRangeSettlement] = useState([])
   const [showDateDanaMasuk, setShowDateDanaMasuk] = useState("none")
+  const [showDateSettlement, setShowDateSettlement] = useState("none")
   const [inputHandle, setInputHandle] = useState({
     idTransaksiDanaMasuk: "",
     idTransaksiSettlement: "",
@@ -49,7 +45,8 @@ export default () => {
     statusSettlement: "",
     fiturSettlement: 0,
     fiturDanaMasuk: 0,
-    periodeDanaMasuk: 0
+    periodeDanaMasuk: 0,
+    periodeSettlement: 0
   })
   const [pendingTransfer, setPendingTransfer] = useState(true)
   const [pendingSettlement, setPendingSettlement] = useState(true)
@@ -93,6 +90,22 @@ export default () => {
     }
   }
 
+  function handleChangePeriodeSettlement(e) {
+    if (e.target.value === "7") {
+        setShowDateSettlement("")
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    } else {
+        setShowDateSettlement("none")
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    }
+  }
+
   function pickDateSettlement(item) {
     setStateSettlement(item)
     if (item !== null) {
@@ -127,13 +140,13 @@ export default () => {
     try {
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"partner_id":"${partnerId}"}`)
-      console.log(dataParams, 'ini data params list agen');
+      // console.log(dataParams, 'ini data params list agen');
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", { data: dataParams }, { headers: headers })
-      console.log(listAgen, 'ini list agen');
+      // console.log(listAgen, 'ini list agen');
       if (listAgen.status === 200 && listAgen.data.response_code == 200 && listAgen.data.response_new_token.length === 0) {
         setListAgen(listAgen.data.response_data)
       } else if (listAgen.status === 200 && listAgen.data.response_code == 200 && listAgen.data.response_new_token.length !== 0) {
@@ -142,6 +155,7 @@ export default () => {
       }
     } catch (error) {
       console.log(error);
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -153,7 +167,7 @@ export default () => {
           'Authorization' : auth
       }
       const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
-      console.log(userDetail, 'ini user detal funct');
+      // console.log(userDetail, 'ini user detal funct');
       if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
         setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
         getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1)
@@ -166,6 +180,7 @@ export default () => {
       }
   } catch (error) {
       console.log(error);
+      history.push(errorCatch(error.response.status))
     }
   }
   
@@ -178,7 +193,7 @@ export default () => {
         'Authorization' : auth
       }
       const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
-      console.log(listTransferDana, 'ini list transfer dana');
+      // console.log(listTransferDana, 'ini list');
       if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token === null) {
         listTransferDana.data.response_data.results.list = listTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
         setPageNumberDanaMasuk(listTransferDana.data.response_data)
@@ -194,8 +209,7 @@ export default () => {
         setPendingTransfer(false)
       }
     } catch (error) {
-      console.log(error)
-      // RouteTo(errorCatch(error.response.status))
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -275,7 +289,6 @@ export default () => {
         'Authorization' : auth
       }
       const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
-      // console.log(dataSettlement, "ini data settlement");
       if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
         dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(dataSettlement.data.response_data)
@@ -287,9 +300,8 @@ export default () => {
         setPendingSettlement(false)
       }
     } catch (error) {
-      console.log(error)
-      // RouteTo(errorCatch(error.response.status))
-      // history.push(errorCatch(error.response.status))
+      // console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
@@ -302,7 +314,6 @@ export default () => {
         'Authorization' : auth
       }
       const dataChartTransfer = await axios.post(BaseURL + "/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
-      // console.log(dataChartTransfer, 'ini data chart transfer ');
       if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length === 0) {
         dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setDataChartTransfer(dataChartTransfer.data.response_data)
@@ -312,33 +323,25 @@ export default () => {
         setDataChartTransfer(dataChartTransfer.data.response_data)
       }
     } catch (error) {
-      console.log(error)
-      // history.push(errorCatch(error.response.status))
+      // console.log(error)
+      history.push(errorCatch(error.response.status))
     }
   }
 
-//   var chart    = document.getElementById('chart').getContext('2d'),
-//     gradient = chart.createLinearGradient(0, 0, 0, 450);
-
-// gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)');
-// gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
-// gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
-
   async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, fiturDanaMasuk) {
     try {
-      console.log(idTransaksi, 'ini id trans');
       setPendingSettlement(true)
       setIsFilterDanaMasuk(true)
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "fitur_id": ${fiturDanaMasuk}}`)
       // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
-      console.log(dataParams, "ini data params dana masuk filter");
+      // console.log(dataParams, "ini data params dana masuk filter");
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const filterTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
-      console.log(filterTransferDana, "ini data filter transfer dana");
+      // console.log(filterTransferDana, "ini data filter transfer dana");
       if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token === null) {
         filterTransferDana.data.response_data.results.list = filterTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
         setPageNumberDanaMasuk(filterTransferDana.data.response_data)
@@ -354,8 +357,7 @@ export default () => {
         setPendingSettlement(false)
       }
     } catch (error) {
-      console.log(error)
-      // RouteTo(errorCatch(error.response.status))
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -370,7 +372,6 @@ export default () => {
         'Authorization' : auth
       }
       const filterSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
-      // console.log(filterSettlement, "ini data filter settlement");
       if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
         filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(filterSettlement.data.response_data)
@@ -380,8 +381,7 @@ export default () => {
         setListSettlement(filterSettlement.data.response_data)
       }
     } catch (error) {
-      console.log(error)
-      // RouteTo(errorCatch(error.response.status))
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -421,16 +421,12 @@ export default () => {
 
   useEffect(() => {
     if (!access_token) {
-      // RouteTo("/login")
       history.push('/login');
     }
     userDetails()
     getSettlement(oneMonthAgo, currentDate)
     getSettlementChart(oneMonthAgo, currentDate)
-  }, [access_token, ])
-
-  // console.log(userDetail, 'user detail');
-  // console.log(pageNumberDanaMasuk, 'page number');
+  }, [access_token])
 
   async function detailListTransferHandler(trxId) {
     try {
@@ -441,7 +437,6 @@ export default () => {
         'Authorization' : auth
       }
       const detailTransaksi = await axios.post(BaseURL + "/Report/GetTransferReportDetail", { data: dataParams }, { headers: headers })
-      console.log(detailTransaksi, "ini detail transaksi");
       if (detailTransaksi.status === 200 && detailTransaksi.data.response_code === 200 && detailTransaksi.data.response_new_token.length === 0) {
         setDetailTransferDana(detailTransaksi.data.response_data)
         setShowModalDetailTransferDana(true)
@@ -451,8 +446,7 @@ export default () => {
         setShowModalDetailTransferDana(true)
       }
     } catch (error) {
-      console.log(error)
-      // RouteTo(errorCatch(error.response.status))
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
@@ -467,17 +461,14 @@ export default () => {
         name: 'ID Transaksi',
         selector: row => row.id,
         cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
-        // sortable: true
     },
     {
         name: 'Waktu',
         selector: row => row.created_at,
-        // sortable: true
     },
     {
         name: 'Nama Agen',
         selector: row => row.name,
-        // sortable: true
     },
     {
       name: 'Jenis Transaksi',
@@ -487,7 +478,6 @@ export default () => {
     {
         name: 'Total Akhir',
         selector: row => row.amount,
-        // sortable: true,
         cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
         style: { display: "flex", flexDirection: "row", justifyContent: "center", }
     },
@@ -495,7 +485,6 @@ export default () => {
         name: 'Status',
         selector: row => row.status,
         width: "150px",
-        // sortable: true,
         style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
         conditionalCellStyles: [
           {
@@ -516,19 +505,6 @@ export default () => {
           }
         ],
     },
-    // {
-    //   name: 'Action',
-    //   width: "230px",
-    // //   cell:(row) => 
-    // //     <>
-    // //     <img alt="" src={DeleteIcon} onClick={() => openDeleteModal(row.partner_id)}/>&nbsp;&nbsp;&nbsp;&nbsp;
-    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, true)}>Ubah</span>&nbsp;&nbsp;&nbsp;&nbsp;
-    // //     <span style={{color: '#DB1F26', fontWeight: 'bold', cursor: 'pointer'}} onClick={() => navigateDetailPartner(row.partner_id, false)}>Detail</span>
-    // //     </>,
-    //   ignoreRowClick: true,
-    //   allowOverflow: true,
-    //   button: true
-    // }
   ];
 
   const columnsSettlement = [
@@ -541,12 +517,10 @@ export default () => {
         name: 'ID Transaksi',
         selector: row => row.tvasettl_code,
         width: "251px"
-        // sortable: true
     },
     {
         name: 'Waktu',
         selector: row => row.tvasettl_crtdt,
-        // sortable: true
     },
     {
       name: 'Jenis Transaksi',
@@ -556,14 +530,12 @@ export default () => {
     {
         name: 'Jumlah',
         selector: row => row.tvasettl_amount,
-        // sortable: true,
         cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>
     },
     {
         name: 'Status',
         selector: row => row.mstatus_name,
         width: "127px",
-        // sortable: true,
         style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: 6, margin: "6px 16px", width: "50%", borderRadius: 4 },
         conditionalCellStyles: [
           {
@@ -597,21 +569,107 @@ export default () => {
       },
   };
 
-  function exportReportTransferDanaMasukHandler(data) {
-    let dataExcel = []
-    for (let i = 0; i < data.length; i++) {
-      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, Waktu: data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+  function exportReportTransferDanaMasukHandler(isFilter, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, fiturDanaMasuk) {
+    if (isFilter) {
+      async function exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, fiturDanaMasuk) {
+        try {
+          const auth = "Bearer " + getToken()
+          const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": 1, "row_per_page": 1000000, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "fitur_id": ${fiturDanaMasuk}}`)
+          // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
+          // console.log(dataParams, "ini data params dana masuk filter");
+          const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+          }
+          const dataExportFilter = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+          // console.log(dataExportFilter, "ini data filter transfer dana");
+          if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
+            const data = dataExportFilter.data.response_data.results.list
+            let dataExcel = []
+            for (let i = 0; i < data.length; i++) {
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");
+          } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token !== null) {
+            setUserSession(dataExportFilter.data.response_new_token)
+            const data = dataExportFilter.data.response_data.results.list
+            let dataExcel = []
+            for (let i = 0; i < data.length; i++) {
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");            
+          }
+        } catch (error) {
+          // console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+      }
+      exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, fiturDanaMasuk)
+    } else {
+      async function exportGetListTransferDana(partnerId) {
+        try {
+          const auth = "Bearer " + getToken()
+          const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "page": 1, "row_per_page": 1000000, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "fitur_id": 0}`)
+          const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+          }
+          const dataExportDefault = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+          // console.log(dataExportDefault, 'ini list');
+          if (dataExportDefault.status === 200 && dataExportDefault.data.response_code === 200 && dataExportDefault.data.response_new_token === null) {
+            const data = dataExportDefault.data.response_data.results.list
+            let dataExcel = []
+            for (let i = 0; i < data.length; i++) {
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");            
+            
+          } else if (dataExportDefault.status === 200 && dataExportDefault.data.response_code === 200 && dataExportDefault.data.response_new_token !== null) {
+            setUserSession(dataExportDefault.data.response_new_token)
+            const data = dataExportDefault.data.response_data.results.list
+            let dataExcel = []
+            for (let i = 0; i < data.length; i++) {
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");
+            
+          }
+        } catch (error) {
+          // console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+      }
+      exportGetListTransferDana(partnerId)
     }
-    let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-    let workBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-    XLSX.writeFile(workBook, "Report Transfer Dana Masuk.xlsx");
-  }
+  } 
+
+  // function exportReportTransferDanaMasukHandler(data) {
+  //   let dataExcel = []
+  //   for (let i = 0; i < data.length; i++) {
+  //     dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, Waktu: data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+  //   }
+  //   let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+  //   let workBook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+  //   XLSX.writeFile(workBook, "Report Transfer Dana Masuk.xlsx");
+  // }
 
   function exportReportSettlementHandler(data) {
     let dataExcel = []
     for (let i = 0; i < data.length; i++) {
-      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt, Jumlah: data[i].tvasettl_amount, Status: data[i].tvasettl_status_id })
+      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt, Jumlah: data[i].tvasettl_amount, Status: data[i].mstatus_name })
     }
     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
     let workBook = XLSX.utils.book_new();
@@ -737,7 +795,6 @@ export default () => {
               </table>
             </Col>
           </Row> */}
-            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
             <Row className='mt-4'>
             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4}>
@@ -765,25 +822,30 @@ export default () => {
                       <option defaultChecked disabled value="">Pilih Status</option>
                       <option value={2}>Success</option>
                       <option value={1}>In Progress</option>
-                      {/* <option value={3}>Refund</option> */}
-                      {/* <option value={4}>Canceled</option> */}
                       <option value={7}>Waiting For Payment</option>
-                      {/* <option value={8}>Paid</option> */}
                       <option value={9}>Payment Expired</option>
-                      {/* <option value={10}>Withdraw</option> */}
-                      {/* <option value={11}>Idle</option> */}
-                      {/* <option value={15}>Expected Success</option> */}
                     </Form.Select>
                 </Col>
             </Row>
             <Row className='mt-4'>
-                <Col xs={4}>
-                    <span style={{ marginRight: 35 }}>Periode*</span>
-                    <DateRangePicker
-                      onChange={pickDateDanaMasuk}
-                      value={stateDanaMasuk}
-                      clearIcon={null}
-                    />
+                <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
+                  <span >Periode*</span>
+                  <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-5" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
+                    <option defaultChecked disabled value={0}>Pilih Periode</option>
+                    <option value={2}>Hari Ini</option>
+                    <option value={3}>Kemarin</option>
+                    <option value={4}>7 Hari Terakhir</option>
+                    <option value={5}>Bulan Ini</option>
+                    <option value={6}>Bulan Kemarin</option>
+                    <option value={7}>Pilih Range Tanggal</option>
+                  </Form.Select>                 
+                </Col>
+                <Col xs={4} style={{ display: showDateDanaMasuk }}>
+                  <DateRangePicker
+                    onChange={pickDateDanaMasuk}
+                    value={stateDanaMasuk}
+                    clearIcon={null}
+                  />
                 </Col>
                 <Col xs={4}>
                     <span>Jenis Transaksi</span>
@@ -825,7 +887,7 @@ export default () => {
               // listTransferDana.length !== 0 &&
               listTransferDana !== undefined &&
               <div>
-                <Link onClick={() => exportReportTransferDanaMasukHandler(listTransferDana)} className="export-span">Export</Link>
+                <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
               </div>
             }
             <br/>
@@ -916,14 +978,25 @@ export default () => {
                     <span>ID Transaksi</span>
                     <input name="idTransaksiSettlement" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
-                <Col xs={4}>
+                {/* <Col xs={4}>
                     <span style={{ marginRight: 20 }}>Periode*</span>
-                      <DateRangePicker
-                        onChange={pickDateSettlement}
-                        value={stateSettlement}
-                        clearIcon={null}
-                        // calendarIcon={null}
-                      />
+                    <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
+                      <option defaultChecked disabled value={0}>Pilih Periode</option>
+                      <option value={2}>Hari Ini</option>
+                      <option value={3}>Kemarin</option>
+                      <option value={4}>7 Hari Terakhir</option>
+                      <option value={5}>Bulan Ini</option>
+                      <option value={6}>Bulan Kemarin</option>
+                      <option value={7}>Pilih Range Tanggal</option>
+                  </Form.Select>                    
+                </Col> */}
+                <Col xs={4} >
+                  <span style={{ marginRight: 20 }}>Periode*</span>
+                  <DateRangePicker
+                    onChange={pickDateSettlement}
+                    value={stateSettlement}
+                    clearIcon={null}
+                  />
                 </Col>
                 <Col xs={4}>
                     <span>Status</span>
@@ -945,6 +1018,7 @@ export default () => {
                   <option value={100}>VA Partner</option>
                 </Form.Select>
               </Col>
+              
             </Row>
             <Row className='mt-4'>
                 <Col xs={3}>
@@ -984,7 +1058,6 @@ export default () => {
                     data={listSettlement}
                     customStyles={customStyles}
                     pagination
-                    // highlightOnHover
                     progressPending={pendingSettlement}
                     progressComponent={<CustomLoader />}
                 />

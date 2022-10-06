@@ -70,7 +70,7 @@ function RiwayatTransaksi() {
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -124,8 +124,6 @@ function RiwayatTransaksi() {
     }
 
     function handlePageChangeDanaMasuk(page) {
-        // console.log(page, 'ini di gandle change page');
-        // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
         if (isFilterDanaMasuk) {
             setActivePageDanaMasuk(page)
             filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.fiturDanaMasuk)
@@ -136,7 +134,6 @@ function RiwayatTransaksi() {
     }
 
     function handlePageChangeSettlement(page) {
-        // console.log(page, 'ini di gandle change page');
         if (isFilterSettlement) {
             setActivePageSettlement(page)
             filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement)
@@ -161,7 +158,7 @@ function RiwayatTransaksi() {
                 setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -178,13 +175,11 @@ function RiwayatTransaksi() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0}`)
-            console.log(dataParams, "ini params");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const dataRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
             if (dataRiwayatDanaMasuk.status === 200 && dataRiwayatDanaMasuk.data.response_code === 200 && dataRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 dataRiwayatDanaMasuk.data.response_data.results = dataRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(dataRiwayatDanaMasuk.data.response_data)
@@ -200,8 +195,7 @@ function RiwayatTransaksi() {
                 setPendingTransfer(false)
             }
         } catch (error) {
-            console.log(error)
-            // RouteTo(errorCatch(error.response.status))
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -210,13 +204,11 @@ function RiwayatTransaksi() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0}`)
-            console.log(dataParams, "ini params2");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const dataRiwayatSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(dataRiwayatSettlement, 'ini data riwayat settlement');
             if (dataRiwayatSettlement.status === 200 && dataRiwayatSettlement.data.response_code === 200 && dataRiwayatSettlement.data.response_new_token.length === 0) {
                 dataRiwayatSettlement.data.response_data.results.list_data = dataRiwayatSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}))
                 setPageNumberSettlement(dataRiwayatSettlement.data.response_data)
@@ -234,8 +226,7 @@ function RiwayatTransaksi() {
                 setPendingSettlement(false)
             }
         } catch (error) {
-            console.log(error)
-            // RouteTo(errorCatch(error.response.status))
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -261,7 +252,6 @@ function RiwayatTransaksi() {
             setPendingTransfer(true)
             setIsFilterDanaMasuk(true)
             setActivePageDanaMasuk(page)
-            // console.log(page, 'ini di function filter');
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturDanaMasuk}}`)
             // console.log(dataParams, 'ini data params filter');
@@ -270,7 +260,6 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const filterRiwayatDanaMasuk = await axios.post(BaseURL + "/Home/GetListHistoryTransfer", {data: dataParams}, { headers: headers });
-            // console.log(filterRiwayatDanaMasuk, 'ini data filter riwayat dana masuk');
             if (filterRiwayatDanaMasuk.status === 200 && filterRiwayatDanaMasuk.data.response_code === 200 && filterRiwayatDanaMasuk.data.response_new_token.length === 0) {
                 filterRiwayatDanaMasuk.data.response_data.results = filterRiwayatDanaMasuk.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberDanaMasuk(filterRiwayatDanaMasuk.data.response_data)
@@ -286,8 +275,7 @@ function RiwayatTransaksi() {
                 setPendingTransfer(false)
             }
         } catch (error) {
-            console.log(error)
-            // RouteTo(errorCatch(error.response.status))
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -305,7 +293,6 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-            // console.log(filterSettlement, 'ini filter data settlement');
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
                 filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberSettlement(filterSettlement.data.response_data)
@@ -323,8 +310,7 @@ function RiwayatTransaksi() {
                 setPendingSettlement(false)
             }
         } catch (error) {
-            console.log(error)
-            // RouteTo(errorCatch(error.response.status))
+            // console.log(error)
             history.push(errorCatch(error.response.status))
     }
     }
@@ -380,7 +366,6 @@ function RiwayatTransaksi() {
                 'Authorization': auth
             }
             const detailListTransfer = await axios.post(BaseURL + "/Report/GetTransferReportDetail", {data: dataParams}, { headers: headers });
-            // console.log(detailListTransfer, 'ini detail list transfer');
             if (detailListTransfer.status === 200 && detailListTransfer.data.response_code === 200 && detailListTransfer.data.response_new_token.length === 0) {
                 setDetailTransferDana(detailListTransfer.data.response_data)
                 setShowModalDetailTransferDana(true)
@@ -390,19 +375,10 @@ function RiwayatTransaksi() {
                 setShowModalDetailTransferDana(true)
             }
         } catch (error) {
-            console.log(error)
-            // RouteTo(errorCatch(error.response.status))
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
-
-    // function detailListSettlement(settlementId) {
-    //     console.log(settlementId, 'ini settlementId');
-    //     const date = new Date(createDate.slice(8,17).split('/').reverse().join('-')).toLocaleDateString('en-CA')
-    //     history.push(`/detailsettlement/${settlementId}`)
-    // }
-
-    // console.log(dataRiwayatDanaMasuk, 'ini data riwayat dana masuk');
     
     const columns = [
         {
@@ -537,7 +513,7 @@ function RiwayatTransaksi() {
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
-            name: 'Fee Transaksi',
+            name: 'Jasa Layanan',
             selector: row => convertToRupiah(row.total_partner_fee),
             // sortable: true,
             width: "224px",
@@ -545,7 +521,7 @@ function RiwayatTransaksi() {
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
-            name: 'Fee Tax Transaksi',
+            name: 'PPN atas Jasa Layanan',
             selector: row => convertToRupiah(row.total_fee_tax),
             // sortable: true,
             width: "224px",
@@ -553,7 +529,7 @@ function RiwayatTransaksi() {
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
-            name: 'Fee Bank',
+            name: 'Reimbursement by VA',
             selector: row => convertToRupiah(row.total_fee_bank),
             // sortable: true,
             width: "224px",
@@ -561,7 +537,7 @@ function RiwayatTransaksi() {
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
-            name: 'Fee Settlement',
+            name: 'Jasa Settlement',
             selector: row => convertToRupiah(row.tvasettl_fee),
             // sortable: true,
             width: "224px",
@@ -683,7 +659,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Transaksi Dana Masuk.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -693,7 +669,6 @@ function RiwayatTransaksi() {
                 try {
                     const auth = 'Bearer ' + getToken();
                     const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
-                    // console.log(dataParams, 'ini data params filter');
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -722,7 +697,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Transaksi Dana Masuk.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -741,12 +716,11 @@ function RiwayatTransaksi() {
                         'Authorization': auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportFilter, 'ini data filter settlement');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Fee Transaksi": data[i].total_partner_fee, "Fee Tax Transaksi": data[i].total_fee_tax, "Fee Bank": data[i].total_fee_bank, "Fee Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -757,7 +731,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Fee Transaksi": data[i].total_partner_fee, "Fee Tax Transaksi": data[i].total_fee_tax, "Fee Bank": data[i].total_fee_bank, "Fee Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -765,7 +739,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
                     }
                 } catch (error) {
-                    console.log(error)
+                    // console.log(error)
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -780,12 +754,11 @@ function RiwayatTransaksi() {
                         'Authorization': auth
                     }
                     const dataExportSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
-                    // console.log(dataExportSettlement, 'ini data settlement di export');
                     if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length === 0) {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Fee Transaksi": data[i].total_partner_fee, "Fee Tax Transaksi": data[i].total_fee_tax, "Fee Bank": data[i].total_fee_bank, "Fee Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -796,7 +769,7 @@ function RiwayatTransaksi() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Fee Transaksi": data[i].total_partner_fee, "Fee Tax Transaksi": data[i].total_fee_tax, "Fee Bank": data[i].total_fee_bank, "Fee Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -804,7 +777,7 @@ function RiwayatTransaksi() {
                         XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
                     }
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     history.push(errorCatch(error.response.status))
                 }
             }
@@ -818,9 +791,6 @@ function RiwayatTransaksi() {
           {/* <div>Loading...</div> */}
         </div>
     );
-
-    // console.log(dataRiwayatDanaMasuk, "ini data dana masuk");
-    // console.log(inputHandle.periodeDanaMasuk, "ini data settlement");
 
   return (
     <div className="content-page mt-6">

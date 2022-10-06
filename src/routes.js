@@ -22,6 +22,7 @@ export const Routes = {
     EditPartner : { path: "/editpartner/:partnerId" },
     ListMenuAccess : { path: "/menuaccess/:userId" },
     RiwayatTopUp : { path: "/riwayattopup" },
+    AlokasiSaldo : { path: "/alokasisaldo" },
     ReNotifyVA : { path: "/renotifyva" },
     DisbursementReport : { path: "/disbursementreport" },
     Billing: { path: "/examples/billing" },

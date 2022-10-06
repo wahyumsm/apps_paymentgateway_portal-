@@ -20,11 +20,9 @@ function InvoiceDisbursement() {
 
     function pickDateInvoiceDisbursement(item) {
         setStateInvoiceDisbursement(item)
-        // console.log(item, 'ini item');
         if (item !== null) {
             item = item.map(el => el.toLocaleDateString('en-CA'))
             setDateRangeInvoiceDisbursement(item)
-            // console.log(item, 'ini item2');
         }
     }
 
@@ -32,13 +30,11 @@ function InvoiceDisbursement() {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}"}`);
-            // console.log(dataParams, 'ini data params');
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceDisbursement", { data: dataParams }, { headers: headers })
-            // console.log(invoiceData, "ini invoice data");
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoiceDisbursement(invoiceData.data.response_data)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
@@ -157,6 +153,9 @@ function InvoiceDisbursement() {
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{ borderRight: "hidden" }}></td>
                                         <td style={{  }}></td>
+                                        {/* <br />
+                                        <br />
+                                        <br /> */}
                                         <br />
                                         <br />
                                         <br />

@@ -38,7 +38,6 @@ function DaftarAgen() {
   );
 
   function tambahAgen() {
-    // RouteTo("/tambahagen")
     history.push("/tambahagen")
   }
 
@@ -50,7 +49,6 @@ function DaftarAgen() {
         'Authorization' : auth
       }
       const listAgen = await axios.post(BaseURL + "/Agen/ListAgen", { data: "" }, { headers: headers })
-      // console.log(listAgen, "ini list agen di daftar agen")
       if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
         listAgen.data.response_data = listAgen.data.response_data.map((obj, id) => ({ ...obj, id: id + 1, status: (obj.status === true) ? "Aktif" : "Tidak Aktif" }));
         setListAgen(listAgen.data.response_data)
@@ -62,14 +60,12 @@ function DaftarAgen() {
         setPending(false)
       }
     } catch (error) {
-      console.log(error)
-      // RouteTo(errorCatch(error.response.status))
+      // console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
   
   function detailAgenHandler(agenId) {
-    // RouteTo(`/detailagen/${agenId}`)
     history.push(`/detailagen/${agenId}`)
   }
 
@@ -134,7 +130,6 @@ function DaftarAgen() {
 
   useEffect(() => {
     if (!access_token) {
-      // RouteTo("/login")
     history.push('/login');
   }
     getDataAgen()

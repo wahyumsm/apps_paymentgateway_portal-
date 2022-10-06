@@ -73,7 +73,7 @@ function AddUser() {
       }
     } catch (e) {
       history.push(errorCatch(e.response.status));
-      console.log(e);
+      // console.log(e);
     }
   }
 
@@ -103,7 +103,7 @@ function AddUser() {
         setDataListPartner(listPartner.data.response_data);
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       history.push(errorCatch(e.response.status));
     }
   }
@@ -135,7 +135,7 @@ function AddUser() {
         setDataListAgenFromPartner(listAgenFromPartner.data.response_data);
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       history.push(errorCatch(e.response.status));
     }
   }
@@ -175,7 +175,7 @@ function AddUser() {
       }
       
     } catch (e) {      
-      console.log(e);
+      // console.log(e);
       setErrorMsg(e.response.data.response_message)
       if (e.response.data.response_message === "Failed") {
         alert(e.response.data.response_message)
@@ -185,7 +185,6 @@ function AddUser() {
   }
   useEffect(() => {
     if (!access_token) {
-      // RouteTo("/login")
       history.push("/login");
     }
     if (user_role === "102") {

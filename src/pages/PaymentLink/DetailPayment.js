@@ -28,7 +28,7 @@ function DetailPayment() {
     }, [])
 
     const onClick = useCallback(({target: {innerText}}) => {
-        console.log(`Clicked on "${innerText}"!`);
+        // console.log(`Clicked on "${innerText}"!`);
         alert("Copied!")
     }, [])
 
@@ -42,7 +42,7 @@ function DetailPayment() {
                 'Authorization' : auth
             }
             const detailPayment = await axios.post(BaseURL + "/PaymentLink/PaymentLinkDetails", { data: dataParams }, { headers: headers })
-            console.log(detailPayment, "ini detail payment");
+            // console.log(detailPayment, "ini detail payment");
             if (detailPayment.status === 200 && detailPayment.data.response_code === 200 && detailPayment.data.response_new_token.length === 0) {
                 setDetailPayment(detailPayment.data.response_data)
             } else if (detailPayment.status === 200 && detailPayment.data.response_code === 200 && detailPayment.data.response_new_token.length !== 0) {

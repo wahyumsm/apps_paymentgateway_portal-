@@ -54,7 +54,6 @@ function UpdateUser() {
         try {
             const auth = "Bearer " + getToken();
             const dataParams = encryptData(`{"muser_id":"${muserId}"}`);
-            // console.log(dataParams, "ini data param");
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: auth,
@@ -85,7 +84,7 @@ function UpdateUser() {
                 getListAgen(dataDetail.partner_id)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status));
         }
     }        
@@ -108,7 +107,7 @@ function UpdateUser() {
                     history.push("/managementuser")
                 }
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 setErrorMsg(error.response.data.response_message)
                 if (error.response.data.response_message === "Failed") {
                     alert(error.response.data.response_message)
@@ -129,7 +128,6 @@ function UpdateUser() {
                     { data: "" },
                     { headers: headers }
                 );
-                // console.log(listRole, "ini role");
                 if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length === 0) {
                     setListRole(listRole.data.response_data);
                 } else if (listRole.status === 200 && listRole.data.response_code === 200 && listRole.data.response_new_token.length !== 0) {
@@ -137,7 +135,7 @@ function UpdateUser() {
                     setListRole(listRole.data.response_data)
                 }
             } catch (error) {
-                console.log(error);
+                // console.log(error);
                 history.push(errorCatch(error.response.status))
             }
         }
@@ -154,7 +152,6 @@ function UpdateUser() {
                     { data: "" },
                     { headers: headers }
                 );
-                // console.log(listPartner, "ini partner di user");
                 if (
                     listPartner.status === 200 &&
                     listPartner.data.response_code === 200 &&
@@ -176,7 +173,6 @@ function UpdateUser() {
 
         async function getListAgen(partnerId) {
             try {
-                // console.log(partnerId, "ini partner id di function list agen");
                 const auth = 'Bearer ' + getToken();
                 const dataParams = encryptData(`{"partner_id": "${partnerId}"}`);
                 const headers = {

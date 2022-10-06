@@ -91,7 +91,7 @@ export default (props = {}) => {
     }
     dispatch(GetUserAccessMenu("/Account/GetUserAccess"))
   }, [])
-
+  
   if (!userAccessMenu) {
     return null
   }
