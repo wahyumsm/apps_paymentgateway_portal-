@@ -154,7 +154,7 @@ export default () => {
         setListAgen(listAgen.data.response_data)
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status))
     }
   }
@@ -179,7 +179,7 @@ export default () => {
         getDataAgen(userDetail.data.response_data.muser_partnerdtl_id)
       }
   } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status))
     }
   }
