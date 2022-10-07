@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Table } from '@themesberg/react-bootstrap'
+import { Col, Form, Row, Table } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import jsPDF from 'jspdf';
@@ -16,7 +16,19 @@ function InvoiceDisbursement() {
     const [stateInvoiceDisbursement, setStateInvoiceDisbursement] = useState(null)
     const [dateRangeInvoiceDisbursement, setDateRangeInvoiceDisbursement] = useState([])
     const [dataInvoiceDisbursement, setDataInvoiceDisbursement] = useState({})
+    const [dataListPartner, setDataListPartner] = useState([])
+    const [namaPartner, setNamaPartner] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
+
+    function resetButtonHandle() {
+        setStateInvoiceDisbursement(null)
+        setDateRangeInvoiceDisbursement([])
+        setNamaPartner("")
+    }
+
+    function handleChangeNamaPartner(e) {
+        setNamaPartner(e.target.value)
+    }
 
     function pickDateInvoiceDisbursement(item) {
         setStateInvoiceDisbursement(item)
@@ -26,10 +38,31 @@ function InvoiceDisbursement() {
         }
     }
 
-    async function generateInvoiceDisbursement(dateRange) {
+    async function listPartner() {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}"}`);
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
+            // console.log(listPartner, 'ini list partner');
+            if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
+                setDataListPartner(listPartner.data.response_data)
+            } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
+                setUserSession(listPartner.data.response_new_token)
+                setDataListPartner(listPartner.data.response_data)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function generateInvoiceDisbursement(dateRange, partnerId) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}"}`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -49,7 +82,7 @@ function InvoiceDisbursement() {
                 setDataInvoiceDisbursement({})
             }
         }
-    }
+    }    
 
     async function downloadPDF(table, dateRange) {
         // const element = document.getElementById('tableInvoice');
@@ -68,6 +101,7 @@ function InvoiceDisbursement() {
         if (user_role === "102") {
             history.push('/404');
         }
+        listPartner()
     }, [access_token, user_role])
     
 
@@ -78,26 +112,50 @@ function InvoiceDisbursement() {
                 <h2 className="h5 mb-3 mt-4">Invoice Disbursement</h2>
             </div>
             <div className='main-content'>
-                <div className='mt-4'>
+                <div className='riwayat-dana-masuk-div mt-4'>
                     <div className='base-content mt-3 mb-3'>
-                        <Row className='mb-4'>
-                            <Col xs={8} className="d-flex justify-content-start align-items-center">
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                        <Row className='mt-2 mb-4'>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span className='me-3'>Periode*</span>
-                                <DateRangePicker 
-                                    onChange={pickDateInvoiceDisbursement}
-                                    value={stateInvoiceDisbursement}
-                                    clearIcon={null}
-                                    className='me-3'
-                                />
-                                <button
-                                    onClick={() => generateInvoiceDisbursement(dateRangeInvoiceDisbursement)}
-                                    className={(stateInvoiceDisbursement === null) ? 'btn-off' : 'add-button'}
-                                    style={{ maxWidth: 'fit-content', padding: 7, height: 40 }}
-                                    disabled={(stateInvoiceDisbursement === null) ? true : false}
-                                >
-                                    Generate
-                                </button>
+                                <div>
+                                    <DateRangePicker 
+                                        onChange={pickDateInvoiceDisbursement}
+                                        value={stateInvoiceDisbursement}
+                                        clearIcon={null}
+                                        className='me-3'
+                                    />
+                                </div>                                
                             </Col>
+                            <Col xs={5} className="d-flex justify-content-start align-items-center">
+                                <span>Nama Partner</span>
+                                <Form.Select name='namaPartner' className="input-text-ez me-4" value={namaPartner} onChange={(e) => handleChangeNamaPartner(e)}>
+                                    <option defaultChecked disabled value="">Pilih Nama Partner</option>
+                                    {
+                                        dataListPartner.map((item, index) => {
+                                            return (
+                                                <option key={index} value={item.partner_id}>{item.nama_perusahaan}</option>
+                                            )
+                                        })
+                                    }
+                                </Form.Select>
+                            </Col>
+                            <button
+                                onClick={() => generateInvoiceDisbursement(dateRangeInvoiceDisbursement, namaPartner)}
+                                className={(stateInvoiceDisbursement === null || namaPartner.length === 0) ? 'btn-off' : 'add-button'}
+                                style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
+                                disabled={(stateInvoiceDisbursement === null || namaPartner.length === 0) ? true : false}
+                            >
+                                Generate
+                            </button>
+                            <button
+                                onClick={() => resetButtonHandle()}
+                                className={(stateInvoiceDisbursement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez"}
+                                style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
+                                disabled={(stateInvoiceDisbursement === null || namaPartner.length === 0) ? true : false}
+                            >
+                                Atur Ulang
+                            </button>
                         </Row>
                         <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
                             <table className='table table-bordered mt-2' id='tableInvoice' style={{ width: "87%" }}>

@@ -185,7 +185,7 @@ function ListPayment() {
         inputHandle.refId,
         dateRangePaylink,
         inputHandle.periodePaylink,
-        1,
+        page,
         inputHandle.rowPerPage,
         orderId,
         orderField,
@@ -274,7 +274,7 @@ function ListPayment() {
         setPendingPaylink(false);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status));
     }
   }
@@ -341,7 +341,7 @@ function ListPayment() {
         setPendingPaylink(false);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status));
     }
   }
@@ -930,7 +930,7 @@ function ListPayment() {
                                 style={{ cursor: "pointer" }}
                               />
                             </OverlayTrigger>
-                            <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip><div className="text-center">Salin Link</div></Tooltip>}>
+                            <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Salin Link</div></Tooltip>}>
                               <CopyToClipboard onCopy={onCopy} text={item.tpaylink_url}>
                                 <FontAwesomeIcon
                                   icon={faClone}

@@ -329,7 +329,7 @@ export default () => {
         setListPartner(newArr);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status));
     }
   }
@@ -543,7 +543,7 @@ export default () => {
         setPendingPaylink(false);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status));
     }
   }
@@ -592,7 +592,7 @@ export default () => {
         setPendingPaylink(false);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       history.push(errorCatch(error.response.status));
     }
   }
@@ -734,7 +734,7 @@ export default () => {
               </div>
             </Col>
             <Col lg={3}>
-              <div className="card-information base-content">
+              <div className="card-information base-content-beranda">
                 <p className="p-info">Total Biaya Payment Link</p>
                 <p className="p-amount">
                   {convertToRupiah(
@@ -744,7 +744,7 @@ export default () => {
               </div>
             </Col>
             <Col lg={3} className="mt-3">
-              <div className="card-information base-content">
+              <div className="card-information base-content-beranda">
                 <p className="p-info">Total Biaya Settlement</p>
                 <p className="p-amount">{convertToRupiah((settlementTransaction.total_biaya_settlement !== undefined) ? settlementTransaction.total_biaya_settlement : 0)}</p>
               </div>

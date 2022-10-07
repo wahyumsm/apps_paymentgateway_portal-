@@ -60,7 +60,8 @@ function AddPayment() {
 
   const [isNotCompleteData, setNotCompleteData] = useState({
     nominal: false,
-    refId: false
+    refId: false,
+    minNominal: false
   });
 
   const [inputHandle, setInputHandle] = useState({
@@ -168,7 +169,7 @@ function AddPayment() {
         setPaymentType(getPaymentType.data.response_data);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -214,7 +215,7 @@ function AddPayment() {
         setShowModal(true);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (error.response.status === 400) {
         alert(error.response.data.response_message)
       }
@@ -240,7 +241,7 @@ function AddPayment() {
     });
   }
 
-  const goToTop = () => {
+  const goToTop = (amount) => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -248,8 +249,9 @@ function AddPayment() {
     var a = date.getMinutes()
     var b = date.getHours()
     setNotCompleteData({
-      nominal: inputHandle.nominal == null,
-      refId: inputHandle.refId == ""
+      nominal: inputHandle.nominal === null,
+      refId: inputHandle.refId === "",
+      minNominal: amount < 10000
     });
   };
 
@@ -352,9 +354,10 @@ function AddPayment() {
             <input
               type="number"
               name="nominal"
+              min={10000}
               onChange={handleChange}
               class={
-                isNotCompleteData.nominal == true
+                (isNotCompleteData.nominal === true || isNotCompleteData.minNominal === true)
                   ? "form-control is-invalid"
                   : "input-text-user"
               }
@@ -362,6 +365,12 @@ function AddPayment() {
               value={inputHandle.nominal}
               required
             />
+            {
+              isNotCompleteData.minNominal &&
+              <div className="my-1" style={{ fontSize: "12px", color: "#B9121B" }}>
+                Nominal tagihan Min. 10.000
+              </div>
+            }
             <div className="my-1" style={{ fontSize: "12px" }}>
               *Biaya Admin: Rp 0 ( Dibebankan kepada partner )
             </div>
@@ -613,8 +622,8 @@ function AddPayment() {
       >
         <button
           onClick={() =>
-            inputHandle.refId == "" || inputHandle.nominal == null || isNotEnableButton(inputMinuteHandle, inputHourHandle)
-              ? goToTop()
+            inputHandle.refId === "" || inputHandle.refId.length === 0 || inputHandle.nominal === null || inputHandle.nominal < 10000 || isNotEnableButton(inputMinuteHandle, inputHourHandle)
+              ? goToTop(inputHandle.nominal)
               : addPaylinkHandler(
                   inputHandle.paymentId,
                   inputHandle.refId,
