@@ -168,7 +168,7 @@ function AddPayment() {
         setPaymentType(getPaymentType.data.response_data);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
@@ -214,7 +214,7 @@ function AddPayment() {
         setShowModal(true);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (error.response.status === 400) {
         alert(error.response.data.response_message)
       }

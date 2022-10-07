@@ -116,8 +116,8 @@ function CustomDesignPayment () {
                 setImageFile(dataDetailCustom.mpaylink_logo_url)
             }
         } catch (e) {
-            console.log(e);
-            // history.push(errorCatch(e.response.status))
+            // console.log(e);
+            history.push(errorCatch(e.response.status))
         }
     }
 

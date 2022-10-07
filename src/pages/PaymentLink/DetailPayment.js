@@ -50,7 +50,7 @@ function DetailPayment() {
                 setDetailPayment(detailPayment.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
@@ -74,7 +74,7 @@ function DetailPayment() {
             }
             alert("Success")
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
