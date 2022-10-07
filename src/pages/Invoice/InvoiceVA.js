@@ -203,7 +203,7 @@ function InvoiceVA() {
                                         }) :
                                         <tr>
                                             <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>1</td>
-                                            <td>-</td>
+                                            <td>{(errorMessage.length !== 0) ? errorMessage : "-"}</td>
                                             <td style={{ textAlign: "center" }}>0</td>
                                             <td style={{ textAlign: "end" }}>Rp 0</td>
                                             <td style={{ textAlign: "end" }}>Rp 0</td>
