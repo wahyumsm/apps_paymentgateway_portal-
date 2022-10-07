@@ -60,7 +60,8 @@ function AddPayment() {
 
   const [isNotCompleteData, setNotCompleteData] = useState({
     nominal: false,
-    refId: false
+    refId: false,
+    minNominal: false
   });
 
   const [inputHandle, setInputHandle] = useState({
@@ -240,7 +241,7 @@ function AddPayment() {
     });
   }
 
-  const goToTop = () => {
+  const goToTop = (amount) => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -248,9 +249,13 @@ function AddPayment() {
     var a = date.getMinutes()
     var b = date.getHours()
     setNotCompleteData({
-      nominal: inputHandle.nominal == null,
-      refId: inputHandle.refId == ""
+      nominal: inputHandle.nominal === null,
+      refId: inputHandle.refId === "",
+      minNominal: amount < 10000
     });
+    if (amount < 10000) {
+      
+    }
   };
 
   function toCancel() {
@@ -352,9 +357,10 @@ function AddPayment() {
             <input
               type="number"
               name="nominal"
+              min={10000}
               onChange={handleChange}
               class={
-                isNotCompleteData.nominal == true
+                (isNotCompleteData.nominal === true || isNotCompleteData.minNominal === true)
                   ? "form-control is-invalid"
                   : "input-text-user"
               }
@@ -362,6 +368,12 @@ function AddPayment() {
               value={inputHandle.nominal}
               required
             />
+            {
+              isNotCompleteData.minNominal &&
+              <div className="my-1" style={{ fontSize: "12px", color: "#B9121B" }}>
+                Nominal tagihan Min. 10.000
+              </div>
+            }
             <div className="my-1" style={{ fontSize: "12px" }}>
               *Biaya Admin: Rp 0 ( Dibebankan kepada partner )
             </div>
@@ -613,8 +625,8 @@ function AddPayment() {
       >
         <button
           onClick={() =>
-            inputHandle.refId == "" || inputHandle.nominal == null || isNotEnableButton(inputMinuteHandle, inputHourHandle)
-              ? goToTop()
+            inputHandle.refId === "" || inputHandle.refId.length === 0 || inputHandle.nominal === null || inputHandle.nominal < 10000 || isNotEnableButton(inputMinuteHandle, inputHourHandle)
+              ? goToTop(inputHandle.nominal)
               : addPaylinkHandler(
                   inputHandle.paymentId,
                   inputHandle.refId,
