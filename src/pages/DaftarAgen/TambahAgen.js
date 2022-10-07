@@ -260,6 +260,7 @@ function TambahAgen() {
                                     placeholder="Masukkan Jumlah Settlement Fee"
                                     value={inputHandle.settlementFee}
                                     type='number'
+                                    min={0}
                                     onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onBlur={() => setAdd(!add)}
