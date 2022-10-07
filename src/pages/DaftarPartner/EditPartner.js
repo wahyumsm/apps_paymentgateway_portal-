@@ -12,7 +12,7 @@ import {
   RouteTo,
   setUserSession,
 } from "../../function/helpers";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import encryptData from "../../function/encryptData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -891,14 +891,14 @@ function EditPartner() {
     <div className="container-content mt-5">
       {isDetailAkun ? (
         <span className="breadcrumbs-span">
-          Beranda &nbsp;
-          <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Partner &nbsp;
+          <Link to={"/"}>Beranda</Link> &nbsp;
+          <img alt="" src={breadcrumbsIcon} /> &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;
           <img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner
         </span>
       ) : (
         <span className="breadcrumbs-span">
-          Beranda &nbsp;
-          <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Partner &nbsp;
+          <Link to={"/"}>Beranda</Link> &nbsp;
+          <img alt="" src={breadcrumbsIcon} /> &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;
           <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen
         </span>
       )}
