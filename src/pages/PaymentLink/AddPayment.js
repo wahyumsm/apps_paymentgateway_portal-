@@ -253,9 +253,6 @@ function AddPayment() {
       refId: inputHandle.refId === "",
       minNominal: amount < 10000
     });
-    if (amount < 10000) {
-      
-    }
   };
 
   function toCancel() {
