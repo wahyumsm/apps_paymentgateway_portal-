@@ -6,6 +6,7 @@ import axios from "axios";
 import {
   BaseURL,
   convertFormatNumber,
+  convertFormatNumberPartner,
   errorCatch,
   getRole,
   getToken,
@@ -598,11 +599,11 @@ function EditPartner() {
     },
     {
       name: "Fee",
-      selector: (row) => row.fee,
+      selector: (row) => convertFormatNumberPartner(row.fee),
     },
     {
       name: "Settlement Fee",
-      selector: (row) => row.fee_settle,
+      selector: (row) => convertFormatNumberPartner(row.fee_settle),
       width: "150px",
     },
     {
@@ -1224,7 +1225,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(inputHandle.fee.length === 0) ? "" : convertFormatNumber(parseInt(inputHandle.fee))}
+                        value={(inputHandle.fee.length === 0) ? "" : convertFormatNumberPartner(parseInt(inputHandle.fee))}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
@@ -1261,7 +1262,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(inputHandle.settlementFee.length === 0) ? "" : convertFormatNumber(
+                        value={(inputHandle.settlementFee.length === 0) ? "" : convertFormatNumberPartner(
                           parseInt(inputHandle.settlementFee)
                         )}
                         name="settlementFee"

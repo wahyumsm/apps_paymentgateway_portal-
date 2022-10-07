@@ -288,7 +288,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const dataSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
+      const dataSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
       if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
         dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(dataSettlement.data.response_data)
@@ -371,7 +371,7 @@ export default () => {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
-      const filterSettlement = await axios.post(BaseURL + "/report/GetSettlement", { data: dataParams }, { headers: headers })
+      const filterSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
       if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
         filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
         setListSettlement(filterSettlement.data.response_data)
@@ -408,6 +408,7 @@ export default () => {
       })
       setStateSettlement(null)
       setDateRangeSettlement([])
+      setShowDateSettlement("none")
     }
   }
 
@@ -978,8 +979,8 @@ export default () => {
                     <span>ID Transaksi</span>
                     <input name="idTransaksiSettlement" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
-                {/* <Col xs={4}>
-                    <span style={{ marginRight: 20 }}>Periode*</span>
+                <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
+                    <span >Periode*</span>
                     <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                       <option defaultChecked disabled value={0}>Pilih Periode</option>
                       <option value={2}>Hari Ini</option>
@@ -989,15 +990,7 @@ export default () => {
                       <option value={6}>Bulan Kemarin</option>
                       <option value={7}>Pilih Range Tanggal</option>
                   </Form.Select>                    
-                </Col> */}
-                <Col xs={4} >
-                  <span style={{ marginRight: 20 }}>Periode*</span>
-                  <DateRangePicker
-                    onChange={pickDateSettlement}
-                    value={stateSettlement}
-                    clearIcon={null}
-                  />
-                </Col>
+                </Col>                
                 <Col xs={4}>
                     <span>Status</span>
                     <Form.Select name="statusSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
@@ -1018,7 +1011,13 @@ export default () => {
                   <option value={100}>VA Partner</option>
                 </Form.Select>
               </Col>
-              
+              <Col xs={4} style={{ display: showDateSettlement }}>
+                <DateRangePicker
+                  onChange={pickDateSettlement}
+                  value={stateSettlement}
+                  clearIcon={null}
+                />
+              </Col>
             </Row>
             <Row className='mt-4'>
                 <Col xs={3}>

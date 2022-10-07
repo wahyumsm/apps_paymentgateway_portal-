@@ -1,5 +1,5 @@
-export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
+// export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
+export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
 // export const BaseURL = "https://apid.ezeelink.co.id/snap/api2"
 // export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
 
@@ -62,6 +62,19 @@ export const convertFormatNumber = (num) => {
     .split("", rupiah.length - 1)
     .reverse()
     .join("");
+};
+
+export const convertFormatNumberPartner = (num) => {
+  let rupiah = "";
+  let format = ",00"
+  let angkaRev = num.toString().split("").reverse().join("");
+  for (var i = 0; i < angkaRev.length; i++)
+    if (i % 3 === 0) rupiah += angkaRev.substr(i, 3) + ".";
+  return (rupiah
+    .split("", rupiah.length - 1)
+    .reverse()
+    .join(""))
+    .concat(format);
 };
 
 export function errorCatch(statusCode) {

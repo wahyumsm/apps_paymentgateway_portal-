@@ -5,6 +5,7 @@ import encryptData from "../../function/encryptData";
 import {
   BaseURL,
   convertFormatNumber,
+  convertFormatNumberPartner,
   convertToRupiah,
   errorCatch,
   getRole,
@@ -167,11 +168,11 @@ function TambahPartner() {
     },
     {
       name: "Fee",
-      selector: (row) => row.fee,
+      selector: (row) => convertFormatNumberPartner(row.fee),
     },
     {
       name: "Settlement Fee",
-      selector: (row) => row.fee_settle,
+      selector: (row) => convertFormatNumberPartner(row.fee_settle),
       width: "150px",
     },
     {
@@ -962,7 +963,7 @@ function toDashboard() {
                 <Form.Control
                   name="fee"
                   onChange={handleChangeFee}
-                  value={biayaHandle.fee.length === 0 ? "" : convertFormatNumber(parseInt(biayaHandle.fee))}
+                  value={biayaHandle.fee.length === 0 ? "" : convertFormatNumberPartner(parseInt(biayaHandle.fee))}
                   placeholder="Rp. 0"
                   type="text"
                   style={{
@@ -1014,7 +1015,7 @@ function toDashboard() {
                 <Form.Control
                   name="settlementFee"
                   onChange={handleChangeSettlement}
-                  value={(biayaHandle.settlementFee.length === 0) ? "" : convertFormatNumber(parseInt(biayaHandle.settlementFee))}
+                  value={(biayaHandle.settlementFee.length === 0) ? "" : convertFormatNumberPartner(parseInt(biayaHandle.settlementFee))}
                   placeholder="Rp. 0"
                   type="text"
                   style={{
