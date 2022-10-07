@@ -158,7 +158,7 @@ function CustomDesignPayment () {
                             {!imageFile ?
                                     <div style={{background: "#F0F0F0", border: "1px solid #C4C4C4", width: 100, height:48}} className="py-2 px-2">Logo Anda</div> :
                                 <>                                        
-                                    <img src={imageFile} alt="alt" width="96px" height="44px" />
+                                    <img src={imageFile} alt="alt" width="auto" height="44px" />
                                     <input
                                         type="file"
                                         onChange={handleFileChange}
@@ -240,7 +240,7 @@ function CustomDesignPayment () {
                                         />
                                     </div> :
                                     <>                                        
-                                        <img src={imageFile} alt="alt" width="96px" height="44px" />
+                                        <img src={imageFile} alt="alt" width="auto" height="44px" />
                                         <input
                                             type="file"
                                             onChange={handleFileChange}
