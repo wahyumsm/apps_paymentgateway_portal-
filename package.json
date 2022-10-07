@@ -1,7 +1,6 @@
 {
   "name": "@themesberg/volt-react-dashboard",
   "description": "Payment Gateway CRM React Dashboard",
-  "proxy": "https://api.ezeelink.co.id/mobile-demo/mobile3",
   "author": "",
   "keywords": [
     "bootstrap 5",
