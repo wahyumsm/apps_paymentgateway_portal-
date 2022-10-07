@@ -225,7 +225,7 @@ function DetailAkun() {
                 <div className='konfigurasi-section' style={{marginTop: 24}}>
                     <hr className='hr-style' style={{marginTop: -25}}/>
                     <div className='base-content'>
-                        <span>You will need to know your <b>Partner ID</b> and <b>Private Key</b> to communicate with Midtrans. Please use the Development server while you are still in development.</span>
+                        <span>You will need to know your <b>Partner ID</b> and <b>Private Key</b> to communicate with Ezeelink. Please use the Development server while you are still in development.</span>
                         <br/>
                         <br/>
                         <p className='head-title'>API Keys</p>
