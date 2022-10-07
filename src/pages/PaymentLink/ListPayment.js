@@ -920,7 +920,7 @@ function ListPayment() {
                         </td>
                         <td>
                           <div className=" ms-2 d-flex justify-content-start align-items-center">
-                            <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip style={{ maxWidth: 200, width: 105 }}>Lihat Detail</Tooltip>}>
+                            <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lihat Detail</div></Tooltip>}>
                               <FontAwesomeIcon
                                 icon={faEye}
                                 onClick={() =>
@@ -930,7 +930,7 @@ function ListPayment() {
                                 style={{ cursor: "pointer" }}
                               />
                             </OverlayTrigger>
-                            <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip style={{ maxWidth: 200, width: 105 }}>Salin Link</Tooltip>}>
+                            <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip><div className="text-center">Salin Link</div></Tooltip>}>
                               <CopyToClipboard onCopy={onCopy} text={item.tpaylink_url}>
                                 <FontAwesomeIcon
                                   icon={faClone}
