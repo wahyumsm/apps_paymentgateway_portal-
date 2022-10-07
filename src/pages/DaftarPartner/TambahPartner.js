@@ -697,7 +697,8 @@ function toDashboard() {
                 name="phoneNumber"
                 onChange={handleChange}
                 placeholder="Masukkan Nomor Telepon"
-                type="text"
+                type="number"
+                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                 style={{
                   width: "100%",
                   height: 40,
@@ -752,7 +753,8 @@ function toDashboard() {
                 name="noNpwp"
                 onChange={handleChange}
                 placeholder="Masukkan Nomor NPWP"
-                type="text"
+                type="number"
+                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                 style={{
                   width: "100%",
                   height: 40,
@@ -830,7 +832,8 @@ function toDashboard() {
                 name="noHp"
                 onChange={handleChange}
                 placeholder="Masukkan No HP Direktur"
-                type="text"
+                type="number"
+                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                 style={{
                   width: "100%",
                   height: 40,
@@ -886,7 +889,8 @@ function toDashboard() {
                 name="akunBank"
                 onChange={handleChange}
                 placeholder="Masukkan Nomor Rekening"
-                type="text"
+                type="number"
+                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                 style={{
                   width: "100%",
                   height: 40,
@@ -968,7 +972,7 @@ function toDashboard() {
                     marginLeft: "unset",
                     borderColor: alertFee ? "red" : ""
                   }}
-                  min={0}
+                  // min={0}
                   onFocus={() => setEditFee(!editFee)}
                 />
               }
@@ -1004,7 +1008,7 @@ function toDashboard() {
                     borderColor: alertSettlement ? "red" : ""
                   }}
                   onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
-                  // min={0}
+                  min={0}
                   onBlur={() => setEditSettle(!editSettle)}
                 /> :
                 <Form.Control

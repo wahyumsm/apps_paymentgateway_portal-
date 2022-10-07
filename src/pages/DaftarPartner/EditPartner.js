@@ -1013,7 +1013,8 @@ function EditPartner() {
                     <td style={{ width: 200 }}>Nomor Telepon</td>
                     <td>
                       <input
-                        type="text"
+                        type="number"
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                         className="input-text-ez"
                         onChange={handleChange}
                         defaultValue={detailPartner.mpartner_telp}
@@ -1055,7 +1056,8 @@ function EditPartner() {
                     <td style={{ width: 200 }}>No NPWP</td>
                     <td>
                       <input
-                        type="text"
+                        type="number"
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                         className="input-text-ez"
                         onChange={handleChange}
                         defaultValue={
@@ -1119,7 +1121,8 @@ function EditPartner() {
                     <td style={{ width: 200 }}>No Hp Direktur</td>
                     <td>
                       <input
-                        type="text"
+                        type="number"
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                         className="input-text-ez"
                         onChange={handleChange}
                         defaultValue={detailPartner.mpartner_direktur_telp}
@@ -1161,7 +1164,8 @@ function EditPartner() {
                     <td style={{ width: 200 }}>No. Rekening</td>
                     <td>
                       <input
-                        type="text"
+                        type="number"
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                         className="input-text-ez"
                         onChange={handleChange}
                         defaultValue={detailPartner.mpartnerdtl_account_number}
@@ -1225,7 +1229,7 @@ function EditPartner() {
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
                         onFocus={() => setEditFee(!editFee)}
-                        min={0}
+                        // min={0}
                       />
                     }
                     {alertFee === true ?
@@ -1249,6 +1253,7 @@ function EditPartner() {
                         placeholder={"Rp 0"}
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
                         onBlur={() => setEditInput(!editInput)}
+                        min={0}
                         onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                       />
                     ) : (

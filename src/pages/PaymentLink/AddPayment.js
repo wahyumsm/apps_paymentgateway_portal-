@@ -355,6 +355,7 @@ function AddPayment() {
               type="number"
               name="nominal"
               min={10000}
+              onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
               onChange={handleChange}
               class={
                 (isNotCompleteData.nominal === true || isNotCompleteData.minNominal === true)
@@ -499,6 +500,7 @@ function AddPayment() {
               onChange={handleChange}
               name="useLimit"
               type="number"
+              onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
               min={1}
               step={1}
               className="input-text-user"
