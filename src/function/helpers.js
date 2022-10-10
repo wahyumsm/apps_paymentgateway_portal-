@@ -64,6 +64,15 @@ export const convertFormatNumber = (num) => {
     .join("");
 };
 
+export const convertFormatNumberPartner = (money) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 2,
+  })
+    .format(money)
+};
+
 export function errorCatch(statusCode) {
   const code = {
     401: "/login",

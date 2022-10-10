@@ -1138,10 +1138,10 @@ function RiwayatTransaksi() {
                             <Col style={{ fontWeight: 400 }}>Biaya Partner</Col>
                             <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
                         </Row>
-                        <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
+                        {/* <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
                             <Col style={{ fontWeight: 400 }}>Biaya Settlement</Col>
                             <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_partner_fee)}</Col>
-                        </Row>
+                        </Row> */}
                         <center>
                             <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, padding: "0px 24px", border: "1px dashed #EBEBEB" }} />
                         </center>

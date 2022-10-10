@@ -6,13 +6,14 @@ import axios from "axios";
 import {
   BaseURL,
   convertFormatNumber,
+  convertFormatNumberPartner,
   errorCatch,
   getRole,
   getToken,
   RouteTo,
   setUserSession,
 } from "../../function/helpers";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import encryptData from "../../function/encryptData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -53,7 +54,7 @@ function EditPartner() {
   const [alertFee, setAlertFee] = useState(false)
   const [alertSettlement, setAlertSettlement] = useState(false)
   const [inputHandle, setInputHandle] = useState({
-    id: detailPartner.mpartner_id,
+    id: partnerId,
     namaPerusahaan: detailPartner.mpartner_name,
     emailPerusahaan: detailPartner.mpartner_email,
     phoneNumber: detailPartner.mpartner_telp,
@@ -93,6 +94,8 @@ function EditPartner() {
       });
     }
   }
+
+  // console.log(inputHandle.noHp, "NO HP DIREKTUR");
 
   function handleChangeFee (e) {  
     if (e.target.name === "active") {
@@ -598,11 +601,11 @@ function EditPartner() {
     },
     {
       name: "Fee",
-      selector: (row) => row.fee,
+      selector: (row) => convertFormatNumberPartner(row.fee),
     },
     {
       name: "Settlement Fee",
-      selector: (row) => row.fee_settle,
+      selector: (row) => convertFormatNumberPartner(row.fee_settle),
       width: "150px",
     },
     {
@@ -891,14 +894,14 @@ function EditPartner() {
     <div className="container-content mt-5">
       {isDetailAkun ? (
         <span className="breadcrumbs-span">
-          <Link to={"/"}>Beranda</Link> &nbsp;
-          <img alt="" src={breadcrumbsIcon} /> &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;
+          Beranda &nbsp;
+          <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Partner &nbsp;
           <img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner
         </span>
       ) : (
         <span className="breadcrumbs-span">
-          <Link to={"/"}>Beranda</Link> &nbsp;
-          <img alt="" src={breadcrumbsIcon} /> &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;
+          Beranda &nbsp;
+          <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Partner &nbsp;
           <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen
         </span>
       )}
@@ -988,7 +991,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChange}
-                        defaultValue={detailPartner.mpartner_name}
+                        value={inputHandle.namaPerusahaan === undefined ? detailPartner.mpartner_name : inputHandle.namaPerusahaan}
                         name="namaPerusahaan"
                         style={{ width: "100%", marginLeft: "unset" }}
                       />
@@ -1002,7 +1005,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChange}
-                        defaultValue={detailPartner.mpartner_email}
+                        value={inputHandle.emailPerusahaan === undefined ? detailPartner.mpartner_email : inputHandle.emailPerusahaan}
                         name="emailPerusahaan"
                         style={{ width: "100%", marginLeft: "unset" }}
                       />
@@ -1014,12 +1017,12 @@ function EditPartner() {
                     <td>
                       <input
                         type="number"
-                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                         className="input-text-ez"
                         onChange={handleChange}
-                        defaultValue={detailPartner.mpartner_telp}
+                        value={inputHandle.phoneNumber === undefined ? detailPartner.mpartner_telp : inputHandle.phoneNumber}
                         name="phoneNumber"
                         style={{ width: "100%", marginLeft: "unset" }}
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                       />
                     </td>
                   </tr>
@@ -1031,7 +1034,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChange}
-                        defaultValue={detailPartner.mpartner_address}
+                        value={inputHandle.alamat === undefined ? detailPartner.mpartner_address : inputHandle.alamat}
                         name="alamat"
                         style={{ width: "100%", marginLeft: "unset" }}
                       />
@@ -1057,16 +1060,17 @@ function EditPartner() {
                     <td>
                       <input
                         type="number"
-                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                         className="input-text-ez"
                         onChange={handleChange}
                         defaultValue={
+                          // inputHandle.noNpwp === undefined ? detailPartner.mpartner_npwp : inputHandle.noNpwp
                           detailPartner.mpartner_npwp !== null
                             ? detailPartner.mpartner_npwp
                             : "-"
                         }
                         name="noNpwp"
                         style={{ width: "100%", marginLeft: "unset" }}
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                       />
                     </td>
                   </tr>
@@ -1079,6 +1083,7 @@ function EditPartner() {
                         className="input-text-ez"
                         onChange={handleChange}
                         defaultValue={
+                          // inputHandle.namaNpwp === undefined ? detailPartner.mpartner_npwp_name : inputHandle.namaNpwp
                           detailPartner.mpartner_npwp_name !== null
                             ? detailPartner.mpartner_npwp_name
                             : "-"
@@ -1110,7 +1115,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChange}
-                        defaultValue={detailPartner.mpartner_direktur}
+                        value={inputHandle.nama === undefined ? detailPartner.mpartner_direktur : inputHandle.nama}
                         name="nama"
                         style={{ width: "100%", marginLeft: "unset" }}
                       />
@@ -1122,12 +1127,12 @@ function EditPartner() {
                     <td>
                       <input
                         type="number"
-                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                         className="input-text-ez"
                         onChange={handleChange}
-                        defaultValue={detailPartner.mpartner_direktur_telp}
+                        value={inputHandle.noHp === undefined ? detailPartner.mpartner_direktur_telp : inputHandle.noHp}
                         name="noHp"
                         style={{ width: "100%", marginLeft: "unset" }}
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                       />
                     </td>
                   </tr>
@@ -1165,12 +1170,12 @@ function EditPartner() {
                     <td>
                       <input
                         type="number"
-                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                         className="input-text-ez"
                         onChange={handleChange}
-                        defaultValue={detailPartner.mpartnerdtl_account_number}
+                        value={inputHandle.akunBank === undefined ? detailPartner.mpartnerdtl_account_number : inputHandle.akunBank}
                         name="akunBank"
                         style={{ width: "100%", marginLeft: "unset" }}
+                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                       />
                     </td>
                   </tr>
@@ -1182,7 +1187,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChange}
-                        defaultValue={detailPartner.mpartnerdtl_account_name}
+                        value={inputHandle.rekeningOwner === undefined ? detailPartner.mpartnerdtl_account_name : inputHandle.rekeningOwner}
                         name="rekeningOwner"
                         style={{ width: "100%", marginLeft: "unset" }}
                       />
@@ -1212,24 +1217,24 @@ function EditPartner() {
                         type="number"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(inputHandle.fee.length === 0) ? "" : parseInt(inputHandle.fee)}
+                        value={(inputHandle.fee.length === 0) ? "" : (inputHandle.fee)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
                         onBlur={() => setEditFee(!editFee)}
                         min={0}
-                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                        onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                       /> :
                       <input
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(inputHandle.fee.length === 0) ? "" : convertFormatNumber(parseInt(inputHandle.fee))}
+                        value={(inputHandle.fee.length === 0) ? "" : convertFormatNumberPartner(inputHandle.fee)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
                         onFocus={() => setEditFee(!editFee)}
-                        // min={0}
+                        min={0}
                       />
                     }
                     {alertFee === true ?
@@ -1248,21 +1253,20 @@ function EditPartner() {
                         type="number"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(inputHandle.settlementFee.length === 0) ? "" : parseInt(inputHandle.settlementFee)}
+                        value={(inputHandle.settlementFee.length === 0) ? "" : (inputHandle.settlementFee)}
                         name="settlementFee"
                         placeholder={"Rp 0"}
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
                         onBlur={() => setEditInput(!editInput)}
-                        min={0}
-                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                        onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                       />
                     ) : (
                       <input
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(inputHandle.settlementFee.length === 0) ? "" : convertFormatNumber(
-                          parseInt(inputHandle.settlementFee)
+                        value={(inputHandle.settlementFee.length === 0) ? "" : convertFormatNumberPartner(
+                          inputHandle.settlementFee
                         )}
                         name="settlementFee"
                         placeholder={"Rp 0"}
