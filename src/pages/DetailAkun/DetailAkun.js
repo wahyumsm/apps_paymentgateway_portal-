@@ -225,7 +225,7 @@ function DetailAkun() {
                 <div className='konfigurasi-section' style={{marginTop: 24}}>
                     <hr className='hr-style' style={{marginTop: -25}}/>
                     <div className='base-content'>
-                        <span>You will need to know your <b>Partner ID</b> and <b>Private Key</b> to communicate with Midtrans. Please use the Development server while you are still in development.</span>
+                        <span>You will need to know your <b>Partner ID</b> and <b>Secret Key</b> to communicate with Ezeelink. Please use the Development server while you are still in development.</span>
                         <br/>
                         <br/>
                         <p className='head-title'>API Keys</p>
@@ -239,12 +239,12 @@ function DetailAkun() {
                                         <td><span><b>{dataAkun.mpartner_id}</b></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Public Key</td>
+                                        <td>API Key</td>
                                         <td>:</td>
                                         <td><span><b>{dataAkun.public_key}</b></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Private Key</td>
+                                        <td>Secret Key</td>
                                         <td>:</td>
                                         <td><span><b>{dataAkun.private_key}</b></span></td>
                                     </tr>
@@ -264,7 +264,7 @@ function DetailAkun() {
                     </div>
                     <br/>
                     <div className="base-content mb-5">
-                        <p>Midtrans requires the URL endpoints for for the following scenarios:</p>
+                        <p>Ezeelink requires the URL endpoints for for the following scenarios:</p>
                         <br/>
                         <Row>
                             <Col xs={3}>

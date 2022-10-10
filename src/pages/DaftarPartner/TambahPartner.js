@@ -4,9 +4,7 @@ import { useHistory } from "react-router-dom";
 import encryptData from "../../function/encryptData";
 import {
   BaseURL,
-  convertFormatNumber,
   convertFormatNumberPartner,
-  convertToRupiah,
   errorCatch,
   getRole,
   getToken,
@@ -946,7 +944,7 @@ function toDashboard() {
                 <Form.Control
                   name="fee"
                   onChange={handleChangeFee}
-                  value={biayaHandle.fee.length === 0 ? "" : parseInt(biayaHandle.fee)}
+                  value={biayaHandle.fee.length === 0 ? "" : (biayaHandle.fee)}
                   placeholder="Rp. 0"
                   type="number"
                   style={{
@@ -956,14 +954,14 @@ function toDashboard() {
                     marginLeft: "unset",
                     borderColor: alertFee ? "red" : ""
                   }}
-                  onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                  onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                   min={0}
                   onBlur={() => setEditFee(!editFee)}                  
                 /> :
                 <Form.Control
                   name="fee"
                   onChange={handleChangeFee}
-                  value={biayaHandle.fee.length === 0 ? "" : convertFormatNumberPartner(parseInt(biayaHandle.fee))}
+                  value={biayaHandle.fee.length === 0 ? "" : convertFormatNumberPartner((biayaHandle.fee))}
                   placeholder="Rp. 0"
                   type="text"
                   style={{
@@ -998,7 +996,7 @@ function toDashboard() {
                 <Form.Control
                   name="settlementFee"
                   onChange={handleChangeSettlement}
-                  value={(biayaHandle.settlementFee.length === 0) ? "" : parseInt(biayaHandle.settlementFee)}
+                  value={(biayaHandle.settlementFee.length === 0) ? "" : (biayaHandle.settlementFee)}
                   placeholder="Rp. 0"
                   type="number"
                   style={{
@@ -1008,14 +1006,14 @@ function toDashboard() {
                     marginLeft: "unset",
                     borderColor: alertSettlement ? "red" : ""
                   }}
-                  onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                  onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                   min={0}
                   onBlur={() => setEditSettle(!editSettle)}
                 /> :
                 <Form.Control
                   name="settlementFee"
                   onChange={handleChangeSettlement}
-                  value={(biayaHandle.settlementFee.length === 0) ? "" : convertFormatNumberPartner(parseInt(biayaHandle.settlementFee))}
+                  value={(biayaHandle.settlementFee.length === 0) ? "" : convertFormatNumberPartner((biayaHandle.settlementFee))}
                   placeholder="Rp. 0"
                   type="text"
                   style={{

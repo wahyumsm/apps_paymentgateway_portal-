@@ -56,6 +56,10 @@ export default () => {
   const [pageNumberDanaMasuk, setPageNumberDanaMasuk] = useState({})
   const [totalPageDanaMasuk, setTotalPageDanaMasuk] = useState(0)
   const [isFilterDanaMasuk, setIsFilterDanaMasuk] = useState(false)
+  const [activePageSettlement, setActivePageSettlement] = useState(1)
+  const [pageNumberSettlement, setPageNumberSettlement] = useState({})
+  const [totalPageSettlement, setTotalPageSettlement] = useState(0)
+  const [isFilterSettlement, setIsFilterSettlement] = useState(false)
   const currentDate = new Date().toISOString().split('T')[0]
   const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
 
@@ -126,6 +130,18 @@ export default () => {
     }
   }
 
+  function handlePageChangeSettlement(page) {
+    // console.log(page, 'ini di gandle change page');
+    // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
+    if (isFilterSettlement) {
+        setActivePageSettlement(page)
+        filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, inputHandle.periodeSettlement, dateRangeSettlement, page, 0, inputHandle.statusDanaMasuk, inputHandle.fiturDanaMasuk)
+    } else {
+        setActivePageSettlement(page)
+        getSettlement(oneMonthAgo, currentDate)
+    }
+  }
+
   function getColors(length) {
     let colors = [];
 
@@ -193,7 +209,7 @@ export default () => {
         'Authorization' : auth
       }
       const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
-      // console.log(listTransferDana, 'ini list');
+      // console.log(listTransferDana, 'ini list dana masuk');
       if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token === null) {
         listTransferDana.data.response_data.results.list = listTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
         setPageNumberDanaMasuk(listTransferDana.data.response_data)
@@ -283,20 +299,25 @@ export default () => {
   async function getSettlement(oneMonthAgo, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_code":"", "tvasettl_status_id":0, "tvasettl_from":"${currentDate}", "tvasettl_to":"${currentDate}", "fitur_id": 0}`)
+      const dataParams = encryptData(`{"tvasettl_code":"", "statusID": [], "date_from":"${currentDate}", "date_to":"${currentDate}", "period": 2, "page": 1, "row_per_page": 10, "fitur_id": 0}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const dataSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
+      // console.log(dataSettlement, "data settlement");
       if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
-        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(dataSettlement.data.response_data)
+        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setPageNumberSettlement(dataSettlement.data.response_data)
+        setTotalPageSettlement(dataSettlement.data.response_data.max_page)
+        setListSettlement(dataSettlement.data.response_data.results)        
         setPendingSettlement(false)
       } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
         setUserSession(dataSettlement.data.response_new_token)
-        dataSettlement.data.response_data = dataSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(dataSettlement.data.response_data)
+        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setPageNumberSettlement(dataSettlement.data.response_data)
+        setTotalPageSettlement(dataSettlement.data.response_data.max_page)
+        setListSettlement(dataSettlement.data.response_data.results)
         setPendingSettlement(false)
       }
     } catch (error) {
@@ -330,7 +351,7 @@ export default () => {
 
   async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, fiturDanaMasuk) {
     try {
-      setPendingSettlement(true)
+      setPendingTransfer(true)
       setIsFilterDanaMasuk(true)
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "fitur_id": ${fiturDanaMasuk}}`)
@@ -347,14 +368,14 @@ export default () => {
         setPageNumberDanaMasuk(filterTransferDana.data.response_data)
         setTotalPageDanaMasuk(filterTransferDana.data.response_data.max_page)
         setListTransferDana(filterTransferDana.data.response_data.results.list)
-        setPendingSettlement(false)
+        setPendingTransfer(false)
       } else if (filterTransferDana.status === 200 && filterTransferDana.data.response_code === 200 && filterTransferDana.data.response_new_token !== null) {
         setUserSession(filterTransferDana.data.response_new_token)
         filterTransferDana.data.response_data.results.list = filterTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
         setPageNumberDanaMasuk(filterTransferDana.data.response_data)
         setTotalPageDanaMasuk(filterTransferDana.data.response_data.max_page)
         setListTransferDana(filterTransferDana.data.response_data.results.list)
-        setPendingSettlement(false)
+        setPendingTransfer(false)
       }
     } catch (error) {
       // console.log(error)
@@ -362,23 +383,31 @@ export default () => {
     }
   }
 
-  async function filterSettlementButtonHandle(idTransaksi, periode, status, fitur) {
+  async function filterSettlementButtonHandle(idTransaksi, periode, dateId, page, rowPerPage, status, fitur) {
     // console.log("ini filter settlement");
+    setPendingSettlement(true)
+    setIsFilterSettlement(true)
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "tvasettl_status_id":${(status.length !== 0) ? status : 0}, "tvasettl_from":"${(periode.length !== 0) ? periode[0] : ""}", "tvasettl_to":"${(periode.length !== 0) ? periode[1] : ""}", "fitur_id":${fitur}}`)
+      const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "statusID": [${(status.length !== 0) ? status : []}], "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to":"${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id":${fitur}}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
       }
       const filterSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
       if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
-        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(filterSettlement.data.response_data)
+        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data.results)
+        setTotalPageSettlement(filterSettlement.data.response_data.max_page)
+        setPageNumberSettlement(filterSettlement.data.response_data)
+        setPendingSettlement(false)
       } else if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length !== 0) {
         setUserSession(filterSettlement.data.response_new_token)
-        filterSettlement.data.response_data = filterSettlement.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setListSettlement(filterSettlement.data.response_data)
+        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setListSettlement(filterSettlement.data.response_data.results)
+        setTotalPageSettlement(filterSettlement.data.response_data.max_page)
+        setPageNumberSettlement(filterSettlement.data.response_data)
+        setPendingSettlement(false)
       }
     } catch (error) {
       // console.log(error)
@@ -403,7 +432,8 @@ export default () => {
       setInputHandle({
           ...inputHandle,
           idTransaksiSettlement: "",
-          statusSettlement: "",
+          statusSettlement: [],
+          periodeSettlement: 0, 
           fiturSettlement: 0
       })
       setStateSettlement(null)
@@ -525,7 +555,7 @@ export default () => {
     },
     {
       name: 'Jenis Transaksi',
-      selector: row => row.fitur_desc,
+      selector: row => row.mfitur_desc,
       // sortable: true
     },
     {
@@ -570,9 +600,9 @@ export default () => {
       },
   };
 
-  function exportReportTransferDanaMasukHandler(isFilter, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, fiturDanaMasuk) {
+  function exportReportTransferDanaMasukHandler(isFilter, partnerId, idTransaksi, namaAgen, dateId, periode, status, fiturDanaMasuk) {
     if (isFilter) {
-      async function exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, fiturDanaMasuk) {
+      async function exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, fiturDanaMasuk) {
         try {
           const auth = "Bearer " + getToken()
           const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": 1, "row_per_page": 1000000, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "fitur_id": ${fiturDanaMasuk}}`)
@@ -611,7 +641,7 @@ export default () => {
           history.push(errorCatch(error.response.status))
         }
       }
-      exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, fiturDanaMasuk)
+      exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, fiturDanaMasuk)
     } else {
       async function exportGetListTransferDana(partnerId) {
         try {
@@ -654,28 +684,79 @@ export default () => {
       }
       exportGetListTransferDana(partnerId)
     }
-  } 
+  }
 
-  // function exportReportTransferDanaMasukHandler(data) {
-  //   let dataExcel = []
-  //   for (let i = 0; i < data.length; i++) {
-  //     dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, Waktu: data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
-  //   }
-  //   let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-  //   let workBook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-  //   XLSX.writeFile(workBook, "Report Transfer Dana Masuk.xlsx");
-  // }
-
-  function exportReportSettlementHandler(data) {
-    let dataExcel = []
-    for (let i = 0; i < data.length; i++) {
-      dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt, Jumlah: data[i].tvasettl_amount, Status: data[i].mstatus_name })
+  function exportReportSettlementHandler(isFilter, idTransaksi, periode, dateId, status, fitur, oneMonthAgo, currentDate) {
+    if (isFilter) {
+      async function exportFilterSettlement(idTransaksi, periode, dateId, status, fitur) {
+        try {
+          const auth = "Bearer " + getToken()
+          const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "statusID": [${(status.length !== 0) ? status : []}], "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to":"${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": 1, "row_per_page": 1000000, "fitur_id":${fitur}}`)
+          const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+          }
+          const dataExportFilter = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
+          if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
+            const data = dataExportFilter.data.response_data.results = dataExportFilter.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+            let dataExcel = []
+            for (let i = 0; i < data.length; i++) {
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+          } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {            
+            setUserSession(dataExportFilter.data.response_new_token)
+            const data = dataExportFilter.data.response_data.results = dataExportFilter.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+            let dataExcel = []
+            for (let i = 0; i < data.length; i++) {
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+          }
+        } catch (error) {
+          // console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+      }
+      exportFilterSettlement(idTransaksi, periode, dateId, status, fitur)
+    } else {
+      async function exportGetSettlement(oneMonthAgo, currentDate) {
+        try {
+          const auth = "Bearer " + getToken()
+          const dataParams = encryptData(`{"tvasettl_code":"", "statusID": [], "date_from":"${currentDate}", "date_to":"${currentDate}", "period": 2, "page": 1, "row_per_page": 1000000, "fitur_id": 0}`)
+          const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+          }
+          const dataSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
+          // console.log(dataSettlement, "data settlement");
+          if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
+            dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+            setPageNumberSettlement(dataSettlement.data.response_data)
+            setTotalPageSettlement(dataSettlement.data.response_data.max_page)
+            setListSettlement(dataSettlement.data.response_data.results)        
+            setPendingSettlement(false)
+          } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
+            setUserSession(dataSettlement.data.response_new_token)
+            dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+            setPageNumberSettlement(dataSettlement.data.response_data)
+            setTotalPageSettlement(dataSettlement.data.response_data.max_page)
+            setListSettlement(dataSettlement.data.response_data.results)
+            setPendingSettlement(false)
+          }
+        } catch (error) {
+          // console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+      }
+      exportGetSettlement(oneMonthAgo, currentDate)
     }
-    let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-    let workBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-    XLSX.writeFile(workBook, "Report Settlement.xlsx");
   }
 
   const CustomLoader = () => (
@@ -888,7 +969,7 @@ export default () => {
               // listTransferDana.length !== 0 &&
               listTransferDana !== undefined &&
               <div>
-                <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
+                <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
               </div>
             }
             <br/>
@@ -1006,7 +1087,7 @@ export default () => {
               <Col xs={4}>
                 <span>Jenis Transaksi</span>
                 <Form.Select name="fiturSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
-                  <option defaultValue value={0}>Pilih Status</option>
+                  <option defaultValue value={0}>Pilih Jenis Transaksi</option>
                   <option value={104}>Payment Link</option>
                   <option value={100}>VA Partner</option>
                 </Form.Select>
@@ -1024,9 +1105,9 @@ export default () => {
                     <Row>
                         <Col xs={6}>
                             <button
-                              onClick={() => filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, dateRangeSettlement, inputHandle.statusSettlement, inputHandle.fiturSettlement)}
-                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.fiturSettlement.length === 0}
+                              onClick={() => filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, dateRangeSettlement, inputHandle.periodeSettlement, 1, 0, inputHandle.statusSettlement, inputHandle.fiturSettlement)}
+                              className={(inputHandle.periodeSettlement !== 0 || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0}
                             >
                               Terapkan
                             </button>
@@ -1034,8 +1115,8 @@ export default () => {
                         <Col xs={6}>
                             <button
                               onClick={() => resetButtonHandle("Settlement")}
-                              className={(dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) ? "btn-reset" : "btn-ez"}
-                              disabled={dateRangeSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.idTransaksiSettlement.length === 0 || dateRangeSettlement.length === 0 && inputHandle.statusSettlement.length === 0}
+                              className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-reset" : "btn-ez"}
+                              disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0}
                             >
                               Atur Ulang
                             </button>
@@ -1044,9 +1125,9 @@ export default () => {
                 </Col>
             </Row>
             {
-              listSettlement.length !== 0 &&
+              listSettlement.length !== undefined &&
               <div>
-                <Link onClick={() => exportReportSettlementHandler(listSettlement)} className="export-span">Export</Link>
+                <Link onClick={() => exportReportSettlementHandler(isFilterSettlement, inputHandle.idTransaksiSettlement, dateRangeSettlement, inputHandle.periodeSettlement, inputHandle.statusSettlement, inputHandle.fiturSettlement, oneMonthAgo, currentDate)} className="export-span">Export</Link>
               </div>
             }
             <br/>
@@ -1056,10 +1137,21 @@ export default () => {
                     columns={columnsSettlement}
                     data={listSettlement}
                     customStyles={customStyles}
-                    pagination
                     progressPending={pendingSettlement}
                     progressComponent={<CustomLoader />}
                 />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlement}</div>
+              <Pagination
+                  activePage={activePageSettlement}
+                  itemsCountPerPage={pageNumberSettlement.row_per_page}
+                  totalItemsCount={(pageNumberSettlement.row_per_page*pageNumberSettlement.max_page)}
+                  pageRangeDisplayed={5}
+                  itemClass="page-item"
+                  linkClass="page-link"
+                  onChange={handlePageChangeSettlement}
+              />
             </div>
         </div>
       </div>

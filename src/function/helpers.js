@@ -64,17 +64,13 @@ export const convertFormatNumber = (num) => {
     .join("");
 };
 
-export const convertFormatNumberPartner = (num) => {
-  let rupiah = "";
-  let format = ",00"
-  let angkaRev = num.toString().split("").reverse().join("");
-  for (var i = 0; i < angkaRev.length; i++)
-    if (i % 3 === 0) rupiah += angkaRev.substr(i, 3) + ".";
-  return (rupiah
-    .split("", rupiah.length - 1)
-    .reverse()
-    .join(""))
-    .concat(format);
+export const convertFormatNumberPartner = (money) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 2,
+  })
+    .format(money)
 };
 
 export function errorCatch(statusCode) {

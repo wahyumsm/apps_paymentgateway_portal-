@@ -482,7 +482,7 @@ export default (props) => {
                               key={item.mpartballchannel_id}
                               className="fw-bold"
                             >
-                              <div className="mt-1 d-flex justify-content-center align-items-center">
+                              <div className="mt-1 d-flex justify-content-flex-start align-items-center">
                                 <div className="me-2" style={{borderRadius: "50%", background: "#077E86", width: 10, height: 10}}></div>
                                 <div style={{fontSize: 14, fontFamily: "Nunito", fontWeight: 400, color: "#383838"}}>Alokasi Saldo di {item.mpaytype_name}</div>
                               </div>

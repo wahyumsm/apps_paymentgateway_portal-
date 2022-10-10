@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row, Image} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, convertFormatNumberPartner, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumberPartner, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
