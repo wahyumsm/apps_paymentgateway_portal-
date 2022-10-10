@@ -103,8 +103,12 @@ function AlokasiSaldo() {
         setTujuanAlokasiSaldo(e.target.value)
     }
 
-    function sortingHandle(sortColumn, value, isFilter, dateId, dateRange, payTypeId) {
+    function sortingHandle(sortColumn, value, isFilter, dateId, dateRange, payTypeId, channelDisburse) {
         setIsSorting(true)
+        let newPayTypeId = []
+        if (payTypeId === 0) {
+            channelDisburse.forEach(item => newPayTypeId.push(item.mpaytype_id))
+        }
         if (sortColumn === "tpartballchannel_crtdt" && !isFilter) {
             setIsDesc({
                 ...isDesc,
@@ -112,7 +116,7 @@ function AlokasiSaldo() {
                 orderIdTanggal: value,
                 orderIdStatus: true
             })
-            historyAlokasiSaldo(1, value, sortColumn)
+            historyAlokasiSaldo(1, value, sortColumn, (payTypeId === 0 ? newPayTypeId : payTypeId))
         } else if (sortColumn === "tpartballchannel_crtdt" && isFilter) {
             setIsDesc({
                 ...isDesc,
@@ -120,7 +124,7 @@ function AlokasiSaldo() {
                 orderIdTanggal: value,
                 orderIdStatus: true
             })
-            filterHistoryAlokasiSaldo(1, dateId, dateRange, payTypeId, value, sortColumn)
+            filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn)
         } else if (sortColumn === "mstatus_name" && !isFilter) {
             setIsDesc({
                 ...isDesc,
@@ -128,7 +132,7 @@ function AlokasiSaldo() {
                 orderIdTanggal: true,
                 orderIdStatus: value
             })
-            historyAlokasiSaldo(1, value, sortColumn)
+            historyAlokasiSaldo(1, value, sortColumn, (payTypeId === 0 ? newPayTypeId : payTypeId))
         } else if (sortColumn === "mstatus_name" && isFilter) {
             setIsDesc({
                 ...isDesc,
@@ -136,16 +140,20 @@ function AlokasiSaldo() {
                 orderIdTanggal: true,
                 orderIdStatus: value
             })
-            filterHistoryAlokasiSaldo(1, dateId, dateRange, payTypeId, value, sortColumn)
+            filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn)
         }
     }
 
-    function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending) {
+    function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse) {
         setActivePageRiwayatAlokasiSaldo(page)
+        let newPayTypeId = []
+        if (payTypeId === 0) {
+            channelDisburse.forEach(item => newPayTypeId.push(item.mpaytype_id))
+        }
         if (isFilter) {
-            filterHistoryAlokasiSaldo(page, detId, dateRange, payTypeId, (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField)
+            filterHistoryAlokasiSaldo(page, detId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField)
         } else if (!isFilter) {
-            historyAlokasiSaldo(page, (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField)
+            historyAlokasiSaldo(page, (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField, (payTypeId === 0 ? newPayTypeId : payTypeId))
         }
     }
 
@@ -345,13 +353,19 @@ function AlokasiSaldo() {
                 'Authorization' : auth
             }
             const disbursementChannel = await axios.post(BaseURL + "/Partner/ListDisburseChannel", { data: "" }, { headers: headers })
-            console.log(disbursementChannel, 'disbursement channel');
+            // console.log(disbursementChannel, 'disbursement channel');
             if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length === 0) {
                 setDisbursementChannel(disbursementChannel.data.response_data)
+                let payTypeId = []
+                disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.mpaytype_id)))
+                historyAlokasiSaldo(1, true, isDesc.orderField, payTypeId)
             } else if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length !== 0) {
                 setUserSession(disbursementChannel.data.response_new_token)
                 setDisbursementChannel(disbursementChannel.data.response_data)
-            }
+                let payTypeId = []
+                disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.mpaytype_id)))
+                historyAlokasiSaldo(1, true, isDesc.orderField, payTypeId)
+    }
         } catch (error) {
             // console.log(error);
         }
@@ -415,7 +429,7 @@ function AlokasiSaldo() {
         }
     }
 
-    async function historyAlokasiSaldo(currentPage, isDescending, orderField) {
+    async function historyAlokasiSaldo(currentPage, isDescending, orderField, payTypeId) {
         try {
             if ((isDescending === undefined && orderField === undefined) || (isDescending === true && orderField === "tpartballchannel_crtdt")) {
                 isDescending = 0
@@ -440,7 +454,7 @@ function AlokasiSaldo() {
                 "order_id": ${isDescending},
                 "order_field": "${orderField}",
                 "statusID": [ "1", "2" ],
-                "paytypeID": [ "31", "32", "33" ]
+                "paytypeID": [${payTypeId}]
             }`)
             const headers = {
                 'Content-Type':'application/json',
@@ -472,8 +486,13 @@ function AlokasiSaldo() {
         try {
             setIsFilterHistory(true)
             setPendingAlokasiSaldo(true)
+            // console.log(disbursementChannel, 'ini disburchannel dari luar');
+            let newPayTypeId = []
+            if (payTypeId === 0) {
+                disbursementChannel.forEach(item => newPayTypeId.push(item.mpaytype_id))
+            }
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${(isDescending === undefined || isDescending) ? 0 : 1}, "order_field": "${(orderField === undefined) ? "tpartballchannel_crtdt" : orderField}", "statusID": [ "1", "2" ], "paytypeID": [ ${(payTypeId === 0) ? ["31", "32", "33"] : payTypeId} ] }`)
+            const dataParams = encryptData(`{ "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${(isDescending === undefined || isDescending) ? 0 : 1}, "order_field": "${(orderField === undefined) ? "tpartballchannel_crtdt" : orderField}", "statusID": [ "1", "2" ], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -503,93 +522,92 @@ function AlokasiSaldo() {
     useEffect(() => {
         getBalance()
         getDisbursementChannel()
-        historyAlokasiSaldo(1, true, isDesc.orderField)
     }, [])
 
-    const columnsRiwayatAlokasiSaldo = [
-        {
-            name: 'No',
-            selector: row => row.number,
-            width: "57px",
-            style: { justifyContent: "center" }
-        },
-        {
-            name: 'Tanggal Alokasi',
-            selector: row => row.tpartballchannel_crtdt_format,
-            // sortable: true
-            width: "150px",
-            style: { justifyContent: "center" }
-        },
-        {
-            name: 'Tujuan Alokasi',
-            selector: row => row.mpaytype_name,
-            // sortable: true
-            width: "150px",
-            style: { justifyContent: "center" }
-        },
-        {
-            name: 'Total Alokasi',
-            selector: row => row.tpartballchannel_amount_rp,
-            style: { justifyContent: "flex-end" },
-            width: "150px",
-            // sortable: true,
-        },
-        {
-            name: 'Saldo Awal Tersedia',
-            selector: row => row.tpartballchannel_balance_before_rp,
-            width: "224px",
-            style: { justifyContent: "flex-end", },
-            // sortable: true,
-        },
-        {
-            name: 'Sisa Saldo Tersedia',
-            selector: row => row.tpartballchannel_balance_after_rp,
-            width: "224px",
-            style: { justifyContent: "flex-end", },
-            // sortable: true,
-        },
-        {
-            name: 'Status',
-            selector: row => row.mstatus_name,
-            // cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
-            // width: "150px",
-            // sortable: true,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
-            conditionalCellStyles: [
-                {
-                    when: row => row.tpartballchannel_status_id === 2,
-                    style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
-                },
-                {
-                    when: row => row.tpartballchannel_status_id === 1 || row.tpartballchannel_status_id === 7, 
-                    className: ['detailStatus'],
-                    style: { cursor:"pointer", textDecoration: "underline", background: "rgba(247, 148, 33, 0.08)", paddingLeft: "unset", '&:hover': {cursor: 'pointer', backgroundColor: '#FFFFFF'},},
-                    option: {'&:hover': {backgroundColor: "#FFFFFF"} }
-                },
-                {
-                    when: row => row.tpartballchannel_status_id === 4,
-                    style: { background: "rgba(185, 18, 27, 0.08)", paddingLeft: "unset" }
-                },
-                {
-                    when: row => row.tpartballchannel_status_id === 3 || row.tpartballchannel_status_id === 5 || row.tpartballchannel_status_id === 6 || row.tpartballchannel_status_id === 8 || row.tpartballchannel_status_id === 9 || row.tpartballchannel_status_id === 10 || row.tpartballchannel_status_id === 11 || row.tpartballchannel_status_id === 12 || row.tpartballchannel_status_id === 13 || row.tpartballchannel_status_id === 14 || row.tpartballchannel_status_id === 15,
-                    style: { background: "#F0F0F0", paddingLeft: "unset" }
-                }
-            ],
-        },
-    ];
+    // const columnsRiwayatAlokasiSaldo = [
+    //     {
+    //         name: 'No',
+    //         selector: row => row.number,
+    //         width: "57px",
+    //         style: { justifyContent: "center" }
+    //     },
+    //     {
+    //         name: 'Tanggal Alokasi',
+    //         selector: row => row.tpartballchannel_crtdt_format,
+    //         // sortable: true
+    //         width: "150px",
+    //         style: { justifyContent: "center" }
+    //     },
+    //     {
+    //         name: 'Tujuan Alokasi',
+    //         selector: row => row.mpaytype_name,
+    //         // sortable: true
+    //         width: "150px",
+    //         style: { justifyContent: "center" }
+    //     },
+    //     {
+    //         name: 'Total Alokasi',
+    //         selector: row => row.tpartballchannel_amount_rp,
+    //         style: { justifyContent: "flex-end" },
+    //         width: "150px",
+    //         // sortable: true,
+    //     },
+    //     {
+    //         name: 'Saldo Awal Tersedia',
+    //         selector: row => row.tpartballchannel_balance_before_rp,
+    //         width: "224px",
+    //         style: { justifyContent: "flex-end", },
+    //         // sortable: true,
+    //     },
+    //     {
+    //         name: 'Sisa Saldo Tersedia',
+    //         selector: row => row.tpartballchannel_balance_after_rp,
+    //         width: "224px",
+    //         style: { justifyContent: "flex-end", },
+    //         // sortable: true,
+    //     },
+    //     {
+    //         name: 'Status',
+    //         selector: row => row.mstatus_name,
+    //         // cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
+    //         // width: "150px",
+    //         // sortable: true,
+    //         style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
+    //         conditionalCellStyles: [
+    //             {
+    //                 when: row => row.tpartballchannel_status_id === 2,
+    //                 style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
+    //             },
+    //             {
+    //                 when: row => row.tpartballchannel_status_id === 1 || row.tpartballchannel_status_id === 7, 
+    //                 className: ['detailStatus'],
+    //                 style: { cursor:"pointer", textDecoration: "underline", background: "rgba(247, 148, 33, 0.08)", paddingLeft: "unset", '&:hover': {cursor: 'pointer', backgroundColor: '#FFFFFF'},},
+    //                 option: {'&:hover': {backgroundColor: "#FFFFFF"} }
+    //             },
+    //             {
+    //                 when: row => row.tpartballchannel_status_id === 4,
+    //                 style: { background: "rgba(185, 18, 27, 0.08)", paddingLeft: "unset" }
+    //             },
+    //             {
+    //                 when: row => row.tpartballchannel_status_id === 3 || row.tpartballchannel_status_id === 5 || row.tpartballchannel_status_id === 6 || row.tpartballchannel_status_id === 8 || row.tpartballchannel_status_id === 9 || row.tpartballchannel_status_id === 10 || row.tpartballchannel_status_id === 11 || row.tpartballchannel_status_id === 12 || row.tpartballchannel_status_id === 13 || row.tpartballchannel_status_id === 14 || row.tpartballchannel_status_id === 15,
+    //                 style: { background: "#F0F0F0", paddingLeft: "unset" }
+    //             }
+    //         ],
+    //     },
+    // ];
 
-    const customStyles = {
-        headCells: {
-            style: {
-                backgroundColor: '#F2F2F2',
-                border: '12px',
-                fontWeight: 'bold',
-                fontSize: '16px',
-                display: 'flex',
-                justifyContent: 'center',
-            },
-        },
-    };
+    // const customStyles = {
+    //     headCells: {
+    //         style: {
+    //             backgroundColor: '#F2F2F2',
+    //             border: '12px',
+    //             fontWeight: 'bold',
+    //             fontSize: '16px',
+    //             display: 'flex',
+    //             justifyContent: 'center',
+    //         },
+    //     },
+    // };
 
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
@@ -899,7 +917,7 @@ function AlokasiSaldo() {
                                     <thead style={{ height: 50 }}>
                                         <tr>
                                             <th style={{ width: 55, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>No</th>
-                                            <th onClick={() => sortingHandle("tpartballchannel_crtdt", !isDesc.orderIdTanggal, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo)} style={{ width: 155, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
+                                            <th onClick={() => sortingHandle("tpartballchannel_crtdt", !isDesc.orderIdTanggal, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel)} style={{ width: 155, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
                                                 Tanggal Alokasi
                                                 {
                                                     isDesc.orderIdTanggal ?
@@ -911,7 +929,7 @@ function AlokasiSaldo() {
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Total Alokasi</th>
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Saldo Awal Tersedia</th>
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Sisa Saldo Tersedia</th>
-                                            <th onClick={() => sortingHandle("mstatus_name", !isDesc.orderIdStatus, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo)} style={{ width: 155, textAlign: "center", background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
+                                            <th onClick={() => sortingHandle("mstatus_name", !isDesc.orderIdStatus, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel)} style={{ width: 155, textAlign: "center", background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
                                                 Status
                                                 {
                                                     isDesc.orderIdStatus ?
@@ -1137,7 +1155,7 @@ function AlokasiSaldo() {
                                     pageRangeDisplayed={5}
                                     itemClass="page-item"
                                     linkClass="page-link"
-                                    onChange={(e) => handlePageChangeAlokasiSaldo(e, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, isDesc)}
+                                    onChange={(e) => handlePageChangeAlokasiSaldo(e, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, isDesc, disbursementChannel)}
                                 />
                             </div>
                         }
