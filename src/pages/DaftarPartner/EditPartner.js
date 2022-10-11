@@ -97,7 +97,7 @@ function EditPartner() {
 
   // console.log(inputHandle.noHp, "NO HP DIREKTUR");
 
-  function handleChangeFee (e) {  
+  function handleChangeFee (e) {
     if (e.target.name === "active") {
       setAlertFee(false)
       setInputHandle({
