@@ -618,7 +618,7 @@ export default () => {
             const data = dataExportFilter.data.response_data.results.list
             let dataExcel = []
             for (let i = 0; i < data.length; i++) {
-                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
             }
             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
             let workBook = XLSX.utils.book_new();
@@ -629,7 +629,7 @@ export default () => {
             const data = dataExportFilter.data.response_data.results.list
             let dataExcel = []
             for (let i = 0; i < data.length; i++) {
-                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
             }
             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
             let workBook = XLSX.utils.book_new();
@@ -657,7 +657,7 @@ export default () => {
             const data = dataExportDefault.data.response_data.results.list
             let dataExcel = []
             for (let i = 0; i < data.length; i++) {
-                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
             }
             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
             let workBook = XLSX.utils.book_new();
@@ -669,7 +669,7 @@ export default () => {
             const data = dataExportDefault.data.response_data.results.list
             let dataExcel = []
             for (let i = 0; i < data.length; i++) {
-                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Total Akhir": data[i].amount, Status: data[i].status })
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Nama Agen": data[i].name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
             }
             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
             let workBook = XLSX.utils.book_new();
@@ -701,7 +701,7 @@ export default () => {
             const data = dataExportFilter.data.response_data.results = dataExportFilter.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
             let dataExcel = []
             for (let i = 0; i < data.length; i++) {
-                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
             }
             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
             let workBook = XLSX.utils.book_new();
@@ -712,7 +712,7 @@ export default () => {
             const data = dataExportFilter.data.response_data.results = dataExportFilter.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
             let dataExcel = []
             for (let i = 0; i < data.length; i++) {
-                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
             }
             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
             let workBook = XLSX.utils.book_new();
@@ -737,18 +737,26 @@ export default () => {
           const dataSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
           // console.log(dataSettlement, "data settlement");
           if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
-            dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-            setPageNumberSettlement(dataSettlement.data.response_data)
-            setTotalPageSettlement(dataSettlement.data.response_data.max_page)
-            setListSettlement(dataSettlement.data.response_data.results)        
-            setPendingSettlement(false)
+            const data = dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+            let dataExcel = []
+            for (let i = 0; i < data.length; i++) {
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
           } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
             setUserSession(dataSettlement.data.response_new_token)
-            dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-            setPageNumberSettlement(dataSettlement.data.response_data)
-            setTotalPageSettlement(dataSettlement.data.response_data.max_page)
-            setListSettlement(dataSettlement.data.response_data.results)
-            setPendingSettlement(false)
+            const data = dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+            let dataExcel = []
+            for (let i = 0; i < data.length; i++) {
+                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
           }
         } catch (error) {
           // console.log(error)
