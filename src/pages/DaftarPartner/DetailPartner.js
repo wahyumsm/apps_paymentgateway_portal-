@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useCallback} from 'react'
+import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row, Image} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
@@ -12,6 +12,7 @@ import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import edit from '../../assets/icon/edit_icon.svg';
 import deleted from '../../assets/icon/delete_icon.svg'
+import FilterComponent from '../../components/FilterComponent';
 
 function DetailPartner() {
 
@@ -26,6 +27,23 @@ function DetailPartner() {
     const [fiturType, setFiturType] = useState({})
     const [expanded, setExpanded] = useState(false)
     const myRef = useRef(null)
+    const [filterText, setFilterText] = React.useState('');
+    const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
+    const filteredItems = listAgen.filter(
+        item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
+    );
+
+    const subHeaderComponentMemo = useMemo(() => {
+        const handleClear = () => {
+            if (filterText) {
+                setResetPaginationToggle(!resetPaginationToggle);
+                setFilterText('');
+            }
+        };
+        return (
+            <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Data Agen :" placeholder="Masukkan Nama Agen" />
+        );	}, [filterText, resetPaginationToggle]
+    );
 
     const showCheckboxes = () => {
         if (!expanded) {
@@ -539,35 +557,21 @@ function DetailPartner() {
                 </> : 
                 <> 
                     <hr className='hr-style' style={{marginTop: -2}}/>
-                    <div className='base-content mt-5 mb-5'>   
-                        <div className='search-bar mb-5'>
-                            <Row>
-                                <Col xs={3} >
-                                    <span className='h5'>
-                                        Cari Data Agen :
-                                    </span>
-                                </Col>
-                                <Col xs={6}>
-                                    <Form.Control
-                                        placeholder="Masukkan Nama Agen"
-                                        aria-label="Masukkan Nama Agen"
-                                        aria-describedby="basic-addon2"
-                                        style={{marginTop: '-10px'}}
-                                        />
-                                </Col>
-                            </Row>
-                        </div>
+                    <div className='base-content mt-5 mb-5'>  
                         {
                         listAgen.length === 0 ?
                         <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
                         <div className="div-table">
                             <DataTable
-                            columns={columns}
-                            data={listAgen}
-                            customStyles={customStyles}
-                            noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                            pagination
-                            highlightOnHover
+                                columns={columns}
+                                data={filteredItems}
+                                customStyles={customStyles}
+                                noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                                pagination
+                                highlightOnHover
+                                progressComponent={<CustomLoader />}
+                                subHeader
+                                subHeaderComponent={subHeaderComponentMemo}
                             />
                         </div>
                         }
