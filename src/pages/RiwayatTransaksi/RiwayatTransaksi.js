@@ -1131,7 +1131,7 @@ function RiwayatTransaksi() {
                             <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_amount)}</Col>
                         </Row>
                         <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>
-                            <Col style={{ fontWeight: 400 }}>Biaya VA</Col>
+                            <Col style={{ fontWeight: 400 }}>Biaya {detailTransferDana.mfitur_name === "Payment Link" ? "Payment Link" : "VA"}</Col>
                             <Col style={{  display: "flex", justifyContent: "end", fontWeight: 600 }}>{convertToRupiah(detailTransferDana.tvatrans_bank_fee)}</Col>
                         </Row>
                         <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginTop: 12 }}>

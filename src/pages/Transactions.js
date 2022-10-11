@@ -135,10 +135,10 @@ export default () => {
     // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
     if (isFilterSettlement) {
         setActivePageSettlement(page)
-        filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, inputHandle.periodeSettlement, dateRangeSettlement, page, 0, inputHandle.statusDanaMasuk, inputHandle.fiturDanaMasuk)
+        filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, dateRangeSettlement, inputHandle.periodeSettlement, page, 0, inputHandle.statusDanaMasuk, inputHandle.fiturDanaMasuk)
     } else {
         setActivePageSettlement(page)
-        getSettlement(oneMonthAgo, currentDate)
+        getSettlement(page, currentDate)
     }
   }
 
@@ -296,10 +296,10 @@ export default () => {
 
   const datas = data.map((obj, id) => ({ ...obj, color: getColors(id+1).slice(-1)}))
 
-  async function getSettlement(oneMonthAgo, currentDate) {
+  async function getSettlement(currentPage, currentDate) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"tvasettl_code":"", "statusID": [], "date_from":"${currentDate}", "date_to":"${currentDate}", "period": 2, "page": 1, "row_per_page": 10, "fitur_id": 0}`)
+      const dataParams = encryptData(`{"tvasettl_code":"", "statusID": [], "date_from":"", "date_to":"", "period": 2, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -307,14 +307,14 @@ export default () => {
       const dataSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
       // console.log(dataSettlement, "data settlement");
       if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
-        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
         setPageNumberSettlement(dataSettlement.data.response_data)
         setTotalPageSettlement(dataSettlement.data.response_data.max_page)
         setListSettlement(dataSettlement.data.response_data.results)        
         setPendingSettlement(false)
       } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
         setUserSession(dataSettlement.data.response_new_token)
-        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
         setPageNumberSettlement(dataSettlement.data.response_data)
         setTotalPageSettlement(dataSettlement.data.response_data.max_page)
         setListSettlement(dataSettlement.data.response_data.results)
@@ -353,6 +353,7 @@ export default () => {
     try {
       setPendingTransfer(true)
       setIsFilterDanaMasuk(true)
+      setActivePageDanaMasuk(page)
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "fitur_id": ${fiturDanaMasuk}}`)
       // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
@@ -385,9 +386,10 @@ export default () => {
 
   async function filterSettlementButtonHandle(idTransaksi, periode, dateId, page, rowPerPage, status, fitur) {
     // console.log("ini filter settlement");
-    setPendingSettlement(true)
-    setIsFilterSettlement(true)
     try {
+      setPendingSettlement(true)
+      setIsFilterSettlement(true)
+      setActivePageSettlement(page)
       const auth = "Bearer " + getToken()
       const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "statusID": [${(status.length !== 0) ? status : []}], "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to":"${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id":${fitur}}`)
       const headers = {
@@ -396,14 +398,14 @@ export default () => {
       }
       const filterSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
       if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
-        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
         setListSettlement(filterSettlement.data.response_data.results)
         setTotalPageSettlement(filterSettlement.data.response_data.max_page)
         setPageNumberSettlement(filterSettlement.data.response_data)
         setPendingSettlement(false)
       } else if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length !== 0) {
         setUserSession(filterSettlement.data.response_new_token)
-        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
         setListSettlement(filterSettlement.data.response_data.results)
         setTotalPageSettlement(filterSettlement.data.response_data.max_page)
         setPageNumberSettlement(filterSettlement.data.response_data)
@@ -455,7 +457,7 @@ export default () => {
       history.push('/login');
     }
     userDetails()
-    getSettlement(oneMonthAgo, currentDate)
+    getSettlement(1, currentDate)
     getSettlementChart(oneMonthAgo, currentDate)
   }, [access_token])
 
