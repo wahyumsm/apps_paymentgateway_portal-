@@ -154,6 +154,13 @@ function DetailSettlement() {
             width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
             // sortable: true,
+        },        
+        {
+            name: 'Nama Bank',
+            selector: row => row.mbank_name,
+            width: "224px",
+            // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
+            // sortable: true,
         },
         {
             name: 'Nominal Settlement',

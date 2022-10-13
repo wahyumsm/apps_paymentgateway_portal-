@@ -18,6 +18,7 @@ function RiwayatTransaksi() {
     const access_token = getToken();
     const user_role = getRole();
     const [dataListPartner, setDataListPartner] = useState([])
+    const [listBank, setListBank] = useState([])
     const [dataListAgenFromPartner, setDataListAgenFromPartner] = useState([])
     const [dataRiwayatDanaMasuk, setDataRiwayatDanaMasuk] = useState([])
     const [dataRiwayatSettlement, setDataRiwayatSettlement] = useState([])
@@ -38,6 +39,7 @@ function RiwayatTransaksi() {
         statusSettlement: [],
         periodeDanaMasuk: 0,
         periodeSettlement: 0,
+        bankDanaMasuk: "",
         fiturDanaMasuk: 0,
         fiturSettlement: 0
     })
@@ -126,7 +128,7 @@ function RiwayatTransaksi() {
     function handlePageChangeDanaMasuk(page) {
         if (isFilterDanaMasuk) {
             setActivePageDanaMasuk(page)
-            filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.fiturDanaMasuk)
+            filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)
         } else {
             setActivePageDanaMasuk(page)
             riwayatDanaMasuk(page)
@@ -174,7 +176,7 @@ function RiwayatTransaksi() {
         // 7 -> pilih tanggal
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "bank_code": "", "fitur_id": 0}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -228,7 +230,26 @@ function RiwayatTransaksi() {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
+        }
     }
+
+    async function getBankNameHandler() {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const listBankName = await axios.post(BaseURL + "/Home/BankGetList", {data: ""}, { headers: headers });
+            if (listBankName.status === 200 && listBankName.data.response_code === 200 && listBankName.data.response_new_token.length === 0) {
+                setListBank(listBankName.data.response_data)
+            } else if (listBankName.status === 200 && listBankName.data.response_code === 200 && listBankName.data.response_new_token.length !== 0) {
+                setListBank(listBankName.data.response_data)
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
     }
 
     function pickDateDanaMasuk(item) {
@@ -247,14 +268,13 @@ function RiwayatTransaksi() {
         }
     }
 
-    async function filterRiwayatDanaMasuk(page, statusId, transId, partnerId, subPartnerId, dateId, periode, rowPerPage, fiturDanaMasuk) {
+    async function filterRiwayatDanaMasuk(page, statusId, transId, partnerId, subPartnerId, dateId, periode, rowPerPage, bankDanaMasuk, fiturDanaMasuk) {
         try {
             setPendingTransfer(true)
             setIsFilterDanaMasuk(true)
             setActivePageDanaMasuk(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturDanaMasuk}}`)
-            // console.log(dataParams, 'ini data params filter');
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "bank_code":"${bankDanaMasuk}", "fitur_id": ${fiturDanaMasuk}}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -324,6 +344,7 @@ function RiwayatTransaksi() {
                 namaAgenDanaMasuk: "",
                 statusDanaMasuk: [],
                 periodeDanaMasuk: 0,
+                bankDanaMasuk: "",
                 fiturDanaMasuk: 0
             })
             setStateDanaMasuk(null)
@@ -355,6 +376,7 @@ function RiwayatTransaksi() {
         listPartner()
         riwayatDanaMasuk(activePageDanaMasuk)
         riwayatSettlement(activePageSettlement)
+        getBankNameHandler()
     }, [access_token, user_role])
 
     async function detailListTransferHandler(partnerId) {
@@ -418,6 +440,13 @@ function RiwayatTransaksi() {
             // sortable: true,
             // width: "175px"
             width: "150px",
+        },
+        {
+            name: 'Nama Bank',
+            selector: row => row.mbank_name,
+            // sortable: true,
+            width: "175px"
+            // width: "150px",
         },
         {
             name: 'No VA',
@@ -625,12 +654,12 @@ function RiwayatTransaksi() {
         },
     };
 
-    function ExportReportTransferDanaMasukHandler(isFilter, statusId, transId, partnerId, subPartnerId, dateId, periode) {
+    function ExportReportTransferDanaMasukHandler(isFilter, statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId) {
         if (isFilter) {
-            async function dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode) {
+            async function dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "bank_code":"${bankName}", "fitur_id": ${fiturId}}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -663,12 +692,12 @@ function RiwayatTransaksi() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode)
+            dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId)
         } else {
             async function dataExportDanaMasuk() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "bank_code": "", "fitur_id": 0}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -874,9 +903,21 @@ function RiwayatTransaksi() {
                             </Form.Select>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col xs={4}></Col>
-                        <Col xs={4} className="mt-3">
+                    <Row className="mt-4">
+                        <Col xs={4} className="d-flex justify-content-start align-items-center">
+                            <span>Nama Bank</span>
+                            <Form.Select name='bankDanaMasuk' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.bankDanaMasuk} onChange={(e) => handleChange(e)}>
+                                <option defaultValue value={0}>Pilih Nama Bank</option>
+                                {
+                                    listBank.map((item, idx) => {
+                                        return (
+                                            <option key={idx} value={item.mbank_code}>{item.mbank_name}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Select>
+                        </Col>
+                        <Col xs={4} >
                             <div style={{ display: showDateDanaMasuk }}>
                                 <DateRangePicker 
                                     onChange={pickDateDanaMasuk}
@@ -892,9 +933,9 @@ function RiwayatTransaksi() {
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.fiturDanaMasuk)}
-                                        className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                                        onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)}
+                                        className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                     >
                                         Terapkan
                                     </button>
@@ -902,8 +943,8 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Dana Masuk")}
-                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
-                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0}
+                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
+                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                     >
                                         Atur Ulang
                                     </button>
@@ -914,7 +955,7 @@ function RiwayatTransaksi() {
                     {
                         dataRiwayatDanaMasuk.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportTransferDanaMasukHandler(isFilterDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk)} className="export-span">Export</Link>
+                            <Link onClick={() => ExportReportTransferDanaMasukHandler(isFilterDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
