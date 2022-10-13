@@ -521,26 +521,34 @@ export default () => {
     {
         name: 'Waktu',
         selector: row => row.created_at,
+        width: "145px"
     },
     {
-        name: 'Nama Agen',
-        selector: row => row.name,
+      name: 'Nama Agen',
+      selector: row => row.name,
+      style: { paddingRight: 'unset' },
+      width: "200px"
     },
     {
-        name: 'Nama Bank',
-        selector: row => row.bank_name,
+      name: 'Nama Bank',
+      selector: row => row.bank_name,
+      style: { paddingRight: 'unset' },
+      // width: "145px"
     },
     {
       name: 'Jenis Transaksi',
       selector: row => row.fiturID,
       // sortable: true
+      style: { display: "flex", flexDirection: "row", justifyContent: "center", paddingRight: 'unset', },
+      width: "145px"
     },
     {
         name: 'Total Akhir',
         selector: row => row.amount,
-        cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
-        style: { display: "flex", flexDirection: "row", justifyContent: "center", }
-    },
+        cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
+        style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+        width: "145px"
+      },
     {
         name: 'Status',
         selector: row => row.status,
@@ -625,6 +633,9 @@ export default () => {
               border: '12px',
               fontWeight: 'bold',
               fontSize: '16px',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              width: '150px'
           },
       },
   };
