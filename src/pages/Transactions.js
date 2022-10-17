@@ -206,7 +206,7 @@ export default () => {
   async function getListTransferDana(partnerId, currentPage) {
     try {
       const auth = "Bearer " + getToken()
-      const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 6, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "partner_trans_id" :"", "bank_code": "", "fitur_id": 0}`)
+      const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "partner_trans_id" :"", "bank_code": "", "fitur_id": 0}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth
@@ -528,13 +528,13 @@ export default () => {
     {
         name: 'Partner Trans ID',
         selector: row => row.partner_trx_id,
-        // width: "145px"
+        width: "160px"
     },
     {
       name: 'Nama Agen',
       selector: row => row.name,
       style: { paddingRight: 'unset' },
-      width: "160px"
+      // width: "160px"
     },
     {
       name: 'Nama Bank',
@@ -547,7 +547,7 @@ export default () => {
       selector: row => row.fiturID,
       // sortable: true
       style: { display: "flex", flexDirection: "row", justifyContent: "center", paddingRight: 'unset', },
-      width: "145px"
+      // width: "145px"
     },
     {
         name: 'Total Akhir',
