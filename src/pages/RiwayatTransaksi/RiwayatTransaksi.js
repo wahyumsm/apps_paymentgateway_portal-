@@ -40,6 +40,7 @@ function RiwayatTransaksi() {
         periodeDanaMasuk: 0,
         periodeSettlement: 0,
         bankDanaMasuk: "",
+        partnerTransIdDanaMasuk: "",
         fiturDanaMasuk: 0,
         fiturSettlement: 0
     })
@@ -128,7 +129,7 @@ function RiwayatTransaksi() {
     function handlePageChangeDanaMasuk(page) {
         if (isFilterDanaMasuk) {
             setActivePageDanaMasuk(page)
-            filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)
+            filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)
         } else {
             setActivePageDanaMasuk(page)
             riwayatDanaMasuk(page)
@@ -176,7 +177,7 @@ function RiwayatTransaksi() {
         // 7 -> pilih tanggal
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "bank_code": "", "fitur_id": 0}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "partner_transid": "", "bank_code": "", "fitur_id": 0}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -268,13 +269,14 @@ function RiwayatTransaksi() {
         }
     }
 
-    async function filterRiwayatDanaMasuk(page, statusId, transId, partnerId, subPartnerId, dateId, periode, rowPerPage, bankDanaMasuk, fiturDanaMasuk) {
+    async function filterRiwayatDanaMasuk(page, statusId, transId, partnerId, subPartnerId, dateId, periode, rowPerPage, partnerTransId, bankDanaMasuk, fiturDanaMasuk) {
         try {
             setPendingTransfer(true)
             setIsFilterDanaMasuk(true)
             setActivePageDanaMasuk(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "bank_code":"${bankDanaMasuk}", "fitur_id": ${fiturDanaMasuk}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10},  "partner_transid": "${partnerTransId}", "bank_code":"${bankDanaMasuk}", "fitur_id": ${fiturDanaMasuk}}`)
+            // console.log(dataParams, "filter dana masuk");
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -345,6 +347,7 @@ function RiwayatTransaksi() {
                 statusDanaMasuk: [],
                 periodeDanaMasuk: 0,
                 bankDanaMasuk: "",
+                partnerTransIdDanaMasuk: "",
                 fiturDanaMasuk: 0
             })
             setStateDanaMasuk(null)
@@ -420,6 +423,12 @@ function RiwayatTransaksi() {
             selector: row => row.tvatrans_crtdt_format,
             // sortable: true,          
             width: "143px",
+        },
+        {
+            name: 'Partner Trans ID',
+            selector: row => row.partner_transid,
+            // sortable: true,          
+            width: "150px",
         },
         {
             name: 'Nama Partner',
@@ -654,12 +663,12 @@ function RiwayatTransaksi() {
         },
     };
 
-    function ExportReportTransferDanaMasukHandler(isFilter, statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId) {
+    function ExportReportTransferDanaMasukHandler(isFilter, statusId, transId, partnerId, subPartnerId, dateId, periode, partnerTransId, bankName, fiturId) {
         if (isFilter) {
             async function dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "bank_code":"${bankName}", "fitur_id": ${fiturId}}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "partner_transid": "${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturId}}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -669,7 +678,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -680,7 +689,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -697,7 +706,7 @@ function RiwayatTransaksi() {
             async function dataExportDanaMasuk() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "bank_code": "", "fitur_id": 0}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "partner_transid":"", "bank_code": "", "fitur_id": 0}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -707,7 +716,7 @@ function RiwayatTransaksi() {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -718,7 +727,7 @@ function RiwayatTransaksi() {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -907,7 +916,7 @@ function RiwayatTransaksi() {
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Nama Bank</span>
                             <Form.Select name='bankDanaMasuk' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.bankDanaMasuk} onChange={(e) => handleChange(e)}>
-                                <option defaultValue value={0}>Pilih Nama Bank</option>
+                                <option defaultValue value={""}>Pilih Nama Bank</option>
                                 {
                                     listBank.map((item, idx) => {
                                         return (
@@ -917,15 +926,17 @@ function RiwayatTransaksi() {
                                 }
                             </Form.Select>
                         </Col>
-                        <Col xs={4} >
-                            <div style={{ display: showDateDanaMasuk }}>
-                                <DateRangePicker 
-                                    onChange={pickDateDanaMasuk}
-                                    value={stateDanaMasuk}
-                                    clearIcon={null}
-                                    // calendarIcon={null}
-                                />
-                            </div>
+                        <Col xs={4} style={{ display: showDateDanaMasuk }}>
+                            <DateRangePicker 
+                                onChange={pickDateDanaMasuk}
+                                value={stateDanaMasuk}
+                                clearIcon={null}
+                                // calendarIcon={null}
+                            />
+                        </Col>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center">
+                            <span>Partner Trans ID</span>
+                            <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdDanaMasuk} name="partnerTransIdDanaMasuk" type='text'className='input-text-riwayat ms-2' placeholder='Masukkan Partner Trans ID'/>
                         </Col>
                     </Row>
                     <Row className='mt-4'>
@@ -933,9 +944,9 @@ function RiwayatTransaksi() {
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)}
-                                        className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                                        onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)}
+                                        className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.partnerTransIdDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.partnerTransIdDanaMasuk.length === 0 | inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                     >
                                         Terapkan
                                     </button>
@@ -943,8 +954,8 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Dana Masuk")}
-                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
-                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.partnerTransIdDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
+                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.partnerTransIdDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                     >
                                         Atur Ulang
                                     </button>
@@ -955,7 +966,7 @@ function RiwayatTransaksi() {
                     {
                         dataRiwayatDanaMasuk.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportTransferDanaMasukHandler(isFilterDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
+                            <Link onClick={() => ExportReportTransferDanaMasukHandler(isFilterDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
