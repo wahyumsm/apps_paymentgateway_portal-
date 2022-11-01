@@ -94,7 +94,7 @@ body {
 
 .input-text-ez {
     width: 57%;
-    margin-left: 20px;
+    /* margin-left: 20px; */
     height: 40px;
     border-radius: 8px;
     border: 1px solid #E0E0E0;

@@ -27,6 +27,7 @@ function DisbursementReport() {
         namaPartnerDisbursement: "",
         statusDisbursement: [],
         periodeDisbursement: 0,
+        partnerTransId: ""
     })
     const [pendingDisbursement, setPendingDisbursement] = useState(true)
     const [activePageDisbursement, setActivePageDisbursement] = useState(1)
@@ -68,7 +69,7 @@ function DisbursementReport() {
     function handlePageChangeDisbursement(page) {
         if (isFilterDisbursement) {
             setActivePageDisbursement(page)
-            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, 0)
+            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, 0)
         } else {
             setActivePageDisbursement(page)
             disbursementReport(page)
@@ -108,7 +109,7 @@ function DisbursementReport() {
         try {
             if (userRole !== "102") {
                 const auth = 'Bearer ' + getToken();
-                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
@@ -132,7 +133,7 @@ function DisbursementReport() {
                 }
             } else {
                 const auth = 'Bearer ' + getToken();
-                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
@@ -169,13 +170,13 @@ function DisbursementReport() {
         }
     }
 
-    async function filterDisbursement(page, statusId, transId, partnerId, dateId, periode, rowPerPage) {
+    async function filterDisbursement(page, statusId, transId, partnerId, dateId, periode, partnerTransId, rowPerPage) {
         try {
             setPendingDisbursement(true)
             setIsFilterDisbursement(true)
             setActivePageDisbursement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -210,6 +211,7 @@ function DisbursementReport() {
             namaPartnerDisbursement: "",
             statusDisbursement: [],
             periodeDisbursement: 0,
+            partnerTransId: ""
         })
         setStateDisbursement(null)
         setDateRangeDisbursement([])
@@ -243,6 +245,12 @@ function DisbursementReport() {
             name: 'Waktu',
             selector: row => convertSimpleTimeStamp(row.tdishburse_crtdt),
             width: "150px",
+            // sortable: true,
+        },
+        {
+            name: 'Partner Trans ID',
+            selector: row => row.partner_trans_id,
+            width: "170px",
             // sortable: true,
         },
         {
@@ -338,6 +346,12 @@ function DisbursementReport() {
             // sortable: true,
         },
         {
+            name: 'Partner Trans ID',
+            selector: row => row.partner_trans_id,
+            width: "170px",
+            // sortable: true,
+        },
+        {
             name: 'Nominal Disbursement',
             selector: row => convertToRupiah(row.tdishburse_amount),
             // sortable: true,
@@ -425,12 +439,13 @@ function DisbursementReport() {
         },
     };
 
-    function ExportReportDisbursementHandler(isFilter, userRole, statusId, transId, partnerId, dateId, periode) {
+    function ExportReportDisbursementHandler(isFilter, userRole, statusId, transId, partnerId, dateId, periode, partnerTransId) {
         if (isFilter === true && userRole === "102") {
-            async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
+            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, partnerTransId) {
                 try {
+                    // console.log(partnerTransId, "partner trans filter");
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -440,7 +455,7 @@ function DisbursementReport() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -451,7 +466,7 @@ function DisbursementReport() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -463,12 +478,13 @@ function DisbursementReport() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, dateId, periode)
+            dataExportFilter(statusId, transId, partnerId, dateId, periode, partnerTransId)
         } else if (isFilter === true && userRole !== "102") {
-            async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
+            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, partnerTransId) {
                 try {
+                    // console.log(partnerTransId, "partner trans filter");
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -478,7 +494,7 @@ function DisbursementReport() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -489,7 +505,7 @@ function DisbursementReport() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -501,12 +517,12 @@ function DisbursementReport() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, dateId, periode)
+            dataExportFilter(statusId, transId, partnerId, dateId, periode, partnerTransId)
         } else if (isFilter === false && userRole === "102") {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -516,7 +532,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -527,7 +543,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -544,7 +560,7 @@ function DisbursementReport() {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -554,7 +570,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -565,7 +581,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -582,7 +598,7 @@ function DisbursementReport() {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -592,7 +608,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -603,7 +619,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -624,6 +640,10 @@ function DisbursementReport() {
             <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
         </div>
     );
+
+    // console.log(showDateDisbursement, 'ini show date range');
+    // console.log(stateDateDisbursement, 'ini state disburs');
+    // console.log(dateRangeDisbursement, 'ini data date range');
 
     return (
         <div className="content-page mt-6">
@@ -670,10 +690,10 @@ function DisbursementReport() {
                                     </Col>
                                 </Row>
                                 <Row className='mt-4'>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDisbursement === "none") ? "33.2%" : "44.4%" }}>
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: (showDateDisbursement === "none") ? "33.2%" : "33.2%" }}>
                                         <span style={{ marginRight: 26 }}>Periode*</span>
-                                        <Form.Select name='periodeDisbursement' className="input-text-ez me-4" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
-                                            <option defaultChecked disabled value={0}>Pilih Periode</option>
+                                        <Form.Select name='periodeDisbursement' className="input-text-ez " value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
+                                            <option defaultChecked disabled value={0}>Pilih Periode</option> 
                                             <option value={2}>Hari Ini</option>
                                             <option value={3}>Kemarin</option>
                                             <option value={4}>7 Hari Terakhir</option>
@@ -681,7 +701,9 @@ function DisbursementReport() {
                                             <option value={6}>Bulan Kemarin</option>
                                             <option value={7}>Pilih Range Tanggal</option>
                                         </Form.Select>
-                                        <div style={{ display: showDateDisbursement }}>
+                                    </Col>
+                                    <Col xs={4} style={{ display: showDateDisbursement }}>
+                                        <div >
                                             <DateRangePicker 
                                                 onChange={pickDateDisbursement}
                                                 value={stateDateDisbursement}
@@ -689,6 +711,10 @@ function DisbursementReport() {
                                                 // calendarIcon={null}
                                             />
                                         </div>
+                                    </Col>
+                                    <Col xs={4} className="d-flex justify-content-center">
+                                        <span>Partner Trans ID</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-ez' placeholder='Masukkan Partner Trans ID'/>
                                     </Col>
                                 </Row>
                             </> :
@@ -698,7 +724,7 @@ function DisbursementReport() {
                                         <span>ID Transaksi</span>
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "34%" }}>
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: "34%" }}>
                                         <span style={{ marginRight: 26 }}>Periode*</span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez me-4" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
                                             <option defaultChecked disabled value={0}>Pilih Periode</option>
@@ -721,8 +747,15 @@ function DisbursementReport() {
                                             {/* <option value={9}>Kadaluwarsa</option> */}
                                         </Form.Select>
                                     </Col>
-                                    <Col xs={11} className="d-flex justify-content-center align-items-center mt-3" style={{ marginLeft: 81 }}>
-                                        <div style={{ display: showDateDisbursement }}>
+                                    
+                                </Row>
+                                <Row className='mt-3'>
+                                    <Col xs={4} className='d-flex justify-content-center align-items-center'>
+                                        <span>Partner Trans ID</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-ez' placeholder='Masukkan Partner Trans ID'/>
+                                    </Col>
+                                    <Col xs={4} className="d-flex justify-content-center align-items-center" >
+                                        <div style={{ display: showDateDisbursement}}>
                                             <DateRangePicker 
                                                 onChange={pickDateDisbursement}
                                                 value={stateDateDisbursement}
@@ -739,7 +772,7 @@ function DisbursementReport() {
                                 <Row>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, 0)}
+                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, 0)}
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0}
                                         >
@@ -761,7 +794,7 @@ function DisbursementReport() {
                         {
                             dataDisbursement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, 0)} className="export-span">Export</Link>
+                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId)} className="export-span">Export</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
