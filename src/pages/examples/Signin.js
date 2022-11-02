@@ -172,7 +172,7 @@ export default () => {
                     Login
                   </Button>
                 </Form>
-                <div style={{ display: 'none' }}>
+                <div>
                   <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
                     <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>
                       {` Lupa Kata Sandi? `}

@@ -1,18 +1,18 @@
-
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faEnvelope, faUnlockAlt, faEye } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Form, Card, Button, Container, InputGroup } from '@themesberg/react-bootstrap';
-import { Link } from 'react-router-dom';
 
-import { Routes } from "../../routes";
-import { BaseURL, getToken } from "../../function/helpers";
+// import { Routes } from "../../routes";
+import { authorization, BaseURL, getToken, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
+import { useHistory } from "react-router-dom";
 
 export default ({ location }) => {
 
+  const history = useHistory()
   const validateSignature = location.search.split("=")[1].slice(0,(location.search.split("=")[1].length - 6))
   const validateEmail = location.search.split("=")[2]
   const [newPassword, setNewPassword] = useState("")
@@ -22,9 +22,24 @@ export default ({ location }) => {
   // console.log(validateSignature, "ini validateSignature");
   // console.log(validateEmail, "ini validateEmail");
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const passwordInputType = showPassword ? "text" : "password";
+  const newPasswordInputType = showNewPassword ? "text" : "password";
+  const passwordIconColor = showPassword ? "#262B40" : "";
+  const newPasswordIconColor = showNewPassword ? "#262B40" : "";
+
+  const togglePasswordVisibility = (param) => {
+    if (param === 'first') {
+      setShowPassword(!showPassword);
+    } else {
+      setShowNewPassword(!showNewPassword)
+    }
+  };
+
   async function validateResetPassword(signature, email) {
     try {
-      const auth = "Bearer " + getToken()
+      const auth = authorization
       const dataParams = encryptData(`{"email": "${email}", "signature": "${signature}"}`)
       const headers = {
         "Content-Type": "application/json",
@@ -33,7 +48,10 @@ export default ({ location }) => {
       const validated = await axios.post(BaseURL + "/Account/ValidateResetPassword", { data: dataParams }, { headers: headers })
       // console.log(validated, "ini validated");
     } catch (error) {
-      // console.log(error);
+      // console.log(error.response);
+      if (error.response.status) {
+        history.push('/404')
+      }
     }
   }
 
@@ -50,18 +68,12 @@ export default ({ location }) => {
     try {
       // console.log(password, "ini password");
       // console.log(passwordConfirmation, "ini passwordConfirmation");
-      e.preventDefault()
-      let validasi = 0
+        e.preventDefault()
+        let validasi = 0
         const besarKecil = /[A-Za-z]/g;
         const numbers = /[0-9]/g;
         const spChar = /[/\W|_/g]/g;
 
-        if (password !== passwordConfirmation) {
-            setIsErrorConfirmNewPass(true)
-            return
-        } else {
-            setIsErrorConfirmNewPass(false)
-        }
         if (password.match(besarKecil) && password.length >= 8) {
             validasi += 1
         }
@@ -72,22 +84,32 @@ export default ({ location }) => {
             validasi += 1
         }
         // console.log(validasi, "ini validasi");
-        if (validasi <= 2) {
+        if (validasi < 2) {
             setIsNotValid(true)
         } else {
           setIsNotValid(false)
-          const auth = "Bearer " + getToken()
-          const dataParams = encryptData(`{"email": "${email}", "signature": "${signature}", "password": "${password}"}`)
-          // console.log(dataParams, "ini dataParams reset password");
-          const headers = {
-            "Content-Type": "application/json",
-            'Authorization': auth,
-          };
-          const resetPassword = await axios.post(BaseURL + "/Account/ResetPassword", { data: dataParams }, { headers: headers })
-          // console.log(resetPassword, "ini resetPassword");
+          if (password !== passwordConfirmation) {
+              setIsErrorConfirmNewPass(true)
+              return
+          } else {
+              setIsErrorConfirmNewPass(false)
+              const auth = authorization
+              const dataParams = encryptData(`{"email": "${email}", "signature": "${signature}", "password": "${password}"}`)
+              // console.log(dataParams, "ini dataParams reset password");
+              const headers = {
+                "Content-Type": "application/json",
+                'Authorization': auth,
+              };
+              const resetPassword = await axios.post(BaseURL + "/Account/ResetPassword", { data: dataParams }, { headers: headers })
+              // console.log(resetPassword, "ini resetPassword");
+              if (resetPassword.status === 200 && resetPassword.data.response_code === 200) {
+                alert("Kata Sandi berhasil di ubah")
+                history.push('/login')
+              }
+          }
         }
     } catch (error) {
-      // console.log(error);
+      // console.log(error.response.status);
     }
   }
 
@@ -126,7 +148,10 @@ export default ({ location }) => {
                       <InputGroup.Text>
                         <FontAwesomeIcon icon={faUnlockAlt} />
                       </InputGroup.Text>
-                      <Form.Control required value={newPassword} onChange={handleChange} name="new-password" type="password" placeholder="Masukkan Kata Sandi Baru" />
+                      <Form.Control required value={newPassword} onChange={handleChange} name="new-password" type={passwordInputType} placeholder="Masukkan Kata Sandi Baru" />
+                      <InputGroup.Text onClick={() => togglePasswordVisibility('first')} className="pass-log">
+                        <FontAwesomeIcon color={passwordIconColor} icon={faEye} />
+                      </InputGroup.Text>
                     </InputGroup>
                     {
                       (isNotValid) &&
@@ -141,7 +166,10 @@ export default ({ location }) => {
                       <InputGroup.Text>
                         <FontAwesomeIcon icon={faUnlockAlt} />
                       </InputGroup.Text>
-                      <Form.Control required value={newPasswordConfirmation} onChange={handleChange} name="new-password-confirmation" type="password" placeholder="Konfirmasi Kata Sandi Baru" />
+                      <Form.Control required value={newPasswordConfirmation} onChange={handleChange} name="new-password-confirmation" type={newPasswordInputType} placeholder="Konfirmasi Kata Sandi Baru" />
+                      <InputGroup.Text onClick={() => togglePasswordVisibility('second')} className="pass-log">
+                        <FontAwesomeIcon color={newPasswordIconColor} icon={faEye} />
+                      </InputGroup.Text>
                     </InputGroup>
                     {
                       isErrorConfirmNewPass &&

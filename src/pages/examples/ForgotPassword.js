@@ -3,25 +3,31 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Form, Card, Button, Container, InputGroup, Modal } from '@themesberg/react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import validator from "validator";
 import sendEmailIcon from "../../assets/img/illustrations/sendEmail.svg";
 import { Routes } from "../../routes";
-import { BaseURL, getToken, setUserSession } from "../../function/helpers";
+import { authorization, BaseURL, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 
 export default () => {
 
+  const history = useHistory()
   const [email, setEmail] = useState('')
   const [showModal, setShowModal] = useState(false)
+
+  function redirectToLogin() {
+    setShowModal(false)
+    history.push('/login')
+  }
 
   async function sendEmail(e, emailLink) {
     try {
       e.preventDefault()
       if (validator.isEmail(emailLink)) {
         // console.log('email valid');
-        const auth = "Bearer " + getToken()
+        const auth = authorization
         const dataParams = encryptData(`{"email": "${emailLink}"}`)
         const headers = {
           "Content-Type": "application/json",
@@ -42,7 +48,7 @@ export default () => {
       }
     } catch (error) {
       // console.log(error)
-      if (error.response.status === 400) {
+      if (error.response.status) {
         setShowModal(true)
       }
     }
@@ -90,7 +96,7 @@ export default () => {
             <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>Silahkan periksa email dan ikuti intruksi untuk mereset kata sandi Anda.</p>
           </div>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-            <Button variant="primary" onClick={() => setShowModal(false)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Oke</Button>
+            <Button variant="primary" onClick={redirectToLogin} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Oke</Button>
           </div>
         </Modal.Body>
       </Modal>
