@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Row, Form, Image } from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
@@ -9,6 +9,7 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faEye, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import FilterManageUser from "../../components/FileManageUser";
 
 function ListUser () {
 
@@ -17,11 +18,46 @@ function ListUser () {
   const [listManageUser, setListManageUser] = useState([])
   const user_role = getRole()
   const [inputHandle, setInputHandle] = useState({
-    idTransaksi: "",
-    namaAgen: "",
-    status: "",
+    status: 1,
   })
+  console.log(inputHandle.status, "numnb");
   const [pending, setPending] = useState(true)
+  const [filterText, setFilterText] = React.useState('');
+  const filteredItemsName = listManageUser.filter(
+      item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
+  );
+
+  const filteredItemsEmail = listManageUser.filter(
+    item => item.email && item.email.toLowerCase().includes(filterText.toLowerCase()),
+  );
+
+  const subHeaderComponentMemo = useMemo(() => {
+    const handleClear = () => {
+        if (filterText) {
+            setFilterText('');
+        }
+    };
+
+    function handleChange(e) {
+      setInputHandle({
+        ...inputHandle,
+        [e.target.name]: Number(e.target.value),
+      });
+    }
+    return (
+        <Row className="my-4" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <Col xs={6}>
+            <Form.Select name="status" className='input-text-user' style={{ display: "inline" }} onChange={(e) => handleChange(e)} >
+                <option defaultValue value={1}>Nama</option>
+                <option value={2}>Email</option>
+            </Form.Select>
+          </Col>
+          <Col xs={6}>
+            <FilterManageUser onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Daftar Partner :" placeholder="Masukkan Nama Partner" />
+          </Col>
+        </Row>
+    );	}, [filterText, inputHandle]
+);
 
   function detailUserHandler(muserId) {
     history.push(`/updateuser/${muserId}`)
@@ -142,44 +178,20 @@ function ListUser () {
         </button>
         <div className='base-content'>
             <span className='mb-4' style={{fontWeight: 600}}>Data User</span>
-            <Row className='mt-4'>
-                <Col className="font-weight-bold mb-3" xs={12}>Search By</Col>
-                <Col xs={6}>
-                    <Form.Select name="statusDanaMasuk" className='input-text-user' style={{ display: "inline" }} >
-                        <option defaultValue value={1}>Nama</option>
-                        <option value={2}>Email</option>
-                    </Form.Select>
-                </Col>
-                <Col xs={6}>
-                    <input name="namaAgen" type='text' className='input-text-user' placeholder='Cari'/>
-                </Col>
-            </Row>
-            <Row className='mt-4'>
-                <Col xs={3}>
-                    <Row>
-                        <Col xs={6}>
-                            <button className="btn-ez-on">
-                              Cari
-                            </button>
-                        </Col>
-                        {/* <Col xs={6}>
-                            <button className={(dateRange.length !== 0 || dateRange.length !== 0 && inputHandle.idTransaksi.length !== 0 || dateRange.length !== 0 && inputHandle.status.length !== 0 || dateRange.length !== 0 && inputHandle.namaAgen.length !== 0) ? "btn-ez-on" : "btn-ez"} disabled={dateRange.length === 0 || dateRange.length === 0 && inputHandle.idTransaksi.length === 0 || dateRange.length === 0 && inputHandle.status.length === 0 || dateRange.length === 0 && inputHandle.namaAgen.length === 0}>
-                              Atur Ulang
-                            </button>
-                        </Col> */}
-                    </Row>
-                </Col>
-            </Row>
+            
             <br/>
             <div className="div-table">
                 <DataTable
                     columns={columnManageUser}
-                    data={listManageUser}
+                    data={inputHandle.status === 1 ? filteredItemsName : filteredItemsEmail}
                     customStyles={customStyles}
                     pagination
                     highlightOnHover
                     progressPending={pending}
                     progressComponent={<CustomLoader />}
+                    subHeader
+                    subHeaderComponent={subHeaderComponentMemo}
+                    persistTableHead
                 />
             </div>
         </div>
