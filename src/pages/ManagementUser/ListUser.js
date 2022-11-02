@@ -53,7 +53,7 @@ function ListUser () {
             </Form.Select>
           </Col>
           <Col xs={6}>
-            <FilterManageUser onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Daftar Partner :" placeholder="Masukkan Nama Partner" />
+            <FilterManageUser onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Daftar Partner :" placeholder={inputHandle.status === 1 ? "Masukkan Nama" : "Masukkan Email"} />
           </Col>
         </Row>
     );	}, [filterText, inputHandle]
