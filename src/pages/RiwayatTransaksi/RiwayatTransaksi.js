@@ -940,7 +940,7 @@ function RiwayatTransaksi() {
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={3}>
+                        <Col xs={5}>
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
@@ -1058,7 +1058,7 @@ function RiwayatTransaksi() {
                                 />
                             </div>
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Jenis Transaksi</span>
                             <Form.Select name='fiturSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultValue value={0}>Pilih Jenis Transaksi</option>
@@ -1068,7 +1068,7 @@ function RiwayatTransaksi() {
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={3}>
+                        <Col xs={5}>
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button

@@ -796,7 +796,7 @@ export default () => {
                 </Col>                
               </Row>
               <Row className="my-3">
-                <Col xs={3}>
+                <Col xs={5}>
                   <Row>
                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                       <button
@@ -966,7 +966,7 @@ export default () => {
                   </Col>                
                 </Row>
                 <Row className='my-3'>
-                  <Col xs={3}>
+                  <Col xs={5}>
                     <Row>
                       <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                         <button
@@ -1110,7 +1110,7 @@ export default () => {
                   </Col>                
                 </Row>
                 <Row className='my-3'>
-                  <Col xs={3}>
+                  <Col xs={5}>
                     <Row>
                       <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                         <button
@@ -1337,7 +1337,7 @@ export default () => {
                 </Col>
               </Row>
               <Row className="my-3">
-                <Col xs={3}>
+                <Col xs={5}>
                   <Row>
                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                       <button

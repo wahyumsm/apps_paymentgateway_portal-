@@ -662,11 +662,11 @@ function DisbursementReport() {
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>ID Transaksi</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-ez' placeholder='Masukkan ID Transaksi'/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>Nama Partner</span>
-                                        <Form.Select name='namaPartnerDisbursement' className="input-text-ez me-4" value={inputHandle.namaPartnerDisbursement} onChange={(e) => handleChange(e)}>
+                                        <Form.Select name='namaPartnerDisbursement' className="input-text-ez" value={inputHandle.namaPartnerDisbursement} onChange={(e) => handleChange(e)} style={{ marginLeft: 35 }}>
                                             <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                             {
                                                 dataListPartner.map((item, index) => {
@@ -679,7 +679,7 @@ function DisbursementReport() {
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>Status</span>
-                                        <Form.Select name="statusDisbursement" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
+                                        <Form.Select name="statusDisbursement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
                                             <option defaultChecked disabled value="">Pilih Status</option>
                                             <option value={2}>Berhasil</option>
                                             <option value={1}>In Progress</option>
@@ -692,7 +692,7 @@ function DisbursementReport() {
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: (showDateDisbursement === "none") ? "33.2%" : "33.2%" }}>
                                         <span style={{ marginRight: 26 }}>Periode*</span>
-                                        <Form.Select name='periodeDisbursement' className="input-text-ez " value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
+                                        <Form.Select name='periodeDisbursement' className="input-text-ez" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
                                             <option defaultChecked disabled value={0}>Pilih Periode</option> 
                                             <option value={2}>Hari Ini</option>
                                             <option value={3}>Kemarin</option>
@@ -702,7 +702,13 @@ function DisbursementReport() {
                                             <option value={7}>Pilih Range Tanggal</option>
                                         </Form.Select>
                                     </Col>
-                                    <Col xs={4} style={{ display: showDateDisbursement }}>
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                        <span>Partner Trans ID</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-ez' placeholder='Masukkan Partner Trans ID'/>
+                                    </Col>
+                                </Row>
+                                <Row className='mt-4'>
+                                    <Col xs={3} style={{ display: showDateDisbursement }} className="text-end ms-5">
                                         <div >
                                             <DateRangePicker 
                                                 onChange={pickDateDisbursement}
@@ -711,10 +717,6 @@ function DisbursementReport() {
                                                 // calendarIcon={null}
                                             />
                                         </div>
-                                    </Col>
-                                    <Col xs={4} className="d-flex justify-content-center">
-                                        <span>Partner Trans ID</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-ez' placeholder='Masukkan Partner Trans ID'/>
                                     </Col>
                                 </Row>
                             </> :
@@ -768,7 +770,7 @@ function DisbursementReport() {
                             </>
                         }
                         <Row className='mt-4'>
-                            <Col xs={3}>
+                            <Col xs={5}>
                                 <Row>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button

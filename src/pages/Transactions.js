@@ -977,7 +977,7 @@ export default () => {
                     <option value={7}>Pilih Range Tanggal</option>
                   </Form.Select>                 
                 </Col>
-                <Col xs={4}>
+                <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span>Jenis Transaksi</span>
                     <Form.Select name='fiturDanaMasuk' onChange={(e) => handleChange(e)} value={inputHandle.fiturDanaMasuk} className='input-text-ez' style={{ display: "inline" }}>
                       <option defaultValue value={0}>Pilih Jenis Transaksi</option>
@@ -1014,7 +1014,7 @@ export default () => {
                 
             </Row>
             <Row className='mt-4'>
-                <Col xs={3}>
+                <Col xs={5}>
                     <Row>
                         <Col xs={6}>
                             <button
@@ -1176,7 +1176,7 @@ export default () => {
               </Col>
             </Row>
             <Row className='mt-4'>
-                <Col xs={3}>
+                <Col xs={5}>
                     <Row>
                         <Col xs={6}>
                             <button
