@@ -903,7 +903,7 @@ function RiwayatTransaksi() {
                                 <option value={7}>Pilih Range Tanggal</option>
                             </Form.Select>                            
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Jenis Transaksi</span>
                             <Form.Select name='fiturDanaMasuk' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturDanaMasuk} onChange={(e) => handleChange(e)}>
                                 <option defaultValue value={0}>Pilih Jenis Transaksi</option>

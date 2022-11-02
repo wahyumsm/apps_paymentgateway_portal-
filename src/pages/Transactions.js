@@ -1007,7 +1007,7 @@ export default () => {
                       clearIcon={null}
                     />
                 </Col>
-                <Col xs={4} >
+                <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span className="pe-2">Partner Trans ID</span>
                     <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdDanaMasuk} name="partnerTransIdDanaMasuk" type='text' className='input-text-riwayat ms-1' placeholder='Masukkan Partner Trans ID'/>
                 </Col>           
@@ -1016,7 +1016,7 @@ export default () => {
             <Row className='mt-4'>
                 <Col xs={5}>
                     <Row>
-                        <Col xs={6}>
+                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                             <button
                               onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)}
                               // className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
@@ -1028,7 +1028,7 @@ export default () => {
                               Terapkan
                             </button>
                         </Col>
-                        <Col xs={6}>
+                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                             <button
                               onClick={() => resetButtonHandle("Dana Masuk")}
                               className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
@@ -1178,7 +1178,7 @@ export default () => {
             <Row className='mt-4'>
                 <Col xs={5}>
                     <Row>
-                        <Col xs={6}>
+                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                             <button
                               onClick={() => filterSettlementButtonHandle(inputHandle.idTransaksiSettlement, dateRangeSettlement, inputHandle.periodeSettlement, 1, 0, inputHandle.statusSettlement, inputHandle.fiturSettlement)}
                               className={(inputHandle.periodeSettlement !== 0 || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
@@ -1187,7 +1187,7 @@ export default () => {
                               Terapkan
                             </button>
                         </Col>
-                        <Col xs={6}>
+                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                             <button
                               onClick={() => resetButtonHandle("Settlement")}
                               className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-reset" : "btn-ez"}
