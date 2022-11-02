@@ -1159,7 +1159,7 @@ export default () => {
                 </Col>
             </Row>
             <Row className='mt-4'>
-              <Col xs={4}>
+              <Col xs={4} className="d-flex justify-content-start align-items-center">
                 <span>Jenis Transaksi</span>
                 <Form.Select name="fiturSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
                   <option defaultValue value={0}>Pilih Jenis Transaksi</option>
