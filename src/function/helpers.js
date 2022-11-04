@@ -34,11 +34,11 @@ export const removeUserSession = () => {
   sessionStorage.removeItem("role");
 };
 
-export function convertToRupiah(money) {
+export function convertToRupiah(money, fractionDigits) {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
-    maximumFractionDigits: 0,
+    maximumFractionDigits: fractionDigits === undefined ? 0 : fractionDigits,
   }).format(money);
 }
 
