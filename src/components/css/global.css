@@ -739,6 +739,13 @@ header.sc-dIouRR.TUEFO {
     align-items: center;
 }
 
+header.sc-dIouRR.evxAbm {
+    padding: unset;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 /* .hoverActive {
     background: "#3DB54A";
     color: "#FFFFFF";

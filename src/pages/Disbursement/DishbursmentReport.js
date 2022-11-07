@@ -76,6 +76,14 @@ function DisbursementReport() {
         }
     }
 
+    function toDashboard() {
+        history.push("/");
+    }
+
+    function toLaporan() {
+        history.push("/laporan");
+    }
+
     async function listPartner() {
         try {
             const auth = 'Bearer ' + getToken();
@@ -646,8 +654,8 @@ function DisbursementReport() {
     // console.log(dateRangeDisbursement, 'ini data date range');
 
     return (
-        <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>{(user_role === "102") ? "Beranda" : <Link to={"/"}>Beranda</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</span>
+        <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
+            <span className='breadcrumbs-span'>{(user_role === "102") ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</span> 
             <div className='head-title'>
                 <h2 className="h5 mb-3 mt-4">Disbursement Report</h2>
             </div>

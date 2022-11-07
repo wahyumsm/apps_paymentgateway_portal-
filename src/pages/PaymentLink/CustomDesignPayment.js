@@ -187,7 +187,7 @@ function CustomDesignPayment () {
                                     </button>
                                 </div>
                             </div>
-                            <div style={{border: "3px solid #F0F0F0"}}></div>
+                            <div style={{border: "3px solid #F0F0F0", backgroundColor: '#F0F0F0'}}></div>
                             <Row className="mt-2">
                                 <Col xs={12}>
                                     <div className="my-1">Nama</div>
