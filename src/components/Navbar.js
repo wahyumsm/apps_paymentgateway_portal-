@@ -822,7 +822,7 @@ export default (props) => {
                     }}
                     className="text-center"
                   >
-                    Please contact your admin
+                    Please contact your admin.
                   </p>
                 </div>
                 <div 
@@ -836,14 +836,14 @@ export default (props) => {
                     onClick={() => setShowModalAlokasi(false)}
                     style={{
                       fontFamily: "Exo",
-                      color: "#888888",
-                      background: "#FFFFFF",
+                      color: "#2C1919",
+                      background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
                       maxWidth: 125,
                       maxHeight: 45,
                       width: "100%",
                       height: "100%",
-                      border: "1px solid #EBEBEB;",
-                      borderColor: "#EBEBEB",
+                      border: "0.6px solid #2C1919",
+                      borderRadius: 6
                     }}
                     className="mx-2"
                   >
