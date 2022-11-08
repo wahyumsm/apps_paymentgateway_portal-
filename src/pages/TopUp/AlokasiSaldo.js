@@ -1277,7 +1277,7 @@ function AlokasiSaldo() {
                         }}
                     >
                     <Button
-                        onClick={() => setShowModalAlokasi(false)}
+                        onClick={() => closeAlokasi()}
                         style={{
                         fontFamily: "Exo",
                         color: "#2C1919",

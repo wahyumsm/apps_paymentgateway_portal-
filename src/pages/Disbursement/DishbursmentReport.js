@@ -246,7 +246,7 @@ function DisbursementReport() {
             name: 'ID Transaksi',
             selector: row => row.tdishburse_code,
             // sortable: true
-            width: "224px",
+            width: "200px",
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
         },
         {
@@ -258,7 +258,7 @@ function DisbursementReport() {
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_trans_id,
-            width: "170px",
+            width: "238px",
             // sortable: true,
         },
         {
@@ -344,7 +344,7 @@ function DisbursementReport() {
             name: 'ID Transaksi',
             selector: row => row.tdishburse_code,
             // sortable: true
-            width: "224px",
+            width: "200px",
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
         },
         {
