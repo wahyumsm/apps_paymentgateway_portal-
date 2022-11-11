@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Row, Table, Modal, Alert, Toast, Image } from '@themesberg/react-bootstrap'
 import { BaseURL, convertFormatNumber, convertToRupiah, getRole, getToken, setUserSession } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle, faSortUp, faSortDown } from "@fortawesome/free-solid-svg-icons"
 import Checklist from '../../assets/icon/checklist_icon.svg'
@@ -13,16 +13,19 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker/dist/DateRangePic
 import DataTable from 'react-data-table-component'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import Pagination from 'react-js-pagination'
+import gagalMasukAlokasi from '../../assets/icon/gagaltopup_icon.svg'
 
 function AlokasiSaldo() {
 
     const user_role = getRole()
     const [balance, setBalance] = useState({})
+    const history = useHistory();
     const [balanceDetail, setBalanceDetail] = useState([])
     const [disbursementChannel, setDisbursementChannel] = useState([])
     const [showModalSaveAlokasiSaldo, setShowModalSaveAlokasiSaldo] = useState(false)
     const [showAlertSuccess, setShowAlertSuccess] = useState(false)
     const [showAlertSaldoTidakCukup, setShowAlertSaldoTidakCukup] = useState(false)
+    const [showModalAlokasi, setShowModalAlokasi] = useState(false)
     const [disburseBCA, setDisburseBCA] = useState({
         id: "32",
         checked: true,
@@ -324,6 +327,11 @@ function AlokasiSaldo() {
         })
     }
 
+    function closeAlokasi () {
+        history.push("/laporan");
+        setShowModalAlokasi(false)
+    }
+
     async function getBalance() {
         try {
             const auth = "Bearer " + getToken()
@@ -334,11 +342,19 @@ function AlokasiSaldo() {
             const balance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
             if (balance.status === 200 && balance.data.response_code === 200 && balance.data.response_new_token.length === 0) {
                 setBalance(balance.data.response_data)
-                setBalanceDetail(balance.data.response_data.balance_detail)
+                if (balance.data.response_data.balance_detail.length !== 0) {
+                    setBalanceDetail(balance.data.response_data.balance_detail)
+                } else {
+                    setShowModalAlokasi(true)
+                }
             } else if (balance.status === 200 && balance.data.response_code === 200 && balance.data.response_new_token.length !== 0) {
                 setUserSession(balance.data.response_new_token)
                 setBalance(balance.data.response_data)
-                setBalanceDetail(balance.data.response_data.balance_detail)
+                if (balance.data.response_data.balance_detail.length !== 0) {
+                    setBalanceDetail(balance.data.response_data.balance_detail)
+                } else {
+                    setShowModalAlokasi(true)
+                }
             }
         } catch (error) {
             // console.log(error);
@@ -886,7 +902,7 @@ function AlokasiSaldo() {
                             </Col>
                         </Row>
                         <Row className='mt-2'>
-                            <Col xs={3}>
+                            <Col xs={5}>
                                 <Row>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
@@ -1208,6 +1224,78 @@ function AlokasiSaldo() {
                     </Toast>
                 </div>
             }
+
+            <Modal className="history-modal" size="sm" centered show={showModalAlokasi} onHide={() => closeAlokasi()}>
+                <Modal.Body>
+                    <div className="text-center mt-3"><img src={gagalMasukAlokasi} alt="alokasi saldo"/></div>
+                    <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: 24,
+                        marginBottom: 16,
+                    }}
+                    >
+                    <p
+                        style={{
+                        fontFamily: "Exo",
+                        fontSize: 20,
+                        fontWeight: 700,
+                        marginBottom: "unset",
+                        }}
+                        className="text-center"
+                    >
+                        You can't access Alokasi Saldo Page
+                    </p>
+                    </div>
+                    <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: 12,
+                        marginBottom: 16,
+                    }}
+                    >
+                    <p
+                        style={{
+                        fontFamily: "Nunito",
+                        fontSize: 14,
+                        fontWeight: 400,
+                        marginBottom: "unset",
+                        }}
+                        className="text-center"
+                    >
+                        Please contact your admin.
+                    </p>
+                    </div>
+                    <div 
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            marginTop: 12,
+                            marginBottom: 16,
+                        }}
+                    >
+                    <Button
+                        onClick={() => closeAlokasi()}
+                        style={{
+                        fontFamily: "Exo",
+                        color: "#2C1919",
+                        background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                        maxWidth: 125,
+                        maxHeight: 45,
+                        width: "100%",
+                        height: "100%",
+                        border: "0.6px solid #2C1919",
+                        borderRadius: 6
+                        }}
+                        className="mx-2"
+                    >
+                        Close
+                    </Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     )
 }

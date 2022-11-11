@@ -56,6 +56,7 @@ import Checklist from '../assets/icon/checklist_icon.svg'
 import encryptData from "../function/encryptData";
 import { useCallback } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
+import gagalMasukAlokasi from '../assets/icon/gagaltopup_icon.svg'
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -87,6 +88,7 @@ export default (props) => {
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
   const [showStatusTopup, setShowStatusTopup] = useState(false)
+  const [showModalAlokasi, setShowModalAlokasi] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
   const handleCloseRiwayatTopUp = () => setShowRiwayatTopUp(false)
   const [imageTopUp, setImageTopUp] = useState({});
@@ -305,6 +307,14 @@ export default (props) => {
         }
     }
 
+    function toAlokasiPage () {
+      if (balanceDetail.length !== 0) {
+        history.push("/alokasisaldo")
+      } else {
+        setShowModalAlokasi(true)
+      }
+    }
+
     useEffect(() => {
       if (!access_token) {
         history.push('/login');
@@ -473,7 +483,7 @@ export default (props) => {
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2 d-flex justify-content-center align-items-center">
-                    <div className="pe-2">
+                    <div className={balanceDetail.length !== 0 ? "pe-2" : ""}>
                       {
                         balanceDetail.length !==0 &&
                         balanceDetail.map(item => {
@@ -492,7 +502,7 @@ export default (props) => {
                         })
                       }
                     </div>
-                    <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 135}}></div>
+                    {balanceDetail.length !== 0 ? <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 135}}></div> : ""}
                     <div className="ps-2">
                       <Dropdown.Item
                         onClick={() => setShowModalTopUp(true)}
@@ -513,7 +523,7 @@ export default (props) => {
                       </Dropdown.Item>
                       <Dropdown.Item
                         className="fw-bold"
-                        onClick={() => history.push("/alokasisaldo")}
+                        onClick={() => toAlokasiPage()}
                       >
                         <div className="pe-2">
                           <img alt="" src={alokasiIcon} /> Alokasi Saldo
@@ -638,7 +648,7 @@ export default (props) => {
                 {iconGagal === true && 
                   <>
                     <div style={{ color: "#B9121B", fontSize: 12 }}>
-                      <img src={noteIconRed} className="me-2" />
+                      <img src={noteIconRed} className="me-2" alt="notice" />
                       Nominal Top Up wajib diisi
                     </div>
                   </>
@@ -770,6 +780,77 @@ export default (props) => {
               </div>
             }
           </Modal.Body>
+        </Modal>
+
+        <Modal className="history-modal" size="sm" centered show={showModalAlokasi} onHide={() => setShowModalAlokasi(false)}>
+            <Modal.Body>
+                <div className="text-center mt-3"><img src={gagalMasukAlokasi} alt="alokasi saldo"/></div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: 24,
+                    marginBottom: 16,
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "Exo",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      marginBottom: "unset",
+                    }}
+                    className="text-center"
+                  >
+                    You can't access Alokasi Saldo Page
+                  </p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: 12,
+                    marginBottom: 16,
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "Nunito",
+                      fontSize: 14,
+                      fontWeight: 400,
+                      marginBottom: "unset",
+                    }}
+                    className="text-center"
+                  >
+                    Please contact your admin.
+                  </p>
+                </div>
+                <div 
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: 12,
+                    marginBottom: 16,
+                  }}>
+                  <Button
+                    onClick={() => setShowModalAlokasi(false)}
+                    style={{
+                      fontFamily: "Exo",
+                      color: "#2C1919",
+                      background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                      maxWidth: 125,
+                      maxHeight: 45,
+                      width: "100%",
+                      height: "100%",
+                      border: "0.6px solid #2C1919",
+                      borderRadius: 6
+                    }}
+                    className="mx-2"
+                  >
+                    Close
+                  </Button>
+                </div>
+            </Modal.Body>
         </Modal>
       </Container>
     </Navbar>

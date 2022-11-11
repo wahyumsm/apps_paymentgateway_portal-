@@ -76,6 +76,14 @@ function DisbursementReport() {
         }
     }
 
+    function toDashboard() {
+        history.push("/");
+    }
+
+    function toLaporan() {
+        history.push("/laporan");
+    }
+
     async function listPartner() {
         try {
             const auth = 'Bearer ' + getToken();
@@ -238,7 +246,7 @@ function DisbursementReport() {
             name: 'ID Transaksi',
             selector: row => row.tdishburse_code,
             // sortable: true
-            width: "224px",
+            width: "200px",
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
         },
         {
@@ -250,7 +258,7 @@ function DisbursementReport() {
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_trans_id,
-            width: "170px",
+            width: "238px",
             // sortable: true,
         },
         {
@@ -336,7 +344,7 @@ function DisbursementReport() {
             name: 'ID Transaksi',
             selector: row => row.tdishburse_code,
             // sortable: true
-            width: "224px",
+            width: "200px",
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
         },
         {
@@ -646,8 +654,8 @@ function DisbursementReport() {
     // console.log(dateRangeDisbursement, 'ini data date range');
 
     return (
-        <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>{(user_role === "102") ? "Beranda" : <Link to={"/"}>Beranda</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</span>
+        <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
+            <span className='breadcrumbs-span'>{(user_role === "102") ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</span> 
             <div className='head-title'>
                 <h2 className="h5 mb-3 mt-4">Disbursement Report</h2>
             </div>

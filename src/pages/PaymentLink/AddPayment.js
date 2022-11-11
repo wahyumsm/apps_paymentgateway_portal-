@@ -436,7 +436,7 @@ function AddPayment() {
             </div>
             <div className="position-relative d-flex justify-content-between align-items-center" onClick={showCheckboxes}>
               <input
-                className={(isNotEnableButton(inputMinuteHandle, inputHourHandle) === false) ? "input-text-user" : "form-control is-invalid" }
+                className={(isNotEnableButton(inputMinuteHandle, inputHourHandle, dateDay.day) === false) ? "input-text-user" : "form-control is-invalid" }
                 placeholder="Silahkan atur waktu"
                 value={
                   convertTimeDigit(inputHourHandle) +
@@ -444,7 +444,7 @@ function AddPayment() {
                   convertTimeDigit(inputMinuteHandle)
                 }
               />
-              {(isNotEnableButton(inputMinuteHandle, inputHourHandle) === true) ? "" : <div
+              {(isNotEnableButton(inputMinuteHandle, inputHourHandle, dateDay.day) === true) ? "" : <div
                   className="position-absolute right-1"
                   style={{ cursor: "pointer" }}
                 >
@@ -624,7 +624,7 @@ function AddPayment() {
       >
         <button
           onClick={() =>
-            inputHandle.refId === "" || inputHandle.refId.length === 0 || inputHandle.nominal === null || inputHandle.nominal < 10000 || isNotEnableButton(inputMinuteHandle, inputHourHandle)
+            inputHandle.refId === "" || inputHandle.refId.length === 0 || inputHandle.nominal === null || inputHandle.nominal < 10000 || isNotEnableButton(inputMinuteHandle, inputHourHandle, dateDay.day)
               ? goToTop(inputHandle.nominal)
               : addPaylinkHandler(
                   inputHandle.paymentId,

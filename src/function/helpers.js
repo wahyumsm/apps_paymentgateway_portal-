@@ -117,23 +117,38 @@ export const styleStatusPaylink = {
   },
 };
 
-export function isNotEnableButton(minutes, hour) {
+export function isNotEnableButton(minutes, hour, date) {
   var now = new Date();
   var user = new Date();
   var nowMinutes = now.getMinutes();
   var nowHour = now.getHours();
+  var nowDate = now.getDate()
   var value_now = `${nowHour}:${nowMinutes+5}:00`.split(":");
   var value_user = `${hour}:${minutes}:00`.split(":");
 
   now.setHours(value_now[0], value_now[1], value_now[2], 0);
   user.setHours(value_user[0], value_user[1], value_user[2], 0);
+  // console.log(now.setHours(value_now[0], value_now[1], value_now[2], 0), 'value now');
+  // console.log(now,'its now');
+  // console.log(user, 'its user');
 
-  const diff = Math.abs(now - user);
-  if (diff < 300000 && diff > 0) {
-    return true;
+  if (now > user) {
+    if (nowDate === date) {
+      return true
+    } else {
+      return false
+    }
   } else {
-    return false;
+    return false
   }
+
+  // const diff = (now - user);
+  // console.log(diff, 'its diff');
+  // if (diff < 300000 && diff > 0) {
+  //   return true;
+  // } else {
+  //   return false;
+  // }
 }
 
 export function terbilangVA(a){

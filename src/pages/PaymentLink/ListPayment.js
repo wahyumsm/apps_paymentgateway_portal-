@@ -627,7 +627,7 @@ function ListPayment() {
           </Col>
         </Row>
         <Row className="mt-3">
-          <Col xs={3}>
+          <Col xs={5}>
             <Row>
               <Col xs={6} style={{ width: "unset" }}>
                 <button
@@ -704,7 +704,7 @@ function ListPayment() {
           <div>Show</div>
           <Form.Select
             className="ms-3"
-            style={{ display: "inline", width: "7%" }}
+            style={{ display: "inline", width: "8.5%" }}
             value={inputHandle.rowPerPage}
             onChange={(e) => handleChangeEntries(e)}
             name="rowPerPage"
