@@ -87,7 +87,7 @@ function InvoiceVA() {
                         pdf.addImage(imgData, imageType, (dataInvoice.inv_products.length < 11 ? 45 : 80), (dataInvoice.inv_products.length < 9 ? 55 : dataInvoice.inv_products.length < 11 ? 15 : 25), (dataInvoice.inv_products.length <= 10 ? pdfWidth*0.8 : pdfWidth*0.65), (dataInvoice.inv_products.length <= 10 ? pageHeight*0.8 : pageHeight*0.65));
                     }
                     // Output / Save
-                    pdf.save(`invoice-settlement-va.pdf`);
+                    pdf.save(`invoice-settlementva-${dataInvoice.partner_detail.partner_name}-${dataInvoice.inv_date}.pdf`);
                 };
             })
             .catch((error) => {
@@ -143,7 +143,7 @@ function InvoiceVA() {
                 'Authorization': auth
             }
             const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
-            console.log(invoiceData, 'ini invoice data');
+            // console.log(invoiceData, 'ini invoice data');
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
                 setDataInvoice(invoiceData.data.response_data)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
@@ -408,120 +408,7 @@ function InvoiceVA() {
                                         </tr>
                                     </tbody>
                                 </Table>
-                                {/* <table className='table table-bordered mt-2' id='tableInvoice' style={{ width: "87%" }}>
-                                    <thead>
-                                        <tr>
-                                            <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                                No
-                                            </th>
-                                            <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                                Nama Barang
-                                            </th>
-                                            <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                                Qty TRANSAKSI
-                                            </th>
-                                            <th colSpan={2} style={{ textAlign: "center" }}>
-                                                Harga (Rp)
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th style={{ textAlign: "center" }}>
-                                                Satuan
-                                            </th>
-                                            <th style={{ textAlign: "center" }}>
-                                                Total
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="table-group-divider">
-                                        {
-                                            dataInvoice.inv_products ?
-                                            dataInvoice.inv_products.map((item, idx) => {
-                                                return (
-                                                    <tr key={idx}>
-                                                        <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>{ idx + 1 }</td>
-                                                        <td>{ item.prod_name }</td>
-                                                        <td style={{ textAlign: "center" }}>{ item.qty_trx }</td>
-                                                        <td style={{ textAlign: "end" }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit) : "Rp 0"}</td>
-                                                        <td style={{ textAlign: "end" }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total) : "Rp 0"}</td>
-                                                    </tr>
-                                                )
-                                            }) :
-                                            <tr>
-                                                <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>1</td>
-                                                <td>{(errorMessage.length !== 0) ? errorMessage : "-"}</td>
-                                                <td style={{ textAlign: "center" }}>0</td>
-                                                <td style={{ textAlign: "end" }}>Rp 0</td>
-                                                <td style={{ textAlign: "end" }}>Rp 0</td>
-                                            </tr>
-                                        }
-                                        <tr>
-                                            <td style={{ borderRight: "hidden" }}></td>
-                                            <td style={{ borderRight: "hidden" }}></td>
-                                            <td style={{ borderRight: "hidden" }}></td>
-                                            <td style={{ borderRight: "hidden" }}></td>
-                                            <td></td>
-                                            <br />
-                                            <br />
-                                            <br />
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3} style={{ fontWeight: 600, textAlign: "end", borderTop: "solid" }}>Harga Jual :</td>
-                                            <td colSpan={2} style={{ textAlign: "end", borderTop: "solid" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp) : "Rp 0"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3} style={{ fontWeight: 600, textAlign: "end" }}>PPN 11% :</td>
-                                            <td colSpan={2} style={{ textAlign: "end", width: 200 }}>{(dataInvoice.inv_ppn !== undefined) ? convertToRupiah(dataInvoice.inv_ppn) : "Rp 0"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3} style={{ fontWeight: 600, textAlign: "end", background: "#077E86", color: "#FFFFFF" }}>Total :</td>
-                                            <td colSpan={2} style={{ textAlign: "end", width: 200, background: "#077E86", color: "#FFFFFF" }}>{(dataInvoice.inv_total !== undefined) ? convertToRupiah(dataInvoice.inv_total) : "Rp 0"}</td>
-                                        </tr>
-                                    </tbody>
-                                </table> */}
                             </div>
-                            {/* <div style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
-                                <table className='table table-bordered'>
-                                    <thead style={{ backgroundColor: "#F2F2F2", border: "transparent", display: 'hidden' }}>
-                                        <tr>
-                                            <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                                No
-                                            </th>
-                                            <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                                Nama Barang
-                                            </th>
-                                            <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                                Qty TRANSAKSI
-                                            </th>
-                                            <th colSpan={2} style={{ textAlign: "center" }}>
-                                                Harga (Rp)
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th style={{ textAlign: "center" }}>
-                                                Satuan
-                                            </th>
-                                            <th style={{ textAlign: "center" }}>
-                                                Total
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="table-group-divider">
-                                        <tr>
-                                            <td colSpan={3} style={{ fontWeight: 600, textAlign: "end", borderTop: "solid" }}>Harga Jual :</td>
-                                            <td colSpan={2} style={{ textAlign: "end", borderTop: "solid" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp) : "Rp 0"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3} style={{ fontWeight: 600, textAlign: "end" }}>PPN 11% :</td>
-                                            <td colSpan={2} style={{ textAlign: "end", width: 200 }}>{(dataInvoice.inv_ppn !== undefined) ? convertToRupiah(dataInvoice.inv_ppn) : "Rp 0"}</td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3} style={{ fontWeight: 600, textAlign: "end", background: "#077E86", color: "#FFFFFF" }}>Total :</td>
-                                            <td colSpan={2} style={{ textAlign: "end", width: 200, background: "#077E86", color: "#FFFFFF" }}>{(dataInvoice.inv_total !== undefined) ? convertToRupiah(dataInvoice.inv_total) : "Rp 0"}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div> */}
                             <div style={{ fontSize: 13 }}>
                                 <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                     <tr>
@@ -534,20 +421,14 @@ function InvoiceVA() {
                             </div>
                         </div>
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
-                            {/* <Pdf targetRef={ref} filename="invoice-example.pdf" options={options}>
-                                {({ toPdf }) => */}
-                                    <button
-                                        onClick={SaveAsPDFHandler}
-                                        // onClick={toPdf}
-                                        // onClick={() => downloadPDF("#tableInvoice", dateRangeSettlement)}
-                                        className={(Object.keys(dataInvoice).length === 0) ? "btn-off mb-3" : 'add-button mb-3'}
-                                        style={{ maxWidth: 'fit-content' }}
-                                        disabled={Object.keys(dataInvoice).length === 0}
-                                    >
-                                        Download PDF
-                                    </button>
-                            {/* //     }
-                            // </Pdf> */}
+                            <button
+                                onClick={SaveAsPDFHandler}
+                                className={(Object.keys(dataInvoice).length === 0) ? "btn-off mb-3" : 'add-button mb-3'}
+                                style={{ maxWidth: 'fit-content' }}
+                                disabled={Object.keys(dataInvoice).length === 0}
+                            >
+                                Download PDF
+                            </button>
                         </div>
                     </div>
                 </div>

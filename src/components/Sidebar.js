@@ -41,8 +41,6 @@ export default (props = {}) => {
   const CollapsableNavItem = (props) => {
     const { eventKey, title, icon, image, children = null } = props;
     const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
-    console.log(defaultKey, 'default key');
-    console.log(eventKey, 'event key');
 
     return (
       <Accordion as={Nav.Item} defaultActiveKey={defaultKey}>
@@ -97,7 +95,6 @@ export default (props = {}) => {
   if (!userAccessMenu) {
     return null
   }
-  console.log(userAccessMenu);
 
   return (
     <>

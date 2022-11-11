@@ -343,7 +343,7 @@ export function terbilangDisbursement(nAngka) {
 	sub = terb_depan(v);
 	/* sisa = parseFloat('0.'+p2);
 	subkoma = terb_belakang(sisa); */
-	console.log(p2, 1, 'p2');
+	// console.log(p2, 1, 'p2');
 	subkoma = terb_belakang(p2);
 	sub = tanda + sub.replace('  ',' ') +'Koma '+ subkoma.replace('  ',' ');
 	return sub.replace('  ', ' ');
