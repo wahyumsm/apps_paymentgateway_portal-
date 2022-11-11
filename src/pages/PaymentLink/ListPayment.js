@@ -463,6 +463,7 @@ function ListPayment() {
       <div>Loading...</div>
     </div>
   );
+
   return (
     <div
       className="main-content mt-5"
@@ -680,7 +681,7 @@ function ListPayment() {
                       inputHandle.statusPaylink.length !== 0) ||
                     (dateRangePaylink.length !== 0 &&
                       inputHandle.refId.length !== 0)
-                      ? "btn-ez-on"
+                      ? "btn-reset"
                       : "btn-ez"
                   }
                   disabled={

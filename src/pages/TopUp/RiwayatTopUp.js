@@ -199,6 +199,7 @@ function RiwayatTopUp() {
             idTransaksiRiwayatTopUp: "",
             statusRiwayatTopUp: [],
             periodeRiwayatTopUp: 0,
+            namaPartnerRiwayatTopUp: ""
         })
         setStateRiwayatTopup(null)
         setDateRangeRiwayatTopUp([])
