@@ -9,6 +9,7 @@ import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
+import alertIcon from "../../assets/icon/alert_icon.svg";
 
 function TambahAgen() {
 
@@ -308,6 +309,26 @@ function TambahAgen() {
                         </Col>
                     </Row> */}
                 </div>
+            </div>
+            <div className="head-title">
+                <h5 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Rekening Sub Account</h5>
+            </div>
+            <div
+                style={{
+                    width:"93%",
+                    fontSize: "14px",
+                    background: "rgba(255, 214, 0, 0.16)",
+                    borderRadius: "4px",
+                    fontStyle: "italic",
+                    padding: "12px",
+                    gap: 10,
+                }}
+                className="text-start my-2"
+            >
+                <span className="mx-2">
+                    <img src={alertIcon} alt="alert" />
+                </span>
+                Silahkan hubungi Admin untuk menambahkan Sub Account pada agen
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
                 <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee, inputHandle.nominal)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.settlementFee === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.settlementFee === 0 }>

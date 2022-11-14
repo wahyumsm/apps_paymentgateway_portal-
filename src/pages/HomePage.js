@@ -74,6 +74,8 @@ import DetailSettlement from './RiwayatTransaksi/DetailSettlement';
 import ReNotifyVA from './HelpDesk/ReNotifyVA';
 import DisbursementReport from './Disbursement/DishbursmentReport';
 import AlokasiSaldo from './TopUp/AlokasiSaldo';
+import InfoSaldoDanMutasi from './RiwayatSubAccount/InfoSaldoDanMutasi';
+import TransferSubAccount from './RiwayatSubAccount/TransferSubAccount';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -167,6 +169,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.AddPayment.path} component={AddPayment} />
     <RouteWithSidebar exact path={Routes.CustomDesignPayment.path} component={CustomDesignPayment} />
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccount.path} component={ListRiwayatSubAccount} />
+    <RouteWithSidebar exact path={Routes.InfoSaldoDanMutasi.path} component={InfoSaldoDanMutasi} />
+    <RouteWithSidebar exact path={Routes.TransferSubAccount.path} component={TransferSubAccount} />
 
     {/* components */}
     <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} />

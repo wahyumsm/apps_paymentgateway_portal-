@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Row} from '@themesberg/react-bootstrap';
+import { Col, Image, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
 import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
@@ -9,6 +9,9 @@ import { useHistory, useParams } from 'react-router-dom';
 import { el } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
+import DataTable from 'react-data-table-component';
+import {agenLists} from '../../data/tables'
+import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 
 function DetailAkun() {
 
@@ -16,6 +19,8 @@ function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
     const history = useHistory()
+    const myRef = useRef(null)
+    const [expandedSubAcc, setExpandedSubAcc] = useState(false)
     const [inputHandle, setInputHandle] = useState({
         callbackUrl: dataAkun.callback_url,
     })
@@ -26,6 +31,37 @@ function DetailAkun() {
             [e.target.name] : e.target.value
         })
     }
+
+    const showCheckboxesSubAccount = () => {
+        if (!expandedSubAcc) {
+          setExpandedSubAcc(true);
+        } else {
+          setExpandedSubAcc(false);
+        }
+    };
+
+    const columns = [
+        {
+            name: 'No',
+            selector: row => row.id,
+        },
+        {
+            name: 'Sumber Agen',
+            selector: row => row.id,
+        },
+        {
+            name: 'Nama Bank',
+            selector: row => row.id,
+        },
+        {
+            name: 'No Rekening',
+            selector: row => row.id,
+        },
+        {
+            name: 'Nama Pemilik Rekening',
+            selector: row => row.id,
+        }
+    ]
 
     async function userDetailPartner (url) {
         try {
@@ -45,8 +81,26 @@ function DetailAkun() {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
+        }
     }
-    }
+
+    const CustomLoader = () => (
+        <div style={{ padding: '24px' }}>
+            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+            <div>Loading...</div>
+        </div>
+    );
+
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#F2F2F2',
+                border: '12px',
+                fontWeight: 'bold',
+                fontSize: '16px'
+            },
+        },
+    };
 
     useEffect(()=>{
         if (!access_token) {
@@ -252,11 +306,32 @@ function DetailAkun() {
                             <br/>
                         </tbody>
                     </table>
-                    <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
-                        <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} >
-                            Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
-                        </button>
-                    </div>
+                    {expandedSubAcc ?
+                        <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
+                            <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                                Sembunyikan tabel skema biaya <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
+                            </button>
+                        </div> :
+                        <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
+                            <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                                Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="ms-2" />
+                            </button>
+                        </div>
+                    }
+                    {expandedSubAcc &&
+                        <div className="div-table pb-4 mb-4" ref={myRef}>
+                            <DataTable
+                                columns={columns}
+                                data={agenLists}
+                                customStyles={customStyles}
+                                // progressPending={pendingSettlement}
+                                progressComponent={<CustomLoader />}
+                                // dense
+                                // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                                // pagination
+                            />
+                        </div>
+                    }
                 </div>
             </div>
             </> : 

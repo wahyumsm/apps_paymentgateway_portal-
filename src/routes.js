@@ -41,6 +41,8 @@ export const Routes = {
     AddPayment: {path: "/addpayment"},
     CustomDesignPayment: {path: "/custom-design-payment"},
     ListRiwayatSubAccount: {path: "/riwayat-sub-account"},
+    InfoSaldoDanMutasi: {path: "/info-saldo-dan-mutasi"},
+    TransferSubAccount: {path: "/transfer"},
 
     // docs
     DocsOverview: { path: "/documentation/overview" },

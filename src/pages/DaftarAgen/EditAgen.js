@@ -155,7 +155,7 @@ function EditAgen() {
             <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
                 <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
                 <div className="head-title">
-                    <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
+                    <div className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</div>
                     {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
                 </div>
                 <div className='base-content' style={{ width:"93%", padding: 50 }}>
@@ -321,6 +321,61 @@ function EditAgen() {
                         </Row> */}
                     </div>
                 </div>
+                <div className="head-title">
+                <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Rekening Sub Account</div>
+                </div>
+                    <div className='base-content' style={{ width:"93%", padding: 50 }}>
+                        <div>
+                            <Row className='mb-4'>
+                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                        Nama Bank
+                                    </span>
+                                </Col>
+                                <Col xs={9}>
+                                    <Form.Control
+                                        value={inputHandle.bankName && "Bank Danamon"}
+                                        placeholder="Bank Danamon"
+                                        type='text'
+                                        disabled
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row className='mb-4'>
+                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                        No Rekening
+                                    </span>
+                                </Col>
+                                <Col xs={9}>
+                                    <Form.Control
+                                        name='akunBank'
+                                        value={inputHandle.akunBank}
+                                        type='text'
+                                        disabled
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }} 
+                                    />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                        Nama Pemilik Rekening
+                                    </span>
+                                </Col>
+                                <Col xs={9}>
+                                    <Form.Control
+                                        name='rekeningOwner'
+                                        value={inputHandle.rekeningOwner}
+                                        type='text'
+                                        disabled
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}   
+                                    />
+                                </Col>
+                            </Row>
+                        </div>
+                    </div>
                 <div className='mb-5 mt-4 me-4 pe-5' style={{ display: "flex", justifyContent: "end"}}>
                     <button onClick={() => setShowModalBatalEdit(true)} className='mx-2' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", gap: 8, width: 136, height: 45, background: "#FFFFFF", color:"#888888", border: "0.6px solid #EBEBEB", borderRadius: 6 }}>
                         Batal
