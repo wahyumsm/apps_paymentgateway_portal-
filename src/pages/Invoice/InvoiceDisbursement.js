@@ -149,23 +149,13 @@ function InvoiceDisbursement() {
                         pdf.addImage(imgData, imageType, (dataInvoiceDisbursement.inv_products.length < 11 ? 55 : 80), (dataInvoiceDisbursement.inv_products.length < 9 ? 20 : dataInvoiceDisbursement.inv_products.length < 11 ? 15 : 20), (dataInvoiceDisbursement.inv_products.length <= 10 ? pdfWidth*0.75 : pdfWidth*0.6), (dataInvoiceDisbursement.inv_products.length <= 10 ? pageHeight*0.75 : pageHeight*0.6));
                     }
                     // Output / Save
-                    pdf.save(`invoice-disbursement.pdf`);
+                    pdf.save(`invoice-disbursement-${dataInvoiceDisbursement.partner_detail.partner_name}-${dataInvoiceDisbursement.inv_date}.pdf`);
                 };
             })
             .catch((error) => {
                 console.error('oops, something went wrong!', error);
             });
     };
-
-    async function downloadPDF(table, dateRange) {
-        // const element = document.getElementById('tableInvoice');
-        let doc = new jsPDF("l", "pt", "a4");
-        doc.html(document.querySelector(table), {
-            callback: function (pdf) {
-                pdf.save(`invoice disbursement ${dateRange[0]} - ${dateRange[1]}.pdf`);
-            },
-        })
-    }
 
     useEffect(() => {
         if (!access_token) {
@@ -292,7 +282,6 @@ function InvoiceDisbursement() {
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
                                             <td style={{ paddingRight: 50, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline' }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
                                         </tr>
-                                    {/* </tbody> */}
                                 </table>
                             </div>
                             <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
@@ -365,7 +354,6 @@ function InvoiceDisbursement() {
                                         </tr>
                                         <tr style={{ border: '0px hidden transparent' }}>
                                             <td></td>
-                                            {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", borderTop: "solid" }}></td> */}
                                             <td></td>
                                             <td>Harga Jual</td>
                                             <td style={{ textAlign: "end" }}>:</td>
@@ -373,7 +361,6 @@ function InvoiceDisbursement() {
                                         </tr>
                                         <tr>
                                             <td style={{ border: 'hidden' }}></td>
-                                            {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>:</td>
@@ -381,7 +368,6 @@ function InvoiceDisbursement() {
                                         </tr>
                                         <tr>
                                             <td style={{ border: 'hidden' }}></td>
-                                            {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>:</td>
@@ -389,7 +375,6 @@ function InvoiceDisbursement() {
                                         </tr>
                                         <tr>
                                             <td style={{ border: 'hidden' }}></td>
-                                            {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>:</td>
@@ -397,7 +382,6 @@ function InvoiceDisbursement() {
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
-                                            {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", background: "#077E86", color: "#FFFFFF" }}></td> */}
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>:</td>
@@ -417,83 +401,9 @@ function InvoiceDisbursement() {
                                 <div style={{ display: "flex", justifyContent: "flex-start", borderTop: "solid", fontWeight: 700 }}>Page 1 of 1</div>
                             </div>
                         </div>
-                        {/* <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
-                            <table className='table table-bordered mt-2' id='tableInvoice' style={{ width: "87%" }}>
-                                <thead style={{ backgroundColor: "#F2F2F2", border: "transparent" }}>
-                                    <tr>
-                                        <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                            No
-                                        </th>
-                                        <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                            Nama Barang
-                                        </th>
-                                        <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                            Qty TRANSAKSI
-                                        </th>
-                                        <th colSpan={2} style={{ textAlign: "center" }}>
-                                            Harga (Rp)
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th style={{ textAlign: "center" }}>
-                                            Satuan
-                                        </th>
-                                        <th style={{ textAlign: "center" }}>
-                                            Total
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="table-group-divider">
-                                    {
-                                        dataInvoiceDisbursement.inv_products ?
-                                        dataInvoiceDisbursement.inv_products.map((item, idx) => {
-                                            return (
-                                                <tr key={idx}>
-                                                    <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>{ idx + 1 }</td>
-                                                    <td>{ item.prod_name }</td>
-                                                    <td style={{ textAlign: "center" }}>{ item.qty_trx }</td>
-                                                    <td style={{ textAlign: "end" }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit) : "Rp 0"}</td>
-                                                    <td style={{ textAlign: "end" }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total) : "Rp 0"}</td>
-                                                </tr>
-                                            )
-                                        }) :
-                                        <tr>
-                                            <td style={{ paddingLeft: 16, width: 155, textAlign: "center" }}>1</td>
-                                            <td>{(errorMessage.length !== 0) ? errorMessage : "-"}</td>
-                                            <td style={{ textAlign: "center" }}>0</td>
-                                            <td style={{ textAlign: "end" }}>Rp 0</td>
-                                            <td style={{ textAlign: "end" }}>Rp 0</td>
-                                        </tr>
-                                    }
-                                    <tr>
-                                        <td style={{ borderRight: "hidden" }}></td>
-                                        <td style={{ borderRight: "hidden" }}></td>
-                                        <td style={{ borderRight: "hidden" }}></td>
-                                        <td style={{ borderRight: "hidden" }}></td>
-                                        <td style={{  }}></td>
-                                        <br />
-                                        <br />
-                                        <br />
-                                    </tr>
-                                    <tr>
-                                        <td colSpan={3} style={{ fontWeight: 600, textAlign: "end", borderTop: "solid" }}>Harga Jual :</td>
-                                        <td colSpan={2} style={{ textAlign: "end", borderTop: "solid" }}>{(dataInvoiceDisbursement.inv_dpp !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_dpp) : "Rp 0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colSpan={3} style={{ fontWeight: 600, textAlign: "end" }}>PPN 11% :</td>
-                                        <td colSpan={2} style={{ textAlign: "end", width: 200 }}>{(dataInvoiceDisbursement.inv_ppn !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_ppn) : "Rp 0"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colSpan={3} style={{ fontWeight: 600, textAlign: "end", background: "#077E86", color: "#FFFFFF" }}>Total :</td>
-                                        <td colSpan={2} style={{ textAlign: "end", width: 200, background: "#077E86", color: "#FFFFFF" }}>{(dataInvoiceDisbursement.inv_total !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_total) : "Rp 0"}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div> */}
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
                                 onClick={SaveAsPDFHandler}
-                                // onClick={() => downloadPDF("#tableInvoice", dateRangeInvoiceDisbursement)}
                                 className={(Object.keys(dataInvoiceDisbursement).length === 0) ? "btn-off mb-3" : 'add-button mb-3'}
                                 style={{ maxWidth: 'fit-content' }}
                                 disabled={Object.keys(dataInvoiceDisbursement).length === 0}
