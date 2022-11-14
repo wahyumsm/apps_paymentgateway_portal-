@@ -85,6 +85,7 @@ function DaftarAgen() {
       name: 'Nama Agen',
       selector: row => row.agen_name,
       sortable: true,
+      width: '140px'
     },
     {
       name: 'Email',
@@ -97,6 +98,12 @@ function DaftarAgen() {
     {
       name: 'No Rekening',
       selector: row => row.agen_bank_number,
+    },
+    
+    {
+      name: 'No Rekening Sub Account',
+      selector: row => row.agen_bank_number,
+      width: '220px'
     },
     {
       name: "Default",

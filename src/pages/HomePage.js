@@ -24,7 +24,7 @@ import ListPayment from "./PaymentLink/ListPayment"
 import DetailPayment from './PaymentLink/DetailPayment';
 import AddPayment from './PaymentLink/AddPayment';
 import CustomDesignPayment from './PaymentLink/CustomDesignPayment';
-import LamanPayment from './WebPaymentLink/LamanPayment';
+import ListRiwayatSubAccount from './RiwayatSubAccount/ListRiwayatSubAccount';
 
 // documentation pages
 import DocsOverview from "./documentation/DocsOverview";
@@ -166,7 +166,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DetailPayment.path} component={DetailPayment} />
     <RouteWithSidebar exact path={Routes.AddPayment.path} component={AddPayment} />
     <RouteWithSidebar exact path={Routes.CustomDesignPayment.path} component={CustomDesignPayment} />
-    <RouteWithSidebar exact path={Routes.LamanPayment.path} component={LamanPayment} />
+    <RouteWithSidebar exact path={Routes.ListRiwayatSubAccount.path} component={ListRiwayatSubAccount} />
 
     {/* components */}
     <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} />

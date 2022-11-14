@@ -27,6 +27,8 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
+import FilterComponent from "../../components/FilterComponent";
+import { useMemo } from "react";
 
 function EditPartner() {
   const [isDetailAkun, setIsDetailAkun] = useState(true);
@@ -38,6 +40,7 @@ function EditPartner() {
   const [detailPartner, setDetailPartner] = useState([]);
   const [payment, setPayment] = useState([]);
   const [expanded, setExpanded] = useState(false);
+  const [expandedSubAcc, setExpandedSubAcc] = useState(false)
   const myRef = useRef(null);
   const [listTypeMethod, setListTypeMethod] = useState({});
   const [fiturType, setFiturType] = useState({});
@@ -69,9 +72,27 @@ function EditPartner() {
     rekeningOwner: detailPartner.mpartnerdtl_account_name,
     fee: 0,
     settlementFee: 0,
+    sumberAgen: 0,
     paymentType: [],
     fiturs: 0,
   });
+  const [filterText, setFilterText] = React.useState('');
+  const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
+  const filteredItems = listAgen.filter(
+      item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
+  );
+
+  const subHeaderComponentMemo = useMemo(() => {
+    const handleClear = () => {
+        if (filterText) {
+            setResetPaginationToggle(!resetPaginationToggle);
+            setFilterText('');
+        }
+    };
+    return (
+        <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Data Agen :" placeholder="Masukkan Nama Agen" />
+    );	}, [filterText, resetPaginationToggle]
+  );
 
   const showCheckboxes = () => {
     if (!expanded) {
@@ -80,6 +101,14 @@ function EditPartner() {
       setExpanded(false);
     }
   };
+
+  const showCheckboxesSubAccount = () => {
+    if (!expandedSubAcc) {
+      setExpandedSubAcc(true);
+    } else {
+      setExpandedSubAcc(false);
+    }
+};
 
   function handleChange(e) {
     if (e.target.name === "active") {
@@ -551,6 +580,12 @@ function EditPartner() {
       width: "150px",
     },
     {
+      name: "No Rekening Sub Account",
+      selector: (row) => row.no_rekening,
+      sortable: true,
+      width: "235px",
+    },
+    {
       name: "Nama Pemilik Rekening",
       selector: (row) => row.nama_pemilik_rekening,
       sortable: true,
@@ -618,12 +653,14 @@ function EditPartner() {
             src={edit}
             onClick={() => editInTableHandler(row.number)}
             style={{ cursor: "pointer" }}
+            alt="icon edit"
           />
           <img
             onClick={() => deleteDataHandler(row.number)}
             src={deleted}
             style={{ cursor: "pointer" }}
             className="ms-2"
+            alt="icon delete"
           />
         </div>
       ),
@@ -891,7 +928,7 @@ function EditPartner() {
   }
 
   return (
-    <div className="container-content mt-5">
+    <div className="container-content-partner mt-5">
       {isDetailAkun ? (
         <span className="breadcrumbs-span">
           Beranda &nbsp;
@@ -985,7 +1022,7 @@ function EditPartner() {
                   </tr>
                   <br />
                   <tr>
-                    <td style={{ width: 200 }}>Nama Perusahaan</td>
+                    <td style={{ width: 200 }}>Nama Perusahaan <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="text"
@@ -999,7 +1036,7 @@ function EditPartner() {
                   </tr>
                   <br />
                   <tr>
-                    <td style={{ width: 200 }}>Email Perusahaan</td>
+                    <td style={{ width: 200 }}>Email Perusahaan <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="text"
@@ -1013,7 +1050,7 @@ function EditPartner() {
                   </tr>
                   <br />
                   <tr>
-                    <td style={{ width: 200 }}>Nomor Telepon</td>
+                    <td style={{ width: 200 }}>Nomor Telepon <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="number"
@@ -1028,7 +1065,7 @@ function EditPartner() {
                   </tr>
                   <br />
                   <tr>
-                    <td style={{ width: 200 }}>Alamat</td>
+                    <td style={{ width: 200 }}>Alamat <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="text"
@@ -1056,7 +1093,7 @@ function EditPartner() {
                 <thead></thead>
                 <tbody>
                   <tr>
-                    <td style={{ width: 200 }}>No NPWP</td>
+                    <td style={{ width: 200 }}>No NPWP <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="number"
@@ -1076,7 +1113,7 @@ function EditPartner() {
                   </tr>
                   <br />
                   <tr>
-                    <td style={{ width: 200 }}>Nama NPWP</td>
+                    <td style={{ width: 200 }}>Nama NPWP <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="text"
@@ -1109,7 +1146,7 @@ function EditPartner() {
                 <thead></thead>
                 <tbody>
                   <tr>
-                    <td style={{ width: 200 }}>Nama Direktur</td>
+                    <td style={{ width: 200 }}>Nama Direktur <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="text"
@@ -1123,7 +1160,7 @@ function EditPartner() {
                   </tr>
                   <br />
                   <tr>
-                    <td style={{ width: 200 }}>No Hp Direktur</td>
+                    <td style={{ width: 200 }}>No Hp Direktur <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="number"
@@ -1152,7 +1189,7 @@ function EditPartner() {
                 <thead></thead>
                 <tbody>
                   <tr>
-                    <td style={{ width: 200 }}>Nama Bank</td>
+                    <td style={{ width: 200 }}>Nama Bank <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="text"
@@ -1166,7 +1203,7 @@ function EditPartner() {
                   </tr>
                   <br />
                   <tr>
-                    <td style={{ width: 200 }}>No. Rekening</td>
+                    <td style={{ width: 200 }}>No. Rekening <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="number"
@@ -1181,7 +1218,7 @@ function EditPartner() {
                   </tr>
                   <br />
                   <tr>
-                    <td style={{ width: 200 }}>Nama Pemilik Rekening</td>
+                    <td style={{ width: 200 }}>Nama Pemilik Rekening <span style={{ color: "red" }}>*</span></td>
                     <td>
                       <input
                         type="text"
@@ -1239,7 +1276,7 @@ function EditPartner() {
                     }
                     {alertFee === true ?
                     <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
-                        <img src={noteIconRed} className="me-2" />
+                        <img src={noteIconRed} className="me-2" alt="icon notice" />
                         Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
                     </div> : ""}
                   </td>
@@ -1276,7 +1313,7 @@ function EditPartner() {
                     )}
                     {alertSettlement === true ?
                       <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
-                          <img src={noteIconRed} className="me-2" />
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
                           Settlement Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
                       </div> : ""
                     }
@@ -1632,13 +1669,13 @@ function EditPartner() {
             </table>                        
             {mustFill === true ?
               <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 210 }} className="mt-3">
-                <img src={noteIconRed} className="me-2" />
+                <img src={noteIconRed} className="me-2" alt="icon notice"/>
                 Wajib Dipilih
               </div> : ""
             }
             {redFlag === true ?
               <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 210 }} className="mt-1">
-                <img src={noteIconRed} className="me-2" />
+                <img src={noteIconRed} className="me-2" alt="icon notice"/>
                 Metode Pembayaran tidak boleh sama dalam satu Fitur
               </div> : ""
             }
@@ -1646,7 +1683,7 @@ function EditPartner() {
               <thead></thead>
               <tbody>
                 <tr>
-                  <td style={{ width: 200 }}></td>
+                  <td style={{ width: 210 }}></td>
                   <td>
                     {edited === false ? (
                       <button
@@ -1817,6 +1854,256 @@ function EditPartner() {
               </div>
             )}
           </div>
+
+          <br />
+          <span className="head-title">Rekening Sub Account</span>
+          <br />
+          <br />
+          <div className="base-content">
+            <table
+              style={{ width: "100%", marginLeft: "unset" }}
+              className="table-form"
+            >
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td style={{ width: 200 }}>Sumber Agen</td>
+                  <td>
+                    <Form.Select name='sumberAgen' value={inputHandle.sumberAgen} className='input-text-ez' style={{ width: "100%", marginLeft: "unset" }} onChange={handleChange}>
+                        <option defaultChecked value={0} style={{ color: "#b4c0d2" }} >Pilih Agen</option>
+                        <option value={2}>Hari Ini</option>
+                        <option value={3}>Kemarin</option>
+                        <option value={4}>7 Hari Terakhir</option>
+                        <option value={5}>Bulan Ini</option>
+                        <option value={6}>Bulan Kemarin</option>
+                        <option value={7}>Pilih Range Tanggal</option>
+                    </Form.Select>
+                  </td>
+                </tr>
+                <br />
+                <tr>
+                  <td style={{ width: 200 }}>Nama Bank</td>
+                  <td>
+                    <input
+                      type="text"
+                      className="input-text-ez"
+                      disabled
+                      value="Bank Danamon"
+                      name="bankName"
+                      style={{ width: "100%", marginLeft: "unset" }}
+                    />
+                  </td>
+                </tr>
+                <br />
+                <tr>
+                  <td style={{ width: 200 }}>No. Rekening <span style={{ color: "red" }}>*</span></td>
+                  <td>
+                    <input
+                      type="number"
+                      className="input-text-edit"
+                      onChange={handleChange}
+                      value={inputHandle.akunBank === undefined ? "" : inputHandle.akunBank}
+                      placeholder="Masukkan Nomor Rekening"
+                      name="akunBank"
+                      style={{ width: "100%", marginLeft: "unset" }}
+                      onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                    />
+                  </td>
+                </tr>
+                <br />
+                <tr>
+                  <td style={{ width: 200 }}>Nama Pemilik Rekening</td>
+                  <td>
+                    <input
+                      type="text"
+                      className="input-text-edit"
+                      onChange={handleChange}
+                      value={inputHandle.rekeningOwner === undefined ? "" : inputHandle.rekeningOwner}
+                      name="rekeningOwner"
+                      placeholder="Masukkan Nama Pemilik Rekening"
+                      style={{ width: "100%", marginLeft: "unset" }}
+                    />
+                  </td>
+                </tr>
+                <br />
+              </tbody>
+            </table>
+            <table >              
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td style={{ width: 210 }}></td>
+                  <td>
+                    {edited === false ? (
+                      <button
+                        onClick={() =>
+                          saveNewSchemaHandle(
+                            inputHandle.fee,
+                            inputHandle.settlementFee,
+                            fitur[0],
+                            fitur[1],
+                            paymentMethod.filter((it) => it !== 0),
+                            paymentNameMethod.filter((it) => it !== "Pilih Semua"),
+                            payment.length + 1
+                          )
+                        }
+                        style={{
+                          fontFamily: "Exo",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          alignItems: "center",
+                          padding: "12px 24px",
+                          gap: 8,
+                          width: 250,
+                          height: 48,
+                          color: "#077E86",
+                          background: "unset",
+                          border: "0.6px solid #077E86",
+                          borderRadius: 6,
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          style={{ marginRight: 10 }}
+                        />{" "}
+                        Tambah Sub Account
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          className="mx-2"
+                          onClick={() => batalEdit()}
+                          style={{
+                            fontFamily: "Exo",
+                            fontSize: 16,
+                            fontWeight: 900,
+                            alignItems: "center",
+                            padding: "12px 24px",
+                            gap: 8,
+                            width: 136,
+                            height: 45,
+                            background: "#FFFFFF",
+                            color: "#888888",
+                            border: "0.6px solid #EBEBEB",
+                            borderRadius: 6,
+                          }}
+                        >
+                          Batal
+                        </button>
+                        <button
+                          style={{
+                            fontFamily: "Exo",
+                            fontSize: 16,
+                            fontWeight: 700,
+                            alignItems: "center",
+                            padding: "12px 24px",
+                            gap: 8,
+                            width: 136,
+                            height: 45,
+                            color: "#077E86",
+                            background: "transparent",
+                            border: "1px solid #077E86",
+                            borderRadius: 6,
+                          }}
+                          onClick={() =>
+                            saveEditInTableHandler(
+                              numbering,
+                              inputHandle.fee,
+                              inputHandle.settlementFee,
+                              fitur[0],
+                              fitur[1],
+                              paymentMethod.filter((it) => it !== 0),
+                              paymentNameMethod.filter((it) => it !== "Pilih Semua")
+                            )
+                          }
+                        >
+                          Simpan
+                        </button>
+                      </>
+                    )}
+                  </td>
+                  {/* <td style={{ width: "13%"}}></td> */}
+                  <td className="d-flex justify-content-end align-items-center text-end ms-4">
+                    {expandedSubAcc ? (
+                      <div
+                        className="my-4 text-end"
+                        style={{
+                          // display: "flex",
+                          // justifyContent: "end",
+                          // alignItems: "center",
+                          // padding: "unset",
+                          // width:"100%"
+                        }}
+                      >
+                        <button
+                          style={{
+                            fontFamily: "Exo",
+                            fontSize: 16,
+                            fontWeight: 700,
+                            alignItems: "center",
+                            gap: 8,
+                            // width: "100%",
+                            height: 48,
+                            color: "#077E86",
+                            background: "unset",
+                            border: "unset",
+                          }}
+                          onClick={showCheckboxesSubAccount}
+                          className="text-end"
+                        >
+                          Sembunyikan daftar Sub Account{" "}
+                          <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        className="my-4 mb-4 text-end"
+                        style={{
+                          // display: "flex",
+                          // justifyContent: "end",
+                          // alignItems: "center",
+                          // padding: "unset",
+                          // width:"100%"
+                        }}
+                      >
+                        <button
+                          style={{
+                            fontFamily: "Exo",
+                            fontSize: 16,
+                            fontWeight: 700,
+                            alignItems: "center",
+                            gap: 8,
+                            // width: "100%",
+                            height: 48,
+                            color: "#077E86",
+                            background: "unset",
+                            border: "unset",
+                          }}
+                          onClick={showCheckboxesSubAccount}
+                          className="text-end"
+                        >
+                          Lihat daftar Sub Account{" "}
+                          <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {expandedSubAcc && (
+              <div className="div-table pb-4" ref={myRef}>
+                <DataTable
+                  columns={columnPayment}
+                  data={payment}
+                  customStyles={customStyles}
+                  // progressPending={pendingSettlement}
+                  progressComponent={<CustomLoader />}
+                />
+              </div>
+            )}
+          </div>
+
           <div
             className="mb-5 mt-3"
             style={{ display: "flex", justifyContent: "end" }}
@@ -1878,52 +2165,26 @@ function EditPartner() {
           </div>
         </>
       ) : (
-        <>
-          <hr className="hr-style" style={{ marginTop: -2 }} />
-          <div className="base-content mt-5 mb-5">
-            <div className="search-bar mb-5">
-              <Row>
-                <Col xs={3} style={{ width: "18%" }}>
-                  <span className="h5">Cari Data Agen :</span>
-                </Col>
-                <Col xs={2}>
-                  <Form.Control
-                    placeholder="Masukkan Nama Agen"
-                    aria-label="Masukkan Nama Agen"
-                    aria-describedby="basic-addon2"
-                    style={{ marginTop: "-10px" }}
-                  />
-                </Col>
-              </Row>
-            </div>
-            {listAgen.length === 0 ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  paddingBottom: 20,
-                  alignItems: "center",
-                }}
-              >
-                There are no records to display
-              </div>
-            ) : (
+        <> 
+          <hr className='hr-style' style={{marginTop: -2}}/>
+          <div className='base-content mt-5 mb-5'>  
+              {
+              listAgen.length === 0 ?
+              <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
               <div className="div-table">
-                <DataTable
-                  columns={columns}
-                  data={listAgen}
-                  customStyles={customStyles}
-                  noDataComponent={
-                    <div style={{ marginBottom: 10 }}>No Data</div>
-                  }
-                  pagination
-                  highlightOnHover
-                  onRowClicked={(listAgen) => {
-                    detailAgenHandler(listAgen.agen_id);
-                  }}
-                />
+                  <DataTable
+                      columns={columns}
+                      data={filteredItems}
+                      customStyles={customStyles}
+                      noDataComponent={<div style={{ marginBottom: 10 }}>There are no records to display</div>}
+                      pagination
+                      highlightOnHover
+                      progressComponent={<CustomLoader />}
+                      subHeader
+                      subHeaderComponent={subHeaderComponentMemo}
+                  />
               </div>
-            )}
+              }
           </div>
         </>
       )}

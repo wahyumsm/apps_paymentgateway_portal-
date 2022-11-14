@@ -63,7 +63,7 @@ function DetailAgen() {
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
             <span className='breadcrumbs-span'>{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
             <div className="head-title">
-                <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</h4>
+                <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Detail Agen</div>
                 {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
             </div>
             <div className='base-content' style={{ width:"93%", padding: 50 }}>
@@ -206,11 +206,67 @@ function DetailAgen() {
                     </Row> */}
                 </div>
             </div>
-            <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
-                <button onClick={() => editAgen(agenId)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
-                    Edit
-                </button>
+            <div className="head-title">
+                <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Rekening Sub Account</div>
             </div>
+            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+                <div>
+                    <Row className='mb-4'>
+                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                            <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                Nama Bank
+                            </span>
+                        </Col>
+                        <Col xs={9}>
+                            <Form.Control
+                                value={detailAgen.agen_bank}
+                                type='text'
+                                disabled
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                />
+                        </Col>
+                    </Row>
+                    <Row className='mb-4'>
+                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                            <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                No Rekening
+                            </span>
+                        </Col>
+                        <Col xs={9}>
+                            <Form.Control
+                                name='akunBank'
+                                value={detailAgen.agen_bank_number}
+                                type='text'
+                                disabled
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                            <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                Nama Pemilik Rekening
+                            </span>
+                        </Col>
+                        <Col xs={9}>
+                            <Form.Control
+                                value={detailAgen.agen_bank_name}
+                                type='text'
+                                disabled
+                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                />
+                        </Col>
+                    </Row>
+                </div>
+            </div>
+            {
+                user_role === "102" ?
+                <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
+                    <button onClick={() => editAgen(agenId)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+                        Edit
+                    </button>
+                </div> : ""
+            }
         </div>
     )
 }

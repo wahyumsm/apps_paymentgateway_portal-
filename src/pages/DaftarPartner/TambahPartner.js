@@ -69,6 +69,10 @@ function TambahPartner() {
     settlementFee: 0,
   });
 
+  const [subAccount, setSubAccount] = useState({
+    sumberAgen: 0,
+  });
+
   const showCheckboxes = () => {
     if (!expanded) {
       setExpanded(true);
@@ -642,7 +646,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama Perusahaan*
+                Nama Perusahaan <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -665,7 +669,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Email Perusahaan*
+                Email Perusahaan <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -688,7 +692,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nomor Telepon*
+                Nomor Telepon <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -712,7 +716,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Alamat*
+                Alamat <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -744,7 +748,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                No NPWP*
+                No NPWP <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -768,7 +772,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama NPWP*
+                Nama NPWP <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -800,7 +804,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama Direktur*
+                Nama Direktur <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -823,7 +827,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                No Hp Direktur*
+                No Hp Direktur <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -856,7 +860,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama Bank*
+                Nama Bank <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -880,7 +884,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                No. Rekening*
+                No. Rekening <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -904,7 +908,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama Pemilik Rekening*
+                Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -977,7 +981,7 @@ function toDashboard() {
               }
               {alertFee === true ?
                 <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
-                  <img src={noteIconRed} className="me-2" />
+                  <img src={noteIconRed} className="me-2" alt="icon notice" />
                   Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
                 </div> : ""
               }
@@ -1029,7 +1033,7 @@ function toDashboard() {
               }
               {alertSettlement === true ?
                 <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
-                  <img src={noteIconRed} className="me-2" />
+                  <img src={noteIconRed} className="me-2" alt="icon notice" />
                   Settlement Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
                 </div> : ""
               }
@@ -1374,13 +1378,13 @@ function toDashboard() {
           </Row>
           {mustFill === true ?
             <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 133 }} className="mt-3">
-              <img src={noteIconRed} className="me-2" />
+              <img src={noteIconRed} className="me-2" alt="icon notice" />
               Wajib Dipilih
             </div> : ""
           }
           {redFlag === true ?
             <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 133 }} className="mt-2">
-              <img src={noteIconRed} className="me-2" />
+              <img src={noteIconRed} className="me-2" alt="icon notice" />
               Metode Pembayaran tidak boleh sama dalam satu Fitur
             </div> : ""
           }
@@ -1547,6 +1551,270 @@ function toDashboard() {
           )}
         </div>
       </div>
+
+      <div className="head-title">
+        <h5 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>
+          Rekening Sub Account
+        </h5>
+      </div>
+      <div className="base-content" style={{ width: "100%", padding: 50 }}>
+        <div>
+          <Row className="mb-4">
+            <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
+              <span
+                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
+              >
+                Sumber Agen
+              </span>
+            </Col>
+            <Col xs={10}>
+              <Form.Select name='sumberAgen' onChange={handleChange} value={subAccount.sumberAgen} placeholder="Pilih Agen" style={{width: "100%", height: 40, marginTop: "-7px", marginLeft: "unset"}}>
+                <option defaultChecked disabled value={0}>Pilih Agen</option>
+                <option value={2}>Hari Ini</option>
+                <option value={3}>Kemarin</option>
+                <option value={4}>7 Hari Terakhir</option>
+                <option value={5}>Bulan Ini</option>
+                <option value={6}>Bulan Kemarin</option>
+                <option value={7}>Pilih Range Tanggal</option>
+              </Form.Select>
+            </Col>
+          </Row>
+          <Row className="mb-4">
+            <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
+              <span
+                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
+              >
+                Nama Bank
+              </span>
+            </Col>
+            <Col xs={10}>
+              <Form.Control
+                name="bankName"
+                onChange={handleChange}
+                placeholder="Bank Danamon"
+                type="text"
+                disabled
+                style={{
+                  width: "100%",
+                  height: 40,
+                  marginTop: "-7px",
+                  marginLeft: "unset",
+                }}
+              />
+            </Col>
+          </Row>
+          <Row className="mb-4">
+            <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
+              <span
+                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
+              >
+                No. Rekening <span style={{ color: "red" }}>*</span>
+              </span>
+            </Col>
+            <Col xs={10}>
+              <Form.Control
+                name="akunBank"
+                onChange={handleChange}
+                placeholder="Masukkan Nomor Rekening"
+                type="number"
+                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                style={{
+                  width: "100%",
+                  height: 40,
+                  marginTop: "-7px",
+                  marginLeft: "unset",
+                }}
+              />
+            </Col>
+          </Row>
+          <Row className="">
+            <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
+              <span
+                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
+              >
+                Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
+              </span>
+            </Col>
+            <Col xs={10}>
+              <Form.Control
+                name="rekeningOwner"
+                onChange={handleChange}
+                placeholder="Masukkan Nama Pemilik Rekening"
+                type="text"
+                style={{
+                  width: "100%",
+                  height: 40,
+                  marginTop: "-7px",
+                  marginLeft: "unset",
+                }}
+              />
+            </Col>
+          </Row>
+          
+          <Row className="d-flex justify-content-between align-items-center">
+            <Col xs={1}></Col>
+            <Col className="ms-5">
+              {edited === false ? (
+                <button
+                  onClick={() =>
+                    saveNewSchemaHandle(
+                      biayaHandle.fee,
+                      biayaHandle.settlementFee,
+                      fitur[0],
+                      fitur[1],
+                      paymentMethod.filter(it => it !== 0),
+                      paymentNameMethod.filter(it => it !== "Pilih Semua"),
+                      payment.length + 1
+                    )
+                  }
+                  style={{
+                    fontFamily: "Exo",
+                    fontSize: 16,
+                    fontWeight: 700,
+                    alignItems: "center",
+                    padding: "12px 24px",
+                    gap: 8,
+                    width: 250,
+                    height: 48,
+                    color: "#077E86",
+                    background: "unset",
+                    border: "0.6px solid #077E86",
+                    borderRadius: 6,
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} />{" "}
+                  Tambah Sub Account
+                </button>
+              ) : (
+                <>
+                  <button
+                    className="mx-2"
+                    onClick={() => batalEdit()}
+                    style={{
+                      fontFamily: "Exo",
+                      fontSize: 16,
+                      fontWeight: 900,
+                      alignItems: "center",
+                      padding: "12px 24px",
+                      gap: 8,
+                      width: 136,
+                      height: 45,
+                      background: "#FFFFFF",
+                      color: "#888888",
+                      border: "0.6px solid #EBEBEB",
+                      borderRadius: 6,
+                    }}
+                  >
+                    Batal
+                  </button>
+                  <button
+                    style={{
+                      fontFamily: "Exo",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      alignItems: "center",
+                      padding: "12px 24px",
+                      gap: 8,
+                      width: 136,
+                      height: 45,
+                      color: "#077E86",
+                      background: "transparent",
+                      border: "1px solid #077E86",
+                      borderRadius: 6,
+                    }}
+                    onClick={() =>
+                      saveEditInTableHandler(
+                        numbering,
+                        biayaHandle.fee,
+                        biayaHandle.settlementFee,
+                        fitur[0],
+                        fitur[1],
+                        paymentMethod.filter(it => it !== 0),
+                        paymentNameMethod.filter(it => it !== "Pilih Semua")
+                      )
+                    }
+                  >
+                    Simpan
+                  </button>
+                </>
+              )}
+            </Col>
+            <Col>
+              {expanded ? (
+                <div
+                  className="my-4"
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                    alignItems: "center",
+                    padding: "unset",
+                  }}
+                >
+                  <button
+                    style={{
+                      fontFamily: "Exo",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      alignItems: "center",
+                      gap: 8,
+                      width: 300,
+                      height: 48,
+                      color: "#077E86",
+                      background: "unset",
+                      border: "unset",
+                    }}
+                    onClick={showCheckboxes}
+                  >
+                    Sembunyikan daftar Sub Account{" "}
+                    <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  className="my-4"
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                    alignItems: "center",
+                    padding: "unset",
+                  }}
+                >
+                  <button
+                    style={{
+                      fontFamily: "Exo",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      alignItems: "center",
+                      gap: 8,
+                      width: 300,
+                      height: 48,
+                      color: "#077E86",
+                      background: "unset",
+                      border: "unset",
+                    }}
+                    onClick={showCheckboxes}
+                  >
+                    Lihat daftar Sub Account{" "}
+                    <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                  </button>
+                </div>
+              )}
+            </Col>
+          </Row>
+          {expanded && (
+            <div className="div-table pb-4" ref={myRef}>
+              <DataTable
+                columns={columnPayment}
+                data={payment}
+                customStyles={customStyles}
+                // progressPending={pendingSettlement}
+                progressComponent={<CustomLoader />}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
       <div
         style={{
           display: "flex",

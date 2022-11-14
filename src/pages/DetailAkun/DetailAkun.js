@@ -7,6 +7,9 @@ import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from 
 import encryptData from '../../function/encryptData';
 import { useHistory, useParams } from 'react-router-dom';
 import { el } from 'date-fns/locale';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
+
 function DetailAkun() {
 
     const access_token = getRole()
@@ -197,7 +200,7 @@ function DetailAkun() {
                 <span className='head-title'>Rekening</span>
                 <br/>
                 <br/>
-                <div className='base-content mb-5'>
+                <div className='base-content'>
                     <table style={{width: '100%', marginLeft: 'unset'}} className="table-form">
                         <thead></thead>
                         <tbody>
@@ -218,6 +221,42 @@ function DetailAkun() {
                             <br/>
                         </tbody>
                     </table>
+                </div>
+                <br/>
+                <span className='head-title'>Rekening Sub Account</span>
+                <br/>
+                <br/>
+                <div className='base-content mb-5'>
+                    <table style={{width: '100%', marginLeft: 'unset'}} className="table-form">
+                        <thead></thead>
+                        <tbody>
+                            <tr>
+                                <td style={{width: 200}}>Sumber Agen</td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mbank_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                            </tr>
+                            <br/>
+                            <tr>
+                                <td style={{width: 200}}>Nama Bank</td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mbank_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                            </tr>
+                            <br/>
+                            <tr>
+                                <td style={{width: 200}}>No. Rekening</td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_number} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                            </tr>
+                            <br/>
+                            <tr>
+                                <td style={{width: 200}}>Nama Pemilik Rekening</td>
+                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                            </tr>
+                            <br/>
+                        </tbody>
+                    </table>
+                    <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
+                        <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} >
+                            Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                        </button>
+                    </div>
                 </div>
             </div>
             </> : 

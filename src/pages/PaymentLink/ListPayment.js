@@ -540,7 +540,7 @@ function ListPayment() {
         </button>
       </div>
       <div className="base-content mt-3">
-        <span className="font-weight-bold mb-4" style={{ fontWeight: 600 }}>
+        <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
           Filter
         </span>
         <Row className="mt-4">
@@ -554,7 +554,7 @@ function ListPayment() {
               value={inputHandle.paymentId}
               name="paymentId"
               type="text"
-              className="input-text-ez"
+              className="input-text-edit"
               placeholder="Masukkan Payment ID"
             />
           </Col>
@@ -568,7 +568,7 @@ function ListPayment() {
               value={inputHandle.refId}
               name="refId"
               type="text"
-              className="input-text-ez"
+              className="input-text-edit"
               placeholder="Masukkan ID Referensi"
             />
           </Col>

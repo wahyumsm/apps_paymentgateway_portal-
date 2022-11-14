@@ -40,7 +40,7 @@ export const Routes = {
     DetailPayment: {path: "/detailpayment/:paymentId"},
     AddPayment: {path: "/addpayment"},
     CustomDesignPayment: {path: "/custom-design-payment"},
-    LamanPayment: {path: "/laman-payment"},
+    ListRiwayatSubAccount: {path: "/riwayat-sub-account"},
 
     // docs
     DocsOverview: { path: "/documentation/overview" },

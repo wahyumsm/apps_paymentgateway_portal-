@@ -26,6 +26,7 @@ function DetailPartner() {
     const [payment, setPayment] = useState([])
     const [fiturType, setFiturType] = useState({})
     const [expanded, setExpanded] = useState(false)
+    const [expandedSubAcc, setExpandedSubAcc] = useState(false)
     const myRef = useRef(null)
     const [filterText, setFilterText] = React.useState('');
     const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
@@ -50,6 +51,14 @@ function DetailPartner() {
           setExpanded(true);
         } else {
           setExpanded(false);
+        }
+    };
+
+    const showCheckboxesSubAccount = () => {
+        if (!expandedSubAcc) {
+          setExpandedSubAcc(true);
+        } else {
+          setExpandedSubAcc(false);
         }
     };
 
@@ -311,7 +320,7 @@ function DetailPartner() {
     }
 
     return (
-        <div className='container-content mt-5'>
+        <div className='container-content-partner mt-5'>
             {isDetailAkun ? <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner</span>
             : <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen</span>}
             <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
@@ -351,22 +360,22 @@ function DetailPartner() {
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>Nama Perusahaan</td>
+                                    <td style={{width: 200}}>Nama Perusahaan <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>Email Perusahaan</td>
+                                    <td style={{width: 200}}>Email Perusahaan <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_email} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>Nomor Telepon</td>
+                                    <td style={{width: 200}}>Nomor Telepon <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_telp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>Alamat</td>
+                                    <td style={{width: 200}}>Alamat <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_address} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
@@ -382,12 +391,12 @@ function DetailPartner() {
                             <thead></thead>
                             <tbody>
                                 <tr>
-                                    <td style={{width: 200}}>No NPWP</td>
+                                    <td style={{width: 200}}>No NPWP <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_npwp !== null ? detailPartner.mpartner_npwp : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>Nama NPWP</td>
+                                    <td style={{width: 200}}>Nama NPWP <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_npwp_name !== null ? detailPartner.mpartner_npwp_name : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
@@ -403,12 +412,12 @@ function DetailPartner() {
                             <thead></thead>
                             <tbody>
                                 <tr>
-                                    <td style={{width: 200}}>Nama Direktur</td>
+                                    <td style={{width: 200}}>Nama Direktur <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_direktur} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>No Hp Direktur</td>
+                                    <td style={{width: 200}}>No Hp Direktur <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartner_direktur_telp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
@@ -424,40 +433,39 @@ function DetailPartner() {
                             <thead></thead>
                             <tbody>
                                 <tr>
-                                    <td style={{width: 200}}>Nama Bank</td>
+                                    <td style={{width: 200}}>Nama Bank <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mbank_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>No. Rekening</td>
+                                    <td style={{width: 200}}>No. Rekening <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartnerdtl_account_number} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>Nama Pemilik Rekening</td>
+                                    <td style={{width: 200}}>Nama Pemilik Rekening <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={detailPartner.mpartnerdtl_account_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <br/>
+                    <br/>
                     <span className='head-title'>Biaya</span>
                     <br/>
                     <br/>
                     <div className='base-content'>
-                        <table style={{width: '100%', marginLeft: 'unset'}} className="table-form mb-5">
+                        <table style={{width: '100%', marginLeft: 'unset'}} className="table-form ">
                             <thead></thead>
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>Fee <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertFormatNumberPartner(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' placeholder={convertFormatNumberPartner(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertFormatNumberPartner(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' placeholder={convertFormatNumberPartner(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
@@ -523,19 +531,19 @@ function DetailPartner() {
                             </tbody>
                         </table>                        
                         {expanded ?
-                            <div className='my-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
-                                <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
+                            <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
+                                <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
                                     Sembunyikan tabel skema biaya <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
                                 </button>
                             </div> :
-                            <div className='my-4 mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
-                                <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
+                            <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
+                                <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
                                     Lihat tabel skema lainnya <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
                                 </button>
                             </div>                                            
                         }
                         {expanded && 
-                            <div className="div-table pb-4" ref={myRef}>
+                            <div className="div-table pb-4 mb-4" ref={myRef}>
                                 <DataTable
                                     columns={columnPayment}
                                     data={payment}
@@ -549,7 +557,75 @@ function DetailPartner() {
                             </div>
                         }
                     </div>
-                    <div className='mb-5 mt-3' style={{ display: "flex", justifyContent: "end"}}>
+                    <span className='head-title'>Rekening Sub Account</span>
+                    <br/>
+                    <br/>
+                    <div className='base-content'>
+                        <table style={{width: '100%', marginLeft: 'unset'}} className="table-form">
+                            <thead></thead>
+                            <tbody>
+                                <tr>
+                                    <td style={{width: 200}}>Sumber Agen</td>
+                                    <td>
+                                    <Form.Select name='sumberAgen' value={0} placeholder="Pilih Agen" disabled className='input-text-ez' style={{ width: "100%", marginLeft: "unset" }}>
+                                        <option defaultChecked value={0}>Pilih Agen</option>
+                                        <option value={2}>Hari Ini</option>
+                                        <option value={3}>Kemarin</option>
+                                        <option value={4}>7 Hari Terakhir</option>
+                                        <option value={5}>Bulan Ini</option>
+                                        <option value={6}>Bulan Kemarin</option>
+                                        <option value={7}>Pilih Range Tanggal</option>
+                                    </Form.Select>
+                                    </td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{width: 200}}>Nama Bank</td>
+                                    <td><input type='text'className='input-text-ez' value="Bank Danamon" disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{width: 200}}>No. Rekening <span style={{ color: "red" }}>*</span></td>
+                                    <td><input type='text'className='input-text-ez' placeholder="Masukkan Nomor Rekening" disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{width: 200}}>Nama Pemilik Rekening</td>
+                                    <td><input type='text'className='input-text-ez' placeholder='Masukkan Nama Pemilik Rekening' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                </tr>
+                                <br/>
+                            </tbody>
+                        </table>
+                        {expandedSubAcc ?
+                            <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
+                                <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                                    Sembunyikan daftar Sub Account <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                                </button>
+                            </div> :
+                            <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
+                                <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                                    Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                                </button>
+                            </div>                                            
+                        }
+                        {expandedSubAcc && 
+                            <div className="div-table pb-4 mb-4" ref={myRef}>
+                                <DataTable
+                                    columns={columnPayment}
+                                    data={payment}
+                                    customStyles={customStyles}
+                                    // progressPending={pendingSettlement}
+                                    progressComponent={<CustomLoader />}
+                                    // dense
+                                    // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                                    // pagination
+                                />
+                            </div>
+                        }
+                    </div>
+                </div>
+                
+                <div className='mb-5 mt-3' style={{ display: "flex", justifyContent: "end"}}>
                     <button onClick={() => editPartner(partnerId)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                         Edit
                     </button>
