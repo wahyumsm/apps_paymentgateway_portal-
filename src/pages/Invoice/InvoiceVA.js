@@ -84,7 +84,7 @@ function InvoiceVA() {
                         // data 10
                         // pdf.addImage(imgData, imageType, 45, 15, (pdfWidth*0.8), (pageHeight*0.8));
                         // data diatas 15
-                        pdf.addImage(imgData, imageType, (dataInvoice.inv_products.length < 11 ? 45 : 80), (dataInvoice.inv_products.length < 9 ? 55 : dataInvoice.inv_products.length < 11 ? 15 : 25), (dataInvoice.inv_products.length <= 10 ? pdfWidth*0.8 : pdfWidth*0.65), (dataInvoice.inv_products.length <= 10 ? pageHeight*0.8 : pageHeight*0.65));
+                        pdf.addImage(imgData, imageType, (dataInvoice.inv_products.length < 11 ? 55 : 80), (dataInvoice.inv_products.length < 9 ? 20 : dataInvoice.inv_products.length < 11 ? 15 : 20), (dataInvoice.inv_products.length <= 10 ? pdfWidth*0.75 : pdfWidth*0.6), (dataInvoice.inv_products.length <= 10 ? pageHeight*0.75 : pageHeight*0.6));
                     }
                     // Output / Save
                     pdf.save(`invoice-settlement-va.pdf`);
@@ -180,6 +180,7 @@ function InvoiceVA() {
         listPartner()
     }, [access_token, user_role])
     
+    console.log(dataInvoice.inv_products);
 
     return (
         <div className="content-page mt-6">
@@ -192,7 +193,7 @@ function InvoiceVA() {
                     <div className='base-content mt-3 mb-3'>
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-2 mb-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                            <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
                                 <span className='me-3'>Periode*</span>
                                 <div>
                                     <DateRangePicker 
@@ -203,7 +204,7 @@ function InvoiceVA() {
                                     />
                                 </div>
                             </Col>
-                            <Col xs={5} className="d-flex justify-content-start align-items-center">
+                            <Col xs={7} className="d-flex justify-content-start align-items-center ms-4">
                                 <span>Nama Partner</span>
                                 <Form.Select name='namaPartner' className="input-text-ez me-4" value={namaPartner} onChange={(e) => handleChangeNamaPartner(e)}>
                                     <option defaultChecked disabled value="">Pilih Nama Partner</option>
@@ -216,23 +217,23 @@ function InvoiceVA() {
                                     }
                                 </Form.Select>
                             </Col>
-                            <button
-                                onClick={() => generateInvoice(dateRangeSettlement, namaPartner)}
-                                className={(stateSettlement === null || namaPartner.length === 0) ? "btn-off" : "add-button"}
-                                style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                                disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
-                            >
-                                Generate
-                            </button>
-                            <button
-                                onClick={() => resetButtonHandle()}
-                                className={(stateSettlement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez"}
-                                style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                                disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
-                            >
-                                Atur Ulang
-                            </button>
                         </Row>
+                        <button
+                            onClick={() => generateInvoice(dateRangeSettlement, namaPartner)}
+                            className={(stateSettlement === null || namaPartner.length === 0) ? "btn-off" : "add-button"}
+                            style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
+                            disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
+                        >
+                            Generate
+                        </button>
+                        <button
+                            onClick={() => resetButtonHandle()}
+                            className={(stateSettlement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez"}
+                            style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
+                            disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
+                        >
+                            Atur Ulang
+                        </button>
                         <div id='tableInvoice'>
                             <Row style={{ fontSize: 18 }}>
                                 <Col xs={4}></Col>
@@ -293,7 +294,7 @@ function InvoiceVA() {
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                            <td style={{ paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline' }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                            <td style={{ paddingRight: 50, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline' }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
                                         </tr>
                                     {/* </tbody> */}
                                 </table>
@@ -330,11 +331,11 @@ function InvoiceVA() {
                                             dataInvoice.inv_products.map((item, idx) => {
                                                 return (
                                                     <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden' }}>
-                                                        <td style={{ paddingLeft: 16, width: 155, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
-                                                        <td style={{ borderRight: 'hidden' }}>{ item.prod_name }</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, 2) : "Rp 0"}</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, 2) : "Rp 0"}</td>
+                                                        <td style={{ fontSize: 12, paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
+                                                        <td style={{ fontSize: 12, borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
+                                                        <td style={{ fontSize: 12, textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td>
+                                                        <td style={{ fontSize: 12, textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, 2) : "Rp 0"}</td>
+                                                        <td style={{ fontSize: 12, textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
                                             }) :
