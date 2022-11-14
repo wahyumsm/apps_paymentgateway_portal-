@@ -2,7 +2,7 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { getRole } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import SubAccountComponent from '../components/SubAccountComponent'
+import SubAccountComponent from '../../components/SubAccountComponent'
 
 const InfoSaldoDanMutasi = () => {
     const history = useHistory()

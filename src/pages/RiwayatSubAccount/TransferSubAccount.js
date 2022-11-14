@@ -1,5 +1,5 @@
 import React from 'react'
-import SubAccountComponent from '../components/SubAccountComponent'
+import SubAccountComponent from '../../components/SubAccountComponent'
 import { useHistory } from 'react-router-dom'
 import { getRole } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"

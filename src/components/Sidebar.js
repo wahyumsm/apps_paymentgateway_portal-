@@ -143,7 +143,7 @@ export default (props = {}) => {
                       // link={Routes.Transactions.path}
                       link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 16) ? Routes.RiwayatTransaksi.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 21) ? Routes.DisbursementReport.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 20) ? Routes.ListPayment.path : ""}
                     /> :
-                    <CollapsableNavItem key={item.id} title={item.label} image={item.icon}>
+                    <CollapsableNavItem eventKey={item.label} key={item.id} title={item.label} image={item.icon}>
                       {
                         item.detail.map(item2 => {
                           return (

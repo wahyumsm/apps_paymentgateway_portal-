@@ -1,5 +1,5 @@
 import React from 'react'
-import iconInfo from '../../assets/icon/info_icon.svg'
+import iconInfo from '../assets/icon/info_icon.svg'
 
 const SubAccountComponent = () => {
   return (
