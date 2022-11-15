@@ -34,6 +34,7 @@ export default () => {
             'Authorization' : auth
       }
       const dataUserAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
+      console.log(dataUserAccessMenu, 'data access');
       if (dataUserAccessMenu.status === 200 && dataUserAccessMenu.data.response_code === 200) {
         switch (dataUserAccessMenu.data.response_data[0].id) {
           case 10:
@@ -58,7 +59,7 @@ export default () => {
             history.push("/managementuser")
           break;
           case 19:
-            history.push("/renotifyva")
+            history.push("/HelpDesk/renotifyva")
           break;
           case 21:
             history.push("/disbursementreport")
