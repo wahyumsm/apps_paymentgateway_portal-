@@ -409,7 +409,8 @@ function RiwayatTransaksi() {
         {
             name: 'No',
             selector: row => row.number,
-            width: "70px"
+            width: "3%",
+            maxWidth: 'fit-content !important'
         },
         {
             name: 'ID Transaksi',
@@ -612,12 +613,18 @@ function RiwayatTransaksi() {
     const customStylesDanaMasuk = {
         headCells: {
             style: {
+                width: 'max-content',
                 backgroundColor: '#F2F2F2',
                 border: '12px',
                 fontWeight: 'bold',
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
+                '&:not(:last-of-type)': {
+                    borderRightStyle: 'solid',
+                    borderRightWidth: '1px',
+                    borderRightColor: defaultThemes.default.divider.default,
+                },
             },
         },
         headRow: {

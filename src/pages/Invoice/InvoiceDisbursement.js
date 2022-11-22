@@ -146,7 +146,7 @@ function InvoiceDisbursement() {
                         // data 10
                         // pdf.addImage(imgData, imageType, 45, 15, (pdfWidth*0.8), (pageHeight*0.8));
                         // data diatas 15
-                        pdf.addImage(imgData, imageType, (dataInvoiceDisbursement.inv_products.length < 11 ? 55 : 80), (dataInvoiceDisbursement.inv_products.length < 9 ? 20 : dataInvoiceDisbursement.inv_products.length < 11 ? 15 : 20), (dataInvoiceDisbursement.inv_products.length <= 10 ? pdfWidth*0.75 : pdfWidth*0.6), (dataInvoiceDisbursement.inv_products.length <= 10 ? pageHeight*0.75 : pageHeight*0.6));
+                        pdf.addImage(imgData, imageType, (dataInvoiceDisbursement.inv_products.length < 11 ? 60 : 80), (dataInvoiceDisbursement.inv_products.length < 9 ? 75 : dataInvoiceDisbursement.inv_products.length < 11 ? 70 : 75), (dataInvoiceDisbursement.inv_products.length <= 10 ? pdfWidth*0.75 : pdfWidth*0.6), (dataInvoiceDisbursement.inv_products.length <= 10 ? pageHeight*0.75 : pageHeight*0.6));
                     }
                     // Output / Save
                     pdf.save(`invoice-disbursement-${dataInvoiceDisbursement.partner_detail.partner_name}-${dataInvoiceDisbursement.inv_date}.pdf`);
@@ -237,12 +237,12 @@ function InvoiceDisbursement() {
                                         <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Invoice No</td>
                                             <td style={{ width: 1, borderRight: 'hidden', paddingRight: 10 }}>:</td>
-                                            <td>{dataInvoiceDisbursement.inv_no ? dataInvoiceDisbursement.inv_no : "-"}</td>
+                                            <td style={{ fontWeight: 700 }}>{dataInvoiceDisbursement.inv_no ? dataInvoiceDisbursement.inv_no : "-"}</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Tgl</td>
                                             <td style={{ borderRight: 'hidden' }}>:</td>
-                                            <td>{dataInvoiceDisbursement.inv_date ? dataInvoiceDisbursement.inv_date : "-"}</td>
+                                            <td style={{ fontWeight: 700 }}>{dataInvoiceDisbursement.inv_date ? dataInvoiceDisbursement.inv_date : "-"}</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden' }}>PO No.</td>
@@ -256,12 +256,12 @@ function InvoiceDisbursement() {
                                         <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Nama</td>
                                             <td style={{ borderRight: 'hidden' }}>:</td>
-                                            <td>{dataInvoiceDisbursement.partner_detail ? dataInvoiceDisbursement.partner_detail.partner_name : "-"}</td>
+                                            <td style={{ fontWeight: 700 }}>{dataInvoiceDisbursement.partner_detail ? dataInvoiceDisbursement.partner_detail.partner_name.toUpperCase() : "-"}</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid', width: '50%' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                            <td style={{ paddingRight: 50, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline' }}>{dataInvoiceDisbursement.partner_detail ? dataInvoiceDisbursement.partner_detail.partner_address : "-"}</td>
+                                            <td style={{ paddingRight: 50, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>{dataInvoiceDisbursement.partner_detail ? dataInvoiceDisbursement.partner_detail.partner_address.toUpperCase() : "-"}</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Attn.</td>
@@ -275,12 +275,12 @@ function InvoiceDisbursement() {
                                         <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Nama</td>
                                             <td style={{ borderRight: 'hidden' }}>:</td>
-                                            <td>PT. EZEELINK INDONESIA</td>
+                                            <td style={{ fontWeight: 700 }}>PT. EZEELINK INDONESIA</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                            <td style={{ paddingRight: 50, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline' }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                            <td style={{ paddingRight: 50, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
                                         </tr>
                                 </table>
                             </div>
@@ -315,12 +315,12 @@ function InvoiceDisbursement() {
                                             dataInvoiceDisbursement.inv_products ?
                                             dataInvoiceDisbursement.inv_products.map((item, idx) => {
                                                 return (
-                                                    <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden' }}>
-                                                        <td style={{ fontSize: 12, paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
-                                                        <td style={{ fontSize: 12, borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
-                                                        <td style={{ fontSize: 12, textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td>
-                                                        <td style={{ fontSize: 12, textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, 2) : "Rp 0"}</td>
-                                                        <td style={{ fontSize: 12, textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, 2) : "Rp 0"}</td>
+                                                    <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
+                                                        <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
+                                                        <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
                                             }) :
@@ -352,28 +352,28 @@ function InvoiceDisbursement() {
                                             <br />
                                             <br />
                                         </tr>
-                                        <tr style={{ border: '0px hidden transparent' }}>
+                                        <tr style={{ border: '0px hidden transparent', fontWeight: 700 }}>
                                             <td></td>
                                             <td></td>
                                             <td>Harga Jual</td>
                                             <td style={{ textAlign: "end" }}>:</td>
                                             <td style={{ textAlign: "end" }}>{(dataInvoiceDisbursement.inv_dpp !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_dpp, 2) : "Rp 0"}</td>
                                         </tr>
-                                        <tr>
+                                        <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>:</td>
                                             <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>-</td>
                                         </tr>
-                                        <tr>
+                                        <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>:</td>
                                             <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_dpp !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_dpp, 2) : "Rp 0"}</td>
                                         </tr>
-                                        <tr>
+                                        <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
@@ -383,17 +383,17 @@ function InvoiceDisbursement() {
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
+                                            <td style={{ fontSize: 16, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_total !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_total, 2) : "Rp 0"}</td>
+                                            <td style={{ fontSize: 16, textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_total !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_total, 2) : "Rp 0"}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
                             </div>
-                            <div style={{ fontSize: 13 }}>
+                            <div style={{ fontSize: 13, fontWeight: 700 }}>
                                 <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                     <tr>
-                                        <td>Terbilang: {(dataInvoiceDisbursement.inv_total !== undefined) ? terbilangVA(dataInvoiceDisbursement.inv_total) + " Rupiah" : "nol Rupiah"}</td>
+                                        <td>Terbilang: {(dataInvoiceDisbursement.inv_total !== undefined) ? terbilangVA(dataInvoiceDisbursement.inv_total).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                     </tr>
                                 </table>
                                 <div>Remark:</div>
