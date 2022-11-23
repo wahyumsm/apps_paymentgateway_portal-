@@ -810,7 +810,7 @@ export default () => {
                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                       <button
                           onClick={() => buttonResetPartner("Reset Partner")}
-                          className={(inputHandle.periodePartnerChart !== 0) ? "btn-reset" : "btn-ez"}
+                          className={(inputHandle.periodePartnerChart !== 0) ? "btn-reset" : "btn-ez-reset"}
                           disabled={inputHandle.periodePartnerChart === 0}
                       >
                         Atur Ulang
@@ -980,7 +980,7 @@ export default () => {
                       <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                         <button
                           onClick={() => buttonResetFee("Reset Fee")}
-                          className={(inputHandle.periodeFeeChart !== 0) ? "btn-reset" : "btn-ez"}
+                          className={(inputHandle.periodeFeeChart !== 0) ? "btn-reset" : "btn-ez-reset"}
                           disabled={inputHandle.periodeFeeChart === 0}
                         >
                             Atur Ulang
@@ -1124,7 +1124,7 @@ export default () => {
                       <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                         <button
                             onClick={() => buttonResetVa("Reset Va")}
-                            className={(inputHandle.periodeVaChart !== 0) ? "btn-reset" : "btn-ez"}
+                            className={(inputHandle.periodeVaChart !== 0) ? "btn-reset" : "btn-ez-reset"}
                             disabled={inputHandle.periodeVaChart === 0}
                         >
                             Atur Ulang
@@ -1366,7 +1366,7 @@ export default () => {
                         className={                          
                           (inputHandle.periodePaylinkChart !== 0)
                             ? "btn-reset"
-                            : "btn-ez"
+                            : "btn-ez-reset"
                         }
                         disabled={
                           inputHandle.periodePaylinkChart === 0

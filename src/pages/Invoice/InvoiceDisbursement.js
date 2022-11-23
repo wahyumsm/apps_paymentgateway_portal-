@@ -214,7 +214,7 @@ function InvoiceDisbursement() {
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateInvoiceDisbursement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez"}
+                            className={(stateInvoiceDisbursement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
                             disabled={(stateInvoiceDisbursement === null || namaPartner.length === 0) ? true : false}
                         >

@@ -228,7 +228,7 @@ function InvoiceVA() {
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateSettlement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez"}
+                            className={(stateSettlement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
                             disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
                         >

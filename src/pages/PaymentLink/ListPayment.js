@@ -682,7 +682,7 @@ function ListPayment() {
                     (dateRangePaylink.length !== 0 &&
                       inputHandle.refId.length !== 0)
                       ? "btn-reset"
-                      : "btn-ez"
+                      : "btn-ez-reset"
                   }
                   disabled={
                     inputHandle.periodePaylink === 0 ||

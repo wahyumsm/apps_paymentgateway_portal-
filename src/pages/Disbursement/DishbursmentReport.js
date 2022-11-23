@@ -72,7 +72,7 @@ function DisbursementReport() {
             filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, 0)
         } else {
             setActivePageDisbursement(page)
-            disbursementReport(page)
+            disbursementReport(page, user_role)
         }
     }
 
@@ -240,7 +240,8 @@ function DisbursementReport() {
         {
             name: 'No',
             selector: row => row.number,
-            width: "57px",
+            width: "3%",
+            maxWidth: 'fit-content !important'
         },
         {
             name: 'ID Transaksi',
@@ -338,7 +339,8 @@ function DisbursementReport() {
         {
             name: 'No',
             selector: row => row.number,
-            width: "57px",
+            width: "3%",
+            maxWidth: 'fit-content !important'
         },
         {
             name: 'ID Transaksi',
@@ -792,7 +794,7 @@ function DisbursementReport() {
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => resetButtonHandle()}
-                                            className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0) ? "btn-reset" : "btn-ez"}
+                                            className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0}
                                         >
                                             Atur Ulang
