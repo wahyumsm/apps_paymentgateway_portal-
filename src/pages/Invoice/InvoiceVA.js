@@ -180,7 +180,7 @@ function InvoiceVA() {
         listPartner()
     }, [access_token, user_role])
     
-    console.log(dataInvoice.inv_products);
+    // console.log(dataInvoice.inv_products);
 
     return (
         <div className="content-page mt-6">

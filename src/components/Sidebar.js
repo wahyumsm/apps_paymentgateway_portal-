@@ -11,11 +11,6 @@ import './css/global.css'
 
 import { Routes } from "../routes";
 import EzeeLogo from "../assets/icon/Logo_Ezeelink.svg";
-import BerandaIcon from "../assets/icon/beranda_icon.svg";
-import LaporanIcon from "../assets/icon/laporan_icon.svg";
-import RiwayatIcon from "../assets/icon/riwayat_icon.svg";
-import DaftarAgenIcon from "../assets/icon/daftaragen_icon.svg";
-import DaftarPartnerIcon from "../assets/icon/daftarpartner_icon.svg";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";

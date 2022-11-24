@@ -75,7 +75,7 @@ import ReNotifyVA from './HelpDesk/ReNotifyVA';
 import DisbursementReport from './Disbursement/DishbursmentReport';
 import AlokasiSaldo from './TopUp/AlokasiSaldo';
 
-const RouteWithLoader = ({ component: Component, ...rest }) => {
+const   RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {

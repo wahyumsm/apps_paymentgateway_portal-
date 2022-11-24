@@ -34,7 +34,7 @@ export default () => {
             'Authorization' : auth
       }
       const dataUserAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
-      console.log(dataUserAccessMenu, 'data access');
+      // console.log(dataUserAccessMenu, 'data access');
       if (dataUserAccessMenu.status === 200 && dataUserAccessMenu.data.response_code === 200) {
         switch (dataUserAccessMenu.data.response_data[0].id) {
           case 10:
@@ -53,7 +53,7 @@ export default () => {
             history.push("/riwayattransaksi")
           break;
           case 17:
-            history.push("/invoice")
+            history.push("/invoiceva")
           break;
           case 18:
             history.push("/managementuser")
@@ -61,11 +61,17 @@ export default () => {
           case 19:
             history.push("/HelpDesk/renotifyva")
           break;
+          case 20:
+            history.push("/listpayment")
+          break;
           case 21:
             history.push("/disbursementreport")
           break;
           case 22:
             history.push("/riwayattopup")
+          break;
+          case 23:
+            history.push("/invoicedisbursement")
           break;
         }
       }
