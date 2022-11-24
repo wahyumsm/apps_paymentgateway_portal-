@@ -23,6 +23,7 @@ function InvoiceVA() {
     const [namaPartner, setNamaPartner] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
     const [isIgnoreZeroAmount, setIsIgnoreZeroAmount] = useState(false)
+    const [invoiceDate, setInvoiceDate] = useState("")
 
     const SaveAsPDFHandler = () => {
         const dom = document.getElementById('tableInvoice');
@@ -100,6 +101,8 @@ function InvoiceVA() {
         setStateSettlement(null)
         setDateRangeSettlement([])
         setNamaPartner("")
+        setInvoiceDate("")
+        setIsIgnoreZeroAmount(false)
     }
 
     function handleChangeNamaPartner(e) {
@@ -121,6 +124,7 @@ function InvoiceVA() {
 
     function handleInvoiceDate(e) {
         console.log(e.target.value, 'ini date');
+        setInvoiceDate(e.target.value)
     }
 
     async function listPartner() {
@@ -144,10 +148,10 @@ function InvoiceVA() {
         }
     }
 
-    async function generateInvoice(dateRange, partnerId) {
+    async function generateInvoice(dateRange, partnerId, dateInv, includeZeroAmount) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}"}`);
+            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}", "date_inv": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "is_save": false}`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -191,6 +195,10 @@ function InvoiceVA() {
     }, [access_token, user_role])
     
     console.log(dataInvoice.inv_products);
+    console.log(invoiceDate, 'invoice date');
+    console.log(stateSettlement, 'state settlement');
+    console.log(namaPartner.length, 'nama partner');
+    console.log(dateRangeSettlement, 'date range');
 
     return (
         <div className="content-page mt-6">
@@ -216,7 +224,7 @@ function InvoiceVA() {
                             </Col>
                             <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
                                 <span>Nama Partner*</span>
-                                <Form.Select name='namaPartner' className="input-text-ez" style={{ marginLeft: 65 }} value={namaPartner} onChange={(e) => handleChangeNamaPartner(e)}>
+                                <Form.Select name='namaPartner' className="input-text-ez" style={{ marginLeft: 65 }} value={namaPartner} onChange={(e) => setNamaPartner(e.target.value)}>
                                     <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                     {
                                         dataListPartner.map((item, index) => {
@@ -232,7 +240,7 @@ function InvoiceVA() {
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
                                 <span className='me-3'>Tanggal Invoice*</span>
                                 <div>
-                                    <input onChange={handleInvoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
+                                    <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
                                 </div>
                             </Col>
                             <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
@@ -241,25 +249,25 @@ function InvoiceVA() {
                                     <Form.Check
                                         type="switch"
                                         id="custom-switch"
-                                        onChange={handleSwitch}
+                                        onChange={(e) => setIsIgnoreZeroAmount(e.target.checked)}
                                         label={isIgnoreZeroAmount? "Include" : "Exclude"}
                                         checked={isIgnoreZeroAmount}
                                     />
                                 </div>
                             </Col></Row>
                         <button
-                            onClick={() => generateInvoice(dateRangeSettlement, namaPartner)}
-                            className={(stateSettlement === null || namaPartner.length === 0) ? "btn-off" : "add-button"}
+                            onClick={() => generateInvoice(dateRangeSettlement, namaPartner, invoiceDate, isIgnoreZeroAmount)}
+                            className={(stateSettlement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? "btn-off" : "add-button"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                            disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
+                            disabled={(stateSettlement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? true : false}
                         >
                             Generate
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateSettlement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez"}
+                            className={(stateSettlement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                            disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
+                            disabled={(stateSettlement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? false : true}
                         >
                             Atur Ulang
                         </button>
