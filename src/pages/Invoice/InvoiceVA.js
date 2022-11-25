@@ -196,10 +196,6 @@ function InvoiceVA() {
     }, [access_token, user_role])
     
     // console.log(dataInvoice.inv_products);
-    // console.log(invoiceDate, 'invoice date');
-    // console.log(stateSettlement, 'state settlement');
-    // console.log(namaPartner.length, 'nama partner');
-    // console.log(dateRangeSettlement, 'date range');
 
     return (
         <div className="content-page mt-6">

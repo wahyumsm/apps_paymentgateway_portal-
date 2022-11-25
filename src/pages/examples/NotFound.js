@@ -4,13 +4,85 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Card, Image, Button, Container } from '@themesberg/react-bootstrap';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { Routes } from "../../routes";
 import NotFoundImage from "../../assets/img/illustrations/404.svg";
+import { BaseURL, getRole, getToken } from "../../function/helpers";
+import axios from "axios";
 
 
 export default () => {
+
+  const access_token = getToken()
+  const user_role = getRole()
+  const history = useHistory()
+
+  async function userAccessMenu(url, token) {
+    try {
+      const auth = "Bearer " + token
+        const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+      }
+      const dataUserAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
+      // console.log(dataUserAccessMenu, 'data access');
+      if (dataUserAccessMenu.status === 200 && dataUserAccessMenu.data.response_code === 200) {
+        switch (dataUserAccessMenu.data.response_data[0].id) {
+          case 10:
+            history.push("/")
+          break;
+          case 11:
+            history.push("/laporan")
+          break;
+          case 14:
+            history.push("/daftaragen")
+          break;
+          case 15:
+            history.push("/daftarpartner")
+          break;
+          case 16:
+            history.push("/riwayattransaksi")
+          break;
+          case 17:
+            history.push("/invoiceva")
+          break;
+          case 18:
+            history.push("/managementuser")
+          break;
+          case 19:
+            history.push("/HelpDesk/renotifyva")
+          break;
+          case 20:
+            history.push("/listpayment")
+          break;
+          case 21:
+            history.push("/disbursementreport")
+          break;
+          case 22:
+            history.push("/riwayattopup")
+          break;
+          case 23:
+            history.push("/invoicedisbursement")
+          break;
+        }
+      }
+    } catch (error) {
+      // console.log(error);
+      if (error.response.status === 401) {
+        history.push("/login")
+      }
+    }
+  }
+
+  function toHome(token, role) {
+    if (token === null || role === null) {
+      history.push("/login")
+    } else if (token !== null) {
+      userAccessMenu("/Account/GetUserAccess", token)
+    }
+  }
+
   return (
     <main>
       <section className="vh-100 d-flex align-items-center justify-content-center">
@@ -18,7 +90,7 @@ export default () => {
           <Row>
             <Col xs={12} className="text-center d-flex align-items-center justify-content-center">
               <div>
-                <Card.Link as={Link} to={Routes.DashboardOverview.path}>
+                <Card.Link onClick={() => toHome(access_token, user_role)}>
                   <Image src={NotFoundImage} className="img-fluid w-75" />
                 </Card.Link>
                 <h1 className="text-primary mt-5">
@@ -28,7 +100,7 @@ export default () => {
                   Oops! Looks like you followed a bad link. If you think this is a
                   problem with us, please tell us.
             </p>
-                <Button as={Link} variant="primary" className="animate-hover" to={Routes.DashboardOverview.path}>
+                <Button variant="primary" className="animate-hover" onClick={() => toHome(access_token, user_role)}>
                   <FontAwesomeIcon icon={faChevronLeft} className="animate-left-3 me-3 ms-2" />
                   Go back home
                 </Button>
