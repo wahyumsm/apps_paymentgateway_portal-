@@ -24,6 +24,7 @@ function DetailPartner() {
     const [listAgen, setListAgen] = useState([])
     const [detailPartner, setDetailPartner] = useState([])
     const [payment, setPayment] = useState([])
+    const [subAccount, setSubAccount] = useState([])
     const [fiturType, setFiturType] = useState({})
     const [expanded, setExpanded] = useState(false)
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
@@ -117,13 +118,17 @@ function DetailPartner() {
             const detailPartner = await axios.post(BaseURL + "/Partner/EditPartner", { data: dataParams }, { headers: headers })
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
                 detailPartner.data.response_data.payment_method = detailPartner.data.response_data.payment_method.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
+                detailPartner.data.response_data.sub_account = detailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
                 setDetailPartner(detailPartner.data.response_data)
                 setPayment(detailPartner.data.response_data.payment_method)
+                setSubAccount(detailPartner.data.response_data.sub_account)
             } else if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length !== 0) {
                 setUserSession(detailPartner.data.response_new_token)
                 detailPartner.data.response_data.payment_method = detailPartner.data.response_data.payment_method.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
+                detailPartner.data.response_data.sub_account = detailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
                 setDetailPartner(detailPartner.data.response_data)
                 setPayment(detailPartner.data.response_data.payment_method)
+                setSubAccount(detailPartner.data.response_data.sub_account)
             }
         } catch (error) {
             // console.log(error)
@@ -184,6 +189,38 @@ function DetailPartner() {
           style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
           
         }
+    ]
+
+    const columnSubAcc = [
+        {
+            name: "No",
+            selector: (row) => row.number,
+            width: "67px",
+          },
+          {
+            name: "Sumber Agen",
+            selector: (row) => row.agen_source,
+            width: "180px",
+          },
+          {
+            name: "Nama Bank",
+            selector: (row) => (row.bank_name),
+            width: "160px",
+          },
+          {
+            name: "Nomor Rekening",
+            selector: (row) => row.bank_number,
+            width: "180px",
+          },
+          {
+            name: "Nama Pemilik Rekening",
+            selector: (row) => row.bank_account_name,
+          },
+          {
+            name: "Aksi",
+              selector: (row) => row.icon,
+            width: "130px",
+        },
     ]
 
     async function getDataAgen(partnerId) {
@@ -611,8 +648,8 @@ function DetailPartner() {
                         {expandedSubAcc && 
                             <div className="div-table pb-4 mb-4" ref={myRef}>
                                 <DataTable
-                                    columns={columnPayment}
-                                    data={payment}
+                                    columns={columnSubAcc}
+                                    data={subAccount}
                                     customStyles={customStyles}
                                     // progressPending={pendingSettlement}
                                     progressComponent={<CustomLoader />}

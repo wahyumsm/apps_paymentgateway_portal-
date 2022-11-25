@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
-import { Col, Form, Row, Image, Fade } from "@themesberg/react-bootstrap";
+import { Col, Form, Row, Image, Fade, OverlayTrigger, Tooltip } from "@themesberg/react-bootstrap";
 import $ from "jquery";
 import axios from "axios";
 import {
   BaseURL,
-  convertFormatNumber,
   convertFormatNumberPartner,
   errorCatch,
   getRole,
@@ -13,7 +12,7 @@ import {
   RouteTo,
   setUserSession,
 } from "../../function/helpers";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import encryptData from "../../function/encryptData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -39,6 +38,7 @@ function EditPartner() {
   const [listAgen, setListAgen] = useState([]);
   const [detailPartner, setDetailPartner] = useState([]);
   const [payment, setPayment] = useState([]);
+  const [subAccount,setSubAccount] = useState([])
   const [expanded, setExpanded] = useState(false);
   const [expandedSubAcc, setExpandedSubAcc] = useState(false)
   const myRef = useRef(null);
@@ -48,14 +48,22 @@ function EditPartner() {
   const [fitur, setFitur] = useState("", "");
   const [paymentNameMethod, setPaymentNameMethod] = useState([]);
   const [numbering, setNumbering] = useState(0);
+  const [numberSubAcc, setNumberSubAcc] = useState(0)
   const [edited, setEdited] = useState(false);
   const [editInput, setEditInput] = useState(false);
+  const [editedSubAcc, setEditedSubAcc] = useState(false);
   const [editFee, setEditFee] = useState(false)
   const [loading, setLoading] = useState(false);
   const [redFlag, setRedFlag] = useState(false)
   const [mustFill, setMustFill] = useState(false)
   const [alertFee, setAlertFee] = useState(false)
   const [alertSettlement, setAlertSettlement] = useState(false)
+  const [alertFillAgen, setAlertFillAgen] = useState(false)
+  const [alertNoRek, setAlertNoRek] = useState(false)
+  const [alertNameRek, setAlertNameRek] = useState(false)
+  const [alertMaxSubAcc, setAlertMaxSubAcc] = useState(false)
+  const [alertSamePartner, setAlertSamePartner] = useState(false)
+  const [sumberAgenList, setSumberAgenList] = useState([])
   const [inputHandle, setInputHandle] = useState({
     id: partnerId,
     namaPerusahaan: detailPartner.mpartner_name,
@@ -72,15 +80,24 @@ function EditPartner() {
     rekeningOwner: detailPartner.mpartnerdtl_account_name,
     fee: 0,
     settlementFee: 0,
-    sumberAgen: 0,
+    sumberAgen: "",
+    sumberAgenName: "",
+    bankNameSubAcc: "Danamon",
+    akunBankSubAcc: "",
+    rekeningOwnerSubAcc: "",
     paymentType: [],
     fiturs: 0,
   });
+  const [agenName, setAgenName] = useState("")
+  const [agenCode, setAgenCode] = useState("")
   const [filterText, setFilterText] = React.useState('');
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
   const filteredItems = listAgen.filter(
       item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
   );
+
+  console.log(agenName, "agen name");
+  console.log(agenCode, "agen code");
 
   const subHeaderComponentMemo = useMemo(() => {
     const handleClear = () => {
@@ -108,7 +125,7 @@ function EditPartner() {
     } else {
       setExpandedSubAcc(false);
     }
-};
+  };
 
   function handleChange(e) {
     if (e.target.name === "active") {
@@ -124,7 +141,31 @@ function EditPartner() {
     }
   }
 
-  // console.log(inputHandle.noHp, "NO HP DIREKTUR");
+  function handleChangeSubAcc (e) {
+    if (e.target.name === "sumberAgen") {
+      setAlertFillAgen(false)
+      setAlertSamePartner(false)
+      console.log(e.target.value, "target value");
+      setInputHandle({
+        ...inputHandle,
+        [e.target.name]: e.target.value,
+      });
+      const resultAgen = sumberAgenList.find((item) => 
+        item.mpartnerdtl_sub_id === e.target.value
+      )
+      setAgenName(resultAgen.mpartnerdtl_sub_name);
+      setAgenCode(resultAgen.mpartnerdtl_sub_id);
+    } else {
+      setAlertFillAgen(false)
+      setAlertSamePartner(false)
+      setAlertNoRek(false)
+      setAlertNameRek(false)
+      setInputHandle({
+        ...inputHandle,
+        [e.target.name]: e.target.value,
+      });
+    }
+  }
 
   function handleChangeFee (e) {
     if (e.target.name === "active") {
@@ -219,6 +260,9 @@ function EditPartner() {
   // console.log(inputHandle.fee, "ini fee");
   // console.log(inputHandle.settlementFee, "ini settle");
   // console.log(listMethodMenu.length, "ini list method menu");
+  // console.log(inputHandle.akunBankSubAcc, "nomor rek");
+  // console.log(inputHandle.rekeningOwnerSubAcc, "nama pemilik");
+  // console.log(inputHandle.sumberAgen, "nama agennya");
 
   function editInTableHandler(numberId) {
     setEdited(true);
@@ -315,6 +359,91 @@ function EditPartner() {
     setEdited(false);
   }
 
+  function editInSubAcc(numberId) {
+    setEditedSubAcc(true);
+    const result = subAccount.find((item) => item.number === numberId);
+    const resultAgen = sumberAgenList.find((item) => 
+      item.mpartnerdtl_sub_id === result.subpartner_id
+    )
+    console.log(result, "ini result sub account edit");
+    setInputHandle({
+      akunBankSubAcc: result.bank_number,
+      rekeningOwnerSubAcc: result.bank_account_name,
+      sumberAgen: result.subpartner_id,
+    })
+    setAgenName(resultAgen.mpartnerdtl_sub_name);
+    setAgenCode(resultAgen.mpartnerdtl_sub_id);
+    console.log(inputHandle.sumberAgen, 'di input handle');
+    setNumberSubAcc(numberId)
+  }
+
+  function saveEditTableSubAcc (
+    numberId,
+    sumberAgenCode,
+    sumberAgen,
+    akunBankSubAcc,
+    rekeningOwnerSubAcc
+  ) {
+    if (sumberAgenCode !== "" && sumberAgen !== "" && akunBankSubAcc !== "" && rekeningOwnerSubAcc !== "") {
+      setAlertFillAgen(false)
+      setAlertNoRek(false)
+      setAlertNameRek(false)
+      const target = subAccount.find((item) => item.number === numberId)
+      const source = {
+        number: numberId,
+        subpartner_id: sumberAgenCode,
+        agen_source: sumberAgen,
+        bank_number: akunBankSubAcc,
+        bank_account_name: rekeningOwnerSubAcc,
+        bank_name: "Danamon"
+      }
+      Object.assign(target, source);
+      setSubAccount([...subAccount])
+      setEditedSubAcc(false)
+      setInputHandle({
+        sumberAgen: "",
+        akunBankSubAcc: "",
+        rekeningOwnerSubAcc: "",
+      })
+    } else {
+      if (sumberAgenCode === "" || sumberAgen === "") {
+        setAlertFillAgen(true)
+      }
+      if (akunBankSubAcc === "") {
+        setAlertNoRek(true)
+      }
+      if (rekeningOwnerSubAcc === "") {
+        setAlertNameRek(true)
+      }
+    }
+  }
+
+  function batalEditSubAcc() {
+    setInputHandle({
+      sumberAgen: "",
+      akunBankSubAcc: "",
+      rekeningOwnerSubAcc: "",
+    })
+    setAgenName("")
+    setAgenCode("")
+    setEditedSubAcc(false);
+    setAlertFillAgen(false)
+    setAlertNoRek(false)
+    setAlertNameRek(false)
+  }
+
+  function deleteHandlerSubAcc (numberId) {
+    const result = subAccount.findIndex((item) => item.number === numberId);
+    subAccount.splice(result, 1);
+    setSubAccount([...subAccount]);
+    setInputHandle({
+      sumberAgen: "",
+      akunBankSubAcc: "",
+      rekeningOwnerSubAcc: ""
+    });
+    setEditedSubAcc(false);
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function getDetailPartner(partnerId) {
     try {
@@ -351,8 +480,14 @@ function EditPartner() {
             ...obj,
             number: id + 1,
           }));
+        detailPartner.data.response_data.sub_account =
+          detailPartner.data.response_data.sub_account.map((obj, id) => ({
+            ...obj,
+            number: id + 1,
+          }));
         setDetailPartner(detailPartner.data.response_data);
         setPayment(detailPartner.data.response_data.payment_method);
+        setSubAccount(detailPartner.data.response_data.sub_account);
       } else if (
         detailPartner.status === 200 &&
         detailPartner.data.response_code === 200 &&
@@ -375,14 +510,22 @@ function EditPartner() {
             ...obj,
             number: id + 1,
           }));
+        detailPartner.data.response_data.sub_account =
+          detailPartner.data.response_data.sub_account.map((obj, id) => ({
+            ...obj,
+            number: id + 1,
+          }));
         setDetailPartner(detailPartner.data.response_data);
         setPayment(detailPartner.data.response_data.payment_method);
+        setSubAccount(detailPartner.data.response_data.sub_account);
       }
     } catch (error) {
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
     }
   }
+
+  console.log(subAccount, "ini sub acc");
 
   async function getTypeFitur() {
     try {
@@ -667,6 +810,59 @@ function EditPartner() {
     },
   ];
 
+  const columnSubAcc = [
+    {
+      name: "No",
+      selector: (row) => row.number,
+      width: "67px",
+    },
+    {
+      name: "Sumber Agen",
+      selector: (row) => row.agen_source,
+      width: "180px",
+    },
+    {
+      name: "Nama Bank",
+      selector: (row) => (row.bank_name),
+      width: "160px",
+    },
+    {
+      name: "Nomor Rekening",
+      selector: (row) => row.bank_number,
+      width: "180px",
+    },
+    {
+      name: "Nama Pemilik Rekening",
+      selector: (row) => row.bank_account_name,
+    },
+    {
+      name: "Aksi",
+      //   selector: (row) => row.icon,
+      width: "130px",
+      cell: (row) => (
+        <div className="d-flex justify-content-center align-items-center">
+          <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Edit</div></Tooltip>}>
+            <img
+              src={edit}
+              onClick={() => editInSubAcc(row.number)}
+              style={{ cursor: "pointer" }}
+              alt="icon edit"
+            />
+          </OverlayTrigger>
+          <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Delete</div></Tooltip>}>
+            <img
+              onClick={() => deleteHandlerSubAcc(row.number)}
+              src={deleted}
+              style={{ cursor: "pointer" }}
+              className="ms-2"
+              alt="icon delete"
+            />
+          </OverlayTrigger>
+        </div>
+      ),
+    },
+  ];
+
   function saveNewSchemaHandle(
     fee,
     fee_settle,
@@ -727,6 +923,65 @@ function EditPartner() {
     }
   }
 
+  function saveNewSchemaSubAccHandle (
+    sumberAgenCode,
+    sumberAgen,
+    akunBankSubAcc,
+    rekeningOwnerSubAcc,
+    number
+  ) {
+    if (number > 2) {
+      setAlertMaxSubAcc(true)
+      setInputHandle({
+        sumberAgen: "",
+        akunBankSubAcc: "",
+        rekeningOwnerSubAcc: "",
+      })
+      setAgenName("")
+      setAgenCode("")
+    } else {
+      setAlertMaxSubAcc(false)
+      if (sumberAgenCode !== "" && sumberAgen !== "" && akunBankSubAcc !== "" && rekeningOwnerSubAcc !== "") {
+        setAlertFillAgen(false)
+        setAlertNoRek(false)
+        setAlertNameRek(false)
+        subAccount.find((item) => {
+          if (item.subpartner_id === sumberAgenCode) {
+            setAlertSamePartner(true)
+          } else {
+              setAlertSamePartner(false)
+              const newDataSubAcc = {
+              bank_name: "Danamon",
+              bank_number: akunBankSubAcc,
+              bank_account_name: rekeningOwnerSubAcc,
+              subpartner_id: sumberAgenCode,
+              agen_source: sumberAgen,
+              number: number
+            }
+            setSubAccount([...subAccount, newDataSubAcc])
+            setInputHandle({
+              sumberAgen: "",
+              akunBankSubAcc: "",
+              rekeningOwnerSubAcc: "",
+            })
+          }
+        })
+        
+      } else {
+        if (sumberAgenCode === "" || sumberAgen === "") {
+          setAlertFillAgen(true)
+        }
+        if (akunBankSubAcc === "") {
+          setAlertNoRek(true)
+        }
+        if (rekeningOwnerSubAcc === "") {
+          setAlertNameRek(true)
+        }
+      }
+    }
+    
+  }
+
   async function editDetailPartner(
     id,
     namaPerusahaan,
@@ -740,7 +995,8 @@ function EditPartner() {
     active,
     akunBank,
     rekeningOwner,
-    paymentData
+    paymentData,
+    subAccount
   ) {
     try {
       if (namaPerusahaan === undefined) {
@@ -791,10 +1047,30 @@ function EditPartner() {
           delete item.fitur_name
         )
       );
+
+      subAccount = subAccount.map((item) => ({
+        ...item,
+        account_number: item.bank_number,
+        account_name: item.bank_account_name,
+        sub_partnerID: item.subpartner_id,
+        bank_code: "011"
+      }));
+      subAccount = subAccount.filter(
+        (item) => (
+          delete item.number,
+          delete item.bank_number,
+          delete item.bank_account_name,
+          delete item.bank_name,
+          delete item.agen_source,
+          delete item.subpartner_id
+        )
+      );
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
         `{"mpartner_id":"${id}", "mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "payment_method": ${JSON.stringify(
           paymentData
+        )}, "sub_account": ${JSON.stringify(
+          subAccount
         )}}`
       );
       const headers = {
@@ -868,6 +1144,28 @@ function EditPartner() {
     }
   }
 
+  async function listSumberAgenHandler(partnerId) {
+    try {
+        const auth = 'Bearer ' + getToken();
+        const dataParams = encryptData(`{"mpartnerdtl_sub_id":"${partnerId}"}`);
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': auth
+        }
+        const getSumberAgen = await axios.post(BaseURL + "/Partner/GetSumberAgen", {data: dataParams}, {headers: headers})
+        console.log(getSumberAgen, "list disburse");
+        if (getSumberAgen.status === 200 && getSumberAgen.data.response_code === 200 && getSumberAgen.data.response_new_token.length === 0) {
+            setSumberAgenList(getSumberAgen.data.response_data)
+        } else if (getSumberAgen.status === 200 && getSumberAgen.data.response_code === 200 && getSumberAgen.data.response_new_token.length !== 0) {
+            setUserSession(getSumberAgen.data.response_new_token)
+            setSumberAgenList(getSumberAgen.data.response_data)
+        }
+    } catch (error) {
+        // console.log(error);
+        history.push(errorCatch(error.response.status))
+    }
+  }
+
   useEffect(() => {
     if (!access_token) {
       // RouteTo('/login')
@@ -879,6 +1177,7 @@ function EditPartner() {
     getDetailPartner(partnerId);
     getDataAgen(partnerId);
     getTypeFitur();
+    listSumberAgenHandler(partnerId)
   }, [access_token, user_role, partnerId]);
 
   const CustomLoader = () => (
@@ -931,14 +1230,14 @@ function EditPartner() {
     <div className="container-content-partner mt-5">
       {isDetailAkun ? (
         <span className="breadcrumbs-span">
-          Beranda &nbsp;
-          <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Partner &nbsp;
+          <Link to={"/"}>Beranda</Link> &nbsp;
+          <img alt="" src={breadcrumbsIcon} /> &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;
           <img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner
         </span>
       ) : (
         <span className="breadcrumbs-span">
-          Beranda &nbsp;
-          <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Partner &nbsp;
+          <Link to={"/"}>Beranda</Link> &nbsp;
+          <img alt="" src={breadcrumbsIcon} /> &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;
           <img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen
         </span>
       )}
@@ -1254,7 +1553,7 @@ function EditPartner() {
                         type="number"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(inputHandle.fee.length === 0) ? "" : (inputHandle.fee)}
+                        value={(inputHandle.fee === undefined) ? 0 : (inputHandle.fee)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
@@ -1266,7 +1565,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(inputHandle.fee.length === 0) ? "" : convertFormatNumberPartner(inputHandle.fee)}
+                        value={(inputHandle.fee === undefined) ? convertFormatNumberPartner(0) : convertFormatNumberPartner(inputHandle.fee)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
@@ -1290,7 +1589,7 @@ function EditPartner() {
                         type="number"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(inputHandle.settlementFee.length === 0) ? "" : (inputHandle.settlementFee)}
+                        value={(inputHandle.settlementFee === undefined) ? (0) : (inputHandle.settlementFee)}
                         name="settlementFee"
                         placeholder={"Rp 0"}
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
@@ -1302,9 +1601,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(inputHandle.settlementFee.length === 0) ? "" : convertFormatNumberPartner(
-                          inputHandle.settlementFee
-                        )}
+                        value={(inputHandle.settlementFee === undefined) ? convertFormatNumberPartner(0) : convertFormatNumberPartner(inputHandle.settlementFee)}
                         name="settlementFee"
                         placeholder={"Rp 0"}
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
@@ -1869,15 +2166,35 @@ function EditPartner() {
                 <tr>
                   <td style={{ width: 200 }}>Sumber Agen</td>
                   <td>
-                    <Form.Select name='sumberAgen' value={inputHandle.sumberAgen} className='input-text-ez' style={{ width: "100%", marginLeft: "unset" }} onChange={handleChange}>
-                        <option defaultChecked value={0} style={{ color: "#b4c0d2" }} >Pilih Agen</option>
-                        <option value={2}>Hari Ini</option>
-                        <option value={3}>Kemarin</option>
-                        <option value={4}>7 Hari Terakhir</option>
-                        <option value={5}>Bulan Ini</option>
-                        <option value={6}>Bulan Kemarin</option>
-                        <option value={7}>Pilih Range Tanggal</option>
+                    <Form.Select name='sumberAgen' value={inputHandle.sumberAgen} className='input-text-ez' style={{ width: "100%", marginLeft: "unset" }} onChange={(e) => handleChangeSubAcc(e)}>
+                        <option defaultChecked disabled value={""} style={{ color: "#b4c0d2" }} >Pilih Agen</option>
+                        {
+                          sumberAgenList.map((item, index) => {
+                            return (
+                              <option key={index} value={item.mpartnerdtl_sub_id}>{item.mpartnerdtl_sub_name}</option>
+                            )
+                          })
+                        }
                     </Form.Select>
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width: 200 }}></td>
+                  <td>
+                    {
+                      alertFillAgen === true ?
+                      <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          Sumber Agen wajib diisi
+                      </div> : ""
+                    }
+                    {
+                      alertSamePartner === true ?
+                      <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          Agen telah ada
+                      </div> : ""
+                    }
                   </td>
                 </tr>
                 <br />
@@ -1888,8 +2205,8 @@ function EditPartner() {
                       type="text"
                       className="input-text-ez"
                       disabled
-                      value="Bank Danamon"
-                      name="bankName"
+                      value={"Bank Danamon"}
+                      // name="bankNameSubAcc"
                       style={{ width: "100%", marginLeft: "unset" }}
                     />
                   </td>
@@ -1901,13 +2218,25 @@ function EditPartner() {
                     <input
                       type="number"
                       className="input-text-edit"
-                      onChange={handleChange}
-                      value={inputHandle.akunBank === undefined ? "" : inputHandle.akunBank}
+                      onChange={(e) => handleChangeSubAcc(e)}
+                      value={inputHandle.akunBankSubAcc === undefined ? "" : inputHandle.akunBankSubAcc}
                       placeholder="Masukkan Nomor Rekening"
-                      name="akunBank"
+                      name="akunBankSubAcc"
                       style={{ width: "100%", marginLeft: "unset" }}
                       onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                     />
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width: 200 }}></td>
+                  <td>
+                    {
+                      alertNoRek === true ?
+                      <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          No Rekening Wajib diisi
+                      </div> : ""
+                    }
                   </td>
                 </tr>
                 <br />
@@ -1917,12 +2246,24 @@ function EditPartner() {
                     <input
                       type="text"
                       className="input-text-edit"
-                      onChange={handleChange}
-                      value={inputHandle.rekeningOwner === undefined ? "" : inputHandle.rekeningOwner}
-                      name="rekeningOwner"
+                      onChange={(e) => handleChangeSubAcc(e)}
+                      value={inputHandle.rekeningOwnerSubAcc === undefined ? "" : inputHandle.rekeningOwnerSubAcc}
+                      name="rekeningOwnerSubAcc"
                       placeholder="Masukkan Nama Pemilik Rekening"
                       style={{ width: "100%", marginLeft: "unset" }}
                     />
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width: 200 }}></td>
+                  <td>
+                    {
+                      alertNameRek === true ?
+                      <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          Nama Pemilik Rekening wajib diisi
+                      </div> : ""
+                    }
                   </td>
                 </tr>
                 <br />
@@ -1934,17 +2275,15 @@ function EditPartner() {
                 <tr>
                   <td style={{ width: 210 }}></td>
                   <td>
-                    {edited === false ? (
+                    {editedSubAcc === false ? (
                       <button
                         onClick={() =>
-                          saveNewSchemaHandle(
-                            inputHandle.fee,
-                            inputHandle.settlementFee,
-                            fitur[0],
-                            fitur[1],
-                            paymentMethod.filter((it) => it !== 0),
-                            paymentNameMethod.filter((it) => it !== "Pilih Semua"),
-                            payment.length + 1
+                          saveNewSchemaSubAccHandle(
+                            agenCode,
+                            agenName,
+                            inputHandle.akunBankSubAcc,
+                            inputHandle.rekeningOwnerSubAcc,
+                            subAccount.length + 1
                           )
                         }
                         style={{
@@ -1956,10 +2295,11 @@ function EditPartner() {
                           gap: 8,
                           width: 250,
                           height: 48,
-                          color: "#077E86",
+                          color: subAccount.length >= 2 ? "#888888" : "#077E86",
                           background: "unset",
-                          border: "0.6px solid #077E86",
+                          border: subAccount.length >= 2 ? "0.6px solid #888888" : "0.6px solid #077E86",
                           borderRadius: 6,
+                          cursor: subAccount.length >= 2 ? "unset" : "pointer"
                         }}
                       >
                         <FontAwesomeIcon
@@ -1972,7 +2312,7 @@ function EditPartner() {
                       <>
                         <button
                           className="mx-2"
-                          onClick={() => batalEdit()}
+                          onClick={() => batalEditSubAcc()}
                           style={{
                             fontFamily: "Exo",
                             fontSize: 16,
@@ -2006,14 +2346,12 @@ function EditPartner() {
                             borderRadius: 6,
                           }}
                           onClick={() =>
-                            saveEditInTableHandler(
-                              numbering,
-                              inputHandle.fee,
-                              inputHandle.settlementFee,
-                              fitur[0],
-                              fitur[1],
-                              paymentMethod.filter((it) => it !== 0),
-                              paymentNameMethod.filter((it) => it !== "Pilih Semua")
+                            saveEditTableSubAcc(
+                              numberSubAcc,
+                              agenCode,
+                              agenName,
+                              inputHandle.akunBankSubAcc,
+                              inputHandle.rekeningOwnerSubAcc
                             )
                           }
                         >
@@ -2089,13 +2427,26 @@ function EditPartner() {
                     )}
                   </td>
                 </tr>
+                <tr>
+                  <td style={{ width: 210 }}></td>
+                  <td>
+                    {
+                      subAccount.length >= 2 ?
+                      <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          Maksimal 2 akun untuk ditambahkan.
+                      </div> : ""
+                    }
+                  </td>
+                </tr>
+                <br/>
               </tbody>
             </table>
             {expandedSubAcc && (
               <div className="div-table pb-4" ref={myRef}>
                 <DataTable
-                  columns={columnPayment}
-                  data={payment}
+                  columns={columnSubAcc}
+                  data={subAccount}
                   customStyles={customStyles}
                   // progressPending={pendingSettlement}
                   progressComponent={<CustomLoader />}
@@ -2143,7 +2494,8 @@ function EditPartner() {
                   inputHandle.active,
                   inputHandle.akunBank,
                   inputHandle.rekeningOwner,
-                  payment
+                  payment,
+                  subAccount
                 )
               }
               style={{

@@ -106,8 +106,20 @@ body {
     color: #888888;
 }
 
-.input-text-edit {
+.input-text-riwayat {
     width: 57%;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 0px 10px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
+
+.input-text-edit, .input-text-sub {
     margin-left: 20px;
     height: 40px;
     border-radius: 8px;
@@ -120,21 +132,16 @@ body {
     color: #888888;
 }
 
-.input-text-ez::placeholder {
-    color: #b4c0d2;
+.input-text-sub {
+    width: 59%;
 }
 
-.input-text-riwayat {
+.input-text-edit {
     width: 57%;
-    height: 40px;
-    border-radius: 8px;
-    border: 1px solid #E0E0E0;
-    padding: 0px 10px;
-    font-family: 'Nunito';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    color: #888888;
+}
+
+.input-text-ez::placeholder {
+    color: #b4c0d2;
 }
 
 .input-text-user {
@@ -519,6 +526,11 @@ body {
     max-width: 100%;
 }
 
+.checking .label {
+    font-weight: 400;
+    font-size: 14;
+}
+
 /* page detail agen */
 
 .form-switch .form-check-input {
@@ -698,6 +710,20 @@ width: 150px;
     border-radius: 6px;
 }
 
+.btn-ez-transfer {
+    font-family: "Exo";
+    font-size: 16px;
+    font-weight: 700;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%);
+    border: 0.6px solid #2C1919;
+    border-radius: 6px;
+    color: #2C1919;
+}
+
 /* select option in dashboard */
 
 .dropPartner .css-b62m3t-container {
@@ -768,7 +794,72 @@ header.sc-dIouRR.evxAbm {
     align-items: center;
 }
 
+.datePicker .react-daterange-picker__calendar--open {
+    width: unset;
+    z-index: 999;
+}
+
 /* .hoverActive {
     background: "#3DB54A";
     color: "#FFFFFF";
+} */
+
+/* ok button style */
+.rs-picker-toolbar-right-btn-ok { 
+    text-align: center;
+    height: 40px;
+    cursor: pointer;
+    border: 1px solid #077E86; 
+    padding: 0px 10px; 
+    font-size: 14px; 
+    border-radius: 8px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    color: #077E86;
+    width: 100px;
+}
+
+.rs-picker-toggle-textbox {
+    margin-right: 3rem;
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #077E86;
+    padding: 0px 10px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #077E86;
+}
+
+.rs-picker-toggle-caret {
+    display: inline-block;
+    /* margin-right: 240px; */
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-weight: normal;
+    color: #077E86;
+}
+
+.rs-calendar-table-cell .rs-calendar-table-cell-is-today {
+    color: white;
+    border-color: #077E86;
+}
+
+.form-add:disabled {
+    color:#000000
+}
+
+/* .rs-stack {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+
+/* .rs-picker-toggle-placeholder {
+    display: none;
 } */

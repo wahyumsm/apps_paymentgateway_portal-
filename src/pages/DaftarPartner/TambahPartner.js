@@ -40,6 +40,7 @@ function TambahPartner() {
   const [paymentMethod, setPaymentMethod] = useState([]);
   const [paymentNameMethod, setPaymentNameMethod] = useState([]);
   const [expanded, setExpanded] = useState(false);
+  const [expandedSubAcc, setExpandedSubAcc] = useState(false)
   const [numbering, setNumbering] = useState(0);
   const myRef = useRef(null);
   const [payment, setPayment] = useState([]);
@@ -62,15 +63,20 @@ function TambahPartner() {
     bankName: 1,
     akunBank: "",
     rekeningOwner: "",
+    sumberAgen: "",
+    akunBankSubAcc: "",
+    rekeningOwnerSubAcc: "",
+    bankNameSubAcc: "011",
   });
+
+  console.log(inputHandle.akunBankSubAcc, "nomor rekening");
+  console.log(inputHandle.rekeningOwnerSubAcc, "nama pemilik");
+  console.log(inputHandle.bankNameSubAcc, "nama bank");
+  console.log(inputHandle.sumberAgen, "sumber agen");
 
   const [biayaHandle, setBiayaHandle] = useState({
     fee: 0,
     settlementFee: 0,
-  });
-
-  const [subAccount, setSubAccount] = useState({
-    sumberAgen: 0,
   });
 
   const showCheckboxes = () => {
@@ -78,6 +84,14 @@ function TambahPartner() {
       setExpanded(true);
     } else {
       setExpanded(false);
+    }
+  };
+
+  const showCheckboxesSubAccount = () => {
+    if (!expandedSubAcc) {
+      setExpandedSubAcc(true);
+    } else {
+      setExpandedSubAcc(false);
     }
   };
 
@@ -529,7 +543,10 @@ function TambahPartner() {
     bankName,
     akunBank,
     rekeningOwner,
-    paymentData
+    paymentData,
+    bankNameSubAcc,
+    rekeningOwnerSubAcc,
+    akunBankSubAcc
   ) {
     try {
       paymentData = paymentData.map((item) => ({
@@ -550,7 +567,7 @@ function TambahPartner() {
       const dataParams = encryptData(
         `{"mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_id": ${bankName}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "payment_method": ${JSON.stringify(
           paymentData
-        )}}`
+        )}, "sub_acc_bank_code": "${bankNameSubAcc}", "sub_acc_name": "${rekeningOwnerSubAcc}", "sub_acc_number": "${akunBankSubAcc}"}`
       );
       const headers = {
         "Content-Type": "application/json",
@@ -1539,7 +1556,7 @@ function toDashboard() {
             </Col>
           </Row>
           {expanded && (
-            <div className="div-table pb-4" ref={myRef}>
+            <div className="div-table" ref={myRef}>
               <DataTable
                 columns={columnPayment}
                 data={payment}
@@ -1568,14 +1585,8 @@ function toDashboard() {
               </span>
             </Col>
             <Col xs={10}>
-              <Form.Select name='sumberAgen' onChange={handleChange} value={subAccount.sumberAgen} placeholder="Pilih Agen" style={{width: "100%", height: 40, marginTop: "-7px", marginLeft: "unset"}}>
-                <option defaultChecked disabled value={0}>Pilih Agen</option>
-                <option value={2}>Hari Ini</option>
-                <option value={3}>Kemarin</option>
-                <option value={4}>7 Hari Terakhir</option>
-                <option value={5}>Bulan Ini</option>
-                <option value={6}>Bulan Kemarin</option>
-                <option value={7}>Pilih Range Tanggal</option>
+              <Form.Select name='sumberAgen' onChange={handleChange} disabled value={inputHandle.sumberAgen} className="form-add" placeholder="Pilih Agen" style={{width: "100%", height: 40, marginTop: "-7px", marginLeft: "unset" }}>
+                <option defaultChecked value={""}>Pilih Agen</option>
               </Form.Select>
             </Col>
           </Row>
@@ -1589,7 +1600,7 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
-                name="bankName"
+                name="bankNameSubAcc"
                 onChange={handleChange}
                 placeholder="Bank Danamon"
                 type="text"
@@ -1613,7 +1624,7 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
-                name="akunBank"
+                name="akunBankSubAcc"
                 onChange={handleChange}
                 placeholder="Masukkan Nomor Rekening"
                 type="number"
@@ -1637,7 +1648,7 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
-                name="rekeningOwner"
+                name="rekeningOwnerSubAcc"
                 onChange={handleChange}
                 placeholder="Masukkan Nama Pemilik Rekening"
                 type="text"
@@ -1650,168 +1661,7 @@ function toDashboard() {
               />
             </Col>
           </Row>
-          
-          <Row className="d-flex justify-content-between align-items-center">
-            <Col xs={1}></Col>
-            <Col className="ms-5">
-              {edited === false ? (
-                <button
-                  onClick={() =>
-                    saveNewSchemaHandle(
-                      biayaHandle.fee,
-                      biayaHandle.settlementFee,
-                      fitur[0],
-                      fitur[1],
-                      paymentMethod.filter(it => it !== 0),
-                      paymentNameMethod.filter(it => it !== "Pilih Semua"),
-                      payment.length + 1
-                    )
-                  }
-                  style={{
-                    fontFamily: "Exo",
-                    fontSize: 16,
-                    fontWeight: 700,
-                    alignItems: "center",
-                    padding: "12px 24px",
-                    gap: 8,
-                    width: 250,
-                    height: 48,
-                    color: "#077E86",
-                    background: "unset",
-                    border: "0.6px solid #077E86",
-                    borderRadius: 6,
-                  }}
-                >
-                  <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} />{" "}
-                  Tambah Sub Account
-                </button>
-              ) : (
-                <>
-                  <button
-                    className="mx-2"
-                    onClick={() => batalEdit()}
-                    style={{
-                      fontFamily: "Exo",
-                      fontSize: 16,
-                      fontWeight: 900,
-                      alignItems: "center",
-                      padding: "12px 24px",
-                      gap: 8,
-                      width: 136,
-                      height: 45,
-                      background: "#FFFFFF",
-                      color: "#888888",
-                      border: "0.6px solid #EBEBEB",
-                      borderRadius: 6,
-                    }}
-                  >
-                    Batal
-                  </button>
-                  <button
-                    style={{
-                      fontFamily: "Exo",
-                      fontSize: 16,
-                      fontWeight: 700,
-                      alignItems: "center",
-                      padding: "12px 24px",
-                      gap: 8,
-                      width: 136,
-                      height: 45,
-                      color: "#077E86",
-                      background: "transparent",
-                      border: "1px solid #077E86",
-                      borderRadius: 6,
-                    }}
-                    onClick={() =>
-                      saveEditInTableHandler(
-                        numbering,
-                        biayaHandle.fee,
-                        biayaHandle.settlementFee,
-                        fitur[0],
-                        fitur[1],
-                        paymentMethod.filter(it => it !== 0),
-                        paymentNameMethod.filter(it => it !== "Pilih Semua")
-                      )
-                    }
-                  >
-                    Simpan
-                  </button>
-                </>
-              )}
-            </Col>
-            <Col>
-              {expanded ? (
-                <div
-                  className="my-4"
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    alignItems: "center",
-                    padding: "unset",
-                  }}
-                >
-                  <button
-                    style={{
-                      fontFamily: "Exo",
-                      fontSize: 16,
-                      fontWeight: 700,
-                      alignItems: "center",
-                      gap: 8,
-                      width: 300,
-                      height: 48,
-                      color: "#077E86",
-                      background: "unset",
-                      border: "unset",
-                    }}
-                    onClick={showCheckboxes}
-                  >
-                    Sembunyikan daftar Sub Account{" "}
-                    <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className="my-4"
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    alignItems: "center",
-                    padding: "unset",
-                  }}
-                >
-                  <button
-                    style={{
-                      fontFamily: "Exo",
-                      fontSize: 16,
-                      fontWeight: 700,
-                      alignItems: "center",
-                      gap: 8,
-                      width: 300,
-                      height: 48,
-                      color: "#077E86",
-                      background: "unset",
-                      border: "unset",
-                    }}
-                    onClick={showCheckboxes}
-                  >
-                    Lihat daftar Sub Account{" "}
-                    <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
-                  </button>
-                </div>
-              )}
-            </Col>
-          </Row>
-          {expanded && (
-            <div className="div-table pb-4" ref={myRef}>
-              <DataTable
-                columns={columnPayment}
-                data={payment}
-                customStyles={customStyles}
-                // progressPending={pendingSettlement}
-                progressComponent={<CustomLoader />}
-              />
-            </div>
-          )}
+        
         </div>
       </div>
 
@@ -1838,12 +1688,15 @@ function toDashboard() {
               inputHandle.bankName,
               inputHandle.akunBank,
               inputHandle.rekeningOwner,
-              payment
+              payment,
+              inputHandle.bankNameSubAcc,
+              inputHandle.rekeningOwnerSubAcc,
+              inputHandle.akunBankSubAcc
             )
           }
           style={{ width: 136, cursor: (inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && payment.length !== 0 ) ? "pointer" : "unset" }}
-          className={(inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && payment.length !== 0 ) ? 'btn-ez-on' : 'btn-ez'}
-          disabled={inputHandle.namaPerusahaan.length === 0 || inputHandle.emailPerusahaan.length === 0 || inputHandle.phoneNumber.length === 0 || inputHandle.alamat.length === 0 || inputHandle.noNpwp.length === 0 || inputHandle.namaNpwp.length === 0 || inputHandle.nama.length === 0 || inputHandle.noHp.length === 0 || inputHandle.active.length === 0 || inputHandle.bankName.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.rekeningOwner.length === 0 || payment.length === 0  }
+          className={(inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && payment.length !== 0 && inputHandle.rekeningOwnerSubAcc.length !== 0 && inputHandle.akunBankSubAcc.length !== 0) ? 'btn-ez-on' : 'btn-ez'}
+          disabled={inputHandle.namaPerusahaan.length === 0 || inputHandle.emailPerusahaan.length === 0 || inputHandle.phoneNumber.length === 0 || inputHandle.alamat.length === 0 || inputHandle.noNpwp.length === 0 || inputHandle.namaNpwp.length === 0 || inputHandle.nama.length === 0 || inputHandle.noHp.length === 0 || inputHandle.active.length === 0 || inputHandle.bankName.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.rekeningOwner.length === 0 || payment.length === 0  || inputHandle.rekeningOwnerSubAcc.length === 0 || inputHandle.akunBankSubAcc.length === 0}
         >
           Tambahkan
         </button>

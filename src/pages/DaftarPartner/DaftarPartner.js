@@ -150,24 +150,7 @@ function DaftarPartner() {
                 <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah Partner
             </button>
         </div>
-        <div className='base-content'>   
-            {/* <div className='search-bar mb-5'>
-                <Row>
-                    <Col xs={3}>
-                        <span className='h5'>
-                            Cari Data Partner :
-                        </span>
-                    </Col>
-                    <Col xs={6}>
-                        <Form.Control
-                            placeholder="Recipient's username"
-                            aria-label="Recipient's username"
-                            aria-describedby="basic-addon2"
-                            style={{marginTop: '-10px'}}
-                            />
-                    </Col>
-                </Row>
-            </div> */}
+        <div className='base-content'>
             <div className="div-table">
                 <DataTable
                     columns={columns}
