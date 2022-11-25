@@ -20,6 +20,8 @@ function InvoiceDisbursement() {
     const [dataListPartner, setDataListPartner] = useState([])
     const [namaPartner, setNamaPartner] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
+    const [isIgnoreZeroAmount, setIsIgnoreZeroAmount] = useState(false)
+    const [invoiceDate, setInvoiceDate] = useState("")
 
     function resetButtonHandle() {
         setStateInvoiceDisbursement(null)
@@ -60,10 +62,10 @@ function InvoiceDisbursement() {
         }
     }
 
-    async function generateInvoiceDisbursement(dateRange, partnerId) {
+    async function generateInvoiceDisbursement(dateRange, partnerId, dateInv, includeZeroAmount, isSave) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}"}`);
+            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}", "inv_date": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "is_save": ${isSave}}`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -86,6 +88,7 @@ function InvoiceDisbursement() {
     }
     
     const SaveAsPDFHandler = () => {
+        generateInvoiceDisbursement(dateRangeInvoiceDisbursement, namaPartner, invoiceDate, isIgnoreZeroAmount, true)
         const dom = document.getElementById('tableInvoice');
         toPng(dom)
             .then((dataUrl) => {
@@ -180,7 +183,7 @@ function InvoiceDisbursement() {
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-2 mb-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span className='me-3'>Periode*</span>
+                                <span style={{ marginRight: 73 }}>Periode*</span>
                                 <div>
                                     <DateRangePicker 
                                         onChange={pickDateInvoiceDisbursement}
@@ -204,19 +207,39 @@ function InvoiceDisbursement() {
                                 </Form.Select>
                             </Col>
                         </Row>
+                        <Row className='mt-2 mb-4'>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
+                                <span className='me-3'>Tanggal Invoice*</span>
+                                <div>
+                                    <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
+                                </div>
+                            </Col>
+                            <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
+                                <span className='me-4'>Include Zero Amount</span>
+                                <div>
+                                    <Form.Check
+                                        type="switch"
+                                        id="custom-switch"
+                                        onChange={(e) => setIsIgnoreZeroAmount(e.target.checked)}
+                                        label={isIgnoreZeroAmount? "Include" : "Exclude"}
+                                        checked={isIgnoreZeroAmount}
+                                    />
+                                </div>
+                            </Col>
+                        </Row>
                         <button
-                            onClick={() => generateInvoiceDisbursement(dateRangeInvoiceDisbursement, namaPartner)}
-                            className={(stateInvoiceDisbursement === null || namaPartner.length === 0) ? 'btn-off' : 'add-button'}
+                            onClick={() => generateInvoiceDisbursement(dateRangeInvoiceDisbursement, namaPartner, invoiceDate, isIgnoreZeroAmount, false)}
+                            className={(stateInvoiceDisbursement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? 'btn-off' : 'add-button'}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                            disabled={(stateInvoiceDisbursement === null || namaPartner.length === 0) ? true : false}
+                            disabled={(stateInvoiceDisbursement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? true : false}
                         >
                             Generate
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateInvoiceDisbursement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez"}
+                            className={(stateInvoiceDisbursement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                            disabled={(stateInvoiceDisbursement === null || namaPartner.length === 0) ? true : false}
+                            disabled={(stateInvoiceDisbursement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? false : true}
                         >
                             Atur Ulang
                         </button>
@@ -280,7 +303,7 @@ function InvoiceDisbursement() {
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                            <td style={{ paddingRight: 50, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                            <td style={{ paddingRight: 366, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
                                         </tr>
                                 </table>
                             </div>
@@ -319,8 +342,8 @@ function InvoiceDisbursement() {
                                                         <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
                                                         <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
                                                         <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, 2) : "Rp 0"}</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, true, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, true, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
                                             }) :
@@ -356,36 +379,36 @@ function InvoiceDisbursement() {
                                             <td></td>
                                             <td></td>
                                             <td>Harga Jual</td>
-                                            <td style={{ textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end" }}>{(dataInvoiceDisbursement.inv_dpp !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_dpp, 2) : "Rp 0"}</td>
+                                            <td style={{ textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end" }}>{(dataInvoiceDisbursement.inv_dpp !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_dpp, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>-</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_dpp !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_dpp, 2) : "Rp 0"}</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_dpp !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_dpp, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(dataInvoiceDisbursement.inv_ppn !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_ppn, 2) : "Rp 0"}</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(dataInvoiceDisbursement.inv_ppn !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_ppn, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
-                                            <td style={{ fontSize: 16, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>:</td>
-                                            <td style={{ fontSize: 16, textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_total !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_total, 2) : "Rp 0"}</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_total !== undefined) ? convertToRupiah(dataInvoiceDisbursement.inv_total, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -397,7 +420,7 @@ function InvoiceDisbursement() {
                                     </tr>
                                 </table>
                                 <div>Remark:</div>
-                                <div style={{ textAlign: 'end', marginTop: 50, marginBottom: 25 }}>........................................</div>
+                                <div style={{ textAlign: 'end', marginTop: 150, marginBottom: 25 }}>........................................</div>
                                 <div style={{ display: "flex", justifyContent: "flex-start", borderTop: "solid", fontWeight: 700 }}>Page 1 of 1</div>
                             </div>
                         </div>

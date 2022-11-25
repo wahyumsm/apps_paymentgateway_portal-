@@ -5,8 +5,7 @@ import $ from "jquery";
 import axios from "axios";
 import {
   BaseURL,
-  convertFormatNumber,
-  convertFormatNumberPartner,
+  convertToRupiah,
   errorCatch,
   getRole,
   getToken,
@@ -601,11 +600,11 @@ function EditPartner() {
     },
     {
       name: "Fee",
-      selector: (row) => convertFormatNumberPartner(row.fee),
+      selector: (row) => convertToRupiah(row.fee, true, 2),
     },
     {
       name: "Settlement Fee",
-      selector: (row) => convertFormatNumberPartner(row.fee_settle),
+      selector: (row) => convertToRupiah(row.fee_settle, true, 2),
       width: "150px",
     },
     {
@@ -1229,7 +1228,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(inputHandle.fee.length === 0) ? "" : convertFormatNumberPartner(inputHandle.fee)}
+                        value={(inputHandle.fee.length === 0) ? "" : convertToRupiah(inputHandle.fee, true, 2)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
@@ -1265,9 +1264,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(inputHandle.settlementFee.length === 0) ? "" : convertFormatNumberPartner(
-                          inputHandle.settlementFee
-                        )}
+                        value={(inputHandle.settlementFee.length === 0) ? "" : convertToRupiah(inputHandle.settlementFee, true, 2)}
                         name="settlementFee"
                         placeholder={"Rp 0"}
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}

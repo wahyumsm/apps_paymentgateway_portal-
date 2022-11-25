@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertFormatNumber, convertToCurrency, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"

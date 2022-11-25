@@ -14,7 +14,6 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import { Line, Pie } from "react-chartjs-2";
 import {
   BaseURL,
-  convertToCurrency,
   convertToRupiah,
   errorCatch,
   getRole,
