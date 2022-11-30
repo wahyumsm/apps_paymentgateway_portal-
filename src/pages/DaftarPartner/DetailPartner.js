@@ -627,7 +627,7 @@ function DetailPartner() {
                                 </tr>
                                 <br/>
                                 <tr>
-                                    <td style={{width: 200}}>Nama Pemilik Rekening</td>
+                                    <td style={{width: 200}}>Nama Pemilik Rekening <span style={{ color: "red" }}>*</span></td>
                                     <td><input type='text'className='input-text-ez' placeholder='Masukkan Nama Pemilik Rekening' disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>

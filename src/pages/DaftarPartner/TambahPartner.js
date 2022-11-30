@@ -69,11 +69,6 @@ function TambahPartner() {
     bankNameSubAcc: "011",
   });
 
-  console.log(inputHandle.akunBankSubAcc, "nomor rekening");
-  console.log(inputHandle.rekeningOwnerSubAcc, "nama pemilik");
-  console.log(inputHandle.bankNameSubAcc, "nama bank");
-  console.log(inputHandle.sumberAgen, "sumber agen");
-
   const [biayaHandle, setBiayaHandle] = useState({
     fee: 0,
     settlementFee: 0,
@@ -654,7 +649,7 @@ function toDashboard() {
         <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>
           Tambah Partner
         </h4>
-        <h5 style={{ fontFamily: "Exo" }}>Profil Perusahaan</h5>
+        <h5 className=" mb-4" style={{ fontFamily: "Exo" }}>Profil Perusahaan</h5>
       </div>
       <div className="base-content" style={{ width: "100%", padding: 50 }}>
         <div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import { Col, Form, Row, Image, Fade, OverlayTrigger, Tooltip } from "@themesberg/react-bootstrap";
 import $ from "jquery";
@@ -27,7 +27,7 @@ import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
 import FilterComponent from "../../components/FilterComponent";
-import { useMemo } from "react";
+import noteIconGrey from "../../assets/icon/note_icon_grey.svg"
 
 function EditPartner() {
   const [isDetailAkun, setIsDetailAkun] = useState(true);
@@ -78,16 +78,20 @@ function EditPartner() {
     bankName: 1,
     akunBank: detailPartner.mpartnerdtl_account_number,
     rekeningOwner: detailPartner.mpartnerdtl_account_name,
+    paymentType: [],
+    fiturs: 0,
+  });
+  const [biayaHandle, setBiayaHandle] = useState({
     fee: 0,
-    settlementFee: 0,
+    settlementFee: 0
+  })
+  const [subAccountHandle, setSubAccountHandle] = useState({
     sumberAgen: "",
     sumberAgenName: "",
     bankNameSubAcc: "Danamon",
     akunBankSubAcc: "",
     rekeningOwnerSubAcc: "",
-    paymentType: [],
-    fiturs: 0,
-  });
+  })
   const [agenName, setAgenName] = useState("")
   const [agenCode, setAgenCode] = useState("")
   const [filterText, setFilterText] = React.useState('');
@@ -95,9 +99,6 @@ function EditPartner() {
   const filteredItems = listAgen.filter(
       item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
   );
-
-  console.log(agenName, "agen name");
-  console.log(agenCode, "agen code");
 
   const subHeaderComponentMemo = useMemo(() => {
     const handleClear = () => {
@@ -145,9 +146,8 @@ function EditPartner() {
     if (e.target.name === "sumberAgen") {
       setAlertFillAgen(false)
       setAlertSamePartner(false)
-      console.log(e.target.value, "target value");
-      setInputHandle({
-        ...inputHandle,
+      setSubAccountHandle({
+        ...subAccountHandle,
         [e.target.name]: e.target.value,
       });
       const resultAgen = sumberAgenList.find((item) => 
@@ -155,13 +155,16 @@ function EditPartner() {
       )
       setAgenName(resultAgen.mpartnerdtl_sub_name);
       setAgenCode(resultAgen.mpartnerdtl_sub_id);
-    } else {
-      setAlertFillAgen(false)
-      setAlertSamePartner(false)
+    } else if (e.target.name === "akunBankSubAcc") {
       setAlertNoRek(false)
+      setSubAccountHandle({
+        ...subAccountHandle,
+        [e.target.name]: e.target.value,
+      });
+    } else {
       setAlertNameRek(false)
-      setInputHandle({
-        ...inputHandle,
+      setSubAccountHandle({
+        ...subAccountHandle,
         [e.target.name]: e.target.value,
       });
     }
@@ -170,14 +173,14 @@ function EditPartner() {
   function handleChangeFee (e) {
     if (e.target.name === "active") {
       setAlertFee(false)
-      setInputHandle({
-        ...inputHandle,
-        [e.target.name]: !inputHandle.active,
+      setBiayaHandle({
+        ...biayaHandle,
+        [e.target.name]: !biayaHandle.active,
       });
     } else {
       setAlertFee(false)
-      setInputHandle({
-        ...inputHandle,
+      setBiayaHandle({
+        ...biayaHandle,
         [e.target.name]: e.target.value,
       });
     }
@@ -189,14 +192,14 @@ function EditPartner() {
   function handleChangeSettle (e) {
     if (e.target.name === "active") {
       setAlertSettlement(false)
-      setInputHandle({
-        ...inputHandle,
-        [e.target.name]: !inputHandle.active,
+      setBiayaHandle({
+        ...biayaHandle,
+        [e.target.name]: !biayaHandle.active,
       });
     } else {
       setAlertSettlement(false)
-      setInputHandle({
-        ...inputHandle,
+      setBiayaHandle({
+        ...biayaHandle,
         [e.target.name]: e.target.value,
       });
     }
@@ -252,23 +255,11 @@ function EditPartner() {
     }
   };
 
-  // console.log(paymentMethod,"ini metode payment");
-  //   console.log(paymentNameMethod, "ini name methodnya");
-  //   console.log(payment, "ini payment");
-  //   console.log(fitur[0], "ini fitur id");
-  //   console.log(fitur[1], "ini fitur id");
-  // console.log(inputHandle.fee, "ini fee");
-  // console.log(inputHandle.settlementFee, "ini settle");
-  // console.log(listMethodMenu.length, "ini list method menu");
-  // console.log(inputHandle.akunBankSubAcc, "nomor rek");
-  // console.log(inputHandle.rekeningOwnerSubAcc, "nama pemilik");
-  // console.log(inputHandle.sumberAgen, "nama agennya");
-
   function editInTableHandler(numberId) {
     setEdited(true);
     const result = payment.find((item) => item.number === numberId);
     getTypeMethod(result.fitur_id);
-    setInputHandle({
+    setBiayaHandle({
       fee: result.fee,
       settlementFee: result.fee_settle,
     });
@@ -319,7 +310,7 @@ function EditPartner() {
         Object.assign(target, source);
         setPayment([...payment]);
         setEdited(false);
-        setInputHandle({
+        setBiayaHandle({
           fee: 0,
           settlementFee: 0,
         });
@@ -333,7 +324,7 @@ function EditPartner() {
   }
 
   function batalEdit() {
-    setInputHandle({
+    setBiayaHandle({
       fee: 0,
       settlementFee: 0,
     });
@@ -349,7 +340,7 @@ function EditPartner() {
     const result = payment.findIndex((item) => item.number === numberId);
     payment.splice(result, 1);
     setPayment([...payment]);
-    setInputHandle({
+    setBiayaHandle({
       fee: 0,
       settlementFee: 0,
     });
@@ -365,15 +356,14 @@ function EditPartner() {
     const resultAgen = sumberAgenList.find((item) => 
       item.mpartnerdtl_sub_id === result.subpartner_id
     )
-    console.log(result, "ini result sub account edit");
-    setInputHandle({
+    // console.log(result, "ini result sub account edit");
+    setSubAccountHandle({
       akunBankSubAcc: result.bank_number,
       rekeningOwnerSubAcc: result.bank_account_name,
       sumberAgen: result.subpartner_id,
     })
     setAgenName(resultAgen.mpartnerdtl_sub_name);
     setAgenCode(resultAgen.mpartnerdtl_sub_id);
-    console.log(inputHandle.sumberAgen, 'di input handle');
     setNumberSubAcc(numberId)
   }
 
@@ -388,23 +378,54 @@ function EditPartner() {
       setAlertFillAgen(false)
       setAlertNoRek(false)
       setAlertNameRek(false)
-      const target = subAccount.find((item) => item.number === numberId)
-      const source = {
-        number: numberId,
-        subpartner_id: sumberAgenCode,
-        agen_source: sumberAgen,
-        bank_number: akunBankSubAcc,
-        bank_account_name: rekeningOwnerSubAcc,
-        bank_name: "Danamon"
+      const finder = subAccount.find((item) => item.subpartner_id === sumberAgenCode)
+      console.log(finder, "finder");
+      // console.log(finder.subpartner_id, "finder sub partner id");
+      console.log(sumberAgenCode, "agen code ");
+      console.log(numberId, 'number id');
+      if (finder !== undefined) {
+        if (finder.number === numberId) {
+          setAlertSamePartner(false)
+          const target = subAccount.find((item) => item.number === numberId)
+          const source = {
+            number: numberId,
+            subpartner_id: sumberAgenCode,
+            agen_source: sumberAgen,
+            bank_number: akunBankSubAcc,
+            bank_account_name: rekeningOwnerSubAcc,
+            bank_name: "Danamon"
+          }
+          Object.assign(target, source);
+          setSubAccount([...subAccount])
+          setEditedSubAcc(false)
+          setSubAccountHandle({
+            sumberAgen: "",
+            akunBankSubAcc: "",
+            rekeningOwnerSubAcc: "",
+          })
+        } else {
+          setAlertSamePartner(true)
+        }
+      } else {
+        setAlertSamePartner(false)
+        const target = subAccount.find((item) => item.number === numberId)
+        const source = {
+          number: numberId,
+          subpartner_id: sumberAgenCode,
+          agen_source: sumberAgen,
+          bank_number: akunBankSubAcc,
+          bank_account_name: rekeningOwnerSubAcc,
+          bank_name: "Danamon"
+        }
+        Object.assign(target, source);
+        setSubAccount([...subAccount])
+        setEditedSubAcc(false)
+        setSubAccountHandle({
+          sumberAgen: "",
+          akunBankSubAcc: "",
+          rekeningOwnerSubAcc: "",
+        })
       }
-      Object.assign(target, source);
-      setSubAccount([...subAccount])
-      setEditedSubAcc(false)
-      setInputHandle({
-        sumberAgen: "",
-        akunBankSubAcc: "",
-        rekeningOwnerSubAcc: "",
-      })
     } else {
       if (sumberAgenCode === "" || sumberAgen === "") {
         setAlertFillAgen(true)
@@ -419,7 +440,7 @@ function EditPartner() {
   }
 
   function batalEditSubAcc() {
-    setInputHandle({
+    setSubAccountHandle({
       sumberAgen: "",
       akunBankSubAcc: "",
       rekeningOwnerSubAcc: "",
@@ -430,13 +451,14 @@ function EditPartner() {
     setAlertFillAgen(false)
     setAlertNoRek(false)
     setAlertNameRek(false)
+    setAlertSamePartner(false)
   }
 
   function deleteHandlerSubAcc (numberId) {
     const result = subAccount.findIndex((item) => item.number === numberId);
     subAccount.splice(result, 1);
     setSubAccount([...subAccount]);
-    setInputHandle({
+    setSubAccountHandle({
       sumberAgen: "",
       akunBankSubAcc: "",
       rekeningOwnerSubAcc: ""
@@ -524,8 +546,6 @@ function EditPartner() {
       history.push(errorCatch(error.response.status));
     }
   }
-
-  console.log(subAccount, "ini sub acc");
 
   async function getTypeFitur() {
     try {
@@ -792,19 +812,23 @@ function EditPartner() {
       width: "130px",
       cell: (row) => (
         <div className="d-flex justify-content-center align-items-center">
-          <img
-            src={edit}
-            onClick={() => editInTableHandler(row.number)}
-            style={{ cursor: "pointer" }}
-            alt="icon edit"
-          />
-          <img
-            onClick={() => deleteDataHandler(row.number)}
-            src={deleted}
-            style={{ cursor: "pointer" }}
-            className="ms-2"
-            alt="icon delete"
-          />
+          <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Edit</div></Tooltip>}>
+            <img
+              src={edit}
+              onClick={() => editInTableHandler(row.number)}
+              style={{ cursor: "pointer" }}
+              alt="icon edit"
+            />
+          </OverlayTrigger>
+          <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Delete</div></Tooltip>}>
+            <img
+              onClick={() => deleteDataHandler(row.number)}
+              src={deleted}
+              style={{ cursor: "pointer" }}
+              className="ms-2"
+              alt="icon delete"
+            />
+          </OverlayTrigger>
         </div>
       ),
     },
@@ -889,11 +913,11 @@ function EditPartner() {
         setMustFill(true)
       } else {
         setMustFill(false)
-        if (inputHandle.fee === "") {
+        if (biayaHandle.fee === "") {
           setAlertFee(true)
         } else {
           setAlertFee(false)
-          if (inputHandle.settlementFee === "") {
+          if (biayaHandle.settlementFee === "") {
             setAlertSettlement(true)
           } else {
             setAlertSettlement(false)
@@ -908,7 +932,7 @@ function EditPartner() {
             };
             setPayment([...payment, newData]);
             setRedFlag(false)
-            setInputHandle({
+            setBiayaHandle({
               fee: 0,
               settlementFee: 0,
             });
@@ -932,7 +956,7 @@ function EditPartner() {
   ) {
     if (number > 2) {
       setAlertMaxSubAcc(true)
-      setInputHandle({
+      setSubAccountHandle({
         sumberAgen: "",
         akunBankSubAcc: "",
         rekeningOwnerSubAcc: "",
@@ -945,28 +969,44 @@ function EditPartner() {
         setAlertFillAgen(false)
         setAlertNoRek(false)
         setAlertNameRek(false)
-        subAccount.find((item) => {
-          if (item.subpartner_id === sumberAgenCode) {
-            setAlertSamePartner(true)
-          } else {
+        if (subAccount.length !== 0) {
+          subAccount.forEach((item) => {
+            if (item.subpartner_id === sumberAgenCode) {
+              setAlertSamePartner(true)
+            } else {
               setAlertSamePartner(false)
               const newDataSubAcc = {
-              bank_name: "Danamon",
-              bank_number: akunBankSubAcc,
-              bank_account_name: rekeningOwnerSubAcc,
-              subpartner_id: sumberAgenCode,
-              agen_source: sumberAgen,
-              number: number
+                bank_name: "Danamon",
+                bank_number: akunBankSubAcc,
+                bank_account_name: rekeningOwnerSubAcc,
+                subpartner_id: sumberAgenCode,
+                agen_source: sumberAgen,
+                number: number
+              }
+              setSubAccount([...subAccount, newDataSubAcc])
+              setSubAccountHandle({
+                sumberAgen: "",
+                akunBankSubAcc: "",
+                rekeningOwnerSubAcc: "",
+              })
             }
-            setSubAccount([...subAccount, newDataSubAcc])
-            setInputHandle({
-              sumberAgen: "",
-              akunBankSubAcc: "",
-              rekeningOwnerSubAcc: "",
-            })
+          })
+        } else {
+          const newDataSubAcc = {
+            bank_name: "Danamon",
+            bank_number: akunBankSubAcc,
+            bank_account_name: rekeningOwnerSubAcc,
+            subpartner_id: sumberAgenCode,
+            agen_source: sumberAgen,
+            number: number
           }
-        })
-        
+          setSubAccount([...subAccount, newDataSubAcc])
+          setSubAccountHandle({
+            sumberAgen: "",
+            akunBankSubAcc: "",
+            rekeningOwnerSubAcc: "",
+          })
+        }
       } else {
         if (sumberAgenCode === "" || sumberAgen === "") {
           setAlertFillAgen(true)
@@ -1153,7 +1193,7 @@ function EditPartner() {
             'Authorization': auth
         }
         const getSumberAgen = await axios.post(BaseURL + "/Partner/GetSumberAgen", {data: dataParams}, {headers: headers})
-        console.log(getSumberAgen, "list disburse");
+        // console.log(getSumberAgen, "list disburse");
         if (getSumberAgen.status === 200 && getSumberAgen.data.response_code === 200 && getSumberAgen.data.response_new_token.length === 0) {
             setSumberAgenList(getSumberAgen.data.response_data)
         } else if (getSumberAgen.status === 200 && getSumberAgen.data.response_code === 200 && getSumberAgen.data.response_new_token.length !== 0) {
@@ -1553,7 +1593,7 @@ function EditPartner() {
                         type="number"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(inputHandle.fee === undefined) ? 0 : (inputHandle.fee)}
+                        value={(biayaHandle.fee === undefined) ? 0 : (inputHandle.fee)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
@@ -1565,7 +1605,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(inputHandle.fee === undefined) ? convertFormatNumberPartner(0) : convertFormatNumberPartner(inputHandle.fee)}
+                        value={(biayaHandle.fee === undefined) ? convertFormatNumberPartner(0) : convertFormatNumberPartner(biayaHandle.fee)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
@@ -1589,7 +1629,7 @@ function EditPartner() {
                         type="number"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(inputHandle.settlementFee === undefined) ? (0) : (inputHandle.settlementFee)}
+                        value={(biayaHandle.settlementFee === undefined) ? (0) : (biayaHandle.settlementFee)}
                         name="settlementFee"
                         placeholder={"Rp 0"}
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
@@ -1601,7 +1641,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(inputHandle.settlementFee === undefined) ? convertFormatNumberPartner(0) : convertFormatNumberPartner(inputHandle.settlementFee)}
+                        value={(biayaHandle.settlementFee === undefined) ? convertFormatNumberPartner(0) : convertFormatNumberPartner(biayaHandle.settlementFee)}
                         name="settlementFee"
                         placeholder={"Rp 0"}
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
@@ -1976,169 +2016,164 @@ function EditPartner() {
                 Metode Pembayaran tidak boleh sama dalam satu Fitur
               </div> : ""
             }
-            <table >              
-              <thead></thead>
-              <tbody>
-                <tr>
-                  <td style={{ width: 210 }}></td>
-                  <td>
-                    {edited === false ? (
-                      <button
-                        onClick={() =>
-                          saveNewSchemaHandle(
-                            inputHandle.fee,
-                            inputHandle.settlementFee,
-                            fitur[0],
-                            fitur[1],
-                            paymentMethod.filter((it) => it !== 0),
-                            paymentNameMethod.filter((it) => it !== "Pilih Semua"),
-                            payment.length + 1
-                          )
-                        }
-                        style={{
-                          fontFamily: "Exo",
-                          fontSize: 16,
-                          fontWeight: 700,
-                          alignItems: "center",
-                          padding: "12px 24px",
-                          gap: 8,
-                          width: 250,
-                          height: 48,
-                          color: "#077E86",
-                          background: "unset",
-                          border: "0.6px solid #077E86",
-                          borderRadius: 6,
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faPlus}
-                          style={{ marginRight: 10 }}
-                        />{" "}
-                        Tambah Skema Baru
-                      </button>
-                    ) : (
-                      <>
-                        <button
-                          className="mx-2"
-                          onClick={() => batalEdit()}
-                          style={{
-                            fontFamily: "Exo",
-                            fontSize: 16,
-                            fontWeight: 900,
-                            alignItems: "center",
-                            padding: "12px 24px",
-                            gap: 8,
-                            width: 136,
-                            height: 45,
-                            background: "#FFFFFF",
-                            color: "#888888",
-                            border: "0.6px solid #EBEBEB",
-                            borderRadius: 6,
-                          }}
-                        >
-                          Batal
-                        </button>
-                        <button
-                          style={{
-                            fontFamily: "Exo",
-                            fontSize: 16,
-                            fontWeight: 700,
-                            alignItems: "center",
-                            padding: "12px 24px",
-                            gap: 8,
-                            width: 136,
-                            height: 45,
-                            color: "#077E86",
-                            background: "transparent",
-                            border: "1px solid #077E86",
-                            borderRadius: 6,
-                          }}
-                          onClick={() =>
-                            saveEditInTableHandler(
-                              numbering,
-                              inputHandle.fee,
-                              inputHandle.settlementFee,
-                              fitur[0],
-                              fitur[1],
-                              paymentMethod.filter((it) => it !== 0),
-                              paymentNameMethod.filter((it) => it !== "Pilih Semua")
-                            )
-                          }
-                        >
-                          Simpan
-                        </button>
-                      </>
-                    )}
-                  </td>
-                  {/* <td style={{ width: "13%"}}></td> */}
-                  <td className="d-flex justify-content-end align-items-center text-end ms-4">
-                    {expanded ? (
-                      <div
-                        className="my-4 text-end"
-                        style={{
-                          // display: "flex",
-                          // justifyContent: "end",
-                          // alignItems: "center",
-                          // padding: "unset",
-                          // width:"100%"
-                        }}
-                      >
-                        <button
-                          style={{
-                            fontFamily: "Exo",
-                            fontSize: 16,
-                            fontWeight: 700,
-                            alignItems: "center",
-                            gap: 8,
-                            // width: "100%",
-                            height: 48,
-                            color: "#077E86",
-                            background: "unset",
-                            border: "unset",
-                          }}
-                          onClick={showCheckboxes}
-                          className="text-end"
-                        >
-                          Sembunyikan tabel skema biaya{" "}
-                          <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
-                        </button>
-                      </div>
-                    ) : (
-                      <div
-                        className="my-4 mb-4 text-end"
-                        style={{
-                          // display: "flex",
-                          // justifyContent: "end",
-                          // alignItems: "center",
-                          // padding: "unset",
-                          // width:"100%"
-                        }}
-                      >
-                        <button
-                          style={{
-                            fontFamily: "Exo",
-                            fontSize: 16,
-                            fontWeight: 700,
-                            alignItems: "center",
-                            gap: 8,
-                            // width: "100%",
-                            height: 48,
-                            color: "#077E86",
-                            background: "unset",
-                            border: "unset",
-                          }}
-                          onClick={showCheckboxes}
-                          className="text-end"
-                        >
-                          Lihat tabel skema lainnya{" "}
-                          <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <Row className="d-flex justify-content-between align-items-center">
+              <Col xs={2}></Col>
+              <Col className="ms-5">
+                {edited === false ? (
+                  <button
+                    onClick={() =>
+                      saveNewSchemaHandle(
+                        biayaHandle.fee,
+                        biayaHandle.settlementFee,
+                        fitur[0],
+                        fitur[1],
+                        paymentMethod.filter((it) => it !== 0),
+                        paymentNameMethod.filter((it) => it !== "Pilih Semua"),
+                        payment.length + 1
+                      )
+                    }
+                    style={{
+                      fontFamily: "Exo",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      alignItems: "center",
+                      padding: "12px 24px",
+                      gap: 8,
+                      width: 250,
+                      height: 48,
+                      color: "#077E86",
+                      background: "unset",
+                      border: "0.6px solid #077E86",
+                      borderRadius: 6,
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      style={{ marginRight: 10 }}
+                    />{" "}
+                    Tambah Skema Baru
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="me-2"
+                      onClick={() => batalEdit()}
+                      style={{
+                        fontFamily: "Exo",
+                        fontSize: 16,
+                        fontWeight: 900,
+                        alignItems: "center",
+                        padding: "12px 24px",
+                        gap: 8,
+                        width: 136,
+                        height: 45,
+                        background: "#FFFFFF",
+                        color: "#888888",
+                        border: "0.6px solid #EBEBEB",
+                        borderRadius: 6,
+                      }}
+                    >
+                      Batal
+                    </button>
+                    <button
+                      style={{
+                        fontFamily: "Exo",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        alignItems: "center",
+                        padding: "12px 24px",
+                        gap: 8,
+                        width: 136,
+                        height: 45,
+                        color: "#077E86",
+                        background: "transparent",
+                        border: "1px solid #077E86",
+                        borderRadius: 6,
+                      }}
+                      onClick={() =>
+                        saveEditInTableHandler(
+                          numbering,
+                          biayaHandle.fee,
+                          biayaHandle.settlementFee,
+                          fitur[0],
+                          fitur[1],
+                          paymentMethod.filter((it) => it !== 0),
+                          paymentNameMethod.filter((it) => it !== "Pilih Semua")
+                        )
+                      }
+                    >
+                      Simpan
+                    </button>
+                  </>
+                )}
+              </Col>
+              <Col>
+                {expanded ? (
+                  <div
+                    className="my-4 text-end"
+                    style={{
+                      display: "flex",
+                      justifyContent: "end",
+                      alignItems: "center",
+                      padding: "unset",
+                      width:"100%"
+                    }}
+                  >
+                    <button
+                      style={{
+                        fontFamily: "Exo",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        alignItems: "center",
+                        gap: 8,
+                        // width: "100%",
+                        height: 48,
+                        color: "#077E86",
+                        background: "unset",
+                        border: "unset",
+                      }}
+                      onClick={showCheckboxes}
+                      className="text-end"
+                    >
+                      Sembunyikan tabel skema biaya{" "}
+                      <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className="my-4 mb-4 text-end"
+                    style={{
+                      display: "flex",
+                      justifyContent: "end",
+                      alignItems: "center",
+                      padding: "unset",
+                      width:"100%"
+                    }}
+                  >
+                    <button
+                      style={{
+                        fontFamily: "Exo",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        alignItems: "center",
+                        gap: 8,
+                        // width: "100%",
+                        height: 48,
+                        color: "#077E86",
+                        background: "unset",
+                        border: "unset",
+                      }}
+                      onClick={showCheckboxes}
+                      className="text-end"
+                    >
+                      Lihat tabel skema lainnya{" "}
+                      <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                    </button>
+                  </div>
+                )}
+              </Col>
+            </Row>
+            
             {expanded && (
               <div className="div-table pb-4" ref={myRef}>
                 <DataTable
@@ -2166,7 +2201,7 @@ function EditPartner() {
                 <tr>
                   <td style={{ width: 200 }}>Sumber Agen</td>
                   <td>
-                    <Form.Select name='sumberAgen' value={inputHandle.sumberAgen} className='input-text-ez' style={{ width: "100%", marginLeft: "unset" }} onChange={(e) => handleChangeSubAcc(e)}>
+                    <Form.Select name='sumberAgen' value={subAccountHandle.sumberAgen} className='input-text-ez' style={{ width: "100%", marginLeft: "unset" }} onChange={(e) => handleChangeSubAcc(e)}>
                         <option defaultChecked disabled value={""} style={{ color: "#b4c0d2" }} >Pilih Agen</option>
                         {
                           sumberAgenList.map((item, index) => {
@@ -2219,7 +2254,7 @@ function EditPartner() {
                       type="number"
                       className="input-text-edit"
                       onChange={(e) => handleChangeSubAcc(e)}
-                      value={inputHandle.akunBankSubAcc === undefined ? "" : inputHandle.akunBankSubAcc}
+                      value={subAccountHandle.akunBankSubAcc === undefined ? "" : subAccountHandle.akunBankSubAcc}
                       placeholder="Masukkan Nomor Rekening"
                       name="akunBankSubAcc"
                       style={{ width: "100%", marginLeft: "unset" }}
@@ -2241,13 +2276,13 @@ function EditPartner() {
                 </tr>
                 <br />
                 <tr>
-                  <td style={{ width: 200 }}>Nama Pemilik Rekening</td>
+                  <td style={{ width: 200 }}>Nama Pemilik Rekening <span style={{ color: "red" }}>*</span></td>
                   <td>
                     <input
                       type="text"
                       className="input-text-edit"
                       onChange={(e) => handleChangeSubAcc(e)}
-                      value={inputHandle.rekeningOwnerSubAcc === undefined ? "" : inputHandle.rekeningOwnerSubAcc}
+                      value={subAccountHandle.rekeningOwnerSubAcc === undefined ? "" : subAccountHandle.rekeningOwnerSubAcc}
                       name="rekeningOwnerSubAcc"
                       placeholder="Masukkan Nama Pemilik Rekening"
                       style={{ width: "100%", marginLeft: "unset" }}
@@ -2269,179 +2304,175 @@ function EditPartner() {
                 <br />
               </tbody>
             </table>
-            <table >              
-              <thead></thead>
-              <tbody>
-                <tr>
-                  <td style={{ width: 210 }}></td>
-                  <td>
-                    {editedSubAcc === false ? (
-                      <button
-                        onClick={() =>
-                          saveNewSchemaSubAccHandle(
-                            agenCode,
-                            agenName,
-                            inputHandle.akunBankSubAcc,
-                            inputHandle.rekeningOwnerSubAcc,
-                            subAccount.length + 1
-                          )
-                        }
-                        style={{
-                          fontFamily: "Exo",
-                          fontSize: 16,
-                          fontWeight: 700,
-                          alignItems: "center",
-                          padding: "12px 24px",
-                          gap: 8,
-                          width: 250,
-                          height: 48,
-                          color: subAccount.length >= 2 ? "#888888" : "#077E86",
-                          background: "unset",
-                          border: subAccount.length >= 2 ? "0.6px solid #888888" : "0.6px solid #077E86",
-                          borderRadius: 6,
-                          cursor: subAccount.length >= 2 ? "unset" : "pointer"
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faPlus}
-                          style={{ marginRight: 10 }}
-                        />{" "}
-                        Tambah Sub Account
-                      </button>
-                    ) : (
-                      <>
-                        <button
-                          className="mx-2"
-                          onClick={() => batalEditSubAcc()}
-                          style={{
-                            fontFamily: "Exo",
-                            fontSize: 16,
-                            fontWeight: 900,
-                            alignItems: "center",
-                            padding: "12px 24px",
-                            gap: 8,
-                            width: 136,
-                            height: 45,
-                            background: "#FFFFFF",
-                            color: "#888888",
-                            border: "0.6px solid #EBEBEB",
-                            borderRadius: 6,
-                          }}
-                        >
-                          Batal
-                        </button>
-                        <button
-                          style={{
-                            fontFamily: "Exo",
-                            fontSize: 16,
-                            fontWeight: 700,
-                            alignItems: "center",
-                            padding: "12px 24px",
-                            gap: 8,
-                            width: 136,
-                            height: 45,
-                            color: "#077E86",
-                            background: "transparent",
-                            border: "1px solid #077E86",
-                            borderRadius: 6,
-                          }}
-                          onClick={() =>
-                            saveEditTableSubAcc(
-                              numberSubAcc,
-                              agenCode,
-                              agenName,
-                              inputHandle.akunBankSubAcc,
-                              inputHandle.rekeningOwnerSubAcc
-                            )
-                          }
-                        >
-                          Simpan
-                        </button>
-                      </>
-                    )}
-                  </td>
-                  {/* <td style={{ width: "13%"}}></td> */}
-                  <td className="d-flex justify-content-end align-items-center text-end ms-4">
-                    {expandedSubAcc ? (
-                      <div
-                        className="my-4 text-end"
-                        style={{
-                          // display: "flex",
-                          // justifyContent: "end",
-                          // alignItems: "center",
-                          // padding: "unset",
-                          // width:"100%"
-                        }}
-                      >
-                        <button
-                          style={{
-                            fontFamily: "Exo",
-                            fontSize: 16,
-                            fontWeight: 700,
-                            alignItems: "center",
-                            gap: 8,
-                            // width: "100%",
-                            height: 48,
-                            color: "#077E86",
-                            background: "unset",
-                            border: "unset",
-                          }}
-                          onClick={showCheckboxesSubAccount}
-                          className="text-end"
-                        >
-                          Sembunyikan daftar Sub Account{" "}
-                          <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
-                        </button>
-                      </div>
-                    ) : (
-                      <div
-                        className="my-4 mb-4 text-end"
-                        style={{
-                          // display: "flex",
-                          // justifyContent: "end",
-                          // alignItems: "center",
-                          // padding: "unset",
-                          // width:"100%"
-                        }}
-                      >
-                        <button
-                          style={{
-                            fontFamily: "Exo",
-                            fontSize: 16,
-                            fontWeight: 700,
-                            alignItems: "center",
-                            gap: 8,
-                            // width: "100%",
-                            height: 48,
-                            color: "#077E86",
-                            background: "unset",
-                            border: "unset",
-                          }}
-                          onClick={showCheckboxesSubAccount}
-                          className="text-end"
-                        >
-                          Lihat daftar Sub Account{" "}
-                          <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: 210 }}></td>
-                  <td>
-                    {
-                      subAccount.length >= 2 ?
-                      <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
-                          <img src={noteIconRed} className="me-2" alt="icon notice" />
-                          Maksimal 2 akun untuk ditambahkan.
-                      </div> : ""
+
+            <Row className="d-flex justify-content-between align-items-center">
+              <Col xs={2}></Col>
+              <Col className="ms-5">
+                {editedSubAcc === false ? (
+                  <button
+                    onClick={() =>
+                      saveNewSchemaSubAccHandle(
+                        agenCode,
+                        agenName,
+                        subAccountHandle.akunBankSubAcc,
+                        subAccountHandle.rekeningOwnerSubAcc,
+                        subAccount.length + 1
+                      )
                     }
-                  </td>
-                </tr>
-                <br/>
-              </tbody>
-            </table>
+                    style={{
+                      fontFamily: "Exo",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      alignItems: "center",
+                      padding: "12px 24px",
+                      gap: 8,
+                      width: 250,
+                      height: 48,
+                      color: subAccount.length >= 2 ? "#C4C4C4" : "#077E86",
+                      background: "unset",
+                      border: subAccount.length >= 2 ? "1px solid #EBEBEB" : "0.6px solid #077E86",
+                      borderRadius: 6,
+                      cursor: subAccount.length >= 2 ? "unset" : "pointer"
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      style={{ marginRight: 10 }}
+                    />{" "}
+                    Tambah Sub Account
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="me-2"
+                      onClick={() => batalEditSubAcc()}
+                      style={{
+                        fontFamily: "Exo",
+                        fontSize: 16,
+                        fontWeight: 900,
+                        alignItems: "center",
+                        padding: "12px 24px",
+                        gap: 8,
+                        width: 136,
+                        height: 45,
+                        background: "#FFFFFF",
+                        color: "#888888",
+                        border: "0.6px solid #EBEBEB",
+                        borderRadius: 6,
+                      }}
+                    >
+                      Batal
+                    </button>
+                    <button
+                      style={{
+                        fontFamily: "Exo",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        alignItems: "center",
+                        padding: "12px 24px",
+                        gap: 8,
+                        width: 136,
+                        height: 45,
+                        color: "#077E86",
+                        background: "transparent",
+                        border: "1px solid #077E86",
+                        borderRadius: 6,
+                      }}
+                      onClick={() =>
+                        saveEditTableSubAcc(
+                          numberSubAcc,
+                          agenCode,
+                          agenName,
+                          subAccountHandle.akunBankSubAcc,
+                          subAccountHandle.rekeningOwnerSubAcc
+                        )
+                      }
+                    >
+                      Simpan
+                    </button>
+                  </>
+                )}
+              </Col>
+              <Col>
+                {expandedSubAcc ? (
+                  <div
+                    className="my-4 text-end"
+                    style={{
+                      // display: "flex",
+                      // justifyContent: "end",
+                      // alignItems: "center",
+                      // padding: "unset",
+                      // width:"100%"
+                    }}
+                  >
+                    <button
+                      style={{
+                        fontFamily: "Exo",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        alignItems: "center",
+                        gap: 8,
+                        // width: "100%",
+                        height: 48,
+                        color: "#077E86",
+                        background: "unset",
+                        border: "unset",
+                      }}
+                      onClick={showCheckboxesSubAccount}
+                      className="text-end"
+                    >
+                      Sembunyikan daftar Sub Account{" "}
+                      <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className="my-4 mb-4 text-end"
+                    style={{
+                      // display: "flex",
+                      // justifyContent: "end",
+                      // alignItems: "center",
+                      // padding: "unset",
+                      // width:"100%"
+                    }}
+                  >
+                    <button
+                      style={{
+                        fontFamily: "Exo",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        alignItems: "center",
+                        gap: 8,
+                        // width: "100%",
+                        height: 48,
+                        color: "#077E86",
+                        background: "unset",
+                        border: "unset",
+                      }}
+                      onClick={showCheckboxesSubAccount}
+                      className="text-end"
+                    >
+                      Lihat daftar Sub Account{" "}
+                      <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                    </button>
+                  </div>
+                )}
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={2}></Col>
+              <Col className="ms-5">
+                {
+                  subAccount.length >= 2 ?
+                  <div style={{ color: "#888888", fontSize: 12 }} className="mb-4">
+                      <img src={noteIconGrey} className="me-2" alt="icon notice" />
+                      Maksimal 2 akun untuk ditambahkan.
+                  </div> : ""
+                }
+              </Col>
+            </Row>
+
+            
             {expandedSubAcc && (
               <div className="div-table pb-4" ref={myRef}>
                 <DataTable

@@ -525,7 +525,7 @@ const ListRiwayatSubAccount = () => {
                             className='datePicker'
                             locale={Locale}
                             format="yyyy-MM-dd"
-                            // initialSettings={{ startDate: oneMonthAgo, endDate: currentDate }}
+                            defaultCalendarValue={[new Date(`${oneMonthAgo}`), new Date(`${currentDate}`)]}
                         />
                     </Col>
                 </Row>
@@ -545,9 +545,12 @@ const ListRiwayatSubAccount = () => {
                         </Row>
                     </Col>
                 </Row>
-                <div className='mt-3 mb-5'>
-                    <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransfer, inputHandle.idReff, inputHandle.fiturTransaksi, inputHandle.namaPartner, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer)} className="export-span">Export</Link>
-                </div>
+                {
+                    dataRiwayatTransfer.length !== 0 && 
+                    <div className='mt-3 mb-5'>
+                        <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransfer, inputHandle.idReff, inputHandle.fiturTransaksi, inputHandle.namaPartner, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer)} className="export-span">Export</Link>
+                    </div>
+                }
                 <div className="div-table mt-4 pb-4">
                     <DataTable
                         columns={user_role === "102" ? columnsPartner : columnsAdmin}
