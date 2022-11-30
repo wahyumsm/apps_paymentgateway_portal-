@@ -68,6 +68,8 @@ function SaldoPartner() {
     const [pageNumberRiwayatAlokasiSaldo, setPageNumberRiwayatAlokasiSaldo] = useState({})
     const [isFilterHistory, setIsFilterHistory] = useState(false)
     const [isSorting, setIsSorting] = useState(false)
+    const [namaPartnerAlokasiSaldo, setNamaPartnerAlokasiSaldo] = useState("")
+    const [statusRiwayatAlokasiSaldo, setStatusRiwayatAlokasiSaldo] = useState([])
 
 
     const startColorNumber = (money) => {  
@@ -137,7 +139,7 @@ function SaldoPartner() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const listRiwayat = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
+            const listRiwayat = await axios.post(BaseURL + "/Report/HistoryTopUpPartnerFilter", { data: dataParams }, { headers: headers })
             if (listRiwayat.data.response_code === 200 && listRiwayat.status === 200 && listRiwayat.data.response_new_token.length === 0) {
                 listRiwayat.data.response_data.results = listRiwayat.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberRiwayatTopUp(listRiwayat.data.response_data)
@@ -160,24 +162,25 @@ function SaldoPartner() {
     async function getDisbursementChannel() {
         try {
             const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{ "fitur_id": "102" }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const disbursementChannel = await axios.post(BaseURL + "/Partner/ListDisburseChannel", { data: "" }, { headers: headers })
+            const disbursementChannel = await axios.post(BaseURL + "/PaymentLink/GetMetodePembayaran", { data: dataParams }, { headers: headers })
             // console.log(disbursementChannel, 'disbursement channel');
             if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length === 0) {
                 setDisbursementChannel(disbursementChannel.data.response_data)
                 let payTypeId = []
-                disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.mpaytype_id)))
+                disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.payment_id)))
                 historyAlokasiSaldo(1, true, isDesc.orderField, payTypeId)
             } else if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length !== 0) {
                 setUserSession(disbursementChannel.data.response_new_token)
                 setDisbursementChannel(disbursementChannel.data.response_data)
                 let payTypeId = []
-                disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.mpaytype_id)))
+                disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.payment_id)))
                 historyAlokasiSaldo(1, true, isDesc.orderField, payTypeId)
-    }
+            }
         } catch (error) {
             // console.log(error);
         }
@@ -199,22 +202,12 @@ function SaldoPartner() {
                 orderField = "mstatus_name"
             }
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{
-                "date_from": "",
-                "date_to": "",
-                "dateID": 5,
-                "page": ${(currentPage === 0) ? 1 : currentPage},
-                "row_per_page": 10,
-                "order_id": ${isDescending},
-                "order_field": "${orderField}",
-                "statusID": [ "1", "2" ],
-                "paytypeID": [${payTypeId}]
-            }`)
+            const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 5, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2" ], "paytypeID": [${payTypeId}] }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const ballanceAllocation = await axios.post(BaseURL + "/Partner/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+            const ballanceAllocation = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
             if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length === 0) {
                 ballanceAllocation.data.response_data.results = ballanceAllocation.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberRiwayatAlokasiSaldo(ballanceAllocation.data.response_data)
@@ -236,22 +229,34 @@ function SaldoPartner() {
         }
     }
     
-    async function filterHistoryAlokasiSaldo(currentPage, dateId, dateRange, payTypeId, isDescending, orderField) {
+    async function filterHistoryAlokasiSaldo(currentPage, dateId, dateRange, payTypeId, isDescending, orderField, partnerId, statusId) {
         try {
             setIsFilterHistory(true)
             setPendingAlokasiSaldo(true)
-            // console.log(disbursementChannel, 'ini disburchannel dari luar');
+            console.log(currentPage, 'currentPage');
+            console.log(dateId, 'dateId');
+            console.log(dateRange, 'dateRange');
+            console.log(payTypeId, 'payTypeId');
+            console.log(isDescending, 'isDescending');
+            console.log(orderField, 'orderField');
+            console.log(partnerId, 'partnerId');
+            console.log(statusId, 'statusId');
+            console.log('ini di dalam funct filter alokasi saldo 1');
             let newPayTypeId = []
             if (payTypeId === 0) {
-                disbursementChannel.forEach(item => newPayTypeId.push(item.mpaytype_id))
+                disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
             }
+            console.log('ini di dalam funct filter alokasi saldo 2');
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${(isDescending === undefined || isDescending) ? 0 : 1}, "order_field": "${(orderField === undefined) ? "tpartballchannel_crtdt" : orderField}", "statusID": [ "1", "2" ], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
+            console.log('ini di dalam funct filter alokasi saldo 3');
+            const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${(isDescending === undefined || isDescending) ? 0 : 1}, "order_field": "${(orderField === undefined) ? "tpartballchannel_crtdt" : orderField}", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const filterHistory = await axios.post(BaseURL + "/Partner/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+            console.log('ini di dalam funct filter alokasi saldo 4');
+            const filterHistory = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+            console.log(filterHistory, 'filter alokasi saldo');
             if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length === 0) {
                 filterHistory.data.response_data.results = filterHistory.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberRiwayatAlokasiSaldo(filterHistory.data.response_data)
@@ -273,11 +278,11 @@ function SaldoPartner() {
         }
     }
     
-    function sortingHandle(sortColumn, value, isFilter, dateId, dateRange, payTypeId, channelDisburse) {
+    function sortingHandle(sortColumn, value, isFilter, dateId, dateRange, payTypeId, channelDisburse, partnerId, statusId) {
         setIsSorting(true)
         let newPayTypeId = []
         if (payTypeId === 0) {
-            channelDisburse.forEach(item => newPayTypeId.push(item.mpaytype_id))
+            channelDisburse.forEach(item => newPayTypeId.push(item.payment_id))
         }
         if (sortColumn === "tpartballchannel_crtdt" && !isFilter) {
             setIsDesc({
@@ -294,7 +299,7 @@ function SaldoPartner() {
                 orderIdTanggal: value,
                 orderIdStatus: true
             })
-            filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn)
+            filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
         } else if (sortColumn === "mstatus_name" && !isFilter) {
             setIsDesc({
                 ...isDesc,
@@ -310,7 +315,7 @@ function SaldoPartner() {
                 orderIdTanggal: true,
                 orderIdStatus: value
             })
-            filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn)
+            filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
         }
     }
     
@@ -368,14 +373,14 @@ function SaldoPartner() {
         listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, inputHandle.namaPartnerRiwayatTopUp, isFilterTopUp)
     }
     
-    function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse) {
+    function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse, partnerId, statusId) {
         setActivePageRiwayatAlokasiSaldo(page)
         let newPayTypeId = []
         if (payTypeId === 0) {
-            channelDisburse.forEach(item => newPayTypeId.push(item.mpaytype_id))
+            channelDisburse.forEach(item => newPayTypeId.push(item.payment_id))
         }
         if (isFilter) {
-            filterHistoryAlokasiSaldo(page, detId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField)
+            filterHistoryAlokasiSaldo(page, detId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField, partnerId, statusId)
         } else if (!isFilter) {
             historyAlokasiSaldo(page, (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField, (payTypeId === 0 ? newPayTypeId : payTypeId))
         }
@@ -395,6 +400,8 @@ function SaldoPartner() {
     }
     
     function resetButtonHandleAlokasiSaldo() {
+        setNamaPartnerAlokasiSaldo("")
+        setStatusRiwayatAlokasiSaldo([])
         setPeriodeRiwayatAlokasiSaldo(0)
         setDateRangeRiwayatAlokasiSaldo([])
         setTujuanAlokasiSaldo(0)
@@ -478,27 +485,27 @@ function SaldoPartner() {
             selector: row => row.tparttopup_code,
             // sortable: true
             // width: "224px",
-            style: { justifyContent: "center" }
-        },
-        {
-            name: 'Nama Partner',
-            selector: row => row.mpartnerdtl_sub_name,
-            // sortable: true
-            // width: "224px",
-            style: { justifyContent: "center" }
-        },
-        {
-            name: 'Nominal',
-            selector: row => row.tparttopup_trf_amount_rp,
-            style: { justifyContent: "flex-end" },
-            // width: "150px",
-            // sortable: true,
+            // style: { justifyContent: "center" }
         },
         {
             name: 'Tanggal',
             selector: row => row.tparttopup_crtdt_format,
             // width: "224px",
-            style: { justifyContent: "center", },
+            // style: { justifyContent: "center", },
+            // sortable: true,
+        },
+        {
+            name: 'Nama Partner',
+            selector: row => row.mpartnerdtl_sub_name,
+            // sortable: true
+            width: "260px",
+            style: { wordBreak: 'break-word', whiteSpace: 'normal' }
+        },
+        {
+            name: 'Nominal Topup',
+            selector: row => row.tparttopup_trf_amount_rp,
+            style: { justifyContent: "flex-end" },
+            // width: "150px",
             // sortable: true,
         },
         {
@@ -631,13 +638,19 @@ function SaldoPartner() {
         </div>
     );
 
+    console.log(statusRiwayatAlokasiSaldo, 'statusRiwayatAlokasiSaldo');
+    console.log(tujuanAlokasiSaldo, 'tujuanAlokasiSaldo');
+
     return (
         <>
             <div className="content-page mt-6">
-                <span className='breadcrumbs-span'>{(user_role === "102") ? "Beranda" : <Link to={"/"}>Beranda</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Top Up</span>
+                <span className='breadcrumbs-span'>{(user_role === "102") ? "Beranda" : <Link to={"/"}>Beranda</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Saldo Partner</span>
+                <div className='head-title'>
+                    <h2 className="h5 mb-3 mt-4">Riwayat Saldo Partner</h2>
+                </div>
                 <div className='main-content'>
                     <div className='riwayat-settlement-div mt-4'>
-                        <span className='mt-4' style={{fontWeight: 600}}>Riwayat Top Up</span>
+                        <span className='mt-4' style={{fontWeight: 600}}>Riwayat Topup Partner</span>
                         <div className='base-content mt-3'>
                             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                             {/* untuk admin */}
@@ -747,13 +760,47 @@ function SaldoPartner() {
                         </div>
                     </div>
                 </div>
-                <div className='mt-4'>
-                    <span className='mt-4' style={{fontWeight: 600}}>Riwayat Alokasi Saldo</span>
+                <div className='mt-5'>
+                    <span className='mt-4' style={{fontWeight: 600}}>Riwayat Alokasi Partner</span>
                     <div className='base-content mt-2' style={{ padding: "20px 40px" }}>
                         <span style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-4'>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span>Nama Partner</span>
+                                <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez ms-4" value={namaPartnerAlokasiSaldo} onChange={(e) => setNamaPartnerAlokasiSaldo(e.target.value)}>
+                                    <option defaultChecked disabled value="">Pilih Nama Partner</option>
+                                    {
+                                        dataListPartner.map((item, index) => {
+                                            return (
+                                                <option key={index} value={item.partner_id}>{item.nama_perusahaan}</option>
+                                            )
+                                        })
+                                    }
+                                </Form.Select>
+                            </Col>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "32%" }}>
+                                <span>Tujuan Alokasi</span>
+                                <Form.Select name="tujuanAlokasiSaldo" className='input-text-ez' style={{ display: "inline" }} value={tujuanAlokasiSaldo} onChange={(e) => setTujuanAlokasiSaldo(e.target.value)}>
+                                    <option defaultChecked disabled value={0}>Pilih Tujuan</option>
+                                    {
+                                        disbursementChannel.map(item => (
+                                            <option key={item.payment_id} value={item.payment_id}>{item.payment_name}</option>
+                                        ))
+                                    }
+                                </Form.Select>
+                            </Col>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span>Status</span>
+                                <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={statusRiwayatAlokasiSaldo} onChange={(e) => setStatusRiwayatAlokasiSaldo([e.target.value])}>
+                                    <option defaultChecked disabled value="">Pilih Status</option>
+                                    <option value={"2"}>Berhasil</option>
+                                    <option value={"1"}>In Progress</option>
+                                </Form.Select>
+                            </Col>
+                        </Row>
+                        <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
-                                <span className='me-1'>Periode*</span>
+                                <span className='me-4'>Periode*</span>
                                 <Form.Select name='periodeRiwayatAlokasiSaldo' className="input-text-ez" value={(periodeRiwayatAlokasiSaldo !== 0) ? periodeRiwayatAlokasiSaldo : 0} onChange={(e) => handleChangePeriodeRiwayatAlokasiSaldo(e)}>
                                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                                     <option value={2}>Hari Ini</option>
@@ -764,20 +811,7 @@ function SaldoPartner() {
                                     <option value={7}>Pilih Range Tanggal</option>
                                 </Form.Select>
                             </Col>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "32%" }}>
-                                <span>Tujuan Alokasi</span>
-                                <Form.Select name="tujuanAlokasiSaldo" className='input-text-ez' style={{ display: "inline" }} value={tujuanAlokasiSaldo} onChange={(e) => setTujuanAlokasiSaldo(e.target.value)}>
-                                    <option defaultChecked disabled value={0}>Pilih Status</option>
-                                    {
-                                        disbursementChannel.map(item => (
-                                            <option key={item.mpaytype_id} value={item.mpaytype_id}>{item.mpaytype_name}</option>
-                                        ))
-                                    }
-                                </Form.Select>
-                            </Col>
-                        </Row>
-                        <Row className='mt-4'>
-                            <Col xs={4} className="d-flex justify-content-center align-items-center" style={{ marginLeft: 7 }}>
+                            <Col xs={1} className="d-flex justify-content-center align-items-center" style={{ marginLeft: 7 }}>
                                 <div className="my-2" style={{ display: showDateRiwayatAlokasiSaldo }}>
                                     <DateRangePicker
                                         onChange={pickDateRiwayatAlokasiSaldo}
@@ -787,12 +821,12 @@ function SaldoPartner() {
                                 </div>
                             </Col>
                         </Row>
-                        <Row className='mt-2'>
+                        <Row className='mt-4'>
                             <Col xs={5}>
                                 <Row>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterHistoryAlokasiSaldo(1, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo)}
+                                            onClick={() => filterHistoryAlokasiSaldo(1, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, (isDesc.orderField === "tpartballchannel_crtdt") ? isDesc.orderIdTanggal : isDesc.orderIdStatus, isDesc.orderField, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)}
                                             className={(periodeRiwayatAlokasiSaldo !== 0 || (periodeRiwayatAlokasiSaldo !== 0 && dateRangeRiwayatAlokasiSaldo.length !== 0)) ? "btn-ez-on" : "btn-ez"}
                                             disabled={(periodeRiwayatAlokasiSaldo === 0 || (periodeRiwayatAlokasiSaldo === 0 && dateRangeRiwayatAlokasiSaldo.length === 0))}
                                         >
@@ -819,8 +853,9 @@ function SaldoPartner() {
                                     <thead style={{ height: 50 }}>
                                         <tr>
                                             <th style={{ width: 55, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>No</th>
-                                            <th onClick={() => sortingHandle("tpartballchannel_crtdt", !isDesc.orderIdTanggal, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel)} style={{ width: 155, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
-                                                Tanggal Alokasi
+                                            <th style={{ width: 155, background: "#F3F4F5" }}>Nama Partner</th>
+                                            <th onClick={() => sortingHandle("tpartballchannel_crtdt", !isDesc.orderIdTanggal, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)} style={{ width: 155, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
+                                                Tanggal
                                                 {
                                                     isDesc.orderIdTanggal ?
                                                     <span><FontAwesomeIcon icon={faSortDown} size="lg" className="ms-2" /></span> :
@@ -831,7 +866,7 @@ function SaldoPartner() {
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Total Alokasi</th>
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Saldo Awal Tersedia</th>
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Sisa Saldo Tersedia</th>
-                                            <th onClick={() => sortingHandle("mstatus_name", !isDesc.orderIdStatus, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel)} style={{ width: 155, textAlign: "center", background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
+                                            <th onClick={() => sortingHandle("mstatus_name", !isDesc.orderIdStatus, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)} style={{ width: 155, textAlign: "center", background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
                                                 Status
                                                 {
                                                     isDesc.orderIdStatus ?
@@ -847,6 +882,7 @@ function SaldoPartner() {
                                                 listRiwayatAlokasiSaldo.map(item => (
                                                     <tr key={item.tpartballchannel_id} style={{ borderBottom: "hidden", fontSize: 14 }}>
                                                         <td style={{ width: 55, textAlign: "center" }}>{item.number}</td>
+                                                        <td style={{ width: 155 }}>{item.mpartner_name}</td>
                                                         <td style={{ width: 155, textAlign: "center" }}>{item.tpartballchannel_crtdt_format}</td>
                                                         <td style={{ width: 155, textAlign: "center" }}>{item.mpaytype_name}</td>
                                                         <td style={{ paddingRight: 20, width: 155, textAlign: "end" }}>{item.tpartballchannel_amount_rp}</td>
@@ -899,7 +935,7 @@ function SaldoPartner() {
                                     pageRangeDisplayed={5}
                                     itemClass="page-item"
                                     linkClass="page-link"
-                                    onChange={(e) => handlePageChangeAlokasiSaldo(e, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, isDesc, disbursementChannel)}
+                                    onChange={(e) => handlePageChangeAlokasiSaldo(e, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, isDesc, disbursementChannel, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)}
                                 />
                             </div>
                         }
