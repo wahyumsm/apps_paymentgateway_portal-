@@ -498,7 +498,8 @@ function SaldoPartner() {
             name: 'Nama Partner',
             selector: row => row.mpartnerdtl_sub_name,
             // sortable: true
-            width: "260px",
+            // width: "260px",
+            wrap: true,
             style: { wordBreak: 'break-word', whiteSpace: 'normal' }
         },
         {
@@ -638,9 +639,6 @@ function SaldoPartner() {
         </div>
     );
 
-    console.log(statusRiwayatAlokasiSaldo, 'statusRiwayatAlokasiSaldo');
-    console.log(tujuanAlokasiSaldo, 'tujuanAlokasiSaldo');
-
     return (
         <>
             <div className="content-page mt-6">
@@ -736,7 +734,7 @@ function SaldoPartner() {
                                     <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.namaPartnerRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 0)} className="export-span">Export</Link>
                                 </div>
                             }
-                            <div className="div-table mt-4 pb-4">
+                            <div className="div-table mt-4 pb-5">
                                 <DataTable
                                     columns={columnsRiwayatTopUpAdmin}
                                     data={listRiwayatTopUpPartner}
@@ -745,22 +743,25 @@ function SaldoPartner() {
                                     progressComponent={<CustomLoader />}
                                 />
                             </div>
-                            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageRiwayatTopUp}</div>
-                                <Pagination
-                                    activePage={activePageRiwayatTopUp}
-                                    itemsCountPerPage={pageNumberRiwayatTopUp.row_per_page}
-                                    totalItemsCount={(pageNumberRiwayatTopUp.row_per_page*pageNumberRiwayatTopUp.max_page)}
-                                    pageRangeDisplayed={5}
-                                    itemClass="page-item"
-                                    linkClass="page-link"
-                                    onChange={handlePageChangeTopUp}
-                                />
-                            </div>
+                            {
+                                listRiwayatTopUpPartner.length !== 0 &&
+                                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageRiwayatTopUp}</div>
+                                    <Pagination
+                                        activePage={activePageRiwayatTopUp}
+                                        itemsCountPerPage={pageNumberRiwayatTopUp.row_per_page}
+                                        totalItemsCount={(pageNumberRiwayatTopUp.row_per_page*pageNumberRiwayatTopUp.max_page)}
+                                        pageRangeDisplayed={5}
+                                        itemClass="page-item"
+                                        linkClass="page-link"
+                                        onChange={handlePageChangeTopUp}
+                                    />
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
-                <div className='mt-5'>
+                <div className='mt-5 mb-5'>
                     <span className='mt-4' style={{fontWeight: 600}}>Riwayat Alokasi Partner</span>
                     <div className='base-content mt-2' style={{ padding: "20px 40px" }}>
                         <span style={{fontWeight: 600}}>Filter</span>
@@ -800,7 +801,7 @@ function SaldoPartner() {
                         </Row>
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
-                                <span className='me-4'>Periode*</span>
+                                <span style={{ marginRight: 42 }}>Periode*</span>
                                 <Form.Select name='periodeRiwayatAlokasiSaldo' className="input-text-ez" value={(periodeRiwayatAlokasiSaldo !== 0) ? periodeRiwayatAlokasiSaldo : 0} onChange={(e) => handleChangePeriodeRiwayatAlokasiSaldo(e)}>
                                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                                     <option value={2}>Hari Ini</option>
@@ -811,7 +812,7 @@ function SaldoPartner() {
                                     <option value={7}>Pilih Range Tanggal</option>
                                 </Form.Select>
                             </Col>
-                            <Col xs={1} className="d-flex justify-content-center align-items-center" style={{ marginLeft: 7 }}>
+                            <Col xs={1} className="d-flex justify-content-center align-items-center" style={{ marginLeft: 30 }}>
                                 <div className="my-2" style={{ display: showDateRiwayatAlokasiSaldo }}>
                                     <DateRangePicker
                                         onChange={pickDateRiwayatAlokasiSaldo}
