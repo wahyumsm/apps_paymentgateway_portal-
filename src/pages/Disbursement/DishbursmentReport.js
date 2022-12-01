@@ -366,14 +366,14 @@ function DisbursementReport() {
             name: 'Nominal Disbursement',
             selector: row => convertToRupiah(row.tdishburse_amount),
             // sortable: true,
-            // width: "224px",
+            width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Total Disbursement',
             selector: row => convertToRupiah(row.tdishburse_total_amount),
             // sortable: true,
-            // width: "224px",
+            width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
@@ -426,26 +426,26 @@ function DisbursementReport() {
                 display: 'flex',
                 justifyContent: 'flex-start',
                 '&:not(:last-of-type)': {
-                    borderRightStyle: 'solid',
-                    borderRightWidth: '1px',
-                    borderRightColor: defaultThemes.default.divider.default,
+                    borderRightStyle: user_role !== "102" && 'solid',
+                    borderRightWidth: user_role !== "102" && '1px',
+                    borderRightColor: user_role !== "102" && defaultThemes.default.divider.default,
                 },
             },
         },
         cells: {
             style: {
                 '&:not(:last-of-type)': {
-                    borderRightStyle: 'solid',
-                    borderRightWidth: '1px',
-                    borderRightColor: defaultThemes.default.divider.default,
+                    borderRightStyle: user_role !== "102" && 'solid',
+                    borderRightWidth: user_role !== "102" && '1px',
+                    borderRightColor: user_role !== "102" && defaultThemes.default.divider.default,
                 },
             },
         },
         headRow: {
             style: {
-                borderTopStyle: 'solid',
-                borderTopWidth: '1px',
-                borderTopColor: defaultThemes.default.divider.default,
+                borderTopStyle: user_role !== "102" && 'solid',
+                borderTopWidth: user_role !== "102" && '1px',
+                borderTopColor: user_role !== "102" && defaultThemes.default.divider.default,
             },
         },
     };
