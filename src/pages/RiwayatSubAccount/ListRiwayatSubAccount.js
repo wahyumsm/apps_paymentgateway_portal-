@@ -56,7 +56,7 @@ const ListRiwayatSubAccount = () => {
     })
     const { allowedMaxDays, allowedRange, combine } = DateRangePicker;
     const currentDate = new Date().toISOString().split('T')[0]
-    const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
+    const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate() + 1).toISOString().split('T')[0]
     
     const Locale = {
         sunday: 'Min',
