@@ -429,12 +429,14 @@ function RiwayatTransaksi() {
             name: 'Partner Trans ID',
             selector: row => row.partner_transid,
             // sortable: true,          
+            wrap: true,
             width: "150px",
         },
         {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             // sortable: true
+            wrap: true,
             width: "150px",
         },
         {
@@ -442,6 +444,7 @@ function RiwayatTransaksi() {
             selector: row => row.mpartnerdtl_sub_name,
             // sortable: true,
             // width: "175px"
+            wrap: true,
             width: "150px",
         },
         {
@@ -525,6 +528,7 @@ function RiwayatTransaksi() {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             width: "224px",
+            wrap: true,
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
             // sortable: true,
         },

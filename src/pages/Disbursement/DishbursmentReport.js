@@ -266,6 +266,7 @@ function DisbursementReport() {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             width: "224px",
+            wrap: true,
             // sortable: true,
         },
         {

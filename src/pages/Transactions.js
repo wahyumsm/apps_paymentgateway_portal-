@@ -528,17 +528,20 @@ export default () => {
     {
         name: 'Partner Trans ID',
         selector: row => row.partner_trx_id,
+        wrap: true,
         width: "160px"
     },
     {
       name: 'Nama Agen',
       selector: row => row.name,
+        wrap: true,
       style: { paddingRight: 'unset' },
       // width: "160px"
     },
     {
       name: 'Nama Bank',
       selector: row => row.bank_name,
+        wrap: true,
       style: { paddingRight: 'unset' },
       // width: "145px"
     },

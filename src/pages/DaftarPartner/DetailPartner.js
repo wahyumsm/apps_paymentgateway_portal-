@@ -132,22 +132,27 @@ function DetailPartner() {
         {
           name: 'ID Agen',
           selector: row => row.agen_id,
+          wrap: true,
           sortable: true,
+          width: "150px"
         },
         {
           name: 'Nama Agen',
           selector: row => row.agen_name,
+          wrap: true,
           sortable: true,
           width: "150px"
         },
         {
           name: 'Email',
           selector: row => row.agen_email,
+          wrap: true,
           sortable: true,
         },
         {
           name: 'No Hp',
           selector: row => row.agen_mobile,
+          wrap: true,
           sortable: true,
         },
         {

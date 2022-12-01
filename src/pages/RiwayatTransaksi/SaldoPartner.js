@@ -202,7 +202,7 @@ function SaldoPartner() {
                 orderField = "mstatus_name"
             }
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 5, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2" ], "paytypeID": [${payTypeId}] }`)
+            const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2" ], "paytypeID": [${payTypeId}] }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -466,9 +466,10 @@ function SaldoPartner() {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role !== "102") {
-            listPartner()
+        if (user_role === "102") {
+            history.push('/404');
         }
+        listPartner()
         listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false)
         getDisbursementChannel()
     }, [access_token, user_role])
