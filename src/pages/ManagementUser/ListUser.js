@@ -111,14 +111,17 @@ function ListUser () {
     {
         name: 'Role',
         selector: row => row.role_desc,
+        wrap: true,
     },
     {
         name: 'Email',
         selector: row => row.email,
+        wrap: true,
     },
     {
         name: 'Nama',
         selector: row => row.name,
+        wrap: true,
         sortable: true
     },
     {

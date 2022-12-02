@@ -233,30 +233,17 @@ function SaldoPartner() {
         try {
             setIsFilterHistory(true)
             setPendingAlokasiSaldo(true)
-            console.log(currentPage, 'currentPage');
-            console.log(dateId, 'dateId');
-            console.log(dateRange, 'dateRange');
-            console.log(payTypeId, 'payTypeId');
-            console.log(isDescending, 'isDescending');
-            console.log(orderField, 'orderField');
-            console.log(partnerId, 'partnerId');
-            console.log(statusId, 'statusId');
-            console.log('ini di dalam funct filter alokasi saldo 1');
             let newPayTypeId = []
             if (payTypeId === 0) {
                 disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
             }
-            console.log('ini di dalam funct filter alokasi saldo 2');
             const auth = "Bearer " + getToken()
-            console.log('ini di dalam funct filter alokasi saldo 3');
             const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${(isDescending === undefined || isDescending) ? 0 : 1}, "order_field": "${(orderField === undefined) ? "tpartballchannel_crtdt" : orderField}", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            console.log('ini di dalam funct filter alokasi saldo 4');
             const filterHistory = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
-            console.log(filterHistory, 'filter alokasi saldo');
             if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length === 0) {
                 filterHistory.data.response_data.results = filterHistory.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberRiwayatAlokasiSaldo(filterHistory.data.response_data)
