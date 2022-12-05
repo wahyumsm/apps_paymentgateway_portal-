@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertToCurrency, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 
@@ -197,7 +197,7 @@ function DetailAgen() {
                         </Col>
                         <Col xs={9}>
                             <Form.Control
-                                value={convertToCurrency(detailAgen.nominal_topup === null ? 0 : detailAgen.nominal_topup)}
+                                value={(detailAgen.nominal_topup === null ? 0 : detailAgen.nominal_topup)}
                                 type='text'
                                 disabled
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}

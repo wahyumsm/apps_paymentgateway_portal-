@@ -916,7 +916,7 @@ function AlokasiSaldo() {
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => resetButtonHandle()}
-                                            className={(periodeRiwayatAlokasiSaldo !== 0 || (periodeRiwayatAlokasiSaldo !== 0 && dateRangeRiwayatAlokasiSaldo.length !== 0)) ? "btn-reset" : "btn-ez"}
+                                            className={(periodeRiwayatAlokasiSaldo !== 0 || (periodeRiwayatAlokasiSaldo !== 0 && dateRangeRiwayatAlokasiSaldo.length !== 0)) ? "btn-reset" : "btn-ez-reset"}
                                             disabled={(periodeRiwayatAlokasiSaldo === 0 || (periodeRiwayatAlokasiSaldo === 0 && dateRangeRiwayatAlokasiSaldo.length === 0))}
                                         >
                                             Atur Ulang

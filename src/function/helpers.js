@@ -34,23 +34,12 @@ export const removeUserSession = () => {
   sessionStorage.removeItem("role");
 };
 
-export function convertToRupiah(money, fractionDigits) {
+export function convertToRupiah(money, isRupiah, fractionDigits) {
   return new Intl.NumberFormat("id-ID", {
-    style: "currency",
+    style: isRupiah === undefined || isRupiah === true ? "currency" : "decimal",
     currency: "IDR",
     maximumFractionDigits: fractionDigits === undefined ? 0 : fractionDigits,
   }).format(money);
-}
-
-export function convertToCurrency(money) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "decimal",
-    currency: "IDR",
-    maximumFractionDigits: 2,
-    currencyDisplay: "symbol",
-  })
-    .format(money)
-    .replace(/\B(?=(\d{4})+(?!\d))/g, ".");
 }
 
 export const convertFormatNumber = (num) => {
@@ -62,15 +51,6 @@ export const convertFormatNumber = (num) => {
     .split("", rupiah.length - 1)
     .reverse()
     .join("");
-};
-
-export const convertFormatNumberPartner = (money) => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 2,
-  })
-    .format(money)
 };
 
 export function errorCatch(statusCode) {

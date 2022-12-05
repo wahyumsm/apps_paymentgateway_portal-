@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import encryptData from "../../function/encryptData";
 import {
   BaseURL,
-  convertFormatNumberPartner,
+  convertToRupiah,
   errorCatch,
   getRole,
   getToken,
@@ -179,11 +179,11 @@ function TambahPartner() {
     },
     {
       name: "Fee",
-      selector: (row) => convertFormatNumberPartner(row.fee),
+      selector: (row) => convertToRupiah(row.fee, true, 2),
     },
     {
       name: "Settlement Fee",
-      selector: (row) => convertFormatNumberPartner(row.fee_settle),
+      selector: (row) => convertToRupiah(row.fee_settle, true, 2),
       width: "150px",
     },
     {
@@ -977,7 +977,7 @@ function toDashboard() {
                 <Form.Control
                   name="fee"
                   onChange={handleChangeFee}
-                  value={biayaHandle.fee.length === 0 ? "" : convertFormatNumberPartner((biayaHandle.fee))}
+                  value={biayaHandle.fee.length === 0 ? "" : convertToRupiah(biayaHandle.fee, true, 2)}
                   placeholder="Rp. 0"
                   type="text"
                   style={{
@@ -1029,7 +1029,7 @@ function toDashboard() {
                 <Form.Control
                   name="settlementFee"
                   onChange={handleChangeSettlement}
-                  value={(biayaHandle.settlementFee.length === 0) ? "" : convertFormatNumberPartner((biayaHandle.settlementFee))}
+                  value={(biayaHandle.settlementFee.length === 0) ? "" : convertToRupiah(biayaHandle.settlementFee, true, 2)}
                   placeholder="Rp. 0"
                   type="text"
                   style={{

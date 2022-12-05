@@ -84,12 +84,14 @@ function DaftarAgen() {
     {
       name: 'Nama Agen',
       selector: row => row.agen_name,
+      wrap: true,
       sortable: true,
       width: '140px'
     },
     {
       name: 'Email',
       selector: row => row.agen_email,
+      wrap: true,
     },
     {
       name: 'No Hp',

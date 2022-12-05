@@ -98,12 +98,14 @@ function DaftarPartner() {
         {
             name: 'Nama Perusahaan',
             selector: row => row.nama_perusahaan,
+            wrap: true,
             sortable: true,
             width: "230px"
         },
         {
             name: 'Email Perusahaan',
             selector: row => row.email_perusahaan ? row.email_perusahaan : <><div>-</div></>,
+            wrap: true,
             sortable: true
         },
         {

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import SimpleBar from 'simplebar-react';
 import { NavLink, useHistory, useLocation } from "react-router-dom";
@@ -11,11 +10,6 @@ import './css/global.css'
 
 import { Routes } from "../routes";
 import EzeeLogo from "../assets/icon/Logo_Ezeelink.svg";
-import BerandaIcon from "../assets/icon/beranda_icon.svg";
-import LaporanIcon from "../assets/icon/laporan_icon.svg";
-import RiwayatIcon from "../assets/icon/riwayat_icon.svg";
-import DaftarAgenIcon from "../assets/icon/daftaragen_icon.svg";
-import DaftarPartnerIcon from "../assets/icon/daftarpartner_icon.svg";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
@@ -141,7 +135,7 @@ export default (props = {}) => {
                       // image={(item.label === "Dashboard") ? BerandaIcon : (item.label === "Report") ? LaporanIcon : (item.label === "Daftar Agen") ? DaftarAgenIcon : ""}
                       image={item.icon}
                       // link={Routes.Transactions.path}
-                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 16) ? Routes.RiwayatTransaksi.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 21) ? Routes.DisbursementReport.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 20) ? Routes.ListPayment.path : ""}
+                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 20) ? Routes.ListPayment.path : (item.id === 21) ? Routes.DisbursementReport.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 25) ? "" : ""}
                     /> :
                     <CollapsableNavItem eventKey={item.label} key={item.id} title={item.label} image={item.icon}>
                       {
@@ -153,7 +147,7 @@ export default (props = {}) => {
                               title={item2.label}
                               // icon={faAngleRight}
                               image={item2.icon}
-                              link={(item2.id === 1701) ? Routes.NotFound.path : (item2.id === 1702) ? Routes.NotFound.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : ""}
+                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? "" : (item2.id === 2402) ? "" : (item2.id === 2403) ? "" : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
                             /> :
                             <CollapsableNavItem key={item2.id} title={item2.label} image={item2.icon}>
                               {
@@ -165,7 +159,7 @@ export default (props = {}) => {
                                         title={item3.label}
                                         // icon={faAngleRight}
                                         image={item3.icon}
-                                        link={(item2.id === 170201) ? Routes.NotFound.path : (item2.id === 170202) ? Routes.NotFound.path : ""}
+                                        link={(item2.id === 990201) ? Routes.NotFound.path : (item2.id === 990202) ? Routes.NotFound.path : ""}
                                       />
                                     </div>
                                   )
