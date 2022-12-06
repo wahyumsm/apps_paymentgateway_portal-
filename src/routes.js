@@ -3,7 +3,8 @@ export const Routes = {
     // pages
     DashboardOverview: { path: "/" },
     // DashboardOverview: { path: "/dashboard" },
-    RiwayatTransaksi: { path: "/riwayattransaksi"},
+    RiwayatTransaksi: { path: "/Riwayat/transaksi"},
+    SaldoPartner: { path: "/Riwayat/saldopartner"},
     DetailSettlement: { path: "/detailsettlement/:settlementId"},
     DetailAkun : { path: "/detailakun"},
     Transactions: { path: "/laporan" },

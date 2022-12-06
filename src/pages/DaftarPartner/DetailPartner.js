@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row, Image} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, convertFormatNumberPartner, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
@@ -146,22 +146,27 @@ function DetailPartner() {
         {
           name: 'ID Agen',
           selector: row => row.agen_id,
+          wrap: true,
           sortable: true,
+          width: "150px"
         },
         {
           name: 'Nama Agen',
           selector: row => row.agen_name,
+          wrap: true,
           sortable: true,
           width: "150px"
         },
         {
           name: 'Email',
           selector: row => row.agen_email,
+          wrap: true,
           sortable: true,
         },
         {
           name: 'No Hp',
           selector: row => row.agen_mobile,
+          wrap: true,
           sortable: true,
         },
         {
@@ -298,11 +303,11 @@ function DetailPartner() {
         },
         {
             name: 'Fee',
-            selector: row => convertFormatNumberPartner(row.fee),
+            selector: row => convertToRupiah(row.fee, true, 2),
         },
         {
             name: 'Settlement Fee',
-            selector: row => convertFormatNumberPartner(row.fee_settle),
+            selector: row => convertToRupiah(row.fee_settle, true, 2),
             width: "150px"
         },        
         {
@@ -497,12 +502,12 @@ function DetailPartner() {
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>Fee <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' placeholder={convertFormatNumberPartner(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' placeholder={convertFormatNumberPartner(0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>

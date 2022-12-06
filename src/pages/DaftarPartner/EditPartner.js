@@ -5,7 +5,7 @@ import $ from "jquery";
 import axios from "axios";
 import {
   BaseURL,
-  convertFormatNumberPartner,
+  convertToRupiah,
   errorCatch,
   getRole,
   getToken,
@@ -799,11 +799,11 @@ function EditPartner() {
     },
     {
       name: "Fee",
-      selector: (row) => convertFormatNumberPartner(row.fee),
+      selector: (row) => convertToRupiah(row.fee, true, 2),
     },
     {
       name: "Settlement Fee",
-      selector: (row) => convertFormatNumberPartner(row.fee_settle),
+      selector: (row) => convertToRupiah(row.fee_settle, true, 2),
       width: "150px",
     },
     {
@@ -1593,7 +1593,7 @@ function EditPartner() {
                         type="number"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(biayaHandle.fee === undefined) ? 0 : (inputHandle.fee)}
+                        value={(biayaHandle.fee === undefined) ? 0 : (biayaHandle.fee)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
@@ -1605,7 +1605,7 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeFee}
-                        value={(biayaHandle.fee === undefined) ? convertFormatNumberPartner(0) : convertFormatNumberPartner(biayaHandle.fee)}
+                        value={(biayaHandle.fee.length === 0) ? convertToRupiah(0, true, 2) : convertToRupiah(biayaHandle.fee, true, 2)}
                         name="fee"
                         placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertFee ? "red" : "" }}
@@ -1629,11 +1629,12 @@ function EditPartner() {
                         type="number"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(biayaHandle.settlementFee === undefined) ? (0) : (biayaHandle.settlementFee)}
+                        value={(biayaHandle.settlementFee === undefined) ? 0 : (biayaHandle.settlementFee)}
                         name="settlementFee"
                         placeholder={"Rp 0"}
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
                         onBlur={() => setEditInput(!editInput)}
+                        min={0}
                         onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                       />
                     ) : (
@@ -1641,11 +1642,12 @@ function EditPartner() {
                         type="text"
                         className="input-text-ez"
                         onChange={handleChangeSettle}
-                        value={(biayaHandle.settlementFee === undefined) ? convertFormatNumberPartner(0) : convertFormatNumberPartner(biayaHandle.settlementFee)}
+                        value={(biayaHandle.settlementFee.length === 0) ? convertToRupiah(0, true, 2) : convertToRupiah(biayaHandle.settlementFee, true, 2)}
                         name="settlementFee"
-                        placeholder={"Rp 0"}
+                        placeholder="Rp 0"
                         style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
                         onFocus={() => setEditInput(!editInput)}
+                        min={0}
                       />
                     )}
                     {alertSettlement === true ?

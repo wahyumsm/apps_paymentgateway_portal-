@@ -409,7 +409,8 @@ function RiwayatTransaksi() {
         {
             name: 'No',
             selector: row => row.number,
-            width: "70px"
+            width: "3%",
+            maxWidth: 'fit-content !important'
         },
         {
             name: 'ID Transaksi',
@@ -428,12 +429,14 @@ function RiwayatTransaksi() {
             name: 'Partner Trans ID',
             selector: row => row.partner_transid,
             // sortable: true,          
+            wrap: true,
             width: "150px",
         },
         {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             // sortable: true
+            wrap: true,
             width: "150px",
         },
         {
@@ -441,6 +444,7 @@ function RiwayatTransaksi() {
             selector: row => row.mpartnerdtl_sub_name,
             // sortable: true,
             // width: "175px"
+            wrap: true,
             width: "150px",
         },
         {
@@ -524,6 +528,7 @@ function RiwayatTransaksi() {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             width: "224px",
+            wrap: true,
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
             // sortable: true,
         },
@@ -612,12 +617,14 @@ function RiwayatTransaksi() {
     const customStylesDanaMasuk = {
         headCells: {
             style: {
+                width: 'max-content',
                 backgroundColor: '#F2F2F2',
                 border: '12px',
                 fontWeight: 'bold',
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
+                
             },
         },
         headRow: {
@@ -954,7 +961,7 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Dana Masuk")}
-                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.partnerTransIdDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez"}
+                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.partnerTransIdDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                         disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.partnerTransIdDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                     >
                                         Atur Ulang
@@ -1082,7 +1089,7 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Settlement")}
-                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-reset" : "btn-ez"}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                         disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0}
                                     >
                                         Atur Ulang

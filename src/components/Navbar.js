@@ -39,7 +39,7 @@ import arrowDown from "../assets/img/icons/arrow_down.svg";
 import arrowUp from "../assets/img/icons/arrow_up.svg";
 import circleInfo from "../assets/icon/circle-info.svg"
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertToCurrency, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";

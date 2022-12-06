@@ -22,8 +22,11 @@ function InvoiceVA() {
     const [dataListPartner, setDataListPartner] = useState([])
     const [namaPartner, setNamaPartner] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
+    const [isIgnoreZeroAmount, setIsIgnoreZeroAmount] = useState(false)
+    const [invoiceDate, setInvoiceDate] = useState("")
 
     const SaveAsPDFHandler = () => {
+        generateInvoice(dateRangeSettlement, namaPartner, invoiceDate, isIgnoreZeroAmount, true)
         const dom = document.getElementById('tableInvoice');
         toPng(dom)
             .then((dataUrl) => {
@@ -84,7 +87,7 @@ function InvoiceVA() {
                         // data 10
                         // pdf.addImage(imgData, imageType, 45, 15, (pdfWidth*0.8), (pageHeight*0.8));
                         // data diatas 15
-                        pdf.addImage(imgData, imageType, (dataInvoice.inv_products.length < 11 ? 45 : 80), (dataInvoice.inv_products.length < 9 ? 55 : dataInvoice.inv_products.length < 11 ? 15 : 25), (dataInvoice.inv_products.length <= 10 ? pdfWidth*0.8 : pdfWidth*0.65), (dataInvoice.inv_products.length <= 10 ? pageHeight*0.8 : pageHeight*0.65));
+                        pdf.addImage(imgData, imageType, (dataInvoice.inv_products.length < 11 ? 60 : 80), (dataInvoice.inv_products.length < 9 ? 75 : dataInvoice.inv_products.length < 11 ? 70 : 75), (dataInvoice.inv_products.length <= 10 ? pdfWidth*0.75 : pdfWidth*0.6), (dataInvoice.inv_products.length <= 10 ? pageHeight*0.75 : pageHeight*0.6));
                     }
                     // Output / Save
                     pdf.save(`invoice-settlementva-${dataInvoice.partner_detail.partner_name}-${dataInvoice.inv_date}.pdf`);
@@ -99,11 +102,13 @@ function InvoiceVA() {
         setStateSettlement(null)
         setDateRangeSettlement([])
         setNamaPartner("")
+        setInvoiceDate("")
+        setIsIgnoreZeroAmount(false)
     }
 
-    function handleChangeNamaPartner(e) {
-        setNamaPartner(e.target.value)
-    }
+    // function handleChangeNamaPartner(e) {
+    //     setNamaPartner(e.target.value)
+    // }
 
     function pickDateSettlement(item) {
         setStateSettlement(item)
@@ -112,6 +117,16 @@ function InvoiceVA() {
             setDateRangeSettlement(item)
         }
     }
+
+    // function handleSwitch(e) {
+    //     console.log(e.target.checked, 'e.target');
+    //     setIsIgnoreZeroAmount(e.target.checked)
+    // }
+
+    // function handleInvoiceDate(e) {
+    //     console.log(e.target.value, 'ini date');
+    //     setInvoiceDate(e.target.value)
+    // }
 
     async function listPartner() {
         try {
@@ -134,10 +149,10 @@ function InvoiceVA() {
         }
     }
 
-    async function generateInvoice(dateRange, partnerId) {
+    async function generateInvoice(dateRange, partnerId, dateInv, includeZeroAmount, isSave) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}"}`);
+            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}", "inv_date": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "is_save": ${isSave}}`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -160,15 +175,15 @@ function InvoiceVA() {
         }
     }
 
-    async function downloadPDF(table, dateRange) {
-        // const element = document.getElementById('tableInvoice');
-        let doc = new jsPDF("l", "pt", "a4");
-        doc.html(document.querySelector(table), {
-            callback: function (pdf) {
-                pdf.save(`invoice settlement va ${dateRange[0]} - ${dateRange[1]}.pdf`);
-            },
-        })
-    }
+    // async function downloadPDF(table, dateRange) {
+    //     // const element = document.getElementById('tableInvoice');
+    //     let doc = new jsPDF("l", "pt", "a4");
+    //     doc.html(document.querySelector(table), {
+    //         callback: function (pdf) {
+    //             pdf.save(`invoice settlement va ${dateRange[0]} - ${dateRange[1]}.pdf`);
+    //         },
+    //     })
+    // }
 
     useEffect(() => {
         if (!access_token) {
@@ -180,6 +195,7 @@ function InvoiceVA() {
         listPartner()
     }, [access_token, user_role])
     
+    // console.log(dataInvoice.inv_products);
 
     return (
         <div className="content-page mt-6">
@@ -192,8 +208,8 @@ function InvoiceVA() {
                     <div className='base-content mt-3 mb-3'>
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-2 mb-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span className='me-3'>Periode*</span>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
+                                <span style={{ marginRight: 73 }}>Periode*</span>
                                 <div>
                                     <DateRangePicker 
                                         onChange={pickDateSettlement}
@@ -203,9 +219,9 @@ function InvoiceVA() {
                                     />
                                 </div>
                             </Col>
-                            <Col xs={5} className="d-flex justify-content-start align-items-center">
-                                <span>Nama Partner</span>
-                                <Form.Select name='namaPartner' className="input-text-ez me-4" value={namaPartner} onChange={(e) => handleChangeNamaPartner(e)}>
+                            <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
+                                <span>Nama Partner*</span>
+                                <Form.Select name='namaPartner' className="input-text-ez" style={{ marginLeft: 65 }} value={namaPartner} onChange={(e) => setNamaPartner(e.target.value)}>
                                     <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                     {
                                         dataListPartner.map((item, index) => {
@@ -216,23 +232,43 @@ function InvoiceVA() {
                                     }
                                 </Form.Select>
                             </Col>
-                            <button
-                                onClick={() => generateInvoice(dateRangeSettlement, namaPartner)}
-                                className={(stateSettlement === null || namaPartner.length === 0) ? "btn-off" : "add-button"}
-                                style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                                disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
-                            >
-                                Generate
-                            </button>
-                            <button
-                                onClick={() => resetButtonHandle()}
-                                className={(stateSettlement !== null && namaPartner.length !== 0) ? "btn-reset" : "btn-ez"}
-                                style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                                disabled={(stateSettlement === null || namaPartner.length === 0) ? true : false}
-                            >
-                                Atur Ulang
-                            </button>
                         </Row>
+                        <Row className='mt-2 mb-4'>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
+                                <span className='me-3'>Tanggal Invoice*</span>
+                                <div>
+                                    <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
+                                </div>
+                            </Col>
+                            <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
+                                <span className='me-4'>Include Zero Amount</span>
+                                <div>
+                                    <Form.Check
+                                        type="switch"
+                                        id="custom-switch"
+                                        onChange={(e) => setIsIgnoreZeroAmount(e.target.checked)}
+                                        label={isIgnoreZeroAmount? "Include" : "Exclude"}
+                                        checked={isIgnoreZeroAmount}
+                                    />
+                                </div>
+                            </Col>
+                        </Row>
+                        <button
+                            onClick={() => generateInvoice(dateRangeSettlement, namaPartner, invoiceDate, isIgnoreZeroAmount, false)}
+                            className={(stateSettlement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? "btn-off" : "add-button"}
+                            style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
+                            disabled={(stateSettlement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? true : false}
+                        >
+                            Generate
+                        </button>
+                        <button
+                            onClick={() => resetButtonHandle()}
+                            className={(stateSettlement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                            style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
+                            disabled={(stateSettlement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? false : true}
+                        >
+                            Atur Ulang
+                        </button>
                         <div id='tableInvoice'>
                             <Row style={{ fontSize: 18 }}>
                                 <Col xs={4}></Col>
@@ -250,12 +286,12 @@ function InvoiceVA() {
                                         <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Invoice No</td>
                                             <td style={{ width: 1, borderRight: 'hidden', paddingRight: 10 }}>:</td>
-                                            <td>{dataInvoice.inv_no ? dataInvoice.inv_no : "-"}</td>
+                                            <td style={{ fontWeight: 700 }}>{dataInvoice.inv_no ? dataInvoice.inv_no : "-"}</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Tgl</td>
                                             <td style={{ borderRight: 'hidden' }}>:</td>
-                                            <td>{dataInvoice.inv_date ? dataInvoice.inv_date : "-"}</td>
+                                            <td style={{ fontWeight: 700 }}>{dataInvoice.inv_date ? dataInvoice.inv_date : "-"}</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden' }}>PO No.</td>
@@ -269,12 +305,12 @@ function InvoiceVA() {
                                         <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Nama</td>
                                             <td style={{ borderRight: 'hidden' }}>:</td>
-                                            <td>{dataInvoice.partner_detail ? dataInvoice.partner_detail.partner_name : "-"}</td>
+                                            <td style={{ fontWeight: 700 }}>{dataInvoice.partner_detail ? dataInvoice.partner_detail.partner_name.toUpperCase() : "-"}</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid', width: '50%' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                            <td style={{ paddingRight: 50, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline' }}>{dataInvoice.partner_detail ? dataInvoice.partner_detail.partner_address : "-"}</td>
+                                            <td style={{ paddingRight: 50, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>{dataInvoice.partner_detail ? dataInvoice.partner_detail.partner_address.toUpperCase() : "-"}</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Attn.</td>
@@ -288,12 +324,12 @@ function InvoiceVA() {
                                         <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Nama</td>
                                             <td style={{ borderRight: 'hidden' }}>:</td>
-                                            <td>PT. EZEELINK INDONESIA</td>
+                                            <td style={{ fontWeight: 700 }}>PT. EZEELINK INDONESIA</td>
                                         </tr>
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                            <td style={{ paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline' }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                            <td style={{ paddingRight: 366, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
                                         </tr>
                                     {/* </tbody> */}
                                 </table>
@@ -329,12 +365,12 @@ function InvoiceVA() {
                                             dataInvoice.inv_products ?
                                             dataInvoice.inv_products.map((item, idx) => {
                                                 return (
-                                                    <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden' }}>
-                                                        <td style={{ paddingLeft: 16, width: 155, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
-                                                        <td style={{ borderRight: 'hidden' }}>{ item.prod_name }</td>
+                                                    <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
+                                                        <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
+                                                        <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
                                                         <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, 2) : "Rp 0"}</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, true, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, true, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
                                             }) :
@@ -366,57 +402,57 @@ function InvoiceVA() {
                                             <br />
                                             <br />
                                         </tr>
-                                        <tr style={{ border: '0px hidden transparent' }}>
+                                        <tr style={{ border: '0px hidden transparent',fontWeight: 700 }}>
                                             <td></td>
                                             {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", borderTop: "solid" }}></td> */}
                                             <td></td>
                                             <td>Harga Jual</td>
-                                            <td style={{ textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, 2) : "Rp 0"}</td>
+                                            <td style={{ textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, true, 2).slice(3) : "0"}</td>
                                         </tr>
-                                        <tr>
+                                        <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>-</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0</td>
                                         </tr>
-                                        <tr>
+                                        <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, 2) : "Rp 0"}</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, true, 2).slice(3) : "0"}</td>
                                         </tr>
-                                        <tr>
+                                        <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(dataInvoice.inv_ppn !== undefined) ? convertToRupiah(dataInvoice.inv_ppn, 2) : "Rp 0"}</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(dataInvoice.inv_ppn !== undefined) ? convertToRupiah(dataInvoice.inv_ppn, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", background: "#077E86", color: "#FFFFFF" }}></td> */}
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
-                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>:</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_total !== undefined) ? convertToRupiah(dataInvoice.inv_total, 2) : "Rp 0"}</td>
+                                            <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_total !== undefined) ? convertToRupiah(dataInvoice.inv_total, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
                             </div>
-                            <div style={{ fontSize: 13 }}>
+                            <div style={{ fontSize: 13, fontWeight: 700 }}>
                                 <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                     <tr>
-                                        <td>Terbilang: {(dataInvoice.inv_total !== undefined) ? terbilangVA(dataInvoice.inv_total) + " Rupiah" : "nol Rupiah"}</td>
+                                        <td>Terbilang: {(dataInvoice.inv_total !== undefined) ? terbilangVA(dataInvoice.inv_total).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                     </tr>
                                 </table>
                                 <div>Remark:</div>
-                                <div style={{ textAlign: 'end', marginTop: 50, marginBottom: 25 }}>........................................</div>
+                                <div style={{ textAlign: 'end', marginTop: 150, marginBottom: 25 }}>........................................</div>
                                 <div style={{ display: "flex", justifyContent: "flex-start", borderTop: "solid", fontWeight: 700 }}>Page 1 of 1</div>
                             </div>
                         </div>
