@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import SubAccountComponent from '../../components/SubAccountComponent'
 import { useHistory } from 'react-router-dom'
-import { getRole } from '../../function/helpers'
+import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Button, Col, Form, FormControl, Image, Modal, Row } from '@themesberg/react-bootstrap'
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
@@ -15,6 +15,9 @@ import noteIconGreen from "../../assets/icon/note_icon_green.svg"
 import transferSuccess from "../../assets/icon/berhasiltopup_icon.svg"
 import transferFailed from "../../assets/icon/gagaltopup_icon.svg"
 import OtpInput from 'react-otp-input'
+import axios from 'axios'
+import { useEffect } from 'react'
+import FilterSubAccount from '../../components/FilterSubAccount'
 
 const TransferSubAccount = () => {
     const history = useHistory()
@@ -25,24 +28,74 @@ const TransferSubAccount = () => {
     const [showModalInputCode, setShowModalInputCode] = useState(false)
     const [showTransferBerhasil, setShowTransferBerhasil] = useState(false)
     const [otp, setOtp] = useState('')
+    const [listBank, setListBank] = useState([])
+    const [listAkunPartner, setListAkunPartner] = useState([])
+    const [filterText, setFilterText] = useState('')
+    const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
+    const filterItems = listBank.filter(
+        item => (item.mbank_name && item.mbank_name.toLowerCase().includes(filterText.toLowerCase())) || (item.mbank_code && item.mbank_code.toLowerCase().includes(filterText.toLowerCase()))
+    )
+    const [inputHandle, setInputHandle] = useState({
+        akunPartner: ""
+    })
+
+    const [inputData, setInputData] = useState({
+        bankName: "",
+        bankCode: ""
+    })
+
+    const subHeaderComponentMemo = useMemo(() => {
+        // const handleClear = () => {
+        //     if (filterText) {
+        //         setResetPaginationToggle(!resetPaginationToggle);
+        //         setFilterText('');
+        //     }
+        // };
+        return (
+            <FilterSubAccount filterText={filterText} onFilter={e => setFilterText(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
+        );	}, [filterText, resetPaginationToggle]
+    );
+
+    const handleRowClicked = row => {
+        filterItems.map(item => {
+            if (row.mbank_code === item.mbank_code) {
+                setInputData({
+                    bankName: row.mbank_name,
+                    bankCode: row.mbank_code
+                });
+                setShowBank(false)
+            }
+        });
+    
+    };
+
+    console.log(inputData, "inputData");
 
     function handleChange () {
         setOtp({otp})
     }
 
+    function handleChangeTransfer(e) {
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name]: e.target.value,
+        });
+    }
+
     const columnsBank = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.number,
             width: "80px"
         },
         {
             name: 'Nama Bank',
-            selector: row => row.status,
+            selector: row => row.mbank_name,
         },
         {
             name: 'Kode Bank',
-            selector: row => row.noRekening,
+            selector: row => row.mbank_code,
+            width: "150px"
         },
     ]
 
@@ -84,6 +137,64 @@ const TransferSubAccount = () => {
         setShowTransferBerhasil(true)
     }
 
+    async function getAkunPartner() {
+        try {
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const listPartnerAkun = await axios.post(BaseURL + "/SubAccount/GetAgenAccount", { data: "" }, { headers: headers })
+            if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length === 0) {
+                // listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListAkunPartner(listPartnerAkun.data.response_data)
+                setInputHandle({
+                    ...inputHandle,
+                    akunPartner: listPartnerAkun.data.response_data[0].partner_id,
+                    nomorAkun: listPartnerAkun.data.response_data[0].account_number,
+                    namaAkun: listPartnerAkun.data.response_data[0].account_name,
+                })
+            } else if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length !== 0) {
+                setUserSession(listPartnerAkun.data.response_new_token)
+                // listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListAkunPartner(listPartnerAkun.data.response_data)
+                setInputHandle({
+                    ...inputHandle,
+                    akunPartner: listPartnerAkun.data.response_data[0].partner_id,
+                    nomorAkun: listPartnerAkun.data.response_data[0].account_number,
+                    namaAkun: listPartnerAkun.data.response_data[0].account_name,
+                })
+            }
+        } catch (error) {
+        //   console.log(error)
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function getBankList() {
+        try {
+          const auth = "Bearer " + getToken()
+          const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+          }
+          const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: "" }, { headers: headers })
+          if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
+            bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+            setListBank(bankList.data.response_data)
+          } else if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length !== 0) {
+            setUserSession(bankList.data.response_new_token)
+            bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+            setListBank(bankList.data.response_data)
+          }
+        } catch (error) {
+        //   console.log(error)
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     const customStyles = {
         headCells: {
             style: {
@@ -94,6 +205,11 @@ const TransferSubAccount = () => {
                 fontFamily: 'Exo'
             },
         },
+        cells: {
+            style: {
+                cursor: 'pointer',
+            }
+        },
     };
   
     const CustomLoader = () => (
@@ -102,6 +218,13 @@ const TransferSubAccount = () => {
         <div>Loading...</div>
       </div>
     );
+
+    useEffect(() => {
+        getAkunPartner()
+        getBankList()
+    }, [])
+    
+
     return (
         <div className='main-content mt-5' style={{ padding: "37px 50px" }}>
             <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Transfer</span> 
@@ -111,10 +234,14 @@ const TransferSubAccount = () => {
             {/* <SubAccountComponent/> */}
             <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "50%" }}>
                 <div className="mb-3">Pilih Akun</div>
-                <Form.Select>
-                    <option defaultChecked disabled value="">Pilih Status</option>
-                    <option value={2}>Agung Sejahtera - 517289192816</option>
-                    <option value={1}>Agung Sejahtera - 517289192816</option>
+                <Form.Select name="akunPartner" value={inputHandle.akunPartner} onChange={(e) => handleChangeTransfer(e)}>
+                    {listAkunPartner.map((item, idx) => {
+                        return (
+                            <option key={idx} value={item.partner_id}>
+                                {item.account_name} - {item.account_number}
+                            </option>
+                        )
+                    })}
                 </Form.Select>
             </div>
             <div className="head-title">
@@ -126,7 +253,7 @@ const TransferSubAccount = () => {
                         Pilih Bank <span style={{ color: "red" }}>*</span>
                     </Col>
                     <Col xs={10} className="position-relative d-flex justify-content-between align-items-center" style={{ cursor: "pointer" }} onClick={() => setShowBank(true)}>
-                        <input className="input-text-user" placeholder='Pilih Bank Tujuan'/>
+                        <input style={{ cursor: "pointer", backgroundColor: "#FFFFFF" }} disabled name="bankName" value={inputData.bankName} className="input-text-user" placeholder='Pilih Bank Tujuan'/>
                         <div className="position-absolute right-4" ><img src={chevron} alt="time" /></div>
                     </Col>
                 </Row>
@@ -214,7 +341,7 @@ const TransferSubAccount = () => {
             </div>
 
             {/*Modal Pilih Bank*/}
-            <Modal className="history-modal" size="xs" centered show={showBank} onHide={() => setShowBank(false)}>
+            <Modal className="history-modal bank-list-subakun" size="xs" centered show={showBank} onHide={() => setShowBank(false)}>
                 <Modal.Header className="border-0">
                     <Button
                         className="position-absolute top-0 end-0 m-3"
@@ -228,25 +355,19 @@ const TransferSubAccount = () => {
                     Daftar Bank
                 </Modal.Title>
                 <Modal.Body>
-                    <div style={{ fontFamily: 'Nunito', fontSize: 14}}>Cari Data Bank :</div>
-                    <div className="d-flex justify-content-between align-items-center position-relative mt-2" style={{width: "100%"}}>
-                        <div className="position-absolute left-3 px-1"><img src={search} alt="search" /></div>
-                        <FormControl
-                            className="ps-5"
-                            id="search"
-                            type="text"
-                            placeholder="Masukkan Nama / Kode Bank"
-                            aria-label="Search Input"
-                        />
-                    </div>
                     <div className="div-table mt-3">
                         <DataTable 
                             columns={columnsBank}
-                            data={agenLists}
+                            data={filterItems}
                             customStyles={customStyles}
                             progressComponent={<CustomLoader />}
-                            style={{ overflow: 'scroll' }}
                             highlightOnHover
+                            subHeader
+                            subHeaderComponent={subHeaderComponentMemo}
+                            persistTableHead
+                            onRowClicked={handleRowClicked}
+                            fixedHeader={true}
+                            fixedHeaderScrollHeight="300px"
                         />
                     </div>
                 </Modal.Body>

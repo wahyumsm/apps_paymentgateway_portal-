@@ -75,6 +75,12 @@ export function convertSimpleTimeStamp(time) {
   return `${hours}:${minutes}, ${days}/${months}/${years}`;
 }
 
+export function convertDateAndTimeInfoDanSaldo(time) {
+	const tanggal = new Date(time * 1000).toLocaleDateString("id-ID", {day: "2-digit", month: "long", year: "numeric"})
+	const jam = new Date(time * 1000).toLocaleTimeString("en-US", {hour12: false, hour: "2-digit", minute: "2-digit"})
+	return `${tanggal}, ${jam} WIB`
+}
+
 export const convertDateTimeStamp = (time) => {
   return new Intl.DateTimeFormat("id-ID", {
     dateStyle: "full",

@@ -41,9 +41,9 @@ export const Routes = {
     DetailPayment: {path: "/detailpayment/:paymentId"},
     AddPayment: {path: "/addpayment"},
     CustomDesignPayment: {path: "/custom-design-payment"},
-    ListRiwayatSubAccount: {path: "/riwayat-sub-account"},
-    InfoSaldoDanMutasi: {path: "/info-saldo-dan-mutasi"},
-    TransferSubAccount: {path: "/transfer"},
+    ListRiwayatSubAccount: {path: "/Sub Account Bank/riwayat-sub-account"},
+    InfoSaldoDanMutasi: {path: "/Sub Account Bank/info-saldo-dan-mutasi"},
+    TransferSubAccount: {path: "/Sub Account Bank/transfer"},
 
     // docs
     DocsOverview: { path: "/documentation/overview" },

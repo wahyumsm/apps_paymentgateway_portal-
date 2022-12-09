@@ -1,6 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { getRole } from '../../function/helpers'
+import { BaseURL, convertDateAndTimeInfoDanSaldo, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import SubAccountComponent from '../../components/SubAccountComponent'
 import { Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
@@ -10,11 +10,33 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import { agenLists } from '../../data/tables'
 import { useState } from 'react'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import encryptData from '../../function/encryptData'
+import axios from 'axios'
+import { useEffect } from 'react'
 
 const InfoSaldoDanMutasi = () => {
     const history = useHistory()
     const user_role = getRole()
     const [showSaldoSubAcc, setShowSaldoSubAcc] = useState(false)
+    const [listAkunPartner, setListAkunPartner] = useState([])
+    const [dataAkun, setDataAkun] = useState([])
+    const [inputHandle, setInputHandle] = useState({
+        akunPartner: "",
+        nomorAkun: "",
+        namaAkun: ""
+    })
+
+    console.log(inputHandle.akunPartner, "ini id partner");
+
+    function handleChange(e, listAkun) {
+        listAkun = listAkun.find(item => item.partner_id === e.target.value)
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name]: e.target.value,
+            nomorAkun: listAkun.account_number,
+            namaAkun: listAkun.account_name,
+        });
+    }
 
     function toDashboard() {
         history.push("/");
@@ -48,6 +70,69 @@ const InfoSaldoDanMutasi = () => {
         },
     ]
 
+    async function getAkunPartner() {
+        try {
+          const auth = "Bearer " + getToken()
+          const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+          }
+          const listPartnerAkun = await axios.post(BaseURL + "/SubAccount/GetAgenAccount", { data: "" }, { headers: headers })
+          if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length === 0) {
+            // listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+            setListAkunPartner(listPartnerAkun.data.response_data)
+            setInputHandle({
+                ...inputHandle,
+                akunPartner: listPartnerAkun.data.response_data[0].partner_id,
+                nomorAkun: listPartnerAkun.data.response_data[0].account_number,
+                namaAkun: listPartnerAkun.data.response_data[0].account_name,
+            })
+          } else if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length !== 0) {
+            setUserSession(listPartnerAkun.data.response_new_token)
+            // listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+            setListAkunPartner(listPartnerAkun.data.response_data)
+            setInputHandle({
+                ...inputHandle,
+                akunPartner: listPartnerAkun.data.response_data[0].partner_id,
+                nomorAkun: listPartnerAkun.data.response_data[0].account_number,
+                namaAkun: listPartnerAkun.data.response_data[0].account_name,
+            })
+          }
+        } catch (error) {
+        //   console.log(error)
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function getInfoSaldo(partnerId) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"partner_dtl_id":"${partnerId}"}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataAkunPartner = await axios.post(BaseURL + "/SubAccount/GetBalancePartner", { data: dataParams }, { headers: headers })
+            console.log(dataAkunPartner, "data akun partner")
+            if (dataAkunPartner.status === 200 && dataAkunPartner.data.response_code === 200 && dataAkunPartner.data.response_new_token.length === 0) {
+                setDataAkun(dataAkunPartner.data.response_data)
+            } else if (dataAkunPartner.status === 200 && dataAkunPartner.data.response_code === 200 && dataAkunPartner.data.response_new_token.length !== 0) {
+                setUserSession(dataAkunPartner.data.response_new_token)
+                setDataAkun(dataAkunPartner.data.response_data)
+            }
+        } catch (error) {
+          console.log(error)
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    function toSeeSaldo () {
+        setShowSaldoSubAcc(true)
+        getInfoSaldo(inputHandle.akunPartner)
+    }
+
     const customStyles = {
         headCells: {
             style: {
@@ -67,6 +152,13 @@ const InfoSaldoDanMutasi = () => {
           <div>Loading...</div>
         </div>
     );
+
+    useEffect(() => {
+        getAkunPartner()
+        getInfoSaldo(inputHandle.akunPartner)
+    }, [])
+    
+
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
             <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Info Saldo & Mutasi</span> 
@@ -76,20 +168,25 @@ const InfoSaldoDanMutasi = () => {
             {/* <SubAccountComponent/> */}
             <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "38%" }}>
                 <div className="mb-3">Pilih Akun</div>
-                <Form.Select>
-                    <option defaultChecked disabled value="">Pilih Status</option>
-                    <option value={2}>Agung Sejahtera ( Partner )</option>
-                    <option value={1}>Agung Sejahtera ( Partner )</option>
+                <Form.Select name='akunPartner' value={inputHandle.akunPartner} onChange={(e) => handleChange(e, listAkunPartner)}>
+                    {/* <option defaultChecked disabled value="">Pilih Status</option> */}
+                    {listAkunPartner.map((item, idx) => {
+                        return (
+                            <option key={idx} value={item.partner_id}>
+                                {item.account_name} - {item.account_number}
+                            </option>
+                        )
+                    })}
                 </Form.Select>
                 <div className='p-3 mt-3' style={{ border: "1px solid #EBEBEB", borderRadius: 8 }}>
                     <div style={{ fontSize: 14, fontFamily: "Nunito", color: "#888888" }}>Saldo Rekening Sub Account</div>
-                    <div className='d-flex justify-content-start align-items-center mt-2' style={{ cursor: "pointer" }} onClick={() => setShowSaldoSubAcc(true)}>
+                    <div className='d-flex justify-content-start align-items-center mt-2' style={{ cursor: "pointer" }} onClick={toSeeSaldo}>
                         <img src={iconMata} alt="mata" />
                         <div className='ms-2' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 16, color: "#077E86", textDecoration: "underline" }}>Klik Untuk Lihat Saldo</div>
                     </div>
                     <div className='mt-3' style={{ border:"1px solid #C4C4C4", backgroundColor: "#C4C4C4" }} />
                     <div className='mt-3' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>No Rekening Sub Account : </div>
-                    <div className='mt-2' style={{ fontSize: 12, fontFamily: "Nunito", color: "#383838" }}>12345678912 a.n Agung Sejahtera</div>
+                    <div className='mt-2' style={{ fontSize: 12, fontFamily: "Nunito", color: "#383838" }}>{`${inputHandle.nomorAkun} a.n. ${inputHandle.namaAkun}`}</div>
                 </div>
             </div>
             <div className="head-title">
@@ -174,9 +271,9 @@ const InfoSaldoDanMutasi = () => {
                 </Modal.Title>
                 <Modal.Body>
                     <div className='text-center' style={{ fontSize: 14, fontWeight: 400, color: "#383838", fontFamily: "Nunito" }}>Nominal Saldo Saat Ini</div>
-                    <div className='text-center mt-2' style={{ fontSize: 12, fontWeight: 400, color: "#888888", fontFamily: "Nunito" }}>06 Juli 2022 11:46 WIB</div>
-                    <div className='text-center mt-3' style={{color: "#077E86", fontSize: 20, fontFamily: "Exo", fontWeight: 700 }}>Rp200.000.000</div>
-                    <div className='text-center mt-3' style={{color: "#888888", fontSize: 12, fontFamily: "Nunito", fontWeight: 400 }}>No. Rekening: 12345679093 a.n Agung Sejahtera</div>
+                    <div className='text-center mt-2' style={{ fontSize: 12, fontWeight: 400, color: "#888888", fontFamily: "Nunito" }}>{convertDateAndTimeInfoDanSaldo(dataAkun.timestamp_request)}</div>
+                    <div className='text-center mt-2' style={{color: "#077E86", fontSize: 20, fontFamily: "Exo", fontWeight: 700 }}>{convertToRupiah(dataAkun.availablebalance, true, 2)}</div>
+                    <div className='text-center mt-3' style={{color: "#888888", fontSize: 12, fontFamily: "Nunito", fontWeight: 400 }}>No. Rekening: {dataAkun.account_number} a.n {dataAkun.account_name}</div>
                     <div className='px-5'>
                         <button
                             onClick={() => setShowSaldoSubAcc(false)}
