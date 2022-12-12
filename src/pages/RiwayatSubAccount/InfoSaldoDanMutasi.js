@@ -253,13 +253,16 @@ const InfoSaldoDanMutasi = () => {
                         </Row>
                     </Col>
                 </Row>
-                <div className="div-table mt-4 pb-4">
+                <div className="div-table table-transfer mt-4 pb-4">
                     <DataTable
                         columns={columns}
                         data={agenLists}
                         customStyles={customStyles}
                         // progressPending={pendingSettlement}
+                        persistTableHead
                         progressComponent={<CustomLoader />}
+                        fixedHeader={true}
+                        fixedHeaderScrollHeight="550px"
                         // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                     />
                 </div>
