@@ -5,6 +5,10 @@ body {
     background-color: #F3F4F5 !important;
 }
 
+.sidebar .nav {
+    white-space: normal;
+}
+
 .sidebar .nav-item .nav-link {
     border: unset !important;
 }
@@ -827,7 +831,7 @@ header.sc-dIouRR.evxAbm {
     font-size: 14px; 
     border-radius: 8px;
     font-family: 'Nunito';
-    font-style: normal;
+    font-style: bold;
     font-weight: 400;
     color: #077E86;
     width: 100px;
@@ -877,3 +881,12 @@ header.sc-dIouRR.evxAbm {
 /* .rs-picker-toggle-placeholder {
     display: none;
 } */
+
+
+.rs-btn {
+    font-weight: 700 !important;
+}
+
+.rs-stack-item .rs-picker-toolbar-right {
+    margin-top: 60px;
+}

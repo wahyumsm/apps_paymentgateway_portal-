@@ -1,4 +1,4 @@
-import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
+import { Col, Form, Image, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
 import React from 'react'
 import DataTable from 'react-data-table-component'
 import { Link, useHistory } from 'react-router-dom'
@@ -15,28 +15,27 @@ import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import { useEffect } from 'react'
 import * as XLSX from "xlsx"
+import triangleInfo from "../../assets/icon/triangle-info.svg"
 
 const ListRiwayatSubAccount = () => {
     const user_role = getRole()
     const column = [
         {
-            // label: 'Range Tanggal maksimal 7 hari dan ',
-            // style: {
-            //     color: '#383838',
-            //     textAlign: 'left',
-            // },
-            // placement: 'bottom',
+            label: <><img src={triangleInfo} alt="triangle_info" style={{ marginRight: 3, marginTop: -6 }} /> Range Tanggal maksimal 7 hari dan periode mutasi paling lama 31 hari</>,
+            style: {
+                color: '#383838',
+                width: 'max-content',
+                padding: '14px 25px 14px 14px',
+                fontSize: 13,
+                fontStyle: 'italic',
+                textAlign: 'left',
+                whiteSpace: 'normal',
+                backgroundColor: 'rgba(255, 214, 0, 0.16)',
+                opacity: 'unset'
+            },
+            placement: 'bottom',
             
         },
-        {
-            // label: 'periode mutasi paling lama 31 hari',
-            // style: {
-            //     color: '#383838',
-            //     textAlign: 'left',
-            // },
-            // placement: 'bottom',
-            
-        }
     ]
     const [dateRangeRiwayatTranfer, setDateRangeRiwayatTranfer] = useState([])
     const [showDateRiwayatTranfer, setShowDateRiwayatTransfer] = useState("none")
@@ -511,12 +510,25 @@ const ListRiwayatSubAccount = () => {
                             className="datePicker"
                             activeStartDate={new Date(new Date().setDate((new Date()).getDate() - 30))}
                         /> */}
+                        {/* <OverlayTrigger
+                            placement="bottom"
+                            trigger={["hover"]}
+                            overlay={
+                            <Tooltip>Range Tanggal maksimal 7 hari dan periode mutasi paling lama 31 hari</Tooltip>
+                            }
+                        >
+                            <img
+                            src={triangleInfo}
+                            alt="triangle_info"
+                            style={{ marginRight: 15 }}
+                            />
+                        </OverlayTrigger> */}
                         <DateRangePicker 
                             value={stateRiwayatTransfer} 
                             ranges={column} 
                             onChange={(e) => pickDateRiwayatTransfer(e)} 
                             character=' - ' 
-                            cleanable={false} 
+                            cleanable={true} 
                             placement={'bottomEnd'} 
                             size='lg' 
                             appearance="default" 

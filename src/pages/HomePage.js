@@ -131,16 +131,16 @@ export default () => (
   <Switch>
     {/* <RouteWithLoader exact path={Routes.Presentation.path} component={Presentation} /> */}
     <RouteWithLoader exact path={Routes.Login.path} component={Signin} />
-    <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
+    {/* <RouteWithLoader exact path={Routes.Signup.path} component={Signup} /> */}
     <RouteWithLoader exact path={Routes.ForgotPassword.path} component={ForgotPassword} />
     <RouteWithLoader exact path={Routes.ResetPassword.path} component={ResetPassword} />
-    <RouteWithLoader exact path={Routes.Lock.path} component={Lock} />
+    {/* <RouteWithLoader exact path={Routes.Lock.path} component={Lock} /> */}
     <RouteWithLoader exact path={Routes.NotFound.path} component={NotFoundPage} />
-    <RouteWithLoader exact path={Routes.ServerError.path} component={ServerError} />
+    {/* <RouteWithLoader exact path={Routes.ServerError.path} component={ServerError} /> */}
 
     {/* pages */}
     <RouteWithSidebar exact path={Routes.DashboardOverview.path} component={DashboardOverview} />
-    <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} />
+    {/* <RouteWithSidebar exact path={Routes.Upgrade.path} component={Upgrade} /> */}
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
     <RouteWithSidebar exact path={Routes.SaldoPartner.path} component={SaldoPartner} />
@@ -163,8 +163,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
     <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/>
-    <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} />
-    <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} />
+    {/* <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} /> */}
+    {/* <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} /> */}
     <RouteWithSidebar exact path={Routes.AddUser.path} component={AddUser}/>
     <RouteWithSidebar exact path={Routes.ListPayment.path} component={ListPayment} />
     <RouteWithSidebar exact path={Routes.DetailPayment.path} component={DetailPayment} />
@@ -175,31 +175,31 @@ export default () => (
     <RouteWithSidebar exact path={Routes.TransferSubAccount.path} component={TransferSubAccount} />
 
     {/* components */}
-    <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} />
-    <RouteWithSidebar exact path={Routes.Alerts.path} component={Alerts} />
-    <RouteWithSidebar exact path={Routes.Badges.path} component={Badges} />
-    <RouteWithSidebar exact path={Routes.Breadcrumbs.path} component={Breadcrumbs} />
-    <RouteWithSidebar exact path={Routes.Buttons.path} component={Buttons} />
-    <RouteWithSidebar exact path={Routes.Forms.path} component={Forms} />
-    <RouteWithSidebar exact path={Routes.Modals.path} component={Modals} />
-    <RouteWithSidebar exact path={Routes.Navs.path} component={Navs} />
-    <RouteWithSidebar exact path={Routes.Navbars.path} component={Navbars} />
-    <RouteWithSidebar exact path={Routes.Pagination.path} component={Pagination} />
-    <RouteWithSidebar exact path={Routes.Popovers.path} component={Popovers} />
-    <RouteWithSidebar exact path={Routes.Progress.path} component={Progress} />
-    <RouteWithSidebar exact path={Routes.Tables.path} component={Tables} />
-    <RouteWithSidebar exact path={Routes.Tabs.path} component={Tabs} />
-    <RouteWithSidebar exact path={Routes.Tooltips.path} component={Tooltips} />
-    <RouteWithSidebar exact path={Routes.Toasts.path} component={Toasts} />
+    {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Alerts.path} component={Alerts} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Badges.path} component={Badges} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Breadcrumbs.path} component={Breadcrumbs} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Buttons.path} component={Buttons} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Forms.path} component={Forms} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Modals.path} component={Modals} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Navs.path} component={Navs} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Navbars.path} component={Navbars} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Pagination.path} component={Pagination} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Popovers.path} component={Popovers} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Progress.path} component={Progress} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Tables.path} component={Tables} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Tabs.path} component={Tabs} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Tooltips.path} component={Tooltips} /> */}
+    {/* <RouteWithSidebar exact path={Routes.Toasts.path} component={Toasts} /> */}
 
     {/* documentation */}
-    <RouteWithSidebar exact path={Routes.DocsOverview.path} component={DocsOverview} />
-    <RouteWithSidebar exact path={Routes.DocsDownload.path} component={DocsDownload} />
-    <RouteWithSidebar exact path={Routes.DocsQuickStart.path} component={DocsQuickStart} />
-    <RouteWithSidebar exact path={Routes.DocsLicense.path} component={DocsLicense} />
-    <RouteWithSidebar exact path={Routes.DocsFolderStructure.path} component={DocsFolderStructure} />
-    <RouteWithSidebar exact path={Routes.DocsBuild.path} component={DocsBuild} />
-    <RouteWithSidebar exact path={Routes.DocsChangelog.path} component={DocsChangelog} />
+    {/* <RouteWithSidebar exact path={Routes.DocsOverview.path} component={DocsOverview} /> */}
+    {/* <RouteWithSidebar exact path={Routes.DocsDownload.path} component={DocsDownload} /> */}
+    {/* <RouteWithSidebar exact path={Routes.DocsQuickStart.path} component={DocsQuickStart} /> */}
+    {/* <RouteWithSidebar exact path={Routes.DocsLicense.path} component={DocsLicense} /> */}
+    {/* <RouteWithSidebar exact path={Routes.DocsFolderStructure.path} component={DocsFolderStructure} /> */}
+    {/* <RouteWithSidebar exact path={Routes.DocsBuild.path} component={DocsBuild} /> */}
+    {/* <RouteWithSidebar exact path={Routes.DocsChangelog.path} component={DocsChangelog} /> */}
 
     <Redirect to={Routes.NotFound.path} />
   </Switch>

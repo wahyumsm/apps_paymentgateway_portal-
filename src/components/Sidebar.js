@@ -35,6 +35,9 @@ export default (props = {}) => {
   const CollapsableNavItem = (props) => {
     const { eventKey, title, icon, image, children = null } = props;
     const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
+    console.log(pathname, 'pathname');
+    console.log(defaultKey, 'defaultKey');
+    console.log(eventKey, 'eventKey');
 
     return (
       <Accordion as={Nav.Item} defaultActiveKey={defaultKey}>
@@ -120,7 +123,7 @@ export default (props = {}) => {
               </Nav.Link>
             </div> */}
             <Nav className="flex-column pt-3 pt-md-0">              
-              <div style={{backgroundColor: '#DF9C43', width: '102%', height: '67px', textAlign: 'center'}}>
+              <div style={{backgroundColor: '#DF9C43', height: '67px', textAlign: 'center'}}>
                 <img src={EzeeLogo} style={{width: 66, height: 36, marginTop: 12}} alt=""/>
               </div>              
               {
@@ -147,7 +150,7 @@ export default (props = {}) => {
                               title={item2.label}
                               // icon={faAngleRight}
                               image={item2.icon}
-                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? "" : (item2.id === 2402) ? "" : (item2.id === 2403) ? "" : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
+                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2402) ? Routes.TransferSubAccount.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
                             /> :
                             <CollapsableNavItem key={item2.id} title={item2.label} image={item2.icon}>
                               {
