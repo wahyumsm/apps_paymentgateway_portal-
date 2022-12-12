@@ -35,6 +35,9 @@ export default (props = {}) => {
   const CollapsableNavItem = (props) => {
     const { eventKey, title, icon, image, children = null } = props;
     const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
+    console.log(pathname, 'pathname');
+    console.log(defaultKey, 'defaultKey');
+    console.log(eventKey, 'eventKey');
 
     return (
       <Accordion as={Nav.Item} defaultActiveKey={defaultKey}>
@@ -120,7 +123,7 @@ export default (props = {}) => {
               </Nav.Link>
             </div> */}
             <Nav className="flex-column pt-3 pt-md-0">              
-              <div style={{backgroundColor: '#DF9C43', width: '102%', height: '67px', textAlign: 'center'}}>
+              <div style={{backgroundColor: '#DF9C43', height: '67px', textAlign: 'center'}}>
                 <img src={EzeeLogo} style={{width: 66, height: 36, marginTop: 12}} alt=""/>
               </div>              
               {
