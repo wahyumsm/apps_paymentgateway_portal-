@@ -71,6 +71,9 @@ function SaldoPartner() {
     const [namaPartnerAlokasiSaldo, setNamaPartnerAlokasiSaldo] = useState("")
     const [statusRiwayatAlokasiSaldo, setStatusRiwayatAlokasiSaldo] = useState([])
 
+    const [listHistorySaldo, setListHistorySaldo] = useState([])
+    const [pendingHistorySaldo, setPendingHistorySaldo] = useState(true)
+    const [namaPartnerHistorySaldo, setNamaPartnerHistorySaldo] = useState("")
 
     const startColorNumber = (money) => {  
         if (money !== 0) {
@@ -110,7 +113,7 @@ function SaldoPartner() {
 
     async function listPartner() {
         try {
-            const auth = 'Bearer ' + getToken();
+            const auth = 'Bearer ' + access_token;
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -133,7 +136,7 @@ function SaldoPartner() {
             setPendingTopup(true)
             setIsFilterTopUp(isFilter)
             setActivePageRiwayatTopUp(currentPage)
-            const auth = "Bearer " + getToken()
+            const auth = "Bearer " + access_token
             const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "sub_partner_id": "${(namaPartner !== undefined) ? namaPartner : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
@@ -161,7 +164,7 @@ function SaldoPartner() {
     
     async function getDisbursementChannel() {
         try {
-            const auth = "Bearer " + getToken()
+            const auth = "Bearer " + access_token
             const dataParams = encryptData(`{ "fitur_id": "102" }`)
             const headers = {
                 'Content-Type':'application/json',
@@ -201,7 +204,7 @@ function SaldoPartner() {
                 isDescending = 1
                 orderField = "mstatus_name"
             }
-            const auth = "Bearer " + getToken()
+            const auth = "Bearer " + access_token
             const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2" ], "paytypeID": [${payTypeId}] }`)
             const headers = {
                 'Content-Type':'application/json',
@@ -237,7 +240,7 @@ function SaldoPartner() {
             if (payTypeId === 0) {
                 disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
             }
-            const auth = "Bearer " + getToken()
+            const auth = "Bearer " + access_token
             const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${(isDescending === undefined || isDescending) ? 0 : 1}, "order_field": "${(orderField === undefined) ? "tpartballchannel_crtdt" : orderField}", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
             const headers = {
                 'Content-Type':'application/json',
@@ -303,6 +306,32 @@ function SaldoPartner() {
                 orderIdStatus: value
             })
             filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
+        }
+    }
+
+    async function historySaldoPartner(partnerId) {
+        try {
+            setPendingHistorySaldo(true)
+            const auth = "Bearer " + access_token
+            const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}" }`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const historySaldo = await axios.post(BaseURL + "/Partner/GetListPartnerBalanceChannel", { data: dataParams }, { headers: headers })
+            // console.log(historySaldo, 'historySaldo');
+            if (historySaldo.status === 200 && historySaldo.data.response_code === 200 && historySaldo.data.response_new_token.length === 0) {
+                historySaldo.data.response_data = historySaldo.data.response_data.map((obj, idx) => ({...obj, number: idx + 1}));
+                setListHistorySaldo(historySaldo.data.response_data)
+                setPendingHistorySaldo(false)
+        } else if (historySaldo.status === 200 && historySaldo.data.response_code === 200 && historySaldo.data.response_new_token.length !== 0) {
+                historySaldo.data.response_data = historySaldo.data.response_data.map((obj, idx) => ({...obj, number: idx + 1}));
+                setUserSession(historySaldo.data.response_new_token)
+                setListHistorySaldo(historySaldo.data.response_data)
+                setPendingHistorySaldo(false)
+            }
+        } catch (error) {
+            // console.log(error);
         }
     }
     
@@ -398,7 +427,7 @@ function SaldoPartner() {
 
     async function detailTopUpHandler(idTransaksi) {
         try {
-            const auth = "Bearer " + getToken()   
+            const auth = "Bearer " + access_token   
             const dataParams = encryptData(`{"tparttopup_code":"${idTransaksi}"}`)
             const headers = {
                 "Content-Type": "application/json",
@@ -425,7 +454,7 @@ function SaldoPartner() {
 
     async function topUpHandleConfirm() {
         try {
-            const auth = "Bearer " + getToken()        
+            const auth = "Bearer " + access_token        
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -459,6 +488,7 @@ function SaldoPartner() {
         listPartner()
         listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false)
         getDisbursementChannel()
+        historySaldoPartner()
     }, [access_token, user_role])
     
     const columnsRiwayatTopUpAdmin = [
@@ -527,6 +557,38 @@ function SaldoPartner() {
         },
     ];
 
+    const columnsRiwayatSaldoPartner = [
+        {
+            name: 'No',
+            selector: row => row.number,
+            width: "57px",
+            style: { justifyContent: "center" }
+        },
+        {
+            name: 'Nama Partner',
+            selector: row => row.mpartner_name,
+            sortable: true,
+            // width: "260px",
+            wrap: true,
+            style: { wordBreak: 'break-word', whiteSpace: 'normal', paddingLeft: 80 }
+        },
+        {
+            name: 'Channel',
+            selector: row => row.mpartballchannel_name,
+            // sortable: true,
+            // width: "260px",
+            wrap: true,
+            style: { wordBreak: 'break-word', whiteSpace: 'normal', justifyContent: "center", paddingRight: 11 }
+        },
+        {
+            name: 'Saldo',
+            selector: row => convertToRupiah(row.mpartballchannel_balance),
+            style: { justifyContent: "flex-end", paddingRight: 100 },
+            // width: "150px",
+            // sortable: true,
+        },
+    ];
+
     const customStyles = {
         headCells: {
             style: {
@@ -544,7 +606,7 @@ function SaldoPartner() {
         if (isFilter === true && userRole !== "102") {
             async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
                 try {
-                    const auth = 'Bearer ' + getToken();
+                    const auth = 'Bearer ' + access_token;
                     const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
@@ -582,7 +644,7 @@ function SaldoPartner() {
         } else if (isFilter === false && userRole !== "102") {
             async function dataExportTopUp() {
                 try {
-                    const auth = 'Bearer ' + getToken();
+                    const auth = 'Bearer ' + access_token;
                     const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "sub_partner_id": "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
@@ -635,7 +697,7 @@ function SaldoPartner() {
                     <h2 className="h5 mb-3 mt-4">Riwayat Saldo Partner</h2>
                 </div>
                 <div className='main-content'>
-                    <div className='riwayat-settlement-div mt-4'>
+                    <div className='mt-4'>
                         <span className='mt-4' style={{fontWeight: 600}}>Riwayat Topup Partner</span>
                         <div className='base-content mt-3'>
                             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
@@ -928,6 +990,64 @@ function SaldoPartner() {
                                 />
                             </div>
                         }
+                    </div>
+                </div>
+                <div className='mt-5 mb-5'>
+                    <div className='mt-4'>
+                        <span className='mt-4' style={{fontWeight: 600}}>Saldo Partner</span>
+                        <div className='base-content mt-3'>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                            {/* untuk admin */}
+                            <Row className='mt-4'>
+                                <Col xs={6} className="d-flex justify-content-start align-items-center">
+                                    <span>Nama Partner</span>
+                                    <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={namaPartnerHistorySaldo} onChange={(e) => setNamaPartnerHistorySaldo(e.target.value)}>
+                                        <option defaultChecked disabled value="">Pilih Nama Partner</option>
+                                        {
+                                            dataListPartner.map((item, index) => {
+                                                return (
+                                                    <option key={index} value={item.partner_id}>{item.nama_perusahaan}</option>
+                                                )
+                                            })
+                                        }
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <Row className='mt-4'>
+                                <Col xs={5}>
+                                    <Row>
+                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => historySaldoPartner(namaPartnerHistorySaldo)}
+                                                className={(namaPartnerHistorySaldo.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                                disabled={namaPartnerHistorySaldo.length === 0}
+                                            >
+                                                Terapkan
+                                            </button>
+                                        </Col>
+                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => setNamaPartnerHistorySaldo("")}
+                                                className={namaPartnerHistorySaldo.length !== 0 ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={namaPartnerHistorySaldo.length === 0}
+                                            >
+                                                Atur Ulang
+                                            </button>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <div className="div-table mt-4 pb-5">
+                                <DataTable
+                                    columns={columnsRiwayatSaldoPartner}
+                                    data={listHistorySaldo}
+                                    customStyles={customStyles}
+                                    pagination
+                                    progressPending={pendingHistorySaldo}
+                                    progressComponent={<CustomLoader />}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 

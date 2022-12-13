@@ -574,7 +574,7 @@ function RiwayatTopUp() {
             <div className="content-page mt-6">
                 <span className='breadcrumbs-span'>{(user_role === "102") ? "Beranda" : <Link to={"/"}>Beranda</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Top Up</span>
                 <div className='main-content'>
-                    <div className='riwayat-settlement-div mt-4'>
+                    <div className='mt-4'>
                         <span className='mt-4' style={{fontWeight: 600}}>Riwayat Top Up</span>
                         <div className='base-content mt-3'>
                             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>

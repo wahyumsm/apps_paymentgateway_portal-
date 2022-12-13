@@ -666,7 +666,7 @@ function DisbursementReport() {
                 <h2 className="h5 mb-3 mt-4">Disbursement Report</h2>
             </div>
             <div className='main-content'>
-                <div className='riwayat-settlement-div mt-2'>
+                <div className='mt-2'>
                     <span className='mt-4' style={{fontWeight: 600}}>Disbursement Report</span>
                     <div className='base-content mt-3'>
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>

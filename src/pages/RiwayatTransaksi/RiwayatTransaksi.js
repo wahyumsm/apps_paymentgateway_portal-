@@ -1001,7 +1001,7 @@ function RiwayatTransaksi() {
                     </div>
                 </div>
             </div>
-            <div className='riwayat-settlement-div mt-5'>
+            <div className='riwayat-settlement-div mt-5 mb-5'>
                 <span className='mt-4' style={{fontWeight: 600}}>Riwayat Settlement</span>
                 <div className='base-content mt-3'>
                     <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
