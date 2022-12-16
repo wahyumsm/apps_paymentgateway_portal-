@@ -44,13 +44,25 @@ function AlokasiSaldo() {
         minAlokasi: false,
         addedAmount: 0
     })
-    
     const [disburseInterbank, setDisburseInterbank] = useState({
         id: "28",
         checked: false,
         minAlokasi: false,
         addedAmount: 0
     })
+    const [disburseBIFAST, setDisburseBIFAST] = useState({
+        id: "34",
+        checked: false,
+        minAlokasi: false,
+        addedAmount: 0
+    })
+    const [disburseDanamon, setDisburseDanamon] = useState({
+        id: "35",
+        checked: false,
+        minAlokasi: false,
+        addedAmount: 0
+    })
+
     const [addedDisbursementChannels, setaddedDisbursementChannels] = useState([{
         id: "32",
         addedAmount: 0
@@ -82,8 +94,8 @@ function AlokasiSaldo() {
         orderIdStatus: true,
     })
 
-    function convertToRupiahFunct(sisaSaldo, alokasiDana, alokasiBCA, alokasiMandiri, alokasiInterbank) {
-        let finalSisaSaldo = Number(sisaSaldo) - Number(alokasiDana) - Number(alokasiBCA) - Number(alokasiMandiri) - Number(alokasiInterbank)
+    function convertToRupiahFunct(sisaSaldo, alokasiDana, alokasiBCA, alokasiMandiri, alokasiInterbank, alokasiBIFAST, alokasiDanamon) {
+        let finalSisaSaldo = Number(sisaSaldo) - Number(alokasiDana) - Number(alokasiBCA) - Number(alokasiMandiri) - Number(alokasiInterbank) - Number(alokasiBIFAST) - Number(alokasiDanamon)
         setTimeout(() => {
             if (finalSisaSaldo < 0) {
                 setShowAlertSaldoTidakCukup(true)
@@ -207,6 +219,20 @@ function AlokasiSaldo() {
                 checked: e.target.checked,
                 addedAmount: 0
             })
+        } else if (e.target.id === "34") {
+            setDisburseBIFAST({
+                ...disburseBIFAST,
+                cat_id: catId,
+                checked: e.target.checked,
+                addedAmount: 0
+            })
+        } else if (e.target.id === "35") {
+            setDisburseDanamon({
+                ...disburseDanamon,
+                cat_id: catId,
+                checked: e.target.checked,
+                addedAmount: 0
+            })
         }
         setInputHandle({
             ...inputHandle,
@@ -268,6 +294,34 @@ function AlokasiSaldo() {
         } else if (e.target.id === "28" && Number(e.target.value) >= minimalAlokasiSaldo) {
             setDisburseInterbank({
                 ...disburseInterbank,
+                cat_id: catId,
+                minAlokasi: (Number(e.target.value) === 0) ? true : false,
+                addedAmount: Number(e.target.value)
+            })
+        } else if (e.target.id === "34" && Number(e.target.value) < minimalAlokasiSaldo) {
+            setDisburseBIFAST({
+                ...disburseBIFAST,
+                cat_id: catId,
+                minAlokasi: true,
+                addedAmount: Number(e.target.value)
+            })
+        } else if (e.target.id === "34" && Number(e.target.value) >= minimalAlokasiSaldo) {
+            setDisburseBIFAST({
+                ...disburseBIFAST,
+                cat_id: catId,
+                minAlokasi: (Number(e.target.value) === 0) ? true : false,
+                addedAmount: Number(e.target.value)
+            })
+        } else if (e.target.id === "35" && Number(e.target.value) < minimalAlokasiSaldo) {
+            setDisburseDanamon({
+                ...disburseDanamon,
+                cat_id: catId,
+                minAlokasi: true,
+                addedAmount: Number(e.target.value)
+            })
+        } else if (e.target.id === "35" && Number(e.target.value) >= minimalAlokasiSaldo) {
+            setDisburseDanamon({
+                ...disburseDanamon,
                 cat_id: catId,
                 minAlokasi: (Number(e.target.value) === 0) ? true : false,
                 addedAmount: Number(e.target.value)
@@ -387,7 +441,7 @@ function AlokasiSaldo() {
         }
     }
 
-    async function saveAlokasiSaldo(channelDana, channelBCA, channelMandiri, channelInterbank) {
+    async function saveAlokasiSaldo(channelDana, channelBCA, channelMandiri, channelInterbank, channelBIFAST, channelDanamon) {
         try {
             setShowModalSaveAlokasiSaldo(false)
             let newArr = []
@@ -417,6 +471,20 @@ function AlokasiSaldo() {
                     mpaytype_id: Number(channelInterbank.id),
                     mpaycat_id: Number(channelInterbank.cat_id),
                     amount: Number(channelInterbank.addedAmount),
+                })
+            }
+            if (channelBIFAST.checked === true) {
+                newArr.push({
+                    mpaytype_id: Number(channelBIFAST.id),
+                    mpaycat_id: Number(channelBIFAST.cat_id),
+                    amount: Number(channelBIFAST.addedAmount),
+                })
+            }
+            if (channelDanamon.checked === true) {
+                newArr.push({
+                    mpaytype_id: Number(channelDanamon.id),
+                    mpaycat_id: Number(channelDanamon.cat_id),
+                    amount: Number(channelDanamon.addedAmount),
                 })
             }
             const auth = "Bearer " + getToken()
@@ -685,7 +753,7 @@ function AlokasiSaldo() {
                         <div className='alokasi-amount mt-2'>
                             <Row>
                                 {
-                                    (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false) ?
+                                    (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false && disburseBIFAST.checked === false && disburseDanamon.checked === false) ?
                                     <span style={{ fontSize: 14, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Tujuan alokasi wajib dipilih salah satu.</span> :
                                     disbursementChannel.length !== 0 &&
                                     disbursementChannel.map(item => {
@@ -724,6 +792,18 @@ function AlokasiSaldo() {
                                                     item.mpaytype_id === 33 && disburseMandiri.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
                                                     item.mpaytype_id === 33 && disburseMandiri.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
+                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
                                                     <span style={{ fontSize: 12, color: "#C4C4C4" }}>Masukkan nominal saldo yang akan dialokasikan.</span>
                                                 }
@@ -772,7 +852,7 @@ function AlokasiSaldo() {
                                                             <span>Alokasi ke {(item.mpaytype_id === 31 && disburseDana.checked === true) ? "Dana" : null}</span>
                                                         </td>
                                                         <td>
-                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : 0)}</span>
+                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : (item.mpaytype_id === 34) ? disburseBIFAST.addedAmount : (item.mpaytype_id === 35) ? disburseDanamon.addedAmount : 0)}</span>
                                                         </td>
                                                     </> :
                                                     (item.mpaytype_id === 32 && disburseBCA.checked === true) ?
@@ -781,7 +861,7 @@ function AlokasiSaldo() {
                                                             <span>Alokasi ke {(item.mpaytype_id === 32 && disburseBCA.checked === true) ? "BCA" : null}</span>
                                                         </td>
                                                         <td>
-                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : 0)}</span>
+                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : (item.mpaytype_id === 34) ? disburseBIFAST.addedAmount : (item.mpaytype_id === 35) ? disburseDanamon.addedAmount : 0)}</span>
                                                         </td>
                                                     </> :
                                                     (item.mpaytype_id === 33 && disburseMandiri.checked === true) ?
@@ -790,7 +870,7 @@ function AlokasiSaldo() {
                                                             <span>Alokasi ke {(item.mpaytype_id === 33 && disburseMandiri.checked === true) ? "Mandiri" : null}</span>
                                                         </td>
                                                         <td>
-                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : 0)}</span>
+                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : (item.mpaytype_id === 34) ? disburseBIFAST.addedAmount : (item.mpaytype_id === 35) ? disburseDanamon.addedAmount : 0)}</span>
                                                         </td>
                                                     </> :
                                                     (item.mpaytype_id === 28 && disburseInterbank.checked === true) ?
@@ -799,7 +879,25 @@ function AlokasiSaldo() {
                                                             <span>Alokasi ke {(item.mpaytype_id === 28 && disburseInterbank.checked === true) ? "Interbank LLG" : null}</span>
                                                         </td>
                                                         <td>
-                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : 0)}</span>
+                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : (item.mpaytype_id === 34) ? disburseBIFAST.addedAmount : (item.mpaytype_id === 35) ? disburseDanamon.addedAmount : 0)}</span>
+                                                        </td>
+                                                    </> :
+                                                    (item.mpaytype_id === 34 && disburseBIFAST.checked === true) ?
+                                                    <>
+                                                        <td>
+                                                            <span>Alokasi ke {(item.mpaytype_id === 34 && disburseBIFAST.checked === true) ? "BIFAST" : null}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : (item.mpaytype_id === 34) ? disburseBIFAST.addedAmount : (item.mpaytype_id === 35) ? disburseDanamon.addedAmount : 0)}</span>
+                                                        </td>
+                                                    </> :
+                                                    (item.mpaytype_id === 35 && disburseDanamon.checked === true) ?
+                                                    <>
+                                                        <td>
+                                                            <span>Alokasi ke {(item.mpaytype_id === 35 && disburseDanamon.checked === true) ? "Danamon" : null}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiah((item.mpaytype_id === 31) ? disburseDana.addedAmount : (item.mpaytype_id === 32) ? disburseBCA.addedAmount : (item.mpaytype_id === 33) ? disburseMandiri.addedAmount : (item.mpaytype_id === 28) ? disburseInterbank.addedAmount : (item.mpaytype_id === 34) ? disburseBIFAST.addedAmount : (item.mpaytype_id === 35) ? disburseDanamon.addedAmount : 0)}</span>
                                                         </td>
                                                     </> : null
                                                 }
@@ -818,8 +916,8 @@ function AlokasiSaldo() {
                                             {
                                                 showAlertSaldoTidakCukup ?
                                                 // <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600, color: "#B9121B" }}>{convertToRupiahFunct((balance.balance !== undefined ? balance.balance : 0) - (Number(disburseDana.addedAmount)) - (Number(disburseBCA.addedAmount)) - (Number(disburseMandiri.addedAmount)))}</span> :
-                                                <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600, color: "#B9121B" }}>{convertToRupiahFunct((balance.balance !== undefined) ? balance.balance : 0, disburseDana.addedAmount, disburseBCA.addedAmount, disburseMandiri.addedAmount, disburseInterbank.addedAmount)}</span> :
-                                                <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiahFunct((balance.balance !== undefined) ? balance.balance : 0, disburseDana.addedAmount, disburseBCA.addedAmount, disburseMandiri.addedAmount, disburseInterbank.addedAmount)}</span>
+                                                <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600, color: "#B9121B" }}>{convertToRupiahFunct((balance.balance !== undefined) ? balance.balance : 0, disburseDana.addedAmount, disburseBCA.addedAmount, disburseMandiri.addedAmount, disburseInterbank.addedAmount, disburseBIFAST.addedAmount, disburseDanamon.addedAmount)}</span> :
+                                                <span style={{ display: "flex", justifyContent: "flex-end", fontWeight: 600 }}>{convertToRupiahFunct((balance.balance !== undefined) ? balance.balance : 0, disburseDana.addedAmount, disburseBCA.addedAmount, disburseMandiri.addedAmount, disburseInterbank.addedAmount, disburseBIFAST.addedAmount, disburseDanamon.addedAmount)}</span>
                                             }
                                         </td>
                                     </tr>
@@ -852,9 +950,9 @@ function AlokasiSaldo() {
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
                                 onClick={() => setShowModalSaveAlokasiSaldo(true)}
-                                className={((disburseDana.checked === true && disburseDana.minAlokasi === true) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount === 0) || (disburseBCA.checked === true && disburseBCA.minAlokasi === true) || (disburseBCA.checked === true && disburseBCA.minAlokasi === false && disburseBCA.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === true) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount === 0) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === true) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount === 0) || (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false) || showAlertSaldoTidakCukup === true) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}
+                                className={((disburseDana.checked === true && disburseDana.minAlokasi === true) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount === 0) || (disburseBCA.checked === true && disburseBCA.minAlokasi === true) || (disburseBCA.checked === true && disburseBCA.minAlokasi === false && disburseBCA.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === true) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount === 0) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === true) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount === 0) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === true) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === false && disburseBIFAST.addedAmount === 0) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === true) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === false && disburseDanamon.addedAmount === 0) || (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false && disburseBIFAST.checked === false && disburseDanamon.checked === false) || showAlertSaldoTidakCukup === true) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}
                                 style={{ maxWidth: 'max-content', padding: 7, height: 40, }}
-                                disabled={(disburseDana.checked === true && disburseDana.minAlokasi === true) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount === 0) || (disburseBCA.checked === true && disburseBCA.minAlokasi === true) || (disburseBCA.checked === true && disburseBCA.minAlokasi === false && disburseBCA.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === true) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount === 0) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === true) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount === 0) || (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false) || showAlertSaldoTidakCukup === true}
+                                disabled={(disburseDana.checked === true && disburseDana.minAlokasi === true) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount === 0) || (disburseBCA.checked === true && disburseBCA.minAlokasi === true) || (disburseBCA.checked === true && disburseBCA.minAlokasi === false && disburseBCA.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === true) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount === 0) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === true) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount === 0) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === true) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === false && disburseBIFAST.addedAmount === 0) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === true) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === false && disburseDanamon.addedAmount === 0) || (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false && disburseBIFAST.checked === false && disburseDanamon.checked === false) || showAlertSaldoTidakCukup === true}
                             >
                                 Alokasikan Saldo
                             </button>
@@ -1197,7 +1295,7 @@ function AlokasiSaldo() {
                     </p>                
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSaveAlokasiSaldo(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;" }} className="mx-2">Tidak</Button>
-                        <Button onClick={() => saveAlokasiSaldo(disburseDana, disburseBCA, disburseMandiri, disburseInterbank)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
+                        <Button onClick={() => saveAlokasiSaldo(disburseDana, disburseBCA, disburseMandiri, disburseInterbank, disburseBIFAST, disburseDanamon)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
                     </div>
                 </Modal.Body>
             </Modal>

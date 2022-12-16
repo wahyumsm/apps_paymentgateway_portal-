@@ -937,27 +937,27 @@ header.sc-dIouRR.evxAbm {
 
 /*di transfer sub akun*/
 
-.table-transfer .eEZnxD {
-    min-height: 550px;
+.table-transfer .fZxLXy {
+    min-height: 500px;
 }
 
-.eEZnxD::-webkit-scrollbar {
+.fZxLXy::-webkit-scrollbar {
     width: 10px;
     height: 6px;
     background-color: #FFFFFF;
 }
 
-.eEZnxD::-webkit-scrollbar-thumb {
+.fZxLXy::-webkit-scrollbar-thumb {
     border-radius: 6px;
     background: #c4c4c4;
 }
 
-.eEZnxD::-webkit-scrollbar-track {
+.fZxLXy::-webkit-scrollbar-track {
     box-shadow: inset 0 0 1px grey;
     border-radius: 6px;
 }
 
-.eEZnxD::-webkit-scrollbar-button:single-button {
+.fZxLXy::-webkit-scrollbar-button:single-button {
     /* background-color: rgb(64, 64, 64); */
 
     display: block;

@@ -18,6 +18,7 @@ import OtpInput from 'react-otp-input'
 import axios from 'axios'
 import { useEffect } from 'react'
 import FilterSubAccount from '../../components/FilterSubAccount'
+import Countdown from 'react-countdown'
 
 const TransferSubAccount = () => {
     const history = useHistory()
@@ -26,14 +27,20 @@ const TransferSubAccount = () => {
     const [showBank, setShowBank] = useState(false)
     const [showTransfer, setShowTransfer] = useState(false)
     const [showModalInputCode, setShowModalInputCode] = useState(false)
+    const [toCountdown, setToCountdown] = useState(false)
     const [showTransferBerhasil, setShowTransferBerhasil] = useState(false)
     const [otp, setOtp] = useState('')
+    const renderer = ({ hours, minutes, seconds }) => {  return <span>{seconds}</span>; }
     const [listBank, setListBank] = useState([])
+    const [listRekening, setListRekening] = useState([])
     const [listAkunPartner, setListAkunPartner] = useState([])
-    const [filterText, setFilterText] = useState('')
-    const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
-    const filterItems = listBank.filter(
-        item => (item.mbank_name && item.mbank_name.toLowerCase().includes(filterText.toLowerCase())) || (item.mbank_code && item.mbank_code.toLowerCase().includes(filterText.toLowerCase()))
+    const [filterTextBank, setFilterTextBank] = useState('')
+    const [filterTextRekening, setFilterTextRekening] = useState('')
+    const filterItemsBank = listBank.filter(
+        item => (item.mbank_name && item.mbank_name.toLowerCase().includes(filterTextBank.toLowerCase())) || (item.mbank_code && item.mbank_code.toLowerCase().includes(filterTextBank.toLowerCase()))
+    )
+    const filterItemsRekening = listRekening.filter(
+        item => (item.moffshorebankacclist_name && item.moffshorebankacclist_name.toLowerCase().includes(filterTextRekening.toLowerCase())) || (item.moffshorebankacclist_number && item.moffshorebankacclist_number.toLowerCase().includes(filterTextRekening.toLowerCase()))
     )
     const [inputHandle, setInputHandle] = useState({
         akunPartner: ""
@@ -44,7 +51,11 @@ const TransferSubAccount = () => {
         bankCode: ""
     })
 
-    const subHeaderComponentMemo = useMemo(() => {
+    const [inputDataRekening, setInputDataRekening] = useState({
+        noRek: ""
+    })
+
+    const subHeaderComponentMemoBank = useMemo(() => {
         // const handleClear = () => {
         //     if (filterText) {
         //         setResetPaginationToggle(!resetPaginationToggle);
@@ -52,12 +63,24 @@ const TransferSubAccount = () => {
         //     }
         // };
         return (
-            <FilterSubAccount filterText={filterText} onFilter={e => setFilterText(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
-        );	}, [filterText, resetPaginationToggle]
+            <FilterSubAccount filterText={filterTextBank} onFilter={e => setFilterTextBank(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
+        );	}, [filterTextBank]
+    );
+
+    const subHeaderComponentMemoRekening = useMemo(() => {
+        // const handleClear = () => {
+        //     if (filterText) {
+        //         setResetPaginationToggle(!resetPaginationToggle);
+        //         setFilterText('');
+        //     }
+        // };
+        return (
+            <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / No Rekening Bank" />
+        );	}, [filterTextRekening]
     );
 
     const handleRowClicked = row => {
-        filterItems.map(item => {
+        filterItemsBank.map(item => {
             if (row.mbank_code === item.mbank_code) {
                 setInputData({
                     bankName: row.mbank_name,
@@ -66,10 +89,26 @@ const TransferSubAccount = () => {
                 setShowBank(false)
             }
         });
-    
     };
 
-    console.log(inputData, "inputData");
+    const handleRowClickedRekening = row => {
+        console.log(row.moffshorebankacclist_number, "number in click");
+        filterItemsRekening.map(item => {
+            if (row.moffshorebankacclist_number === item.moffshorebankacclist_number) {
+                setInputDataRekening({
+                    noRek: row.moffshorebankacclist_number
+                });
+                setShowDaftarRekening(false)
+            }
+        });
+    };
+
+    function handleChangeRek(e) {
+        setInputDataRekening({
+            ...inputDataRekening,
+            [e.target.name] : e.target.value
+        })
+    }
 
     function handleChange () {
         setOtp({otp})
@@ -80,6 +119,14 @@ const TransferSubAccount = () => {
             ...inputHandle,
             [e.target.name]: e.target.value,
         });
+    }
+    
+    function completeTime() {
+        setToCountdown(false)
+    }
+
+    function sendAgain() {
+        setToCountdown(true)
     }
 
     const columnsBank = [
@@ -102,20 +149,20 @@ const TransferSubAccount = () => {
     const columns = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.number,
             width: "67px"
         },
         {
             name: 'Nama Pemilik Rekening',
-            selector: row => row.namaAgen,
+            selector: row => row.moffshorebankacclist_name,
         },
         {
             name: 'No Rekening',
-            selector: row => row.noRekening,
+            selector: row => row.moffshorebankacclist_number,
         },
         {
             name: 'Nama Bank',
-            selector: row => row.status,
+            selector: row => row.mbank_name,
         },
     ]
 
@@ -130,6 +177,7 @@ const TransferSubAccount = () => {
     function toInputCode () {
         setShowTransfer(false)
         setShowModalInputCode(true)
+        setToCountdown(true)
     }
 
     function toTransfer () {
@@ -195,6 +243,30 @@ const TransferSubAccount = () => {
         }
     }
 
+    async function getRekeningList() {
+        try {
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const rekeningList = await axios.post(BaseURL + "/SubAccount/GetListAccount", { data: "" }, { headers: headers })
+            console.log(rekeningList, 'list rekening');
+            if (rekeningList.status === 200 && rekeningList.data.response_code === 200 && rekeningList.data.response_new_token.length === 0) {
+                rekeningList.data.response_data = rekeningList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListRekening(rekeningList.data.response_data)
+            } else if (rekeningList.status === 200 && rekeningList.data.response_code === 200 && rekeningList.data.response_new_token.length !== 0) {
+                setUserSession(rekeningList.data.response_new_token)
+                rekeningList.data.response_data = rekeningList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListRekening(rekeningList.data.response_data)
+            }
+        } catch (error) {
+        //   console.log(error)
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     const customStyles = {
         headCells: {
             style: {
@@ -222,11 +294,12 @@ const TransferSubAccount = () => {
     useEffect(() => {
         getAkunPartner()
         getBankList()
+        getRekeningList()
     }, [])
     
 
     return (
-        <div className='main-content mt-5' style={{ padding: "37px 50px" }}>
+        <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
             <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Transfer</span> 
             <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Transfer</div>
@@ -262,7 +335,7 @@ const TransferSubAccount = () => {
                         Nomor Rekening Tujuan <span style={{ color: "red" }}>*</span>
                     </Col>
                     <Col xs={8}>
-                        <input type='text' className="input-text-user" placeholder='Masukkan No. Rekening Tujuan'/>
+                        <input type='number' name='noRek' value={inputDataRekening.noRek} onChange={(e) => handleChangeRek(e)} className="input-text-user" placeholder='Masukkan No. Rekening Tujuan' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}/>
                     </Col>
                     <Col xs={2} >
                         <button className='btn-ez-transfer'>
@@ -327,7 +400,7 @@ const TransferSubAccount = () => {
                 </Row>
                 <Row className='mt-3 align-items-center'>
                     <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                        Nomor Rekening Tujuan <span style={{ color: "red" }}>*</span>
+                        Biaya Transfer <span style={{ color: "red" }}>*</span>
                     </Col>
                     <Col xs={10}>
                         <input type='text' disabled className="input-text-user" placeholder='Rp 0'/>
@@ -358,12 +431,12 @@ const TransferSubAccount = () => {
                     <div className="div-table mt-3">
                         <DataTable 
                             columns={columnsBank}
-                            data={filterItems}
+                            data={filterItemsBank}
                             customStyles={customStyles}
                             progressComponent={<CustomLoader />}
                             highlightOnHover
                             subHeader
-                            subHeaderComponent={subHeaderComponentMemo}
+                            subHeaderComponent={subHeaderComponentMemoBank}
                             persistTableHead
                             onRowClicked={handleRowClicked}
                             fixedHeader={true}
@@ -388,25 +461,19 @@ const TransferSubAccount = () => {
                     Daftar Rekening
                 </Modal.Title>
                 <Modal.Body>
-                    <div style={{ fontFamily: 'Nunito', fontSize: 14}}>Cari Data Bank :</div>
-                    <div className="d-flex justify-content-between align-items-center position-relative mt-2" style={{width: "100%"}}>
-                        <div className="position-absolute left-3 px-1"><img src={search} alt="search" /></div>
-                        <FormControl
-                            className="ps-5"
-                            id="search"
-                            type="text"
-                            placeholder="Masukkan Nama / Kode Bank"
-                            aria-label="Search Input"
-                        />
-                    </div>
-                    <div className="div-table mt-3">
+                    <div className="div-table bank-list-subakun mt-3">
                         <DataTable 
                             columns={columns}
-                            data={agenLists}
+                            data={filterItemsRekening}
                             customStyles={customStyles}
                             progressComponent={<CustomLoader />}
-                            style={{ overflow: 'scroll' }}
+                            subHeader
+                            subHeaderComponent={subHeaderComponentMemoRekening}
+                            persistTableHead
+                            onRowClicked={handleRowClickedRekening}
                             highlightOnHover
+                            fixedHeader={true}
+                            fixedHeaderScrollHeight="300px"
                         />
                     </div>
                 </Modal.Body>
@@ -527,7 +594,14 @@ const TransferSubAccount = () => {
                             inputStyle={{ border: "1px solid #EBEBEB", borderRadius: 8, backgroundColor: "#FFFFFF", gap: 12, width: "3rem", height:"3rem", fontSize: 20, fontFamily: "Exo", fontWeight: 700, color: "#393939" }}
                         />
                     </div>
-                    <div className='text-center mt-3' style={{color: "#393939", fontSize: 16, fontFamily: "Source Sans Pro" }}>Mohon tunggu dalam <b>59 detik</b> untuk kirim ulang</div>
+                    {
+                        toCountdown === true ? 
+                            <div className='text-center mt-3' style={{color: "#393939", fontSize: 16, fontFamily: "Source Sans Pro" }}>Mohon tunggu dalam <b><Countdown date={Date.now() + 59000} renderer={renderer} onComplete={completeTime} /> detik</b> untuk kirim ulang</div> :
+                            <div className='d-flex justify-content-center align-items-center mt-3'>
+                                <div className="me-1" style={{ color: "#393939", fontFamily: "Nunito", fontSize: 16 }}>Tidak menerima kode OTP? </div>
+                                <div onClick={sendAgain} className='ms-1' style={{ color: "#077E86", fontFamily: "Exo", fontWeight: 700, fontSize: 16, cursor: "pointer" }}>Kirim Ulang</div>
+                            </div>
+                    }
                     <div className='px-5'>
                         <button
                             onClick={() => toTransfer()}

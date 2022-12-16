@@ -21,7 +21,7 @@ const ListRiwayatSubAccount = () => {
     const user_role = getRole()
     const column = [
         {
-            label: <><img src={triangleInfo} alt="triangle_info" style={{ marginRight: 3, marginTop: -6 }} /> Range Tanggal maksimal 7 hari dan periode mutasi paling lama 31 hari</>,
+            label: <><img src={triangleInfo} alt="triangle_info" style={{ marginRight: 3, marginTop: -6 }} /> Range Tanggal maksimal 7 hari dan periode mutasi paling lama 90 hari</>,
             style: {
                 color: '#383838',
                 width: 'max-content',
@@ -56,6 +56,7 @@ const ListRiwayatSubAccount = () => {
     const { allowedMaxDays, allowedRange, combine } = DateRangePicker;
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate() + 1).toISOString().split('T')[0]
+    const threeMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 3, new Date().getDate() + 1).toISOString().split('T')[0]
     
     const Locale = {
         sunday: 'Min',
@@ -533,7 +534,7 @@ const ListRiwayatSubAccount = () => {
                             size='lg' 
                             appearance="default" 
                             placeholder="Select Date Range" 
-                            disabledDate={combine(allowedMaxDays(7), allowedRange(oneMonthAgo, currentDate))}  
+                            disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}  
                             className='datePicker'
                             locale={Locale}
                             format="yyyy-MM-dd"

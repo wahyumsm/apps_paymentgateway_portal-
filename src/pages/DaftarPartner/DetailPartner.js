@@ -117,15 +117,15 @@ function DetailPartner() {
             }
             const detailPartner = await axios.post(BaseURL + "/Partner/EditPartner", { data: dataParams }, { headers: headers })
             if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length === 0) {
-                detailPartner.data.response_data.payment_method = detailPartner.data.response_data.payment_method.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
-                detailPartner.data.response_data.sub_account = detailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
+                detailPartner.data.response_data.payment_method = detailPartner.data.response_data.payment_method.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
+                detailPartner.data.response_data.sub_account = detailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setDetailPartner(detailPartner.data.response_data)
                 setPayment(detailPartner.data.response_data.payment_method)
                 setSubAccount(detailPartner.data.response_data.sub_account)
             } else if (detailPartner.status === 200 && detailPartner.data.response_code === 200 && detailPartner.data.response_new_token.length !== 0) {
                 setUserSession(detailPartner.data.response_new_token)
-                detailPartner.data.response_data.payment_method = detailPartner.data.response_data.payment_method.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
-                detailPartner.data.response_data.sub_account = detailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} /><img src={deleted} className="ms-2" /></div>}))
+                detailPartner.data.response_data.payment_method = detailPartner.data.response_data.payment_method.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
+                detailPartner.data.response_data.sub_account = detailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setDetailPartner(detailPartner.data.response_data)
                 setPayment(detailPartner.data.response_data.payment_method)
                 setSubAccount(detailPartner.data.response_data.sub_account)

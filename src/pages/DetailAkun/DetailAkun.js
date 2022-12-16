@@ -6,7 +6,8 @@ import axios from 'axios';
 import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import { useHistory, useParams } from 'react-router-dom';
-import { el } from 'date-fns/locale';
+import edit from '../../assets/icon/edit_icon.svg';
+import deleted from '../../assets/icon/delete_icon.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
@@ -18,6 +19,7 @@ function DetailAkun() {
     const access_token = getRole()
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
+    const [subAccount, setSubAccount] = useState({})
     const history = useHistory()
     const myRef = useRef(null)
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
@@ -43,23 +45,23 @@ function DetailAkun() {
     const columns = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.number,
         },
         {
             name: 'Sumber Agen',
-            selector: row => row.id,
+            selector: row => row.agen_source,
         },
         {
             name: 'Nama Bank',
-            selector: row => row.id,
+            selector: row => row.bank_name,
         },
         {
             name: 'No Rekening',
-            selector: row => row.id,
+            selector: row => row.bank_number,
         },
         {
             name: 'Nama Pemilik Rekening',
-            selector: row => row.id,
+            selector: row => row.bank_account_name,
         }
     ]
 
@@ -72,10 +74,14 @@ function DetailAkun() {
             }
             const userDetailPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
             if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length === 0) {
+                userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setDataAkun(userDetailPartner.data.response_data)
+                setSubAccount(userDetailPartner.data.response_data.sub_account)
             } else if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length !== 0) {
+                userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setUserSession(userDetailPartner.data.response_new_token)
                 setDataAkun(userDetailPartner.data.response_data)
+                setSubAccount(userDetailPartner.data.response_data.sub_account)
             }
             
         } catch (error) {
@@ -286,22 +292,22 @@ function DetailAkun() {
                         <tbody>
                             <tr>
                                 <td style={{width: 200}}>Sumber Agen</td>
-                                <td><input type='text'className='input-text-ez' value={dataAkun.mbank_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={'-'} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Nama Bank</td>
-                                <td><input type='text'className='input-text-ez' value={dataAkun.mbank_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={'-'} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>No. Rekening</td>
-                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_number} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={'-'} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Nama Pemilik Rekening</td>
-                                <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={'-'} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                         </tbody>
@@ -322,7 +328,7 @@ function DetailAkun() {
                         <div className="div-table pb-4 mb-4" ref={myRef}>
                             <DataTable
                                 columns={columns}
-                                data={agenLists}
+                                data={subAccount}
                                 customStyles={customStyles}
                                 // progressPending={pendingSettlement}
                                 progressComponent={<CustomLoader />}
