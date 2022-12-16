@@ -30,7 +30,7 @@ const TransferSubAccount = () => {
     const [toCountdown, setToCountdown] = useState(false)
     const [showTransferBerhasil, setShowTransferBerhasil] = useState(false)
     const [otp, setOtp] = useState('')
-    const renderer = ({ hours, minutes, seconds }) => {  return <span>{seconds}</span>; }
+    const renderer = ({ minutes, seconds }) => {  return <span>{minutes !== 0 && `${minutes} menit`} {seconds} detik</span>; }
     const [listBank, setListBank] = useState([])
     const [listRekening, setListRekening] = useState([])
     const [listAkunPartner, setListAkunPartner] = useState([])
@@ -596,7 +596,7 @@ const TransferSubAccount = () => {
                     </div>
                     {
                         toCountdown === true ? 
-                            <div className='text-center mt-3' style={{color: "#393939", fontSize: 16, fontFamily: "Source Sans Pro" }}>Mohon tunggu dalam <b><Countdown date={Date.now() + 59000} renderer={renderer} onComplete={completeTime} /> detik</b> untuk kirim ulang</div> :
+                            <div className='text-center mt-3' style={{color: "#393939", fontSize: 16, fontFamily: "Source Sans Pro" }}>Mohon tunggu dalam <b><Countdown date={Date.now() + 120000} renderer={renderer} onComplete={completeTime} /></b> untuk kirim ulang</div> :
                             <div className='d-flex justify-content-center align-items-center mt-3'>
                                 <div className="me-1" style={{ color: "#393939", fontFamily: "Nunito", fontSize: 16 }}>Tidak menerima kode OTP? </div>
                                 <div onClick={sendAgain} className='ms-1' style={{ color: "#077E86", fontFamily: "Exo", fontWeight: 700, fontSize: 16, cursor: "pointer" }}>Kirim Ulang</div>
