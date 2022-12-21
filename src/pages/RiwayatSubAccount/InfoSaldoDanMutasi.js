@@ -27,12 +27,39 @@ const InfoSaldoDanMutasi = () => {
     const [userId, setUserId] = useState([])
     const [pendingMutasi, setPendingMutasi] = useState(true)
     const [pendingSaldo, setPendingSaldo] = useState(true)
-    const fetchMoreData = () => {
-        setTimeout(() => {
-            if (pageMutasi.next_record !== "N") {
-                setListMutasi(listMutasi.concat(listMutasi))
+    async function fetchMoreData() {
+        // getListMutasi(userId, pageMutasi.next_record, pageMutasi.matched_record)
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"subpartner_id":"${userId}", "start_date":"20220403", "end_date":"20220410", "date_id":7, "page":{"max_record":"10", "next_record":"${pageMutasi.next_record !== undefined ? pageMutasi.next_record : "N"}", "matched_record":"${pageMutasi.matched_record !== undefined ? pageMutasi.matched_record : "0"}"}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
             }
-        },1000)
+            const mutasiList = await axios.post(BaseURL + "/SubAccount/GetAccountStatement", { data: dataParams }, { headers: headers })
+            if (mutasiList.status === 200 && mutasiList.data.response_code === 200 && mutasiList.data.response_new_token.length === 0) {
+                mutasiList.data.response_data.data.forEach((obj, idx) => {
+                    let year = obj.waktu.slice(0, 4)
+                    let month = obj.waktu.slice(4, 6)
+                    let day = obj.waktu.slice(6, 8)
+                    obj.waktu = `${day}/${month}/${year}`
+                });
+                setListMutasi(listMutasi.concat(mutasiList.data.response_data.data))
+                setPageMutasi(mutasiList.data.response_data.pages)
+            } else if (mutasiList.status === 200 && mutasiList.data.response_code === 200 && mutasiList.data.response_new_token.length !== 0) {
+                setUserSession(mutasiList.data.response_new_token)
+                mutasiList.data.response_data.data.forEach((obj, idx) => {
+                    let year = obj.waktu.slice(0, 4)
+                    let month = obj.waktu.slice(4, 6)
+                    let day = obj.waktu.slice(6, 8)
+                    obj.waktu = `${day}/${month}/${year}`
+                });
+                setListMutasi(listMutasi.concat(mutasiList.data.response_data.data))
+                setPageMutasi(mutasiList.data.response_data.pages)
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     console.log(listMutasi, 'listMutasi');
@@ -206,10 +233,11 @@ const InfoSaldoDanMutasi = () => {
         }
     }
 
-    async function getListMutasi(partnerId) {
+    async function getListMutasi(partnerId, nextRecord, matchedRecord) {
         try {
+            setPendingMutasi(true)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"subpartner_id":"${partnerId}", "start_date":"20220403", "end_date":"20220410", "date_id":7, "page":{"max_record":"10", "next_record":"N", "matched_record":"0"}}`)
+            const dataParams = encryptData(`{"subpartner_id":"${partnerId}", "start_date":"20220403", "end_date":"20220410", "date_id":7, "page":{"max_record":"10", "next_record":"${nextRecord !== undefined ? nextRecord : "N"}", "matched_record":"${matchedRecord !== undefined ? matchedRecord : "0"}"}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -217,8 +245,7 @@ const InfoSaldoDanMutasi = () => {
             const mutasiList = await axios.post(BaseURL + "/SubAccount/GetAccountStatement", { data: dataParams }, { headers: headers })
             console.log(mutasiList, "DATA MUTASI LIST")
             if (mutasiList.status === 200 && mutasiList.data.response_code === 200 && mutasiList.data.response_new_token.length === 0) {
-                mutasiList.data.response_data.data.forEach((obj, idx) => {
-                    obj.number = idx + 1
+                mutasiList.data.response_data.data.forEach((obj) => {
                     let year = obj.waktu.slice(0, 4)
                     let month = obj.waktu.slice(4, 6)
                     let day = obj.waktu.slice(6, 8)
@@ -228,8 +255,7 @@ const InfoSaldoDanMutasi = () => {
                 setPageMutasi(mutasiList.data.response_data.pages)
                 setPendingMutasi(false)
             } else if (mutasiList.status === 200 && mutasiList.data.response_code === 200 && mutasiList.data.response_new_token.length !== 0) {
-                mutasiList.data.response_data.data.forEach((obj, idx) => {
-                    obj.number = idx + 1
+                mutasiList.data.response_data.data.forEach((obj) => {
                     let year = obj.waktu.slice(0, 4)
                     let month = obj.waktu.slice(4, 6)
                     let day = obj.waktu.slice(6, 8)
@@ -377,7 +403,7 @@ const InfoSaldoDanMutasi = () => {
         userDetails()
         getAkunPartner()
     }, [])
-    
+    console.log(listMutasi, 'listMutasi');
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
@@ -486,33 +512,88 @@ const InfoSaldoDanMutasi = () => {
                     </Col>
                 </Row>
                 <div className="div-table table-transfer mt-4 pb-4">
-                    <DataTable
-                        columns={columns}
-                        data={listMutasi}
-                        customStyles={customStyles}
-                        progressPending={pendingMutasi}
-                        progressComponent={<CustomLoader />}
-                        persistTableHead
-                        fixedHeader={true}
-                        fixedHeaderScrollHeight="500px"
-                        // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                    />
+                    <div id="scrollableDiv" className='fixed-header-table'>
+                        <InfiniteScroll
+                            dataLength={listMutasi.length}
+                            next={fetchMoreData}
+                            hasMore={pageMutasi.next_record === "Y" ? true : false}
+                            loader={<div style={{ textAlign: 'center' }}><CustomLoader /></div>}
+                            scrollableTarget="scrollableDiv"
+                        >
+                            {
+                                pendingMutasi ?
+                                <div className='d-flex justify-content-center'><CustomLoader /></div> :
+                                <div id='table-body' style={{ height: 300, overflow: "auto" }}>
+                                    <table className='table mt-3'>
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>ID Referensi</th>
+                                                <th>Waktu</th>
+                                                <th>Nominal</th>
+                                                <th>Keterangan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {
+                                            listMutasi.map((item, idx) => (
+                                                <tr key={idx}>
+                                                    <td>{ idx+1 }</td>
+                                                    <td>{ item.Id_referensi }</td>
+                                                    <td>{ item.waktu }</td>
+                                                    <td>{ item.nominal }</td>
+                                                    <td>{ item.keterangan }</td>
+                                                </tr>
+                                            ))
+                                        }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </InfiniteScroll>
+                    </div>
+                    
+                    {/* <div id="scrollableDiv" className='fixed-header-table'>
+                        {
+                            pendingMutasi ?
+                            <div className='d-flex justify-content-center'><CustomLoader /></div> :
+                            <div id='table-body' style={{ height: 300, overflow: "auto" }}>
+                                <table className='table mt-3'>
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>ID Referensi</th>
+                                            <th>Waktu</th>
+                                            <th>Nominal</th>
+                                            <th>Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <InfiniteScroll
+                                            dataLength={listMutasi.length}
+                                            next={fetchMoreData}
+                                            hasMore={pageMutasi.next_record === "Y" ? true : false}
+                                            loader={<div style={{ textAlign: 'center' }}><CustomLoader /></div>}
+                                            scrollableTarget="scrollableDiv"
+                                        >
+                                            {
+                                                listMutasi.map((item, idx) => (
+                                                    <tr key={idx}>
+                                                        <td>{ idx+1 }</td>
+                                                        <td>{ item.Id_referensi }</td>
+                                                        <td>{ item.waktu }</td>
+                                                        <td>{ item.nominal }</td>
+                                                        <td>{ item.keterangan }</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </InfiniteScroll>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div> */}
                 </div>
-            </div>
-            <div id="scrollableDiv" style={{ height: 300, overflow: "auto" }}>
-                <InfiniteScroll
-                    dataLength={listMutasi.length}
-                    next={fetchMoreData}
-                    hasMore={pageMutasi.next_record === "Y" ? true : false}
-                    loader={<h4>Loading...</h4>}
-                    scrollableTarget="scrollableDiv"
-                >
-                    {listMutasi.map((item, idx) => (
-                        <div style={style} key={idx}>
-                            div - #{item.nominal}
-                        </div>
-                    ))}
-                </InfiniteScroll>
             </div>
             <Modal className="history-modal" size="xs" centered show={showSaldoSubAcc} onHide={() => setShowSaldoSubAcc(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
