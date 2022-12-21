@@ -231,7 +231,7 @@ const ListRiwayatSubAccount = () => {
     async function getListRiwayatTransfer(currentPage) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"subpartner_id":"", "toffshorebank_code":"", "trans_type": 0, "partner_name":"", "date_from":"", "date_to":"", "period":4, "page":${(currentPage < 1) ? 1 : currentPage}, "row_per_page":10}`)
+            const dataParams = encryptData(`{"subpartner_id":"", "toffshorebank_code":"", "trans_type": 0, "partner_name":"", "date_from":"", "date_to":"", "period":2, "page":${(currentPage < 1) ? 1 : currentPage}, "row_per_page":10}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
