@@ -3,13 +3,11 @@ import SubAccountComponent from '../../components/SubAccountComponent'
 import { useHistory } from 'react-router-dom'
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Button, Col, Form, FormControl, Image, Modal, Row } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import { useState } from 'react'
-import search from "../../assets/icon/search_icon.svg"
 import DataTable from 'react-data-table-component'
-import { agenLists} from '../../data/tables'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import noteIconGreen from "../../assets/icon/note_icon_green.svg"
 import transferSuccess from "../../assets/icon/berhasiltopup_icon.svg"
@@ -83,20 +81,9 @@ const TransferSubAccount = () => {
     }
 
     const [inputTransfer, setInputTransfer] = useState ({
-        nominal: 0,
+        nominal: "",
         desc: ""
     })
-
-    console.log(inputHandle.akunPartner, "akun partner");
-    console.log(inputHandle.nomorAkun, "nomor akun");
-    console.log(inputHandle.namaAkun, "nama partner");
-    console.log(inputData.bankName, "bank name");
-    console.log(inputData.bankCode, "bank code");
-    console.log(inputDataRekening.noRek, "no rek tujuan");
-    console.log(checking.account_name, "name rek tujuan");
-    console.log(inputTransfer.nominal, "nominal");
-    console.log(transferFee.fee_transfer, "biaya tf");
-    console.log(otp, "otp");
 
     const subHeaderComponentMemoBank = useMemo(() => {
         return (
@@ -137,6 +124,7 @@ const TransferSubAccount = () => {
                     bankName: row.mbank_name
                 })
                 setShowDaftarRekening(false)
+                feeTransferHandler(row.moffshorebankacclist_bank_code)
             }
         });
     };
@@ -162,9 +150,10 @@ const TransferSubAccount = () => {
     }
 
     function handleChange(e) {
+        console.log(e.target.value, "e.target.value");
         setInputTransfer({
             ...inputTransfer,
-            [e.target.name]: e.target.value,
+            [e.target.name]: (e.target.name !== "desc") ? Number(e.target.value).toString() : e.target.value,
         });
     }
     
@@ -174,8 +163,27 @@ const TransferSubAccount = () => {
 
     function sendAgain() {
         sendOtpHanlder(inputHandle.akunPartner)
-        // setToCountdown(true)
     }
+
+    var htmlToImage = require('html-to-image')
+
+    const onButtonClick = (async (dataConfirmation) => {
+        const dom = document.getElementById('bukti');
+        const fontEmbedCss = await htmlToImage.getFontEmbedCSS(dom);
+        console.log(dom, 'dom');
+        htmlToImage.toPng(dom, { fontEmbedCss })
+            .then(function (dataUrl) {
+                console.log(dataUrl, 'dataUrl');
+                var link = document.createElement('a');
+                link.download = `bukti-pembayaran-${dataConfirmation.trans_id}.png`
+                link.href = dataUrl;
+                link.click()
+                // download(dataUrl, "bukti-tarnsfer.png")
+            })
+            .catch((err) => {
+                console.log(err, 'oops, something went wrong!')
+            })
+    })
 
     const columnsBank = [
         {
@@ -228,9 +236,7 @@ const TransferSubAccount = () => {
 
     function toInputCode () {
         setShowTransfer(false)
-        // setShowModalInputCode(true)
         sendOtpHanlder(inputHandle.akunPartner)
-        // setToCountdown(true)
     }
 
     function toTransfer () {
@@ -248,27 +254,31 @@ const TransferSubAccount = () => {
             if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length === 0) {
                 // listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setListAkunPartner(listPartnerAkun.data.response_data)
-                setInputHandle({
-                    ...inputHandle,
-                    akunPartner: listPartnerAkun.data.response_data[0].partner_id,
-                    nomorAkun: listPartnerAkun.data.response_data[0].account_number,
-                    namaAkun: listPartnerAkun.data.response_data[0].account_name,
-                })
+                if (listPartnerAkun.data.response_data.length !== 0) {
+                    setInputHandle({
+                        ...inputHandle,
+                        akunPartner: listPartnerAkun.data.response_data[0].partner_id,
+                        nomorAkun: listPartnerAkun.data.response_data[0].account_number,
+                        namaAkun: listPartnerAkun.data.response_data[0].account_name,
+                    })
+                }
             } else if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length !== 0) {
                 setUserSession(listPartnerAkun.data.response_new_token)
                 // listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setListAkunPartner(listPartnerAkun.data.response_data)
-                setInputHandle({
-                    ...inputHandle,
-                    akunPartner: listPartnerAkun.data.response_data[0].partner_id,
-                    nomorAkun: listPartnerAkun.data.response_data[0].account_number,
-                    namaAkun: listPartnerAkun.data.response_data[0].account_name,
-                })
+                if (listPartnerAkun.data.response_data.length !== 0) {
+                    setInputHandle({
+                        ...inputHandle,
+                        akunPartner: listPartnerAkun.data.response_data[0].partner_id,
+                        nomorAkun: listPartnerAkun.data.response_data[0].account_number,
+                        namaAkun: listPartnerAkun.data.response_data[0].account_name,
+                    })
+                }
             }
         } catch (error) {
-        //   console.log(error)
+          console.log(error)
             // RouteTo(errorCatch(error.response.status))
-            history.push(errorCatch(error.response.status))
+            // history.push(errorCatch(error.response.status))
         }
     }
 
@@ -437,7 +447,7 @@ const TransferSubAccount = () => {
     async function confirmHandler(nomorAkun, nominal, bankCode, desc, otp, saveNomorAkun, subPartnerId) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"account_number": "${nomorAkun}", "amount": ${nominal}, "bank_code": "${bankCode}", "description": "${desc}", "otp": "${otp}", "save_account_number": ${saveNomorAkun}, "sub_partner_id": "${subPartnerId}"}`)
+            const dataParams = encryptData(`{"account_number": "${nomorAkun}", "amount": ${Number(nominal)}, "bank_code": "${bankCode}", "description": "${desc}", "otp": "${otp}", "save_account_number": ${saveNomorAkun}, "sub_partner_id": "${subPartnerId}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -497,10 +507,12 @@ const TransferSubAccount = () => {
             }
         },
     };
+
+    console.log(listAkunPartner, "LIST AKUN PARTNER");
   
     const CustomLoader = () => (
       <div style={{ padding: '24px' }}>
-        <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+        <img className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
         <div>Loading...</div>
       </div>
     );
@@ -518,151 +530,157 @@ const TransferSubAccount = () => {
             <div className="head-title mt-3 mb-3">
                 <div classN ame="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Transfer</div>
             </div>
-            {/* <SubAccountComponent/> */}
-            <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "50%" }}>
-                <div className="mb-3">Pilih Akun</div>
-                <Form.Select name="akunPartner" value={inputHandle.akunPartner} onChange={(e) => handleChangeTransfer(e, listAkunPartner)}>
-                    {listAkunPartner.map((item, idx) => {
-                        return (
-                            <option key={idx} value={item.partner_id}>
-                                {item.account_name} - {item.account_number}
-                            </option>
-                        )
-                    })}
-                </Form.Select>
-            </div>
-            <div className="head-title">
-                <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Rekening Tujuan</div>
-            </div>
-            <div className='base-content-custom px-3 pt-4 pb-4' >
-                <Row className='mt-1 align-items-center'>
-                    <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                        Pilih Bank <span style={{ color: "red" }}>*</span>
-                    </Col>
-                    <Col xs={10} className="position-relative d-flex justify-content-between align-items-center" style={{ cursor: "pointer" }} onClick={() => setShowBank(true)}>
-                        <input style={{ cursor: "pointer", backgroundColor: "#FFFFFF" }} disabled name="bankName" value={inputData.bankName} className="input-text-user" placeholder='Pilih Bank Tujuan'/>
-                        <div className="position-absolute right-4" ><img src={chevron} alt="time" /></div>
-                    </Col>
-                </Row>
-                <Row className='mt-3 align-items-center'>
-                    <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                        Nomor Rekening Tujuan <span style={{ color: "red" }}>*</span>
-                    </Col>
-                    <Col xs={8}>
-                        <input type='number' name='noRek' value={inputDataRekening.noRek} onChange={(e) => handleChangeRek(e)} className="input-text-user" placeholder='Masukkan No. Rekening Tujuan' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}/>
-                    </Col>
-                    <Col xs={2} >
-                        <button onClick={() => checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, true)} className='btn-ez-transfer'>
-                            Periksa
-                        </button>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={2}></Col>
-                    <Col xs={10}>
-                        {
-                            clickCheck === true ?
-                                <>
-                                    {
-                                        msg === "Success" ?
-                                        <div style={{ color: "#3DB54A", fontSize: 12 }} className="mt-2">
-                                            <img src={noteIconGreen} className="me-2" alt="icon notice" />
-                                            Rekening Terkonfirmasi - {checking.account_name}
-                                        </div> :
-                                        <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-2">
-                                            <img src={noteIconRed} className="me-2" alt="icon notice" />
-                                            {inputData.bankCode === "" ? 'Silahkan pilih bank terlebih dahulu' : msg}
-                                        </div>
-                                    }
-                                </> : <></>
-                        }
-                        
-                        <div className='d-flex align-items-center justify-content-between'>
-                            <div className='mt-2'>
-                                <Form.Check
-                                    label="Simpan ke Daftar Rekening"
-                                    id="statusId"
-                                    onChange={handleOnChangeCheckBox}
-                                    checked={isChecked}
-                                />
-                            </div>
-                            <div className='mt-2'>
-                                <button
-                                    style={{
-                                        fontFamily: "Exo",
-                                        fontSize: 14,
-                                        fontWeight: 700,
-                                        alignItems: "center",
-                                        height: 48,
-                                        color: "#077E86",
-                                        background: "unset",
-                                        border: "unset",
-                                        textDecoration: 'underline'
-                                    }}
-                                    onClick={() => setShowDaftarRekening(true)}
-                                >
-                                    Lihat Daftar Rekening
+            {
+                listAkunPartner.length !== 0 ?
+                <>
+                    <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "50%" }}>
+                        <div className="mb-3">Pilih Akun</div>
+                        <Form.Select name="akunPartner" value={inputHandle.akunPartner} onChange={(e) => handleChangeTransfer(e, listAkunPartner)}>
+                            {listAkunPartner.map((item, idx) => {
+                                return (
+                                    <option key={idx} value={item.partner_id}>
+                                        {item.account_name} - {item.account_number}
+                                    </option>
+                                )
+                            })}
+                        </Form.Select>
+                    </div>
+                    <div className="head-title">
+                        <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Rekening Tujuan</div>
+                    </div>
+                    <div className='base-content-custom px-3 pt-4 pb-4' >
+                        <Row className='mt-1 align-items-center'>
+                            <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
+                                Pilih Bank <span style={{ color: "red" }}>*</span>
+                            </Col>
+                            <Col xs={10} className="position-relative d-flex justify-content-between align-items-center" style={{ cursor: "pointer" }} onClick={() => setShowBank(true)}>
+                                <input style={{ cursor: "pointer", backgroundColor: "#FFFFFF" }} disabled name="bankName" value={inputData.bankName} className="input-text-user" placeholder='Pilih Bank Tujuan'/>
+                                <div className="position-absolute right-4" ><img src={chevron} alt="time" /></div>
+                            </Col>
+                        </Row>
+                        <Row className='mt-3 align-items-center'>
+                            <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
+                                Nomor Rekening Tujuan <span style={{ color: "red" }}>*</span>
+                            </Col>
+                            <Col xs={8}>
+                                <input type='number' name='noRek' value={inputDataRekening.noRek} onChange={(e) => handleChangeRek(e)} className="input-text-user" placeholder='Masukkan No. Rekening Tujuan' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}/>
+                            </Col>
+                            <Col xs={2} >
+                                <button onClick={() => checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, true)} className='btn-ez-transfer'>
+                                    Periksa
                                 </button>
-                            </div>
-                        </div>
-                    </Col>
-                </Row>
-                <Row className='mt-3 align-items-center'>
-                    <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                        Nominal Transfer <span style={{ color: "red" }}>*</span>
-                    </Col>
-                    <Col xs={10}>
-                        {
-                            editNominal ?
-                                <input 
-                                    name="nominal" 
-                                    value={inputTransfer.nominal === undefined ? 0 : inputTransfer.nominal} 
-                                    type='number' 
-                                    className="input-text-user" 
-                                    // placeholder='Rp 0'
-                                    onChange={handleChange}
-                                    onBlur={() => setEditNominal(!editNominal)}
-                                    onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
-                                /> :
-                                <input 
-                                    name="nominal" 
-                                    value={inputTransfer.nominal === undefined ? convertToRupiah(0, true, 0) : convertToRupiah(inputTransfer.nominal, true, 0)} 
-                                    type='text' 
-                                    className="input-text-user" 
-                                    // placeholder='Rp 0' 
-                                    onChange={handleChange}
-                                    onFocus={() => setEditNominal(!editNominal)}
-                                />
-                        }
-                    </Col>
-                </Row>
-                <Row className='mt-3 align-items-center'>
-                    <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                        Deskripsi
-                    </Col>
-                    <Col xs={10}>
-                        <input name="desc" value={inputTransfer.desc} type='text' className="input-text-user" placeholder='Masukkan Deskripsi' onChange={handleChange}/>
-                    </Col>
-                </Row>
-                <Row className='mt-3 align-items-center'>
-                    <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                        Biaya Transfer <span style={{ color: "red" }}>*</span>
-                    </Col>
-                    <Col xs={10}>
-                        <input value={(transferFee.fee_transfer === undefined) ? convertToRupiah(0, true, 0) : convertToRupiah(transferFee.fee_transfer, true, 0)} type='text' disabled className="input-text-user" placeholder='Rp 0'/>
-                    </Col>
-                </Row>
-            </div>
-            <div className="d-flex justify-content-end align-items-center mt-3" >
-                <button 
-                    className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && inputTransfer.nominal !== 0 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
-                    disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || inputTransfer.nominal === 0 || transferFee.fee_transfer === undefined}
-                    style={{ width: '25%' }} 
-                    onClick={() => toShowDataTransfer(isCheckedAccBankButton)}
-                >
-                    Transfer Sekarang
-                </button>
-            </div>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={2}></Col>
+                            <Col xs={10}>
+                                {
+                                    clickCheck === true ?
+                                        <>
+                                            {
+                                                msg === "Success" ?
+                                                <div style={{ color: "#3DB54A", fontSize: 12 }} className="mt-2">
+                                                    <img src={noteIconGreen} className="me-2" alt="icon notice" />
+                                                    Rekening Terkonfirmasi - {checking.account_name}
+                                                </div> :
+                                                <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-2">
+                                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                                    {inputData.bankCode === "" ? 'Silahkan pilih bank terlebih dahulu' : msg}
+                                                </div>
+                                            }
+                                        </> : <></>
+                                }
+                                
+                                <div className='d-flex align-items-center justify-content-between'>
+                                    <div className='mt-2'>
+                                        <Form.Check
+                                            label="Simpan ke Daftar Rekening"
+                                            id="statusId"
+                                            onChange={handleOnChangeCheckBox}
+                                            checked={isChecked}
+                                        />
+                                    </div>
+                                    <div className='mt-2'>
+                                        <button
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 14,
+                                                fontWeight: 700,
+                                                alignItems: "center",
+                                                height: 48,
+                                                color: "#077E86",
+                                                background: "unset",
+                                                border: "unset",
+                                                textDecoration: 'underline'
+                                            }}
+                                            onClick={() => setShowDaftarRekening(true)}
+                                        >
+                                            Lihat Daftar Rekening
+                                        </button>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row className='mt-3 align-items-center'>
+                            <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
+                                Nominal Transfer <span style={{ color: "red" }}>*</span>
+                            </Col>
+                            <Col xs={10}>
+                                {
+                                    editNominal ?
+                                        <input 
+                                            name="nominal" 
+                                            value={inputTransfer.nominal === undefined ? 0 : inputTransfer.nominal} 
+                                            type='number' 
+                                            className="input-text-user" 
+                                            // placeholder='Rp 0'
+                                            onChange={handleChange}
+                                            min={0}
+                                            onBlur={() => setEditNominal(!editNominal)}
+                                            onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                                        /> :
+                                        <input 
+                                            name="nominal" 
+                                            value={inputTransfer.nominal === undefined ? convertToRupiah(0, true, 0) : convertToRupiah(inputTransfer.nominal, true, 0)} 
+                                            type='text' 
+                                            className="input-text-user" 
+                                            // placeholder='Rp 0' 
+                                            onChange={handleChange}
+                                            onFocus={() => setEditNominal(!editNominal)}
+                                        />
+                                }
+                            </Col>
+                        </Row>
+                        <Row className='mt-3 align-items-center'>
+                            <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
+                                Deskripsi
+                            </Col>
+                            <Col xs={10}>
+                                <input name="desc" value={inputTransfer.desc} type='text' className="input-text-user" placeholder='Masukkan Deskripsi' onChange={handleChange}/>
+                            </Col>
+                        </Row>
+                        <Row className='mt-3 align-items-center'>
+                            <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
+                                Biaya Transfer <span style={{ color: "red" }}>*</span>
+                            </Col>
+                            <Col xs={10}>
+                                <input value={(transferFee.fee_transfer === undefined) ? convertToRupiah(0, true, 0) : convertToRupiah(transferFee.fee_transfer, true, 0)} type='text' disabled className="input-text-user" placeholder='Rp 0'/>
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className="d-flex justify-content-end align-items-center mt-3" >
+                        <button 
+                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && inputTransfer.nominal.length >= 5 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
+                            disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || inputTransfer.nominal.length < 5 || transferFee.fee_transfer === undefined}
+                            style={{ width: '25%' }} 
+                            onClick={() => toShowDataTransfer(isCheckedAccBankButton)}
+                        >
+                            Transfer Sekarang
+                        </button>
+                    </div>
+                </> :
+                <SubAccountComponent/>
+            }
 
             {/*Modal Pilih Bank*/}
             <Modal className="history-modal bank-list-subakun" size="xs" centered show={showBank} onHide={() => setShowBank(false)}>
@@ -770,7 +788,7 @@ const TransferSubAccount = () => {
                             <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Biaya Admin</div>
                         </div>
                         <div className='d-flex justify-content-between align-items-center mt-1'>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{inputTransfer.desc}</div>
+                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{inputTransfer.desc !== "" ? inputTransfer.desc : "-"}</div>
                             <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(transferFee.fee_transfer, true, 0)}</div>
                         </div>
                         <div className='mt-3' style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Total</div>
@@ -935,51 +953,54 @@ const TransferSubAccount = () => {
                     />
                     
                 </Modal.Header>
-                <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    <div><img src={dataConfirm.status_id === 2 ? transferSuccess : dataConfirm.status_id === 1 ? transferProses : transferFailed}  alt="success" /></div>
-                    <div className='mt-3'>{dataConfirm.status_message}</div>
-                    {
-                        dataConfirm.status_id === 1 ?
-                            <div style={{ fontSize: 14, fontFamily: 'Nunito', color: '#848484' }} className='mt-2'>Cek mutasi secara berkala untuk mengetahui status transfer</div> : <></>
-                    }
-                </Modal.Title>
-                <Modal.Body>
-                    <div className='px-2 py-3' style={{ backgroundColor: "rgba(240, 240, 240, 0.38)" }}>
-                        <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Dari Rekening</div>
-                        <div className='mt-1' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.source_account_number}</div>
-                        <div className='mt-3' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>Rekening Tujuan</div>
-                        <div className='d-flex justify-content-between align-items-center mt-3'>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Nama Bank</div>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>No Rekening</div>
+                <Modal.Body style={{ padding: 'unset'}}>
+                    <div id='bukti' className='px-3 my-3' style={{ backgroundColor: "#FFFFFF" }}>
+                        <div className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
+                            <div><img src={dataConfirm.status_id === 2 ? transferSuccess : dataConfirm.status_id === 1 ? transferProses : transferFailed}  alt="success" /></div>
+                            <div className='mt-3 mb-3'>{dataConfirm.status_message}</div>
+                            {
+                                dataConfirm.status_id === 1 ?
+                                    <div style={{ fontSize: 14, fontFamily: 'Nunito', color: '#848484' }} className='mt-2'>Cek mutasi secara berkala untuk mengetahui status transfer</div> : <></>
+                            }
                         </div>
-                        <div className='d-flex justify-content-between align-items-center mt-1'>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{inputData.bankName}</div>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.beneficiary_account_number}</div>
+                        <div className='px-2 py-3' style={{ backgroundColor: "rgba(240, 240, 240, 0.38)" }}>
+                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Dari Rekening</div>
+                            <div className='mt-1' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.source_account_number}</div>
+                            <div className='mt-3' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>Rekening Tujuan</div>
+                            <div className='d-flex justify-content-between align-items-center mt-3'>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Nama Bank</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>No Rekening</div>
+                            </div>
+                            <div className='d-flex justify-content-between align-items-center mt-1'>
+                                <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{inputData.bankName}</div>
+                                <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.beneficiary_account_number}</div>
+                            </div>
+                            <div className='d-flex justify-content-between align-items-center mt-3'>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Nama Pemilik Rekening</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Nominal Transfer</div>
+                            </div>
+                            <div className='d-flex justify-content-between align-items-center mt-1'>
+                                <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.beneficiary_account_name}</div>
+                                <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(dataConfirm.transfer_amount, true, 0)}</div>
+                            </div>
+                            <div className='d-flex justify-content-between align-items-center mt-3'>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Deskripsi</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Biaya Admin</div>
+                            </div>
+                            <div className='d-flex justify-content-between align-items-center mt-1'>
+                                <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.description !== "" ? dataConfirm.description : "-"}</div>
+                                <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(dataConfirm.admin_fee, true, 0)}</div>
+                            </div>
+                            <div className='mt-3' style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Total</div>
+                            <div style={{ fontSize: 24, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah((Number(dataConfirm.transfer_amount)) + (Number(dataConfirm.admin_fee)))}</div>
                         </div>
-                        <div className='d-flex justify-content-between align-items-center mt-3'>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Nama Pemilik Rekening</div>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Nominal Transfer</div>
-                        </div>
-                        <div className='d-flex justify-content-between align-items-center mt-1'>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.beneficiary_account_name}</div>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(dataConfirm.transfer_amount, true, 0)}</div>
-                        </div>
-                        <div className='d-flex justify-content-between align-items-center mt-3'>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Deskripsi</div>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Biaya Admin</div>
-                        </div>
-                        <div className='d-flex justify-content-between align-items-center mt-1'>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.description}</div>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(dataConfirm.admin_fee, true, 0)}</div>
-                        </div>
-                        <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Total</div>
-                        <div className='mt-1' style={{ fontSize: 24, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah((Number(dataConfirm.transfer_amount)) + (Number(dataConfirm.admin_fee)))}</div>
                     </div>
-                    <div className='d-flex justify-content-center align-items-center'>
+                    <div className='d-flex justify-content-center align-items-center mt-3 mb-4'>
                         {
                             dataConfirm.status_id !== 1 ?
                             <>
                                 <button
+                                onClick={() => onButtonClick(dataConfirm)}
                                     className="mx-2"
                                     style={{
                                         fontFamily: "Exo",

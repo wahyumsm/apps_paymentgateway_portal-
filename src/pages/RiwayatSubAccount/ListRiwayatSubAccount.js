@@ -7,7 +7,7 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 // import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import Pagination from 'react-js-pagination'
 import SubAccountComponent from '../../components/SubAccountComponent'
-import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
 import { useState } from 'react'
 import { DateRangePicker } from 'rsuite'
 import "rsuite/dist/rsuite.css";
@@ -19,6 +19,7 @@ import triangleInfo from "../../assets/icon/triangle-info.svg"
 
 const ListRiwayatSubAccount = () => {
     const user_role = getRole()
+    const [listAkunPartner, setListAkunPartner] = useState([])
     const column = [
         {
             label: <><img src={triangleInfo} alt="triangle_info" style={{ marginRight: 3, marginTop: -6 }} /> Range Tanggal maksimal 7 hari dan periode mutasi paling lama 90 hari</>,
@@ -166,7 +167,7 @@ const ListRiwayatSubAccount = () => {
         },
         {
             name: 'Biaya Admin',
-            selector: row => row.toffshorebank_fee,
+            selector: row => convertToRupiah(row.toffshorebank_fee_bank, true, 0),
             width: '130px'
         },
         {
@@ -394,10 +395,32 @@ const ListRiwayatSubAccount = () => {
             }
             dataDefault()
         }
-    } 
+    }
+
+    async function getAkunPartner() {
+        try {
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const listPartnerAkun = await axios.post(BaseURL + "/SubAccount/GetAgenAccount", { data: "" }, { headers: headers })
+            if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length === 0) {
+                setListAkunPartner(listPartnerAkun.data.response_data)
+            } else if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length !== 0) {
+                setUserSession(listPartnerAkun.data.response_new_token)
+                setListAkunPartner(listPartnerAkun.data.response_data)
+            }
+        } catch (error) {
+        //   console.log(error)
+            // RouteTo(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
+        }
+    }
 
     useEffect(() => {
         getListRiwayatTransfer(activePageRiwayatTransfer)
+        getAkunPartner()
     }, [])
     
 
@@ -423,169 +446,172 @@ const ListRiwayatSubAccount = () => {
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Transaksi Sub Account</span>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} /> Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> Riwayat Transaksi Sub Account</span>
             <div className='head-title'>
                 <h2 className="h4 mt-4 mb-4" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 18, color: "#383838"}}>Riwayat Transaksi Sub Account Partner</h2>
             </div>
-            {/* <SubAccountComponent/> */}
-            <div className="base-content mt-3">
-                <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
-                    Filter
-                </span>
-                <Row className="mt-4">
-                    <Col xs={4} className="d-flex justify-content-between align-items-center">
-                        <div>ID Referensi</div>
-                        <input
-                            name="idReff"
-                            value={inputHandle.idReff}
-                            onChange={(e) => handleChange(e)}
-                            type="text"
-                            className="input-text-sub"
-                            placeholder="Masukkan ID Referensi"
-                        />
-                    </Col>
-                    {
-                        user_role !== "102" ?
+            {
+                listAkunPartner.length !== 0 ?
+                <div className="base-content mt-3">
+                    <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
+                        Filter
+                    </span>
+                    <Row className="mt-4">
                         <Col xs={4} className="d-flex justify-content-between align-items-center">
-                            <div>Nama Partner</div>
+                            <div>ID Referensi</div>
                             <input
-                                name="namaPartner"
-                                value={inputHandle.namaPartner}
+                                name="idReff"
+                                value={inputHandle.idReff}
                                 onChange={(e) => handleChange(e)}
                                 type="text"
                                 className="input-text-sub"
-                                placeholder="Masukkan Nama Partner"
+                                placeholder="Masukkan ID Referensi"
                             />
-                        </Col> :
+                        </Col>
+                        {
+                            user_role !== "102" ?
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <div>Nama Partner</div>
+                                <input
+                                    name="namaPartner"
+                                    value={inputHandle.namaPartner}
+                                    onChange={(e) => handleChange(e)}
+                                    type="text"
+                                    className="input-text-sub"
+                                    placeholder="Masukkan Nama Partner"
+                                />
+                            </Col> :
+                            <Col
+                                xs={4}
+                                className="d-flex justify-content-between align-items-center"
+                            >
+                                <div>Jenis Transaksi</div>
+                                <Form.Select
+                                    name="fiturTransaksi"
+                                    value={inputHandle.fiturTransaksi}
+                                    onChange={(e) => handleChange(e)}
+                                    className="input-text-sub"
+                                    placeholder='Pilih Jenis Transaksi'
+                                >
+                                    <option value={0}>Pilih Jenis Transaksi</option>
+                                    <option value={1}>Transaksi Masuk ( cr )</option>
+                                    <option value={2}>Transaksi Keluar ( db )</option>
+                                </Form.Select>
+                            </Col> 
+                        }
+                        
                         <Col
                             xs={4}
                             className="d-flex justify-content-between align-items-center"
+                            style={{ width: (showDateRiwayatTranfer === "none") ? "33%" : "33%" }}
                         >
-                            <div>Jenis Transaksi</div>
+                            <div>Periode</div>
                             <Form.Select
-                                name="fiturTransaksi"
-                                value={inputHandle.fiturTransaksi}
-                                onChange={(e) => handleChange(e)}
+                                name="periodeRiwayatTransfer"
                                 className="input-text-sub"
-                                placeholder='Pilih Jenis Transaksi'
+                                value={inputHandle.periodeRiwayatTransfer}
+                                onChange={(e) => handleChangePeriodeTransfer(e)}
                             >
-                                <option value={0}>Pilih Jenis Transaksi</option>
-                                <option value={1}>Transaksi Masuk ( cr )</option>
-                                <option value={2}>Transaksi Keluar ( db )</option>
+                                <option defaultChecked disabled value={0}>Pilih Periode</option>
+                                <option value={2}>Hari Ini</option>
+                                <option value={3}>Kemarin</option>
+                                <option value={4}>7 Hari Terakhir</option>
+                                <option value={7}>Pilih Range Tanggal</option>
                             </Form.Select>
-                        </Col> 
-                    }
-                    
-                    <Col
-                        xs={4}
-                        className="d-flex justify-content-between align-items-center"
-                        style={{ width: (showDateRiwayatTranfer === "none") ? "33%" : "33%" }}
-                    >
-                        <div>Periode</div>
-                        <Form.Select
-                            name="periodeRiwayatTransfer"
-                            className="input-text-sub"
-                            value={inputHandle.periodeRiwayatTransfer}
-                            onChange={(e) => handleChangePeriodeTransfer(e)}
-                        >
-                            <option defaultChecked disabled value={0}>Pilih Periode</option>
-                            <option value={2}>Hari Ini</option>
-                            <option value={3}>Kemarin</option>
-                            <option value={4}>7 Hari Terakhir</option>
-                            <option value={7}>Pilih Range Tanggal</option>
-                        </Form.Select>
-                    </Col>
-                </Row>
-                <Row style={{ display: showDateRiwayatTranfer }}>
-                    <Col xs={4}></Col>
-                    <Col xs={4}></Col>
-                    <Col xs={4} className='d-flex justify-content-end align-items-center mt-4 pe-3' >
-                        {/* <DateRangePicker
-                            onChange={pickDateRiwayatTransfer}
-                            value={stateRiwayatTransfer}
-                            clearIcon={null}
-                            showDoubleView={true}
-                            selectRange={true}
-                            closeCalendar={true}
-                            format={'dd-MM-y'}
-                            className="datePicker"
-                            activeStartDate={new Date(new Date().setDate((new Date()).getDate() - 30))}
-                        /> */}
-                        {/* <OverlayTrigger
-                            placement="bottom"
-                            trigger={["hover"]}
-                            overlay={
-                            <Tooltip>Range Tanggal maksimal 7 hari dan periode mutasi paling lama 31 hari</Tooltip>
-                            }
-                        >
-                            <img
-                            src={triangleInfo}
-                            alt="triangle_info"
-                            style={{ marginRight: 15 }}
+                        </Col>
+                    </Row>
+                    <Row style={{ display: showDateRiwayatTranfer }}>
+                        <Col xs={4}></Col>
+                        <Col xs={4}></Col>
+                        <Col xs={4} className='d-flex justify-content-end align-items-center mt-4 pe-3' >
+                            {/* <DateRangePicker
+                                onChange={pickDateRiwayatTransfer}
+                                value={stateRiwayatTransfer}
+                                clearIcon={null}
+                                showDoubleView={true}
+                                selectRange={true}
+                                closeCalendar={true}
+                                format={'dd-MM-y'}
+                                className="datePicker"
+                                activeStartDate={new Date(new Date().setDate((new Date()).getDate() - 30))}
+                            /> */}
+                            {/* <OverlayTrigger
+                                placement="bottom"
+                                trigger={["hover"]}
+                                overlay={
+                                <Tooltip>Range Tanggal maksimal 7 hari dan periode mutasi paling lama 31 hari</Tooltip>
+                                }
+                            >
+                                <img
+                                src={triangleInfo}
+                                alt="triangle_info"
+                                style={{ marginRight: 15 }}
+                                />
+                            </OverlayTrigger> */}
+                            <DateRangePicker 
+                                value={stateRiwayatTransfer} 
+                                ranges={column} 
+                                onChange={(e) => pickDateRiwayatTransfer(e)} 
+                                character=' - ' 
+                                cleanable={true} 
+                                placement={'bottomEnd'} 
+                                size='lg' 
+                                appearance="default" 
+                                placeholder="Select Date Range" 
+                                disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}  
+                                className='datePicker'
+                                locale={Locale}
+                                format="yyyy-MM-dd"
+                                defaultCalendarValue={[new Date(`${oneMonthAgo}`), new Date(`${currentDate}`)]}
                             />
-                        </OverlayTrigger> */}
-                        <DateRangePicker 
-                            value={stateRiwayatTransfer} 
-                            ranges={column} 
-                            onChange={(e) => pickDateRiwayatTransfer(e)} 
-                            character=' - ' 
-                            cleanable={true} 
-                            placement={'bottomEnd'} 
-                            size='lg' 
-                            appearance="default" 
-                            placeholder="Select Date Range" 
-                            disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}  
-                            className='datePicker'
-                            locale={Locale}
-                            format="yyyy-MM-dd"
-                            defaultCalendarValue={[new Date(`${oneMonthAgo}`), new Date(`${currentDate}`)]}
+                        </Col>
+                    </Row>
+                    <Row className='mt-3'>
+                        <Col xs={5}>
+                            <Row>
+                                <Col xs={6} style={{ width: "unset" }}>
+                                    <button className={(inputHandle.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranfer.length !== 0 || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.idReff.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.namaPartner.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.fiturTransaksi !== 0)) ? "btn-ez-on" : "btn-ez"} disabled={inputHandle.periodeRiwayatTransfer === 0 || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.idReff.length === 0) || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.namaPartner.length === 0)|| (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.fiturTransaksi === 0)} onClick={() => filterListRiwayatTransaksi(inputHandle.idReff, inputHandle.fiturTransaksi, inputHandle.namaPartner, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer, 1, 10)}>
+                                        Terapkan
+                                    </button>
+                                </Col>
+                                <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                    <button className={(inputHandle.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranfer.length !== 0 || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.idReff.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.namaPartner.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.fiturTransaksi !== 0)) ? "btn-reset" : "btn-ez"} disabled={inputHandle.periodeRiwayatTransfer === 0 || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.idReff.length === 0) || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.namaPartner.length === 0)|| (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.fiturTransaksi === 0)} onClick={() => resetButtonHandle()}>
+                                        Atur Ulang
+                                    </button>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    {
+                        dataRiwayatTransfer.length !== 0 && 
+                        <div className='mt-3 mb-5'>
+                            <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransfer, inputHandle.idReff, inputHandle.fiturTransaksi, inputHandle.namaPartner, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer)} className="export-span">Export</Link>
+                        </div>
+                    }
+                    <div className="div-table mt-4 pb-4">
+                        <DataTable
+                            columns={user_role === "102" ? columnsPartner : columnsAdmin}
+                            data={dataRiwayatTransfer}
+                            customStyles={customStyles}
+                            progressPending={pendingRiwayatTransfer}
+                            progressComponent={<CustomLoader />}
                         />
-                    </Col>
-                </Row>
-                <Row className='mt-3'>
-                    <Col xs={5}>
-                        <Row>
-                            <Col xs={6} style={{ width: "unset" }}>
-                                <button className={(inputHandle.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranfer.length !== 0 || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.idReff.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.namaPartner.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.fiturTransaksi !== 0)) ? "btn-ez-on" : "btn-ez"} disabled={inputHandle.periodeRiwayatTransfer === 0 || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.idReff.length === 0) || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.namaPartner.length === 0)|| (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.fiturTransaksi === 0)} onClick={() => filterListRiwayatTransaksi(inputHandle.idReff, inputHandle.fiturTransaksi, inputHandle.namaPartner, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer, 1, 10)}>
-                                    Terapkan
-                                </button>
-                            </Col>
-                            <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                <button className={(inputHandle.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranfer.length !== 0 || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.idReff.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.namaPartner.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.fiturTransaksi !== 0)) ? "btn-reset" : "btn-ez"} disabled={inputHandle.periodeRiwayatTransfer === 0 || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.idReff.length === 0) || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.namaPartner.length === 0)|| (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.fiturTransaksi === 0)} onClick={() => resetButtonHandle()}>
-                                    Atur Ulang
-                                </button>
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
-                {
-                    dataRiwayatTransfer.length !== 0 && 
-                    <div className='mt-3 mb-5'>
-                        <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransfer, inputHandle.idReff, inputHandle.fiturTransaksi, inputHandle.namaPartner, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer)} className="export-span">Export</Link>
                     </div>
-                }
-                <div className="div-table mt-4 pb-4">
-                    <DataTable
-                        columns={user_role === "102" ? columnsPartner : columnsAdmin}
-                        data={dataRiwayatTransfer}
-                        customStyles={customStyles}
-                        progressPending={pendingRiwayatTransfer}
-                        progressComponent={<CustomLoader />}
-                    />
-                </div>
-                <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageRiwayatTransfer}</div>
-                    <Pagination
-                        activePage={activePageRiwayatTransfer}
-                        itemsCountPerPage={pageNumberRiwayatTransfer.row_per_page}
-                        totalItemsCount={(pageNumberRiwayatTransfer.row_per_page*pageNumberRiwayatTransfer.max_page)}
-                        pageRangeDisplayed={5}
-                        itemClass="page-item"
-                        linkClass="page-link"
-                        onChange={handlePageChangeRiwayatTransfer}
-                    />
-                </div>
-            </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageRiwayatTransfer}</div>
+                        <Pagination
+                            activePage={activePageRiwayatTransfer}
+                            itemsCountPerPage={pageNumberRiwayatTransfer.row_per_page}
+                            totalItemsCount={(pageNumberRiwayatTransfer.row_per_page*pageNumberRiwayatTransfer.max_page)}
+                            pageRangeDisplayed={5}
+                            itemClass="page-item"
+                            linkClass="page-link"
+                            onChange={handlePageChangeRiwayatTransfer}
+                        />
+                    </div>
+                </div> :
+                <SubAccountComponent/>
+            }
         </div>
     )
 }

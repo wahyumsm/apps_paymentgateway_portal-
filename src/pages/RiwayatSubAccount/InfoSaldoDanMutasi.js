@@ -27,6 +27,7 @@ const InfoSaldoDanMutasi = () => {
     const [userId, setUserId] = useState([])
     const [pendingMutasi, setPendingMutasi] = useState(true)
     const [pendingSaldo, setPendingSaldo] = useState(true)
+    
     async function fetchMoreData() {
         // getListMutasi(userId, pageMutasi.next_record, pageMutasi.matched_record)
         try {
@@ -61,6 +62,8 @@ const InfoSaldoDanMutasi = () => {
             console.log(error);
         }
     }
+
+
 
     console.log(listMutasi, 'listMutasi');
 
@@ -183,22 +186,26 @@ const InfoSaldoDanMutasi = () => {
           if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length === 0) {
             // listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAkunPartner(listPartnerAkun.data.response_data)
-            setInputHandle({
-                ...inputHandle,
-                akunPartner: listPartnerAkun.data.response_data[0].partner_id,
-                nomorAkun: listPartnerAkun.data.response_data[0].account_number,
-                namaAkun: listPartnerAkun.data.response_data[0].account_name,
-            })
+            if (listPartnerAkun.data.response_data.length !== 0) {
+                setInputHandle({
+                    ...inputHandle,
+                    akunPartner: listPartnerAkun.data.response_data[0].partner_id,
+                    nomorAkun: listPartnerAkun.data.response_data[0].account_number,
+                    namaAkun: listPartnerAkun.data.response_data[0].account_name,
+                })
+            }
           } else if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length !== 0) {
             setUserSession(listPartnerAkun.data.response_new_token)
             // listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListAkunPartner(listPartnerAkun.data.response_data)
-            setInputHandle({
-                ...inputHandle,
-                akunPartner: listPartnerAkun.data.response_data[0].partner_id,
-                nomorAkun: listPartnerAkun.data.response_data[0].account_number,
-                namaAkun: listPartnerAkun.data.response_data[0].account_name,
-            })
+            if (listPartnerAkun.data.response_data.length !== 0) {
+                setInputHandle({
+                    ...inputHandle,
+                    akunPartner: listPartnerAkun.data.response_data[0].partner_id,
+                    nomorAkun: listPartnerAkun.data.response_data[0].account_number,
+                    namaAkun: listPartnerAkun.data.response_data[0].account_name,
+                })
+            }
           }
         } catch (error) {
         //   console.log(error)
@@ -411,190 +418,195 @@ const InfoSaldoDanMutasi = () => {
             <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Info Saldo & Mutasi</div>
             </div>
-            {/* <SubAccountComponent/> */}
-            <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "38%" }}>
-                <div className="mb-3">Pilih Akun</div>
-                <Form.Select name='akunPartner' value={inputHandle.akunPartner} onChange={(e) => handleChange(e, listAkunPartner)}>
-                    {/* <option defaultChecked disabled value="">Pilih Status</option> */}
-                    {listAkunPartner.map((item, idx) => {
-                        return (
-                            <option key={idx} value={item.partner_id}>
-                                {item.account_name} - {item.account_number}
-                            </option>
-                        )
-                    })}
-                </Form.Select>
-                <div className='p-3 mt-3' style={{ border: "1px solid #EBEBEB", borderRadius: 8 }}>
-                    <div style={{ fontSize: 14, fontFamily: "Nunito", color: "#888888" }}>Saldo Rekening Sub Account</div>
-                    <div className='d-flex justify-content-start align-items-center mt-2' style={{ cursor: "pointer" }} onClick={toSeeSaldo}>
-                        <img src={iconMata} alt="mata" />
-                        <div className='ms-2' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 16, color: "#077E86", textDecoration: "underline" }}>Klik Untuk Lihat Saldo</div>
-                    </div>
-                    <div className='mt-3' style={{ border:"1px solid #C4C4C4", backgroundColor: "#C4C4C4" }} />
-                    <div className='mt-3' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>No Rekening Sub Account : </div>
-                    <div className='mt-2' style={{ fontSize: 12, fontFamily: "Nunito", color: "#383838" }}>{`${inputHandle.nomorAkun} a.n. ${inputHandle.namaAkun}`}</div>
-                </div>
-            </div>
-            <div className="head-title">
-                <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Mutasi Rekening Sub Account</div>
-            </div>
-            <div className="base-content mt-3">
-                <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
-                    Filter
-                </span>
-                <Row className="mt-4">
-                    <Col
-                        xs={4}
-                        className="d-flex justify-content-between align-items-center"
-                    >
-                        <div>Periode</div>
-                        <Form.Select
-                            name="periodeInfoMutasi"
-                            className="input-text-sub"
-                            value={inputDataMutasi.periodeInfoMutasi}
-                            onChange={(e) => handleChangePeriodeMutasi(e)}
-                        >
-                            <option defaultChecked disabled value={0}>Pilih Periode</option>
-                            <option value={1}>Hari Ini</option>
-                            <option value={2}>Kemarin</option>
-                            <option value={3}>7 Hari Terakhir</option>
-                            <option value={7}>Pilih Range Tanggal</option>
+            {
+                listAkunPartner.length !== 0 ?
+                <>
+                    <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "38%" }}>
+                        <div className="mb-3">Pilih Akun</div>
+                        <Form.Select name='akunPartner' value={inputHandle.akunPartner} onChange={(e) => handleChange(e, listAkunPartner)}>
+                            {/* <option defaultChecked disabled value="">Pilih Status</option> */}
+                            {listAkunPartner.map((item, idx) => {
+                                return (
+                                    <option key={idx} value={item.partner_id}>
+                                        {item.account_name} - {item.account_number}
+                                    </option>
+                                )
+                            })}
                         </Form.Select>
-                    </Col>
-                    <Col xs={4} className='d-flex justify-content-center align-items-center' >
-                        <div style={{ display: showDateInfoMutasi }}>
-                            <DateRangePicker
-                                value={stateInfoMutasi}
-                                ranges={column}
-                                onChange={(e) => pickDateInfoMutasi(e)}
-                                character=' - '
-                                cleanable={true}
-                                placement='bottomStart'
-                                size='lg'
-                                placeholder="Select Date Range" 
-                                disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
-                                className='datePicker'
-                                locale={Locale}
-                                format="yyyy-MM-dd"
-                                defaultCalendarValue={[new Date(`${oneMonthAgo}`), new Date(`${currentDate}`)]}
-                            />
+                        <div className='p-3 mt-3' style={{ border: "1px solid #EBEBEB", borderRadius: 8 }}>
+                            <div style={{ fontSize: 14, fontFamily: "Nunito", color: "#888888" }}>Saldo Rekening Sub Account</div>
+                            <div className='d-flex justify-content-start align-items-center mt-2' style={{ cursor: "pointer" }} onClick={toSeeSaldo}>
+                                <img src={iconMata} alt="mata" />
+                                <div className='ms-2' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 16, color: "#077E86", textDecoration: "underline" }}>Klik Untuk Lihat Saldo</div>
+                            </div>
+                            <div className='mt-3' style={{ border:"1px solid #C4C4C4", backgroundColor: "#C4C4C4" }} />
+                            <div className='mt-3' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>No Rekening Sub Account : </div>
+                            <div className='mt-2' style={{ fontSize: 12, fontFamily: "Nunito", color: "#383838" }}>{`${inputHandle.nomorAkun} a.n. ${inputHandle.namaAkun}`}</div>
                         </div>
-                    </Col>
-                    {/* <Col xs={4} className="d-flex justify-content-between align-items-center">
-                        <span>Jenis Transaksi</span>
-                        <Form.Select name='fiturDanaMasuk' className='input-text-ez' style={{ display: "inline" }}>
-                            <option defaultValue value={0}>Semua</option>
-                            <option value={1}>Transaksi Masuk ( cr )</option>
-                            <option value={2}>Transaksi Keluar ( db )</option>
-                        </Form.Select>
-                    </Col> */}
-                </Row>
-                <Row className='mt-3'>
-                    <Col xs={5}>
-                        <Row>
-                            <Col xs={6} style={{ width: "unset" }}>
-                                <button 
-                                    className='btn-ez-on'
-                                    onClick={() => filterGetListMutasi(userId, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, pageMutasi.next_record, pageMutasi.matched_record)}
+                    </div>
+                    <div className="head-title">
+                        <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Mutasi Rekening Sub Account</div>
+                    </div>
+                    <div className="base-content mt-3">
+                        <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
+                            Filter
+                        </span>
+                        <Row className="mt-4">
+                            <Col
+                                xs={4}
+                                className="d-flex justify-content-between align-items-center"
+                            >
+                                <div>Periode</div>
+                                <Form.Select
+                                    name="periodeInfoMutasi"
+                                    className="input-text-sub"
+                                    value={inputDataMutasi.periodeInfoMutasi}
+                                    onChange={(e) => handleChangePeriodeMutasi(e)}
                                 >
-                                    Terapkan
-                                </button>
+                                    <option defaultChecked disabled value={0}>Pilih Periode</option>
+                                    <option value={1}>Hari Ini</option>
+                                    <option value={2}>Kemarin</option>
+                                    <option value={3}>7 Hari Terakhir</option>
+                                    <option value={7}>Pilih Range Tanggal</option>
+                                </Form.Select>
                             </Col>
-                            <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                <button 
-                                    className='btn-reset'
-                                    onClick={() => resetButtonHandle()}
-                                >
-                                    Atur Ulang
-                                </button>
+                            <Col xs={4} className='d-flex justify-content-center align-items-center' >
+                                <div style={{ display: showDateInfoMutasi }}>
+                                    <DateRangePicker
+                                        value={stateInfoMutasi}
+                                        ranges={column}
+                                        onChange={(e) => pickDateInfoMutasi(e)}
+                                        character=' - '
+                                        cleanable={true}
+                                        placement='bottomStart'
+                                        size='lg'
+                                        placeholder="Select Date Range" 
+                                        disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
+                                        className='datePicker'
+                                        locale={Locale}
+                                        format="yyyy-MM-dd"
+                                        defaultCalendarValue={[new Date(`${oneMonthAgo}`), new Date(`${currentDate}`)]}
+                                    />
+                                </div>
+                            </Col>
+                            {/* <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Jenis Transaksi</span>
+                                <Form.Select name='fiturDanaMasuk' className='input-text-ez' style={{ display: "inline" }}>
+                                    <option defaultValue value={0}>Semua</option>
+                                    <option value={1}>Transaksi Masuk ( cr )</option>
+                                    <option value={2}>Transaksi Keluar ( db )</option>
+                                </Form.Select>
+                            </Col> */}
+                        </Row>
+                        <Row className='mt-3'>
+                            <Col xs={5}>
+                                <Row>
+                                    <Col xs={6} style={{ width: "unset" }}>
+                                        <button 
+                                            className='btn-ez-on'
+                                            onClick={() => filterGetListMutasi(userId, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, pageMutasi.next_record, pageMutasi.matched_record)}
+                                        >
+                                            Terapkan
+                                        </button>
+                                    </Col>
+                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <button 
+                                            className='btn-reset'
+                                            onClick={() => resetButtonHandle()}
+                                        >
+                                            Atur Ulang
+                                        </button>
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
-                    </Col>
-                </Row>
-                <div className="div-table table-transfer mt-4 pb-4">
-                    <div id="scrollableDiv" className='fixed-header-table'>
-                        <InfiniteScroll
-                            dataLength={listMutasi.length}
-                            next={fetchMoreData}
-                            hasMore={pageMutasi.next_record === "Y" ? true : false}
-                            loader={<div style={{ textAlign: 'center' }}><CustomLoader /></div>}
-                            scrollableTarget="scrollableDiv"
-                        >
-                            {
-                                pendingMutasi ?
-                                <div className='d-flex justify-content-center'><CustomLoader /></div> :
-                                <div id='table-body' style={{ height: 300, overflow: "auto" }}>
-                                    <table className='table mt-3'>
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>ID Referensi</th>
-                                                <th>Waktu</th>
-                                                <th>Nominal</th>
-                                                <th>Keterangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        {
-                                            listMutasi.map((item, idx) => (
-                                                <tr key={idx}>
-                                                    <td>{ idx+1 }</td>
-                                                    <td>{ item.Id_referensi }</td>
-                                                    <td>{ item.waktu }</td>
-                                                    <td>{ item.nominal }</td>
-                                                    <td>{ item.keterangan }</td>
-                                                </tr>
-                                            ))
-                                        }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            }
-                        </InfiniteScroll>
-                    </div>
-                    
-                    {/* <div id="scrollableDiv" className='fixed-header-table'>
-                        {
-                            pendingMutasi ?
-                            <div className='d-flex justify-content-center'><CustomLoader /></div> :
-                            <div id='table-body' style={{ height: 300, overflow: "auto" }}>
-                                <table className='table mt-3'>
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>ID Referensi</th>
-                                            <th>Waktu</th>
-                                            <th>Nominal</th>
-                                            <th>Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <InfiniteScroll
-                                            dataLength={listMutasi.length}
-                                            next={fetchMoreData}
-                                            hasMore={pageMutasi.next_record === "Y" ? true : false}
-                                            loader={<div style={{ textAlign: 'center' }}><CustomLoader /></div>}
-                                            scrollableTarget="scrollableDiv"
-                                        >
-                                            {
-                                                listMutasi.map((item, idx) => (
-                                                    <tr key={idx}>
-                                                        <td>{ idx+1 }</td>
-                                                        <td>{ item.Id_referensi }</td>
-                                                        <td>{ item.waktu }</td>
-                                                        <td>{ item.nominal }</td>
-                                                        <td>{ item.keterangan }</td>
+                        <div className="div-table table-transfer mt-4 pb-4">
+                            <div id="scrollableDiv" className='fixed-header-table'>
+                                <InfiniteScroll
+                                    dataLength={listMutasi.length}
+                                    next={fetchMoreData}
+                                    hasMore={pageMutasi.next_record === "Y" ? true : false}
+                                    loader={<div style={{ textAlign: 'center' }}><CustomLoader /></div>}
+                                    scrollableTarget="scrollableDiv"
+                                >
+                                    {
+                                        pendingMutasi ?
+                                        <div className='d-flex justify-content-center'><CustomLoader /></div> :
+                                        <div id='table-body' style={{ height: 300, overflow: "auto" }}>
+                                            <table className='table mt-3'>
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>ID Referensi</th>
+                                                        <th>Waktu</th>
+                                                        <th>Nominal</th>
+                                                        <th>Keterangan</th>
                                                     </tr>
-                                                ))
-                                            }
-                                        </InfiniteScroll>
-                                    </tbody>
-                                </table>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        listMutasi.map((item, idx) => (
+                                                            <tr key={idx}>
+                                                                <td>{ idx+1 }</td>
+                                                                <td>{ item.Id_referensi }</td>
+                                                                <td>{ item.waktu }</td>
+                                                                <td>{ item.nominal }</td>
+                                                                <td>{ item.keterangan }</td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                </InfiniteScroll>
                             </div>
-                        }
-                    </div> */}
-                </div>
-            </div>
+                            
+                            {/* <div id="scrollableDiv" className='fixed-header-table'>
+                                {
+                                    pendingMutasi ?
+                                    <div className='d-flex justify-content-center'><CustomLoader /></div> :
+                                    <div id='table-body' style={{ height: 300, overflow: "auto" }}>
+                                        <table className='table mt-3'>
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>ID Referensi</th>
+                                                    <th>Waktu</th>
+                                                    <th>Nominal</th>
+                                                    <th>Keterangan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <InfiniteScroll
+                                                    dataLength={listMutasi.length}
+                                                    next={fetchMoreData}
+                                                    hasMore={pageMutasi.next_record === "Y" ? true : false}
+                                                    loader={<div style={{ textAlign: 'center' }}><CustomLoader /></div>}
+                                                    scrollableTarget="scrollableDiv"
+                                                >
+                                                    {
+                                                        listMutasi.map((item, idx) => (
+                                                            <tr key={idx}>
+                                                                <td>{ idx+1 }</td>
+                                                                <td>{ item.Id_referensi }</td>
+                                                                <td>{ item.waktu }</td>
+                                                                <td>{ item.nominal }</td>
+                                                                <td>{ item.keterangan }</td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </InfiniteScroll>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            </div> */}
+                        </div>
+                    </div>
+                </> :
+                <SubAccountComponent/>
+            }
             <Modal className="history-modal" size="xs" centered show={showSaldoSubAcc} onHide={() => setShowSaldoSubAcc(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
                     Saldo Rekening Sub Account 
