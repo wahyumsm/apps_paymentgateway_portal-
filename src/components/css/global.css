@@ -433,6 +433,10 @@ body {
     max-width: 751px;
 }
 
+.panduan-modal .modal-content {
+    max-width: 704px;
+}
+
 .confirm-modal .modal-content {
     width: 400px;
 }
