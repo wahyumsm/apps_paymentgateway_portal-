@@ -349,14 +349,14 @@ function DetailPartner() {
     function detailAkunTabs(isTabs){
         setIsDetailAkun(isTabs)
         if(!isTabs){
-            $('#detailakuntab').removeClass('menu-detail-akun-hr-active')
+            $('#detailakuntab').removeClass('menu-detail-akun-d-active')
             $('#detailakunspan').removeClass('menu-detail-akun-span-active')
-            $('#konfigurasitab').addClass('menu-detail-akun-hr-active')
+            $('#konfigurasitab').addClass('menu-detail-akun-d-active')
             $('#konfigurasispan').addClass('menu-detail-akun-span-active')
         }else{
-            $('#konfigurasitab').removeClass('menu-detail-akun-hr-active')
+            $('#konfigurasitab').removeClass('menu-detail-akun-d-active')
             $('#konfigurasispan').removeClass('menu-detail-akun-span-active')
-            $('#detailakuntab').addClass('menu-detail-akun-hr-active')
+            $('#detailakuntab').addClass('menu-detail-akun-d-active')
             $('#detailakunspan').addClass('menu-detail-akun-span-active')
         }
     }
@@ -366,7 +366,7 @@ function DetailPartner() {
             {isDetailAkun ? <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner</span>
             : <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen</span>}
             <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
-                <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => detailAkunTabs(true)} id="detailakuntab">
+                <div className='detail-akun-tabs menu-detail-akun-d-active' onClick={() => detailAkunTabs(true)} id="detailakuntab">
                     <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Profil Partner</span>
                 </div>
                 <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => detailAkunTabs(false)} id="konfigurasitab">
@@ -377,7 +377,7 @@ function DetailPartner() {
                 isDetailAkun ? 
                 <>
                 <div className='detail-akun-section'>        
-                    <hr className='hr-style' style={{marginTop: -2}}/>
+                    <d className='d-style' style={{marginTop: -2}}/>
                     <br/>
                     <span className='head-title'>Profil Perusahaan</span>
                     <br/>
@@ -674,7 +674,7 @@ function DetailPartner() {
                 </div>
                 </> : 
                 <> 
-                    <hr className='hr-style' style={{marginTop: -2}}/>
+                    <d className='d-style' style={{marginTop: -2}}/>
                     <div className='base-content mt-5 mb-5'>  
                         {
                         listAgen.length === 0 ?

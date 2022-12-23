@@ -77,6 +77,7 @@ import AlokasiSaldo from './TopUp/AlokasiSaldo';
 import InfoSaldoDanMutasi from './RiwayatSubAccount/InfoSaldoDanMutasi';
 import TransferSubAccount from './RiwayatSubAccount/TransferSubAccount';
 import SaldoPartner from './RiwayatTransaksi/SaldoPartner';
+import DisbursementPage from './Disbursement/DisbursementPage';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -162,6 +163,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceVA.path} component={InvoiceVA}/>
     <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
+    <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
     <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/>
     {/* <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} /> */}
     {/* <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} /> */}
