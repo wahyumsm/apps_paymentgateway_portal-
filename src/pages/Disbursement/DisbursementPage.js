@@ -185,19 +185,41 @@ function DisbursementPage() {
                     </div> :
                     <div id='disbursement-bulk'>
                         <hr className='hr-style' style={{marginTop: -2}}/>
-                        <div className='base-content mb-5'>
+                        <div className='base-content pb-5 mb-5'>
                             <div className='pb-5' style={{ fontFamily: "Nunito", fontSize: 14 }}>
                                 <span>Perhatikan panduan pengisian template untuk menghindari kesalahan: <span onClick={() => setOpenModalPanduan(true)} style={{ fontFamily: "Exo", fontWeight: 700, color: "#077E86", cursor: "pointer" }}>Lihat Panduan</span></span>
                                 <div className="d-flex justify-content-end align-items-start" style={{ marginTop: -25 }} >
                                     <button 
                                         className='btn-reset'
                                         style={{ width: '25%' }} 
-                                        // onClick={() => toShowDataTransfer(isCheckedAccBankButton)}
+                                        onClick={() => alert("Download berhasil")}
                                     >
                                         <img src={downloadIcon} width="25" height="25" alt="download_icon" style={{ marginRight: 7 }} />
                                         Download Template
                                     </button>
                                 </div>
+                            </div>
+                            <div style={{ maxWidth: 1550, height: 172, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'rgba(7, 126, 134, 0.04)', border: '1px dashed #077E86', borderRadius: 8 }}>
+                                <div>Pilih atau letakkan file Excel (*.csv) kamu di sini.</div>
+                                <div>Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                <button
+                                    // onClick={() => setOpenModalPanduan(false)}
+                                    className="my-3"
+                                    style={{
+                                        fontFamily: "Exo",
+                                        fontSize: 14,
+                                        fontWeight: 700,
+                                        padding: "0px 24px",
+                                        width: 136,
+                                        height: 45,
+                                        background: "#FFFFFF",
+                                        borderRadius: 8,
+                                        color: '#077E86',
+                                        border: "0.4px solid #077E86"
+                                    }}
+                                >
+                                    Upload File
+                                </button>
                             </div>
                         </div>
                     </div>
