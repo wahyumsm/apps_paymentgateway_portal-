@@ -594,11 +594,13 @@ export default () => {
     {
         name: 'ID Transaksi',
         selector: row => row.tvasettl_code,
-        width: "251px"
+        width: "170px",
+        cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
     },
     {
         name: 'Waktu',
         selector: row => row.tvasettl_crtdt,
+        width: "150px",
     },
     {
       name: 'Jenis Transaksi',
