@@ -56,6 +56,10 @@ function DisbursementPage() {
         bankCode: ""
     })
 
+    const [inputHandle, setInputHandle] = useState({
+        bankCabang: ""
+    })
+
     const columns = [
         {
           name: "No",
@@ -267,6 +271,26 @@ function DisbursementPage() {
         });
     };
 
+    const handleRowClickedRekening = row => {
+        console.log(row, "row in rekening");
+        // filterItemsRekening.map(item => {
+        //     if (row.mbank_code === item.mbank_code) {
+        //         setInputData({
+        //             bankName: row.mbank_name,
+        //             bankCode: row.mbank_code
+        //         });
+        //         setShowBank(false)
+        //     }
+        // });
+    };
+
+    function handleChange(e) {
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name] : e.target.value
+        })
+    }
+
     function disbursementTabs(isTabs){
         setisDisbursementManual(isTabs)
         if(!isTabs){
@@ -348,6 +372,9 @@ function DisbursementPage() {
                                                 placeholder="Masukkan Cabang Bank "
                                                 type='text'
                                                 className='input-text-user'
+                                                name="bankCabang"
+                                                value={inputHandle.bankCabang}
+                                                onChange={() => handleChange()}
                                             />
                                         </Col>
                                     </Row>
@@ -360,7 +387,7 @@ function DisbursementPage() {
                                                 placeholder="Masukan No. Rekening Tujuan"
                                                 type='text'
                                                 className='input-text-user'
-                                                />
+                                            />
                                         </Col>
                                     </Row>
                                     <Row className='align-items-center'>
@@ -484,18 +511,34 @@ function DisbursementPage() {
                                             </button>        
                                         </Col>
                                     </Row>
-                                    <div className="div-table mt-1">
+                                    <div className="div-table pt-3">
                                         <DataTable
                                             columns={columns}
                                             data={agenLists}
                                             customStyles={customStyles}
                                             noDataComponent={<div style={{ marginBottom: 10 }}>Belum ada data tujuan Disbursement</div>}
-                                            // pagination
                                             highlightOnHover
-                                            // progressComponent={<CustomLoader />}
-                                            // subHeader
-                                            // subHeaderComponent={subHeaderComponentMemo}
                                         />
+
+                                        {/* <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Bank Tujuan</th>
+                                                    <th>Cabang (Khusus Non-BCA)</th>
+                                                    <th>No. Rekening Tujuan</th>
+                                                    <th>Nama Pemilik Rekening</th>
+                                                    <th>Nominal Disbursement</th>
+                                                    <th>Email Penerima</th>
+                                                    <th>Catatan</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {}
+                                            </tbody>
+                                        </table> */}
+
                                     </div>
                                     <div className='sub-base-content-disburse mt-5'>
                                         <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>Ringkasan</div>
