@@ -88,6 +88,12 @@ body {
     padding: 37px 27px 0px 27px;
 }
 
+.sub-base-content-disburse {
+    border-radius: 8px;
+    background: #F0F0F0;
+    padding: 12px
+}
+
 .p-amount {
     font-family: 'Nunito';
     font-style: normal;
@@ -176,6 +182,19 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 8px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
+
+.input-text-disburs {
+    width: 100%;
+    height: 7rem;
+    border-radius: 8px;
+    border: "1px solid #D1D7E0";
+    border-color: "#D1D7E0";
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 400;
@@ -435,6 +454,18 @@ body {
 
 .confirm-modal .modal-content {
     width: 400px;
+}
+
+.disburse-modal .modal-content {
+    max-width: 905px;
+}
+
+.confirm-disburse-modal .modal-content {
+    max-width: 800px;
+}
+
+.panduan-modal .modal-content {
+    max-width: 670px;
 }
 
 /* .disiniya {
@@ -1020,4 +1051,10 @@ header.sc-dIouRR.evxAbm {
 
 .fixed-header-table th {
     background:#eee;
+}
+
+.form-confirm label.form-check-label {
+    font-family: 'Nunito';
+    font-size: 16px;
+    font-weight: 400;
 }
