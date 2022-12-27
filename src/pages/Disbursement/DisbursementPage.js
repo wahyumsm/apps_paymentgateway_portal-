@@ -16,6 +16,8 @@ import DataTable from 'react-data-table-component'
 import { agenLists, invoiceItems } from '../../data/tables'
 import axios from 'axios'
 import FilterSubAccount from '../../components/FilterSubAccount'
+import { FilePond, registerPlugin } from 'react-filepond'
+import 'filepond/dist/filepond.min.css'
 
 function DisbursementPage() {
 
@@ -32,6 +34,14 @@ function DisbursementPage() {
     const [showModalPanduan, setShowModalPanduan] = useState(false)
     const [filterTextBank, setFilterTextBank] = useState('')
     const [filterTextRekening, setFilterTextRekening] = useState('')
+    const [files, setFiles] = useState([])
+    console.log(files, 'files upload');
+    const labelUpload = `<div class='py-4 mt-5 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                <div className='pb-4'>
+                    <span class="filepond--label-action">
+                        Upload File
+                    </span>
+                </div>`
     const filterItemsBank = listBank.filter(
         item => (item.mbank_name && item.mbank_name.toLowerCase().includes(filterTextBank.toLowerCase())) || (item.mbank_code && item.mbank_code.toLowerCase().includes(filterTextBank.toLowerCase()))
     )
@@ -62,36 +72,36 @@ function DisbursementPage() {
 
     const columns = [
         {
-          name: "No",
-          selector: (row) => row.id,
+            name: "No",
+            selector: (row) => row.id,
         },
         {
-          name: "Bank Tujuan",
-          selector: (row) => row.namaAgen,
+            name: "Bank Tujuan",
+            selector: (row) => row.namaAgen,
         },
         {
-          name: "Cabang (Khusus Non-BCA)",
-          selector: (row) => row.status,
+            name: "Cabang (Khusus Non-BCA)",
+            selector: (row) => row.status,
         },
         {
-          name: "No. Rekening Tujuan",
-          selector: (row) => row.noRekening,
+            name: "No. Rekening Tujuan",
+            selector: (row) => row.noRekening,
         },
         {
-          name: "Nama Pemilik Rekening",
-          selector: (row) => row.IDAgen,
+            name: "Nama Pemilik Rekening",
+            selector: (row) => row.IDAgen,
         },
         {
-          name: "Nominal Disbursement",
-          selector: (row) => row.kodeUnik,
+            name: "Nominal Disbursement",
+            selector: (row) => row.kodeUnik,
         },
         {
-          name: "Email Penerima",
-          selector: (row) => row.email,
+            name: "Email Penerima",
+            selector: (row) => row.email,
         },
         {
-          name: "Catatan",
-          selector: (row) => row.noHp,
+            name: "Catatan",
+            selector: (row) => row.noHp,
         },
         {
             name: "Aksi",
@@ -192,20 +202,20 @@ function DisbursementPage() {
 
     async function getBankList() {
         try {
-          const auth = "Bearer " + getToken()
-          const headers = {
-            'Content-Type':'application/json',
-            'Authorization' : auth
-          }
-          const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: "" }, { headers: headers })
-          if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
-            bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-            setListBank(bankList.data.response_data)
-          } else if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length !== 0) {
-            setUserSession(bankList.data.response_new_token)
-            bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-            setListBank(bankList.data.response_data)
-          }
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: "" }, { headers: headers })
+            if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
+                bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListBank(bankList.data.response_data)
+            } else if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length !== 0) {
+                setUserSession(bankList.data.response_new_token)
+                bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListBank(bankList.data.response_data)
+            }
         } catch (error) {
         //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
@@ -215,20 +225,20 @@ function DisbursementPage() {
 
     async function getRekeningList() {
         try {
-          const auth = "Bearer " + getToken()
-          const headers = {
-            'Content-Type':'application/json',
-            'Authorization' : auth
-          }
-          const listRekening = await axios.post(BaseURL + "/Partner/GetAccountList", { data: "" }, { headers: headers })
-          if (listRekening.status === 200 && listRekening.data.response_code === 200 && listRekening.data.response_new_token.length === 0) {
-            listRekening.data.response_data = listRekening.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-            setRekeningList(listRekening.data.response_data)
-          } else if (listRekening.status === 200 && listRekening.data.response_code === 200 && listRekening.data.response_new_token.length !== 0) {
-            setUserSession(listRekening.data.response_new_token)
-            listRekening.data.response_data = listRekening.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-            setRekeningList(listRekening.data.response_data)
-          }
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const listRekening = await axios.post(BaseURL + "/Partner/GetAccountList", { data: "" }, { headers: headers })
+            if (listRekening.status === 200 && listRekening.data.response_code === 200 && listRekening.data.response_new_token.length === 0) {
+                listRekening.data.response_data = listRekening.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setRekeningList(listRekening.data.response_data)
+            } else if (listRekening.status === 200 && listRekening.data.response_code === 200 && listRekening.data.response_new_token.length !== 0) {
+                setUserSession(listRekening.data.response_new_token)
+                listRekening.data.response_data = listRekening.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setRekeningList(listRekening.data.response_data)
+            }
         } catch (error) {
         //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
@@ -238,20 +248,20 @@ function DisbursementPage() {
 
     async function feeBankList() {
         try {
-          const auth = "Bearer " + getToken()
-          const headers = {
-            'Content-Type':'application/json',
-            'Authorization' : auth
-          }
-          const listFeeBank = await axios.post(BaseURL + "/Partner/GetFeeDisbursement", { data: "" }, { headers: headers })
-          if (listFeeBank.status === 200 && listFeeBank.data.response_code === 200 && listFeeBank.data.response_new_token.length === 0) {
-            listFeeBank.data.response_data = listFeeBank.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-            setFeeBank(listFeeBank.data.response_data)
-          } else if (listFeeBank.status === 200 && listFeeBank.data.response_code === 200 && listFeeBank.data.response_new_token.length !== 0) {
-            setUserSession(listFeeBank.data.response_new_token)
-            listFeeBank.data.response_data = listFeeBank.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-            setFeeBank(listFeeBank.data.response_data)
-          }
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const listFeeBank = await axios.post(BaseURL + "/Partner/GetFeeDisbursement", { data: "" }, { headers: headers })
+            if (listFeeBank.status === 200 && listFeeBank.data.response_code === 200 && listFeeBank.data.response_new_token.length === 0) {
+                listFeeBank.data.response_data = listFeeBank.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setFeeBank(listFeeBank.data.response_data)
+            } else if (listFeeBank.status === 200 && listFeeBank.data.response_code === 200 && listFeeBank.data.response_new_token.length !== 0) {
+                setUserSession(listFeeBank.data.response_new_token)
+                listFeeBank.data.response_data = listFeeBank.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setFeeBank(listFeeBank.data.response_data)
+            }
         } catch (error) {
         //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
@@ -712,7 +722,19 @@ function DisbursementPage() {
                                     </button>
                                 </div>
                             </div>
-                            <div className='text-center my-3 position-relative' style={{ background: 'rgba(7, 126, 134, 0.04)', border: '1px dashed #077E86', borderRadius: 8, boxSizing: 'border-box' }}>
+                            <div className='text-center mt-3 position-relative' style={{ marginBottom: 100 }}>
+                                <FilePond
+                                    className="dragdrop"
+                                    files={files}
+                                    onupdatefiles={setFiles}
+                                    allowMultiple={true}
+                                    maxFiles={3}
+                                    server="/api"
+                                    name="files"
+                                    labelIdle={labelUpload}
+                                />
+                            </div>
+                            {/* <div className='text-center my-3 position-relative' style={{ background: 'rgba(7, 126, 134, 0.04)', border: '1px dashed #077E86', borderRadius: 8, boxSizing: 'border-box' }}> */}
                                 {/* <div className='position-absolute' style={{ background: '#077E86', borderRadius: '0px 0px 8px 8px', color: "#FFFFFF", fontFamily: 'Nunito', fontWeight: 600, fontSize: 14, left: "calc(50% - 195px/2)", padding: "10px 24px" }}>Letakkan file di area ini</div> */}
 
                                 { /* Kondisi Error */ }
@@ -731,7 +753,7 @@ function DisbursementPage() {
                                     <div className='ms-2' style={{ fontSize: 14, fontFamily: 'Nunito' }}>Data pada nomor “3”, kolom “Bank Tujuan” data Bank tidak ditemukan.</div>
                                 </div> */}
 
-                                <div className='py-4 mt-3' style={{ fontFamily: 'Nunito', fontSize: 12 }}>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                {/* <div className='py-4 mt-3' style={{ fontFamily: 'Nunito', fontSize: 12 }}>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
                                 <div className='pb-4'>
                                     <button
                                         style={{
@@ -749,8 +771,8 @@ function DisbursementPage() {
                                     >
                                         Upload File
                                     </button>
-                                </div>
-                            </div>
+                                </div> */}
+                            {/* </div> */}
                             <div className="div-table pt-3 pb-5">
                                 <DataTable
                                     columns={columnsBulk}
@@ -793,7 +815,49 @@ function DisbursementPage() {
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" style={{ marginRight: 10 }} />
                                     <span>Harap perhatikan panduan pengisian sebelum melakukan penginputan data pada template yang disediakan. Kesalahan penulisan data dapat menyebabkan gagalnya transaksi disbursement.</span>
                                 </div>
-                                <div className='mt-3' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
+                                <table className='mt-3' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>1.</td>
+                                        <td>File yang diunggah wajib dalam format Excel *.csv, dan tidak dapat menggunakan format lain</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>2.</td>
+                                        <td>File yang diunggah wajib menggunakan template file Excel yang telah disediakan, tidak bisa membuat format Excel sendiri</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>3.</td>
+                                        <td>Dilarang mengubah atau menambahkan nama sheet, nama tabel, urutan tabel dan tipe data tabel. Mengubah nama file diperbolehkan sesuai kebutuhan</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>4.</td>
+                                        <td>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <Link to={""} style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</Link></td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>5.</td>
+                                        <td>Cabang diisi khusus untuk tujuan bank selain BCA, dan wajib diisi. Apabila bank yang dipilih adalah BCA maka isi dengan tanda ‘-’ (Strip)</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>6.</td>
+                                        <td>Nomor Rekening Tujuan diisi sesuai format rekening bank tujuan. Isi menggunakan format angka dan harap perhatikan digit rekening</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>7.</td>
+                                        <td>Nama Pemilik Rekening wajib diisi dengan benar dan sesuai.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>8.</td>
+                                        <td>Nominal Disbursement diisi dalam format Rupiah. Jika nominal merupakan bilangan desimal, maka penulisan tanda koma diganti dengan tanda titik. Contoh: 5500,68 ditulis 5500.68</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>9.</td>
+                                        <td>Email Penerima bersifat opsional dan dapat diisi untuk mengirim notifikasi berhasil Disburse</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>10.</td>
+                                        <td>Catatan dapat diisi bila diperlukan dan bersifat opsional dan maksimal 25 karakter (termasuk spasi). Hanya diperbolehkan menggunakan karakter spesial berupa tanda @, &, dan #.</td>
+                                    </tr>
+                                </table>
+                                {/* <div className='mt-3' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
                                     <div className='d-flex justify-content-start'><div>1.</div> <span className='ms-1'>File yang diunggah wajib dalam format Excel *.csv, dan tidak dapat menggunakan format lain</span></div>
                                     <div className='d-flex justify-content-start'><div>2.</div> <span className='ms-1'>File yang diunggah wajib menggunakan template file Excel yang telah disediakan, tidak bisa membuat format Excel sendiri</span></div>
                                     <div className='d-flex justify-content-start'><div>3.</div> <span className='ms-1'>Dilarang mengubah atau menambahkan nama sheet, nama tabel, urutan tabel dan tipe data tabel. Mengubah nama file diperbolehkan sesuai kebutuhan</span></div>
@@ -804,7 +868,7 @@ function DisbursementPage() {
                                     <div className='d-flex justify-content-start'><div>8.</div> <span className='ms-1'>Nominal Disbursement diisi dalam format Rupiah. Jika nominal merupakan bilangan desimal, maka penulisan tanda koma diganti dengan tanda titik. Contoh: 5500,68 ditulis 5500.68 </span></div>
                                     <div className='d-flex justify-content-start'><div>9.</div> <span className='ms-1'>Email Penerima bersifat opsional dan dapat diisi untuk mengirim notifikasi berhasil Disburse </span></div>
                                     <div className='d-flex justify-content-start'><div>10.</div> <span className='ms-1'>Catatan dapat diisi bila diperlukan dan bersifat opsional dan maksimal 25 karakter (termasuk spasi). Hanya diperbolehkan menggunakan karakter spesial berupa tanda @, &, dan #.</span></div>
-                                </div>
+                                </div> */}
                                 <div className='text-center my-3'>
                                     <button
                                         onClick={() => setShowModalPanduan(false)}
