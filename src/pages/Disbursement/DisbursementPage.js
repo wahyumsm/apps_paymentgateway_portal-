@@ -16,8 +16,12 @@ import DataTable from 'react-data-table-component'
 import { agenLists, invoiceItems } from '../../data/tables'
 import axios from 'axios'
 import FilterSubAccount from '../../components/FilterSubAccount'
+import { Base64 } from 'js-base64'
 import { FilePond, registerPlugin } from 'react-filepond'
+import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import 'filepond/dist/filepond.min.css'
+
+registerPlugin(FilePondPluginFileEncode)
 
 function DisbursementPage() {
 
@@ -35,6 +39,12 @@ function DisbursementPage() {
     const [filterTextBank, setFilterTextBank] = useState('')
     const [filterTextRekening, setFilterTextRekening] = useState('')
     const [files, setFiles] = useState([])
+    async function fileCSV(newValue) {
+        // const pond = newValue.create()
+        const pond = await newValue[0].getFileEncodeBase64String()
+        // console.log(newValue, 'newValue');
+        console.log(Base64.decode(pond), 'pond');
+    }
     console.log(files, 'files upload');
     const labelUpload = `<div class='py-4 mt-5 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
                 <div className='pb-4'>
@@ -726,7 +736,7 @@ function DisbursementPage() {
                                 <FilePond
                                     className="dragdrop"
                                     files={files}
-                                    onupdatefiles={setFiles}
+                                    onupdatefiles={fileCSV}
                                     allowMultiple={true}
                                     maxFiles={3}
                                     server="/api"
