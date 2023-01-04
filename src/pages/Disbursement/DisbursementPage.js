@@ -17,6 +17,7 @@ import { agenLists } from '../../data/tables'
 import axios from 'axios'
 import FilterSubAccount from '../../components/FilterSubAccount'
 import { sum } from 'lodash'
+import * as XLSX from "xlsx"
 
 function DisbursementPage() {
 
@@ -34,6 +35,8 @@ function DisbursementPage() {
     const [numbering, setNumbering] = useState(0)
     const [allNominal, setAllNominal] = useState([])
     const [allFee, setAllFee] = useState([])
+    const [isChecked, setIsChecked] = useState(false)
+    const [dataExcelDisburse, setDataExcelDisburse] = useState({})
     const [isManual, setIsManual] = useState((sessionStorage.getItem('disbursement') !== 'manual' || sessionStorage.getItem('disbursement') === null) ? true : false)
     const [isBulk, setIsBulk] = useState((sessionStorage.getItem('disbursement') !== 'bulk' || sessionStorage.getItem('disbursement') === null) ? false : true)
     const [showDaftarRekening, setShowDaftarRekening] = useState(false)
@@ -60,6 +63,10 @@ function DisbursementPage() {
             <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
         );	}, [filterTextRekening]
     );
+
+    const handleChangeCheckBox = () => {
+        setIsChecked(!isChecked)
+    }
 
     function tabDisbursement(tabDisbursement) {
         if (tabDisbursement === 'manual') {
@@ -375,7 +382,8 @@ function DisbursementPage() {
         nameRek,
         nominal,
         emailPenerima,
-        catatan
+        catatan,
+        saveAcc
     ) {
         const newData = {
             number: number,
@@ -386,7 +394,8 @@ function DisbursementPage() {
             nameRek: nameRek,
             nominal: Number(nominal),
             emailPenerima: emailPenerima,
-            catatan: catatan
+            catatan: catatan,
+            saveAcc: saveAcc
         }
         const result = feeBank.find((item) => item.mpaytype_bank_code === bankCodeTujuan)
         setAllFee([...allFee, result.fee_bank])
@@ -406,6 +415,7 @@ function DisbursementPage() {
             emailPenerima: "",
             catatan: ""
         })
+        setIsChecked(false)
     }
 
     console.log(allFee, "all fee");
@@ -522,6 +532,63 @@ function DisbursementPage() {
         })
     }
 
+    function createDataDisburseExcel (dataDisburse) {
+        // const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+        // let dataExcel = []
+        // for (let i = 0; i < dataDisburse.length; i++) {
+        //     dataExcel.push({"bank_code": dataDisburse[i].bankCodeTujuan, "branch_name": dataDisburse[i].cabang, "account_number": dataDisburse[i].noRek, "account_name": dataDisburse[i].nameRek, "amount": dataDisburse[i].nominal, "email": dataDisburse[i].emailPenerima, "description": dataDisburse[i].catatan, "save_account_number": dataDisburse[i].saveAcc})
+        // }
+        // let workSheet = XLSX.utils.json_to_sheet(dataExcel)
+        // let workBook = XLSX.utils.book_new();
+        // XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+        // XLSX.writeFile(workBook, "file_data_karyawan.xlsx");
+        // const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "binary"})
+        // const convertFile = XLSX.writeFile(workBook, "file_data_karyawan.xlsx")
+        // const data = new Blob([convertFile], { type: fileType})
+        // console.log(data, "data");
+        // console.log(convertFile, "convertFile");
+        // setDataExcelDisburse(convertFile)
+        // console.log(XLSX.writeFile(workBook, "file_data_karyawan.xlsx"), 'ini workbook');
+        setShowModalConfirm(true)
+    }
+
+    console.log(dataExcelDisburse, "data excelnya");
+
+    async function sendDataDisburse (dataDisburse) {
+        try {
+            let dataExcel = []
+            for (let i = 0; i < dataDisburse.length; i++) {
+                dataExcel.push({"bank_code": dataDisburse[i].bankCodeTujuan, "branch_name": dataDisburse[i].cabang, "account_number": dataDisburse[i].noRek, "account_name": dataDisburse[i].nameRek, "amount": dataDisburse[i].nominal, "email": dataDisburse[i].emailPenerima, "description": dataDisburse[i].catatan, "save_account_number": dataDisburse[i].saveAcc})
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel)
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            // XLSX.writeFile(workBook, "file_data_karyawan.xlsx");
+            // const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "binary"})
+            const convertFile = XLSX.writeFile(workBook, "file_data_karyawan")
+            console.log(workBook, 'workBook');
+            const auth = "Bearer " + getToken()
+            var formData = new FormData()
+            console.log(formData, 'formData1');
+            formData.append('file_excel', workBook)
+            console.log(formData, 'formData2');
+            const headers = {
+                'Content-Type':'multipart/form-data',
+                'Authorization' : auth
+            }
+            const dataSendHandler = await axios.post(BaseURL + "/Partner/UploadDisbursementFile", formData, {headers: headers})
+            console.log(dataSendHandler, 'dataSendHandler');
+            if (dataSendHandler.response_code === 200 && dataSendHandler.data.response_new_token.length === 0) {
+                history.push("/disbursement/disbursementpage")
+            } else if (dataSendHandler.response_code === 200 && dataSendHandler.data.response_new_token.length !== 0) {
+                sessionStorage(dataSendHandler.data.response_new_token)
+                history.push("/disbursement/disbursementpage")
+            }
+        } catch (e) {
+
+        }
+    }
+
     function disbursementTabs(isTabs){
         setisDisbursementManual(isTabs)
         if(!isTabs){
@@ -561,15 +628,15 @@ function DisbursementPage() {
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
             <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
             <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
-                <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => tabDisbursement('manual')} id="detailakuntab">
+                <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => disbursementTabs(true)} id="detailakuntab">
                     <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
                 </div>
-                <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => tabDisbursement('bulk')} id="konfigurasitab">
+                <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => disbursementTabs(false)} id="konfigurasitab">
                     <span className='menu-detail-akun-span' id="konfigurasispan">Disbursement Bulk</span>
                 </div>
             </div>
             {
-                isManual === true ?
+                isDisbursementManual ?
                     <>
                         <div id='disbursement-manual'>
                             <hr className='hr-style' style={{marginTop: -2}}/>
@@ -649,8 +716,8 @@ function DisbursementPage() {
                                                     <Form.Check
                                                         label="Simpan ke Daftar Rekening"
                                                         id="statusId"
-                                                        // onChange={handleOnChangeCheckBox}
-                                                        // checked={isChecked}
+                                                        onChange={handleChangeCheckBox}
+                                                        checked={isChecked}
                                                     />
                                                 </div>
                                                 <div className='mb-3'>
@@ -761,7 +828,8 @@ function DisbursementPage() {
                                                         inputRekening.bankNameRek,
                                                         inputHandle.nominal,
                                                         inputHandle.emailPenerima,
-                                                        inputHandle.catatan
+                                                        inputHandle.catatan,
+                                                        isChecked
                                                     )}
                                                     className={
                                                         (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && inputHandle.bankCabang.length !== 0 && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && inputHandle.nominal.length >= 5) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
@@ -981,7 +1049,7 @@ function DisbursementPage() {
                         
                         <div className="d-flex justify-content-end align-items-center">
                             <button
-                                onClick={() => setShowModalConfirm(true)}
+                                onClick={() => createDataDisburseExcel(dataDisburse)}
                                 className='btn-ez-transfer'
                                 style={{ width: '25%' }}
                             >
@@ -1481,6 +1549,7 @@ function DisbursementPage() {
                             Batal
                         </button>
                         <button 
+                            onClick={() => sendDataDisburse(dataDisburse)}
                             className='btn-ez-transfer ms-3'
                             style={{ width: '25%' }}
                         >
