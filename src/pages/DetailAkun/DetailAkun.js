@@ -5,13 +5,12 @@ import $ from 'jquery'
 import axios from 'axios';
 import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import edit from '../../assets/icon/edit_icon.svg';
 import deleted from '../../assets/icon/delete_icon.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
-import {agenLists} from '../../data/tables'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 
 function DetailAkun() {
@@ -19,7 +18,7 @@ function DetailAkun() {
     const access_token = getRole()
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
-    const [subAccount, setSubAccount] = useState({})
+    const [subAccount, setSubAccount] = useState([])
     const history = useHistory()
     const myRef = useRef(null)
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
@@ -89,6 +88,8 @@ function DetailAkun() {
             history.push(errorCatch(error.response.status))
         }
     }
+
+    console.log(subAccount, "sub account");
 
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
@@ -292,51 +293,59 @@ function DetailAkun() {
                         <tbody>
                             <tr>
                                 <td style={{width: 200}}>Sumber Agen</td>
-                                <td><input type='text'className='input-text-ez' value={'-'} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].agen_source : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Nama Bank</td>
-                                <td><input type='text'className='input-text-ez' value={'-'} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_name : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>No. Rekening</td>
-                                <td><input type='text'className='input-text-ez' value={'-'} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_number : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
                                 <td style={{width: 200}}>Nama Pemilik Rekening</td>
-                                <td><input type='text'className='input-text-ez' value={'-'} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_account_name : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                         </tbody>
                     </table>
-                    {expandedSubAcc ?
-                        <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
-                            <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
-                                Sembunyikan daftar sub account <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
-                            </button>
-                        </div> :
-                        <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
-                            <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
-                                Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="ms-2" />
-                            </button>
-                        </div>
+                    {
+                        subAccount.length !== 0 ?
+                        (
+                            expandedSubAcc ?
+                                <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
+                                    <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                                        Sembunyikan daftar sub account <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
+                                    </button>
+                                </div> :
+                                <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
+                                    <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                                        Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="ms-2" />
+                                    </button>
+                                </div>
+                        ) : ""
                     }
-                    {expandedSubAcc &&
-                        <div className="div-table pb-4 mb-4" ref={myRef}>
-                            <DataTable
-                                columns={columns}
-                                data={subAccount}
-                                customStyles={customStyles}
-                                // progressPending={pendingSettlement}
-                                progressComponent={<CustomLoader />}
-                                // dense
-                                // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                                // pagination
-                            />
-                        </div>
+                    {
+                        subAccount.length !== 0 ?
+                        (
+                            expandedSubAcc &&
+                                <div className="div-table pb-4 mb-4" ref={myRef}>
+                                    <DataTable
+                                        columns={columns}
+                                        data={subAccount}
+                                        customStyles={customStyles}
+                                        // progressPending={pendingSettlement}
+                                        progressComponent={<CustomLoader />}
+                                        // dense
+                                        // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                                        // pagination
+                                    />
+                                </div>
+                        ) : ""
                     }
                 </div>
             </div>

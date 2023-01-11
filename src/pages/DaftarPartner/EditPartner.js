@@ -2019,8 +2019,8 @@ function EditPartner() {
               </div> : ""
             }
             <Row className="d-flex justify-content-between align-items-center">
-              <Col xs={2}></Col>
-              <Col className="ms-5">
+              <Col xs={2} style={{ width: 200 }}></Col>
+              <Col className="ms-2">
                 {edited === false ? (
                   <button
                     onClick={() =>
@@ -2308,8 +2308,8 @@ function EditPartner() {
             </table>
 
             <Row className="d-flex justify-content-between align-items-center">
-              <Col xs={2}></Col>
-              <Col className="ms-5">
+              <Col xs={2} style={{ width: 200 }}></Col>
+              <Col className="ms-2">
                 {editedSubAcc === false ? (
                   <button
                     onClick={() =>
@@ -2346,7 +2346,7 @@ function EditPartner() {
                 ) : (
                   <>
                     <button
-                      className="me-2"
+                      // className="me-2"
                       onClick={() => batalEditSubAcc()}
                       style={{
                         fontFamily: "Exo",

@@ -113,6 +113,10 @@ function DaftarAgen() {
       selector: row => row.is_default === true ? "Default Partner" : "-",
     },
     {
+      name: "Kode Unik",
+      selector: row => row.agen_unique_code,
+    },
+    {
       name: 'Status',
       selector: row => row.status,
       sortable: true,

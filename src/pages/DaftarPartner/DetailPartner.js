@@ -146,6 +146,7 @@ function DetailPartner() {
         {
           name: 'ID Agen',
           selector: row => row.agen_id,
+          cell: (row) => <Link style={{textDecoration: "underline", color: "#077E86"}} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>,
           wrap: true,
           sortable: true,
           width: "150px"

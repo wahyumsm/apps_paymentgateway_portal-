@@ -244,7 +244,7 @@ const InfoSaldoDanMutasi = () => {
         try {
             setPendingMutasi(true)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"subpartner_id":"${partnerId}", "start_date":"20220403", "end_date":"20220410", "date_id":7, "page":{"max_record":"10", "next_record":"${nextRecord !== undefined ? nextRecord : "N"}", "matched_record":"${matchedRecord !== undefined ? matchedRecord : "0"}"}}`)
+            const dataParams = encryptData(`{"subpartner_id":"${partnerId}", "start_date":"", "end_date":"", "date_id":1, "page":{"max_record":"10", "next_record":"${nextRecord !== undefined ? nextRecord : "N"}", "matched_record":"${matchedRecord !== undefined ? matchedRecord : "0"}"}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -533,30 +533,49 @@ const InfoSaldoDanMutasi = () => {
                                         pendingMutasi ?
                                         <div className='d-flex justify-content-center'><CustomLoader /></div> :
                                         <div id='table-body' style={{ height: 490, overflow: "auto" }}>
-                                            <table className='table mt-3'>
-                                                <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>ID Referensi</th>
-                                                        <th>Waktu</th>
-                                                        <th>Nominal</th>
-                                                        <th>Keterangan</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                        listMutasi.map((item, idx) => (
-                                                            <tr key={idx}>
-                                                                <td>{ idx+1 }</td>
-                                                                <td>{ item.Id_referensi }</td>
-                                                                <td>{ item.waktu }</td>
-                                                                <td>{ item.nominal }</td>
-                                                                <td>{ item.keterangan }</td>
+                                            {
+                                                listMutasi.length !== 0 ? (
+                                                    <table className='table mt-3'>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>ID Referensi</th>
+                                                                <th>Waktu</th>
+                                                                <th>Nominal</th>
+                                                                <th>Keterangan</th>
                                                             </tr>
-                                                        ))
-                                                    }
-                                                </tbody>
-                                            </table>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                listMutasi.map((item, idx) => (
+                                                                    <tr key={idx}>
+                                                                        <td>{ idx+1 }</td>
+                                                                        <td>{ item.Id_referensi }</td>
+                                                                        <td>{ item.waktu }</td>
+                                                                        <td>{ item.nominal }</td>
+                                                                        <td>{ item.keterangan }</td>
+                                                                    </tr>
+                                                                ))
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                ) : (
+                                                    <>
+                                                        <table className='table mt-3'>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>No</th>
+                                                                    <th>ID Referensi</th>
+                                                                    <th>Waktu</th>
+                                                                    <th>Nominal</th>
+                                                                    <th>Keterangan</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                        <div className='text-center'>Tidak ada data</div>
+                                                    </>
+                                                )
+                                            }
                                         </div>
                                     }
                                 </InfiniteScroll>
