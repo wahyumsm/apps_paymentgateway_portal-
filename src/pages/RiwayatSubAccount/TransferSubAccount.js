@@ -312,15 +312,15 @@ const TransferSubAccount = () => {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const rekeningList = await axios.post(BaseURL + "/SubAccount/GetListAccount", { data: "" }, { headers: headers })
-            console.log(rekeningList, 'list rekening');
-            if (rekeningList.status === 200 && rekeningList.data.response_code === 200 && rekeningList.data.response_new_token.length === 0) {
-                rekeningList.data.response_data = rekeningList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-                setListRekening(rekeningList.data.response_data)
-            } else if (rekeningList.status === 200 && rekeningList.data.response_code === 200 && rekeningList.data.response_new_token.length !== 0) {
-                setUserSession(rekeningList.data.response_new_token)
-                rekeningList.data.response_data = rekeningList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-                setListRekening(rekeningList.data.response_data)
+            const bankList = await axios.post(BaseURL + "/SubAccount/GetListAccount", { data: "" }, { headers: headers })
+            console.log(bankList, 'list bank');
+            if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
+                bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListRekening(bankList.data.response_data)
+            } else if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length !== 0) {
+                setUserSession(bankList.data.response_new_token)
+                bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListRekening(bankList.data.response_data)
             }
         } catch (error) {
         //   console.log(error)
@@ -489,7 +489,15 @@ const TransferSubAccount = () => {
         }
     }
 
-    console.log(errMsg, "errMsg");
+    function batalIn (param) {
+        if (param === "rekening") {
+            setShowDaftarRekening(false)
+            setFilterTextRekening('')
+        } else {
+            setShowBank(false)
+            setFilterTextBank('')
+        }
+    }
 
     const customStyles = {
         headCells: {
@@ -566,7 +574,11 @@ const TransferSubAccount = () => {
                                 <input type='number' name='noRek' value={inputDataRekening.noRek} onChange={(e) => handleChangeRek(e)} className="input-text-user" placeholder='Masukkan No. Rekening Tujuan' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}/>
                             </Col>
                             <Col xs={2} >
-                                <button onClick={() => checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, true)} className='btn-ez-transfer'>
+                                <button 
+                                    onClick={() => checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, true)} 
+                                    className={(inputDataRekening.noRek.length !== 0 && inputData.bankCode.length !== 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
+                                    disabled={inputDataRekening.noRek.length === 0 || inputData.bankCode.length === 0}
+                                >
                                     Periksa
                                 </button>
                             </Col>
@@ -689,7 +701,7 @@ const TransferSubAccount = () => {
                         className="position-absolute top-0 end-0 m-3"
                         variant="close"
                         aria-label="Close"
-                        onClick={() => setShowBank(false)}
+                        onClick={() => batalIn('bank')}
                     />
                     
                 </Modal.Header>
@@ -712,6 +724,27 @@ const TransferSubAccount = () => {
                             fixedHeaderScrollHeight="300px"
                         />
                     </div>
+                    <div className='text-center my-1'>
+                        <button
+                            onClick={() => batalIn('bank')}
+                            style={{
+                                fontFamily: "Exo",
+                                fontSize: 16,
+                                fontWeight: 900,
+                                alignItems: "center",
+                                padding: "12px 24px",
+                                gap: 8,
+                                width: 136,
+                                height: 45,
+                                background: "#FFFFFF",
+                                color: "#888888",
+                                border: "0.6px solid #EBEBEB",
+                                borderRadius: 6,
+                            }}
+                        >
+                            Batal
+                        </button>
+                    </div>
                 </Modal.Body>
             </Modal>
 
@@ -722,7 +755,7 @@ const TransferSubAccount = () => {
                         className="position-absolute top-0 end-0 m-3"
                         variant="close"
                         aria-label="Close"
-                        onClick={() => setShowDaftarRekening(false)}
+                        onClick={() => batalIn('rekening')}
                     />
                     
                 </Modal.Header>
@@ -744,6 +777,27 @@ const TransferSubAccount = () => {
                             fixedHeader={true}
                             fixedHeaderScrollHeight="300px"
                         />
+                    </div>
+                    <div className='text-center my-1'>
+                        <button
+                            onClick={() => batalIn('rekening')}
+                            style={{
+                                fontFamily: "Exo",
+                                fontSize: 16,
+                                fontWeight: 900,
+                                alignItems: "center",
+                                padding: "12px 24px",
+                                gap: 8,
+                                width: 136,
+                                height: 45,
+                                background: "#FFFFFF",
+                                color: "#888888",
+                                border: "0.6px solid #EBEBEB",
+                                borderRadius: 6,
+                            }}
+                        >
+                            Batal
+                        </button>
                     </div>
                 </Modal.Body>
             </Modal>

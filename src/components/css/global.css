@@ -741,6 +741,20 @@ width: 150px;
     color: #2C1919;
 }
 
+.btn-noez-transfer {
+    font-family: "Exo";
+    font-size: 16px;
+    font-weight: 700;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 40px;
+    background: #EBEBEB;
+    border: 0.6px solid #EBEBEB;
+    border-radius: 6px;
+    color: #C4C4C4;
+}
+
 /* select option in dashboard */
 
 .dropPartner .css-b62m3t-container {
@@ -1001,7 +1015,7 @@ header.sc-dIouRR.evxAbm {
 
 .fixed-header-table {
     overflow: overlay;
-    height: 300px;
+    height: 490px;
 }
 .fixed-header-table thead th {
     position: sticky;

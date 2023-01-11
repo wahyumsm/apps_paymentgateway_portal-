@@ -2423,7 +2423,7 @@ function EditPartner() {
                       onClick={showCheckboxesSubAccount}
                       className="text-end"
                     >
-                      Sembunyikan daftar Sub Account{" "}
+                      Sembunyikan daftar akun Sub Account{" "}
                       <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
                     </button>
                   </div>

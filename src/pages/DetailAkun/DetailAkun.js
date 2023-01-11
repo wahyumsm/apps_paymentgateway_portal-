@@ -315,7 +315,7 @@ function DetailAkun() {
                     {expandedSubAcc ?
                         <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
                             <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
-                                Sembunyikan tabel skema biaya <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
+                                Sembunyikan daftar sub account <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
                             </button>
                         </div> :
                         <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >

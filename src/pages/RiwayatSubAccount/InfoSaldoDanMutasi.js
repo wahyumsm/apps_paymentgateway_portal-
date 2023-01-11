@@ -532,7 +532,7 @@ const InfoSaldoDanMutasi = () => {
                                     {
                                         pendingMutasi ?
                                         <div className='d-flex justify-content-center'><CustomLoader /></div> :
-                                        <div id='table-body' style={{ height: 300, overflow: "auto" }}>
+                                        <div id='table-body' style={{ height: 490, overflow: "auto" }}>
                                             <table className='table mt-3'>
                                                 <thead>
                                                     <tr>

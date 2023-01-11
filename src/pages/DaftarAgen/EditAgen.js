@@ -29,6 +29,12 @@ function EditAgen() {
         nominal: 0
     })
 
+    const [inputDataSubAcc, setInputDataSubAcc] = useState({
+        bankNameSubAcc: "",
+        akunBankSubAcc: "",
+        rekeningOwnerSubAcc: ""
+    })
+
     function handleChange(e) {
         if (e.target.name === "active") {
             setInputHandle({
@@ -67,6 +73,7 @@ function EditAgen() {
                 }
                 const dataDetail = detailAgen.data.response_data
                 setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
+                setInputDataSubAcc({bankNameSubAcc: dataDetail.subaccount_bank_name, akunBankSubAcc: dataDetail.subaccount_acc_number, rekeningOwnerSubAcc: dataDetail.subaccount_acc_name})
                 // setDetailAgen(detailAgen.data.response_data)
             } else if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length !== 0) {
                 setUserSession(detailAgen.data.response_new_token)
@@ -83,6 +90,7 @@ function EditAgen() {
                 }
                 const dataDetail = detailAgen.data.response_data
                 setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
+                setInputDataSubAcc({bankNameSubAcc: dataDetail.subaccount_bank_name, akunBankSubAcc: dataDetail.subaccount_acc_number, rekeningOwnerSubAcc: dataDetail.subaccount_acc_name})
                 // setDetailAgen(detailAgen.data.response_data)
             }
         } catch (error) {
@@ -158,7 +166,7 @@ function EditAgen() {
                     <div className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</div>
                     {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
                 </div>
-                <div className='base-content' style={{ width:"93%", padding: 50 }}>
+                <div className='base-content' style={{ width:"100%", padding: 50 }}>
                     <div>
                         <Row className='mb-4'>
                             <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
@@ -324,7 +332,7 @@ function EditAgen() {
                 <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Rekening Sub Account</div>
                 </div>
-                    <div className='base-content' style={{ width:"93%", padding: 50 }}>
+                    <div className='base-content' style={{ width:"100%", padding: 50 }}>
                         <div>
                             <Row className='mb-4'>
                                 <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
@@ -334,7 +342,7 @@ function EditAgen() {
                                 </Col>
                                 <Col xs={9}>
                                     <Form.Control
-                                        value={inputHandle.bankName && "Bank Danamon"}
+                                        value={inputDataSubAcc.bankNameSubAcc && "Bank Danamon"}
                                         placeholder="Bank Danamon"
                                         type='text'
                                         disabled
@@ -351,7 +359,7 @@ function EditAgen() {
                                 <Col xs={9}>
                                     <Form.Control
                                         name='akunBank'
-                                        value={inputHandle.akunBank}
+                                        value={inputDataSubAcc.akunBankSubAcc}
                                         type='text'
                                         disabled
                                         style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }} 
@@ -367,7 +375,7 @@ function EditAgen() {
                                 <Col xs={9}>
                                     <Form.Control
                                         name='rekeningOwner'
-                                        value={inputHandle.rekeningOwner}
+                                        value={inputDataSubAcc.rekeningOwnerSubAcc}
                                         type='text'
                                         disabled
                                         style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}   

@@ -66,7 +66,7 @@ function DetailAgen() {
                 <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Detail Agen</div>
                 {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+            <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
@@ -209,7 +209,7 @@ function DetailAgen() {
             <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Rekening Sub Account</div>
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+            <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
@@ -219,7 +219,7 @@ function DetailAgen() {
                         </Col>
                         <Col xs={9}>
                             <Form.Control
-                                value={detailAgen.agen_bank}
+                                value={detailAgen.subaccount_bank_name}
                                 type='text'
                                 disabled
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
@@ -235,7 +235,7 @@ function DetailAgen() {
                         <Col xs={9}>
                             <Form.Control
                                 name='akunBank'
-                                value={detailAgen.agen_bank_number}
+                                value={detailAgen.subaccount_acc_number}
                                 type='text'
                                 disabled
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
@@ -250,7 +250,7 @@ function DetailAgen() {
                         </Col>
                         <Col xs={9}>
                             <Form.Control
-                                value={detailAgen.agen_bank_name}
+                                value={detailAgen.subaccount_acc_name}
                                 type='text'
                                 disabled
                                 style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
@@ -261,7 +261,7 @@ function DetailAgen() {
             </div>
             {
                 user_role === "102" ?
-                <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
+                <div style={{ display: "flex", justifyContent: "end", marginTop: 16}}>
                     <button onClick={() => editAgen(agenId)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                         Edit
                     </button>

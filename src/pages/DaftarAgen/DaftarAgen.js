@@ -79,6 +79,7 @@ function DaftarAgen() {
     {
       name: 'ID Agen',
       selector: row => row.agen_id,
+      sortable: true,
       cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
     },
     {
@@ -94,7 +95,7 @@ function DaftarAgen() {
       wrap: true,
     },
     {
-      name: 'No Hp',
+      name: 'No Telepon',
       selector: row => row.agen_mobile,
     },
     {
@@ -104,7 +105,7 @@ function DaftarAgen() {
     
     {
       name: 'No Rekening Sub Account',
-      selector: row => row.agen_bank_number,
+      selector: row => row.subaccount_acc_number === null ? "-" : row.subaccount_acc_number,
       width: '220px'
     },
     {
@@ -114,6 +115,7 @@ function DaftarAgen() {
     {
       name: 'Status',
       selector: row => row.status,
+      sortable: true,
       width: "90px",
       style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
       conditionalCellStyles: [

@@ -26,6 +26,7 @@ import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
 import { useRef } from "react";
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
+import alertIcon from "../../assets/icon/alert_icon.svg";
 
 function TambahPartner() {
   const [addPartner, setAddPartner] = useState({});
@@ -539,9 +540,9 @@ function TambahPartner() {
     akunBank,
     rekeningOwner,
     paymentData,
-    bankNameSubAcc,
-    rekeningOwnerSubAcc,
-    akunBankSubAcc
+    // bankNameSubAcc,
+    // rekeningOwnerSubAcc,
+    // akunBankSubAcc
   ) {
     try {
       paymentData = paymentData.map((item) => ({
@@ -562,7 +563,7 @@ function TambahPartner() {
       const dataParams = encryptData(
         `{"mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_id": ${bankName}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "payment_method": ${JSON.stringify(
           paymentData
-        )}, "sub_acc_bank_code": "${bankNameSubAcc}", "sub_acc_name": "${rekeningOwnerSubAcc}", "sub_acc_number": "${akunBankSubAcc}"}`
+        )}, "sub_acc_bank_code": "", "sub_acc_name": "", "sub_acc_number": ""}`
       );
       const headers = {
         "Content-Type": "application/json",
@@ -1569,7 +1570,25 @@ function toDashboard() {
           Rekening Sub Account
         </h5>
       </div>
-      <div className="base-content" style={{ width: "100%", padding: 50 }}>
+
+      <div
+          style={{
+              width:"100%",
+              fontSize: "14px",
+              background: "rgba(255, 214, 0, 0.16)",
+              borderRadius: "4px",
+              fontStyle: "italic",
+              padding: "12px",
+              gap: 10,
+          }}
+          className="text-start my-2"
+      >
+          <span className="mx-2">
+              <img src={alertIcon} alt="alert" />
+          </span>
+          Anda dapat menambahkan rekening Sub-Account saat Edit Profil Partner setelah Akun Partner berhasil dibuat.
+      </div>
+      {/* <div className="base-content" style={{ width: "100%", padding: 50 }}>
         <div>
           <Row className="mb-4">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
@@ -1658,14 +1677,13 @@ function toDashboard() {
           </Row>
         
         </div>
-      </div>
+      </div> */}
 
       <div
         style={{
           display: "flex",
           justifyContent: "end",
           marginTop: 16,
-          marginRight: 83,
         }}
       >
         <button
@@ -1684,9 +1702,9 @@ function toDashboard() {
               inputHandle.akunBank,
               inputHandle.rekeningOwner,
               payment,
-              inputHandle.bankNameSubAcc,
-              inputHandle.rekeningOwnerSubAcc,
-              inputHandle.akunBankSubAcc
+              // inputHandle.bankNameSubAcc,
+              // inputHandle.rekeningOwnerSubAcc,
+              // inputHandle.akunBankSubAcc
             )
           }
           style={{ width: 136, cursor: (inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && payment.length !== 0 ) ? "pointer" : "unset" }}

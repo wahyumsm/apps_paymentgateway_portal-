@@ -115,7 +115,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Agen*
+                                Nama Agen <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -134,7 +134,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Email Agen*
+                                Email Agen <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -158,7 +158,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                No Hp Agen*
+                                No Hp Agen <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -184,7 +184,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Bank*
+                                Nama Bank <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -203,7 +203,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                No Rekening*
+                                No Rekening <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -223,7 +223,7 @@ function TambahAgen() {
                     <Row className='mb-2'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Pemilik Rekening*
+                                Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -241,7 +241,7 @@ function TambahAgen() {
                     <Row>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Settlement Fee*
+                                Settlement Fee <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
