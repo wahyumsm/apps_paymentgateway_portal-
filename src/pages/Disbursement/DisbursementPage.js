@@ -3,15 +3,16 @@ import { Link, useHistory } from 'react-router-dom'
 import $ from 'jquery'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteInfo from "../../assets/icon/note_icon.svg"
-import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
 import { Button, Col, Form, Modal, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCircle } from "@fortawesome/free-solid-svg-icons";
 import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import saveIcon from "../../assets/icon/save_icon.svg";
+import triangleAlertIcon from "../../assets/icon/alert_icon.svg";
 import DataTable from 'react-data-table-component'
 import { agenLists, invoiceItems } from '../../data/tables'
 import axios from 'axios'
@@ -19,7 +20,9 @@ import FilterSubAccount from '../../components/FilterSubAccount'
 import { Base64 } from 'js-base64'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
+import validator from "validator";
 import 'filepond/dist/filepond.min.css'
+import Pagination from 'react-js-pagination'
 
 registerPlugin(FilePondPluginFileEncode)
 
@@ -38,20 +41,241 @@ function DisbursementPage() {
     const [showModalPanduan, setShowModalPanduan] = useState(false)
     const [filterTextBank, setFilterTextBank] = useState('')
     const [filterTextRekening, setFilterTextRekening] = useState('')
+    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+    <div className='pb-4'>
+        <span class="filepond--label-action">
+            Upload File
+        </span>
+    </div>`)
     const [files, setFiles] = useState([])
-    async function fileCSV(newValue) {
-        // const pond = newValue.create()
-        const pond = await newValue[0].getFileEncodeBase64String()
-        // console.log(newValue, 'newValue');
-        console.log(Base64.decode(pond), 'pond');
-    }
-    console.log(files, 'files upload');
-    const labelUpload = `<div class='py-4 mt-5 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+    const [dataFromUpload, setDataFromUpload] = useState([])
+    const [errorFound, setErrorFound] = useState([])
+    const [errorLoadPagination, setErrorLoadPagination] = useState([])
+    const [errorFoundPagination, setErrorFoundPagination] = useState([])
+    const [showModalErrorList, setShowModalErrorList] = useState(false)
+    const [activePageErrorList, setActivePageErrorList] = useState(1)
+    
+    async function fileCSV(newValue, bankLists) {
+        console.log(newValue, 'newValue');
+        console.log(bankLists, 'bankLists');
+        if (errorFound.length !== 0) {
+            setErrorFound([])
+        }
+        if (newValue.length === 0) {
+            // setTimeout(() => {
+                setDataFromUpload([])
+            // }, 500);
+        } else if (newValue.length !== 0 && newValue[0].file.type !== "text/csv") {
+            console.log('masuk wrong type');
+            setErrorFound([])
+            // setTimeout(() => {
+                setLabelUpload("")
+            // }, 2400);
+            // setTimeout(() => {
+                setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Format file tidak sesuai. Pastikan format file dalam bentuk *.csv dan telah <br /> menggunakan template yang disediakan.</div>
+                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
                 <div className='pb-4'>
                     <span class="filepond--label-action">
-                        Upload File
+                        Ganti File
                     </span>
-                </div>`
+                </div>`)
+            // }, 2500);
+        } else {
+            const pond = await newValue[0].getFileEncodeBase64String()
+            console.log(pond, 'pond');
+            if (pond) {
+                const decoded = Base64.decode(pond)
+                console.log(decoded, 'decodedd');
+                const headerCol = decoded.split('|').slice(0, 8)
+                console.log(headerCol, 'headerCol');
+                if (headerCol[0] === "No*" && headerCol[1] === "Bank Tujuan*" && headerCol[2] === "Cabang (Khusus Non-BCA)*" && headerCol[3] === "No. Rekening Tujuan*" && headerCol[4] === "Nama Pemilik Rekening*" && headerCol[5] === "Nominal Disbursement*" && headerCol[6] === "Email Penerima" && headerCol[7] === "Catatan\r\n1") {
+                    console.log("ini bener");
+                    const newDcd = decoded.split("|").slice(8)
+                    console.log(newDcd, 'newDcd');
+                    let newArr = []
+                    let obj = {}
+                    newDcd.forEach((el, idx) => {
+                        if (idx === 0 || idx % 7 === 0) {
+                            obj.bankName = el
+                        } else if (idx === 1 || idx % 7 === 1) {
+                            obj.cabangBank = el
+                        } else if (idx === 2 || idx % 7 === 2) {
+                            obj.noRekening = el
+                        } else if (idx === 3 || idx % 7 === 3) {
+                            obj.ownerName = el
+                        } else if (idx === 4 || idx % 7 === 4) {
+                            obj.nominalDisbursement = el
+                        } else if (idx === 5 || idx % 7 === 5) {
+                            obj.email = el
+                        } else if (idx === 6 || idx % 7 === 6) {
+                            obj.note = el.split("\r")[0]
+                        }
+
+                        if (idx % 7 === 6) {
+                            newArr.push(obj)
+                            obj = {}
+                        }
+                    })
+                    newArr = newArr.map((obj, i) => ({...obj, no: i + 1}) )
+                    console.log(newArr, 'newArr');
+                    let errData = []
+                    newArr.forEach(data => {
+                        let objErrData = {}
+                        if (data.bankName.length === 0) {
+                            console.log('masuk bank name kosong');
+                            objErrData.no = data.no
+                            // objErrData.data = data.bankName
+                            objErrData.keterangan = 'kolom Bank Tujuan : Wajib Diisi.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                        const sameBankName = bankLists.find(list => list.mbank_name.toLowerCase() === data.bankName.toLowerCase())
+                        console.log(sameBankName, 'sameBankName');
+                        if (sameBankName === undefined && data.bankName.length !== 0) {
+                            objErrData.no = data.no
+                            // objErrData.data = data.bankName
+                            objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                        if (data.cabangBank.length === 0) {
+                            objErrData.no = data.no
+                            // objErrData.data = data.cabangBank
+                            objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                        if (data.noRekening.length === 0) {
+                            objErrData.no = data.no
+                            // objErrData.data = data.noRekening
+                            objErrData.keterangan = 'kolom Nomor Rekening : Wajib Diisi.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                        if (data.noRekening.toLowerCase() !== data.noRekening.toUpperCase()) {
+                            objErrData.no = data.no
+                            // objErrData.data = data.noRekening
+                            objErrData.keterangan = 'kolom Nomor Rekening : Tipe data salah.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                        if (data.ownerName.length === 0) {
+                            objErrData.no = data.no
+                            // objErrData.data = data.ownerName
+                            objErrData.keterangan = 'kolom Nama Pemilik Rekening : Wajib Diisi.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                        if (data.nominalDisbursement.length === 0) {
+                            objErrData.no = data.no
+                            // objErrData.data = data.noRekening
+                            objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                        if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
+                            objErrData.no = data.no
+                            // objErrData.data = data.nominalDisbursement
+                            objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                        if (validator.isEmail(data.email) === false) {
+                            objErrData.no = data.no
+                            // objErrData.data = data.email
+                            objErrData.keterangan = 'kolom Email Penerima : Tipe data salah.'
+                            errData.push(objErrData)
+                            objErrData = {}
+                        }
+                    })
+                    console.log(errData, 'errData');
+                    if (errData.length !== 0) {
+                        setTimeout(() => {
+                            setErrorFound(errData)
+                            setLabelUpload("")
+                            setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                            <div className='pb-4'>
+                                <span class="filepond--label-action">
+                                    Ganti File
+                                </span>
+                            </div>`)
+                        }, 2500);
+                        // setTimeout(() => {
+                        // }, 500);
+                    } else {
+                        setErrorFound([])
+                        setTimeout(() => {
+                            setLabelUpload("")
+                            setLabelUpload(`<div class='mt-2 style-label-drag-drop-filename'>${newValue[0].file.name}</div>
+                            <div class='py-4 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                            <div className='pb-4'>
+                                <span class="filepond--label-action">
+                                    Ganti File
+                                </span>
+                            </div>`)
+                        }, 2500);
+                        setTimeout(() => {
+                            setDataFromUpload(newArr)
+                        }, 3000);
+                    }
+                } else {
+                    console.log("ini salah");
+                    setErrorFound([])
+                    setTimeout(() => {
+                        setLabelUpload("")
+                        setLabelUpload(`<div class='py-1 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div>
+                        <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                        <div className='pb-4'>
+                            <span class="filepond--label-action">
+                                Ganti File
+                            </span>
+                        </div>`)
+                    }, 2500);
+                }
+            }
+        }
+    }
+
+    function openErrorListModal(errorList) {
+        console.log(errorList, 'errorList');
+        let errorArr = []
+        let arrKecil = []
+        errorList.forEach((err, idx) => {
+            // console.log(err);
+            if ((idx+1)%10 === 0) {
+                arrKecil.push(err)
+                errorArr.push(arrKecil)
+                arrKecil = []
+            } else if (idx === errorList.length-1) {
+                arrKecil.push(err)
+                errorArr.push(arrKecil)
+                arrKecil = []
+            } else {
+                arrKecil.push(err)
+            }
+        })
+        console.log(errorArr,'errorArr');
+        setErrorFoundPagination(errorArr)
+        setErrorLoadPagination(errorArr[0])
+        setShowModalErrorList(true)
+    }
+
+    function handlePageChangeErrorList(page, errorList) {
+        console.log(page,'page');
+        setActivePageErrorList(page)
+        setErrorLoadPagination(errorList[page-1])
+    }
+
+    function handleClickChangeFile() {
+        console.log('clicked1');
+        $('.filepond--browser').trigger('click');
+        setShowModalErrorList(false)
+        console.log('clicked2');
+    }
+
+    console.log(files, 'files upload');
+    console.log(dataFromUpload, 'dataFromUpload');
+    console.log(labelUpload, 'labelUpload');
     const filterItemsBank = listBank.filter(
         item => (item.mbank_name && item.mbank_name.toLowerCase().includes(filterTextBank.toLowerCase())) || (item.mbank_code && item.mbank_code.toLowerCase().includes(filterTextBank.toLowerCase()))
     )
@@ -186,17 +410,17 @@ function DisbursementPage() {
     const columnsBulk = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.no,
             width: "67px"
         },
         {
             name: 'Bank Tujuan',
-            selector: row => row.email,
+            selector: row => row.bankName,
             width: "180px"
         },
         {
             name: 'Cabang (Khusus Non-BCA)',
-            selector: row => row.IDAgen,
+            selector: row => row.cabangBank,
             width: "250px"
         },
         {
@@ -205,7 +429,22 @@ function DisbursementPage() {
         },
         {
             name: 'Nama Pemilik Rekening',
-            selector: row => row.namaAgen,
+            selector: row => row.ownerName,
+            width: '250px'
+        },
+        {
+            name: 'Nominal Disbursement',
+            selector: row => convertToRupiah(row.nominalDisbursement, true, 2),
+            width: '250px'
+        },
+        {
+            name: 'Email Penerima',
+            selector: row => row.email,
+            width: '250px'
+        },
+        {
+            name: 'Catatan',
+            selector: row => row.note,
             width: '250px'
         }
     ]
@@ -733,12 +972,29 @@ function DisbursementPage() {
                                 </div>
                             </div>
                             <div className='text-center mt-3 position-relative' style={{ marginBottom: 100 }}>
+                                {
+                                    errorFound.length !== 0 &&
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', textAlign: 'center' }}>
+                                        <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
+                                            <div>
+                                                <div style={{ marginLeft: -50 }}>
+                                                    <img class="me-2" src={noteIconRed} width="20px" height="20px" />
+                                                    Kesalahan data yang perlu diperbaiki:
+                                                </div>
+                                                <div><FontAwesomeIcon style={{ width: 5, marginTop: 3, marginLeft: 100 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                            </div>
+                                            <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div>
+                                        </div>
+                                    </div>
+                                }
                                 <FilePond
                                     className="dragdrop"
                                     files={files}
-                                    onupdatefiles={fileCSV}
-                                    allowMultiple={true}
-                                    maxFiles={3}
+                                    onupdatefiles={(newFile) => fileCSV(newFile, listBank)}
+                                    onaddfilestart={() => setErrorFound([])}
+                                    // onaddfile={addFile}
+                                    // allowMultiple={true}
+                                    // maxFiles={3}
                                     server="/api"
                                     name="files"
                                     labelIdle={labelUpload}
@@ -786,10 +1042,10 @@ function DisbursementPage() {
                             <div className="div-table pt-3 pb-5">
                                 <DataTable
                                     columns={columnsBulk}
-                                    data={agenLists}
+                                    data={dataFromUpload}
                                     customStyles={customStyles}
                                     noDataComponent={<div style={{ marginBottom: 10 }}>Belum ada data tujuan Disbursement</div>}
-                                    // pagination
+                                    pagination
                                     highlightOnHover
                                     // progressComponent={<CustomLoader />}
                                     // subHeaderComponent={subHeaderComponentMemo}
@@ -886,6 +1142,66 @@ function DisbursementPage() {
                                         style={{ width: '25%' }}
                                     >
                                         Mengerti
+                                    </button>
+                                </div>
+                            </Modal.Body>
+                        </Modal>
+                        
+                        {/* Modal Lihat list error */}
+                        <Modal className="list-error-modal" size="xl" centered show={showModalErrorList} onHide={() => setShowModalErrorList(false)}>
+                            <Modal.Header className="border-0">
+                                <Button
+                                    className="position-absolute top-0 end-0 m-3"
+                                    variant="close"
+                                    aria-label="Close"
+                                    onClick={() => setShowModalErrorList(false)}
+                                />
+                                
+                            </Modal.Header>
+                            <Modal.Title className='text-center mt-4' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
+                                Kesalahan Data yang Perlu Diperbaiki
+                            </Modal.Title>
+                            <Modal.Body className='px-4'>
+                                <div style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'pre-wrap', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }} className='d-flex justify-content-start align-items-center'>
+                                    <img src={triangleAlertIcon} width="25" height="25" alt="circle_info" style={{ marginRight: 10 }} />
+                                    <span>Harap perbaiki data terlebih dahulu sebelum mengupload ulang file. </span>
+                                </div>
+                                <div className='mt-3' style={{ maxWidth: 622, backgroundColor: 'rgba(185, 18, 27, 0.08)', width: 'auto', padding: '20px 20px 20px 30px', borderRadius: 4 }}>
+                                    <div style={{ height: 210 }}>
+                                        <table style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
+                                            {
+                                                errorLoadPagination.length !== 0 &&
+                                                errorLoadPagination.map((err, idx) => {
+                                                    return(
+                                                        <tr>
+                                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>{(activePageErrorList > 1) ? (idx + 1)+((activePageErrorList-1)*10) : idx + 1}. </td>
+                                                            <td>Data nomor <b>{`${err.no}`}</b>, {`${err.keterangan}`}</td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </table>
+                                    </div>
+                                    <div className="d-flex justify-content-center mt-3">
+                                        <Pagination
+                                            activePage={activePageErrorList}
+                                            itemsCountPerPage={10}
+                                            totalItemsCount={errorFound.length}
+                                            pageRangeDisplayed={5}
+                                            itemClass="page-item"
+                                            linkClass="page-link"
+                                            onChange={(e) => handlePageChangeErrorList(e, errorFoundPagination)}
+                                        />
+                                    </div>
+                                </div>
+                                <input onChange={(newFile) => fileCSV(newFile, listBank)} type='file' id='input-file' accept='text/csv' style={{ visibility: 'hidden' }} />
+                                <div type='file' className='text-center mb-2'>
+                                    <button
+                                        onClick={() => handleClickChangeFile()}
+                                        className='btn-reset'
+                                        style={{ width: '25%' }}
+                                    >
+                                        Ganti File
                                     </button>
                                 </div>
                             </Modal.Body>

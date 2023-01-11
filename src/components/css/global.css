@@ -452,10 +452,6 @@ body {
     max-width: 751px;
 }
 
-.panduan-modal .modal-content {
-    max-width: 704px;
-}
-
 .confirm-modal .modal-content {
     width: 400px;
 }
@@ -469,6 +465,10 @@ body {
 }
 
 .panduan-modal .modal-content {
+    max-width: 670px;
+}
+
+.list-error-modal .modal-content {
     max-width: 670px;
 }
 
@@ -1071,7 +1071,7 @@ header.sc-dIouRR.evxAbm {
 
 .filepond--root .filepond--drop-label {
     min-height: 12em !important;
-    margin-top: -35px;
+    margin-top: -5px;
 }
 
 .filepond--wrapper {
@@ -1097,7 +1097,7 @@ header.sc-dIouRR.evxAbm {
 
 .dragdrop .filepond--panel {
     min-height: max-content !important;
-    height: 200px !important;
+    height: 100% !important;
 }
 
 .filepond--root .filepond--credits[style] {
@@ -1107,6 +1107,24 @@ header.sc-dIouRR.evxAbm {
 .style-label-drag-drop {
     font-family: 'Nunito';
     font-size: 12px !important;
+}
+
+.style-label-drag-drop-error-list {
+    font-family: 'Nunito';
+    font-size: 12px !important;
+    margin-top: 60px !important;
+}
+
+.style-label-drag-drop-error {
+    font-family: 'Nunito';
+    font-size: 12px !important;
+    color: #B9121B;
+}
+
+.style-label-drag-drop-filename {
+    font-family: 'Nunito';
+    font-size: 16px !important;
+    font-weight: 700;
 }
 
 .filepond--label-action {
