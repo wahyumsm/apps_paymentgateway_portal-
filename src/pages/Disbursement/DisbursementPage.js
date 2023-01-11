@@ -722,7 +722,7 @@ function DisbursementPage() {
         let workSheet = XLSX.utils.json_to_sheet(dataExcel)
         let workBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+        // XLSX.writeFile(workBook, "Disbursement Report.xlsx");
         const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "array"})
         var data = new Blob([new Uint8Array(convertFile)], { type: "application/octet-stream"})
         console.log(workBook, 'workBook');
