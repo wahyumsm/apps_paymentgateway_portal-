@@ -133,8 +133,9 @@ function DisbursementPage() {
     // console.log(inputHandle.nominal,"nominal");
     // console.log(inputHandle.emailPenerima.length,"emailPenerima");
     // console.log(inputHandle.catatan,"catatan");
-    console.log(isChecked,"saveAcc");
+    // console.log(isChecked,"saveAcc");
     console.log(dataDisburse,"dataDisburse");
+    console.log(allFee, "all fee");
 
     const columns = [
         {
@@ -451,7 +452,14 @@ function DisbursementPage() {
                 catatan: catatan.length !== 0 ? catatan : "",
                 saveAcc: saveAcc
             }
-            const result = feeBank.find((item) => item.mpaytype_bank_code === bankCodeTujuan)
+            const result = feeBank.find((item) => {
+                if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                    return item.mpaytype_bank_code === bankCodeTujuan
+                } else {
+                    bankCodeTujuan = "BIF"
+                    return item.mpaytype_bank_code === bankCodeTujuan
+                }
+            })
             setAllFee([...allFee, result.fee_bank])
             setDataDisburse([...dataDisburse, newData])
             setAllNominal([...allNominal, Number(nominal)])
@@ -499,7 +507,14 @@ function DisbursementPage() {
             catatan: catatan.length !== 0 ? catatan : "",
             saveAcc: saveAcc
         }
-        const result = feeBank.find((item) => item.mpaytype_bank_code === bankCodeTujuan)
+        const result = feeBank.find((item) => {
+            if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                return item.mpaytype_bank_code === bankCodeTujuan
+            } else {
+                bankCodeTujuan = "BIF"
+                return item.mpaytype_bank_code === bankCodeTujuan
+            }
+        })
         setAllFee([...allFee, result.fee_bank])
         setDataDisburse([...dataDisburse, newData])
         setAllNominal([...allNominal, Number(nominal)])
@@ -585,32 +600,39 @@ function DisbursementPage() {
             const finding = dataDisburse.findIndex((object) => {
                 return object.number === number
             })
-            const result = feeBank.find((item) => item.mpaytype_bank_code === bankCodeTujuan)
-                Object.assign(target, source)
-                setDataDisburse([...dataDisburse])
-                if (finding) {
-                    allNominal[finding] = Number(nominal)
-                    allFee[finding] = result.fee_bank
+            const result = feeBank.find((item) => {
+                if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                    return item.mpaytype_bank_code === bankCodeTujuan
+                } else {
+                    bankCodeTujuan = "BIF"
+                    return item.mpaytype_bank_code === bankCodeTujuan
                 }
-                setAllNominal([...allNominal])
-                setAllFee([...allFee])
-                setEditTabelDisburse(false)
-                setInputData({
-                    bankName: "",
-                    bankCode: "",
-                })
-                setInputRekening({
-                    bankNameRek: "",
-                    bankNumberRek: ""
-                })
-                setInputHandle({
-                    bankCabang: "",
-                    nominal: "",
-                    emailPenerima: "",
-                    catatan: ""
-                })
-                setNumbering(0)
-                setIsChecked(false)
+            })
+            Object.assign(target, source)
+            setDataDisburse([...dataDisburse])
+            if (finding) {
+                allNominal[finding] = Number(nominal)
+                allFee[finding] = result.fee_bank
+            }
+            setAllNominal([...allNominal])
+            setAllFee([...allFee])
+            setEditTabelDisburse(false)
+            setInputData({
+                bankName: "",
+                bankCode: "",
+            })
+            setInputRekening({
+                bankNameRek: "",
+                bankNumberRek: ""
+            })
+            setInputHandle({
+                bankCabang: "",
+                nominal: "",
+                emailPenerima: "",
+                catatan: ""
+            })
+            setNumbering(0)
+            setIsChecked(false)
         } else {
             setShowModalDuplikasi(true)
         }
@@ -645,7 +667,14 @@ function DisbursementPage() {
         const finding = dataDisburse.findIndex((object) => {
             return object.number === number
         })
-        const result = feeBank.find((item) => item.mpaytype_bank_code === bankCodeTujuan)
+        const result = feeBank.find((item) => {
+            if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                return item.mpaytype_bank_code === bankCodeTujuan
+            } else {
+                bankCodeTujuan = "BIF"
+                return item.mpaytype_bank_code === bankCodeTujuan
+            }
+        })
         Object.assign(target, source)
         setDataDisburse([...dataDisburse])
         if (finding) {
@@ -971,7 +1000,7 @@ function DisbursementPage() {
                                                             type='text'
                                                             className='input-text-user'
                                                             name="nominal"
-                                                            value={inputHandle.nominal === undefined ? convertToRupiah(0, true, 0) : convertToRupiah(inputHandle.nominal)}
+                                                            value={inputHandle.nominal === undefined ? convertToRupiah(0, true, 0) : convertToRupiah(inputHandle.nominal, true, 2)}
                                                             onChange={(e) => handleChange(e)}
                                                             onFocus={() => setEditNominal(!editNominal)}
                                                         />
@@ -1166,7 +1195,7 @@ function DisbursementPage() {
                                                                                 {item.nameRek}
                                                                             </td>
                                                                             <td className='ps-3'>
-                                                                                {convertToRupiah(item.nominal)}
+                                                                                {convertToRupiah(item.nominal, true, 2)}
                                                                             </td>
                                                                             <td className='ps-3'>
                                                                                 {item.emailPenerima}
@@ -1232,16 +1261,16 @@ function DisbursementPage() {
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>Ringkasan</div>
                                             <div className='d-flex justify-content-between align-items-center mt-3'>
                                                 <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Disbursement</div>
-                                                <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 0)}</div>
+                                                <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 2)}</div>
                                             </div>
                                             <div className='d-flex justify-content-between align-items-center mt-2'>
                                                 <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement</div>
-                                                <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 0)}</div>
+                                                <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 2)}</div>
                                             </div>
                                             <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
                                             <div className='d-flex justify-content-between align-items-center mt-3' style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>
                                                 <div>Total Fee Disbursement + Total Fee</div>
-                                                <div>{convertToRupiah(sum(allNominal) + sum(allFee))}</div>
+                                                <div>{convertToRupiah((sum(allNominal) + sum(allFee)), true, 2)}</div>
                                             </div>
                                         </div>
                                         <div className='d-flex justify-content-between align-items-center mt-3'>
@@ -1255,7 +1284,7 @@ function DisbursementPage() {
                                                     <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                                     Saldo Anda tidak cukup, Topup saldo terlebih dahulu sebelum melakukan disbursement
                                                 </div> :
-                                                <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(Number((getBalance.balance) - (sum(allNominal) + sum(allFee))), true, 0)}</div>
+                                                <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(Number((getBalance.balance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
                                             }
                                         </div>
                                     </div>
@@ -1647,7 +1676,7 @@ function DisbursementPage() {
                                                                 {item.nameRek}
                                                             </td>
                                                             <td className='ps-3'>
-                                                                {convertToRupiah(item.nominal)}
+                                                                {convertToRupiah(item.nominal, true, 2)}
                                                             </td>
                                                             <td className='ps-3'>
                                                                 {item.emailPenerima}
@@ -1690,16 +1719,16 @@ function DisbursementPage() {
                             <div className='sub-base-content-disburse mt-3'>
                                 <div className='d-flex justify-content-between align-items-center mt-1'>
                                     <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Disbursement</div>
-                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 0)}</div>
+                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 2)}</div>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center mt-2'>
                                     <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement</div>
-                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 0)}</div>
+                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 2)}</div>
                                 </div>
                                 <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
                                 <div className='d-flex justify-content-between align-items-center mt-3' style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>
                                     <div>Total Disbursement + Total Fee</div>
-                                    <div>{convertToRupiah(sum(allNominal) + sum(allFee))}</div>
+                                    <div>{convertToRupiah((sum(allNominal) + sum(allFee)), true, 2)}</div>
                                 </div>
                             </div>
                             <div className='d-flex justify-content-between align-items-center mt-3'>
@@ -1713,7 +1742,7 @@ function DisbursementPage() {
                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                         Saldo Anda tidak cukup, Topup saldo terlebih dahulu sebelum melakukan disbursement
                                     </div> :
-                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(((getBalance.balance) - (sum(allNominal) + sum(allFee))), true, 0)}</div>
+                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(((getBalance.balance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
                                 }
                             </div>
                             <div className='mb-3 mt-3'>
