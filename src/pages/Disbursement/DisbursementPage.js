@@ -114,11 +114,37 @@ function DisbursementPage() {
                     console.log("ini bener");
                     const newDcd = decoded.split("|").slice(8)
                     console.log(newDcd, 'newDcd');
+                    let totalNominalDisburse = 0
+                    let totalFeeDisburse = 0
                     let newArr = []
                     let obj = {}
                     newDcd.forEach((el, idx) => {
                         if (idx === 0 || idx % 7 === 0) {
-                            obj.bankName = el
+                            console.log(el.slice(0,3), 'el.slice(0,3)');
+                            if (el.length === 0) {
+                                obj.bankCode = ""
+                                obj.bankName = ""
+                            } else {
+                                if (el.slice(0, 3).toLowerCase() !== el.slice(0, 3).toUpperCase()) {
+                                    obj.bankCode = "null"
+                                    obj.bankName = "null"
+                                } else {
+                                    const sameBankName = bankLists.find(list => list.mbank_code === el.slice(0, 3))
+                                    obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
+                                    obj.bankName = sameBankName !== undefined ? sameBankName.mbank_name : "undefined"
+                                    if (sameBankName !== undefined) {
+                                        const result = feeBank.find((item) => {
+                                            if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
+                                                return item.mpaytype_bank_code === sameBankName.mbank_code
+                                            } else {
+                                                sameBankName.mbank_code = "BIF"
+                                                return item.mpaytype_bank_code === sameBankName.mbank_code
+                                            }
+                                        })
+                                        totalFeeDisburse += result.fee_bank
+                                    }
+                                }
+                            }
                         } else if (idx === 1 || idx % 7 === 1) {
                             obj.cabangBank = el
                         } else if (idx === 2 || idx % 7 === 2) {
@@ -127,6 +153,7 @@ function DisbursementPage() {
                             obj.ownerName = el
                         } else if (idx === 4 || idx % 7 === 4) {
                             obj.nominalDisbursement = el
+                            totalNominalDisburse += Number(el)
                         } else if (idx === 5 || idx % 7 === 5) {
                             obj.email = el
                         } else if (idx === 6 || idx % 7 === 6) {
@@ -140,26 +167,34 @@ function DisbursementPage() {
                     })
                     newArr = newArr.map((obj, i) => ({...obj, no: i + 1}) )
                     console.log(newArr, 'newArr');
+                    setAllNominal([totalNominalDisburse])
+                    setAllFee([totalFeeDisburse])
                     let errData = []
                     newArr.forEach(data => {
                         let objErrData = {}
-                        if (data.bankName.length === 0) {
+                        if (data.bankName.length === 0 && data.bankCode.length === 0) {
                             console.log('masuk bank name kosong');
                             objErrData.no = data.no
                             // objErrData.data = data.bankName
                             objErrData.keterangan = 'kolom Bank Tujuan : Wajib Diisi.'
                             errData.push(objErrData)
                             objErrData = {}
+                        } else {
+                            if (data.bankName === "null" && data.bankCode === "null") {
+                                objErrData.no = data.no
+                                // objErrData.data = data.bankName
+                                objErrData.keterangan = 'kolom Bank Tujuan : Kode Bank Wajib Diisi.'
+                                errData.push(objErrData)
+                                objErrData = {}
+                            } else if (data.bankName === "undefined" && data.bankCode === "undefined") {
+                                objErrData.no = data.no
+                                // objErrData.data = data.bankName
+                                objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia.'
+                                errData.push(objErrData)
+                                objErrData = {}
+                            }
                         }
-                        const sameBankName = bankLists.find(list => list.mbank_name.toLowerCase() === data.bankName.toLowerCase())
-                        console.log(sameBankName, 'sameBankName');
-                        if (sameBankName === undefined && data.bankName.length !== 0) {
-                            objErrData.no = data.no
-                            // objErrData.data = data.bankName
-                            objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia.'
-                            errData.push(objErrData)
-                            objErrData = {}
-                        }
+                        
                         if (data.cabangBank.length === 0) {
                             objErrData.no = data.no
                             // objErrData.data = data.cabangBank
@@ -501,7 +536,7 @@ function DisbursementPage() {
         },
         {
             name: 'Bank Tujuan',
-            selector: row => row.bankName,
+            selector: row => `${row.bankCode} - ${row.bankName}`,
             width: "180px"
         },
         {
@@ -1008,10 +1043,11 @@ function DisbursementPage() {
         })
     }
 
-    function createDataDisburseExcel (dataDisburse) {
+    function createDataDisburseExcel (dataDisburse, isDisburseManual) {
+        // console.log(isDisburseManual, '!isDisbursementManual');
         let dataExcel = []
         for (let i = 0; i < dataDisburse.length; i++) {
-            dataExcel.push({"bank_code": dataDisburse[i].bankCodeTujuan, "branch_name": dataDisburse[i].cabang, "account_number": dataDisburse[i].noRek, "account_name": dataDisburse[i].nameRek, "amount": dataDisburse[i].nominal, "email": dataDisburse[i].emailPenerima, "description": dataDisburse[i].catatan, "save_account_number": dataDisburse[i].saveAcc})
+            dataExcel.push({"bank_code": (isDisburseManual === true ? dataDisburse[i].bankCodeTujuan : dataDisburse[i].bankCode), "branch_name": (isDisburseManual === true ? dataDisburse[i].cabang : dataDisburse[i].cabangBank), "account_number": (isDisburseManual === true ? dataDisburse[i].noRek : dataDisburse[i].noRekening), "account_name": (isDisburseManual === true ? dataDisburse[i].nameRek : dataDisburse[i].ownerName), "amount": (isDisburseManual === true ? dataDisburse[i].nominal : dataDisburse[i].nominalDisbursement), "email": (isDisburseManual === true ? dataDisburse[i].emailPenerima : dataDisburse[i].email), "description": (isDisburseManual === true ? dataDisburse[i].catatan : dataDisburse[i].note), "save_account_number": (isDisburseManual === true ? dataDisburse[i].saveAcc : false)})
         }
         let workSheet = XLSX.utils.json_to_sheet(dataExcel)
         let workBook = XLSX.utils.book_new();
@@ -1019,7 +1055,7 @@ function DisbursementPage() {
         // XLSX.writeFile(workBook, "Disbursement Report.xlsx");
         const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "array"})
         var data = new Blob([new Uint8Array(convertFile)], { type: "application/octet-stream"})
-        console.log(workBook, 'workBook');
+        // console.log(workBook, 'workBook');
         setDataExcelDisburse(data)
         setShowModalConfirm(true)
     }
@@ -1551,7 +1587,7 @@ function DisbursementPage() {
                         
                         <div className="d-flex justify-content-end align-items-center">
                             <button
-                                onClick={() => createDataDisburseExcel(dataDisburse)}
+                                onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
                                 className={(dataDisburse.length !== 0 && Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) >= 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
                                 disabled={dataDisburse.length === 0 || Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) < 0}
                                 style={{ width: '25%' }}
@@ -1738,8 +1774,10 @@ function DisbursementPage() {
 
                             <div className="d-flex justify-content-end align-items-center my-4">
                                 <button 
-                                    className='btn-ez-transfer'
+                                    className={dataFromUpload.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'}
+                                    disabled={dataFromUpload.length === 0}
                                     style={{ width: '25%' }}
+                                    onClick={() => createDataDisburseExcel(dataFromUpload, isDisbursementManual)}
                                 >
                                     Lakukan Disbursement
                                 </button>
@@ -1966,24 +2004,26 @@ function DisbursementPage() {
                             <span>Harap pastikan seluruh data disbursement sudah benar. Kesalahan pada data dapat menyebabkan kegagalan disbursement dan tetap akan dikenakan biaya sesuai dengan Fee Disbursement yang ditetapkan.</span>
                         </div>
                         <div>
-                            <div className='mt-3' style={{ fontFamily: 'Source Sans Pro', fontSize: 14, color: '#888888' }}>Dari Rekening</div>
-                            <div className='mt-1' style={{ fontFamily: 'Source Sans Pro', fontSize: 16, color: '#383838', fontWeight: 600 }}>2348-3492-0943</div>
+                            {/* <div className='mt-3' style={{ fontFamily: 'Source Sans Pro', fontSize: 14, color: '#888888' }}>Dari Rekening</div>
+                            <div className='mt-1' style={{ fontFamily: 'Source Sans Pro', fontSize: 16, color: '#383838', fontWeight: 600 }}>2348-3492-0943</div> */}
                             <div className='mt-3' style={{ fontFamily: 'Source Sans Pro', fontSize: 16, color: '#383838', fontWeight: 600 }}>Tujuan Disbursement</div>
-                            {/* <div className="div-table bank-list-subakun1 mt-3">
-                                <DataTable 
-                                    columns={columnsRekening}
-                                    data={filterItemsRekening}
-                                    customStyles={customStyles}
-                                    // progressComponent={<CustomLoader />}
-                                    persistTableHead
-                                    // onRowClicked={handleRowClickedRekening}
-                                    highlightOnHover
-                                    fixedHeader={true}
-                                    fixedHeaderScrollHeight="300px"
-                                />
-                            </div> */}
                             {
-                                dataDisburse.length !== 0 ?
+                                !isDisbursementManual ?
+                                <div className="table-disburse-confirm pt-3">
+                                    <DataTable
+                                        columns={columnsBulk}
+                                        data={dataFromUpload}
+                                        customStyles={customStyles}
+                                        noDataComponent={<div style={{ marginBottom: 10 }}>Belum ada data tujuan Disbursement</div>}
+                                        pagination
+                                        highlightOnHover
+                                        fixedHeader
+                                        fixedHeaderScrollHeight='300px'
+                                        // progressComponent={<CustomLoader />}
+                                        // subHeaderComponent={subHeaderComponentMemo}
+                                    />
+                                </div> :
+                                isDisbursementManual && dataDisburse.length !== 0 ?
                                 <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
                                     <table
                                         className="table mt-3"
@@ -2010,28 +2050,28 @@ function DisbursementPage() {
                                                     return (
                                                         <tr>
                                                             <td className='ps-3'>
-                                                                {item.number}
+                                                                {(isDisbursementManual) ? item.number : item.no}
                                                             </td>
                                                             <td className='ps-3'>
-                                                                {item.bankCodeTujuan + ` - ` + item.bankNameTujuan}
+                                                                {(isDisbursementManual) ? item.bankCodeTujuan + ` - ` + item.bankNameTujuan : item.bankCode + ` - ` + item.bankName}
                                                             </td>
                                                             <td className='ps-3'>
-                                                                {item.cabang}
+                                                                {(isDisbursementManual) ? item.cabang : item.cabangBank}
                                                             </td>
                                                             <td className='ps-3'>
-                                                                {item.noRek}
+                                                                {(isDisbursementManual) ? item.noRek : item.noRekening}
                                                             </td>
                                                             <td className='ps-3'>
-                                                                {item.nameRek}
+                                                                {(isDisbursementManual) ? item.nameRek : item.ownerName}
                                                             </td>
                                                             <td className='ps-3'>
-                                                                {convertToRupiah(item.nominal, true, 2)}
+                                                                {(isDisbursementManual) ? convertToRupiah(item.nominal, true, 2) : convertToRupiah(item.nominalDisbursement, true, 2)}
                                                             </td>
                                                             <td className='ps-3'>
-                                                                {item.emailPenerima}
+                                                                {(isDisbursementManual) ? item.emailPenerima : item.email}
                                                             </td>
                                                             <td className='ps-3'>
-                                                                {item.catatan}
+                                                                {(isDisbursementManual) ? item.catatan : item.note}
                                                             </td>
                                                         </tr>
                                                     )
@@ -2058,7 +2098,6 @@ function DisbursementPage() {
                                                 <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nominal Disbursement</th>
                                                 <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Email Penerima</th>
                                                 <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Catatan</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Aksi</th>
                                             </tr>
                                         </thead>
                                     </table>
