@@ -65,12 +65,12 @@ export default (props = {}) => {
     return (
       <Nav.Item className={navItemClassName} onClick={() => setShow(false)}>
         <Nav.Link {...linkProps} target={target} className={` d-flex justify-content-start align-items-center ${classNames}`}>
-          <span>
+          <div>
             {icon ? <span className="sidebar-icon"><FontAwesomeIcon icon={icon} /> </span> : null}
             {image ? <Image src={image} width={20} height={20} className="sidebar-icon svg-icon" /> : null}
 
-          </span>
-          <span className="sidebar-text">{title}</span>
+          </div>
+          <div className={title === "Riwayat Transaksi Sub Account Admin" ? " ms-2 sidebar-text" : "sidebar-text"}>{title}</div>
           {badgeText ? (
             <Badge pill bg={badgeBg} text={badgeColor} className="badge-md notification-count ms-2">{badgeText}</Badge>
           ) : null}

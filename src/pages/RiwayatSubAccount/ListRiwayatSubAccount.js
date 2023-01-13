@@ -778,13 +778,36 @@ const ListRiwayatSubAccount = () => {
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
-                            <DataTable
-                                columns={user_role === "102" ? columnsPartner : columnsAdmin}
-                                data={dataRiwayatTransfer}
-                                customStyles={customStyles}
-                                progressPending={pendingRiwayatTransfer}
-                                progressComponent={<CustomLoader />}
-                            />
+                            {
+                                dataRiwayatTransfer.length !== 0 ? (
+                                    <DataTable
+                                        columns={user_role === "102" ? columnsPartner : columnsAdmin}
+                                        data={dataRiwayatTransfer}
+                                        customStyles={customStyles}
+                                        progressPending={pendingRiwayatTransfer}
+                                        progressComponent={<CustomLoader />}
+                                    />
+                                ) : (
+                                    <div id='table-body' style={{ overflowX: 'auto', maxWidth: 'max-content' }} className='scroll-confirm'>
+                                        <table className="table text-center mt-4" id="tableInvoice" hover>
+                                            <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                <tr>
+                                                    <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo', width: 60 }}>No</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo', width: 170 }}>ID Referensi</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo', width: 150 }}>Waktu</th>
+                                                    {user_role !== "102" && <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo', width: 160 }}>Nama Partner</th>}
+                                                    <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo', width: 170 }}>Jenis Transaksi</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo', width: 200 }}>Rekening Sub Account</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo' }}>Nominal</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo', width: 130 }}>Biaya Admin</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "16px", textTransform: 'unset', fontFamily: 'Exo', width: 135 }}>Keterangan</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <div className='text-center mb-3'>Tidak ada data</div>
+                                    </div>
+                                )
+                            }
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
                         <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageRiwayatTransfer}</div>
