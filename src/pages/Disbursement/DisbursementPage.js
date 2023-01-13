@@ -1889,7 +1889,7 @@ function DisbursementPage() {
                                     </div>
                                     <div className='mt-3' style={{ maxWidth: 622, backgroundColor: 'rgba(185, 18, 27, 0.08)', width: 'auto', padding: '20px 20px 20px 30px', borderRadius: 4 }}>
                                         <div style={{ height: 210 }}>
-                                            <table style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
+                                            <table className='table-error-list-disburse' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
                                                 {
                                                     errorLoadPagination.length !== 0 &&
                                                     errorLoadPagination.map((err, idx) => {
