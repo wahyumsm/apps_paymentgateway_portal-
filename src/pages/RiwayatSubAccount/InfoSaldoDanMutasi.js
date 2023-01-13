@@ -27,12 +27,14 @@ const InfoSaldoDanMutasi = () => {
     const [userId, setUserId] = useState([])
     const [pendingMutasi, setPendingMutasi] = useState(true)
     const [pendingSaldo, setPendingSaldo] = useState(true)
+    const [errMsg, setErrMsg] = useState("")
+    console.log(errMsg, 'errMsg');
     
     async function fetchMoreData() {
-        // getListMutasi(userId, pageMutasi.next_record, pageMutasi.matched_record)
+        getListMutasi(inputHandle.akunPartner, pageMutasi.next_record, pageMutasi.matched_record)
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"subpartner_id":"${userId}", "start_date":"20220403", "end_date":"20220410", "date_id":7, "page":{"max_record":"10", "next_record":"${pageMutasi.next_record !== undefined ? pageMutasi.next_record : "N"}", "matched_record":"${pageMutasi.matched_record !== undefined ? pageMutasi.matched_record : "0"}"}}`)
+            const dataParams = encryptData(`{"subpartner_id":"${inputHandle.akunPartner}", "start_date":"", "end_date":"", "date_id":1, "page":{"max_record":"10", "next_record":"${pageMutasi.next_record !== undefined ? pageMutasi.next_record : "N"}", "matched_record":"${pageMutasi.matched_record !== undefined ? pageMutasi.matched_record : "0"}"}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -60,13 +62,18 @@ const InfoSaldoDanMutasi = () => {
             }
         } catch (error) {
             console.log(error);
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                console.log('masuk log error');
+                setErrMsg(error.response.data.response_message)
+                setPendingMutasi(false)
+            }
+            history.push(errorCatch(error.response.status))
         }
     }
 
 
-
     console.log(listMutasi, 'listMutasi');
-
+    
     const style = {
         height: 30,
         border: "1px solid green",
@@ -79,6 +86,7 @@ const InfoSaldoDanMutasi = () => {
         nomorAkun: "",
         namaAkun: ""
     })
+    console.log(inputHandle.akunPartner, "partner id ");
     const [inputDataMutasi, setInputDataMutasi] = useState({
         periodeInfoMutasi: 0
     })
@@ -121,12 +129,20 @@ const InfoSaldoDanMutasi = () => {
 
     function handleChange(e, listAkun) {
         listAkun = listAkun.find(item => item.partner_id === e.target.value)
+        getListMutasi(listAkun.partner_id)
         setInputHandle({
             ...inputHandle,
             [e.target.name]: e.target.value,
+            akunPartner: listAkun.partner_id,
             nomorAkun: listAkun.account_number,
             namaAkun: listAkun.account_name,
         });
+        setInputDataMutasi({
+            periodeInfoMutasi: 0
+        })
+        setStateInfoMutasi(null)
+        setDateRangeInfoMutasi([])
+        setShowDateInfoMutasi("none")
     }
 
     function loadFunc (page) {
@@ -193,6 +209,7 @@ const InfoSaldoDanMutasi = () => {
                     nomorAkun: listPartnerAkun.data.response_data[0].account_number,
                     namaAkun: listPartnerAkun.data.response_data[0].account_name,
                 })
+                getListMutasi(listPartnerAkun.data.response_data[0].partner_id, pageMutasi.next_record, pageMutasi.matched_record)
             }
           } else if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length !== 0) {
             setUserSession(listPartnerAkun.data.response_new_token)
@@ -242,6 +259,7 @@ const InfoSaldoDanMutasi = () => {
 
     async function getListMutasi(partnerId, nextRecord, matchedRecord) {
         try {
+            console.log('masuk');
             setPendingMutasi(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"subpartner_id":"${partnerId}", "start_date":"", "end_date":"", "date_id":1, "page":{"max_record":"10", "next_record":"${nextRecord !== undefined ? nextRecord : "N"}", "matched_record":"${matchedRecord !== undefined ? matchedRecord : "0"}"}}`)
@@ -276,8 +294,13 @@ const InfoSaldoDanMutasi = () => {
         } catch (error) {
             console.log(error)
             // RouteTo(errorCatch(error.response.status))
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                console.log('masuk log error');
+                setListMutasi([])
+                setErrMsg(error.response.data.response_message)
+                setPendingMutasi(false)
+            }
             history.push(errorCatch(error.response.status))
-            setPendingMutasi(false)
             
         }
     }
@@ -320,29 +343,12 @@ const InfoSaldoDanMutasi = () => {
         } catch (error) {
           console.log(error)
             // RouteTo(errorCatch(error.response.status))
-            history.push(errorCatch(error.response.status))
-        }
-    }
-
-    async function userDetails() {
-        try {
-            const auth = "Bearer " + getToken()
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                console.log('masuk log error');
+                setListMutasi([])
+                setErrMsg(error.response.data.response_message)
+                setPendingMutasi(false)
             }
-            const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
-            console.log(userDetail, 'ini user detal funct');
-            if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
-                setUserId(userDetail.data.response_data.muser_partnerdtl_id)
-                getListMutasi(userDetail.data.response_data.muser_partnerdtl_id)
-            } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
-                setUserSession(userDetail.data.response_new_token)
-                setUserId(userDetail.data.response_data.muser_partnerdtl_id)
-                getListMutasi(userDetail.data.response_data.muser_partnerdtl_id)
-            }
-        } catch (error) {
-            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -407,7 +413,7 @@ const InfoSaldoDanMutasi = () => {
     );
 
     useEffect(() => {
-        userDetails()
+        // userDetails()
         getAkunPartner()
     }, [])
     console.log(listMutasi, 'listMutasi');
@@ -503,15 +509,17 @@ const InfoSaldoDanMutasi = () => {
                                 <Row>
                                     <Col xs={6} style={{ width: "unset" }}>
                                         <button 
-                                            className='btn-ez-on'
-                                            onClick={() => filterGetListMutasi(userId, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, pageMutasi.next_record, pageMutasi.matched_record)}
+                                            className={(inputDataMutasi.periodeInfoMutasi !== 0 || dateRangeInfoMutasi.length !== 0) ? 'btn-ez-on' : 'btn-noez-transfer'}
+                                            disabled={inputDataMutasi.periodeInfoMutasi === 0}
+                                            onClick={() => filterGetListMutasi(inputHandle.akunPartner, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, pageMutasi.next_record, pageMutasi.matched_record)}
                                         >
                                             Terapkan
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button 
-                                            className='btn-reset'
+                                            className={(inputDataMutasi.periodeInfoMutasi !== 0 || dateRangeInfoMutasi.length !== 0) ? 'btn-reset' : 'btn-ez-reset'}
+                                            disabled={inputDataMutasi.periodeInfoMutasi === 0}
                                             onClick={() => resetButtonHandle()}
                                         >
                                             Atur Ulang
@@ -521,7 +529,7 @@ const InfoSaldoDanMutasi = () => {
                             </Col>
                         </Row>
                         <div className="div-table table-transfer mt-4 pb-4">
-                            <div id="scrollableDiv" className='fixed-header-table'>
+                            <div id="scrollableDiv" style={{ height: 490, overflow: "auto" }} className='fixed-header-table'>
                                 <InfiniteScroll
                                     dataLength={listMutasi.length}
                                     next={fetchMoreData}
@@ -532,7 +540,7 @@ const InfoSaldoDanMutasi = () => {
                                     {
                                         pendingMutasi ?
                                         <div className='d-flex justify-content-center'><CustomLoader /></div> :
-                                        <div id='table-body' style={{ height: 490, overflow: "auto" }}>
+                                        <div id='table-body' >
                                             {
                                                 listMutasi.length !== 0 ? (
                                                     <table className='table mt-3'>
@@ -572,7 +580,7 @@ const InfoSaldoDanMutasi = () => {
                                                                 </tr>
                                                             </thead>
                                                         </table>
-                                                        <div className='text-center'>Tidak ada data</div>
+                                                        <div className='text-center' style={{ color: errMsg.length !== 0 && '#B9121B' }}>{errMsg.length === 0 ? "Tidak ada data" : `${errMsg} - Please Contact Your Admin`}</div>
                                                     </>
                                                 )
                                             }

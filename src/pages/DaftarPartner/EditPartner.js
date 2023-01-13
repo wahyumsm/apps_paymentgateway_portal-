@@ -718,7 +718,9 @@ function EditPartner() {
       name: "ID Agen",
       selector: (row) => row.agen_id,
       sortable: true,
-      //   cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
+      cell: (row) => <Link style={{textDecoration: "underline", color: "#077E86"}} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>,
+      // wrap: true,
+      width: "150px"
     },
     {
       name: "Nama Agen",
@@ -744,19 +746,13 @@ function EditPartner() {
     },
     {
       name: "No Rekening Sub Account",
-      selector: (row) => row.no_rekening,
+      selector: (row) => row.subaccount_acc_number === null ? "-" : row.subaccount_acc_number,
       sortable: true,
       width: "235px",
     },
     {
-      name: "Nama Pemilik Rekening",
-      selector: (row) => row.nama_pemilik_rekening,
-      sortable: true,
-      width: "240px",
-    },
-    {
       name: "Kode Unik",
-      selector: (row) => row.agen_unique_code,
+      selector: (row) => row.agen_unique_code === null ? "-" : row.agen_unique_code,
       width: "132px",
       sortable: true,
     },
@@ -1267,7 +1263,7 @@ function EditPartner() {
   }
 
   return (
-    <div className="container-content-partner mt-5">
+    <div className="container-content-partner mt-5" style={{padding: "37px 27px 37px 27px"}}>
       {isDetailAkun ? (
         <span className="breadcrumbs-span">
           <Link to={"/"}>Beranda</Link> &nbsp;
@@ -2395,7 +2391,7 @@ function EditPartner() {
                   </>
                 )}
               </Col>
-              <Col>
+              <Col style={{ padding: "unset" }}>
                 {expandedSubAcc ? (
                   <div
                     className="my-4 text-end"
@@ -2419,6 +2415,7 @@ function EditPartner() {
                         color: "#077E86",
                         background: "unset",
                         border: "unset",
+                        textAlign: 'end'
                       }}
                       onClick={showCheckboxesSubAccount}
                       className="text-end"
@@ -2450,6 +2447,7 @@ function EditPartner() {
                         color: "#077E86",
                         background: "unset",
                         border: "unset",
+                        textAlign: 'end'
                       }}
                       onClick={showCheckboxesSubAccount}
                       className="text-end"
@@ -2462,8 +2460,8 @@ function EditPartner() {
               </Col>
             </Row>
             <Row>
-              <Col xs={2}></Col>
-              <Col className="ms-5">
+              <Col xs={2} style={{ width: 200 }}></Col>
+              <Col className="ms-2">
                 {
                   subAccount.length >= 2 ?
                   <div style={{ color: "#888888", fontSize: 12 }} className="mb-4">

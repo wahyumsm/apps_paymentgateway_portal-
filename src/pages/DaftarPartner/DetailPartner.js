@@ -363,7 +363,7 @@ function DetailPartner() {
     }
 
     return (
-        <div className='container-content-partner mt-5'>
+        <div className='container-content-partner mt-5' style={{padding: "37px 27px 37px 27px"}}>
             {isDetailAkun ? <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner</span>
             : <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen</span>}
             <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
@@ -640,13 +640,13 @@ function DetailPartner() {
                             </tbody>
                         </table>
                         {expandedSubAcc ?
-                            <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
-                                <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                            <div style={{display: "flex", justifyContent: "end", alignItems: "end"}}>
+                                <button className='mb-4 pb-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, textAlign: "end", gap: 8, width: 500, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
                                     Sembunyikan daftar akun Sub Account <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
                                 </button>
                             </div> :
-                            <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
-                                <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                            <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "end"}} >
+                                <button className='mb-4 pb-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, textAlign: "end", gap: 8, width: 500, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
                                     Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
                                 </button>
                             </div>                                            
