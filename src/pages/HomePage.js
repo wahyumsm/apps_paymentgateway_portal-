@@ -164,6 +164,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
     <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
+    <RouteWithSidebar exact path={Routes.RiwayatDisbursement.path} component={DisbursementReport}/>
     <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/>
     {/* <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} /> */}
     {/* <RouteWithSidebar exact path={Routes.BootstrapTables.path} component={BootstrapTables} /> */}
