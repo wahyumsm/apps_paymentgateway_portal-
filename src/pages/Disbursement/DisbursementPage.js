@@ -132,7 +132,10 @@ function DisbursementPage() {
                                     const sameBankName = bankLists.find(list => list.mbank_code === el.slice(0, 3))
                                     obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
                                     obj.bankName = sameBankName !== undefined ? sameBankName.mbank_name : "undefined"
-                                    if (sameBankName !== undefined) {
+                                        console.log(sameBankName, 'sameBankName1');
+                                        console.log(feeBank, 'feeBank');
+                                        if (sameBankName !== undefined && feeBank.length !== 0) {
+                                        console.log(sameBankName, 'sameBankName2');
                                         const result = feeBank.find((item) => {
                                             if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
                                                 return item.mpaytype_bank_code === sameBankName.mbank_code
@@ -141,7 +144,8 @@ function DisbursementPage() {
                                                 return item.mpaytype_bank_code === sameBankName.mbank_code
                                             }
                                         })
-                                        totalFeeDisburse += result.fee_bank
+                                        console.log(result, 'result');
+                                        totalFeeDisburse += result.fee_total
                                     }
                                 }
                             }
@@ -167,6 +171,7 @@ function DisbursementPage() {
                     })
                     newArr = newArr.map((obj, i) => ({...obj, no: i + 1}) )
                     console.log(newArr, 'newArr');
+                    console.log(totalFeeDisburse, 'totalFeeDisburse');
                     setAllNominal([totalNominalDisburse])
                     setAllFee([totalFeeDisburse])
                     let errData = []
@@ -315,6 +320,17 @@ function DisbursementPage() {
         setErrorFoundPagination(errorArr)
         setErrorLoadPagination(errorArr[0])
         setShowModalErrorList(true)
+    }
+
+    function downloadFileHandle(files) {
+        window.open('../../assests/files/Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx', 'Download')
+        // const element = document.createElement("a");
+        // const file = new Blob(files, {
+        //     type: "text/plain;charset=utf-8}"
+        // });
+        // element.href = "../../assests/files/Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx";
+        // element.download = "Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx";
+        // element.click();
     }
 
     function handlePageChangeErrorList(page, errorList) {
@@ -1817,7 +1833,7 @@ function DisbursementPage() {
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>4.</td>
-                                            <td>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <Link to={""} style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</Link></td>
+                                            <td>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <Link onClick={() => downloadFileHandle("bank-list")} style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</Link></td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>5.</td>
