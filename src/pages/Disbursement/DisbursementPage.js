@@ -28,6 +28,9 @@ import { sum } from 'lodash'
 import * as XLSX from "xlsx"
 import Checklist from '../../assets/icon/checklist_icon.svg'
 import NoteIconWhite from "../../assets/icon/note_icon_white.svg"
+import encryptData from '../../function/encryptData'
+import daftarBank from '../../assets/files/Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx'
+import templateBulk from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
 
 registerPlugin(FilePondPluginFileEncode)
 
@@ -199,13 +202,16 @@ function DisbursementPage() {
                                 objErrData = {}
                             }
                         }
-                        
-                        if (data.cabangBank.length === 0) {
-                            objErrData.no = data.no
-                            // objErrData.data = data.cabangBank
-                            objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
-                            errData.push(objErrData)
-                            objErrData = {}
+                        if (data.bankCode !== '013') {
+                            if (data.cabangBank.length === 0) {
+                                objErrData.no = data.no
+                                // objErrData.data = data.cabangBank
+                                objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
+                                errData.push(objErrData)
+                                objErrData = {}
+                            }
+                            // console.log(data.cabangBank.indexOf(' ') >= 0);
+                            console.log(/\s/g.test(data.cabangBank), 'cek spasi kosong', data.cabangBank, data.bankCode);
                         }
                         if (data.noRekening.length === 0) {
                             objErrData.no = data.no
@@ -320,17 +326,6 @@ function DisbursementPage() {
         setErrorFoundPagination(errorArr)
         setErrorLoadPagination(errorArr[0])
         setShowModalErrorList(true)
-    }
-
-    function downloadFileHandle(files) {
-        window.open('../../assests/files/Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx', 'Download')
-        // const element = document.createElement("a");
-        // const file = new Blob(files, {
-        //     type: "text/plain;charset=utf-8}"
-        // });
-        // element.href = "../../assests/files/Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx";
-        // element.download = "Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx";
-        // element.click();
     }
 
     function handlePageChangeErrorList(page, errorList) {
@@ -589,11 +584,12 @@ function DisbursementPage() {
     async function getBankList() {
         try {
             const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"fitur_id" : 102}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: "" }, { headers: headers })
+            const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: dataParams }, { headers: headers })
             if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
                 bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setListBank(bankList.data.response_data)
@@ -603,9 +599,9 @@ function DisbursementPage() {
                 setListBank(bankList.data.response_data)
             }
         } catch (error) {
-        //   console.log(error)
+            console.log(error)
             // RouteTo(errorCatch(error.response.status))
-            history.push(errorCatch(error.response.status))
+            // history.push(errorCatch(error.response.status))
         }
     }
 
@@ -1741,7 +1737,9 @@ function DisbursementPage() {
                                             }}
                                         >
                                             <span className='me-2'><img src={saveIcon} alt="save icon"/></span>
-                                            Download Template
+                                            <a href={daftarBank} download style={{ color: '#077E86' }}>
+                                                Download Template
+                                            </a>
                                         </button>
                                     </div>
                                 </div>
@@ -1833,7 +1831,7 @@ function DisbursementPage() {
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>4.</td>
-                                            <td>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <Link onClick={() => downloadFileHandle("bank-list")} style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</Link></td>
+                                            <td>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <a href={templateBulk} download style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</a></td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>5.</td>
