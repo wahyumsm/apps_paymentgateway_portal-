@@ -938,11 +938,11 @@ export default () => {
             <Row className='mt-4'>
             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                    <span>ID Transaksi</span>
-                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                    <span className="pe-1">ID Transaksi</span>
+                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                    <span>Nama Agen</span>
+                    <span className="pe-3">Nama Agen</span>
                     <Form.Select name="namaAgenDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
                       <option defaultValue value="">Pilih Nama Agen</option>
                       {
@@ -957,7 +957,7 @@ export default () => {
                     {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgenDanaMasuk} name="namaAgenDanaMasuk" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/> */}
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                    <span className="me-4">Status</span>
+                    <span className="pe-4">Status</span>
                     <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
                       <option defaultChecked disabled value="">Pilih Status</option>
                       <option value={2}>Success</option>
@@ -969,7 +969,7 @@ export default () => {
             </Row>
             <Row className='mt-4'>
                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
-                  <span >Periode*</span>
+                  <span className="me-3">Periode*</span>
                   <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-5" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                     <option value={2}>Hari Ini</option>
@@ -1133,10 +1133,10 @@ export default () => {
             </Row>             */}
             {/* <br/> */}
             <Row className='mt-4'>
-            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+              <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                    <span>ID Transaksi</span>
-                    <input name="idTransaksiSettlement" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} type='text'className='input-text-ez' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                    <span className="me-1">ID Transaksi</span>
+                    <input name="idTransaksiSettlement" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
                     <span >Periode*</span>

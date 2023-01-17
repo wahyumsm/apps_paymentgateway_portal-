@@ -69,8 +69,8 @@ function UpdateUser() {
                 detailUser.data.response_new_token.length === 0
             ) {
                 const dataDetail = detailUser.data.response_data
-                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan})
-                if (dataDetail.role_id === 102 || dataDetail.role_id === 103) {
+                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan, agenId: dataDetail.sub_partnerid})
+                if (dataDetail.role_id === 102 || dataDetail.role_id === 104) {
                     getListAgen(dataDetail.partner_id)
                 }
             } else if (
@@ -80,8 +80,11 @@ function UpdateUser() {
             ) {
                 const dataDetail = detailUser.data.response_data
                 setUserSession(detailUser.data.response_new_token);
-                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan})
-                getListAgen(dataDetail.partner_id)
+                setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan, agenId: dataDetail.sub_partnerid})
+                if (dataDetail.role_id === 102 || dataDetail.role_id === 104) {
+                    getListAgen(dataDetail.partner_id)
+                }
+                
             }
         } catch (error) {
             // console.log(error);
@@ -279,6 +282,7 @@ function UpdateUser() {
                                     onChange={(e) => handleChangeToAgen(e)}                                    
                                     value={inputHandle.partnerId}
                                 >
+                                    <option value="">Select Partner</option>
                                     {listPartner.map((data, idx) => {
                                         return (
                                             <option key={idx} value={data.partner_id}>
@@ -291,7 +295,7 @@ function UpdateUser() {
                             <Col
                                 xs={12}
                                 className="mt-2"
-                                style={{ display: inputHandle.partnerId !== undefined && inputHandle.roleUser === 104 ? "" : "none" }}
+                                style={{ display: (inputHandle.partnerId !== undefined && inputHandle.roleUser === 104) ? "" : (inputHandle.partnerId !== undefined && inputHandle.roleUser === 102) ? "" : "none" }}
                             >
                                 <h6>Agen</h6>
                                 <Form.Select
@@ -299,7 +303,7 @@ function UpdateUser() {
                                     className="input-text-user"
                                     style={{ display: "inline" }}
                                     value={inputHandle.agenId}
-                                    onChange={handleChange}
+                                    onChange={(e) => handleChange(e)}
                                 >
                                     <option value="">Select Agen</option>
                                     {listAgen.map((data, idx) => {

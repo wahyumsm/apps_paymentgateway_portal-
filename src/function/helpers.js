@@ -1,7 +1,7 @@
 // export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
+export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
 // export const BaseURL = "https://apid.ezeelink.co.id/snap/api2"
-export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
+// export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
 
 export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms=";
 
@@ -73,6 +73,12 @@ export function convertSimpleTimeStamp(time) {
       : date.getMonth() + 1;
   const years = date.getFullYear();
   return `${hours}:${minutes}, ${days}/${months}/${years}`;
+}
+
+export function convertDateAndTimeInfoDanSaldo(time) {
+	const tanggal = new Date(time * 1000).toLocaleDateString("id-ID", {day: "2-digit", month: "long", year: "numeric"})
+	const jam = new Date(time * 1000).toLocaleTimeString("en-US", {hour12: false, hour: "2-digit", minute: "2-digit"})
+	return `${tanggal}, ${jam} WIB`
 }
 
 export const convertDateTimeStamp = (time) => {

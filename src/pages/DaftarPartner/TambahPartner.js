@@ -40,6 +40,7 @@ function TambahPartner() {
   const [paymentMethod, setPaymentMethod] = useState([]);
   const [paymentNameMethod, setPaymentNameMethod] = useState([]);
   const [expanded, setExpanded] = useState(false);
+  const [expandedSubAcc, setExpandedSubAcc] = useState(false)
   const [numbering, setNumbering] = useState(0);
   const myRef = useRef(null);
   const [payment, setPayment] = useState([]);
@@ -62,6 +63,10 @@ function TambahPartner() {
     bankName: 1,
     akunBank: "",
     rekeningOwner: "",
+    sumberAgen: "",
+    akunBankSubAcc: "",
+    rekeningOwnerSubAcc: "",
+    bankNameSubAcc: "011",
   });
 
   const [biayaHandle, setBiayaHandle] = useState({
@@ -74,6 +79,14 @@ function TambahPartner() {
       setExpanded(true);
     } else {
       setExpanded(false);
+    }
+  };
+
+  const showCheckboxesSubAccount = () => {
+    if (!expandedSubAcc) {
+      setExpandedSubAcc(true);
+    } else {
+      setExpandedSubAcc(false);
     }
   };
 
@@ -525,7 +538,10 @@ function TambahPartner() {
     bankName,
     akunBank,
     rekeningOwner,
-    paymentData
+    paymentData,
+    bankNameSubAcc,
+    rekeningOwnerSubAcc,
+    akunBankSubAcc
   ) {
     try {
       paymentData = paymentData.map((item) => ({
@@ -546,7 +562,7 @@ function TambahPartner() {
       const dataParams = encryptData(
         `{"mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_id": ${bankName}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "payment_method": ${JSON.stringify(
           paymentData
-        )}}`
+        )}, "sub_acc_bank_code": "${bankNameSubAcc}", "sub_acc_name": "${rekeningOwnerSubAcc}", "sub_acc_number": "${akunBankSubAcc}"}`
       );
       const headers = {
         "Content-Type": "application/json",
@@ -633,7 +649,7 @@ function toDashboard() {
         <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>
           Tambah Partner
         </h4>
-        <h5 style={{ fontFamily: "Exo" }}>Profil Perusahaan</h5>
+        <h5 className=" mb-4" style={{ fontFamily: "Exo" }}>Profil Perusahaan</h5>
       </div>
       <div className="base-content" style={{ width: "100%", padding: 50 }}>
         <div>
@@ -642,7 +658,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama Perusahaan*
+                Nama Perusahaan <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -665,7 +681,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Email Perusahaan*
+                Email Perusahaan <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -688,7 +704,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nomor Telepon*
+                Nomor Telepon <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -712,7 +728,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Alamat*
+                Alamat <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -744,7 +760,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                No NPWP*
+                No NPWP <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -768,7 +784,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama NPWP*
+                Nama NPWP <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -800,7 +816,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama Direktur*
+                Nama Direktur <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -823,7 +839,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                No Hp Direktur*
+                No Hp Direktur <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -856,7 +872,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama Bank*
+                Nama Bank <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -880,7 +896,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                No. Rekening*
+                No. Rekening <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -904,7 +920,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Nama Pemilik Rekening*
+                Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
               </span>
             </Col>
             <Col xs={10}>
@@ -977,7 +993,7 @@ function toDashboard() {
               }
               {alertFee === true ?
                 <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
-                  <img src={noteIconRed} className="me-2" />
+                  <img src={noteIconRed} className="me-2" alt="icon notice" />
                   Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
                 </div> : ""
               }
@@ -1029,7 +1045,7 @@ function toDashboard() {
               }
               {alertSettlement === true ?
                 <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
-                  <img src={noteIconRed} className="me-2" />
+                  <img src={noteIconRed} className="me-2" alt="icon notice" />
                   Settlement Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
                 </div> : ""
               }
@@ -1374,13 +1390,13 @@ function toDashboard() {
           </Row>
           {mustFill === true ?
             <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 133 }} className="mt-3">
-              <img src={noteIconRed} className="me-2" />
+              <img src={noteIconRed} className="me-2" alt="icon notice" />
               Wajib Dipilih
             </div> : ""
           }
           {redFlag === true ?
             <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 133 }} className="mt-2">
-              <img src={noteIconRed} className="me-2" />
+              <img src={noteIconRed} className="me-2" alt="icon notice" />
               Metode Pembayaran tidak boleh sama dalam satu Fitur
             </div> : ""
           }
@@ -1535,7 +1551,7 @@ function toDashboard() {
             </Col>
           </Row>
           {expanded && (
-            <div className="div-table pb-4" ref={myRef}>
+            <div className="div-table" ref={myRef}>
               <DataTable
                 columns={columnPayment}
                 data={payment}
@@ -1547,6 +1563,103 @@ function toDashboard() {
           )}
         </div>
       </div>
+
+      <div className="head-title">
+        <h5 className="mt-5 mb-4" style={{ fontFamily: "Exo" }}>
+          Rekening Sub Account
+        </h5>
+      </div>
+      <div className="base-content" style={{ width: "100%", padding: 50 }}>
+        <div>
+          <Row className="mb-4">
+            <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
+              <span
+                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
+              >
+                Sumber Agen
+              </span>
+            </Col>
+            <Col xs={10}>
+              <Form.Select name='sumberAgen' onChange={handleChange} disabled value={inputHandle.sumberAgen} className="form-add" placeholder="Pilih Agen" style={{width: "100%", height: 40, marginTop: "-7px", marginLeft: "unset" }}>
+                <option defaultChecked value={""}>Pilih Agen</option>
+              </Form.Select>
+            </Col>
+          </Row>
+          <Row className="mb-4">
+            <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
+              <span
+                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
+              >
+                Nama Bank
+              </span>
+            </Col>
+            <Col xs={10}>
+              <Form.Control
+                name="bankNameSubAcc"
+                onChange={handleChange}
+                placeholder="Bank Danamon"
+                type="text"
+                disabled
+                style={{
+                  width: "100%",
+                  height: 40,
+                  marginTop: "-7px",
+                  marginLeft: "unset",
+                }}
+              />
+            </Col>
+          </Row>
+          <Row className="mb-4">
+            <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
+              <span
+                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
+              >
+                No. Rekening <span style={{ color: "red" }}>*</span>
+              </span>
+            </Col>
+            <Col xs={10}>
+              <Form.Control
+                name="akunBankSubAcc"
+                onChange={handleChange}
+                placeholder="Masukkan Nomor Rekening"
+                type="number"
+                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                style={{
+                  width: "100%",
+                  height: 40,
+                  marginTop: "-7px",
+                  marginLeft: "unset",
+                }}
+              />
+            </Col>
+          </Row>
+          <Row className="">
+            <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
+              <span
+                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
+              >
+                Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
+              </span>
+            </Col>
+            <Col xs={10}>
+              <Form.Control
+                name="rekeningOwnerSubAcc"
+                onChange={handleChange}
+                placeholder="Masukkan Nama Pemilik Rekening"
+                type="text"
+                style={{
+                  width: "100%",
+                  height: 40,
+                  marginTop: "-7px",
+                  marginLeft: "unset",
+                }}
+              />
+            </Col>
+          </Row>
+        
+        </div>
+      </div>
+
       <div
         style={{
           display: "flex",
@@ -1570,7 +1683,10 @@ function toDashboard() {
               inputHandle.bankName,
               inputHandle.akunBank,
               inputHandle.rekeningOwner,
-              payment
+              payment,
+              inputHandle.bankNameSubAcc,
+              inputHandle.rekeningOwnerSubAcc,
+              inputHandle.akunBankSubAcc
             )
           }
           style={{ width: 136, cursor: (inputHandle.namaPerusahaan.length !== 0 && inputHandle.emailPerusahaan.length !== 0 && inputHandle.phoneNumber.length !== 0 && inputHandle.alamat.length !== 0 && inputHandle.noNpwp.length !== 0 && inputHandle.namaNpwp.length !== 0 && inputHandle.nama.length !== 0 && inputHandle.noHp.length !== 0 && inputHandle.active.length !== 0 && inputHandle.bankName.length !== 0 && inputHandle.akunBank.length !== 0 && inputHandle.rekeningOwner.length !== 0 && payment.length !== 0 ) ? "pointer" : "unset" }}
