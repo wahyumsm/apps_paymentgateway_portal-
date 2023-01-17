@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCircle } from "@fortawesome/free-solid-svg-icons";
 import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
+import noteIconGrey from "../../assets/icon/note_icon_grey.svg";
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import saveIcon from "../../assets/icon/save_icon.svg";
 import triangleAlertIcon from "../../assets/icon/alert_icon.svg";
@@ -28,6 +29,7 @@ import { sum } from 'lodash'
 import * as XLSX from "xlsx"
 import Checklist from '../../assets/icon/checklist_icon.svg'
 import NoteIconWhite from "../../assets/icon/note_icon_white.svg"
+import encryptData from '../../function/encryptData'
 
 registerPlugin(FilePondPluginFileEncode)
 
@@ -141,7 +143,7 @@ function DisbursementPage() {
                                                 return item.mpaytype_bank_code === sameBankName.mbank_code
                                             }
                                         })
-                                        totalFeeDisburse += result.fee_bank
+                                        totalFeeDisburse += result.fee_total
                                     }
                                 }
                             }
@@ -336,9 +338,9 @@ function DisbursementPage() {
         console.log('clicked2');
     }
 
-    console.log(files, 'files upload');
-    console.log(dataFromUpload, 'dataFromUpload');
-    console.log(labelUpload, 'labelUpload');
+    // console.log(files, 'files upload');
+    // console.log(dataFromUpload, 'dataFromUpload');
+    // console.log(labelUpload, 'labelUpload');
     const filterItemsBank = listBank.filter(
         item => (item.mbank_name && item.mbank_name.toLowerCase().includes(filterTextBank.toLowerCase())) || (item.mbank_code && item.mbank_code.toLowerCase().includes(filterTextBank.toLowerCase()))
     )
@@ -573,11 +575,12 @@ function DisbursementPage() {
     async function getBankList() {
         try {
             const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"fitur_id": 102}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: "" }, { headers: headers })
+            const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: dataParams }, { headers: headers })
             if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
                 bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setListBank(bankList.data.response_data)
@@ -706,9 +709,9 @@ function DisbursementPage() {
         })
     }
 
-   var sisa = ((getBalance.balance) - (sum(allNominal) + sum(allFee)))
+//    var sisa = ((getBalance.balance) - (sum(allNominal) + sum(allFee)))
    
-   console.log(sisa, "sisa");
+//    console.log(sisa, "sisa");
 
     function saveNewDisburse (
         number,
@@ -740,18 +743,6 @@ function DisbursementPage() {
         console.log(sameFlag, "sameFlag");
         if (sameFlag === 0) {
             setShowModalDuplikasi(false)
-            const newData = {
-                number: number,
-                bankNameTujuan: bankNameTujuan,
-                bankCodeTujuan: bankCodeTujuan,
-                cabang: cabang,
-                noRek : noRek,
-                nameRek: nameRek,
-                nominal: Number(nominal),
-                emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
-                catatan: catatan.length !== 0 ? catatan : "",
-                saveAcc: saveAcc
-            }
             const result = feeBank.find((item) => {
                 if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
                     return item.mpaytype_bank_code === bankCodeTujuan
@@ -760,7 +751,22 @@ function DisbursementPage() {
                     return item.mpaytype_bank_code === bankCodeTujuan
                 }
             })
-            setAllFee([...allFee, result.fee_bank])
+            const newData = {
+                number: number,
+                bankNameTujuan: bankNameTujuan,
+                bankCodeTujuan: inputData.bankCode,
+                cabang: cabang,
+                noRek : noRek,
+                nameRek: nameRek,
+                nominal: Number(nominal),
+                emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                catatan: catatan.length !== 0 ? catatan : "",
+                saveAcc: saveAcc,
+                feeTotal: result.fee_total
+            }
+
+            console.log(result, "result");
+            setAllFee([...allFee, result.fee_total])
             setDataDisburse([...dataDisburse, newData])
             setAllNominal([...allNominal, Number(nominal)])
             setInputData({
@@ -795,18 +801,6 @@ function DisbursementPage() {
         catatan,
         saveAcc
     ) {
-        const newData = {
-            number: number,
-            bankNameTujuan: bankNameTujuan,
-            bankCodeTujuan: bankCodeTujuan,
-            cabang: cabang,
-            noRek : noRek,
-            nameRek: nameRek,
-            nominal: Number(nominal),
-            emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
-            catatan: catatan.length !== 0 ? catatan : "",
-            saveAcc: saveAcc
-        }
         const result = feeBank.find((item) => {
             if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
                 return item.mpaytype_bank_code === bankCodeTujuan
@@ -815,7 +809,20 @@ function DisbursementPage() {
                 return item.mpaytype_bank_code === bankCodeTujuan
             }
         })
-        setAllFee([...allFee, result.fee_bank])
+        const newData = {
+            number: number,
+            bankNameTujuan: bankNameTujuan,
+            bankCodeTujuan: inputData.bankCode,
+            cabang: cabang,
+            noRek : noRek,
+            nameRek: nameRek,
+            nominal: Number(nominal),
+            emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+            catatan: catatan.length !== 0 ? catatan : "",
+            saveAcc: saveAcc,
+            feeTotal: result.fee_total
+        }
+        setAllFee([...allFee, result.fee_total])
         setDataDisburse([...dataDisburse, newData])
         setAllNominal([...allNominal, Number(nominal)])
         setInputData({
@@ -884,19 +891,6 @@ function DisbursementPage() {
         })
         if (sameFlag === 0) {
             setShowModalDuplikasi(false)
-            const source = {
-                number: number,
-                bankNameTujuan: bankNameTujuan,
-                bankCodeTujuan: bankCodeTujuan,
-                cabang: cabang,
-                noRek : noRek,
-                nameRek: nameRek,
-                nominal: Number(nominal),
-                emailPenerima: emailPenerima,
-                catatan: catatan,
-                saveAcc: saveAcc
-            };
-            const target = dataDisburse.find((item) => item.number === number)
             const finding = dataDisburse.findIndex((object) => {
                 return object.number === number
             })
@@ -908,14 +902,28 @@ function DisbursementPage() {
                     return item.mpaytype_bank_code === bankCodeTujuan
                 }
             })
+            if (finding >= 0) {
+                allNominal[finding] = Number(nominal)
+                allFee[finding] = result.fee_total
+            }
+            setAllFee([...allFee])
+            const target = dataDisburse.find((item) => item.number === number)
+            const source = {
+                number: number,
+                bankNameTujuan: bankNameTujuan,
+                bankCodeTujuan: inputData.bankCode,
+                cabang: cabang,
+                noRek : noRek,
+                nameRek: nameRek,
+                nominal: Number(nominal),
+                emailPenerima: emailPenerima,
+                catatan: catatan,
+                saveAcc: saveAcc,
+            };
             Object.assign(target, source)
             setDataDisburse([...dataDisburse])
-            if (finding) {
-                allNominal[finding] = Number(nominal)
-                allFee[finding] = result.fee_bank
-            }
+            
             setAllNominal([...allNominal])
-            setAllFee([...allFee])
             setEditTabelDisburse(false)
             setInputData({
                 bankName: "",
@@ -949,21 +957,8 @@ function DisbursementPage() {
         nominal,
         emailPenerima,
         catatan,
-        saveAcc
+        saveAcc,
     ) {
-        const source = {
-            number: number,
-            bankNameTujuan: bankNameTujuan,
-            bankCodeTujuan: bankCodeTujuan,
-            cabang: cabang,
-            noRek : noRek,
-            nameRek: nameRek,
-            nominal: Number(nominal),
-            emailPenerima: emailPenerima,
-            catatan: catatan,
-            saveAcc: saveAcc
-        };
-        const target = dataDisburse.find((item) => item.number === number)
         const finding = dataDisburse.findIndex((object) => {
             return object.number === number
         })
@@ -975,14 +970,30 @@ function DisbursementPage() {
                 return item.mpaytype_bank_code === bankCodeTujuan
             }
         })
-        Object.assign(target, source)
-        setDataDisburse([...dataDisburse])
         if (finding) {
             allNominal[finding] = Number(nominal)
-            allFee[finding] = result.fee_bank
+            allFee[finding] = result.fee_total
         }
-        setAllNominal([...allNominal])
         setAllFee([...allFee])
+        const source = {
+            number: number,
+            bankNameTujuan: bankNameTujuan,
+            bankCodeTujuan: inputData.bankCode,
+            cabang: cabang,
+            noRek : noRek,
+            nameRek: nameRek,
+            nominal: Number(nominal),
+            emailPenerima: emailPenerima,
+            catatan: catatan,
+            saveAcc: saveAcc,
+            feeTotal: result.fee_total
+        };
+        const target = dataDisburse.find((item) => item.number === number)
+        
+        Object.assign(target, source)
+        setDataDisburse([...dataDisburse])
+        
+        setAllNominal([...allNominal])
         setEditTabelDisburse(false)
         setInputData({
             bankName: "",
@@ -1025,8 +1036,11 @@ function DisbursementPage() {
 
     function deleteDataDisburse(numberId) {
         const result = dataDisburse.findIndex((item) => item.number === numberId);
+        console.log(result, "delete result");
         dataDisburse.splice(result, 1);
         setDataDisburse([...dataDisburse]);
+        allFee.splice(result, 1)
+        setAllFee([...allFee])
         setInputData({
             bankName: "",
             bankCode: ""
@@ -1185,8 +1199,8 @@ function DisbursementPage() {
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" style={{ marginRight: 10 }} />
                                     Pastikan data tujuan Disbursement sudah benar, kesalahan pada data akan berakibat gagalnya proses transaksi Disbursement.
                                 </span>
-                                <div className='pt-5 pb-5'>
-                                    <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
+                                <div className='pt-5'>
+                                    <Row className='align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
                                             Pilih Bank Tujuan <span style={{ color: "red" }}>*</span>
                                         </Col>
@@ -1201,6 +1215,15 @@ function DisbursementPage() {
                                                 style={{ cursor: "pointer",  backgroundColor: "#FFFFFF" }}
                                             />
                                             <div className="position-absolute right-4" ><img src={chevron} alt="time" /></div>
+                                        </Col>
+                                    </Row>
+                                    <Row className='mb-3 mt-1' style={{ padding: 'unset' }}>
+                                        <Col xs={2}></Col>
+                                        <Col xs={10}>
+                                            <div style={{ fontFamily:'Nunito', fontSize: 12, color: "#888888"}} className='d-flex justify-content-start align-items-center'>
+                                                <span className='me-1'><img src={noteIconGrey} alt='icon error' /></span>
+                                                Transfer setelah jam 12 siang untuk bank tujuan selain BCA berpotensi diterima di hari berikutnya
+                                            </div>
                                         </Col>
                                     </Row>
                                     <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
@@ -1225,10 +1248,11 @@ function DisbursementPage() {
                                         <Col xs={10}>
                                             <Form.Control
                                                 placeholder="Masukan No. Rekening Tujuan"
-                                                type='text'
+                                                type='number'
                                                 className='input-text-user'
                                                 name="bankNumberRek"
                                                 value={inputRekening.bankNumberRek}
+                                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                                 onChange={(e) => handleChangeRek(e)}
                                             />
                                         </Col>
@@ -1348,11 +1372,12 @@ function DisbursementPage() {
                                         <Col xs={10}>
                                             <textarea
                                                 className='input-text-disburs'
-                                                placeholder="Masukkan catatan bila perlu"
+                                                placeholder="Masukkan catatan bila perlu ( Maksimal 25 karakter )"
                                                 style={{ width: "100%", padding: 10 }}
                                                 name="catatan"
                                                 value={inputHandle.catatan}
                                                 onChange={(e) => handleChange(e)}
+                                                maxLength={25}
                                             />
                                         </Col>
                                     </Row>
@@ -1563,7 +1588,7 @@ function DisbursementPage() {
                                         </div>
                                         <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
                                         <div className='d-flex justify-content-between align-items-center mt-3' style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>
-                                            <div>Total Fee Disbursement + Total Fee</div>
+                                            <div>Total Disbursement + Total Fee</div>
                                             <div>{convertToRupiah((sum(allNominal) + sum(allFee)), true, 2)}</div>
                                         </div>
                                     </div>
@@ -1620,6 +1645,7 @@ function DisbursementPage() {
                                         highlightOnHover
                                         subHeader
                                         subHeaderComponent={subHeaderComponentMemoBank}
+                                        noDataComponent={<div className='mt-3'>No Data</div>}
                                         persistTableHead
                                         onRowClicked={handleRowClicked}
                                         fixedHeader={true}
@@ -1673,6 +1699,7 @@ function DisbursementPage() {
                                         // progressComponent={<CustomLoader />}
                                         subHeader
                                         subHeaderComponent={subHeaderComponentMemoRekening}
+                                        noDataComponent={<div className='mt-3'>No Data</div>}
                                         persistTableHead
                                         onRowClicked={handleRowClickedRekening}
                                         highlightOnHover
