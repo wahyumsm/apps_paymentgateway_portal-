@@ -649,11 +649,25 @@ function DisbursementPage() {
             }
             const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
             if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
-                setGetBalance(getBalance.data.response_data)
+                const detailBalance = getBalance.data.response_data.balance_detail
+                let total = 0
+                detailBalance.forEach((item) => {
+                    if (item.mpaytype_mpaycat_id === 2) {
+                        total += item.mpartballchannel_balance
+                    }
+                })
+                setGetBalance(total)
                 // setBalanceDetail(getBalance.data.response_data.balance_detail)
             } else if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length !== 0) {
                 setUserSession(getBalance.data.response_new_token)
-                setGetBalance(getBalance.data.response_data)
+                const detailBalance = getBalance.data.response_data.balance_detail
+                let total = 0
+                detailBalance.forEach((item) => {
+                    if (item.mpaytype_mpaycat_id === 2) {
+                        total += item.mpartballchannel_balance
+                    }
+                })
+                setGetBalance(total)
                 // setBalanceDetail(getBalance.data.response_data.balance_detail)
             }
         } catch (error) {
@@ -709,7 +723,7 @@ function DisbursementPage() {
         })
     }
 
-//    var sisa = ((getBalance.balance) - (sum(allNominal) + sum(allFee)))
+//    var sisa = ((getBalance) - (sum(allNominal) + sum(allFee)))
    
 //    console.log(sisa, "sisa");
 
@@ -1040,7 +1054,9 @@ function DisbursementPage() {
         dataDisburse.splice(result, 1);
         setDataDisburse([...dataDisburse]);
         allFee.splice(result, 1)
+        allNominal.splice(result, 1)
         setAllFee([...allFee])
+        setAllNominal([...allNominal])
         setInputData({
             bankName: "",
             bankCode: ""
@@ -1598,12 +1614,12 @@ function DisbursementPage() {
                                             <div style={{ fontSize: 12, color: '#888888' }}>(Terhitung setelah seluruh disbursement berhasil)</div>
                                         </div>
                                         {
-                                            Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) < 0  ?
+                                            Number((getBalance) - (sum(allNominal) + sum(allFee))) < 0  ?
                                             <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B", width: 250 }} className='text-end'>
                                                 <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                                 Saldo Anda tidak cukup, Topup saldo terlebih dahulu sebelum melakukan disbursement
                                             </div> :
-                                            <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(Number((getBalance.balance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
+                                            <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(Number((getBalance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
                                         }
                                     </div>
                                 </div>
@@ -1613,8 +1629,8 @@ function DisbursementPage() {
                         <div className="d-flex justify-content-end align-items-center">
                             <button
                                 onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
-                                className={(dataDisburse.length !== 0 && Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) >= 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
-                                disabled={dataDisburse.length === 0 || Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) < 0}
+                                className={(dataDisburse.length !== 0 && Number((getBalance) - (sum(allNominal) + sum(allFee))) >= 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
+                                disabled={dataDisburse.length === 0 || Number((getBalance) - (sum(allNominal) + sum(allFee))) < 0}
                                 style={{ width: '25%' }}
                             >
                                 Lakukan Disbursement
@@ -2152,12 +2168,12 @@ function DisbursementPage() {
                                     <div style={{ fontSize: 12, color: '#888888' }}>(Terhitung setelah seluruh disbursement berhasil)</div>
                                 </div>
                                 {
-                                    Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) < 0  ?
+                                    Number((getBalance) - (sum(allNominal) + sum(allFee))) < 0  ?
                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B", width: 250 }} className='text-end'>
                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                         Saldo Anda tidak cukup, Topup saldo terlebih dahulu sebelum melakukan disbursement
                                     </div> :
-                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(((getBalance.balance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
+                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(((getBalance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
                                 }
                             </div>
                             <div className='mb-3 mt-3'>
