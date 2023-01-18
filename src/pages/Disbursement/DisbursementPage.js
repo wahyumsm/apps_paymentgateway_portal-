@@ -138,18 +138,20 @@ function DisbursementPage() {
                                         console.log(sameBankName, 'sameBankName1');
                                         console.log(feeBank, 'feeBank');
                                         if (sameBankName !== undefined && feeBank.length !== 0) {
-                                        console.log(sameBankName, 'sameBankName2');
-                                        const result = feeBank.find((item) => {
-                                            if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
-                                                return item.mpaytype_bank_code === sameBankName.mbank_code
-                                            } else {
-                                                sameBankName.mbank_code = "BIF"
-                                                return item.mpaytype_bank_code === sameBankName.mbank_code
+                                            console.log(sameBankName, 'sameBankName2');
+                                            const result = feeBank.find((item) => {
+                                                if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
+                                                    return item.mpaytype_bank_code === sameBankName.mbank_code
+                                                } else {
+                                                    sameBankName.mbank_code = "BIF"
+                                                    return item.mpaytype_bank_code === sameBankName.mbank_code
+                                                }
+                                            })
+                                            console.log(result, 'result');
+                                            if (result !== undefined) {
+                                                totalFeeDisburse += result.fee_total
                                             }
-                                        })
-                                        console.log(result, 'result');
-                                        totalFeeDisburse += result.fee_total
-                                    }
+                                        }
                                 }
                             }
                         } else if (idx === 1 || idx % 7 === 1) {
@@ -202,7 +204,7 @@ function DisbursementPage() {
                                 objErrData = {}
                             }
                         }
-                        if (data.bankCode !== '013') {
+                        if (data.bankCode !== '014') {
                             if (data.cabangBank.length === 0) {
                                 objErrData.no = data.no
                                 // objErrData.data = data.cabangBank
@@ -210,7 +212,7 @@ function DisbursementPage() {
                                 errData.push(objErrData)
                                 objErrData = {}
                             }
-                            // console.log(data.cabangBank.indexOf(' ') >= 0);
+                            console.log(data.cabangBank.indexOf(' ') >= 0, 'indexOf spasi kosong', data.cabangBank, data.bankCode);
                             console.log(/\s/g.test(data.cabangBank), 'cek spasi kosong', data.cabangBank, data.bankCode);
                         }
                         if (data.noRekening.length === 0) {
