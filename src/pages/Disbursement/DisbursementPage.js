@@ -4,7 +4,7 @@ import $ from 'jquery'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteInfo from "../../assets/icon/note_icon.svg"
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
-import { Button, Col, Form, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, FormControl, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCircle } from "@fortawesome/free-solid-svg-icons";
@@ -24,6 +24,7 @@ import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import validator from "validator";
 import 'filepond/dist/filepond.min.css'
 import Pagination from 'react-js-pagination'
+import search from "../../assets/icon/search_icon.svg"
 
 import { sum } from 'lodash'
 import * as XLSX from "xlsx"
@@ -78,6 +79,13 @@ function DisbursementPage() {
     const [errorFoundPagination, setErrorFoundPagination] = useState([])
     const [showModalErrorList, setShowModalErrorList] = useState(false)
     const [activePageErrorList, setActivePageErrorList] = useState(1)
+    const [alertSaldo, setAlertSaldo] = useState(false)
+    const [balanceDetail, setBalanceDetail] = useState([])
+    const [sisaSaldoAlokasiPerBank, setSisaSaldoAlokasiPerBank] = useState({
+        bca: 0,
+        danamon: 0,
+        bifast: 0
+    })
     
     async function fileCSV(newValue, bankLists) {
         console.log(newValue, 'newValue');
@@ -344,6 +352,7 @@ function DisbursementPage() {
     const filterItemsBank = listBank.filter(
         item => (item.mbank_name && item.mbank_name.toLowerCase().includes(filterTextBank.toLowerCase())) || (item.mbank_code && item.mbank_code.toLowerCase().includes(filterTextBank.toLowerCase()))
     )
+
     const filterItemsRekening = rekeningList.filter(
         item => (item.mbank_name && item.mbank_name.toLowerCase().includes(filterTextRekening.toLowerCase())) || (item.mbankaccountlist_name && item.mbankaccountlist_name.toLowerCase().includes(filterTextRekening.toLowerCase()))
     )
@@ -359,6 +368,17 @@ function DisbursementPage() {
             <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
         );	}, [filterTextRekening]
     );
+
+    const conditionalRowStyles = [
+        {
+            when: row => row.is_enabled === false,
+            style: {
+                '&:hover': {
+                    cursor: 'unset',
+                },
+            },
+        },
+    ];
 
     const handleChangeCheckBox = () => {
         setIsChecked(!isChecked)
@@ -490,7 +510,8 @@ function DisbursementPage() {
         {
             name: 'No',
             selector: row => row.number,
-            width: "80px"
+            width: "80px",
+            ignoreRowClick: true
         },
         {
             name: 'Nama Bank',
@@ -499,7 +520,6 @@ function DisbursementPage() {
         {
             name: 'Kode Bank',
             selector: row => row.mbank_code,
-            width: "150px"
         },
     ]
 
@@ -649,12 +669,26 @@ function DisbursementPage() {
             }
             const getBalance = await axios.post(BaseURL + "/Partner/GetBalance", { data: "" }, { headers: headers })
             if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
-                setGetBalance(getBalance.data.response_data)
-                // setBalanceDetail(getBalance.data.response_data.balance_detail)
+                const detailBalance = getBalance.data.response_data.balance_detail
+                let total = 0
+                detailBalance.forEach((item) => {
+                    if (item.mpaytype_mpaycat_id === 2) {
+                        total += item.mpartballchannel_balance
+                    }
+                })
+                setGetBalance(total)
+                setBalanceDetail(getBalance.data.response_data.balance_detail)
             } else if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length !== 0) {
                 setUserSession(getBalance.data.response_new_token)
-                setGetBalance(getBalance.data.response_data)
-                // setBalanceDetail(getBalance.data.response_data.balance_detail)
+                const detailBalance = getBalance.data.response_data.balance_detail
+                let total = 0
+                detailBalance.forEach((item) => {
+                    if (item.mpaytype_mpaycat_id === 2) {
+                        total += item.mpartballchannel_balance
+                    }
+                })
+                setGetBalance(total)
+                setBalanceDetail(getBalance.data.response_data.balance_detail)
             }
         } catch (error) {
             // console.log(error)
@@ -662,19 +696,25 @@ function DisbursementPage() {
           }
     }
 
-    const handleRowClicked = row => {
-        filterItemsBank.map(item => {
-            if (row.mbank_code === item.mbank_code) {
-                setInputData({
-                    bankName: row.mbank_name,
-                    bankCode: row.mbank_code
-                });
-                setShowBank(false)
+    const handleRowClicked = (row, enable) => {
+        setAlertSaldo(false)
+        filterItemsBank.forEach(item => {
+            if (enable === true) {
+                if (row === item.mbank_code) {
+                    setInputData({
+                        bankName: item.mbank_name,
+                        bankCode: item.mbank_code
+                    });
+                    setShowBank(false)
+                }
+            } else {
+                return
             }
         });
     };
 
     const handleRowClickedRekening = row => {
+        setAlertSaldo(false)
         setInputRekening({
             bankNameRek: row.mbankaccountlist_name,
             bankNumberRek: row.mbankaccountlist_number
@@ -693,23 +733,27 @@ function DisbursementPage() {
     };
 
     function handleChange(e) {
+        if (e.target.name === "emailPenerima") {
+            setErrMsgEmail(false)
+        }
+        if (e.target.name === "nominal") {
+            setAlertSaldo(false)
+        }
         setInputHandle({
             ...inputHandle,
             [e.target.name] : (e.target.name === "nominal") ? Number(e.target.value).toString() : e.target.value
         })
-        if (e.target.name === "emailPenerima") {
-            setErrMsgEmail(false)
-        }
     }
 
     function handleChangeRek(e) {
+        setAlertSaldo(false)
         setInputRekening({
             ...inputRekening,
             [e.target.name] : e.target.value
         })
     }
 
-//    var sisa = ((getBalance.balance) - (sum(allNominal) + sum(allFee)))
+//    var sisa = ((getBalance) - (sum(allNominal) + sum(allFee)))
    
 //    console.log(sisa, "sisa");
 
@@ -729,65 +773,188 @@ function DisbursementPage() {
             setErrMsgEmail(true)
             return
         }
-        let sameFlag = 0
-        dataDisburse.forEach((val) => {
-            console.log(val.noRek, "val noRek");
-            console.log(val.nominal, "val nominal");
-            console.log(noRek, "noRek");
-            console.log(nominal, "nominal");
-            if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
-                console.log("masuk 1");
-                sameFlag++
+        const balanceBank = balanceDetail.find((item) => {
+            console.log(item.channel_id, "balance detail");
+            if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                return item.channel_id === bankCodeTujuan
+            } else {
+                bankCodeTujuan = "BIF"
+                return item.channel_id === bankCodeTujuan
             }
         })
-        console.log(sameFlag, "sameFlag");
-        if (sameFlag === 0) {
-            setShowModalDuplikasi(false)
-            const result = feeBank.find((item) => {
-                if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
-                    return item.mpaytype_bank_code === bankCodeTujuan
-                } else {
-                    bankCodeTujuan = "BIF"
-                    return item.mpaytype_bank_code === bankCodeTujuan
+        if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
+            setAlertSaldo(false)
+            let sameFlag = 0
+            dataDisburse.forEach((val) => {
+                if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
+                    sameFlag++
                 }
             })
-            const newData = {
-                number: number,
-                bankNameTujuan: bankNameTujuan,
-                bankCodeTujuan: inputData.bankCode,
-                cabang: cabang,
-                noRek : noRek,
-                nameRek: nameRek,
-                nominal: Number(nominal),
-                emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
-                catatan: catatan.length !== 0 ? catatan : "",
-                saveAcc: saveAcc,
-                feeTotal: result.fee_total
-            }
+            console.log(sameFlag, "sameFlag");
+            if (sameFlag === 0) {
+                setShowModalDuplikasi(false)
+                const result = feeBank.find((item) => {
+                    if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                        return item.mpaytype_bank_code === bankCodeTujuan
+                    } else {
+                        bankCodeTujuan = "BIF"
+                        return item.mpaytype_bank_code === bankCodeTujuan
+                    }
+                })
+                // const newData = {
+                //     number: number,
+                //     bankNameTujuan: bankNameTujuan,
+                //     bankCodeTujuan: inputData.bankCode,
+                //     cabang: cabang,
+                //     noRek : noRek,
+                //     nameRek: nameRek,
+                //     nominal: Number(nominal),
+                //     emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                //     catatan: catatan.length !== 0 ? catatan : "",
+                //     saveAcc: saveAcc,
+                //     feeTotal: result.fee_total
+                // }
 
-            console.log(result, "result");
-            setAllFee([...allFee, result.fee_total])
-            setDataDisburse([...dataDisburse, newData])
-            setAllNominal([...allNominal, Number(nominal)])
-            setInputData({
-                bankName: "",
-                bankCode: "",
-            })
-            setInputRekening({
-                bankNameRek: "",
-                bankNumberRek: ""
-            })
-            setInputHandle({
-                bankCabang: "",
-                nominal: "",
-                emailPenerima: "",
-                catatan: ""
-            })
-            setIsChecked(false)
+                console.log(result, "result");
+                if (bankCodeTujuan === '014') {
+                    setSisaSaldoAlokasiPerBank({
+                        ...sisaSaldoAlokasiPerBank,
+                        bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                    })
+                    if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        console.log('masuk alert');
+                        setAlertSaldo(true)
+                    } else {
+                        console.log('masuk gak alert');
+                        const newData = {
+                            number: number,
+                            bankNameTujuan: bankNameTujuan,
+                            bankCodeTujuan: inputData.bankCode,
+                            cabang: cabang,
+                            noRek : noRek,
+                            nameRek: nameRek,
+                            nominal: Number(nominal),
+                            emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                            catatan: catatan.length !== 0 ? catatan : "",
+                            saveAcc: saveAcc,
+                            feeTotal: result.fee_total
+                        }
+                        setAllFee([...allFee, result.fee_total])
+                        setDataDisburse([...dataDisburse, newData])
+                        setAllNominal([...allNominal, Number(nominal)])
+                        setInputData({
+                            bankName: "",
+                            bankCode: "",
+                        })
+                        setInputRekening({
+                            bankNameRek: "",
+                            bankNumberRek: ""
+                        })
+                        setInputHandle({
+                            bankCabang: "",
+                            nominal: "",
+                            emailPenerima: "",
+                            catatan: ""
+                        })
+                        setAlertSaldo(false)
+                        setIsChecked(false)
+                    }
+                } else if (bankCodeTujuan === '011') {
+                    setSisaSaldoAlokasiPerBank({
+                        ...sisaSaldoAlokasiPerBank,
+                        danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                    })
+                    if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        console.log('masuk alert');
+                        setAlertSaldo(true)
+                    } else {
+                        console.log('masuk gak alert');
+                        const newData = {
+                            number: number,
+                            bankNameTujuan: bankNameTujuan,
+                            bankCodeTujuan: inputData.bankCode,
+                            cabang: cabang,
+                            noRek : noRek,
+                            nameRek: nameRek,
+                            nominal: Number(nominal),
+                            emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                            catatan: catatan.length !== 0 ? catatan : "",
+                            saveAcc: saveAcc,
+                            feeTotal: result.fee_total
+                        }
+                        setAllFee([...allFee, result.fee_total])
+                        setDataDisburse([...dataDisburse, newData])
+                        setAllNominal([...allNominal, Number(nominal)])
+                        setInputData({
+                            bankName: "",
+                            bankCode: "",
+                        })
+                        setInputRekening({
+                            bankNameRek: "",
+                            bankNumberRek: ""
+                        })
+                        setInputHandle({
+                            bankCabang: "",
+                            nominal: "",
+                            emailPenerima: "",
+                            catatan: ""
+                        })
+                        setAlertSaldo(false)
+                        setIsChecked(false)
+                    }
+                } else {
+                    setSisaSaldoAlokasiPerBank({
+                        ...sisaSaldoAlokasiPerBank,
+                        bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                    })
+                    if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        console.log('masuk alert');
+                        setAlertSaldo(true)
+                    } else {
+                        console.log('masuk gak alert');
+                        const newData = {
+                            number: number,
+                            bankNameTujuan: bankNameTujuan,
+                            bankCodeTujuan: inputData.bankCode,
+                            cabang: cabang,
+                            noRek : noRek,
+                            nameRek: nameRek,
+                            nominal: Number(nominal),
+                            emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                            catatan: catatan.length !== 0 ? catatan : "",
+                            saveAcc: saveAcc,
+                            feeTotal: result.fee_total
+                        }
+                        setAllFee([...allFee, result.fee_total])
+                        setDataDisburse([...dataDisburse, newData])
+                        setAllNominal([...allNominal, Number(nominal)])
+                        setInputData({
+                            bankName: "",
+                            bankCode: "",
+                        })
+                        setInputRekening({
+                            bankNameRek: "",
+                            bankNumberRek: ""
+                        })
+                        setInputHandle({
+                            bankCabang: "",
+                            nominal: "",
+                            emailPenerima: "",
+                            catatan: ""
+                        })
+                        setAlertSaldo(false)
+                        setIsChecked(false)
+                    }
+                }
+            } else {
+                setShowModalDuplikasi(true)
+            }
         } else {
-            setShowModalDuplikasi(true)
+            setAlertSaldo(true)
         }
+        
     }
+    console.log(sisaSaldoAlokasiPerBank, 'sisaSaldoAlokasiPerBank');
 
     function lanjutSaveNew (
         number,
@@ -801,46 +968,157 @@ function DisbursementPage() {
         catatan,
         saveAcc
     ) {
-        const result = feeBank.find((item) => {
+        const balanceBank = balanceDetail.find((item) => {
+            console.log(item.channel_id, "balance detail");
             if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
-                return item.mpaytype_bank_code === bankCodeTujuan
+                return item.channel_id === bankCodeTujuan
             } else {
                 bankCodeTujuan = "BIF"
-                return item.mpaytype_bank_code === bankCodeTujuan
+                return item.channel_id === bankCodeTujuan
+
             }
         })
-        const newData = {
-            number: number,
-            bankNameTujuan: bankNameTujuan,
-            bankCodeTujuan: inputData.bankCode,
-            cabang: cabang,
-            noRek : noRek,
-            nameRek: nameRek,
-            nominal: Number(nominal),
-            emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
-            catatan: catatan.length !== 0 ? catatan : "",
-            saveAcc: saveAcc,
-            feeTotal: result.fee_total
+        if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
+            setAlertSaldo(false)
+            const result = feeBank.find((item) => {
+                if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                    return item.mpaytype_bank_code === bankCodeTujuan
+                } else {
+                    bankCodeTujuan = "BIF"
+                    return item.mpaytype_bank_code === bankCodeTujuan
+                }
+            })
+            if (bankCodeTujuan === '014') {
+                setSisaSaldoAlokasiPerBank({
+                    ...sisaSaldoAlokasiPerBank,
+                    bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                })
+                if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                    console.log('masuk alert');
+                    setAlertSaldo(true)
+                } else {
+                    const newData = {
+                        number: number,
+                        bankNameTujuan: bankNameTujuan,
+                        bankCodeTujuan: inputData.bankCode,
+                        cabang: cabang,
+                        noRek : noRek,
+                        nameRek: nameRek,
+                        nominal: Number(nominal),
+                        emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                        catatan: catatan.length !== 0 ? catatan : "",
+                        saveAcc: saveAcc,
+                        feeTotal: result.fee_total
+                    }
+                    setAllFee([...allFee, result.fee_total])
+                    setDataDisburse([...dataDisburse, newData])
+                    setAllNominal([...allNominal, Number(nominal)])
+                    setInputData({
+                        bankName: "",
+                        bankCode: "",
+                    })
+                    setInputRekening({
+                        bankNameRek: "",
+                        bankNumberRek: ""
+                    })
+                    setInputHandle({
+                        bankCabang: "",
+                        nominal: "",
+                        emailPenerima: "",
+                        catatan: ""
+                    })
+                    setIsChecked(false)
+                    setShowModalDuplikasi(false)
+                }
+            } else if (bankCodeTujuan === '011') {
+                setSisaSaldoAlokasiPerBank({
+                    ...sisaSaldoAlokasiPerBank,
+                    danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                })
+                if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                    console.log('masuk alert');
+                    setAlertSaldo(true)
+                } else {
+                    const newData = {
+                        number: number,
+                        bankNameTujuan: bankNameTujuan,
+                        bankCodeTujuan: inputData.bankCode,
+                        cabang: cabang,
+                        noRek : noRek,
+                        nameRek: nameRek,
+                        nominal: Number(nominal),
+                        emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                        catatan: catatan.length !== 0 ? catatan : "",
+                        saveAcc: saveAcc,
+                        feeTotal: result.fee_total
+                    }
+                    setAllFee([...allFee, result.fee_total])
+                    setDataDisburse([...dataDisburse, newData])
+                    setAllNominal([...allNominal, Number(nominal)])
+                    setInputData({
+                        bankName: "",
+                        bankCode: "",
+                    })
+                    setInputRekening({
+                        bankNameRek: "",
+                        bankNumberRek: ""
+                    })
+                    setInputHandle({
+                        bankCabang: "",
+                        nominal: "",
+                        emailPenerima: "",
+                        catatan: ""
+                    })
+                    setIsChecked(false)
+                    setShowModalDuplikasi(false)
+                }
+            } else {
+                setSisaSaldoAlokasiPerBank({
+                    ...sisaSaldoAlokasiPerBank,
+                    bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                })
+                if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                    console.log('masuk alert');
+                    setAlertSaldo(true)
+                } else {
+                    const newData = {
+                        number: number,
+                        bankNameTujuan: bankNameTujuan,
+                        bankCodeTujuan: inputData.bankCode,
+                        cabang: cabang,
+                        noRek : noRek,
+                        nameRek: nameRek,
+                        nominal: Number(nominal),
+                        emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                        catatan: catatan.length !== 0 ? catatan : "",
+                        saveAcc: saveAcc,
+                        feeTotal: result.fee_total
+                    }
+                    setAllFee([...allFee, result.fee_total])
+                    setDataDisburse([...dataDisburse, newData])
+                    setAllNominal([...allNominal, Number(nominal)])
+                    setInputData({
+                        bankName: "",
+                        bankCode: "",
+                    })
+                    setInputRekening({
+                        bankNameRek: "",
+                        bankNumberRek: ""
+                    })
+                    setInputHandle({
+                        bankCabang: "",
+                        nominal: "",
+                        emailPenerima: "",
+                        catatan: ""
+                    })
+                    setIsChecked(false)
+                    setShowModalDuplikasi(false)
+                }
+            }
+            
+        } else {
+            setAlertSaldo(true)
         }
-        setAllFee([...allFee, result.fee_total])
-        setDataDisburse([...dataDisburse, newData])
-        setAllNominal([...allNominal, Number(nominal)])
-        setInputData({
-            bankName: "",
-            bankCode: "",
-        })
-        setInputRekening({
-            bankNameRek: "",
-            bankNumberRek: ""
-        })
-        setInputHandle({
-            bankCabang: "",
-            nominal: "",
-            emailPenerima: "",
-            catatan: ""
-        })
-        setIsChecked(false)
-        setShowModalDuplikasi(false)
     }
 
     function editDataDisburse(numberId) {
@@ -875,75 +1153,280 @@ function DisbursementPage() {
         nominal,
         emailPenerima,
         catatan,
-        saveAcc
+        saveAcc,
+        dataDisburse
     ) {
+        
         if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
             setErrMsgEmail(true)
             return
         }
-        let sameFlag = 0
-        const results = dataDisburse.filter(res => res.number !== number)
-        console.log(results, "results filter");
-        results.forEach((val) => {
-            if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
-                sameFlag++
+        const balanceBank = balanceDetail.find((item) => {
+            console.log(item.channel_id, "balance detail");
+            if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                return item.channel_id === bankCodeTujuan
+            } else {
+                bankCodeTujuan = "BIF"
+                return item.channel_id === bankCodeTujuan
             }
         })
-        if (sameFlag === 0) {
-            setShowModalDuplikasi(false)
-            const finding = dataDisburse.findIndex((object) => {
-                return object.number === number
-            })
-            const result = feeBank.find((item) => {
-                if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
-                    return item.mpaytype_bank_code === bankCodeTujuan
-                } else {
-                    bankCodeTujuan = "BIF"
-                    return item.mpaytype_bank_code === bankCodeTujuan
+        if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
+            setAlertSaldo(false)
+            let sameFlag = 0
+            const results = dataDisburse.filter(res => res.number !== number)
+            console.log(results, "results filter");
+            results.forEach((val) => {
+                if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
+                    sameFlag++
                 }
             })
-            if (finding >= 0) {
-                allNominal[finding] = Number(nominal)
-                allFee[finding] = result.fee_total
+            if (sameFlag === 0) {
+                setShowModalDuplikasi(false)
+                const finding = dataDisburse.findIndex((object) => {
+                    return object.number === number
+                })
+                const result = feeBank.find((item) => {
+                    if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
+                        return item.mpaytype_bank_code === bankCodeTujuan
+                    } else {
+                        bankCodeTujuan = "BIF"
+                        return item.mpaytype_bank_code === bankCodeTujuan
+                    }
+                })
+                const dataLama = dataDisburse.find((item) => item.number === number);
+                console.log(dataLama, 'dataLama');
+                console.log(bankCodeTujuan, 'bankCodeTujuan');
+                if (dataLama.bankCodeTujuan === bankCodeTujuan) {
+                    console.log('masuk sama codebank');
+                    console.log(sisaSaldoAlokasiPerBank.bca,'sisaSaldoAlokasiPerBank.bca');
+                    console.log(dataLama.nominal + dataLama.feeTotal,'dataLama.nominal + dataLama.feeTotal');
+                    console.log(nominal,'nominal');
+                    console.log(result.fee_total,'result.fee_total');
+                    setSisaSaldoAlokasiPerBank({
+                        ...sisaSaldoAlokasiPerBank,
+                        [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                    })
+                } else {
+                    if (dataLama.bankCodeTujuan === '014') {
+                        setSisaSaldoAlokasiPerBank({
+                            ...sisaSaldoAlokasiPerBank,
+                            bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
+                            [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                        })
+                    } else if (dataLama.bankCodeTujuan === '011') {
+                        setSisaSaldoAlokasiPerBank({
+                            ...sisaSaldoAlokasiPerBank,
+                            danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
+                            [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                        })
+                    } else {
+                        setSisaSaldoAlokasiPerBank({
+                            ...sisaSaldoAlokasiPerBank,
+                            bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
+                            [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                        })
+                    }
+                }
+                
+                if (finding >= 0) {
+                    allNominal[finding] = Number(nominal)
+                    allFee[finding] = result.fee_total
+                }
+                setAllFee([...allFee])
+                const target = dataDisburse.find((item) => item.number === number)
+                const source = {
+                    number: number,
+                    bankNameTujuan: bankNameTujuan,
+                    bankCodeTujuan: inputData.bankCode,
+                    cabang: cabang,
+                    noRek : noRek,
+                    nameRek: nameRek,
+                    nominal: Number(nominal),
+                    emailPenerima: emailPenerima,
+                    catatan: catatan,
+                    saveAcc: saveAcc,
+                };
+                Object.assign(target, source)
+                setDataDisburse([...dataDisburse])
+                setAllNominal([...allNominal])
+                setEditTabelDisburse(false)
+                setInputData({
+                    bankName: "",
+                    bankCode: "",
+                })
+                setInputRekening({
+                    bankNameRek: "",
+                    bankNumberRek: ""
+                })
+                setInputHandle({
+                    bankCabang: "",
+                    nominal: "",
+                    emailPenerima: "",
+                    catatan: ""
+                })
+                setNumbering(0)
+                setIsChecked(false)
+
+                // if (bankCodeTujuan === '014') {
+                //     setSisaSaldoAlokasiPerBank({
+                //         ...sisaSaldoAlokasiPerBank,
+                //         bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                        
+                //     })
+                //     if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                //         console.log('masuk alert');
+                //         setAlertSaldo(true)
+                //     } else {
+                //         setAlertSaldo(false)
+                //         if (finding >= 0) {
+                //             allNominal[finding] = Number(nominal)
+                //             allFee[finding] = result.fee_total
+                //         }
+                //         setAllFee([...allFee])
+                //         const target = dataDisburse.find((item) => item.number === number)
+                //         const source = {
+                //             number: number,
+                //             bankNameTujuan: bankNameTujuan,
+                //             bankCodeTujuan: inputData.bankCode,
+                //             cabang: cabang,
+                //             noRek : noRek,
+                //             nameRek: nameRek,
+                //             nominal: Number(nominal),
+                //             emailPenerima: emailPenerima,
+                //             catatan: catatan,
+                //             saveAcc: saveAcc,
+                //         };
+                //         Object.assign(target, source)
+                //         setDataDisburse([...dataDisburse])
+                        
+                //         setAllNominal([...allNominal])
+                //         setEditTabelDisburse(false)
+                //         setInputData({
+                //             bankName: "",
+                //             bankCode: "",
+                //         })
+                //         setInputRekening({
+                //             bankNameRek: "",
+                //             bankNumberRek: ""
+                //         })
+                //         setInputHandle({
+                //             bankCabang: "",
+                //             nominal: "",
+                //             emailPenerima: "",
+                //             catatan: ""
+                //         })
+                //         setNumbering(0)
+                //         setIsChecked(false)
+                //     }
+                // } else if (bankCodeTujuan === '011') {
+                //     setSisaSaldoAlokasiPerBank({
+                //         ...sisaSaldoAlokasiPerBank,
+                //         danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                //     })
+                //     if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                //         console.log('masuk alert');
+                //         setAlertSaldo(true)
+                //     } else {
+                //         setAlertSaldo(false)
+                //         if (finding >= 0) {
+                //             allNominal[finding] = Number(nominal)
+                //             allFee[finding] = result.fee_total
+                //         }
+                //         setAllFee([...allFee])
+                //         const target = dataDisburse.find((item) => item.number === number)
+                //         const source = {
+                //             number: number,
+                //             bankNameTujuan: bankNameTujuan,
+                //             bankCodeTujuan: inputData.bankCode,
+                //             cabang: cabang,
+                //             noRek : noRek,
+                //             nameRek: nameRek,
+                //             nominal: Number(nominal),
+                //             emailPenerima: emailPenerima,
+                //             catatan: catatan,
+                //             saveAcc: saveAcc,
+                //         };
+                //         Object.assign(target, source)
+                //         setDataDisburse([...dataDisburse])
+                        
+                //         setAllNominal([...allNominal])
+                //         setEditTabelDisburse(false)
+                //         setInputData({
+                //             bankName: "",
+                //             bankCode: "",
+                //         })
+                //         setInputRekening({
+                //             bankNameRek: "",
+                //             bankNumberRek: ""
+                //         })
+                //         setInputHandle({
+                //             bankCabang: "",
+                //             nominal: "",
+                //             emailPenerima: "",
+                //             catatan: ""
+                //         })
+                //         setNumbering(0)
+                //         setIsChecked(false)
+                //     }
+                // } else {
+                //     setSisaSaldoAlokasiPerBank({
+                //         ...sisaSaldoAlokasiPerBank,
+                //         bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total)
+                //     })
+                //     if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                //         console.log('masuk alert');
+                //         setAlertSaldo(true)
+                //     } else {
+                //         setAlertSaldo(false)
+                //         if (finding >= 0) {
+                //             allNominal[finding] = Number(nominal)
+                //             allFee[finding] = result.fee_total
+                //         }
+                //         setAllFee([...allFee])
+                //         const target = dataDisburse.find((item) => item.number === number)
+                //         const source = {
+                //             number: number,
+                //             bankNameTujuan: bankNameTujuan,
+                //             bankCodeTujuan: inputData.bankCode,
+                //             cabang: cabang,
+                //             noRek : noRek,
+                //             nameRek: nameRek,
+                //             nominal: Number(nominal),
+                //             emailPenerima: emailPenerima,
+                //             catatan: catatan,
+                //             saveAcc: saveAcc,
+                //         };
+                //         Object.assign(target, source)
+                //         setDataDisburse([...dataDisburse])
+                        
+                //         setAllNominal([...allNominal])
+                //         setEditTabelDisburse(false)
+                //         setInputData({
+                //             bankName: "",
+                //             bankCode: "",
+                //         })
+                //         setInputRekening({
+                //             bankNameRek: "",
+                //             bankNumberRek: ""
+                //         })
+                //         setInputHandle({
+                //             bankCabang: "",
+                //             nominal: "",
+                //             emailPenerima: "",
+                //             catatan: ""
+                //         })
+                //         setNumbering(0)
+                //         setIsChecked(false)
+                //     }
+                // }
+                
+            } else {
+                setShowModalDuplikasi(true)
             }
-            setAllFee([...allFee])
-            const target = dataDisburse.find((item) => item.number === number)
-            const source = {
-                number: number,
-                bankNameTujuan: bankNameTujuan,
-                bankCodeTujuan: inputData.bankCode,
-                cabang: cabang,
-                noRek : noRek,
-                nameRek: nameRek,
-                nominal: Number(nominal),
-                emailPenerima: emailPenerima,
-                catatan: catatan,
-                saveAcc: saveAcc,
-            };
-            Object.assign(target, source)
-            setDataDisburse([...dataDisburse])
-            
-            setAllNominal([...allNominal])
-            setEditTabelDisburse(false)
-            setInputData({
-                bankName: "",
-                bankCode: "",
-            })
-            setInputRekening({
-                bankNameRek: "",
-                bankNumberRek: ""
-            })
-            setInputHandle({
-                bankCabang: "",
-                nominal: "",
-                emailPenerima: "",
-                catatan: ""
-            })
-            setNumbering(0)
-            setIsChecked(false)
         } else {
-            setShowModalDuplikasi(true)
+            setAlertSaldo(true)
         }
+        
         
     }
 
@@ -1040,7 +1523,9 @@ function DisbursementPage() {
         dataDisburse.splice(result, 1);
         setDataDisburse([...dataDisburse]);
         allFee.splice(result, 1)
+        allNominal.splice(result, 1)
         setAllFee([...allFee])
+        setAllNominal([...allNominal])
         setInputData({
             bankName: "",
             bankCode: ""
@@ -1066,7 +1551,7 @@ function DisbursementPage() {
         let workSheet = XLSX.utils.json_to_sheet(dataExcel)
         let workBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-        // XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
         const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "array"})
         var data = new Blob([new Uint8Array(convertFile)], { type: "application/octet-stream"})
         // console.log(workBook, 'workBook');
@@ -1129,6 +1614,7 @@ function DisbursementPage() {
             $('#detailakunspan').removeClass('menu-detail-akun-span-active')
             $('#konfigurasitab').addClass('menu-detail-akun-hr-active')
             $('#konfigurasispan').addClass('menu-detail-akun-span-active')
+            getBankList()
         }else{
             $('#konfigurasitab').removeClass('menu-detail-akun-hr-active')
             $('#konfigurasispan').removeClass('menu-detail-akun-span-active')
@@ -1305,7 +1791,7 @@ function DisbursementPage() {
                                             </div>
                                         </Col>
                                     </Row>
-                                    <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
+                                    <Row className='align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>    
                                             Nominal Disbursement <span style={{ color: "red" }}>*</span>
                                         </Col>
@@ -1331,6 +1817,21 @@ function DisbursementPage() {
                                                     onChange={(e) => handleChange(e)}
                                                     onFocus={() => setEditNominal(!editNominal)}
                                                 />
+                                            }
+                                        </Col>
+                                    </Row>
+                                    <Row className="mt-2 mb-3">
+                                        <Col xs={2}></Col>
+                                        <Col xs={10}>
+                                            {
+                                                alertSaldo === true ? (
+                                                    <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
+                                                        <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
+                                                        Saldo pada Rekening {inputData.bankName} anda tidak cukup
+                                                    </div>
+                                                ) : (
+                                                    ""
+                                                )
                                             }
                                         </Col>
                                     </Row>
@@ -1460,7 +1961,8 @@ function DisbursementPage() {
                                                                 inputHandle.nominal,
                                                                 inputHandle.emailPenerima,
                                                                 inputHandle.catatan,
-                                                                isChecked
+                                                                isChecked,
+                                                                dataDisburse
                                                             )}
                                                         >
                                                             Simpan
@@ -1480,7 +1982,7 @@ function DisbursementPage() {
                                             >
                                                 <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
                                                     <tr 
-                                                    className='ms-3'  
+                                                        className='ms-3'  
                                                     >
                                                         <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
                                                         <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Bank Tujuan</th>
@@ -1517,10 +2019,10 @@ function DisbursementPage() {
                                                                         {convertToRupiah(item.nominal, true, 2)}
                                                                     </td>
                                                                     <td className='ps-3'>
-                                                                        {item.emailPenerima}
+                                                                        {item.emailPenerima.length === 0 ? "-" : item.emailPenerima}
                                                                     </td>
                                                                     <td className='ps-3'>
-                                                                        {item.catatan}
+                                                                        {item.catatan.length === 0 ? "-" : item.catatan}
                                                                     </td>
                                                                     <td className='ps-3'>
                                                                         <div className="d-flex justify-content-center align-items-center">
@@ -1598,12 +2100,12 @@ function DisbursementPage() {
                                             <div style={{ fontSize: 12, color: '#888888' }}>(Terhitung setelah seluruh disbursement berhasil)</div>
                                         </div>
                                         {
-                                            Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) < 0  ?
+                                            Number((getBalance) - (sum(allNominal) + sum(allFee))) < 0  ?
                                             <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B", width: 250 }} className='text-end'>
                                                 <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                                 Saldo Anda tidak cukup, Topup saldo terlebih dahulu sebelum melakukan disbursement
                                             </div> :
-                                            <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(Number((getBalance.balance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
+                                            <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(Number((getBalance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
                                         }
                                     </div>
                                 </div>
@@ -1613,8 +2115,8 @@ function DisbursementPage() {
                         <div className="d-flex justify-content-end align-items-center">
                             <button
                                 onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
-                                className={(dataDisburse.length !== 0 && Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) >= 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
-                                disabled={dataDisburse.length === 0 || Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) < 0}
+                                className={(dataDisburse.length !== 0 && Number((getBalance) - (sum(allNominal) + sum(allFee))) >= 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
+                                disabled={dataDisburse.length === 0 || Number((getBalance) - (sum(allNominal) + sum(allFee))) < 0}
                                 style={{ width: '25%' }}
                             >
                                 Lakukan Disbursement
@@ -1632,12 +2134,12 @@ function DisbursementPage() {
                                 />
                                 
                             </Modal.Header>
-                            <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
+                            <Modal.Title className="mt-1 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
                                 Daftar Bank
                             </Modal.Title>
                             <Modal.Body>
                                 <div className="div-table mt-3">
-                                    <DataTable 
+                                    {/* <DataTable 
                                         columns={columnsBank}
                                         data={filterItemsBank}
                                         customStyles={customStyles}
@@ -1650,9 +2152,58 @@ function DisbursementPage() {
                                         onRowClicked={handleRowClicked}
                                         fixedHeader={true}
                                         fixedHeaderScrollHeight="300px"
-                                    />
+                                        conditionalRowStyles={conditionalRowStyles}
+                                    /> */}
+                                    <div style={{ fontFamily: 'Nunito', fontSize: 14}}>Cari Data Bank :</div>
+                                    <div className="d-flex justify-content-between align-items-center position-relative mt-2 mb-3" style={{width: "100%"}}>
+                                        <div className="position-absolute left-3 px-1"><img src={search} alt="search" /></div>
+                                        <FormControl
+                                            className="ps-5"
+                                            id="search"
+                                            type="text"
+                                            placeholder='Masukkan Nama / Kode Bank'
+                                            aria-label="Search Input"
+                                            value={filterTextBank}
+                                            onChange={e => setFilterTextBank(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className='scroll-disburse' style={{ overflowX: 'auto', maxWidth: 'max-content', height: 275 }}>
+                                        <table
+                                            className='table'
+                                            id='tableInvoice'
+                                            hover
+                                            style={{ width: 470 }}
+                                        >
+                                            <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                <tr >
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 10 }}>No</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 50 }}>Nama Bank</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 80 }}>Kode Bank</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    filterItemsBank.map((item, index) => {
+                                                        return (
+                                                            <tr key={index} onClick={() => handleRowClicked(item.mbank_code, item.is_enabled)} style={{ cursor: item.is_enabled === true ? 'pointer' : 'not-allowed', backgroundColor: item.is_enabled === false ? '#EBEBEB' : '', color: item.is_enabled === false ? '#C4C4C4' : '' }}>
+                                                                <td className='ps-3'>
+                                                                    {item.number}
+                                                                </td>
+                                                                <td className='ps-3' style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                                                                    {item.mbank_name}
+                                                                </td>
+                                                                <td className='ps-3'>
+                                                                    {item.mbank_code}
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div className='text-center my-1'>
+                                <div className='text-center mt-2'>
                                     <button
                                         onClick={() => batalIn('bank')}
                                         style={{
@@ -2152,12 +2703,12 @@ function DisbursementPage() {
                                     <div style={{ fontSize: 12, color: '#888888' }}>(Terhitung setelah seluruh disbursement berhasil)</div>
                                 </div>
                                 {
-                                    Number((getBalance.balance) - (sum(allNominal) + sum(allFee))) < 0  ?
+                                    Number((getBalance) - (sum(allNominal) + sum(allFee))) < 0  ?
                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B", width: 250 }} className='text-end'>
                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                         Saldo Anda tidak cukup, Topup saldo terlebih dahulu sebelum melakukan disbursement
                                     </div> :
-                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(((getBalance.balance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
+                                    <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(((getBalance) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
                                 }
                             </div>
                             <div className='mb-3 mt-3'>
