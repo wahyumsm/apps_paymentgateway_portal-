@@ -79,10 +79,10 @@ function DisbursementPage() {
     const [errorFoundPagination, setErrorFoundPagination] = useState([])
     const [showModalErrorList, setShowModalErrorList] = useState(false)
     const [activePageErrorList, setActivePageErrorList] = useState(1)
+    console.log(listBank, 'bankLists di luar');
     
     async function fileCSV(newValue, bankLists) {
         console.log(newValue, 'newValue');
-        console.log(bankLists, 'bankLists');
         if (errorFound.length !== 0) {
             setErrorFound([])
         }
@@ -91,7 +91,7 @@ function DisbursementPage() {
                 setDataFromUpload([])
             // }, 500);
         } else if (newValue.length !== 0 && newValue[0].file.type !== "text/csv") {
-            console.log('masuk wrong type');
+            // console.log('masuk wrong type');
             setErrorFound([])
             // setTimeout(() => {
                 setLabelUpload("")
@@ -112,7 +112,7 @@ function DisbursementPage() {
                 const decoded = Base64.decode(pond)
                 console.log(decoded, 'decodedd');
                 const headerCol = decoded.split('|').slice(0, 8)
-                console.log(headerCol, 'headerCol');
+                // console.log(headerCol, 'headerCol');
                 if (headerCol[0] === "No*" && headerCol[1] === "Bank Tujuan*" && headerCol[2] === "Cabang (Khusus Non-BCA)*" && headerCol[3] === "No. Rekening Tujuan*" && headerCol[4] === "Nama Pemilik Rekening*" && headerCol[5] === "Nominal Disbursement*" && headerCol[6] === "Email Penerima" && headerCol[7] === "Catatan\r\n1") {
                     console.log("ini bener");
                     const newDcd = decoded.split("|").slice(8)
@@ -123,7 +123,7 @@ function DisbursementPage() {
                     let obj = {}
                     newDcd.forEach((el, idx) => {
                         if (idx === 0 || idx % 7 === 0) {
-                            console.log(el.slice(0,3), 'el.slice(0,3)');
+                            // console.log(el.slice(0,3), 'el.slice(0,3)');
                             if (el.length === 0) {
                                 obj.bankCode = ""
                                 obj.bankName = ""
@@ -133,25 +133,26 @@ function DisbursementPage() {
                                     obj.bankName = "null"
                                 } else {
                                     const sameBankName = bankLists.find(list => list.mbank_code === el.slice(0, 3))
+                                    console.log(bankLists, 'bankLists di bawah samebank');
+                                    console.log(sameBankName, 'sameBankName1');
                                     obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
                                     obj.bankName = sameBankName !== undefined ? sameBankName.mbank_name : "undefined"
-                                        console.log(sameBankName, 'sameBankName1');
-                                        console.log(feeBank, 'feeBank');
-                                        if (sameBankName !== undefined && feeBank.length !== 0) {
-                                            console.log(sameBankName, 'sameBankName2');
-                                            const result = feeBank.find((item) => {
-                                                if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
-                                                    return item.mpaytype_bank_code === sameBankName.mbank_code
-                                                } else {
-                                                    sameBankName.mbank_code = "BIF"
-                                                    return item.mpaytype_bank_code === sameBankName.mbank_code
-                                                }
-                                            })
-                                            console.log(result, 'result');
-                                            if (result !== undefined) {
-                                                totalFeeDisburse += result.fee_total
+                                    console.log(feeBank, 'feeBank');
+                                    if (sameBankName !== undefined && feeBank.length !== 0) {
+                                        console.log(sameBankName, 'sameBankName2');
+                                        const result = feeBank.find((item) => {
+                                            if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
+                                                return item.mpaytype_bank_code === sameBankName.mbank_code
+                                            } else {
+                                                // sameBankName.mbank_code = "BIF"
+                                                return item.mpaytype_bank_code === sameBankName.mbank_code
                                             }
+                                        })
+                                        console.log(result, 'result');
+                                        if (result !== undefined) {
+                                            totalFeeDisburse += result.fee_total
                                         }
+                                    }
                                 }
                             }
                         } else if (idx === 1 || idx % 7 === 1) {
@@ -175,15 +176,15 @@ function DisbursementPage() {
                         }
                     })
                     newArr = newArr.map((obj, i) => ({...obj, no: i + 1}) )
-                    console.log(newArr, 'newArr');
-                    console.log(totalFeeDisburse, 'totalFeeDisburse');
+                    // console.log(newArr, 'newArr');
+                    // console.log(totalFeeDisburse, 'totalFeeDisburse');
                     setAllNominal([totalNominalDisburse])
                     setAllFee([totalFeeDisburse])
                     let errData = []
-                    newArr.forEach(data => {
+                    newArr = newArr.map(data => {
                         let objErrData = {}
                         if (data.bankName.length === 0 && data.bankCode.length === 0) {
-                            console.log('masuk bank name kosong');
+                            // console.log('masuk bank name kosong');
                             objErrData.no = data.no
                             // objErrData.data = data.bankName
                             objErrData.keterangan = 'kolom Bank Tujuan : Wajib Diisi.'
@@ -204,17 +205,82 @@ function DisbursementPage() {
                                 objErrData = {}
                             }
                         }
+
                         if (data.bankCode !== '014') {
                             if (data.cabangBank.length === 0) {
+                                // console.log('masuk length 0', data.cabangBank, data.bankCode);
                                 objErrData.no = data.no
-                                // objErrData.data = data.cabangBank
                                 objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
                                 errData.push(objErrData)
                                 objErrData = {}
+                            } else if (data.cabangBank.length !== 0 && data.cabangBank.indexOf(' ') >= 0) {
+                                // console.log('masuk spasi kosong', data.cabangBank, data.bankCode);
+                                objErrData.no = data.no
+                                objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                errData.push(objErrData)
+                                objErrData = {}
+                            } else if (data.cabangBank.length !== 0 && (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0)) {
+                                // console.log('masuk huruf x besar dan kecil', data.cabangBank, data.bankCode);
+                                objErrData.no = data.no
+                                objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                errData.push(objErrData)
+                                objErrData = {}
+                            } else if (data.cabangBank.length !== 0 && /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank)) {
+                                // console.log('masuk tanda baca', data.cabangBank, data.bankCode);
+                                objErrData.no = data.no
+                                objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                errData.push(objErrData)
+                                objErrData = {}
+                            } else if (data.cabangBank.length !== 0 && data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
+                                // console.log('masuk angka', data.cabangBank, data.bankCode);
+                                objErrData.no = data.no
+                                objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                errData.push(objErrData)
+                                objErrData = {}
+                            } else if (data.cabangBank.length !== 0 && data.cabangBank.length < 4 && data.cabangBank.toLowerCase() !== data.cabangBank.toUpperCase()) {
+                                // console.log('masuk kombinasi kurang dari 4 huruf', data.cabangBank, data.bankCode);
+                                objErrData.no = data.no
+                                objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                errData.push(objErrData)
+                                objErrData = {}
+                            } else {
+                                return {
+                                    ...data,
+                                    no: data.no,
+                                    bankCode: data.bankCode,
+                                    bankName: data.bankName,
+                                    cabangBank: data.cabangBank,
+                                    noRekening: data.noRekening,
+                                    ownerName: data.ownerName,
+                                    nominalDisbursement: data.nominalDisbursement,
+                                    email: data.email,
+                                    note: data.note
+                                }
                             }
-                            console.log(data.cabangBank.indexOf(' ') >= 0, 'indexOf spasi kosong', data.cabangBank, data.bankCode);
-                            console.log(/\s/g.test(data.cabangBank), 'cek spasi kosong', data.cabangBank, data.bankCode);
+                            // console.log(data.cabangBank.indexOf(/[$-/:-?{-~!"^_`\[\]]/) >= 0, 'indexOf spasi kosong', data.cabangBank, data.bankCode);
+                            // console.log(/[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank), 'cek tanda baca', data.cabangBank, data.bankCode);
+                        } else {
+                            if (data.cabangBank.length === 0 || data.cabangBank.indexOf(' ') >= 0 ||  (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank) || data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
+                                return {
+                                    ...data, 
+                                    cabangBank : ''
+                                }
+                            } else {
+                                return {
+                                    ...data,
+                                    no: data.no,
+                                    bankCode: data.bankCode,
+                                    bankName: data.bankName,
+                                    cabangBank: data.cabangBank,
+                                    noRekening: data.noRekening,
+                                    ownerName: data.ownerName,
+                                    nominalDisbursement: data.nominalDisbursement,
+                                    email: data.email,
+                                    note: data.note
+                                }
+                            }
                         }
+
                         if (data.noRekening.length === 0) {
                             objErrData.no = data.no
                             // objErrData.data = data.noRekening
@@ -222,6 +288,7 @@ function DisbursementPage() {
                             errData.push(objErrData)
                             objErrData = {}
                         }
+
                         if (data.noRekening.toLowerCase() !== data.noRekening.toUpperCase()) {
                             objErrData.no = data.no
                             // objErrData.data = data.noRekening
@@ -229,6 +296,7 @@ function DisbursementPage() {
                             errData.push(objErrData)
                             objErrData = {}
                         }
+
                         if (data.ownerName.length === 0) {
                             objErrData.no = data.no
                             // objErrData.data = data.ownerName
@@ -236,6 +304,7 @@ function DisbursementPage() {
                             errData.push(objErrData)
                             objErrData = {}
                         }
+
                         if (data.nominalDisbursement.length === 0) {
                             objErrData.no = data.no
                             // objErrData.data = data.noRekening
@@ -243,6 +312,7 @@ function DisbursementPage() {
                             errData.push(objErrData)
                             objErrData = {}
                         }
+
                         if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
                             objErrData.no = data.no
                             // objErrData.data = data.nominalDisbursement
@@ -250,6 +320,7 @@ function DisbursementPage() {
                             errData.push(objErrData)
                             objErrData = {}
                         }
+
                         if (validator.isEmail(data.email) === false) {
                             objErrData.no = data.no
                             // objErrData.data = data.email
@@ -258,7 +329,8 @@ function DisbursementPage() {
                             objErrData = {}
                         }
                     })
-                    console.log(errData, 'errData');
+                    // console.log(errData, 'errData');
+                    // console.log(newArr, 'newArr');
                     if (errData.length !== 0) {
                         setTimeout(() => {
                             setErrorFound(errData)
@@ -286,10 +358,10 @@ function DisbursementPage() {
                         }, 2500);
                         setTimeout(() => {
                             setDataFromUpload(newArr)
-                        }, 3000);
+                        }, 2500);
                     }
                 } else {
-                    console.log("ini salah");
+                    // console.log("ini salah");
                     setErrorFound([])
                     setTimeout(() => {
                         setLabelUpload("")
@@ -1129,6 +1201,7 @@ function DisbursementPage() {
             $('#detailakunspan').removeClass('menu-detail-akun-span-active')
             $('#konfigurasitab').addClass('menu-detail-akun-hr-active')
             $('#konfigurasispan').addClass('menu-detail-akun-span-active')
+            getBankList()
         }else{
             $('#konfigurasitab').removeClass('menu-detail-akun-hr-active')
             $('#konfigurasispan').removeClass('menu-detail-akun-span-active')
@@ -1747,7 +1820,7 @@ function DisbursementPage() {
                                 </div>
                                 <div className='text-center mt-3 position-relative' style={{ marginBottom: 100 }}>
                                     {
-                                        errorFound.length !== 0 &&
+                                        errorFound.length !== 0 && errorFound.length > 1 ?
                                         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', textAlign: 'center' }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
                                                 <div>
@@ -1759,7 +1832,20 @@ function DisbursementPage() {
                                                 </div>
                                                 <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div>
                                             </div>
-                                        </div>
+                                        </div> :
+                                        errorFound.length !== 0 && errorFound.length === 1 ?
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', textAlign: 'center' }}>
+                                            <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
+                                                <div>
+                                                    <div style={{ marginLeft: -50 }}>
+                                                        <img class="me-2" src={noteIconRed} width="20px" height="20px" />
+                                                        Kesalahan data yang perlu diperbaiki:
+                                                    </div>
+                                                    <div><FontAwesomeIcon style={{ width: 5, marginTop: 3, marginLeft: 100 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                                </div>
+                                                {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div> */}
+                                            </div>
+                                        </div> : null
                                     }
                                     <FilePond
                                         className="dragdrop"
