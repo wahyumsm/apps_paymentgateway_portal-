@@ -147,248 +147,291 @@ function DisbursementPage() {
                             console.log("ini bener");
                             const newDcd = decoded.split("|").slice(8)
                             console.log(newDcd, 'newDcd');
-                            let totalNominalDisburse = 0
-                            let totalFeeDisburse = 0
-                            let newArr = []
-                            let obj = {}
-                            newDcd.forEach((el, idx) => {
-                                if (idx === 0 || idx % 7 === 0) {
-                                    // console.log(el.slice(0,3), 'el.slice(0,3)');
-                                    if (el.length === 0) {
-                                        obj.bankCode = ""
-                                        obj.bankName = ""
-                                    } else {
-                                        if (el.slice(0, 3).toLowerCase() !== el.slice(0, 3).toUpperCase()) {
-                                            obj.bankCode = "null"
-                                            obj.bankName = "null"
-                                        } else {
-                                            const sameBankName = bankLists.find(list => list.mbank_code === el.slice(0, 3))
-                                            console.log(bankLists, 'bankLists di bawah samebank');
-                                            console.log(sameBankName, 'sameBankName1');
-                                            obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
-                                            obj.bankName = sameBankName !== undefined ? sameBankName.mbank_name : "undefined"
-                                            console.log(feeBank, 'feeBank');
-                                            if (sameBankName !== undefined && feeBank.length !== 0) {
-                                                console.log(sameBankName, 'sameBankName2');
-                                                const result = feeBank.find((item) => {
-                                                    if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
-                                                        return item.mpaytype_bank_code === sameBankName.mbank_code
-                                                    } else {
-                                                        // sameBankName.mbank_code = "BIF"
-                                                        return item.mpaytype_bank_code === sameBankName.mbank_code
-                                                    }
-                                                })
-                                                console.log(result, 'result');
-                                                if (result !== undefined) {
-                                                    totalFeeDisburse += result.fee_total
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else if (idx === 1 || idx % 7 === 1) {
-                                    obj.cabangBank = el
-                                } else if (idx === 2 || idx % 7 === 2) {
-                                    obj.noRekening = el
-                                } else if (idx === 3 || idx % 7 === 3) {
-                                    obj.ownerName = el
-                                } else if (idx === 4 || idx % 7 === 4) {
-                                    obj.nominalDisbursement = el
-                                    totalNominalDisburse += Number(el)
-                                } else if (idx === 5 || idx % 7 === 5) {
-                                    obj.email = el
-                                } else if (idx === 6 || idx % 7 === 6) {
-                                    obj.note = el.split("\r")[0]
-                                }
-        
-                                if (idx % 7 === 6) {
-                                    newArr.push(obj)
-                                    obj = {}
-                                }
-                            })
-                            newArr = newArr.map((obj, i) => ({...obj, no: i + 1}) )
-                            // console.log(newArr, 'newArr');
-                            // console.log(totalFeeDisburse, 'totalFeeDisburse');
-                            setAllNominal([totalNominalDisburse])
-                            setAllFee([totalFeeDisburse])
-                            let errData = []
-                            newArr = newArr.map(data => {
-                                let objErrData = {}
-                                if (data.bankName.length === 0 && data.bankCode.length === 0) {
-                                    // console.log('masuk bank name kosong');
-                                    objErrData.no = data.no
-                                    // objErrData.data = data.bankName
-                                    objErrData.keterangan = 'kolom Bank Tujuan : Wajib Diisi.'
-                                    errData.push(objErrData)
-                                    objErrData = {}
-                                } else {
-                                    if (data.bankName === "null" && data.bankCode === "null") {
-                                        objErrData.no = data.no
-                                        // objErrData.data = data.bankName
-                                        objErrData.keterangan = 'kolom Bank Tujuan : Kode Bank Wajib Diisi.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    } else if (data.bankName === "undefined" && data.bankCode === "undefined") {
-                                        objErrData.no = data.no
-                                        // objErrData.data = data.bankName
-                                        objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    }
-                                }
-        
-                                if (data.bankCode !== '014') {
-                                    if (data.cabangBank.length === 0) {
-                                        // console.log('masuk length 0', data.cabangBank, data.bankCode);
-                                        objErrData.no = data.no
-                                        objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    } else if (data.cabangBank.length !== 0 && data.cabangBank.indexOf(' ') >= 0) {
-                                        // console.log('masuk spasi kosong', data.cabangBank, data.bankCode);
-                                        objErrData.no = data.no
-                                        objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    } else if (data.cabangBank.length !== 0 && (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0)) {
-                                        // console.log('masuk huruf x besar dan kecil', data.cabangBank, data.bankCode);
-                                        objErrData.no = data.no
-                                        objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    } else if (data.cabangBank.length !== 0 && /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank)) {
-                                        // console.log('masuk tanda baca', data.cabangBank, data.bankCode);
-                                        objErrData.no = data.no
-                                        objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    } else if (data.cabangBank.length !== 0 && data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
-                                        // console.log('masuk angka', data.cabangBank, data.bankCode);
-                                        objErrData.no = data.no
-                                        objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    } else if (data.cabangBank.length !== 0 && data.cabangBank.length < 4 && data.cabangBank.toLowerCase() !== data.cabangBank.toUpperCase()) {
-                                        // console.log('masuk kombinasi kurang dari 4 huruf', data.cabangBank, data.bankCode);
-                                        objErrData.no = data.no
-                                        objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    } else {
-                                        return {
-                                            ...data,
-                                            no: data.no,
-                                            bankCode: data.bankCode,
-                                            bankName: data.bankName,
-                                            cabangBank: data.cabangBank,
-                                            noRekening: data.noRekening,
-                                            ownerName: data.ownerName,
-                                            nominalDisbursement: data.nominalDisbursement,
-                                            email: data.email,
-                                            note: data.note
-                                        }
-                                    }
-                                    // console.log(data.cabangBank.indexOf(/[$-/:-?{-~!"^_`\[\]]/) >= 0, 'indexOf spasi kosong', data.cabangBank, data.bankCode);
-                                    // console.log(/[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank), 'cek tanda baca', data.cabangBank, data.bankCode);
-                                } else {
-                                    if (data.cabangBank.length === 0 || data.cabangBank.indexOf(' ') >= 0 ||  (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank) || data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
-                                        return {
-                                            ...data, 
-                                            cabangBank : ''
-                                        }
-                                    } else {
-                                        return {
-                                            ...data,
-                                            no: data.no,
-                                            bankCode: data.bankCode,
-                                            bankName: data.bankName,
-                                            cabangBank: data.cabangBank,
-                                            noRekening: data.noRekening,
-                                            ownerName: data.ownerName,
-                                            nominalDisbursement: data.nominalDisbursement,
-                                            email: data.email,
-                                            note: data.note
-                                        }
-                                    }
-                                }
-        
-                                if (data.noRekening.length === 0) {
-                                    objErrData.no = data.no
-                                    // objErrData.data = data.noRekening
-                                    objErrData.keterangan = 'kolom Nomor Rekening : Wajib Diisi.'
-                                    errData.push(objErrData)
-                                    objErrData = {}
-                                }
-        
-                                if (data.noRekening.toLowerCase() !== data.noRekening.toUpperCase()) {
-                                    objErrData.no = data.no
-                                    // objErrData.data = data.noRekening
-                                    objErrData.keterangan = 'kolom Nomor Rekening : Tipe data salah.'
-                                    errData.push(objErrData)
-                                    objErrData = {}
-                                }
-        
-                                if (data.ownerName.length === 0) {
-                                    objErrData.no = data.no
-                                    // objErrData.data = data.ownerName
-                                    objErrData.keterangan = 'kolom Nama Pemilik Rekening : Wajib Diisi.'
-                                    errData.push(objErrData)
-                                    objErrData = {}
-                                }
-        
-                                if (data.nominalDisbursement.length === 0) {
-                                    objErrData.no = data.no
-                                    // objErrData.data = data.noRekening
-                                    objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
-                                    errData.push(objErrData)
-                                    objErrData = {}
-                                }
-        
-                                if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
-                                    objErrData.no = data.no
-                                    // objErrData.data = data.nominalDisbursement
-                                    objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
-                                    errData.push(objErrData)
-                                    objErrData = {}
-                                }
-        
-                                if (validator.isEmail(data.email) === false) {
-                                    objErrData.no = data.no
-                                    // objErrData.data = data.email
-                                    objErrData.keterangan = 'kolom Email Penerima : Tipe data salah.'
-                                    errData.push(objErrData)
-                                    objErrData = {}
-                                }
-                            })
-                            // console.log(errData, 'errData');
-                            // console.log(newArr, 'newArr');
-                            if (errData.length !== 0) {
-                                setTimeout(() => {
-                                    setErrorFound(errData)
-                                    setLabelUpload("")
-                                    setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
-                                    <div className='pb-4'>
-                                        <span class="filepond--label-action">
-                                            Ganti File
-                                        </span>
-                                    </div>`)
-                                }, 2500);
-                                // setTimeout(() => {
-                                // }, 500);
-                            } else {
+                            console.log(newDcd.length%7, 'newDcd');
+                            if (newDcd.length%7 !== 0) {
                                 setErrorFound([])
                                 setTimeout(() => {
                                     setLabelUpload("")
-                                    setLabelUpload(`<div class='mt-2 style-label-drag-drop-filename'>${newValue[0].file.name}</div>
-                                    <div class='py-4 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                    setLabelUpload(`<div class='py-1 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div>
+                                    <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
                                     <div className='pb-4'>
                                         <span class="filepond--label-action">
                                             Ganti File
                                         </span>
                                     </div>`)
                                 }, 2500);
-                                setTimeout(() => {
-                                    setDataFromUpload(newArr)
-                                }, 2500);
+                            } else {
+                                let totalNominalDisburse = 0
+                                let totalFeeDisburse = 0
+                                let newArr = []
+                                let obj = {}
+                                newDcd.forEach((el, idx) => {
+                                    if (idx === 0 || idx % 7 === 0) {
+                                        // console.log(el.slice(0,3), 'el.slice(0,3)');
+                                        if (el.length === 0) {
+                                            obj.bankCode = ""
+                                            obj.bankName = ""
+                                        } else {
+                                            if (el.slice(0, 3).toLowerCase() !== el.slice(0, 3).toUpperCase()) {
+                                                obj.bankCode = "null"
+                                                obj.bankName = "null"
+                                            } else {
+                                                const sameBankName = bankLists.find(list => list.mbank_code === el.slice(0, 3))
+                                                console.log(bankLists, 'bankLists di bawah samebank');
+                                                console.log(sameBankName, 'sameBankName1');
+                                                obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
+                                                obj.bankName = sameBankName !== undefined ? sameBankName.mbank_name : "undefined"
+                                                console.log(feeBank, 'feeBank');
+                                                if (sameBankName !== undefined && feeBank.length !== 0) {
+                                                    console.log(sameBankName, 'sameBankName2');
+                                                    const result = feeBank.find((item) => {
+                                                        if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
+                                                            return item.mpaytype_bank_code === sameBankName.mbank_code
+                                                        } else {
+                                                            // sameBankName.mbank_code = "BIF"
+                                                            return item.mpaytype_bank_code === sameBankName.mbank_code
+                                                        }
+                                                    })
+                                                    console.log(result, 'result');
+                                                    if (result !== undefined) {
+                                                        totalFeeDisburse += result.fee_total
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else if (idx === 1 || idx % 7 === 1) {
+                                        obj.cabangBank = el
+                                    } else if (idx === 2 || idx % 7 === 2) {
+                                        obj.noRekening = el
+                                    } else if (idx === 3 || idx % 7 === 3) {
+                                        obj.ownerName = el
+                                    } else if (idx === 4 || idx % 7 === 4) {
+                                        console.log(el, 'nominal');
+                                        console.log(el.indexOf(','), 'nominal');
+                                        if (el.indexOf(',') !== -1) {
+                                            // objErrData.no = data.no
+                                            // // objErrData.data = data.noRekening
+                                            // objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
+                                            // errData.push(objErrData)
+                                            // objErrData = {}
+                                            obj.nominalDisbursement = "Tipe data salah."
+                                        } else {
+                                            obj.nominalDisbursement = el
+                                            totalNominalDisburse += Number(el)
+                                        }
+                                    } else if (idx === 5 || idx % 7 === 5) {
+                                        obj.email = el
+                                    } else if (idx === 6 || idx % 7 === 6) {
+                                        obj.note = el.split("\r")[0]
+                                    }
+            
+                                    if (idx % 7 === 6) {
+                                        newArr.push(obj)
+                                        obj = {}
+                                    }
+                                })
+                                newArr = newArr.map((obj, i) => ({...obj, no: i + 1}) )
+                                // console.log(newArr, 'newArr');
+                                // console.log(totalFeeDisburse, 'totalFeeDisburse');
+                                setAllNominal([totalNominalDisburse])
+                                setAllFee([totalFeeDisburse])
+                                let errData = []
+                                newArr = newArr.map(data => {
+                                    console.log(data.nominalDisbursement, 'data.nominalDisbursement');
+                                    console.log(data.nominalDisbursement.length, 'data.nominalDisbursement');
+                                    let objErrData = {}
+                                    if (data.bankName.length === 0 && data.bankCode.length === 0) {
+                                        // console.log('masuk bank name kosong');
+                                        objErrData.no = data.no
+                                        // objErrData.data = data.bankName
+                                        objErrData.keterangan = 'kolom Bank Tujuan : Wajib Diisi.'
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    } else {
+                                        if (data.bankName === "null" && data.bankCode === "null") {
+                                            objErrData.no = data.no
+                                            // objErrData.data = data.bankName
+                                            objErrData.keterangan = 'kolom Bank Tujuan : Kode Bank Wajib Diisi.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (data.bankName === "undefined" && data.bankCode === "undefined") {
+                                            objErrData.no = data.no
+                                            // objErrData.data = data.bankName
+                                            objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        }
+                                    }
+            
+                                    if (data.noRekening.length === 0) {
+                                        objErrData.no = data.no
+                                        // objErrData.data = data.noRekening
+                                        objErrData.keterangan = 'kolom Nomor Rekening : Wajib Diisi.'
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    }
+            
+                                    if (data.noRekening.toLowerCase() !== data.noRekening.toUpperCase()) {
+                                        objErrData.no = data.no
+                                        // objErrData.data = data.noRekening
+                                        objErrData.keterangan = 'kolom Nomor Rekening : Tipe data salah.'
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    }
+            
+                                    if (data.ownerName.length === 0) {
+                                        objErrData.no = data.no
+                                        // objErrData.data = data.ownerName
+                                        objErrData.keterangan = 'kolom Nama Pemilik Rekening : Wajib Diisi.'
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    }
+            
+                                    if (data.nominalDisbursement.length === 0 || data.nominalDisbursement === '0') {
+                                        console.log('masuk nominal error1');
+                                        objErrData.no = data.no
+                                        // objErrData.data = data.noRekening
+                                        objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    }
+                                    
+                                    if (data.nominalDisbursement.length < 4) {
+                                        console.log('masuk nominal error2');
+                                        objErrData.no = data.no
+                                        // objErrData.data = data.noRekening
+                                        objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    }
+            
+                                    if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
+                                        objErrData.no = data.no
+                                        // objErrData.data = data.nominalDisbursement
+                                        objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    }
+            
+                                    if (validator.isEmail(data.email) === false) {
+                                        objErrData.no = data.no
+                                        // objErrData.data = data.email
+                                        objErrData.keterangan = 'kolom Email Penerima : Tipe data salah.'
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    }
+                                    
+                                    if (data.bankCode !== '014') {
+                                        if (data.cabangBank.length === 0) {
+                                            // console.log('masuk length 0', data.cabangBank, data.bankCode);
+                                            objErrData.no = data.no
+                                            objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (data.cabangBank.length !== 0 && data.cabangBank.indexOf(' ') >= 0) {
+                                            // console.log('masuk spasi kosong', data.cabangBank, data.bankCode);
+                                            objErrData.no = data.no
+                                            objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (data.cabangBank.length !== 0 && (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0)) {
+                                            // console.log('masuk huruf x besar dan kecil', data.cabangBank, data.bankCode);
+                                            objErrData.no = data.no
+                                            objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (data.cabangBank.length !== 0 && /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank)) {
+                                            // console.log('masuk tanda baca', data.cabangBank, data.bankCode);
+                                            objErrData.no = data.no
+                                            objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (data.cabangBank.length !== 0 && data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
+                                            // console.log('masuk angka', data.cabangBank, data.bankCode);
+                                            objErrData.no = data.no
+                                            objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (data.cabangBank.length !== 0 && data.cabangBank.length < 4 && data.cabangBank.toLowerCase() !== data.cabangBank.toUpperCase()) {
+                                            // console.log('masuk kombinasi kurang dari 4 huruf', data.cabangBank, data.bankCode);
+                                            objErrData.no = data.no
+                                            objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else {
+                                            return {
+                                                ...data,
+                                                no: data.no,
+                                                bankCode: data.bankCode,
+                                                bankName: data.bankName,
+                                                cabangBank: data.cabangBank,
+                                                noRekening: data.noRekening,
+                                                ownerName: data.ownerName,
+                                                nominalDisbursement: data.nominalDisbursement,
+                                                email: data.email,
+                                                note: data.note
+                                            }
+                                        }
+                                        // console.log(data.cabangBank.indexOf(/[$-/:-?{-~!"^_`\[\]]/) >= 0, 'indexOf spasi kosong', data.cabangBank, data.bankCode);
+                                        // console.log(/[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank), 'cek tanda baca', data.cabangBank, data.bankCode);
+                                    } else {
+                                        if (data.cabangBank.length === 0 || data.cabangBank.indexOf(' ') >= 0 ||  (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank) || data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
+                                            return {
+                                                ...data, 
+                                                cabangBank : ''
+                                            }
+                                        } else {
+                                            return {
+                                                ...data,
+                                                no: data.no,
+                                                bankCode: data.bankCode,
+                                                bankName: data.bankName,
+                                                cabangBank: data.cabangBank,
+                                                noRekening: data.noRekening,
+                                                ownerName: data.ownerName,
+                                                nominalDisbursement: data.nominalDisbursement,
+                                                email: data.email,
+                                                note: data.note
+                                            }
+                                        }
+                                    }
+                                })
+                                console.log(errData, 'errData');
+                                console.log(newArr, 'newArr');
+                                if (errData.length !== 0) {
+                                    setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                    <div className='pb-4'>
+                                        <span class="filepond--label-action">
+                                            Pilih File
+                                        </span>
+                                    </div>`)
+                                    setTimeout(() => {
+                                        setErrorFound(errData)
+                                        setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                        <div className='pb-4'>
+                                            <span class="filepond--label-action">
+                                                Ganti File
+                                            </span>
+                                        </div>`)
+                                    }, 2500);
+                                    // setTimeout(() => {
+                                    // }, 500);
+                                } else {
+                                    setErrorFound([])
+                                    setTimeout(() => {
+                                        setLabelUpload("")
+                                        setLabelUpload(`<div class='mt-2 style-label-drag-drop-filename'>${newValue[0].file.name}</div>
+                                        <div class='py-4 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                        <div className='pb-4'>
+                                            <span class="filepond--label-action">
+                                                Ganti File
+                                            </span>
+                                        </div>`)
+                                    }, 2500);
+                                    setTimeout(() => {
+                                        setDataFromUpload(newArr)
+                                    }, 2500);
+                                }
                             }
                         } else {
                             // console.log("ini salah");
