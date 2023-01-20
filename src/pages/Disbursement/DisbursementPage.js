@@ -2352,7 +2352,7 @@ function DisbursementPage() {
                                             }}
                                         >
                                             <span className='me-2'><img src={saveIcon} alt="save icon"/></span>
-                                            <a href={daftarBank} download style={{ color: '#077E86' }}>
+                                            <a href={templateBulk} download style={{ color: '#077E86' }}>
                                                 Download Template
                                             </a>
                                         </button>
@@ -2459,7 +2459,7 @@ function DisbursementPage() {
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>4.</td>
-                                            <td>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <a href={templateBulk} download style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</a></td>
+                                            <td>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <a href={daftarBank} download style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</a></td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>5.</td>
