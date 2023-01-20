@@ -2368,7 +2368,7 @@ function DisbursementPage() {
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
                                                         Kesalahan data yang perlu diperbaiki:
                                                     </div>
-                                                    <div><FontAwesomeIcon style={{ width: 5, marginTop: 3, marginLeft: 100 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                                    <div><FontAwesomeIcon style={{ width: 5, marginTop: 3, marginLeft: 150 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
                                                 </div>
                                                 <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div>
                                             </div>
@@ -2446,58 +2446,51 @@ function DisbursementPage() {
                                     </div>
                                     <table className='mt-3' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>1.</td>
-                                            <td style={{ padding: 0 }}>File yang diunggah wajib dalam format Excel *.csv, dan tidak dapat menggunakan format lain</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>1.</td>
+                                            <td style={{ padding: 0 }}>File yang diunggah wajib dalam format *.csv, dan tidak dapat menggunakan format lain</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>2.</td>
-                                            <td style={{ padding: 0 }}>File yang diunggah wajib menggunakan template file Excel yang telah disediakan, tidak bisa membuat format Excel sendiri</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>2.</td>
+                                            <td style={{ padding: 0 }}>File yang diunggah wajib menggunakan template file yang telah disediakan, tidak bisa membuat format sendiri</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>3.</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>3.</td>
+                                            <td style={{ padding: 0 }}>Data perkolom <b>wajib</b> dipisahkan dengan tanda “|” (garis lurus). Dilarang menggunakan tanda baca lain sebagai pemisah data antar kolom. Dilarang menambahkan spasi setelah tanda garis lurus. Contoh penulisan : No|BTN|Gambir|51234678|Agatha|10000|agatha@mail.com|-</td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>4.</td>
                                             <td style={{ padding: 0 }}>Dilarang mengubah atau menambahkan nama sheet, nama tabel, urutan tabel dan tipe data tabel. Mengubah nama file diperbolehkan sesuai kebutuhan</td>
+                                            {/* <td style={{ padding: 0 }}>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <a href={daftarBank} download style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</a></td> */}
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>4.</td>
-                                            <td style={{ padding: 0 }}>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : <a href={daftarBank} download style={{ color:"#077E86", textDecoration: "underline" }}>Download File Daftar Bank Tujuan</a></td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>5.</td>
+                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> - Bank Tujuan diisi sesuai dengan daftar bank tujuan disbursement dan <b>wajib menyertakan kode bank</b>. Daftar bank dapat dilihat pada file berikut : <a href={daftarBank} download style={{ color:"#077E86", textDecoration: "underline" }}>Daftar Bank Tujuan</a></td>
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>5.</td>
-                                            <td style={{ padding: 0 }}>Cabang diisi khusus untuk tujuan bank selain BCA, dan wajib diisi. Apabila bank yang dipilih adalah BCA maka isi dengan tanda ‘-’ (Strip)</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>6.</td>
+                                            <td style={{ padding: 0 }}><b>Wajib Diisi khusus</b> cabang tujuan bank selain BCA. Apabila bank yang dipilih adalah BCA maka dapat dikosongkan</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>6.</td>
-                                            <td style={{ padding: 0 }}>Nomor Rekening Tujuan diisi sesuai format rekening bank tujuan. Isi menggunakan format angka dan harap perhatikan digit rekening</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>7.</td>
+                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> - Nomor Rekening Tujuan diisi sesuai format rekening bank tujuan. Gunakan format angka dan harap perhatikan digit rekening</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>7.</td>
-                                            <td style={{ padding: 0 }}>Nama Pemilik Rekening wajib diisi dengan benar dan sesuai.</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>8.</td>
+                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> - Nama Pemilik Rekening wajib diisi dengan benar dan sesuai </td>
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>8.</td>
-                                            <td style={{ padding: 0 }}>Nominal Disbursement diisi dalam format Rupiah. Jika nominal merupakan bilangan desimal, maka penulisan tanda koma diganti dengan tanda titik. Contoh: 5500,68 ditulis 5500.68</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>9.</td>
+                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> - Nominal Disbursement diisi dalam format Rupiah. Jika nominal merupakan bilangan desimal, maka penulisan tanda koma diganti dengan tanda titik. Contoh: 5500,68 ditulis 5500.68</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>9.</td>
-                                            <td style={{ padding: 0 }}>Email Penerima bersifat opsional dan dapat diisi untuk mengirim notifikasi berhasil Disburse</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>10.</td>
+                                            <td style={{ padding: 0 }}>Email Penerima bersifat opsional dan dapat diisi untuk mengirim notifikasi berhasil Disburse. Apabila email tidak diisi, maka dapat dikosongkan</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>10.</td>
-                                            <td style={{ padding: 0 }}>Catatan dapat diisi bila diperlukan dan bersifat opsional dan maksimal 25 karakter (termasuk spasi). Hanya diperbolehkan menggunakan karakter spesial berupa tanda @, &, dan #.</td>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>11.</td>
+                                            <td style={{ padding: 0 }}>Catatan dapat diisi bila diperlukan dan bersifat opsional dan maksimal 25 karakter (termasuk spasi). Hanya diperbolehkan menggunakan karakter spesial berupa tanda @, &, dan #. Apabila catatan tidak diisi, maka dapat dikosongkan</td>
                                         </tr>
                                     </table>
-                                    {/* <div className='mt-3' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
-                                        <div className='d-flex justify-content-start'><div>1.</div> <span className='ms-1'>File yang diunggah wajib dalam format Excel *.csv, dan tidak dapat menggunakan format lain</span></div>
-                                        <div className='d-flex justify-content-start'><div>2.</div> <span className='ms-1'>File yang diunggah wajib menggunakan template file Excel yang telah disediakan, tidak bisa membuat format Excel sendiri</span></div>
-                                        <div className='d-flex justify-content-start'><div>3.</div> <span className='ms-1'>Dilarang mengubah atau menambahkan nama sheet, nama tabel, urutan tabel dan tipe data tabel. Mengubah nama file diperbolehkan sesuai kebutuhan</span></div>
-                                        <div className='d-flex justify-content-start'><div>4.</div> <span className='ms-1'>Bank Tujuan diisi dengan menuliskan nama bank sesuai dengan daftar bank tujuan disbursement yang telah disediakan pada file berikut : Download File Daftar Bank Tujuan </span></div>
-                                        <div className='d-flex justify-content-start'><div>5.</div> <span className='ms-1'>Cabang diisi khusus untuk tujuan bank selain BCA, dan wajib diisi. Apabila bank yang dipilih adalah BCA maka isi dengan tanda ‘-’ (Strip) </span></div>
-                                        <div className='d-flex justify-content-strat'><div>6.</div> <span className='ms-1'>Nomor Rekening Tujuan diisi sesuai format rekening bank tujuan. Isi menggunakan format angka dan harap perhatikan digit rekening</span></div>
-                                        <div className='d-flex justify-content-start'><div>7.</div> <span className='ms-1'>Nama Pemilik Rekening wajib diisi dengan benar dan sesuai. </span></div>
-                                        <div className='d-flex justify-content-start'><div>8.</div> <span className='ms-1'>Nominal Disbursement diisi dalam format Rupiah. Jika nominal merupakan bilangan desimal, maka penulisan tanda koma diganti dengan tanda titik. Contoh: 5500,68 ditulis 5500.68 </span></div>
-                                        <div className='d-flex justify-content-start'><div>9.</div> <span className='ms-1'>Email Penerima bersifat opsional dan dapat diisi untuk mengirim notifikasi berhasil Disburse </span></div>
-                                        <div className='d-flex justify-content-start'><div>10.</div> <span className='ms-1'>Catatan dapat diisi bila diperlukan dan bersifat opsional dan maksimal 25 karakter (termasuk spasi). Hanya diperbolehkan menggunakan karakter spesial berupa tanda @, &, dan #.</span></div>
-                                    </div> */}
                                     <div className='text-center my-3'>
                                         <button
                                             onClick={() => setShowModalPanduan(false)}
@@ -2537,7 +2530,7 @@ function DisbursementPage() {
                                                     errorLoadPagination.map((err, idx) => {
                                                         return(
                                                             <tr>
-                                                                <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5 }}>{(activePageErrorList > 1) ? (idx + 1)+((activePageErrorList-1)*10) : idx + 1}. </td>
+                                                                <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>{(activePageErrorList > 1) ? (idx + 1)+((activePageErrorList-1)*10) : idx + 1}. </td>
                                                                 <td style={{ padding: 0 }}>Data nomor <b>{`${err.no}`}</b>, {`${err.keterangan}`}</td>
                                                             </tr>
                                                         )
