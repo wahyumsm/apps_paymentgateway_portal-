@@ -177,7 +177,7 @@ function DisbursementPage() {
                                                 obj.bankName = "null"
                                             } else {
                                                 const sameBankName = bankLists.find(list => list.mbank_code === el.slice(0, 3))
-                                                console.log(bankLists, 'bankLists di bawah samebank');
+                                                // console.log(bankLists, 'bankLists di bawah samebank');
                                                 console.log(sameBankName, 'sameBankName1');
                                                 obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
                                                 obj.bankName = sameBankName !== undefined ? sameBankName.mbank_name : "undefined"
@@ -189,7 +189,7 @@ function DisbursementPage() {
                                                             return item.mpaytype_bank_code === sameBankName.mbank_code
                                                         } else {
                                                             // sameBankName.mbank_code = "BIF"
-                                                            return item.mpaytype_bank_code === sameBankName.mbank_code
+                                                            return item.mpaytype_bank_code === "BIF"
                                                         }
                                                     })
                                                     console.log(result, 'result');
@@ -235,7 +235,27 @@ function DisbursementPage() {
                                 // console.log(totalFeeDisburse, 'totalFeeDisburse');
                                 setAllNominal([totalNominalDisburse])
                                 setAllFee([totalFeeDisburse])
+                                let sameNumberData = []
                                 let errData = []
+                                newArr.forEach(el => {
+                                    const balanceBank = balanceDetail.find((item) => {
+                                        console.log(item.channel_id, "balance detail");
+                                        if (el.bankCode === "014" || el.bankCode === "011") {
+                                            return item.channel_id === el.bankCode
+                                        } else {
+                                            // el.bankCode = "BIF"
+                                            return item.channel_id === "BIF"
+                                        }
+                                    })
+                                    if (el.nominalDisbursement < balanceBank.mpartballchannel_balance || el.nominalDisbursement === balanceBank.mpartballchannel_balance) {
+                                        const filteredArr = newArr.filter(fil => el.noRekening === fil.noRekening && Number(el.nominalDisbursement) === Number(fil.nominalDisbursement))
+                                        sameNumberData = filteredArr
+                                    }
+                                })
+                                console.log(sameNumberData, 'sameNumberData');
+                                if (sameNumberData.length > 1) {
+                                    setShowModalDuplikasi(true)
+                                }
                                 newArr = newArr.map(data => {
                                     console.log(data.nominalDisbursement, 'data.nominalDisbursement');
                                     console.log(data.nominalDisbursement.length, 'data.nominalDisbursement');
@@ -396,6 +416,7 @@ function DisbursementPage() {
                                         }
                                     }
                                 })
+                                console.log(sameNumberData, 'sameNumberData');
                                 console.log(errData, 'errData');
                                 console.log(newArr, 'newArr');
                                 if (errData.length !== 0) {
