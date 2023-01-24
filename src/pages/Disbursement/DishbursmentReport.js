@@ -113,7 +113,7 @@ function DisbursementReport() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listDisburse = await axios.post(BaseURL + "/Partner/ListDisburseChannel", {data: ""}, {headers: headers})
+            const listDisburse = await axios.post(BaseURL + "/Home/GetPaymentType", {data: ""}, {headers: headers})
             console.log(listDisburse, "list disburse");
             if (listDisburse.status === 200 && listDisburse.data.response_code === 200 && listDisburse.data.response_new_token.length === 0) {
                 setListDisburseChannel(listDisburse.data.response_data)
@@ -783,7 +783,7 @@ function DisbursementReport() {
                                         <Form.Select name="statusDisbursement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
                                             <option defaultChecked disabled value="">Pilih Status</option>
                                             <option value={2}>Berhasil</option>
-                                            <option value={1}>In Progress</option>
+                                            <option value={1}>Dalam Proses</option>
                                             <option value={4}>Gagal</option>
                                             {/* <option value={7}>Menunggu Pembayaran</option> */}
                                             {/* <option value={9}>Kadaluwarsa</option> */}
@@ -814,7 +814,7 @@ function DisbursementReport() {
                                             {
                                                 listDisburseChannel.map((item, index) => {
                                                     return (
-                                                        <option key={index} value={item.bank_code}>{item.mpaytype_name}</option>
+                                                        <option key={index} value={item.payment_code}>{item.payment_name}</option>
                                                     )
                                                 })
                                             }
