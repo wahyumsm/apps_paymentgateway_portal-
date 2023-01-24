@@ -10,6 +10,7 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import noteInfo from "../../assets/icon/note_icon.svg"
 
 function DisbursementReport() {
 
@@ -752,7 +753,7 @@ function DisbursementReport() {
                                             {
                                                 listDisburseChannel.map((item, index) => {
                                                     return (
-                                                        <option key={index} value={item.bank_code}>{item.mpaytype_name}</option>
+                                                        <option key={index} value={item.payment_code}>{item.payment_name}</option>
                                                     )
                                                 })
                                             }
@@ -857,6 +858,14 @@ function DisbursementReport() {
                                 </Row>
                             </Col>
                         </Row>
+                        {
+                            user_role === "102" ? (
+                                <div className='d-flex justify-content-center align-items-center mt-3 mb-2' style={{ color: '#383838', padding: '12px 12px 12px 12px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
+                                    <img src={noteInfo} width="25" height="25" alt="circle_info" />
+                                    <div className='ms-2'>Status transaksi Disbursement Anda akan diperbaharui setiap <b>20 menit</b> sekali. Harap periksa laman ini secara berkala untuk pembaharuan status transaksi.</div>
+                                </div>
+                            ) : ""
+                        }
                         {
                             dataDisbursement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>

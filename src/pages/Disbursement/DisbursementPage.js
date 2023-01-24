@@ -83,6 +83,7 @@ function DisbursementPage() {
     const [showModalErrorList, setShowModalErrorList] = useState(false)
     const [activePageErrorList, setActivePageErrorList] = useState(1)
     const [alertSaldo, setAlertSaldo] = useState(false)
+    const [alertNotValid, setAlertNotValid] = useState(false)
     const [balanceDetail, setBalanceDetail] = useState([])
     const [sisaSaldoAlokasiPerBank, setSisaSaldoAlokasiPerBank] = useState({
         bca: 0,
@@ -890,6 +891,9 @@ function DisbursementPage() {
         if (e.target.name === "nominal") {
             setAlertSaldo(false)
         }
+        if (e.target.name === "bankCabang") {
+            setAlertNotValid(false)
+        }
         setInputHandle({
             ...inputHandle,
             [e.target.name] : (e.target.name === "nominal") ? Number(e.target.value).toString() : e.target.value
@@ -923,6 +927,16 @@ function DisbursementPage() {
         if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
             setErrMsgEmail(true)
             return
+        }
+
+        if ((cabang.length !== 0 && (cabang.indexOf(' ') >= 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
+            console.log("masuk alert not valid");
+            setAlertNotValid(true)
+            return
+        } else {
+            console.log("masuk alert valid");
+            setAlertNotValid(false)
+            
         }
         const balanceBank = balanceDetail.find((item) => {
             console.log(item.channel_id, "balance detail");
@@ -1086,6 +1100,8 @@ function DisbursementPage() {
         } else {
             setAlertSaldo(true)
         }
+        
+        
         
     }
     console.log(sisaSaldoAlokasiPerBank, 'sisaSaldoAlokasiPerBank');
@@ -1783,11 +1799,11 @@ function DisbursementPage() {
                         <div id='disbursement-manual'>
                             <hr className='hr-style' style={{marginTop: -2}}/>
                             <div className='base-content mb-4'>
-                                <span style={{ color: '#383838', width: 'max-content', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
-                                    <img src={noteInfo} width="25" height="25" alt="circle_info" style={{ marginRight: 10 }} />
-                                    Pastikan data tujuan Disbursement sudah benar, kesalahan pada data akan berakibat gagalnya proses transaksi Disbursement.
-                                </span>
-                                <div className='pt-5'>
+                                <div className='d-flex justify-content-center align-items-center' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
+                                    <img src={noteInfo} width="25" height="25" alt="circle_info" />
+                                    <div className='ms-2'>Pastikan data tujuan Disbursement sudah benar, kesalahan pada data akan berakibat gagalnya proses transaksi Disbursement.</div>
+                                </div>
+                                <div className='pt-4'>
                                     <Row className='align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
                                             Pilih Bank Tujuan <span style={{ color: "red" }}>*</span>
@@ -1814,7 +1830,7 @@ function DisbursementPage() {
                                             </div>
                                         </Col>
                                     </Row>
-                                    <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
+                                    <Row className={alertNotValid === true ? `mb-1 align-items-center` : `mb-4 align-items-center`} style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
                                             Cabang (Khusus Non-BCA) <span style={{ color: "red" }}>*</span>
                                         </Col>
@@ -1826,9 +1842,23 @@ function DisbursementPage() {
                                                 name="bankCabang"
                                                 value={inputHandle.bankCabang}
                                                 onChange={(e) => handleChange(e)}
+                                                onKeyDown={(evt) => ["+", "-", ".", ",", "_"].includes(evt.key) && evt.preventDefault()}
                                             />
                                         </Col>
                                     </Row>
+                                    {
+                                        alertNotValid === true ? (
+                                            <Row className='mb-3 align-items-center'>
+                                                <Col xs={2}></Col>
+                                                <Col xs={10}>
+                                                    <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
+                                                        <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
+                                                        Data tidak valid
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        ) : ""
+                                    }
                                     <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
                                             No. Rekening Tujuan <span style={{ color: "red" }}>*</span>
