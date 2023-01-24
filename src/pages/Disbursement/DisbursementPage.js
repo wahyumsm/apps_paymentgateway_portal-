@@ -1672,7 +1672,7 @@ function DisbursementPage() {
             if (dataFromUpload.length !== 0 || errorFound.length !== 0 || labelUpload !== `<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
             <div className='pb-4'>
                 <span class="filepond--label-action">
-                    Upload File
+                    Ganti File
                 </span>
             </div>`) {
                 setShowModalPindahHalaman(true)
