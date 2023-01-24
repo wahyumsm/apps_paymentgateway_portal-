@@ -61,8 +61,9 @@ function DisbursementPage() {
     const [isBulk, setIsBulk] = useState((sessionStorage.getItem('disbursement') !== 'bulk' || sessionStorage.getItem('disbursement') === null) ? false : true)
     const [showStatusTransfer, setShowStatusTransfer] = useState(false)
     const [showDaftarRekening, setShowDaftarRekening] = useState(false)
+    const [tab, setTab] = useState("")
     const [showModalConfirm, setShowModalConfirm] = useState(false)
-    const [showModalPindahHamalan, setShowModalPindahHamalan] = useState(false)
+    const [showModalPindahHalaman, setShowModalPindahHalaman] = useState(false)
     const [showModalPanduan, setShowModalPanduan] = useState(false)
     const [showModalDuplikasi, setShowModalDuplikasi] = useState(false)
     const [showModalStatusDisburse, setShowModalStatusDisburse] = useState(false)
@@ -682,12 +683,12 @@ function DisbursementPage() {
         {
             name: 'Bank Tujuan',
             selector: row => row.mbank_name,
-            width: "150px"
+            width: "130px"
         },
         {
             name: 'Cabang (Khusus Non-BCA)',
             selector: row => row.mbankaccountlist_branch_name,
-            width: "300px"
+            width: "280px"
         },
         {
             name: 'No Rekening',
@@ -1649,6 +1650,73 @@ function DisbursementPage() {
         history.push('/disbursement/report')
     }
 
+    function pindahHalaman (param) {
+        if (param === "manual") {
+            console.log("masuk 1");
+            if (dataFromUpload.length !== 0 || errorFound.length !== 0 || labelUpload !== `<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+            <div className='pb-4'>
+                <span class="filepond--label-action">
+                    Upload File
+                </span>
+            </div>`) {
+                setShowModalPindahHalaman(true)
+                setTab(param)
+            } else {
+                console.log("masuk 2 sub");
+                disbursementTabs(true)
+            }
+        } else {
+            console.log("masuk 2");
+            if (inputData.bankName.length !== 0 || inputData.bankCode.length !== 0 || inputRekening.bankNameRek.length !== 0 || inputRekening.bankNumberRek.length !== 0 || inputHandle.bankCabang.length !== 0 || inputHandle.nominal.length !== 0) {
+                console.log("masuk 1 sub");
+                setShowModalPindahHalaman(true)
+                setTab(param)
+            } else {
+                console.log("masuk 2 sub");
+                disbursementTabs(false)
+            }
+        }
+    }
+
+    function PindahBulk (param) {
+        if (param === "bulk") {
+            console.log("masuk 1");
+            disbursementTabs(false)
+            setShowModalPindahHalaman(false)
+            setInputData({
+                bankName: "",
+                bankCode: ""
+            })
+            setInputRekening({
+                bankNameRek: "",
+                bankNumberRek: ""
+            })
+            setInputHandle({
+                bankCabang: "",
+                nominal: "",
+                emailPenerima: "",
+                catatan: ""
+            })
+            setDataDisburse([])
+            setAllFee([])
+            setAllNominal([])
+            setIsChecked(false)
+            setNumbering(0)
+        } else {
+            console.log("masuk 2");
+            disbursementTabs(true)
+            setShowModalPindahHalaman(false)
+            setDataFromUpload([])
+            setErrorFound([])
+            setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+            <div className='pb-4'>
+                <span class="filepond--label-action">
+                    Upload File
+                </span>
+            </div>`)
+        }
+    }
+
     function disbursementTabs(isTabs){
         setisDisbursementManual(isTabs)
         if(!isTabs){
@@ -1702,10 +1770,10 @@ function DisbursementPage() {
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
                 <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
                 <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
-                    <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => disbursementTabs(true)} id="detailakuntab">
+                    <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
                         <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
                     </div>
-                    <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => disbursementTabs(false)} id="konfigurasitab">
+                    <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => pindahHalaman("bulk")} id="konfigurasitab">
                         <span className='menu-detail-akun-span' id="konfigurasispan">Disbursement Bulk</span>
                     </div>
                 </div>
@@ -2206,7 +2274,7 @@ function DisbursementPage() {
                                             className='table'
                                             id='tableInvoice'
                                             hover
-                                            style={{ width: 470 }}
+                                            style={{ width: 455 }}
                                         >
                                             <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
                                                 <tr >
@@ -2553,7 +2621,7 @@ function DisbursementPage() {
             </div>
             <div>
                 {/* Modal Pindah Halaman */}
-                <Modal size="xs" centered show={showModalPindahHamalan} onHide={() => setShowModalPindahHamalan(false)}>
+                <Modal size="xs" centered show={showModalPindahHalaman} onHide={() => setShowModalPindahHalaman(false)}>
                     <Modal.Title className='text-center mt-4' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
                         Yakin ingin pindah halaman?
                     </Modal.Title>
@@ -2562,6 +2630,7 @@ function DisbursementPage() {
                         <div className='d-flex justify-content-center align-items-center mt-3'>
                             <div className='me-1'>
                                 <button
+                                    onClick={tab === "bulk" ? () => PindahBulk("bulk") : () => PindahBulk("manual")}
                                     style={{
                                         fontFamily: "Exo",
                                         fontSize: 16,
@@ -2582,6 +2651,7 @@ function DisbursementPage() {
                             </div>
                             <div className="ms-1">
                                 <button
+                                onClick={() => setShowModalPindahHalaman(false)}
                                     style={{
                                         fontFamily: "Exo",
                                         fontSize: 16,
