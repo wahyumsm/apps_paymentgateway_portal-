@@ -1669,7 +1669,7 @@ function DisbursementPage() {
     function pindahHalaman (param) {
         if (param === "manual") {
             console.log("masuk 1");
-            if (dataFromUpload.length !== 0 || errorFound.length !== 0 || labelUpload !== `<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+            if (dataFromUpload.length !== 0 || errorFound.length !== 0 || labelUpload === `<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
             <div className='pb-4'>
                 <span class="filepond--label-action">
                     Ganti File
@@ -1694,7 +1694,7 @@ function DisbursementPage() {
         }
     }
 
-    function PindahBulk (param) {
+    function PindahTab (param) {
         if (param === "bulk") {
             console.log("masuk 1");
             disbursementTabs(false)
@@ -2660,7 +2660,7 @@ function DisbursementPage() {
                         <div className='d-flex justify-content-center align-items-center mt-3'>
                             <div className='me-1'>
                                 <button
-                                    onClick={tab === "bulk" ? () => PindahBulk("bulk") : () => PindahBulk("manual")}
+                                    onClick={tab === "bulk" ? () => PindahTab("bulk") : () => PindahTab("manual")}
                                     style={{
                                         fontFamily: "Exo",
                                         fontSize: 16,
