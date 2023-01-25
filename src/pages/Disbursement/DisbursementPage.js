@@ -154,7 +154,7 @@ function DisbursementPage() {
                                 setErrorFound([])
                                 setTimeout(() => {
                                     setLabelUpload("")
-                                    setLabelUpload(`<div class='py-1 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div>
+                                    setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
                                     <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
                                     <div className='pb-4'>
                                         <span class="filepond--label-action">
@@ -440,7 +440,7 @@ function DisbursementPage() {
                             setErrorFound([])
                             setTimeout(() => {
                                 setLabelUpload("")
-                                setLabelUpload(`<div class='py-1 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div>
+                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
                                 <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
@@ -1843,7 +1843,7 @@ function DisbursementPage() {
                         <div id='disbursement-manual'>
                             <hr className='hr-style' style={{marginTop: -2}}/>
                             <div className='base-content mb-4'>
-                                <div className='d-flex justify-content-center align-items-center' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
+                                <div className='d-flex justify-content-start align-items-center' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" />
                                     <div className='ms-2'>Pastikan data tujuan Disbursement sudah benar, kesalahan pada data akan berakibat gagalnya proses transaksi Disbursement.</div>
                                 </div>
@@ -2050,7 +2050,7 @@ function DisbursementPage() {
                                             <textarea
                                                 className='input-text-disburs'
                                                 placeholder="Masukkan catatan bila perlu ( Maksimal 25 karakter )"
-                                                style={{ width: "100%", padding: 10 }}
+                                                style={{ width: "100%", padding: 10, borderColor: "#E0E0E0"}}
                                                 name="catatan"
                                                 value={inputHandle.catatan}
                                                 onChange={(e) => handleChange(e)}

@@ -860,7 +860,7 @@ function DisbursementReport() {
                         </Row>
                         {
                             user_role === "102" ? (
-                                <div className='d-flex justify-content-center align-items-center mt-3 mb-2' style={{ color: '#383838', padding: '12px 12px 12px 12px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
+                                <div className='d-flex justify-content-start align-items-center mt-3 mb-2' style={{ color: '#383838', padding: '12px 12px 12px 12px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" />
                                     <div className='ms-2'>Status transaksi Disbursement Anda akan diperbaharui setiap <b>20 menit</b> sekali. Harap periksa laman ini secara berkala untuk pembaharuan status transaksi.</div>
                                 </div>
