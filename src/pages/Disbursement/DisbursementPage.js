@@ -33,6 +33,7 @@ import NoteIconWhite from "../../assets/icon/note_icon_white.svg"
 import encryptData from '../../function/encryptData'
 import daftarBank from '../../assets/files/Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx'
 import templateBulk from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
+import duplicates from 'find-array-duplicates'
 
 registerPlugin(FilePondPluginFileEncode)
 
@@ -65,6 +66,7 @@ function DisbursementPage() {
     const [showModalPindahHamalan, setShowModalPindahHamalan] = useState(false)
     const [showModalPanduan, setShowModalPanduan] = useState(false)
     const [showModalDuplikasi, setShowModalDuplikasi] = useState(false)
+    const [duplicateData, setDuplicateData] = useState([])
     const [showModalStatusDisburse, setShowModalStatusDisburse] = useState(false)
     const [filterTextBank, setFilterTextBank] = useState('')
     const [filterTextRekening, setFilterTextRekening] = useState('')
@@ -144,10 +146,10 @@ function DisbursementPage() {
                         const headerCol = decoded.split('|').slice(0, 8)
                         // console.log(headerCol, 'headerCol');
                         if (headerCol[0] === "No*" && headerCol[1] === "Bank Tujuan*" && headerCol[2] === "Cabang (Khusus Non-BCA)*" && headerCol[3] === "No. Rekening Tujuan*" && headerCol[4] === "Nama Pemilik Rekening*" && headerCol[5] === "Nominal Disbursement*" && headerCol[6] === "Email Penerima" && headerCol[7] === "Catatan\r\n1") {
-                            console.log("ini bener");
+                            // console.log("ini bener");
                             const newDcd = decoded.split("|").slice(8)
                             console.log(newDcd, 'newDcd');
-                            console.log(newDcd.length%7, 'newDcd');
+                            // console.log(newDcd.length%7, 'newDcd');
                             if (newDcd.length%7 !== 0) {
                                 setErrorFound([])
                                 setTimeout(() => {
@@ -163,6 +165,7 @@ function DisbursementPage() {
                             } else {
                                 let totalNominalDisburse = 0
                                 let totalFeeDisburse = 0
+                                let totalFeeDisburseArr = []
                                 let newArr = []
                                 let obj = {}
                                 newDcd.forEach((el, idx) => {
@@ -195,6 +198,7 @@ function DisbursementPage() {
                                                     console.log(result, 'result');
                                                     if (result !== undefined) {
                                                         totalFeeDisburse += result.fee_total
+                                                        totalFeeDisburseArr.push(result.fee_total)
                                                     }
                                                 }
                                             }
@@ -206,14 +210,9 @@ function DisbursementPage() {
                                     } else if (idx === 3 || idx % 7 === 3) {
                                         obj.ownerName = el
                                     } else if (idx === 4 || idx % 7 === 4) {
-                                        console.log(el, 'nominal');
-                                        console.log(el.indexOf(','), 'nominal');
+                                        // console.log(el, 'nominal');
+                                        // console.log(el.indexOf(','), 'nominal');
                                         if (el.indexOf(',') !== -1) {
-                                            // objErrData.no = data.no
-                                            // // objErrData.data = data.noRekening
-                                            // objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
-                                            // errData.push(objErrData)
-                                            // objErrData = {}
                                             obj.nominalDisbursement = "Tipe data salah."
                                         } else {
                                             obj.nominalDisbursement = el
@@ -235,11 +234,15 @@ function DisbursementPage() {
                                 // console.log(totalFeeDisburse, 'totalFeeDisburse');
                                 setAllNominal([totalNominalDisburse])
                                 setAllFee([totalFeeDisburse])
+                                console.log(totalFeeDisburseArr, 'totalFeeDisburseArr');
                                 let sameNumberData = []
                                 let errData = []
-                                newArr.forEach(el => {
+                                const resultArray = [];
+
+                                newArr.map(el => {
+                                    //for each item in arrayOfObjects check if the object exists in the resulting array
                                     const balanceBank = balanceDetail.find((item) => {
-                                        console.log(item.channel_id, "balance detail");
+                                        // console.log(item.channel_id, "balance detail");
                                         if (el.bankCode === "014" || el.bankCode === "011") {
                                             return item.channel_id === el.bankCode
                                         } else {
@@ -248,17 +251,32 @@ function DisbursementPage() {
                                         }
                                     })
                                     if (el.nominalDisbursement < balanceBank.mpartballchannel_balance || el.nominalDisbursement === balanceBank.mpartballchannel_balance) {
-                                        const filteredArr = newArr.filter(fil => el.noRekening === fil.noRekening && Number(el.nominalDisbursement) === Number(fil.nominalDisbursement))
-                                        sameNumberData = filteredArr
+                                        if(resultArray.find(object => {
+                                            if(object.noRekening === el.noRekening && object.nominalDisbursement === el.nominalDisbursement) {
+                                                //if the object exists iterate times
+                                                object.times++;
+                                                sameNumberData.push(el.no)
+                                                return true;
+                                                //if it does not return false
+                                            } else {
+                                                return false;
+                                            }
+                                        })){
+                                        } else {
+                                            //if the object does not exists push it to the resulting array and set the times count to 1
+                                            el.times = 1;
+                                            resultArray.push(el);
+                                        }
                                     }
                                 })
-                                console.log(sameNumberData, 'sameNumberData');
+
+                                console.log(resultArray, 'resultArray')
+                                console.log(sameNumberData, 'sameNumberData')
                                 if (sameNumberData.length > 1) {
                                     setShowModalDuplikasi(true)
+                                    setDuplicateData(sameNumberData)
                                 }
                                 newArr = newArr.map(data => {
-                                    console.log(data.nominalDisbursement, 'data.nominalDisbursement');
-                                    console.log(data.nominalDisbursement.length, 'data.nominalDisbursement');
                                     let objErrData = {}
                                     if (data.bankName.length === 0 && data.bankCode.length === 0) {
                                         // console.log('masuk bank name kosong');
@@ -392,8 +410,6 @@ function DisbursementPage() {
                                                 note: data.note
                                             }
                                         }
-                                        // console.log(data.cabangBank.indexOf(/[$-/:-?{-~!"^_`\[\]]/) >= 0, 'indexOf spasi kosong', data.cabangBank, data.bankCode);
-                                        // console.log(/[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank), 'cek tanda baca', data.cabangBank, data.bankCode);
                                     } else {
                                         if (data.cabangBank.length === 0 || data.cabangBank.indexOf(' ') >= 0 ||  (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank) || data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
                                             return {
@@ -509,11 +525,15 @@ function DisbursementPage() {
         setActivePageErrorList(1)
     }
 
-    function handleClickChangeFile() {
+    function handleClickChangeFile(param) {
         console.log('clicked1');
         $('.filepond--browser').trigger('click');
-        setShowModalErrorList(false)
-        setActivePageErrorList(1)
+        if (param === "errorList") {
+            setShowModalErrorList(false)
+            setActivePageErrorList(1)
+        } else if (param === "duplicateData") {
+            setShowModalDuplikasi(false)
+        }
         console.log('clicked2');
     }
 
@@ -2389,7 +2409,7 @@ function DisbursementPage() {
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
                                                         Kesalahan data yang perlu diperbaiki:
                                                     </div>
-                                                    <div><FontAwesomeIcon style={{ width: 5, marginTop: 3, marginLeft: 150 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                                    <div style={{ marginLeft: 215 }}><FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
                                                 </div>
                                                 <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div>
                                             </div>
@@ -2402,7 +2422,7 @@ function DisbursementPage() {
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
                                                         Kesalahan data yang perlu diperbaiki:
                                                     </div>
-                                                    <div><FontAwesomeIcon style={{ width: 5, marginTop: 3, marginLeft: 100 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                                    <div style={{ marginLeft: 215 }}><FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
                                                 </div>
                                                 {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div> */}
                                             </div>
@@ -2574,7 +2594,7 @@ function DisbursementPage() {
                                     <input onChange={(newFile) => fileCSV(newFile, listBank, balanceDetail)} type='file' id='input-file' accept='text/csv' style={{ visibility: 'hidden' }} />
                                     <div type='file' className='text-center mb-2'>
                                         <button
-                                            onClick={() => handleClickChangeFile()}
+                                            onClick={() => handleClickChangeFile("errorList")}
                                             className='btn-reset'
                                             style={{ width: '25%' }}
                                         >
@@ -2836,74 +2856,126 @@ function DisbursementPage() {
                         Ditemukan Duplikasi Data, Ingin Tetap Melanjutkan?
                     </Modal.Title>
                     <Modal.Body >
-                        <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data yang ingin Anda tambahkan sudah tersedia di tabel.</div>
+                        {
+                            duplicateData.length === 0 ?
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data yang ingin Anda tambahkan sudah tersedia di tabel.</div> :
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data pada nomor <b style={{ wordBreak: 'break-word' }}>{duplicateData.join(",")}</b> : Terindikasi data duplikasi</div>
+                        }
                         <div className='d-flex justify-content-center align-items-center mt-3'>
-                            <div className='me-1'>
-                                <button
-                                    onClick={editTabelDisburse === false ?
-                                        () => lanjutSaveNew(
-                                            dataDisburse.length + 1,
-                                            inputData.bankName,
-                                            inputData.bankCode,
-                                            inputHandle.bankCabang,
-                                            inputRekening.bankNumberRek,
-                                            inputRekening.bankNameRek,
-                                            inputHandle.nominal,
-                                            inputHandle.emailPenerima,
-                                            inputHandle.catatan,
-                                            isChecked
-                                        ) :
-                                        () => lanjutSaveEdit(
-                                            numbering,
-                                            inputData.bankName,
-                                            inputData.bankCode,
-                                            inputHandle.bankCabang,
-                                            inputRekening.bankNumberRek,
-                                            inputRekening.bankNameRek,
-                                            inputHandle.nominal,
-                                            inputHandle.emailPenerima,
-                                            inputHandle.catatan,
-                                            isChecked
-                                        )
-                                    }
-                                    style={{
-                                        fontFamily: "Exo",
-                                        fontSize: 16,
-                                        fontWeight: 900,
-                                        alignItems: "center",
-                                        padding: "12px 24px",
-                                        gap: 8,
-                                        width: 136,
-                                        height: 45,
-                                        background: "#FFFFFF",
-                                        color: "#888888",
-                                        border: "0.6px solid #EBEBEB",
-                                        borderRadius: 6,
-                                    }}
-                                >
-                                    Lanjutkan
-                                </button>
-                            </div>
-                            <div className="ms-1">
-                                <button
-                                    onClick={() => setShowModalDuplikasi(false)}
-                                    style={{
-                                        fontFamily: "Exo",
-                                        fontSize: 16,
-                                        fontWeight: 900,
-                                        alignItems: "center",
-                                        padding: "12px 24px",
-                                        gap: 8,
-                                        width: 136,
-                                        height: 45,
-                                        background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
-                                        border: "0.6px solid #2C1919",
-                                        borderRadius: 6,
-                                    }}
-                                >
-                                    Perbaiki
-                                </button>
-                            </div>
+                            {
+                                isDisbursementManual ?
+                                <>
+                                    <div className='me-1'>
+                                        <button
+                                            onClick={editTabelDisburse === false ?
+                                                () => lanjutSaveNew(
+                                                    dataDisburse.length + 1,
+                                                    inputData.bankName,
+                                                    inputData.bankCode,
+                                                    inputHandle.bankCabang,
+                                                    inputRekening.bankNumberRek,
+                                                    inputRekening.bankNameRek,
+                                                    inputHandle.nominal,
+                                                    inputHandle.emailPenerima,
+                                                    inputHandle.catatan,
+                                                    isChecked
+                                                ) :
+                                                () => lanjutSaveEdit(
+                                                    numbering,
+                                                    inputData.bankName,
+                                                    inputData.bankCode,
+                                                    inputHandle.bankCabang,
+                                                    inputRekening.bankNumberRek,
+                                                    inputRekening.bankNameRek,
+                                                    inputHandle.nominal,
+                                                    inputHandle.emailPenerima,
+                                                    inputHandle.catatan,
+                                                    isChecked
+                                                )
+                                            }
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 16,
+                                                fontWeight: 900,
+                                                alignItems: "center",
+                                                padding: "12px 24px",
+                                                gap: 8,
+                                                width: 136,
+                                                height: 45,
+                                                background: "#FFFFFF",
+                                                color: "#888888",
+                                                border: "0.6px solid #EBEBEB",
+                                                borderRadius: 6,
+                                            }}
+                                        >
+                                            Lanjutkan
+                                        </button>
+                                    </div>
+                                    <div className="ms-1">
+                                        <button
+                                            onClick={() => setShowModalDuplikasi(false)}
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 16,
+                                                fontWeight: 900,
+                                                alignItems: "center",
+                                                padding: "12px 24px",
+                                                gap: 8,
+                                                width: 136,
+                                                height: 45,
+                                                background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                                                border: "0.6px solid #2C1919",
+                                                borderRadius: 6,
+                                            }}
+                                        >
+                                            Perbaiki
+                                        </button>
+                                    </div>
+                                </> :
+                                <>
+                                    <div className='me-1'>
+                                        <button
+                                            onClick={() => setShowModalDuplikasi(false)}
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 16,
+                                                fontWeight: 900,
+                                                alignItems: "center",
+                                                padding: "12px 24px",
+                                                gap: 8,
+                                                width: 136,
+                                                height: 45,
+                                                background: "#FFFFFF",
+                                                color: "#888888",
+                                                border: "0.6px solid #EBEBEB",
+                                                borderRadius: 6,
+                                            }}
+                                        >
+                                            Lanjutkan
+                                        </button>
+                                    </div>
+                                    <div className="ms-1">
+                                        <button
+                                            onClick={() => handleClickChangeFile("duplicateData")}
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 16,
+                                                fontWeight: 900,
+                                                alignItems: "center",
+                                                padding: "12px 24px",
+                                                gap: 8,
+                                                width: 136,
+                                                height: 45,
+                                                background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                                                border: "0.6px solid #2C1919",
+                                                borderRadius: 6,
+                                            }}
+                                        >
+                                            Perbaiki
+                                        </button>
+                                    </div>
+                                </>
+                            }
                         </div>
                     </Modal.Body>
                 </Modal>
