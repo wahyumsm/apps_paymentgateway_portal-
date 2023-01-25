@@ -70,7 +70,7 @@ function DisbursementPage() {
     const [showModalStatusDisburse, setShowModalStatusDisburse] = useState(false)
     const [filterTextBank, setFilterTextBank] = useState('')
     const [filterTextRekening, setFilterTextRekening] = useState('')
-    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
     <div className='pb-4'>
         <span class="filepond--label-action">
             Upload File
@@ -169,6 +169,8 @@ function DisbursementPage() {
                                 let totalFeeDisburseArr = []
                                 let newArr = []
                                 let obj = {}
+                                const filteredListBank = bankLists.filter(item => item.is_enabled === true)
+                                console.log(filteredListBank, 'filteredListBank');
                                 newDcd.forEach((el, idx) => {
                                     if (idx === 0 || idx % 7 === 0) {
                                         // console.log(el.slice(0,3), 'el.slice(0,3)');
@@ -180,7 +182,7 @@ function DisbursementPage() {
                                                 obj.bankCode = "null"
                                                 obj.bankName = "null"
                                             } else {
-                                                const sameBankName = bankLists.find(list => list.mbank_code === el.slice(0, 3))
+                                                const sameBankName = filteredListBank.find(list => list.mbank_code === el.slice(0, 3))
                                                 // console.log(bankLists, 'bankLists di bawah samebank');
                                                 console.log(sameBankName, 'sameBankName1');
                                                 obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
@@ -242,7 +244,7 @@ function DisbursementPage() {
 
                                 newArr.map(el => {
                                     //for each item in arrayOfObjects check if the object exists in the resulting array
-                                    const balanceBank = balanceDetail.find((item) => {
+                                    const balanceBank = filteredBankTujuan.find((item) => {
                                         // console.log(item.channel_id, "balance detail");
                                         if (el.bankCode === "014" || el.bankCode === "011") {
                                             return item.channel_id === el.bankCode
@@ -279,6 +281,15 @@ function DisbursementPage() {
                                 }
                                 newArr = newArr.map(data => {
                                     let objErrData = {}
+                                    const balanceBank = filteredBankTujuan.find((item) => {
+                                        // console.log(item.channel_id, "balance detail");
+                                        if (data.bankCode === "014" || data.bankCode === "011") {
+                                            return item.channel_id === data.bankCode
+                                        } else {
+                                            // el.bankCode = "BIF"
+                                            return item.channel_id === "BIF"
+                                        }
+                                    })
                                     if (data.bankName.length === 0 && data.bankCode.length === 0) {
                                         // console.log('masuk bank name kosong');
                                         objErrData.no = data.no
@@ -296,7 +307,7 @@ function DisbursementPage() {
                                         } else if (data.bankName === "undefined" && data.bankCode === "undefined") {
                                             objErrData.no = data.no
                                             // objErrData.data = data.bankName
-                                            objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia.'
+                                            objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia pada saat ini.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         }
@@ -333,24 +344,75 @@ function DisbursementPage() {
                                         objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
                                         errData.push(objErrData)
                                         objErrData = {}
+                                    } else {
+                                        if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
+                                            objErrData.no = data.no
+                                            // objErrData.data = data.nominalDisbursement
+                                            objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (data.nominalDisbursement.length < 4) {
+                                            console.log('masuk nominal error2');
+                                            objErrData.no = data.no
+                                            // objErrData.data = data.noRekening
+                                            objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (Number(data.nominalDisbursement) < balanceBank.mpartballchannel_balance || Number(data.nominalDisbursement) === balanceBank.mpartballchannel_balance) {
+                                            const result = feeBank.find((item) => {
+                                                if (data.mbank_code === "014" || data.mbank_code === "011") {
+                                                    return item.mpaytype_bank_code === data.mbank_code
+                                                } else {
+                                                    // sameBankName.mbank_code = "BIF"
+                                                    return item.mpaytype_bank_code === "BIF"
+                                                }
+                                            })
+                                            console.log(result, 'result untuk error nominal');
+                                            if (data.bankCode === '014') {
+                                                if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                    objErrData.no = data.no
+                                                    // objErrData.data = data.noRekening
+                                                    objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup'
+                                                    errData.push(objErrData)
+                                                    objErrData = {}
+                                                } else {
+                                                    setSisaSaldoAlokasiPerBank({
+                                                        ...sisaSaldoAlokasiPerBank,
+                                                        bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    })
+                                                }
+                                            } else if (data.bankCode === '011') {
+                                                if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                    objErrData.no = data.no
+                                                    // objErrData.data = data.noRekening
+                                                    objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup'
+                                                    errData.push(objErrData)
+                                                    objErrData = {}
+                                                } else {
+                                                    setSisaSaldoAlokasiPerBank({
+                                                        ...sisaSaldoAlokasiPerBank,
+                                                        danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    })
+                                                }
+                                            } else {
+                                                if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                    console.log('masuk otherbank');
+                                                    objErrData.no = data.no
+                                                    // objErrData.data = data.noRekening
+                                                    objErrData.keterangan = `Saldo pada rekening ${result.mpaytype_name} anda tidak cukup`
+                                                    errData.push(objErrData)
+                                                    objErrData = {}
+                                                } else {
+                                                    setSisaSaldoAlokasiPerBank({
+                                                        ...sisaSaldoAlokasiPerBank,
+                                                        bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    })
+                                                }
+                                            }
+                                        }
                                     }
-                                    
-                                    if (data.nominalDisbursement.length < 4) {
-                                        console.log('masuk nominal error2');
-                                        objErrData.no = data.no
-                                        // objErrData.data = data.noRekening
-                                        objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    }
+                                    // console.log(filteredBankTujuan.find(found => found.channel_id === data.bankCode), 'filteredBankTujuan.find(found => found.mpartballchannel_balance)');
             
-                                    if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
-                                        objErrData.no = data.no
-                                        // objErrData.data = data.nominalDisbursement
-                                        objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    }
             
                                     if (validator.isEmail(data.email) === false) {
                                         objErrData.no = data.no
@@ -2525,30 +2587,32 @@ function DisbursementPage() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className='text-center mt-3 position-relative' style={{ marginBottom: 100 }}>
+                                <div className='mt-3 position-relative' style={{ marginBottom: 100 }}>
                                     {
                                         errorFound.length !== 0 && errorFound.length > 1 ?
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
-                                                <div>
-                                                    <div style={{ marginLeft: -50 }}>
+                                                <div className='d-flex justify-content-center'>
+                                                    <div>
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
-                                                        Kesalahan data yang perlu diperbaiki:
                                                     </div>
-                                                    <div style={{ marginLeft: 215 }}><FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                                    <div>
+                                                        <div>Kesalahan data yang perlu diperbaiki:</div>
+                                                        <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}
+                                                        <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Lihat Semua</div>
+                                                    </div>
                                                 </div>
-                                                <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div>
                                             </div>
                                         </div> :
                                         errorFound.length !== 0 && errorFound.length === 1 ?
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', marginLeft: 275 }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
                                                 <div>
                                                     <div style={{ marginLeft: -50 }}>
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
                                                         Kesalahan data yang perlu diperbaiki:
                                                     </div>
-                                                    <div style={{ marginLeft: 215 }}><FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                                    <div style={{ marginLeft: 125 }}><FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
                                                 </div>
                                                 {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div> */}
                                             </div>
