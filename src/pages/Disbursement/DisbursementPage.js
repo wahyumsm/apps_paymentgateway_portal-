@@ -867,6 +867,7 @@ function DisbursementPage() {
 
     const handleRowClickedRekening = row => {
         setAlertSaldo(false)
+        setAlertNotValid(false)
         setInputRekening({
             bankNameRek: row.mbankaccountlist_name,
             bankNumberRek: row.mbankaccountlist_number
@@ -929,14 +930,18 @@ function DisbursementPage() {
             return
         }
 
-        if ((cabang.length !== 0 && (cabang.indexOf(' ') >= 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
-            console.log("masuk alert not valid");
-            setAlertNotValid(true)
-            return
+        if (bankCodeTujuan !== "014") {
+            if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
+                console.log("masuk alert not valid");
+                setAlertNotValid(true)
+                return
+            } else {
+                console.log("masuk alert valid");
+                setAlertNotValid(false)
+                
+            }
         } else {
-            console.log("masuk alert valid");
             setAlertNotValid(false)
-            
         }
         const balanceBank = balanceDetail.find((item) => {
             console.log(item.channel_id, "balance detail");
@@ -1118,6 +1123,19 @@ function DisbursementPage() {
         catatan,
         saveAcc
     ) {
+        if (bankCodeTujuan !== "014") {
+            if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
+                console.log("masuk alert not valid");
+                setAlertNotValid(true)
+                return
+            } else {
+                console.log("masuk alert valid");
+                setAlertNotValid(false)
+                
+            }
+        } else {
+            setAlertNotValid(false)
+        }
         const balanceBank = balanceDetail.find((item) => {
             console.log(item.channel_id, "balance detail");
             if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
@@ -1311,6 +1329,19 @@ function DisbursementPage() {
             setErrMsgEmail(true)
             return
         }
+        if (bankCodeTujuan !== "014") {
+            if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
+                console.log("masuk alert not valid");
+                setAlertNotValid(true)
+                return
+            } else {
+                console.log("masuk alert valid");
+                setAlertNotValid(false)
+                
+            }
+        } else {
+            setAlertNotValid(false)
+        }
         const balanceBank = balanceDetail.find((item) => {
             // console.log(item.channel_id, "balance detail");
             if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
@@ -1448,6 +1479,19 @@ function DisbursementPage() {
         if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
             setErrMsgEmail(true)
             return
+        }
+        if (bankCodeTujuan !== "014") {
+            if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
+                console.log("masuk alert not valid");
+                setAlertNotValid(true)
+                return
+            } else {
+                console.log("masuk alert valid");
+                setAlertNotValid(false)
+                
+            }
+        } else {
+            setAlertNotValid(false)
         }
         const balanceBank = balanceDetail.find((item) => {
             if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
@@ -1683,7 +1727,7 @@ function DisbursementPage() {
             }
         } else {
             console.log("masuk 2");
-            if (inputData.bankName.length !== 0 || inputData.bankCode.length !== 0 || inputRekening.bankNameRek.length !== 0 || inputRekening.bankNumberRek.length !== 0 || inputHandle.bankCabang.length !== 0 || inputHandle.nominal.length !== 0) {
+            if (inputData.bankName.length !== 0 || inputData.bankCode.length !== 0 || inputRekening.bankNameRek.length !== 0 || inputRekening.bankNumberRek.length !== 0 || inputHandle.bankCabang.length !== 0 || inputHandle.nominal.length !== 0 || isChecked === true || inputHandle.emailPenerima.length !== 0 || inputHandle.catatan.length !== 0 || dataDisburse.length !== 0 ) {
                 console.log("masuk 1 sub");
                 setShowModalPindahHalaman(true)
                 setTab(param)
