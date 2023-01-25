@@ -285,11 +285,12 @@ const TransferSubAccount = () => {
     async function getBankList() {
         try {
           const auth = "Bearer " + getToken()
+          const dataParams = encryptData(`{"fitur_id":"105"}`)
           const headers = {
             'Content-Type':'application/json',
             'Authorization' : auth
           }
-          const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: "" }, { headers: headers })
+          const bankList = await axios.post(BaseURL + "/Home/BankGetList", { data: dataParams }, { headers: headers })
           if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
             bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
             setListBank(bankList.data.response_data)
