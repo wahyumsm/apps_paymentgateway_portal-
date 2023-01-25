@@ -33,7 +33,6 @@ import NoteIconWhite from "../../assets/icon/note_icon_white.svg"
 import encryptData from '../../function/encryptData'
 import daftarBank from '../../assets/files/Daftar Bank Tujuan Disbursement - PT. Ezeelink Indonesia.xlsx'
 import templateBulk from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
-import duplicates from 'find-array-duplicates'
 
 registerPlugin(FilePondPluginFileEncode)
 
