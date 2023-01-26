@@ -1087,6 +1087,8 @@ function DisbursementPage() {
                 return item.channel_id === bankCodeTujuan
             }
         })
+        
+        console.log(balanceBank, "balanceBank");
         if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
             setAlertSaldo(false)
             let sameFlag = 0
@@ -1245,6 +1247,7 @@ function DisbursementPage() {
         
     }
     console.log(sisaSaldoAlokasiPerBank, 'sisaSaldoAlokasiPerBank');
+    console.log(alertSaldo, 'alertSaldo');
 
     function lanjutSaveNew (
         number,
@@ -1519,38 +1522,148 @@ function DisbursementPage() {
                 }
                 if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
                     console.log("masuk 1");
-                    // console.log('masuk sama codebank');
-                    // console.log(sisaSaldoAlokasiPerBank.bca,'sisaSaldoAlokasiPerBank.bca');
-                    // console.log(dataLama.nominal + dataLama.feeTotal,'dataLama.nominal + dataLama.feeTotal');
-                    // console.log(nominal,'nominal');
-                    // console.log(result.fee_total,'result.fee_total');
-                    setSisaSaldoAlokasiPerBank({
-                        ...sisaSaldoAlokasiPerBank,
-                        [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
-                    })
+                    console.log(sisaSaldoAlokasiPerBank.bca,'sisaSaldoAlokasiPerBank.bca');
+                    console.log(dataLama.nominal + dataLama.feeTotal,'dataLama.nominal + dataLama.feeTotal');
+                    console.log(nominal,'nominal');
+                    console.log(result.fee_total,'result.fee_total');
+                    if (bankCodeTujuan === '014') {
+                        if (Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("validasi 1");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                            })
+                        }
+                    } else if (bankCodeTujuan === "011") {
+                        if (Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("validasi 2");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                            })
+                        }
+                    } else {
+                        if (Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("validasi 3");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                            })
+                        }
+                    }
                 } else {
                     console.log("masuk 2");
                     if (dataLama.bankCodeTujuan === '014') {
                         console.log("masuk 1 sub");
-                        setSisaSaldoAlokasiPerBank({
-                            ...sisaSaldoAlokasiPerBank,
-                            bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
-                            [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
-                        })
+                        if (bankCodeTujuan === "011") {
+                            console.log("masuk 1 sub 1");
+                            if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                                console.log("masuk 1 sub 1 sub 1");
+                                setAlertSaldo(true)
+                                return
+                            } else {
+                                console.log("masuk 2 sub 1 sub 1");
+                                setAlertSaldo(false)
+                                setSisaSaldoAlokasiPerBank({
+                                    ...sisaSaldoAlokasiPerBank,
+                                    bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
+                                    [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                                })
+                            }
+                        } else {
+                            console.log("masuk 2 sub 1");
+                            if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                                console.log("masuk 1 sub 1 sub 1");
+                                setAlertSaldo(true)
+                                return
+                            } else {
+                                console.log("masuk 2 sub 1 sub 1");
+                                setAlertSaldo(false)
+                                setSisaSaldoAlokasiPerBank({
+                                    ...sisaSaldoAlokasiPerBank,
+                                    bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
+                                    [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                                })
+                            }
+                        }
                     } else if (dataLama.bankCodeTujuan === '011') {
                         console.log("masuk 2 sub");
-                        setSisaSaldoAlokasiPerBank({
-                            ...sisaSaldoAlokasiPerBank,
-                            danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
-                            [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
-                        })
+                        if (bankCodeTujuan === "014") {
+                            console.log("masuk 1 sub 1");
+                            if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                                console.log("masuk 1 sub 1 sub 1");
+                                setAlertSaldo(true)
+                                return
+                            } else {
+                                console.log("masuk 2 sub 1 sub 1");
+                                setAlertSaldo(false)
+                                setSisaSaldoAlokasiPerBank({
+                                    ...sisaSaldoAlokasiPerBank,
+                                    danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
+                                    [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                                })
+                            }
+                        } else {
+                            console.log("masuk 2 sub 1");
+                            if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                                console.log("masuk 1 sub 1 sub 1");
+                                setAlertSaldo(true)
+                                return
+                            } else {
+                                console.log("masuk 2 sub 1 sub 1");
+                                setAlertSaldo(false)
+                                setSisaSaldoAlokasiPerBank({
+                                    ...sisaSaldoAlokasiPerBank,
+                                    danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
+                                    [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                                })
+                            }
+                        }
                     } else {
                         console.log("masuk 3 sub");
-                        setSisaSaldoAlokasiPerBank({
-                            ...sisaSaldoAlokasiPerBank,
-                            bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
-                            [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
-                        })
+                        if (bankCodeTujuan === "014") {
+                            console.log("masuk 1 sub 1");
+                            if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                                console.log("masuk 1 sub 1 sub 1");
+                                setAlertSaldo(true)
+                                return
+                            } else {
+                                console.log("masuk 2 sub 1 sub 1");
+                                setAlertSaldo(false)
+                                setSisaSaldoAlokasiPerBank({
+                                    ...sisaSaldoAlokasiPerBank,
+                                    bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
+                                    [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                                })
+                            }
+                        } else {
+                            console.log("masuk 2 sub 1");
+                            if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                                console.log("masuk 1 sub 1 sub 1");
+                                setAlertSaldo(true)
+                                return
+                            } else {
+                                console.log("masuk 2 sub 1 sub 1");
+                                setAlertSaldo(false)
+                                setSisaSaldoAlokasiPerBank({
+                                    ...sisaSaldoAlokasiPerBank,
+                                    bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
+                                    [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                                })
+                            }
+                        }
                     }
                 }
                 setAllFee([...allFee])
@@ -1659,39 +1772,152 @@ function DisbursementPage() {
 
             if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
                 console.log("masuk 1");
-                // console.log('masuk sama codebank');
-                // console.log(sisaSaldoAlokasiPerBank.bca,'sisaSaldoAlokasiPerBank.bca');
-                // console.log(dataLama.nominal + dataLama.feeTotal,'dataLama.nominal + dataLama.feeTotal');
-                // console.log(nominal,'nominal');
-                // console.log(result.fee_total,'result.fee_total');
-                setSisaSaldoAlokasiPerBank({
-                    ...sisaSaldoAlokasiPerBank,
-                    [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
-                })
+                console.log(sisaSaldoAlokasiPerBank.bca,'sisaSaldoAlokasiPerBank.bca');
+                console.log(dataLama.nominal + dataLama.feeTotal,'dataLama.nominal + dataLama.feeTotal');
+                console.log(nominal,'nominal');
+                console.log(result.fee_total,'result.fee_total');
+                if (bankCodeTujuan === '014') {
+                    if (Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                        console.log("validasi 1");
+                        setAlertSaldo(true)
+                        return
+                    } else {
+                        setAlertSaldo(false)
+                        setSisaSaldoAlokasiPerBank({
+                            ...sisaSaldoAlokasiPerBank,
+                            [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                        })
+                    }
+                } else if (bankCodeTujuan === "011") {
+                    if (Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                        console.log("validasi 2");
+                        setAlertSaldo(true)
+                        return
+                    } else {
+                        setAlertSaldo(false)
+                        setSisaSaldoAlokasiPerBank({
+                            ...sisaSaldoAlokasiPerBank,
+                            [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                        })
+                    }
+                } else {
+                    if (Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                        console.log("validasi 3");
+                        setAlertSaldo(true)
+                        return
+                    } else {
+                        setAlertSaldo(false)
+                        setSisaSaldoAlokasiPerBank({
+                            ...sisaSaldoAlokasiPerBank,
+                            [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                        })
+                    }
+                }
             } else {
+                console.log("masuk 2");
                 if (dataLama.bankCodeTujuan === '014') {
                     console.log("masuk 1 sub");
-                    setSisaSaldoAlokasiPerBank({
-                        ...sisaSaldoAlokasiPerBank,
-                        bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
-                        [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
-                    })
+                    if (bankCodeTujuan === "011") {
+                        console.log("masuk 1 sub 1");
+                        if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("masuk 1 sub 1 sub 1");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            console.log("masuk 2 sub 1 sub 1");
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
+                                [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                            })
+                        }
+                    } else {
+                        console.log("masuk 2 sub 1");
+                        if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("masuk 1 sub 1 sub 1");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            console.log("masuk 2 sub 1 sub 1");
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
+                                [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                            })
+                        }
+                    }
                 } else if (dataLama.bankCodeTujuan === '011') {
                     console.log("masuk 2 sub");
-                    setSisaSaldoAlokasiPerBank({
-                        ...sisaSaldoAlokasiPerBank,
-                        danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
-                        [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
-                    })
+                    if (bankCodeTujuan === "014") {
+                        console.log("masuk 1 sub 1");
+                        if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("masuk 1 sub 1 sub 1");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            console.log("masuk 2 sub 1 sub 1");
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
+                                [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                            })
+                        }
+                    } else {
+                        console.log("masuk 2 sub 1");
+                        if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("masuk 1 sub 1 sub 1");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            console.log("masuk 2 sub 1 sub 1");
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
+                                [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                            })
+                        }
+                    }
                 } else {
                     console.log("masuk 3 sub");
-                    setSisaSaldoAlokasiPerBank({
-                        ...sisaSaldoAlokasiPerBank,
-                        bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
-                        [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
-                    })
+                    if (bankCodeTujuan === "014") {
+                        console.log("masuk 1 sub 1");
+                        if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("masuk 1 sub 1 sub 1");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            console.log("masuk 2 sub 1 sub 1");
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
+                                [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                            })
+                        }
+                    } else {
+                        console.log("masuk 2 sub 1");
+                        if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("masuk 1 sub 1 sub 1");
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            console.log("masuk 2 sub 1 sub 1");
+                            setAlertSaldo(false)
+                            setSisaSaldoAlokasiPerBank({
+                                ...sisaSaldoAlokasiPerBank,
+                                bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
+                                [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                            })
+                        }
+                    }
                 }
             }
+
+            
             setAllFee([...allFee])
             const target = dataDisburse.find((item) => item.number === number)
             const source = {
