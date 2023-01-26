@@ -1025,10 +1025,10 @@ function DisbursementPage() {
         if (e.target.name === "emailPenerima") {
             setErrMsgEmail(false)
         }
-        if (e.target.name === "nominal" && e.target.value.length >= 5) {
+        if (e.target.name === "nominal" && Number(e.target.value) >= 10000) {
             setAlertSaldo(false)
             setAlertMinSaldo(false)
-        } else if (e.target.name === "nominal" && e.target.value.length < 5) {
+        } else if (e.target.name === "nominal" && Number(e.target.value) < 10000) {
             setAlertMinSaldo(true)
         }
         if (e.target.name === "bankCabang") {
@@ -2463,10 +2463,10 @@ function DisbursementPage() {
                                                         isChecked
                                                     )}
                                                     className={
-                                                        (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length !== 0) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && inputHandle.nominal.length >= 5 && dataDisburse.length < 10) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
+                                                        (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length !== 0) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= 10000 && dataDisburse.length < 10) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
                                                     }
                                                     disabled={
-                                                        (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length === 0 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || inputHandle.nominal.length < 5 || dataDisburse.length >= 10)
+                                                        (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length === 0 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < 10000 || dataDisburse.length >= 10)
                                                     }
                                                 >
                                                     <FontAwesomeIcon
