@@ -85,6 +85,7 @@ function DisbursementPage() {
     const [activePageErrorList, setActivePageErrorList] = useState(1)
     const [alertSaldo, setAlertSaldo] = useState(false)
     const [alertNotValid, setAlertNotValid] = useState(false)
+    const [alertMinSaldo, setAlertMinSaldo] = useState(false)
     const [balanceDetail, setBalanceDetail] = useState([])
     const [sisaSaldoAlokasiPerBank, setSisaSaldoAlokasiPerBank] = useState({
         bca: 0,
@@ -1057,8 +1058,11 @@ function DisbursementPage() {
         if (e.target.name === "emailPenerima") {
             setErrMsgEmail(false)
         }
-        if (e.target.name === "nominal") {
+        if (e.target.name === "nominal" && Number(e.target.value) >= 10000) {
             setAlertSaldo(false)
+            setAlertMinSaldo(false)
+        } else if (e.target.name === "nominal" && Number(e.target.value) < 10000) {
+            setAlertMinSaldo(true)
         }
         if (e.target.name === "bankCabang") {
             setAlertNotValid(false)
@@ -2227,7 +2231,7 @@ function DisbursementPage() {
                 showModalStatusDisburse && (responMsg !== 0 && responMsg === 2) &&
                 <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
                     <Toast style={{ width: "900px", backgroundColor: "#383838" }} position="bottom-center" className="text-center">
-                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Disbursement Berhasil. <span style={{ textDecoration: 'underline', cursor: "pointer" }} onClick={() => toReportDisburse()}>Lihat Riwayat Disbursement</span></Toast.Body>
+                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Disbursement Sedang Diproses. <span style={{ textDecoration: 'underline', cursor: "pointer" }} onClick={() => toReportDisburse()}>Lihat Riwayat Disbursement</span></Toast.Body>
                     </Toast>
                 </div>
             }
@@ -2382,6 +2386,7 @@ function DisbursementPage() {
                                                     placeholder="Rp 0"
                                                     type='number'
                                                     className='input-text-user'
+                                                    min={0}
                                                     name="nominal"
                                                     value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
                                                     onChange={(e) => handleChange(e)}
@@ -2408,6 +2413,16 @@ function DisbursementPage() {
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                                         Saldo pada Rekening {inputData.bankName} anda tidak cukup
+                                                    </div>
+                                                ) : (
+                                                    ""
+                                                )
+                                            }
+                                            {
+                                                alertMinSaldo === true ? (
+                                                    <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
+                                                        <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
+                                                        Minimal disbursemnet Rp. 10.000,00
                                                     </div>
                                                 ) : (
                                                     ""
@@ -2481,10 +2496,10 @@ function DisbursementPage() {
                                                         isChecked
                                                     )}
                                                     className={
-                                                        (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length !== 0) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && inputHandle.nominal.length >= 5 && dataDisburse.length < 10) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
+                                                        (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length !== 0) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= 10000 && dataDisburse.length < 10) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
                                                     }
                                                     disabled={
-                                                        (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length === 0 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || inputHandle.nominal.length < 5 || dataDisburse.length >= 10)
+                                                        (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length === 0 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < 10000 || dataDisburse.length >= 10)
                                                     }
                                                 >
                                                     <FontAwesomeIcon
