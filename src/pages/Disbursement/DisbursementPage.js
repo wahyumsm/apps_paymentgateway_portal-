@@ -378,7 +378,8 @@ function DisbursementPage() {
                                             console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp');
                                             console.log(result, 'result untuk error nominal');
                                             if (data.bankCode === '014') {
-                                                if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                    console.log('masuk if bca');
                                                     objErrData.no = data.no
                                                     // objErrData.data = data.noRekening
                                                     objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup'
@@ -386,20 +387,23 @@ function DisbursementPage() {
                                                     objErrData = {}
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
-                                                        bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                        bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
                                                 } else {
+                                                    console.log('masuk else bca');
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
-                                                        bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                        bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
+                                                    console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp bca');
                                                     // setSisaSaldoAlokasiPerBank({
                                                     //     ...sisaSaldoAlokasiPerBank,
                                                     //     bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     // })
                                                 }
                                             } else if (data.bankCode === '011') {
-                                                if ((sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                if ((sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                    console.log('masuk if danamon');
                                                     objErrData.no = data.no
                                                     // objErrData.data = data.noRekening
                                                     objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup'
@@ -407,13 +411,15 @@ function DisbursementPage() {
                                                     objErrData = {}
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
-                                                        danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                        danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
                                                 } else {
+                                                    console.log('masuk else danamon');
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
-                                                        danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                        danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
+                                                    console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp danamon');
                                                     // setSisaSaldoAlokasiPerBank({
                                                     //     ...sisaSaldoAlokasiPerBank,
                                                     //     danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
@@ -421,7 +427,7 @@ function DisbursementPage() {
                                                 }
                                             } else {
                                                 console.log((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance), '(sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance)');
-                                                if ((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                if ((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
                                                     console.log('masuk otherbank minus');
                                                     objErrData.no = data.no
                                                     // objErrData.data = data.noRekening
@@ -430,21 +436,22 @@ function DisbursementPage() {
                                                     objErrData = {}
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
-                                                        bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                        bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
                                                 } else {
                                                     console.log('masuk otherbank non minus');
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
-                                                        bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                        bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
+                                                    console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp other bank');
                                                     // setSisaSaldoAlokasiPerBank({
                                                     //     ...sisaSaldoAlokasiPerBank,
                                                     //     bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     // })
                                                 }
                                             }
-                                        } else if (Number(data.nominalDisbursement) > balanceBank.mpartballchannel_balance) {
+                                        } else if (Number(data.nominalDisbursement) > (balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) {
                                             if (data.bankCode === '014') {
                                                 objErrData.no = data.no
                                                 // objErrData.data = data.noRekening
@@ -453,7 +460,7 @@ function DisbursementPage() {
                                                 objErrData = {}
                                                 sisaSaldoAlokasiPerBankTemp = {
                                                     ...sisaSaldoAlokasiPerBankTemp,
-                                                    bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                 }
                                             } else if (data.bankCode === '011') {
                                                 objErrData.no = data.no
@@ -463,7 +470,7 @@ function DisbursementPage() {
                                                 objErrData = {}
                                                 sisaSaldoAlokasiPerBankTemp = {
                                                     ...sisaSaldoAlokasiPerBankTemp,
-                                                    danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                 }
                                             } else {
                                                 objErrData.no = data.no
@@ -473,7 +480,7 @@ function DisbursementPage() {
                                                 objErrData = {}
                                                 sisaSaldoAlokasiPerBankTemp = {
                                                     ...sisaSaldoAlokasiPerBankTemp,
-                                                    bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                 }
                                             }
                                         }
