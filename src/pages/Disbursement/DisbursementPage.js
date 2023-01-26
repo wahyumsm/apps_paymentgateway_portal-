@@ -2198,7 +2198,7 @@ function DisbursementPage() {
                 showModalStatusDisburse && (responMsg !== 0 && responMsg === 2) &&
                 <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
                     <Toast style={{ width: "900px", backgroundColor: "#383838" }} position="bottom-center" className="text-center">
-                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Disbursement Berhasil. <span style={{ textDecoration: 'underline', cursor: "pointer" }} onClick={() => toReportDisburse()}>Lihat Riwayat Disbursement</span></Toast.Body>
+                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Disbursement Sedang Diproses. <span style={{ textDecoration: 'underline', cursor: "pointer" }} onClick={() => toReportDisburse()}>Lihat Riwayat Disbursement</span></Toast.Body>
                     </Toast>
                 </div>
             }
