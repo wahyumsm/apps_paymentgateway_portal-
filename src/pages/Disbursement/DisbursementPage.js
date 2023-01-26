@@ -1381,10 +1381,8 @@ function DisbursementPage() {
                 console.log(dataLama.bankCodeTujuan, 'dataLama bankCodeTujuan');
                 console.log(bankCodeTujuan, 'bankCodeTujuan');
                 
-                if (finding >= 0) {
-                    allNominal[finding] = Number(nominal)
-                    allFee[finding] = result.fee_total
-                }
+                
+                console.log(allNominal, "nominal save edit");
                 if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
                     console.log("masuk 1");
                     console.log(sisaSaldoAlokasiPerBank.bca,'sisaSaldoAlokasiPerBank.bca');
@@ -1531,7 +1529,14 @@ function DisbursementPage() {
                         }
                     }
                 }
+
+                if (finding >= 0) {
+                    allNominal[finding] = Number(nominal)
+                    allFee[finding] = result.fee_total
+                }
+                console.log('diatas set all fee');
                 setAllFee([...allFee])
+                console.log('dibawah set all fee');
                 const target = dataDisburse.find((item) => item.number === number)
                 const source = {
                     number: number,
@@ -1548,7 +1553,9 @@ function DisbursementPage() {
                 };
                 Object.assign(target, source)
                 setDataDisburse([...dataDisburse])
+                console.log('diatas set al nominal');
                 setAllNominal([...allNominal])
+                console.log('dibawah set al nominal');
                 setEditTabelDisburse(false)
                 setInputData({
                     bankName: "",
@@ -1782,8 +1789,9 @@ function DisbursementPage() {
                 }
             }
 
-            
+            console.log('diatas set all fee lanjut edit');
             setAllFee([...allFee])
+            console.log('dibawah set all fee lanjut edit');
             const target = dataDisburse.find((item) => item.number === number)
             const source = {
                 number: number,
@@ -1802,7 +1810,9 @@ function DisbursementPage() {
             Object.assign(target, source)
             setDataDisburse([...dataDisburse])
             
+            console.log('diatas set all nominalc lanjut edit');
             setAllNominal([...allNominal])
+            console.log('dibawah set all nominal lanjut edit');
             setEditTabelDisburse(false)
             setInputData({
                 bankName: "",
