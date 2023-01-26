@@ -253,29 +253,29 @@ function DisbursementPage() {
                                             return item.channel_id === "BIF"
                                         }
                                     })
-                                    if (el.nominalDisbursement < balanceBank.mpartballchannel_balance || el.nominalDisbursement === balanceBank.mpartballchannel_balance) {
-                                        if(resultArray.find(object => {
-                                            if(object.noRekening === el.noRekening && object.nominalDisbursement === el.nominalDisbursement) {
-                                                //if the object exists iterate times
-                                                object.times++;
-                                                sameNumberData.push(el.no)
-                                                return true;
-                                                //if it does not return false
-                                            } else {
-                                                return false;
-                                            }
-                                        })){
+                                    if(resultArray.find(object => {
+                                        if(object.noRekening === el.noRekening && object.nominalDisbursement === el.nominalDisbursement) {
+                                            //if the object exists iterate times
+                                            object.times++;
+                                            sameNumberData.push(el.no)
+                                            return true;
+                                            //if it does not return false
                                         } else {
-                                            //if the object does not exists push it to the resulting array and set the times count to 1
-                                            el.times = 1;
-                                            resultArray.push(el);
+                                            return false;
                                         }
+                                    })){
+                                    } else {
+                                        //if the object does not exists push it to the resulting array and set the times count to 1
+                                        el.times = 1;
+                                        resultArray.push(el);
                                     }
+                                    // if (el.nominalDisbursement < balanceBank.mpartballchannel_balance || el.nominalDisbursement === balanceBank.mpartballchannel_balance) {
+                                    // }
                                 })
 
                                 console.log(resultArray, 'resultArray')
                                 console.log(sameNumberData, 'sameNumberData')
-                                if (sameNumberData.length > 1) {
+                                if (sameNumberData.length >= 1) {
                                     setShowModalDuplikasi(true)
                                     setDuplicateData(sameNumberData)
                                 }
@@ -342,6 +342,7 @@ function DisbursementPage() {
                                         objErrData = {}
                                     }
             
+                                    console.log(data.nominalDisbursement, 'nominal disbursement tipe data');
                                     if (data.nominalDisbursement.length === 0 || data.nominalDisbursement === '0') {
                                         console.log('masuk nominal error1');
                                         objErrData.no = data.no
@@ -350,13 +351,21 @@ function DisbursementPage() {
                                         errData.push(objErrData)
                                         objErrData = {}
                                     } else {
+                                        const result = feeBank.find((item) => {
+                                            if (data.bankCode === "014" || data.bankCode === "011") {
+                                                return item.mpaytype_bank_code === data.bankCode
+                                            } else {
+                                                // sameBankName.mbank_code = "BIF"
+                                                return item.mpaytype_bank_code === "BIF"
+                                            }
+                                        })
                                         if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
                                             objErrData.no = data.no
                                             // objErrData.data = data.nominalDisbursement
                                             objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        } else if (data.nominalDisbursement.length < 4) {
+                                        } else if (data.nominalDisbursement.length < 5) {
                                             console.log('masuk nominal error2');
                                             objErrData.no = data.no
                                             // objErrData.data = data.noRekening
@@ -365,14 +374,6 @@ function DisbursementPage() {
                                             objErrData = {}
                                         } else if (Number(data.nominalDisbursement) < balanceBank.mpartballchannel_balance || Number(data.nominalDisbursement) === balanceBank.mpartballchannel_balance) {
                                             console.log(data, 'data.mbank_code error nominal');
-                                            const result = feeBank.find((item) => {
-                                                if (data.bankCode === "014" || data.bankCode === "011") {
-                                                    return item.mpaytype_bank_code === data.bankCode
-                                                } else {
-                                                    // sameBankName.mbank_code = "BIF"
-                                                    return item.mpaytype_bank_code === "BIF"
-                                                }
-                                            })
                                             console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp');
                                             console.log(result, 'result untuk error nominal');
                                             if (data.bankCode === '014') {
@@ -440,6 +441,38 @@ function DisbursementPage() {
                                                     //     ...sisaSaldoAlokasiPerBank,
                                                     //     bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     // })
+                                                }
+                                            }
+                                        } else if (Number(data.nominalDisbursement) > balanceBank.mpartballchannel_balance) {
+                                            if (data.bankCode === '014') {
+                                                objErrData.no = data.no
+                                                // objErrData.data = data.noRekening
+                                                objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup'
+                                                errData.push(objErrData)
+                                                objErrData = {}
+                                                sisaSaldoAlokasiPerBankTemp = {
+                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                    bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                }
+                                            } else if (data.bankCode === '011') {
+                                                objErrData.no = data.no
+                                                // objErrData.data = data.noRekening
+                                                objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup'
+                                                errData.push(objErrData)
+                                                objErrData = {}
+                                                sisaSaldoAlokasiPerBankTemp = {
+                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                    danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                }
+                                            } else {
+                                                objErrData.no = data.no
+                                                // objErrData.data = data.noRekening
+                                                objErrData.keterangan = `Saldo pada rekening ${result.mpaytype_name} anda tidak cukup`
+                                                errData.push(objErrData)
+                                                objErrData = {}
+                                                sisaSaldoAlokasiPerBankTemp = {
+                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                    bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                 }
                                             }
                                         }
@@ -2876,13 +2909,23 @@ function DisbursementPage() {
                                         errorFound.length !== 0 && errorFound.length === 1 ?
                                         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
+                                            <div className='d-flex justify-content-center'>
                                                 <div>
+                                                    <img class="me-2" src={noteIconRed} width="20px" height="20px" />
+                                                </div>
+                                                <div>
+                                                    <div>Kesalahan data yang perlu diperbaiki:</div>
+                                                    <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}
+                                                    {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Lihat Semua</div> */}
+                                                </div>
+                                            </div>
+                                                {/* <div>
                                                     <div style={{ marginLeft: -50 }}>
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
                                                         Kesalahan data yang perlu diperbaiki:
                                                     </div>
                                                     <div style={{ marginLeft: 125 }}><FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
-                                                </div>
+                                                </div> */}
                                                 {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div> */}
                                             </div>
                                         </div> : null
