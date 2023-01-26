@@ -2859,7 +2859,7 @@ function DisbursementPage() {
                                 <div className='mt-3 position-relative' style={{ marginBottom: 100 }}>
                                     {
                                         errorFound.length !== 0 && errorFound.length > 1 ?
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
                                                 <div className='d-flex justify-content-center'>
                                                     <div>
@@ -2874,7 +2874,7 @@ function DisbursementPage() {
                                             </div>
                                         </div> :
                                         errorFound.length !== 0 && errorFound.length === 1 ?
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', marginLeft: 275 }}>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
                                                 <div>
                                                     <div style={{ marginLeft: -50 }}>
