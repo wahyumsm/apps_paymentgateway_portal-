@@ -66,10 +66,11 @@ function DisbursementPage() {
     const [showModalPindahHalaman, setShowModalPindahHalaman] = useState(false)
     const [showModalPanduan, setShowModalPanduan] = useState(false)
     const [showModalDuplikasi, setShowModalDuplikasi] = useState(false)
+    const [duplicateData, setDuplicateData] = useState([])
     const [showModalStatusDisburse, setShowModalStatusDisburse] = useState(false)
     const [filterTextBank, setFilterTextBank] = useState('')
     const [filterTextRekening, setFilterTextRekening] = useState('')
-    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
     <div className='pb-4'>
         <span class="filepond--label-action">
             Upload File
@@ -146,10 +147,10 @@ function DisbursementPage() {
                         const headerCol = decoded.split('|').slice(0, 8)
                         // console.log(headerCol, 'headerCol');
                         if (headerCol[0] === "No*" && headerCol[1] === "Bank Tujuan*" && headerCol[2] === "Cabang (Khusus Non-BCA)*" && headerCol[3] === "No. Rekening Tujuan*" && headerCol[4] === "Nama Pemilik Rekening*" && headerCol[5] === "Nominal Disbursement*" && headerCol[6] === "Email Penerima" && headerCol[7] === "Catatan\r\n1") {
-                            console.log("ini bener");
+                            // console.log("ini bener");
                             const newDcd = decoded.split("|").slice(8)
                             console.log(newDcd, 'newDcd');
-                            console.log(newDcd.length%7, 'newDcd');
+                            // console.log(newDcd.length%7, 'newDcd');
                             if (newDcd.length%7 !== 0) {
                                 setErrorFound([])
                                 setTimeout(() => {
@@ -165,8 +166,11 @@ function DisbursementPage() {
                             } else {
                                 let totalNominalDisburse = 0
                                 let totalFeeDisburse = 0
+                                let totalFeeDisburseArr = []
                                 let newArr = []
                                 let obj = {}
+                                const filteredListBank = bankLists.filter(item => item.is_enabled === true)
+                                console.log(filteredListBank, 'filteredListBank');
                                 newDcd.forEach((el, idx) => {
                                     if (idx === 0 || idx % 7 === 0) {
                                         // console.log(el.slice(0,3), 'el.slice(0,3)');
@@ -178,8 +182,8 @@ function DisbursementPage() {
                                                 obj.bankCode = "null"
                                                 obj.bankName = "null"
                                             } else {
-                                                const sameBankName = bankLists.find(list => list.mbank_code === el.slice(0, 3))
-                                                console.log(bankLists, 'bankLists di bawah samebank');
+                                                const sameBankName = filteredListBank.find(list => list.mbank_code === el.slice(0, 3))
+                                                // console.log(bankLists, 'bankLists di bawah samebank');
                                                 console.log(sameBankName, 'sameBankName1');
                                                 obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
                                                 obj.bankName = sameBankName !== undefined ? sameBankName.mbank_name : "undefined"
@@ -191,12 +195,13 @@ function DisbursementPage() {
                                                             return item.mpaytype_bank_code === sameBankName.mbank_code
                                                         } else {
                                                             // sameBankName.mbank_code = "BIF"
-                                                            return item.mpaytype_bank_code === sameBankName.mbank_code
+                                                            return item.mpaytype_bank_code === "BIF"
                                                         }
                                                     })
                                                     console.log(result, 'result');
                                                     if (result !== undefined) {
                                                         totalFeeDisburse += result.fee_total
+                                                        totalFeeDisburseArr.push(result.fee_total)
                                                     }
                                                 }
                                             }
@@ -208,14 +213,9 @@ function DisbursementPage() {
                                     } else if (idx === 3 || idx % 7 === 3) {
                                         obj.ownerName = el
                                     } else if (idx === 4 || idx % 7 === 4) {
-                                        console.log(el, 'nominal');
-                                        console.log(el.indexOf(','), 'nominal');
+                                        // console.log(el, 'nominal');
+                                        // console.log(el.indexOf(','), 'nominal');
                                         if (el.indexOf(',') !== -1) {
-                                            // objErrData.no = data.no
-                                            // // objErrData.data = data.noRekening
-                                            // objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
-                                            // errData.push(objErrData)
-                                            // objErrData = {}
                                             obj.nominalDisbursement = "Tipe data salah."
                                         } else {
                                             obj.nominalDisbursement = el
@@ -237,11 +237,64 @@ function DisbursementPage() {
                                 // console.log(totalFeeDisburse, 'totalFeeDisburse');
                                 setAllNominal([totalNominalDisburse])
                                 setAllFee([totalFeeDisburse])
+                                console.log(totalFeeDisburseArr, 'totalFeeDisburseArr');
+                                let sameNumberData = []
                                 let errData = []
+                                const resultArray = [];
+
+                                newArr.map(el => {
+                                    //for each item in arrayOfObjects check if the object exists in the resulting array
+                                    const balanceBank = filteredBankTujuan.find((item) => {
+                                        // console.log(item.channel_id, "balance detail");
+                                        if (el.bankCode === "014" || el.bankCode === "011") {
+                                            return item.channel_id === el.bankCode
+                                        } else {
+                                            // el.bankCode = "BIF"
+                                            return item.channel_id === "BIF"
+                                        }
+                                    })
+                                    if (el.nominalDisbursement < balanceBank.mpartballchannel_balance || el.nominalDisbursement === balanceBank.mpartballchannel_balance) {
+                                        if(resultArray.find(object => {
+                                            if(object.noRekening === el.noRekening && object.nominalDisbursement === el.nominalDisbursement) {
+                                                //if the object exists iterate times
+                                                object.times++;
+                                                sameNumberData.push(el.no)
+                                                return true;
+                                                //if it does not return false
+                                            } else {
+                                                return false;
+                                            }
+                                        })){
+                                        } else {
+                                            //if the object does not exists push it to the resulting array and set the times count to 1
+                                            el.times = 1;
+                                            resultArray.push(el);
+                                        }
+                                    }
+                                })
+
+                                console.log(resultArray, 'resultArray')
+                                console.log(sameNumberData, 'sameNumberData')
+                                if (sameNumberData.length > 1) {
+                                    setShowModalDuplikasi(true)
+                                    setDuplicateData(sameNumberData)
+                                }
+                                let sisaSaldoAlokasiPerBankTemp = {
+                                    bca: 0,
+                                    danamon: 0,
+                                    bifast: 0
+                                }
                                 newArr = newArr.map(data => {
-                                    console.log(data.nominalDisbursement, 'data.nominalDisbursement');
-                                    console.log(data.nominalDisbursement.length, 'data.nominalDisbursement');
                                     let objErrData = {}
+                                    const balanceBank = filteredBankTujuan.find((item) => {
+                                        // console.log(item.channel_id, "balance detail");
+                                        if (data.bankCode === "014" || data.bankCode === "011") {
+                                            return item.channel_id === data.bankCode
+                                        } else {
+                                            // el.bankCode = "BIF"
+                                            return item.channel_id === "BIF"
+                                        }
+                                    })
                                     if (data.bankName.length === 0 && data.bankCode.length === 0) {
                                         // console.log('masuk bank name kosong');
                                         objErrData.no = data.no
@@ -259,7 +312,7 @@ function DisbursementPage() {
                                         } else if (data.bankName === "undefined" && data.bankCode === "undefined") {
                                             objErrData.no = data.no
                                             // objErrData.data = data.bankName
-                                            objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia.'
+                                            objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia pada saat ini.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         }
@@ -296,24 +349,103 @@ function DisbursementPage() {
                                         objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
                                         errData.push(objErrData)
                                         objErrData = {}
+                                    } else {
+                                        if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
+                                            objErrData.no = data.no
+                                            // objErrData.data = data.nominalDisbursement
+                                            objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (data.nominalDisbursement.length < 4) {
+                                            console.log('masuk nominal error2');
+                                            objErrData.no = data.no
+                                            // objErrData.data = data.noRekening
+                                            objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (Number(data.nominalDisbursement) < balanceBank.mpartballchannel_balance || Number(data.nominalDisbursement) === balanceBank.mpartballchannel_balance) {
+                                            console.log(data, 'data.mbank_code error nominal');
+                                            const result = feeBank.find((item) => {
+                                                if (data.bankCode === "014" || data.bankCode === "011") {
+                                                    return item.mpaytype_bank_code === data.bankCode
+                                                } else {
+                                                    // sameBankName.mbank_code = "BIF"
+                                                    return item.mpaytype_bank_code === "BIF"
+                                                }
+                                            })
+                                            console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp');
+                                            console.log(result, 'result untuk error nominal');
+                                            if (data.bankCode === '014') {
+                                                if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                    objErrData.no = data.no
+                                                    // objErrData.data = data.noRekening
+                                                    objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup'
+                                                    errData.push(objErrData)
+                                                    objErrData = {}
+                                                    sisaSaldoAlokasiPerBankTemp = {
+                                                        ...sisaSaldoAlokasiPerBankTemp,
+                                                        bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    }
+                                                } else {
+                                                    sisaSaldoAlokasiPerBankTemp = {
+                                                        ...sisaSaldoAlokasiPerBankTemp,
+                                                        bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    }
+                                                    // setSisaSaldoAlokasiPerBank({
+                                                    //     ...sisaSaldoAlokasiPerBank,
+                                                    //     bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    // })
+                                                }
+                                            } else if (data.bankCode === '011') {
+                                                if ((sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                    objErrData.no = data.no
+                                                    // objErrData.data = data.noRekening
+                                                    objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup'
+                                                    errData.push(objErrData)
+                                                    objErrData = {}
+                                                    sisaSaldoAlokasiPerBankTemp = {
+                                                        ...sisaSaldoAlokasiPerBankTemp,
+                                                        danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    }
+                                                } else {
+                                                    sisaSaldoAlokasiPerBankTemp = {
+                                                        ...sisaSaldoAlokasiPerBankTemp,
+                                                        danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    }
+                                                    // setSisaSaldoAlokasiPerBank({
+                                                    //     ...sisaSaldoAlokasiPerBank,
+                                                    //     danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    // })
+                                                }
+                                            } else {
+                                                console.log((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance), '(sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance)');
+                                                if ((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
+                                                    console.log('masuk otherbank minus');
+                                                    objErrData.no = data.no
+                                                    // objErrData.data = data.noRekening
+                                                    objErrData.keterangan = `Saldo pada rekening ${result.mpaytype_name} anda tidak cukup`
+                                                    errData.push(objErrData)
+                                                    objErrData = {}
+                                                    sisaSaldoAlokasiPerBankTemp = {
+                                                        ...sisaSaldoAlokasiPerBankTemp,
+                                                        bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    }
+                                                } else {
+                                                    console.log('masuk otherbank non minus');
+                                                    sisaSaldoAlokasiPerBankTemp = {
+                                                        ...sisaSaldoAlokasiPerBankTemp,
+                                                        bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    }
+                                                    // setSisaSaldoAlokasiPerBank({
+                                                    //     ...sisaSaldoAlokasiPerBank,
+                                                    //     bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
+                                                    // })
+                                                }
+                                            }
+                                        }
                                     }
-                                    
-                                    if (data.nominalDisbursement.length < 4) {
-                                        console.log('masuk nominal error2');
-                                        objErrData.no = data.no
-                                        // objErrData.data = data.noRekening
-                                        objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    }
+                                    // console.log(filteredBankTujuan.find(found => found.channel_id === data.bankCode), 'filteredBankTujuan.find(found => found.mpartballchannel_balance)');
             
-                                    if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
-                                        objErrData.no = data.no
-                                        // objErrData.data = data.nominalDisbursement
-                                        objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
-                                    }
             
                                     if (validator.isEmail(data.email) === false) {
                                         objErrData.no = data.no
@@ -374,8 +506,6 @@ function DisbursementPage() {
                                                 note: data.note
                                             }
                                         }
-                                        // console.log(data.cabangBank.indexOf(/[$-/:-?{-~!"^_`\[\]]/) >= 0, 'indexOf spasi kosong', data.cabangBank, data.bankCode);
-                                        // console.log(/[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank), 'cek tanda baca', data.cabangBank, data.bankCode);
                                     } else {
                                         if (data.cabangBank.length === 0 || data.cabangBank.indexOf(' ') >= 0 ||  (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank) || data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
                                             return {
@@ -398,6 +528,7 @@ function DisbursementPage() {
                                         }
                                     }
                                 })
+                                console.log(sameNumberData, 'sameNumberData');
                                 console.log(errData, 'errData');
                                 console.log(newArr, 'newArr');
                                 if (errData.length !== 0) {
@@ -490,11 +621,15 @@ function DisbursementPage() {
         setActivePageErrorList(1)
     }
 
-    function handleClickChangeFile() {
+    function handleClickChangeFile(param) {
         console.log('clicked1');
         $('.filepond--browser').trigger('click');
-        setShowModalErrorList(false)
-        setActivePageErrorList(1)
+        if (param === "errorList") {
+            setShowModalErrorList(false)
+            setActivePageErrorList(1)
+        } else if (param === "duplicateData") {
+            setShowModalDuplikasi(false)
+        }
         console.log('clicked2');
     }
 
@@ -2721,30 +2856,32 @@ function DisbursementPage() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className='text-center mt-3 position-relative' style={{ marginBottom: 100 }}>
+                                <div className='mt-3 position-relative' style={{ marginBottom: 100 }}>
                                     {
                                         errorFound.length !== 0 && errorFound.length > 1 ?
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
-                                                <div>
-                                                    <div style={{ marginLeft: -50 }}>
+                                                <div className='d-flex justify-content-center'>
+                                                    <div>
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
-                                                        Kesalahan data yang perlu diperbaiki:
                                                     </div>
-                                                    <div><FontAwesomeIcon style={{ width: 5, marginTop: 3, marginLeft: 150 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                                    <div>
+                                                        <div>Kesalahan data yang perlu diperbaiki:</div>
+                                                        <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}
+                                                        <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Lihat Semua</div>
+                                                    </div>
                                                 </div>
-                                                <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div>
                                             </div>
                                         </div> :
                                         errorFound.length !== 0 && errorFound.length === 1 ?
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', marginLeft: 275 }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
                                                 <div>
                                                     <div style={{ marginLeft: -50 }}>
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
                                                         Kesalahan data yang perlu diperbaiki:
                                                     </div>
-                                                    <div><FontAwesomeIcon style={{ width: 5, marginTop: 3, marginLeft: 100 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
+                                                    <div style={{ marginLeft: 125 }}><FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}</div>
                                                 </div>
                                                 {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', marginLeft: -175, cursor: 'pointer' }}>Lihat Semua</div> */}
                                             </div>
@@ -2916,7 +3053,7 @@ function DisbursementPage() {
                                     <input onChange={(newFile) => fileCSV(newFile, listBank, balanceDetail)} type='file' id='input-file' accept='text/csv' style={{ visibility: 'hidden' }} />
                                     <div type='file' className='text-center mb-2'>
                                         <button
-                                            onClick={() => handleClickChangeFile()}
+                                            onClick={() => handleClickChangeFile("errorList")}
                                             className='btn-reset'
                                             style={{ width: '25%' }}
                                         >
@@ -3179,74 +3316,126 @@ function DisbursementPage() {
                         Ditemukan Duplikasi Data, Ingin Tetap Melanjutkan?
                     </Modal.Title>
                     <Modal.Body >
-                        <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data yang ingin Anda tambahkan sudah tersedia di tabel.</div>
+                        {
+                            duplicateData.length === 0 ?
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data yang ingin Anda tambahkan sudah tersedia di tabel.</div> :
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data pada nomor <b style={{ wordBreak: 'break-word' }}>{duplicateData.join(",")}</b> : Terindikasi data duplikasi</div>
+                        }
                         <div className='d-flex justify-content-center align-items-center mt-3'>
-                            <div className='me-1'>
-                                <button
-                                    onClick={editTabelDisburse === false ?
-                                        () => lanjutSaveNew(
-                                            dataDisburse.length + 1,
-                                            inputData.bankName,
-                                            inputData.bankCode,
-                                            inputHandle.bankCabang,
-                                            inputRekening.bankNumberRek,
-                                            inputRekening.bankNameRek,
-                                            inputHandle.nominal,
-                                            inputHandle.emailPenerima,
-                                            inputHandle.catatan,
-                                            isChecked
-                                        ) :
-                                        () => lanjutSaveEdit(
-                                            numbering,
-                                            inputData.bankName,
-                                            inputData.bankCode,
-                                            inputHandle.bankCabang,
-                                            inputRekening.bankNumberRek,
-                                            inputRekening.bankNameRek,
-                                            inputHandle.nominal,
-                                            inputHandle.emailPenerima,
-                                            inputHandle.catatan,
-                                            isChecked
-                                        )
-                                    }
-                                    style={{
-                                        fontFamily: "Exo",
-                                        fontSize: 16,
-                                        fontWeight: 900,
-                                        alignItems: "center",
-                                        padding: "12px 24px",
-                                        gap: 8,
-                                        width: 136,
-                                        height: 45,
-                                        background: "#FFFFFF",
-                                        color: "#888888",
-                                        border: "0.6px solid #EBEBEB",
-                                        borderRadius: 6,
-                                    }}
-                                >
-                                    Lanjutkan
-                                </button>
-                            </div>
-                            <div className="ms-1">
-                                <button
-                                    onClick={() => setShowModalDuplikasi(false)}
-                                    style={{
-                                        fontFamily: "Exo",
-                                        fontSize: 16,
-                                        fontWeight: 900,
-                                        alignItems: "center",
-                                        padding: "12px 24px",
-                                        gap: 8,
-                                        width: 136,
-                                        height: 45,
-                                        background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
-                                        border: "0.6px solid #2C1919",
-                                        borderRadius: 6,
-                                    }}
-                                >
-                                    Perbaiki
-                                </button>
-                            </div>
+                            {
+                                isDisbursementManual ?
+                                <>
+                                    <div className='me-1'>
+                                        <button
+                                            onClick={editTabelDisburse === false ?
+                                                () => lanjutSaveNew(
+                                                    dataDisburse.length + 1,
+                                                    inputData.bankName,
+                                                    inputData.bankCode,
+                                                    inputHandle.bankCabang,
+                                                    inputRekening.bankNumberRek,
+                                                    inputRekening.bankNameRek,
+                                                    inputHandle.nominal,
+                                                    inputHandle.emailPenerima,
+                                                    inputHandle.catatan,
+                                                    isChecked
+                                                ) :
+                                                () => lanjutSaveEdit(
+                                                    numbering,
+                                                    inputData.bankName,
+                                                    inputData.bankCode,
+                                                    inputHandle.bankCabang,
+                                                    inputRekening.bankNumberRek,
+                                                    inputRekening.bankNameRek,
+                                                    inputHandle.nominal,
+                                                    inputHandle.emailPenerima,
+                                                    inputHandle.catatan,
+                                                    isChecked
+                                                )
+                                            }
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 16,
+                                                fontWeight: 900,
+                                                alignItems: "center",
+                                                padding: "12px 24px",
+                                                gap: 8,
+                                                width: 136,
+                                                height: 45,
+                                                background: "#FFFFFF",
+                                                color: "#888888",
+                                                border: "0.6px solid #EBEBEB",
+                                                borderRadius: 6,
+                                            }}
+                                        >
+                                            Lanjutkan
+                                        </button>
+                                    </div>
+                                    <div className="ms-1">
+                                        <button
+                                            onClick={() => setShowModalDuplikasi(false)}
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 16,
+                                                fontWeight: 900,
+                                                alignItems: "center",
+                                                padding: "12px 24px",
+                                                gap: 8,
+                                                width: 136,
+                                                height: 45,
+                                                background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                                                border: "0.6px solid #2C1919",
+                                                borderRadius: 6,
+                                            }}
+                                        >
+                                            Perbaiki
+                                        </button>
+                                    </div>
+                                </> :
+                                <>
+                                    <div className='me-1'>
+                                        <button
+                                            onClick={() => setShowModalDuplikasi(false)}
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 16,
+                                                fontWeight: 900,
+                                                alignItems: "center",
+                                                padding: "12px 24px",
+                                                gap: 8,
+                                                width: 136,
+                                                height: 45,
+                                                background: "#FFFFFF",
+                                                color: "#888888",
+                                                border: "0.6px solid #EBEBEB",
+                                                borderRadius: 6,
+                                            }}
+                                        >
+                                            Lanjutkan
+                                        </button>
+                                    </div>
+                                    <div className="ms-1">
+                                        <button
+                                            onClick={() => handleClickChangeFile("duplicateData")}
+                                            style={{
+                                                fontFamily: "Exo",
+                                                fontSize: 16,
+                                                fontWeight: 900,
+                                                alignItems: "center",
+                                                padding: "12px 24px",
+                                                gap: 8,
+                                                width: 136,
+                                                height: 45,
+                                                background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                                                border: "0.6px solid #2C1919",
+                                                borderRadius: 6,
+                                            }}
+                                        >
+                                            Perbaiki
+                                        </button>
+                                    </div>
+                                </>
+                            }
                         </div>
                     </Modal.Body>
                 </Modal>
