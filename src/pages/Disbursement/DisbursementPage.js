@@ -1772,10 +1772,6 @@ function DisbursementPage() {
             })
             const dataLama = dataDisburse.find((item) => item.number === number);
 
-            if (finding) {
-                allNominal[finding] = Number(nominal)
-                allFee[finding] = result.fee_total
-            }
 
             if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
                 console.log("masuk 1");
@@ -1924,6 +1920,10 @@ function DisbursementPage() {
                 }
             }
 
+            if (finding) {
+                allNominal[finding] = Number(nominal)
+                allFee[finding] = result.fee_total
+            }
             console.log('diatas set all fee lanjut edit');
             setAllFee([...allFee])
             console.log('dibawah set all fee lanjut edit');
