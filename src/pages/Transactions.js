@@ -357,16 +357,16 @@ export default () => {
         'Authorization' : auth
       }
       const dataChartTransfer = await axios.post(BaseURL + "/Report/GetSettlementChart", { data: dataParams }, { headers: headers })
-      if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length === 0) {
-        dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setDataChartTransfer(dataChartTransfer.data.response_data)
-      } else if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token.length !== 0) {
+      if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token === null) {
+        dataChartTransfer.data.response_data.results = dataChartTransfer.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setDataChartTransfer(dataChartTransfer.data.response_data.results)
+      } else if (dataChartTransfer.data.response_code === 200 && dataChartTransfer.status === 200 && dataChartTransfer.data.response_new_token !== null) {
         setUserSession(dataChartTransfer.data.response_new_token)
-        dataChartTransfer.data.response_data = dataChartTransfer.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-        setDataChartTransfer(dataChartTransfer.data.response_data)
+        dataChartTransfer.data.response_data.results = dataChartTransfer.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+        setDataChartTransfer(dataChartTransfer.data.response_data.results)
       }
     } catch (error) {
-      // console.log(error)
+      console.log(error)
       history.push(errorCatch(error.response.status))
     }
   }
