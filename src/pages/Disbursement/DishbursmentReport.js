@@ -29,7 +29,8 @@ function DisbursementReport() {
         statusDisbursement: [],
         periodeDisbursement: 0,
         partnerTransId: "",
-        paymentCode: ""
+        paymentCode: "",
+        referenceNo: ""
     })
     const [pendingDisbursement, setPendingDisbursement] = useState(true)
     const [activePageDisbursement, setActivePageDisbursement] = useState(1)
@@ -141,7 +142,7 @@ function DisbursementReport() {
         try {
             if (userRole !== "102") {
                 const auth = 'Bearer ' + getToken();
-                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "payment_code":"", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "payment_code":"", reference_no: "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
@@ -165,7 +166,7 @@ function DisbursementReport() {
                 }
             } else {
                 const auth = 'Bearer ' + getToken();
-                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "payment_code":"", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "payment_code":"", reference_no: "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
@@ -208,7 +209,7 @@ function DisbursementReport() {
             setIsFilterDisbursement(true)
             setActivePageDisbursement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -485,12 +486,13 @@ function DisbursementReport() {
                 try {
                     // console.log(partnerTransId, "partner trans filter");
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
+                    console.log(dataExportFilter, 'dataExportFilter');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
@@ -524,7 +526,7 @@ function DisbursementReport() {
                 try {
                     // console.log(partnerTransId, "partner trans filter");
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -562,7 +564,7 @@ function DisbursementReport() {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "payment_code":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "payment_code":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", reference_no: "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -600,7 +602,7 @@ function DisbursementReport() {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "payment_code":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "payment_code":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", reference_no: "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -622,44 +624,6 @@ function DisbursementReport() {
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
                             dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
-                        }
-                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                        let workBook = XLSX.utils.book_new();
-                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
-                    }
-                } catch (error) {
-                    // console.log(error);
-                    history.push(errorCatch(error.response.status))
-                }
-            }
-            dataExportDisbursement()
-        } else if (isFilter === false && userRole !== "102") {
-            async function dataExportDisbursement() {
-                try {
-                    const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "payment_code":"", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "page": 1, "row_per_page": 1000000}`)
-                    const headers = {
-                        'Content-Type': 'application/json',
-                        'Authorization': auth
-                    }
-                    const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
-                    if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
-                        const data = dataExportDisbursement.data.response_data.results
-                        let dataExcel = []
-                        for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
-                        }
-                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                        let workBook = XLSX.utils.book_new();
-                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
-                    } else if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token !== null) {
-                        setUserSession(dataExportDisbursement.data.response_new_token)
-                        const data = dataExportDisbursement.data.response_data.results
-                        let dataExcel = []
-                        for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
