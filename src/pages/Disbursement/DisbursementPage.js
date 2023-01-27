@@ -1608,7 +1608,7 @@ function DisbursementPage() {
                         console.log("masuk 1 sub");
                         if (bankCodeTujuan === "011") {
                             console.log("masuk 1 sub 1");
-                            if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                            if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(nominal) + result.fee_total) < 0) {
                                 console.log("masuk 1 sub 1 sub 1");
                                 setAlertSaldo(true)
                                 return
