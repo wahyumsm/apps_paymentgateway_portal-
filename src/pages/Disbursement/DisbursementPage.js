@@ -2034,7 +2034,9 @@ function DisbursementPage() {
 
     function deleteDataDisburse(numberId) {
         const result = dataDisburse.findIndex((item) => item.number === numberId);
+        const dataLama = dataDisburse.find((item) => item.number === numberId);
         console.log(result, "delete result");
+        console.log(dataLama, "dataLama");
         dataDisburse.splice(result, 1);
         setDataDisburse([...dataDisburse]);
         allFee.splice(result, 1)
@@ -2054,6 +2056,10 @@ function DisbursementPage() {
             nominal: "",
             emailPenerima: "",
             catatan: ""
+        })
+        setSisaSaldoAlokasiPerBank({
+            ...sisaSaldoAlokasiPerBank,
+            [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal)
         })
     }
 
@@ -2684,7 +2690,7 @@ function DisbursementPage() {
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 2)}</div>
                                         </div>
                                         <div className='d-flex justify-content-between align-items-center mt-2'>
-                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement</div>
+                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement + Total Fax</div>
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 2)}</div>
                                         </div>
                                         <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
