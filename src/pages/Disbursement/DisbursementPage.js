@@ -1069,6 +1069,7 @@ function DisbursementPage() {
             setAlertSaldo(false)
             setAlertMinSaldo(false)
         } else if (e.target.name === "nominal" && Number(e.target.value) < 10000) {
+            setAlertSaldo(false)
             setAlertMinSaldo(true)
         }
         if (e.target.name === "bankCabang") {
@@ -2432,7 +2433,7 @@ function DisbursementPage() {
                                                 alertMinSaldo === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Minimal disbursemnet Rp. 10.000,00
+                                                        Minimal disbursement Rp. 10.000,00
                                                     </div>
                                                 ) : (
                                                     ""
