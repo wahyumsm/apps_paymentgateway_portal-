@@ -245,15 +245,15 @@ function DisbursementPage() {
 
                                 newArr.map(el => {
                                     //for each item in arrayOfObjects check if the object exists in the resulting array
-                                    const balanceBank = filteredBankTujuan.find((item) => {
-                                        // console.log(item.channel_id, "balance detail");
-                                        if (el.bankCode === "014" || el.bankCode === "011") {
-                                            return item.channel_id === el.bankCode
-                                        } else {
-                                            // el.bankCode = "BIF"
-                                            return item.channel_id === "BIF"
-                                        }
-                                    })
+                                    // const balanceBank = filteredBankTujuan.find((item) => {
+                                    //     // console.log(item.channel_id, "balance detail");
+                                    //     if (el.bankCode === "014" || el.bankCode === "011") {
+                                    //         return item.channel_id === el.bankCode
+                                    //     } else {
+                                    //         // el.bankCode = "BIF"
+                                    //         return item.channel_id === "BIF"
+                                    //     }
+                                    // })
                                     if(resultArray.find(object => {
                                         if(object.noRekening === el.noRekening && object.nominalDisbursement === el.nominalDisbursement) {
                                             //if the object exists iterate times
@@ -487,7 +487,6 @@ function DisbursementPage() {
                                     }
                                     // console.log(filteredBankTujuan.find(found => found.channel_id === data.bankCode), 'filteredBankTujuan.find(found => found.mpartballchannel_balance)');
             
-            
                                     if (validator.isEmail(data.email) === false) {
                                         objErrData.no = data.no
                                         // objErrData.data = data.email
@@ -498,37 +497,37 @@ function DisbursementPage() {
                                     
                                     if (data.bankCode !== '014') {
                                         if (data.cabangBank.length === 0) {
-                                            // console.log('masuk length 0', data.cabangBank, data.bankCode);
+                                            console.log('masuk length 0', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        } else if (data.cabangBank.length !== 0 && data.cabangBank.indexOf(' ') >= 0) {
-                                            // console.log('masuk spasi kosong', data.cabangBank, data.bankCode);
+                                        } else if (data.cabangBank.length !== 0 && data.cabangBank.trim().length === 0) {
+                                            console.log('masuk spasi kosong', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        } else if (data.cabangBank.length !== 0 && (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0)) {
-                                            // console.log('masuk huruf x besar dan kecil', data.cabangBank, data.bankCode);
+                                        } else if (data.cabangBank.length !== 0 && (data.cabangBank.split('x').join(' ').trim().length === 0 || data.cabangBank.split('X').join(' ').trim().length === 0)) {
+                                            console.log('masuk huruf x besar dan kecil', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.cabangBank.length !== 0 && /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank)) {
-                                            // console.log('masuk tanda baca', data.cabangBank, data.bankCode);
+                                            console.log('masuk tanda baca', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.cabangBank.length !== 0 && data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
-                                            // console.log('masuk angka', data.cabangBank, data.bankCode);
+                                            console.log('masuk angka', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.cabangBank.length !== 0 && data.cabangBank.length < 4 && data.cabangBank.toLowerCase() !== data.cabangBank.toUpperCase()) {
-                                            // console.log('masuk kombinasi kurang dari 4 huruf', data.cabangBank, data.bankCode);
+                                            console.log('masuk kombinasi kurang dari 4 huruf', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
@@ -539,7 +538,7 @@ function DisbursementPage() {
                                                 no: data.no,
                                                 bankCode: data.bankCode,
                                                 bankName: data.bankName,
-                                                cabangBank: data.cabangBank,
+                                                cabangBank: data.cabangBank.trim(),
                                                 noRekening: data.noRekening,
                                                 ownerName: data.ownerName,
                                                 nominalDisbursement: data.nominalDisbursement,
@@ -548,7 +547,7 @@ function DisbursementPage() {
                                             }
                                         }
                                     } else {
-                                        if (data.cabangBank.length === 0 || data.cabangBank.indexOf(' ') >= 0 ||  (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank) || data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
+                                        if (data.cabangBank.length === 0 || data.cabangBank.trim().length === 0 ||  (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank) || data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
                                             return {
                                                 ...data, 
                                                 cabangBank : ''
@@ -559,7 +558,7 @@ function DisbursementPage() {
                                                 no: data.no,
                                                 bankCode: data.bankCode,
                                                 bankName: data.bankName,
-                                                cabangBank: data.cabangBank,
+                                                cabangBank: data.cabangBank.trim(),
                                                 noRekening: data.noRekening,
                                                 ownerName: data.ownerName,
                                                 nominalDisbursement: data.nominalDisbursement,
@@ -2691,7 +2690,7 @@ function DisbursementPage() {
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 2)}</div>
                                         </div>
                                         <div className='d-flex justify-content-between align-items-center mt-2'>
-                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement + Total Fax</div>
+                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement + Total Tax</div>
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 2)}</div>
                                         </div>
                                         <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
@@ -3315,7 +3314,7 @@ function DisbursementPage() {
                                     <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 2)}</div>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center mt-2'>
-                                    <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement</div>
+                                    <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement + Total Tax</div>
                                     <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 2)}</div>
                                 </div>
                                 <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
