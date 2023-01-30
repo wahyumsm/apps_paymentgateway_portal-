@@ -2184,6 +2184,9 @@ function DisbursementPage() {
             console.log("masuk 2");
             disbursementTabs(true)
             setShowModalPindahHalaman(false)
+            setDataDisburse([])
+            setAllFee([])
+            setAllNominal([])
             setDataFromUpload([])
             setErrorFound([])
             setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
