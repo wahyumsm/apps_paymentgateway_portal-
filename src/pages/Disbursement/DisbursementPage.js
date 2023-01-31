@@ -2263,10 +2263,10 @@ function DisbursementPage() {
                     <>
                         <div id='disbursement-manual'>
                             <hr className='hr-style' style={{marginTop: -2}}/>
-                            <div className='base-content mb-4'>
+                            <div className='base-content mb-4 pb-4'>
                                 <div className='d-flex justify-content-start align-items-center' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" />
-                                    <div className='ms-2'>Pastikan data tujuan Disbursement sudah benar, kesalahan pada data akan berakibat gagalnya proses transaksi Disbursement.</div>
+                                    <div className='ms-2'>Pastikan data tujuan Disbursement sudah benar, Ezeelink tidak bertanggung jawab atas kesalahan data yang dilakukan.</div>
                                 </div>
                                 <div className='pt-4'>
                                     <Row className='align-items-center' style={{ fontSize: 14 }}>
@@ -2545,20 +2545,20 @@ function DisbursementPage() {
                                                     </div>
                                                     <div className='ms-1'>
                                                         <button
-                                                            style={{
-                                                                fontFamily: "Exo",
-                                                                fontSize: 16,
-                                                                fontWeight: 700,
-                                                                alignItems: "center",
-                                                                padding: "12px 24px",
-                                                                gap: 8,
-                                                                width: 136,
-                                                                height: 45,
-                                                                color: "#077E86",
-                                                                background: "transparent",
-                                                                border: "1px solid #077E86",
-                                                                borderRadius: 6,
-                                                            }}
+                                                            // style={{
+                                                            //     fontFamily: "Exo",
+                                                            //     fontSize: 16,
+                                                            //     fontWeight: 700,
+                                                            //     alignItems: "center",
+                                                            //     padding: "12px 24px",
+                                                            //     gap: 8,
+                                                            //     width: 136,
+                                                            //     height: 45,
+                                                            //     color: "#077E86",
+                                                            //     background: "transparent",
+                                                            //     border: "1px solid #077E86",
+                                                            //     borderRadius: 6,
+                                                            // }}
                                                             onClick={() => saveEditDataDisburse(
                                                                 numbering,
                                                                 inputData.bankName,
@@ -2572,6 +2572,12 @@ function DisbursementPage() {
                                                                 isChecked,
                                                                 dataDisburse
                                                             )}
+                                                            className={
+                                                                (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length >= 4) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= 10000 && dataDisburse.length < 10) ? 'btn-edit-disbursement' : 'btn-editno-disbursement'
+                                                            }
+                                                            disabled={
+                                                                (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length < 4 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < 10000 || dataDisburse.length >= 10)
+                                                            }
                                                         >
                                                             Simpan
                                                         </button>
