@@ -32,7 +32,6 @@ const TransferSubAccount = () => {
     const [showTransferBerhasil, setShowTransferBerhasil] = useState(false)
     const [otp, setOtp] = useState('')
     let otps = useRef('')
-    console.log(otps, 'otps');
     const renderer = ({ minutes, seconds }) => {  return <span>{minutes !== 0 && `${minutes} menit`} {seconds} detik</span>; }
     const [listBank, setListBank] = useState([])
     const [listRekening, setListRekening] = useState([])
@@ -55,7 +54,7 @@ const TransferSubAccount = () => {
         item => (item.moffshorebankacclist_name && item.moffshorebankacclist_name.toLowerCase().includes(filterTextRekening.toLowerCase())) || (item.moffshorebankacclist_number && item.moffshorebankacclist_number.toLowerCase().includes(filterTextRekening.toLowerCase()))
     )
     
-    console.log(sendOtp, 'sendOtp');
+    // console.log(sendOtp, 'sendOtp');
     const [inputHandle, setInputHandle] = useState({
         akunPartner: "",
         nomorAkun: "",
@@ -150,7 +149,7 @@ const TransferSubAccount = () => {
     }
 
     function handleChange(e) {
-        console.log(e.target.value, "e.target.value");
+        // console.log(e.target.value, "e.target.value");
         setInputTransfer({
             ...inputTransfer,
             [e.target.name]: (e.target.name !== "desc") ? Number(e.target.value).toString() : e.target.value,
@@ -170,10 +169,10 @@ const TransferSubAccount = () => {
     const onButtonClick = (async (dataConfirmation) => {
         const dom = document.getElementById('bukti');
         const fontEmbedCss = await htmlToImage.getFontEmbedCSS(dom);
-        console.log(dom, 'dom');
+        // console.log(dom, 'dom');
         htmlToImage.toPng(dom, { fontEmbedCss })
             .then(function (dataUrl) {
-                console.log(dataUrl, 'dataUrl');
+                // console.log(dataUrl, 'dataUrl');
                 var link = document.createElement('a');
                 link.download = `bukti-pembayaran-${dataConfirmation.trans_id}.png`
                 link.href = dataUrl;
@@ -181,7 +180,7 @@ const TransferSubAccount = () => {
                 // download(dataUrl, "bukti-tarnsfer.png")
             })
             .catch((err) => {
-                console.log(err, 'oops, something went wrong!')
+                // console.log(err, 'oops, something went wrong!')
             })
     })
 
@@ -276,9 +275,9 @@ const TransferSubAccount = () => {
                 }
             }
         } catch (error) {
-          console.log(error)
+        //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
-            // history.push(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -313,7 +312,7 @@ const TransferSubAccount = () => {
                 'Authorization' : auth
             }
             const rekeningList = await axios.post(BaseURL + "/SubAccount/GetListAccount", { data: "" }, { headers: headers })
-            console.log(rekeningList, 'list rekening');
+            // console.log(rekeningList, 'list rekening');
             if (rekeningList.status === 200 && rekeningList.data.response_code === 200 && rekeningList.data.response_new_token.length === 0) {
                 rekeningList.data.response_data = rekeningList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setListRekening(rekeningList.data.response_data)
@@ -343,7 +342,7 @@ const TransferSubAccount = () => {
             if (diperiksa === true) {
                 setIsCheckedAccBankButton(true)
                 const handleCheckAccount = await axios.post(BaseURL + "/SubAccount/AccountInquiryName", { data: dataParams }, { headers: headers })
-                console.log(handleCheckAccount, 'check account tombol periksa');
+                // console.log(handleCheckAccount, 'check account tombol periksa');
                 if (handleCheckAccount.status === 200 && handleCheckAccount.data.response_code === 200 && handleCheckAccount.data.response_new_token === null) {
                     setChecking(handleCheckAccount.data.response_data)
                     setMsg(handleCheckAccount.data.response_message)
@@ -355,7 +354,7 @@ const TransferSubAccount = () => {
             } else {
                 setIsCheckedAccBankButton(true)
                 const handleCheckAccount = await axios.post(BaseURL + "/SubAccount/AccountInquiryName", { data: dataParams }, { headers: headers })
-                console.log(handleCheckAccount, 'check account tanpa tombol periksa');
+                // console.log(handleCheckAccount, 'check account tanpa tombol periksa');
                 if (handleCheckAccount.status === 200 && handleCheckAccount.data.response_code === 200 && handleCheckAccount.data.response_new_token === null) {
                     setChecking(handleCheckAccount.data.response_data)
                     setMsg(handleCheckAccount.data.response_message)
@@ -393,7 +392,7 @@ const TransferSubAccount = () => {
                 'Authorization' : auth
             }
             const checkTransferFee = await axios.post(BaseURL + "/SubAccount/GetTransferFee", { data: dataParams }, { headers: headers })
-            console.log(checkTransferFee, 'transfer fee');
+            // console.log(checkTransferFee, 'transfer fee');
             if (checkTransferFee.status === 200 && checkTransferFee.data.response_code === 200 && checkTransferFee.data.response_new_token === null) {
                 setTransferFee(checkTransferFee.data.response_data)
             } else if (checkTransferFee.status === 200 && checkTransferFee.data.response_code === 200 && checkTransferFee.data.response_new_token !== null) {
@@ -415,7 +414,7 @@ const TransferSubAccount = () => {
                 'Authorization' : auth
             }
             const sendOtpCheck = await axios.post(BaseURL + "/SubAccount/SendOTPTransfer", { data: dataParams }, { headers: headers })
-            console.log(sendOtpCheck, 'otp');
+            // console.log(sendOtpCheck, 'otp');
             if (sendOtpCheck.status === 200 && sendOtpCheck.data.response_code === 200 && sendOtpCheck.data.response_new_token === null) {
                 const timeStamp = new Date(sendOtpCheck.data.response_data.retry*1000).toLocaleString()
                 const countdown = new Date(timeStamp).getTime()
@@ -442,8 +441,6 @@ const TransferSubAccount = () => {
         }
     }
 
-    console.log(showModalMaxInputOtp, "ShowModalMaxInputOtp");
-
     async function confirmHandler(nomorAkun, nominal, bankCode, desc, otp, saveNomorAkun, subPartnerId) {
         try {
             const auth = "Bearer " + getToken()
@@ -453,7 +450,7 @@ const TransferSubAccount = () => {
                 'Authorization' : auth
             }
             const sendDataConfirm = await axios.post(BaseURL + "/SubAccount/Transfer", { data: dataParams }, { headers: headers })
-            console.log(sendDataConfirm, 'transfer fee');
+            // console.log(sendDataConfirm, 'transfer fee');
             if (sendDataConfirm.status === 200 && sendDataConfirm.data.response_code === 200 && sendDataConfirm.data.response_new_token === null) {
                 setDataConfirm(sendDataConfirm.data.response_data)
                 setShowModalInputCode(false)
@@ -465,7 +462,7 @@ const TransferSubAccount = () => {
                 setShowTransferBerhasil(true)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             if (error.response.data.response_code === 400) {
                 if (error.response.data.response_data !== null) {
                     setDataConfirm(error.response.data.response_data)
@@ -482,14 +479,12 @@ const TransferSubAccount = () => {
 
     function toShowDataTransfer (isCheckingButton) {
         if (checking.account_name === undefined && isCheckingButton === false) {
-            console.log('sini');
+            // console.log('sini');
             checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, isCheckingButton)
         } else {
             setShowTransfer(true)
         }
     }
-
-    console.log(errMsg, "errMsg");
 
     const customStyles = {
         headCells: {
@@ -508,7 +503,7 @@ const TransferSubAccount = () => {
         },
     };
 
-    console.log(listAkunPartner, "LIST AKUN PARTNER");
+    // console.log(listAkunPartner, "LIST AKUN PARTNER");
   
     const CustomLoader = () => (
       <div style={{ padding: '24px' }}>

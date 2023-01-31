@@ -379,10 +379,6 @@ function EditPartner() {
       setAlertNoRek(false)
       setAlertNameRek(false)
       const finder = subAccount.find((item) => item.subpartner_id === sumberAgenCode)
-      console.log(finder, "finder");
-      // console.log(finder.subpartner_id, "finder sub partner id");
-      console.log(sumberAgenCode, "agen code ");
-      console.log(numberId, 'number id');
       if (finder !== undefined) {
         if (finder.number === numberId) {
           setAlertSamePartner(false)

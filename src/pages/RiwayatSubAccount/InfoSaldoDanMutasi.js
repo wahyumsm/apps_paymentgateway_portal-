@@ -59,13 +59,10 @@ const InfoSaldoDanMutasi = () => {
                 setPageMutasi(mutasiList.data.response_data.pages)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
         }
     }
-
-
-
-    console.log(listMutasi, 'listMutasi');
 
     const style = {
         height: 30,
@@ -129,9 +126,9 @@ const InfoSaldoDanMutasi = () => {
         });
     }
 
-    function loadFunc (page) {
-        console.log(page, "data load")
-    }
+    // function loadFunc (page) {
+    //     console.log(page, "data load")
+    // }
 
     function toDashboard() {
         history.push("/");
@@ -224,7 +221,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const dataAkunPartner = await axios.post(BaseURL + "/SubAccount/GetBalancePartner", { data: dataParams }, { headers: headers })
-            console.log(dataAkunPartner, "data akun partner")
+            // console.log(dataAkunPartner, "data akun partner")
             if (dataAkunPartner.status === 200 && dataAkunPartner.data.response_code === 200 && dataAkunPartner.data.response_new_token.length === 0) {
                 setDataAkun(dataAkunPartner.data.response_data)
                 setPendingSaldo(false)
@@ -234,7 +231,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingSaldo(false)
             }
         } catch (error) {
-          console.log(error)
+        //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
@@ -250,7 +247,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const mutasiList = await axios.post(BaseURL + "/SubAccount/GetAccountStatement", { data: dataParams }, { headers: headers })
-            console.log(mutasiList, "DATA MUTASI LIST")
+            // console.log(mutasiList, "DATA MUTASI LIST")
             if (mutasiList.status === 200 && mutasiList.data.response_code === 200 && mutasiList.data.response_new_token.length === 0) {
                 mutasiList.data.response_data.data.forEach((obj) => {
                     let year = obj.waktu.slice(0, 4)
@@ -274,7 +271,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingMutasi(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
             setPendingMutasi(false)
@@ -292,7 +289,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const mutasiListFilter = await axios.post(BaseURL + "/SubAccount/GetAccountStatement", { data: dataParams }, { headers: headers })
-            console.log(mutasiListFilter, "DATA MUTASI LIST FILTER")
+            // console.log(mutasiListFilter, "DATA MUTASI LIST FILTER")
             if (mutasiListFilter.status === 200 && mutasiListFilter.data.response_code === 200 && mutasiListFilter.data.response_new_token.length === 0) {
                 mutasiListFilter.data.response_data.data.forEach((obj, idx) => {
                     obj.number = idx + 1
@@ -318,7 +315,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingMutasi(false)
             }
         } catch (error) {
-          console.log(error)
+        //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
             history.push(errorCatch(error.response.status))
         }
@@ -332,7 +329,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
-            console.log(userDetail, 'ini user detal funct');
+            // console.log(userDetail, 'ini user detal funct');
             if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
                 setUserId(userDetail.data.response_data.muser_partnerdtl_id)
                 getListMutasi(userDetail.data.response_data.muser_partnerdtl_id)
@@ -362,7 +359,7 @@ const InfoSaldoDanMutasi = () => {
     }
 
     function pickDateInfoMutasi(item) {
-        console.log(item, "item");
+        // console.log(item, "item");
         setStateInfoMutasi(item)
         if (item !== null) {
           item = item.map(el => el.toLocaleDateString('en-CA').split("-").join(""))
@@ -410,7 +407,7 @@ const InfoSaldoDanMutasi = () => {
         userDetails()
         getAkunPartner()
     }, [])
-    console.log(listMutasi, 'listMutasi');
+    // console.log(listMutasi, 'listMutasi');
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>

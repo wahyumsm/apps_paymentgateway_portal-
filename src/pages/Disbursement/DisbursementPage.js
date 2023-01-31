@@ -94,7 +94,7 @@ function DisbursementPage() {
     })
     
     async function fileCSV(newValue, bankLists, listBankTujuan) {
-        console.log(newValue, 'newValue');
+        // console.log(newValue, 'newValue');
         if (errorFound.length !== 0) {
             setErrorFound([])
         }
@@ -109,7 +109,7 @@ function DisbursementPage() {
                 </div>`)
         } else if (listBankTujuan.length !== 0) {
             const filteredBankTujuan = listBankTujuan.filter(item => item.mpaytype_mpaycat_id === 2)
-            console.log(filteredBankTujuan, 'filteredBankTujuan');
+            // console.log(filteredBankTujuan, 'filteredBankTujuan');
             if (filteredBankTujuan.length === 0) {
                 setLabelUpload("")
                 setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Seluruh data Bank Tujuan tidak tersedia pada saat ini</div>
@@ -141,16 +141,16 @@ function DisbursementPage() {
                     // }, 2500);
                 } else {
                     const pond = await newValue[0].getFileEncodeBase64String()
-                    console.log(pond, 'pond');
+                    // console.log(pond, 'pond');
                     if (pond) {
                         const decoded = Base64.decode(pond)
-                        console.log(decoded, 'decodedd');
+                        // console.log(decoded, 'decodedd');
                         const headerCol = decoded.split('|').slice(0, 8)
                         // console.log(headerCol, 'headerCol');
                         if (headerCol[0] === "No*" && headerCol[1] === "Bank Tujuan*" && headerCol[2] === "Cabang (Khusus Non-BCA)*" && headerCol[3] === "No. Rekening Tujuan*" && headerCol[4] === "Nama Pemilik Rekening*" && headerCol[5] === "Nominal Disbursement*" && headerCol[6] === "Email Penerima" && headerCol[7] === "Catatan\r\n1") {
                             // console.log("ini bener");
                             const newDcd = decoded.split("|").slice(8)
-                            console.log(newDcd, 'newDcd');
+                            // console.log(newDcd, 'newDcd');
                             // console.log(newDcd.length%7, 'newDcd');
                             if (newDcd.length%7 !== 0) {
                                 setErrorFound([])
@@ -171,7 +171,7 @@ function DisbursementPage() {
                                 let newArr = []
                                 let obj = {}
                                 const filteredListBank = bankLists.filter(item => item.is_enabled === true)
-                                console.log(filteredListBank, 'filteredListBank');
+                                // console.log(filteredListBank, 'filteredListBank');
                                 newDcd.forEach((el, idx) => {
                                     if (idx === 0 || idx % 7 === 0) {
                                         // console.log(el.slice(0,3), 'el.slice(0,3)');
@@ -185,12 +185,12 @@ function DisbursementPage() {
                                             } else {
                                                 const sameBankName = filteredListBank.find(list => list.mbank_code === el.slice(0, 3))
                                                 // console.log(bankLists, 'bankLists di bawah samebank');
-                                                console.log(sameBankName, 'sameBankName1');
+                                                // console.log(sameBankName, 'sameBankName1');
                                                 obj.bankCode = sameBankName !== undefined ? sameBankName.mbank_code : "undefined"
                                                 obj.bankName = sameBankName !== undefined ? sameBankName.mbank_name : "undefined"
-                                                console.log(feeBank, 'feeBank');
+                                                // console.log(feeBank, 'feeBank');
                                                 if (sameBankName !== undefined && feeBank.length !== 0) {
-                                                    console.log(sameBankName, 'sameBankName2');
+                                                    // console.log(sameBankName, 'sameBankName2');
                                                     const result = feeBank.find((item) => {
                                                         if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
                                                             return item.mpaytype_bank_code === sameBankName.mbank_code
@@ -199,7 +199,7 @@ function DisbursementPage() {
                                                             return item.mpaytype_bank_code === "BIF"
                                                         }
                                                     })
-                                                    console.log(result, 'result');
+                                                    // console.log(result, 'result');
                                                     if (result !== undefined) {
                                                         totalFeeDisburse += result.fee_total
                                                         totalFeeDisburseArr.push(result.fee_total)
@@ -238,7 +238,7 @@ function DisbursementPage() {
                                 // console.log(totalFeeDisburse, 'totalFeeDisburse');
                                 setAllNominal([totalNominalDisburse])
                                 setAllFee([totalFeeDisburse])
-                                console.log(totalFeeDisburseArr, 'totalFeeDisburseArr');
+                                // console.log(totalFeeDisburseArr, 'totalFeeDisburseArr');
                                 let sameNumberData = []
                                 let errData = []
                                 const resultArray = [];
@@ -274,8 +274,8 @@ function DisbursementPage() {
                                     // }
                                 })
 
-                                console.log(resultArray, 'resultArray')
-                                console.log(sameNumberData, 'sameNumberData')
+                                // console.log(resultArray, 'resultArray')
+                                // console.log(sameNumberData, 'sameNumberData')
                                 if (sameNumberData.length >= 1) {
                                     setShowModalDuplikasi(true)
                                     setDuplicateData(sameNumberData)
@@ -343,9 +343,9 @@ function DisbursementPage() {
                                         objErrData = {}
                                     }
             
-                                    console.log(data.nominalDisbursement, 'nominal disbursement tipe data');
+                                    // console.log(data.nominalDisbursement, 'nominal disbursement tipe data');
                                     if (data.nominalDisbursement.length === 0 || data.nominalDisbursement === '0') {
-                                        console.log('masuk nominal error1');
+                                        // console.log('masuk nominal error1');
                                         objErrData.no = data.no
                                         // objErrData.data = data.noRekening
                                         objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
@@ -367,19 +367,19 @@ function DisbursementPage() {
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.nominalDisbursement.length < 5) {
-                                            console.log('masuk nominal error2');
+                                            // console.log('masuk nominal error2');
                                             objErrData.no = data.no
                                             // objErrData.data = data.noRekening
                                             objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (Number(data.nominalDisbursement) < balanceBank.mpartballchannel_balance || Number(data.nominalDisbursement) === balanceBank.mpartballchannel_balance) {
-                                            console.log(data, 'data.mbank_code error nominal');
-                                            console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp');
-                                            console.log(result, 'result untuk error nominal');
+                                            // console.log(data, 'data.mbank_code error nominal');
+                                            // console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp');
+                                            // console.log(result, 'result untuk error nominal');
                                             if (data.bankCode === '014') {
                                                 if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
-                                                    console.log('masuk if bca');
+                                                    // console.log('masuk if bca');
                                                     objErrData.no = data.no
                                                     // objErrData.data = data.noRekening
                                                     objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup'
@@ -390,12 +390,12 @@ function DisbursementPage() {
                                                         bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
                                                 } else {
-                                                    console.log('masuk else bca');
+                                                    // console.log('masuk else bca');
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
                                                         bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
-                                                    console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp bca');
+                                                    // console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp bca');
                                                     // setSisaSaldoAlokasiPerBank({
                                                     //     ...sisaSaldoAlokasiPerBank,
                                                     //     bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
@@ -403,7 +403,7 @@ function DisbursementPage() {
                                                 }
                                             } else if (data.bankCode === '011') {
                                                 if ((sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
-                                                    console.log('masuk if danamon');
+                                                    // console.log('masuk if danamon');
                                                     objErrData.no = data.no
                                                     // objErrData.data = data.noRekening
                                                     objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup'
@@ -414,21 +414,21 @@ function DisbursementPage() {
                                                         danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
                                                 } else {
-                                                    console.log('masuk else danamon');
+                                                    // console.log('masuk else danamon');
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
                                                         danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
-                                                    console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp danamon');
+                                                    // console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp danamon');
                                                     // setSisaSaldoAlokasiPerBank({
                                                     //     ...sisaSaldoAlokasiPerBank,
                                                     //     danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     // })
                                                 }
                                             } else {
-                                                console.log((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance), '(sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance)');
+                                                // console.log((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance), '(sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance)');
                                                 if ((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total) < 0) {
-                                                    console.log('masuk otherbank minus');
+                                                    // console.log('masuk otherbank minus');
                                                     objErrData.no = data.no
                                                     // objErrData.data = data.noRekening
                                                     objErrData.keterangan = `Saldo pada rekening ${result.mpaytype_name} anda tidak cukup`
@@ -439,16 +439,12 @@ function DisbursementPage() {
                                                         bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
                                                 } else {
-                                                    console.log('masuk otherbank non minus');
+                                                    // console.log('masuk otherbank non minus');
                                                     sisaSaldoAlokasiPerBankTemp = {
                                                         ...sisaSaldoAlokasiPerBankTemp,
                                                         bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(data.nominalDisbursement) + result.fee_total)
                                                     }
-                                                    console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp other bank');
-                                                    // setSisaSaldoAlokasiPerBank({
-                                                    //     ...sisaSaldoAlokasiPerBank,
-                                                    //     bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance) - (Number(data.nominalDisbursement) + result.fee_total)
-                                                    // })
+                                                    // console.log(sisaSaldoAlokasiPerBankTemp, 'sisaSaldoAlokasiPerBankTemp other bank');
                                                 }
                                             }
                                         } else if (Number(data.nominalDisbursement) > (balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) {
@@ -497,37 +493,37 @@ function DisbursementPage() {
                                     
                                     if (data.bankCode !== '014') {
                                         if (data.cabangBank.length === 0) {
-                                            console.log('masuk length 0', data.cabangBank, data.bankCode);
+                                            // console.log('masuk length 0', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.cabangBank.length !== 0 && data.cabangBank.trim().length === 0) {
-                                            console.log('masuk spasi kosong', data.cabangBank, data.bankCode);
+                                            // console.log('masuk spasi kosong', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.cabangBank.length !== 0 && (data.cabangBank.split('x').join(' ').trim().length === 0 || data.cabangBank.split('X').join(' ').trim().length === 0)) {
-                                            console.log('masuk huruf x besar dan kecil', data.cabangBank, data.bankCode);
+                                            // console.log('masuk huruf x besar dan kecil', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.cabangBank.length !== 0 && /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank)) {
-                                            console.log('masuk tanda baca', data.cabangBank, data.bankCode);
+                                            // console.log('masuk tanda baca', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.cabangBank.length !== 0 && data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
-                                            console.log('masuk angka', data.cabangBank, data.bankCode);
+                                            // console.log('masuk angka', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.cabangBank.length !== 0 && data.cabangBank.length < 4 && data.cabangBank.toLowerCase() !== data.cabangBank.toUpperCase()) {
-                                            console.log('masuk kombinasi kurang dari 4 huruf', data.cabangBank, data.bankCode);
+                                            // console.log('masuk kombinasi kurang dari 4 huruf', data.cabangBank, data.bankCode);
                                             objErrData.no = data.no
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
@@ -568,9 +564,9 @@ function DisbursementPage() {
                                         }
                                     }
                                 })
-                                console.log(sameNumberData, 'sameNumberData');
-                                console.log(errData, 'errData');
-                                console.log(newArr, 'newArr');
+                                // console.log(sameNumberData, 'sameNumberData');
+                                // console.log(errData, 'errData');
+                                // console.log(newArr, 'newArr');
                                 if (errData.length !== 0) {
                                     setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
                                     <div className='pb-4'>
@@ -627,7 +623,7 @@ function DisbursementPage() {
     }
 
     function openErrorListModal(errorList) {
-        console.log(errorList, 'errorList');
+        // console.log(errorList, 'errorList');
         let errorArr = []
         let arrKecil = []
         errorList.forEach((err, idx) => {
@@ -644,14 +640,14 @@ function DisbursementPage() {
                 arrKecil.push(err)
             }
         })
-        console.log(errorArr,'errorArr');
+        // console.log(errorArr,'errorArr');
         setErrorFoundPagination(errorArr)
         setErrorLoadPagination(errorArr[0])
         setShowModalErrorList(true)
     }
 
     function handlePageChangeErrorList(page, errorList) {
-        console.log(page,'page');
+        // console.log(page,'page');
         setActivePageErrorList(page)
         setErrorLoadPagination(errorList[page-1])
     }
@@ -662,7 +658,7 @@ function DisbursementPage() {
     }
 
     function handleClickChangeFile(param) {
-        console.log('clicked1');
+        // console.log('clicked1');
         $('.filepond--browser').trigger('click');
         if (param === "errorList") {
             setShowModalErrorList(false)
@@ -670,7 +666,7 @@ function DisbursementPage() {
         } else if (param === "duplicateData") {
             setShowModalDuplikasi(false)
         }
-        console.log('clicked2');
+        // console.log('clicked2');
     }
 
     // console.log(files, 'files upload');
@@ -764,12 +760,12 @@ function DisbursementPage() {
     // console.log(inputRekening.bankNameRek,"bankNameRek");
     // console.log(inputRekening.bankNumberRek,"bankNumberRek");
     // console.log(inputHandle.bankCabang,"bankCabang");
-    console.log(inputHandle.nominal,"nominal");
+    // console.log(inputHandle.nominal,"nominal");
     // console.log(inputHandle.emailPenerima.length,"emailPenerima");
     // console.log(inputHandle.catatan,"catatan");
     // console.log(isChecked,"saveAcc");
-    console.log(dataDisburse,"dataDisburse");
-    console.log(allFee, "all fee");
+    // console.log(dataDisburse,"dataDisburse");
+    // console.log(allFee, "all fee");
 
     const columns = [
         {
@@ -937,7 +933,7 @@ function DisbursementPage() {
                 setListBank(bankList.data.response_data)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             // history.push(errorCatch(error.response.status))
         }
@@ -1111,11 +1107,9 @@ function DisbursementPage() {
 
         if (bankCodeTujuan !== "014") {
             if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
-                console.log("masuk alert not valid");
                 setAlertNotValid(true)
                 return
             } else {
-                console.log("masuk alert valid");
                 setAlertNotValid(false)
                 
             }
@@ -1123,7 +1117,6 @@ function DisbursementPage() {
             setAlertNotValid(false)
         }
         const balanceBank = balanceDetail.find((item) => {
-            console.log(item.channel_id, "balance detail");
             if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
                 return item.channel_id === bankCodeTujuan
             } else {
@@ -1132,7 +1125,6 @@ function DisbursementPage() {
             }
         })
         
-        console.log(balanceBank, "balanceBank");
         if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
             setAlertSaldo(false)
             let sameFlag = 0
@@ -1141,7 +1133,6 @@ function DisbursementPage() {
                     sameFlag++
                 }
             })
-            console.log(sameFlag, "sameFlag");
             if (sameFlag === 0) {
                 setShowModalDuplikasi(false)
                 const result = feeBank.find((item) => {
@@ -1195,10 +1186,8 @@ function DisbursementPage() {
                     }
                 } else if (bankCodeTujuan === '011') {
                     if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                        console.log('masuk alert');
                         setAlertSaldo(true)
                     } else {
-                        console.log('masuk gak alert');
                         const newData = {
                             number: number,
                             bankNameTujuan: bankNameTujuan,
@@ -1238,10 +1227,8 @@ function DisbursementPage() {
                     }
                 } else {
                     if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                        console.log('masuk alert');
                         setAlertSaldo(true)
                     } else {
-                        console.log('masuk gak alert');
                         const newData = {
                             number: number,
                             bankNameTujuan: bankNameTujuan,
@@ -1287,8 +1274,6 @@ function DisbursementPage() {
             setAlertSaldo(true)
         }
     }
-    console.log(sisaSaldoAlokasiPerBank, 'sisaSaldoAlokasiPerBank');
-    console.log(alertSaldo, 'alertSaldo');
 
     function lanjutSaveNew (
         number,
@@ -1304,11 +1289,9 @@ function DisbursementPage() {
     ) {
         if (bankCodeTujuan !== "014") {
             if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
-                console.log("masuk alert not valid");
                 setAlertNotValid(true)
                 return
             } else {
-                console.log("masuk alert valid");
                 setAlertNotValid(false)
                 
             }
@@ -1316,7 +1299,6 @@ function DisbursementPage() {
             setAlertNotValid(false)
         }
         const balanceBank = balanceDetail.find((item) => {
-            console.log(item.channel_id, "balance detail");
             if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
                 return item.channel_id === bankCodeTujuan
             } else {
@@ -1337,7 +1319,6 @@ function DisbursementPage() {
             })
             if (bankCodeTujuan === '014') {
                 if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                    console.log('masuk alert');
                     setAlertSaldo(true)
                 } else {
                     const newData = {
@@ -1379,7 +1360,6 @@ function DisbursementPage() {
                 }
             } else if (bankCodeTujuan === '011') {
                 if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                    console.log('masuk alert');
                     setAlertSaldo(true)
                 } else {
                     const newData = {
@@ -1421,7 +1401,6 @@ function DisbursementPage() {
                 }
             } else {
                 if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                    console.log('masuk alert');
                     setAlertSaldo(true)
                 } else {
                     const newData = {
@@ -1471,7 +1450,6 @@ function DisbursementPage() {
     function editDataDisburse(numberId) {
         setEditTabelDisburse(true)
         const result = dataDisburse.find((item) => item.number === numberId);
-        console.log(result, "result");
         setInputData({
             bankName: result.bankNameTujuan,
             bankCode: result.bankCodeTujuan
@@ -1510,11 +1488,9 @@ function DisbursementPage() {
         }
         if (bankCodeTujuan !== "014") {
             if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
-                console.log("masuk alert not valid");
                 setAlertNotValid(true)
                 return
             } else {
-                console.log("masuk alert valid");
                 setAlertNotValid(false)
                 
             }
@@ -1522,7 +1498,6 @@ function DisbursementPage() {
             setAlertNotValid(false)
         }
         const balanceBank = balanceDetail.find((item) => {
-            // console.log(item.channel_id, "balance detail");
             if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
                 return item.channel_id === bankCodeTujuan
             } else {
@@ -1534,7 +1509,6 @@ function DisbursementPage() {
             setAlertSaldo(false)
             let sameFlag = 0
             const results = dataDisburse.filter(res => res.number !== number)
-            console.log(results, "results filter");
             results.forEach((val) => {
                 if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
                     sameFlag++
@@ -1554,20 +1528,10 @@ function DisbursementPage() {
                     }
                 })
                 const dataLama = dataDisburse.find((item) => item.number === number);
-                console.log(dataLama, 'dataLama');
-                console.log(bankCodeTujuan, 'bankCodeTujuan');
                 
-                
-                console.log(allNominal, "nominal save edit");
                 if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
-                    console.log("masuk 1");
-                    console.log(sisaSaldoAlokasiPerBank.bca,'sisaSaldoAlokasiPerBank.bca');
-                    console.log(dataLama.nominal + dataLama.feeTotal,'dataLama.nominal + dataLama.feeTotal');
-                    console.log(nominal,'nominal');
-                    console.log(result.fee_total,'result.fee_total');
                     if (bankCodeTujuan === '014') {
                         if (Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("validasi 1");
                             setAlertSaldo(true)
                             return
                         } else {
@@ -1579,7 +1543,6 @@ function DisbursementPage() {
                         }
                     } else if (bankCodeTujuan === "011") {
                         if (Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("validasi 2");
                             setAlertSaldo(true)
                             return
                         } else {
@@ -1591,7 +1554,6 @@ function DisbursementPage() {
                         }
                     } else {
                         if (Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("validasi 3");
                             setAlertSaldo(true)
                             return
                         } else {
@@ -1603,17 +1565,12 @@ function DisbursementPage() {
                         }
                     }
                 } else {
-                    console.log("masuk 2");
                     if (dataLama.bankCodeTujuan === '014') {
-                        console.log("masuk 1 sub");
                         if (bankCodeTujuan === "011") {
-                            console.log("masuk 1 sub 1");
                             if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                                console.log("masuk 1 sub 1 sub 1");
                                 setAlertSaldo(true)
                                 return
                             } else {
-                                console.log("masuk 2 sub 1 sub 1");
                                 setAlertSaldo(false)
                                 setSisaSaldoAlokasiPerBank({
                                     ...sisaSaldoAlokasiPerBank,
@@ -1622,13 +1579,10 @@ function DisbursementPage() {
                                 })
                             }
                         } else {
-                            console.log("masuk 2 sub 1");
                             if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                                console.log("masuk 1 sub 1 sub 1");
                                 setAlertSaldo(true)
                                 return
                             } else {
-                                console.log("masuk 2 sub 1 sub 1");
                                 setAlertSaldo(false)
                                 setSisaSaldoAlokasiPerBank({
                                     ...sisaSaldoAlokasiPerBank,
@@ -1638,15 +1592,11 @@ function DisbursementPage() {
                             }
                         }
                     } else if (dataLama.bankCodeTujuan === '011') {
-                        console.log("masuk 2 sub");
                         if (bankCodeTujuan === "014") {
-                            console.log("masuk 1 sub 1");
                             if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                                console.log("masuk 1 sub 1 sub 1");
                                 setAlertSaldo(true)
                                 return
                             } else {
-                                console.log("masuk 2 sub 1 sub 1");
                                 setAlertSaldo(false)
                                 setSisaSaldoAlokasiPerBank({
                                     ...sisaSaldoAlokasiPerBank,
@@ -1655,13 +1605,10 @@ function DisbursementPage() {
                                 })
                             }
                         } else {
-                            console.log("masuk 2 sub 1");
                             if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                                console.log("masuk 1 sub 1 sub 1");
                                 setAlertSaldo(true)
                                 return
                             } else {
-                                console.log("masuk 2 sub 1 sub 1");
                                 setAlertSaldo(false)
                                 setSisaSaldoAlokasiPerBank({
                                     ...sisaSaldoAlokasiPerBank,
@@ -1671,15 +1618,11 @@ function DisbursementPage() {
                             }
                         }
                     } else {
-                        console.log("masuk 3 sub");
                         if (bankCodeTujuan === "014") {
-                            console.log("masuk 1 sub 1");
                             if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                                console.log("masuk 1 sub 1 sub 1");
                                 setAlertSaldo(true)
                                 return
                             } else {
-                                console.log("masuk 2 sub 1 sub 1");
                                 setAlertSaldo(false)
                                 setSisaSaldoAlokasiPerBank({
                                     ...sisaSaldoAlokasiPerBank,
@@ -1688,13 +1631,10 @@ function DisbursementPage() {
                                 })
                             }
                         } else {
-                            console.log("masuk 2 sub 1");
                             if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                                console.log("masuk 1 sub 1 sub 1");
                                 setAlertSaldo(true)
                                 return
                             } else {
-                                console.log("masuk 2 sub 1 sub 1");
                                 setAlertSaldo(false)
                                 setSisaSaldoAlokasiPerBank({
                                     ...sisaSaldoAlokasiPerBank,
@@ -1710,9 +1650,7 @@ function DisbursementPage() {
                     allNominal[finding] = Number(nominal)
                     allFee[finding] = result.fee_total
                 }
-                console.log('diatas set all fee');
                 setAllFee([...allFee])
-                console.log('dibawah set all fee');
                 const target = dataDisburse.find((item) => item.number === number)
                 const source = {
                     number: number,
@@ -1729,9 +1667,7 @@ function DisbursementPage() {
                 };
                 Object.assign(target, source)
                 setDataDisburse([...dataDisburse])
-                console.log('diatas set al nominal');
                 setAllNominal([...allNominal])
-                console.log('dibawah set al nominal');
                 setEditTabelDisburse(false)
                 setInputData({
                     bankName: "",
@@ -1778,11 +1714,9 @@ function DisbursementPage() {
         }
         if (bankCodeTujuan !== "014") {
             if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
-                console.log("masuk alert not valid");
                 setAlertNotValid(true)
                 return
             } else {
-                console.log("masuk alert valid");
                 setAlertNotValid(false)
                 
             }
@@ -1815,14 +1749,8 @@ function DisbursementPage() {
 
 
             if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
-                console.log("masuk 1");
-                console.log(sisaSaldoAlokasiPerBank.bca,'sisaSaldoAlokasiPerBank.bca');
-                console.log(dataLama.nominal + dataLama.feeTotal,'dataLama.nominal + dataLama.feeTotal');
-                console.log(nominal,'nominal');
-                console.log(result.fee_total,'result.fee_total');
                 if (bankCodeTujuan === '014') {
                     if (Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                        console.log("validasi 1");
                         setAlertSaldo(true)
                         return
                     } else {
@@ -1834,7 +1762,6 @@ function DisbursementPage() {
                     }
                 } else if (bankCodeTujuan === "011") {
                     if (Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                        console.log("validasi 2");
                         setAlertSaldo(true)
                         return
                     } else {
@@ -1846,7 +1773,6 @@ function DisbursementPage() {
                     }
                 } else {
                     if (Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                        console.log("validasi 3");
                         setAlertSaldo(true)
                         return
                     } else {
@@ -1858,17 +1784,12 @@ function DisbursementPage() {
                     }
                 }
             } else {
-                console.log("masuk 2");
                 if (dataLama.bankCodeTujuan === '014') {
-                    console.log("masuk 1 sub");
                     if (bankCodeTujuan === "011") {
-                        console.log("masuk 1 sub 1");
                         if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("masuk 1 sub 1 sub 1");
                             setAlertSaldo(true)
                             return
                         } else {
-                            console.log("masuk 2 sub 1 sub 1");
                             setAlertSaldo(false)
                             setSisaSaldoAlokasiPerBank({
                                 ...sisaSaldoAlokasiPerBank,
@@ -1877,13 +1798,10 @@ function DisbursementPage() {
                             })
                         }
                     } else {
-                        console.log("masuk 2 sub 1");
                         if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("masuk 1 sub 1 sub 1");
                             setAlertSaldo(true)
                             return
                         } else {
-                            console.log("masuk 2 sub 1 sub 1");
                             setAlertSaldo(false)
                             setSisaSaldoAlokasiPerBank({
                                 ...sisaSaldoAlokasiPerBank,
@@ -1893,15 +1811,11 @@ function DisbursementPage() {
                         }
                     }
                 } else if (dataLama.bankCodeTujuan === '011') {
-                    console.log("masuk 2 sub");
                     if (bankCodeTujuan === "014") {
-                        console.log("masuk 1 sub 1");
                         if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("masuk 1 sub 1 sub 1");
                             setAlertSaldo(true)
                             return
                         } else {
-                            console.log("masuk 2 sub 1 sub 1");
                             setAlertSaldo(false)
                             setSisaSaldoAlokasiPerBank({
                                 ...sisaSaldoAlokasiPerBank,
@@ -1910,13 +1824,10 @@ function DisbursementPage() {
                             })
                         }
                     } else {
-                        console.log("masuk 2 sub 1");
                         if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("masuk 1 sub 1 sub 1");
                             setAlertSaldo(true)
                             return
                         } else {
-                            console.log("masuk 2 sub 1 sub 1");
                             setAlertSaldo(false)
                             setSisaSaldoAlokasiPerBank({
                                 ...sisaSaldoAlokasiPerBank,
@@ -1926,15 +1837,11 @@ function DisbursementPage() {
                         }
                     }
                 } else {
-                    console.log("masuk 3 sub");
                     if (bankCodeTujuan === "014") {
-                        console.log("masuk 1 sub 1");
                         if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("masuk 1 sub 1 sub 1");
                             setAlertSaldo(true)
                             return
                         } else {
-                            console.log("masuk 2 sub 1 sub 1");
                             setAlertSaldo(false)
                             setSisaSaldoAlokasiPerBank({
                                 ...sisaSaldoAlokasiPerBank,
@@ -1943,13 +1850,10 @@ function DisbursementPage() {
                             })
                         }
                     } else {
-                        console.log("masuk 2 sub 1");
                         if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                            console.log("masuk 1 sub 1 sub 1");
                             setAlertSaldo(true)
                             return
                         } else {
-                            console.log("masuk 2 sub 1 sub 1");
                             setAlertSaldo(false)
                             setSisaSaldoAlokasiPerBank({
                                 ...sisaSaldoAlokasiPerBank,
@@ -1965,9 +1869,7 @@ function DisbursementPage() {
                 allNominal[finding] = Number(nominal)
                 allFee[finding] = result.fee_total
             }
-            console.log('diatas set all fee lanjut edit');
             setAllFee([...allFee])
-            console.log('dibawah set all fee lanjut edit');
             const target = dataDisburse.find((item) => item.number === number)
             const source = {
                 number: number,
@@ -1986,9 +1888,7 @@ function DisbursementPage() {
             Object.assign(target, source)
             setDataDisburse([...dataDisburse])
             
-            console.log('diatas set all nominalc lanjut edit');
             setAllNominal([...allNominal])
-            console.log('dibawah set all nominal lanjut edit');
             setEditTabelDisburse(false)
             setInputData({
                 bankName: "",
@@ -2035,8 +1935,6 @@ function DisbursementPage() {
     function deleteDataDisburse(numberId) {
         const result = dataDisburse.findIndex((item) => item.number === numberId);
         const dataLama = dataDisburse.find((item) => item.number === numberId);
-        console.log(result, "delete result");
-        console.log(dataLama, "dataLama");
         dataDisburse.splice(result, 1);
         setDataDisburse([...dataDisburse]);
         allFee.splice(result, 1)
@@ -2130,7 +2028,6 @@ function DisbursementPage() {
 
     function pindahHalaman (param) {
         if (param === "manual") {
-            console.log("masuk 1");
             if (dataFromUpload.length !== 0 || errorFound.length !== 0 || labelUpload === `<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
             <div className='pb-4'>
                 <span class="filepond--label-action">
@@ -2140,17 +2037,13 @@ function DisbursementPage() {
                 setShowModalPindahHalaman(true)
                 setTab(param)
             } else {
-                console.log("masuk 2 sub");
                 disbursementTabs(true)
             }
         } else {
-            console.log("masuk 2");
             if (inputData.bankName.length !== 0 || inputData.bankCode.length !== 0 || inputRekening.bankNameRek.length !== 0 || inputRekening.bankNumberRek.length !== 0 || inputHandle.bankCabang.length !== 0 || inputHandle.nominal.length !== 0 || isChecked === true || inputHandle.emailPenerima.length !== 0 || inputHandle.catatan.length !== 0 || dataDisburse.length !== 0 ) {
-                console.log("masuk 1 sub");
                 setShowModalPindahHalaman(true)
                 setTab(param)
             } else {
-                console.log("masuk 2 sub");
                 disbursementTabs(false)
             }
         }
@@ -2158,7 +2051,6 @@ function DisbursementPage() {
 
     function PindahTab (param) {
         if (param === "bulk") {
-            console.log("masuk 1");
             disbursementTabs(false)
             setShowModalPindahHalaman(false)
             setInputData({
@@ -2181,7 +2073,6 @@ function DisbursementPage() {
             setIsChecked(false)
             setNumbering(0)
         } else {
-            console.log("masuk 2");
             disbursementTabs(true)
             setShowModalPindahHalaman(false)
             setDataDisburse([])

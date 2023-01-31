@@ -116,7 +116,7 @@ function DisbursementReport() {
                 'Authorization': auth
             }
             const listDisburse = await axios.post(BaseURL + "/Home/GetPaymentType", {data: ""}, {headers: headers})
-            console.log(listDisburse, "list disburse");
+            // console.log(listDisburse, "list disburse");
             if (listDisburse.status === 200 && listDisburse.data.response_code === 200 && listDisburse.data.response_new_token.length === 0) {
                 setListDisburseChannel(listDisburse.data.response_data)
             } else if (listDisburse.status === 200 && listDisburse.data.response_code === 200 && listDisburse.data.response_new_token.length !== 0) {
@@ -492,7 +492,7 @@ function DisbursementReport() {
                         'Authorization': auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
-                    console.log(dataExportFilter, 'dataExportFilter');
+                    // console.log(dataExportFilter, 'dataExportFilter');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
