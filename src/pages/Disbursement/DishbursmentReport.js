@@ -73,7 +73,7 @@ function DisbursementReport() {
     function handlePageChangeDisbursement(page) {
         if (isFilterDisbursement) {
             setActivePageDisbursement(page)
-            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.paymentCode, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, 0)
+            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.paymentCode, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)
         } else {
             setActivePageDisbursement(page)
             disbursementReport(page, user_role)
@@ -203,13 +203,13 @@ function DisbursementReport() {
         }
     }
 
-    async function filterDisbursement(page, statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId, rowPerPage) {
+    async function filterDisbursement(page, statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId, reffNo, rowPerPage) {
         try {
             setPendingDisbursement(true)
             setIsFilterDisbursement(true)
             setActivePageDisbursement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "${reffNo}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -245,7 +245,8 @@ function DisbursementReport() {
             statusDisbursement: [],
             periodeDisbursement: 0,
             partnerTransId: "",
-            paymentCode: ""
+            paymentCode: "",
+            referenceNo: ""
         })
         setStateDisbursement(null)
         setDateRangeDisbursement([])
@@ -333,6 +334,12 @@ function DisbursementReport() {
         {
             name: 'Nomor Akun',
             selector: row => row.tdishburse_acc_num,
+            // sortable: true,
+            width: "224px",
+        },
+        {
+            name: 'Reference No',
+            selector: row => row.reference_no,
             // sortable: true,
             width: "224px",
         },
@@ -480,7 +487,7 @@ function DisbursementReport() {
         },
     };
 
-    function ExportReportDisbursementHandler(isFilter, userRole, statusId, paymentCode, transId, partnerId, dateId, periode, partnerTransId) {
+    function ExportReportDisbursementHandler(isFilter, userRole, statusId, paymentCode, transId, partnerId, dateId, periode, partnerTransId, referenceNo) {
         if (isFilter === true && userRole === "102") {
             async function dataExportFilter(statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId) {
                 try {
@@ -522,11 +529,11 @@ function DisbursementReport() {
             }
             dataExportFilter(statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId)
         } else if (isFilter === true && userRole !== "102") {
-            async function dataExportFilter(statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId) {
+            async function dataExportFilter(statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId, referenceNo) {
                 try {
                     // console.log(partnerTransId, "partner trans filter");
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "${referenceNo}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -536,7 +543,7 @@ function DisbursementReport() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, "Status": data[i].mstatus_name_ind })
+                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, "Status": data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -547,7 +554,7 @@ function DisbursementReport() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, "Status": data[i].mstatus_name_ind })
+                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, "Status": data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -559,7 +566,7 @@ function DisbursementReport() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId)
+            dataExportFilter(statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId, referenceNo)
         } else if (isFilter === false && userRole === "102") {
             async function dataExportDisbursement() {
                 try {
@@ -612,7 +619,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -623,7 +630,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tipe Pembayaran": data[i].payment_type, "Nomor Akun": data[i].tdishburse_acc_num, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -724,8 +731,8 @@ function DisbursementReport() {
                                         </Form.Select>
                                     </Col>
                                 </Row>
-                                <Row className='mt-4'>
-                                    <Col xs={4} style={{ display: showDateDisbursement }}>
+                                <Row className='mt-4' style={{ display: showDateDisbursement }}>
+                                    <Col xs={4}>
                                         <div >
                                             <DateRangePicker 
                                                 onChange={pickDateDisbursement}
@@ -734,6 +741,12 @@ function DisbursementReport() {
                                                 // calendarIcon={null}
                                             />
                                         </div>
+                                    </Col>
+                                </Row>
+                                <Row className='mt-4'>
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                        <span>Reference No</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.referenceNo} name="referenceNo" type='text'className='input-text-ez' placeholder='Masukkan Reference No'/>
                                     </Col>
                                 </Row>
                             </> :
@@ -803,9 +816,9 @@ function DisbursementReport() {
                                 <Row>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.paymentCode, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, 0)}
-                                            className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                            disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0}
+                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.paymentCode, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)}
+                                            className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                            disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
                                             Terapkan
                                         </button>
@@ -813,8 +826,8 @@ function DisbursementReport() {
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => resetButtonHandle()}
-                                            className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                            disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0}
+                                            className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                            disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
                                             Atur Ulang
                                         </button>
@@ -833,7 +846,7 @@ function DisbursementReport() {
                         {
                             dataDisbursement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, inputHandle.paymentCode, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId)} className="export-span">Export</Link>
+                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, inputHandle.paymentCode, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo)} className="export-span">Export</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
