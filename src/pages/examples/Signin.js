@@ -36,43 +36,72 @@ export default () => {
       const dataUserAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
       // console.log(dataUserAccessMenu, 'data access');
       if (dataUserAccessMenu.status === 200 && dataUserAccessMenu.data.response_code === 200) {
-        switch (dataUserAccessMenu.data.response_data[0].id) {
-          case 10:
-            history.push("/")
-          break;
-          case 11:
-            history.push("/laporan")
-          break;
-          case 14:
-            history.push("/daftaragen")
-          break;
-          case 15:
-            history.push("/daftarpartner")
-          break;
-          case 16:
-            history.push("/riwayattransaksi")
-          break;
-          case 17:
-            history.push("/invoiceva")
-          break;
-          case 18:
-            history.push("/managementuser")
-          break;
-          case 19:
-            history.push("/HelpDesk/renotifyva")
-          break;
-          case 20:
-            history.push("/listpayment")
-          break;
-          case 21:
-            history.push("/disbursementreport")
-          break;
-          case 22:
-            history.push("/riwayattopup")
-          break;
-          case 23:
-            history.push("/invoicedisbursement")
-          break;
+        if (dataUserAccessMenu.data.response_data[0].detail.length !== 0) {
+          switch (dataUserAccessMenu.data.response_data[0].detail[0].id) {
+            case 1601:
+              history.push("/Riwayat/transaksi")  
+              break;
+            case 1602:
+              history.push("/Riwayat/saldopartner")  
+            break;
+            case 1901:
+              history.push("/HelpDesk/renotifyva")  
+            break;
+            case 2401:
+              history.push("/Sub Account Bank/info-saldo-dan-mutasi")  
+            break;
+            case 2402:
+              history.push("/Sub Account Bank/transfer")  
+            break;
+            case 2403:
+              history.push("/Sub Account Bank/riwayat-sub-account")  
+            break;
+            case 2601:
+              history.push("/Disbursement/disbursementpage")  
+            break;
+            case 2602:
+              history.push("/Disbursement/report")  
+            break;
+          }
+        } else {
+          switch (dataUserAccessMenu.data.response_data[0].id) {
+            case 10:
+              history.push("/")
+            break;
+            case 11:
+              history.push("/laporan")
+            break;
+            case 14:
+              history.push("/daftaragen")
+            break;
+            case 15:
+              history.push("/daftarpartner")
+            break;
+            case 16:
+              history.push("/riwayattransaksi")
+            break;
+            case 17:
+              history.push("/invoiceva")
+            break;
+            case 18:
+              history.push("/managementuser")
+            break;
+            case 19:
+              history.push("/HelpDesk/renotifyva")
+            break;
+            case 20:
+              history.push("/listpayment")
+            break;
+            case 21:
+              history.push("/disbursementreport")
+            break;
+            case 22:
+              history.push("/riwayattopup")
+            break;
+            case 23:
+              history.push("/invoicedisbursement")
+            break;
+          }
         }
       }
     } catch (error) {
