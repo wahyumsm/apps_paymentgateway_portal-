@@ -2328,7 +2328,7 @@ function DisbursementPage() {
                                                 alertSaldo === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Saldo pada Rekening {inputData.bankName} anda tidak cukup
+                                                        Saldo Alokasi di {(inputData.bankCode === '014') ? inputData.bankName : (inputData.bankCode === '011') ? inputData.bankName :  `"Other Bank"`} tidak cukup
                                                     </div>
                                                 ) : (
                                                     ""
