@@ -483,7 +483,7 @@ function DisbursementPage() {
                                     }
                                     // console.log(filteredBankTujuan.find(found => found.channel_id === data.bankCode), 'filteredBankTujuan.find(found => found.mpartballchannel_balance)');
             
-                                    if (validator.isEmail(data.email) === false) {
+                                    if (data.email.length !== 0 && validator.isEmail(data.email) === false) {
                                         objErrData.no = data.no
                                         // objErrData.data = data.email
                                         objErrData.keterangan = 'kolom Email Penerima : Tipe data salah.'
