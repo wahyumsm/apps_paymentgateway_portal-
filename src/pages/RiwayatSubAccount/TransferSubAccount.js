@@ -284,7 +284,7 @@ const TransferSubAccount = () => {
     async function getBankList() {
         try {
           const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"fitur_id": 105}`)
+            const dataParams = encryptData(`{"fitur_id": 106}`)
             const headers = {
             'Content-Type':'application/json',
             'Authorization' : auth
