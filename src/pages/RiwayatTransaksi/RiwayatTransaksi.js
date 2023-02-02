@@ -237,11 +237,12 @@ function RiwayatTransaksi() {
     async function getBankNameHandler() {
         try {
             const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"fitur_id": 100}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            const listBankName = await axios.post(BaseURL + "/Home/BankGetList", {data: ""}, { headers: headers });
+            const listBankName = await axios.post(BaseURL + "/Home/BankGetList", {data: dataParams}, { headers: headers });
             if (listBankName.status === 200 && listBankName.data.response_code === 200 && listBankName.data.response_new_token.length === 0) {
                 setListBank(listBankName.data.response_data)
             } else if (listBankName.status === 200 && listBankName.data.response_code === 200 && listBankName.data.response_new_token.length !== 0) {
