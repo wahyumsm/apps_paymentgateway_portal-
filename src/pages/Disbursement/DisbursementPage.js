@@ -145,11 +145,23 @@ function DisbursementPage() {
                     if (pond) {
                         const decoded = Base64.decode(pond)
                         // console.log(decoded, 'decodedd');
-                        const headerCol = decoded.split('|').slice(0, 8)
-                        // console.log(headerCol, 'headerCol');
-                        if (headerCol[0] === "No*" && headerCol[1] === "Bank Tujuan*" && headerCol[2] === "Cabang (Khusus Non-BCA)*" && headerCol[3] === "No. Rekening Tujuan*" && headerCol[4] === "Nama Pemilik Rekening*" && headerCol[5] === "Nominal Disbursement*" && headerCol[6] === "Email Penerima" && headerCol[7] === "Catatan\r\n1") {
+                        // console.log(decoded.indexOf(';'));
+                        let headerCol = ''
+                        if (decoded.indexOf('|') === -1) {
+                            headerCol = decoded.split(';').slice(0, 8)
+                        } else {
+                            headerCol = decoded.split('|').slice(0, 8)
+                        }
+                        // console.log(headerCol, 'headerCol ""No*"');
+                        if ((headerCol[0] === '"No*' || headerCol[0] === "No*") && headerCol[1] === "Bank Tujuan*" && headerCol[2] === "Cabang (Khusus Non-BCA)*" && headerCol[3] === "No. Rekening Tujuan*" && headerCol[4] === "Nama Pemilik Rekening*" && headerCol[5] === "Nominal Disbursement*" && headerCol[6] === "Email Penerima" && (headerCol[7] === 'Catatan"\r\n"1' || headerCol[7] === "Catatan\r\n1")) {
                             // console.log("ini bener");
-                            const newDcd = decoded.split("|").slice(8)
+                            let newDcd = ''
+                            if (decoded.indexOf('|') === -1) {
+                                newDcd = decoded.split(';').slice(8)
+                            } else {
+                                newDcd = decoded.split('|').slice(8)
+                            }
+                            // const newDcd = decoded.split("|").slice(8)
                             // console.log(newDcd, 'newDcd');
                             // console.log(newDcd.length%7, 'newDcd');
                             if (newDcd.length%7 !== 0) {
@@ -225,7 +237,7 @@ function DisbursementPage() {
                                     } else if (idx === 5 || idx % 7 === 5) {
                                         obj.email = el
                                     } else if (idx === 6 || idx % 7 === 6) {
-                                        obj.note = el.split("\r")[0]
+                                        obj.note = el.split('"\r')[0]
                                     }
             
                                     if (idx % 7 === 6) {

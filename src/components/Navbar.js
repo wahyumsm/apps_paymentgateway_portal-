@@ -854,7 +854,7 @@ export default (props) => {
         </Modal>
       </Container>
     </Navbar>
-    {topUpResult.is_update === true ?
+    {topUpResult.is_update === false ?
       <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
         <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
           <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Top Up Saldo {convertToRupiah(inputHandle.amounts)} Berhasil</Toast.Body>
