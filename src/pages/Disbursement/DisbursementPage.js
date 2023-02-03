@@ -124,36 +124,67 @@ function DisbursementPage() {
                     // setTimeout(() => {
                         setDataFromUpload([])
                     // }, 500);
-                // } else if (newValue.length !== 0 && newValue[0].file.type !== "text/csv") {
-                //     // console.log('masuk wrong type');
-                //     setErrorFound([])
-                //     // setTimeout(() => {
-                //         setLabelUpload("")
-                //     // }, 2400);
-                //     // setTimeout(() => {
-                //         setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Format file tidak sesuai. Pastikan format file dalam bentuk *.csv dan telah <br /> menggunakan template yang disediakan.</div>
-                //         <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
-                //         <div className='pb-4'>
-                //             <span class="filepond--label-action">
-                //                 Ganti File
-                //             </span>
-                //         </div>`)
+                } else if (newValue.length !== 0 && newValue[0].file.type !== "text/csv") {
+                    // console.log('masuk wrong type');
+                    setErrorFound([])
+                    // setTimeout(() => {
+                        setLabelUpload("")
+                    // }, 2400);
+                    // setTimeout(() => {
+                        setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Format file tidak sesuai. Pastikan format file dalam bentuk *.csv dan telah <br /> menggunakan template yang disediakan.</div>
+                        <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                        <div className='pb-4'>
+                            <span class="filepond--label-action">
+                                Ganti File
+                            </span>
+                        </div>`)
                     // }, 2500);
-                } else if (newValue.length !== 0 && newValue[0].file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-                    const pond = await newValue[0].getFileEncodeBase64String()
-                    if (pond !== undefined) {
-                        const wb = XLSX.read(pond, {type: "base64"})
-                        const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
-                        const data = XLSX.utils.sheet_to_json(ws); // generate objects
-                        // console.log(pond, 'pond');
-                        // console.log(wb, 'wb');
-                        // console.log(ws, 'ws');
-                        console.log(data, 'data');
-                        data.forEach(item => {
-                            console.log(item, 'item excel');
-                        })
-                    }
-                } else if (newValue.length !== 0 && newValue[0].file.type === "text/csv") {
+                // } else if (newValue.length !== 0 && newValue[0].file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                //     const pond = await newValue[0].getFileEncodeBase64String()
+                //     if (pond !== undefined) {
+                //         const wb = XLSX.read(pond, {type: "base64"})
+                //         const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
+                //         const data = XLSX.utils.sheet_to_json(ws); // generate objects
+                //         // console.log(pond, 'pond');
+                //         // console.log(wb, 'wb');
+                //         // console.log(ws, 'ws');
+                //         let sameNumberData = []
+                //         let errData = []
+                //         let resultArray = []
+                //         console.log(data, 'data');
+                //         data.forEach(el => {
+                //             if(resultArray.find(object => {
+                //                 if(object["No. Rekening Tujuan*"] === el["No. Rekening Tujuan*"] && object["Nominal Disbursement*"] === el["Nominal Disbursement*"]) {
+                //                     //if the object exists iterate times
+                //                     object.times++;
+                //                     sameNumberData.push(el["No*"])
+                //                     return true;
+                //                     //if it does not return false
+                //                 } else {
+                //                     return false;
+                //                 }
+                //             })){
+                //             } else {
+                //                 //if the object does not exists push it to the resulting array and set the times count to 1
+                //                 el.times = 1;
+                //                 resultArray.push(el);
+                //             }
+
+                //             let objErrData = {}
+                //             if (el["Bank Tujuan*"].slice(0, 3).toLowerCase() !== el["Bank Tujuan*"].slice(0, 3).toUpperCase()) {
+                //                 objErrData.no = data.no
+                //                 // objErrData.data = data.bankName
+                //                 objErrData.keterangan = 'kolom Bank Tujuan : Kode Bank Wajib Diisi.'
+                //                 errData.push(objErrData)
+                //                 objErrData = {}
+                //             }
+                //         })
+                //         console.log(sameNumberData, 'sameNumberData');
+                //         console.log(resultArray, 'resultArray');
+                //         console.log(errData, 'errData');
+                //     }
+                // } else if (newValue.length !== 0 && newValue[0].file.type === "text/csv") {
+                } else {
                     const pond = await newValue[0].getFileEncodeBase64String()
                     //format file csv
                     if (pond) {
@@ -242,8 +273,8 @@ function DisbursementPage() {
                                     } else if (idx === 4 || idx % 7 === 4) {
                                         // console.log(el, 'nominal');
                                         // console.log(el.indexOf(','), 'nominal');
-                                        if (el.indexOf(',') !== -1) {
-                                            obj.nominalDisbursement = "Tipe data salah."
+                                        if (el.indexOf(',') !== -1 || el.indexOf('.') !== -1) {
+                                            obj.nominalDisbursement = "decimal"
                                         } else {
                                             obj.nominalDisbursement = el
                                             totalNominalDisburse += Number(el)
@@ -389,7 +420,7 @@ function DisbursementPage() {
                                         if (data.nominalDisbursement.toLowerCase() !== data.nominalDisbursement.toUpperCase()) {
                                             objErrData.no = data.no
                                             // objErrData.data = data.nominalDisbursement
-                                            objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
+                                            objErrData.keterangan = `kolom Nominal Disbursement : ${data.nominalDisbursement === "decimal" ? 'Tidak boleh mengandung decimal' : 'Tipe data salah.'}`
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else if (data.nominalDisbursement.length < 5) {
@@ -2321,14 +2352,14 @@ function DisbursementPage() {
                                                     value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
                                                     onChange={(e) => handleChange(e)}
                                                     onBlur={() => setEditNominal(!editNominal)}
-                                                    onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                                                    onKeyDown={(evt) => ["e", "E", "+", "-", ",", "."].includes(evt.key) && evt.preventDefault()}
                                                 /> :
                                                 <Form.Control
                                                     placeholder="Rp 0"
                                                     type='text'
                                                     className='input-text-user'
                                                     name="nominal"
-                                                    value={inputHandle.nominal === undefined ? convertToRupiah(0, true, 0) : convertToRupiah(inputHandle.nominal, true, 2)}
+                                                    value={inputHandle.nominal === undefined ? convertToRupiah(0, true, 0) : convertToRupiah(inputHandle.nominal, true)}
                                                     onChange={(e) => handleChange(e)}
                                                     onFocus={() => setEditNominal(!editNominal)}
                                                 />
@@ -2344,18 +2375,17 @@ function DisbursementPage() {
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                                         Saldo Alokasi di {(inputData.bankCode === '014') ? inputData.bankName : (inputData.bankCode === '011') ? inputData.bankName :  `"Other Bank"`} tidak cukup
                                                     </div>
-                                                ) : (
-                                                    ""
-                                                )
-                                            }
-                                            {
+                                                ) : 
                                                 alertMinSaldo === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Minimal disbursement Rp. 10.000,00
+                                                        Minimal disbursement Rp. 10.000
                                                     </div>
                                                 ) : (
-                                                    ""
+                                                    <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#888888"}} className='text-start'>
+                                                        <span className='me-1'><img src={noteInfo} alt='icon info' /></span>
+                                                        Nominal Disbursement tidak boleh mengandung Decimal
+                                                    </div>
                                                 )
                                             }
                                         </Col>
@@ -2860,16 +2890,16 @@ function DisbursementPage() {
                                         errorFound.length !== 0 && errorFound.length === 1 ?
                                         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                                             <div style={{ color: '#B9121B', fontSize: 14, position: 'absolute', zIndex: 1, marginTop: 13 }}>
-                                            <div className='d-flex justify-content-center'>
-                                                <div>
-                                                    <img class="me-2" src={noteIconRed} width="20px" height="20px" />
+                                                <div className='d-flex justify-content-center'>
+                                                    <div>
+                                                        <img class="me-2" src={noteIconRed} width="20px" height="20px" />
+                                                    </div>
+                                                    <div>
+                                                        <div>Kesalahan data yang perlu diperbaiki:</div>
+                                                        <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}
+                                                        {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Lihat Semua</div> */}
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div>Kesalahan data yang perlu diperbaiki:</div>
-                                                    <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data nomor ${errorFound[0].no} : ${errorFound[0].keterangan}`}
-                                                    {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Lihat Semua</div> */}
-                                                </div>
-                                            </div>
                                                 {/* <div>
                                                     <div style={{ marginLeft: -50 }}>
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
@@ -2936,7 +2966,7 @@ function DisbursementPage() {
                                 <Modal.Body className='px-4'>
                                     <div style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'pre-wrap', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }} className='d-flex justify-content-center align-items-center'>
                                         <img src={noteInfo} width="25" height="25" alt="circle_info" style={{ marginRight: 10 }} />
-                                        <span>Harap perhatikan panduan pengisian sebelum melakukan penginputan data pada template yang disediakan. Kesalahan penulisan data dapat menyebabkan gagalnya transaksi disbursement.</span>
+                                        <span>Pastikan data tujuan Disbursement sudah benar, Ezeelink tidak bertanggung jawab atas kesalahan data yang dilakukan. dan tetap akan dikenakan biaya sesuai dengan Fee Disbursement yang ditetapkan.</span>
                                     </div>
                                     <table className='mt-3' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
                                         <tr>
