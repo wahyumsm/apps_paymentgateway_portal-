@@ -603,7 +603,7 @@ function RiwayatTopUp() {
                                         <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusRiwayatTopUp} onChange={(e) => handleChange(e)}>
                                             <option defaultChecked disabled value="">Pilih Status</option>
                                             <option value={2}>Berhasil</option>
-                                            <option value={1}>In Progress</option>
+                                            <option value={1}>Dalam Proses</option>
                                             <option value={7}>Menunggu Pembayaran</option>
                                             <option value={9}>Kadaluwarsa</option>
                                         </Form.Select>

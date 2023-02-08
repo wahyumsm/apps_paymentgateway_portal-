@@ -160,13 +160,13 @@ function DisbursementPage() {
                 //             bifast: 0
                 //         }
                 //         console.log(data, 'data');
-                //         data.map(el => {
+                //         data.map((el, idx) => {
                 //             //check duplicate data
                 //             if(resultArray.find(object => {
                 //                 if(object["No. Rekening Tujuan*"] === el["No. Rekening Tujuan*"] && object["Nominal Disbursement*"] === el["Nominal Disbursement*"]) {
                 //                     //if the object exists iterate times
                 //                     object.times++;
-                //                     sameNumberData.push(el["No*"])
+                //                     sameNumberData.push(idx + 2)
                 //                     return true;
                 //                     //if it does not return false
                 //                 } else {
@@ -180,11 +180,13 @@ function DisbursementPage() {
                 //             }
                 //         })
 
-                //         data = data.map(el => {
+                //         data = data.map((el, idx) => {
                 //             let objErrData = {}
-                //             const codeBank = el["Bank Tujuan*"].slice(0, 3)
+                //             console.log(el["Bank Tujuan*"], `el["Bank Tujuan*"]`);
+                //             const codeBank = el["Bank Tujuan*"] !== undefined && el["Bank Tujuan*"].slice(0, 3)
                 //             const filteredListBank = bankLists.filter(item => item.is_enabled === true) //bank yg aktif
                 //             const sameBankName = filteredListBank.find(list => list.mbank_code === codeBank) //bank yg sama
+                //             console.log(sameBankName, 'sameBankName');
                 //             const balanceBank = filteredBallanceBank.find((item) => { //ballance bank
                 //                 // console.log(item.channel_id, "balance detail");
                 //                 if (codeBank === "014" || codeBank === "011") {
@@ -194,263 +196,283 @@ function DisbursementPage() {
                 //                     return item.channel_id === "BIF"
                 //                 }
                 //             })
-                //             const resultBankFee = bankFee.find((item) => { //filter fee bank
-                //                 if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
-                //                     return item.mpaytype_bank_code === sameBankName.mbank_code
-                //                 } else {
-                //                     // sameBankName.mbank_code = "BIF"
-                //                     return item.mpaytype_bank_code === "BIF"
-                //                 }
-                //             })
                 //             // console.log(filteredListBank, 'filteredListBank');
                 //             // console.log(balanceBank, 'balanceBank');
-                //             console.log(sameBankName, 'sameBankName');
+                //             // console.log(sameBankName, 'sameBankName');
                 //             //pengecekan code bank
-                //             if (codeBank.length !== 3) { //kode bank tidak valid
-                //                 objErrData.no = el["No*"]
-                //                 objErrData.keterangan = 'kolom Bank Tujuan : Kode Bank Wajib Diisi.'
+                //             if (el["Bank Tujuan*"] === undefined) {
+                //                 objErrData.no = idx + 2
+                //                 objErrData.keterangan = 'kolom Bank Tujuan : Wajib Diisi.'
                 //                 errData.push(objErrData)
                 //                 objErrData = {}
-                //             } else {
-                //                 if (codeBank.toLowerCase() !== codeBank.toUpperCase()) { //kode bank tidak valid
-                //                     objErrData.no = el["No*"]
-                //                     objErrData.keterangan = 'kolom Bank Tujuan : Kode Bank Wajib Diisi.'
-                //                     errData.push(objErrData)
-                //                     objErrData = {}
-                //                 } else { //kode bank valid
-                //                     if (sameBankName !== undefined && bankFee.length !== 0) {
-                //                         // const result = bankFee.find((item) => {
-                //                         //     if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
-                //                         //         return item.mpaytype_bank_code === sameBankName.mbank_code
-                //                         //     } else {
-                //                         //         // sameBankName.mbank_code = "BIF"
-                //                         //         return item.mpaytype_bank_code === "BIF"
-                //                         //     }
-                //                         // })
-                //                         // console.log(result, 'result');
-                //                         if (resultBankFee !== undefined) { //set total fee
-                //                             totalFeeDisburse += resultBankFee.fee_total
-                //                             totalFeeDisburseArr.push(resultBankFee.fee_total)
-                //                         }
+                //             } else if (codeBank.length !== 3) { //kode bank tidak valid
+                //                 objErrData.no = idx + 2
+                //                 objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia pada saat ini.'
+                //                 errData.push(objErrData)
+                //                 objErrData = {}
+                //             } else if (codeBank.toLowerCase() !== codeBank.toUpperCase()) { //kode bank tidak valid
+                //                 objErrData.no = idx + 2
+                //                 objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia pada saat ini.'
+                //                 errData.push(objErrData)
+                //                 objErrData = {}
+                //             } else if (sameBankName === undefined) { //kode bank tidak valid
+                //                 objErrData.no = idx + 2
+                //                 objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia pada saat ini.'
+                //                 errData.push(objErrData)
+                //                 objErrData = {}
+                //             } else { // kode bank valid
+                //                 const resultBankFee = bankFee.find((item) => { //filter fee bank
+                //                     if (sameBankName.mbank_code === "014" || sameBankName.mbank_code === "011") {
+                //                         return item.mpaytype_bank_code === sameBankName.mbank_code
+                //                     } else {
+                //                         // sameBankName.mbank_code = "BIF"
+                //                         return item.mpaytype_bank_code === "BIF"
                 //                     }
-                //                 }
-                //             }
-                //             //pengecekan nomer rekening bank
-                //             if (String(el["No. Rekening Tujuan*"]).length === 0) { //kolom nomor rekening kosong
-                //                 objErrData.no = el["No*"]
-                //                 objErrData.keterangan = 'kolom Nomor Rekening : Wajib Diisi.'
-                //                 errData.push(objErrData)
-                //                 objErrData = {}
-                //             } else { //nomor rekening tidak valid
-                //                 if (String(el["No. Rekening Tujuan*"]).toLowerCase() !== String(el["No. Rekening Tujuan*"]).toUpperCase()) {
-                //                     objErrData.no = el["No*"]
-                //                     objErrData.keterangan = 'kolom Nomor Rekening : Tipe data salah.'
-                //                     errData.push(objErrData)
-                //                     objErrData = {}
-                //                 }
-                //             }
-                //             //pengecekan nama pemilik rekening
-                //             if (el["Nama Pemilik Rekening*"].length === 0) { // kolom nama kosong
-                //                 objErrData.no = el["No*"]
-                //                 objErrData.keterangan = 'kolom Nama Pemilik Rekening : Wajib Diisi.'
-                //                 errData.push(objErrData)
-                //                 objErrData = {}
-                //             }
-                //             //pengecekan email
-                //             if (el["Email Penerima"].length !== 0 && validator.isEmail(el["Email Penerima"]) === false) { //format email salah
-                //                 objErrData.no = el["No*"]
-                //                 objErrData.keterangan = 'kolom Email Penerima : Tipe data salah.'
-                //                 errData.push(objErrData)
-                //                 objErrData = {}
-                //             }
-                //             //pengecekan nominal disbursement
-                //             if (el["Nominal Disbursement*"].length === 0 || el["Nominal Disbursement*"] === '0') { //nominal kosong/nol
-                //                 objErrData.no = el["No*"]
-                //                 objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
-                //                 errData.push(objErrData)
-                //                 objErrData = {}
-                //             } else {
-                //                 if (typeof el["Nominal Disbursement*"] === 'string') {
-                //                     console.log('masuk string');
-                //                     if (el["Nominal Disbursement*"].toLowerCase() !== el["Nominal Disbursement*"].toUpperCase()) {
-                //                         console.log('ada huruf');
-                //                         objErrData.no = el["No*"]
-                //                         objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
-                //                         errData.push(objErrData)
-                //                         objErrData = {}
-                //                     } else if (el["Nominal Disbursement*"].toLowerCase() === el["Nominal Disbursement*"].toUpperCase()) {
-                //                         console.log('tidak ada huruf');
-                //                         if ((el["Nominal Disbursement*"].indexOf(',') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 4] === ',')) {
-                //                             console.log('masuk koma bener');
-                //                             if (el["Nominal Disbursement*"].split(",").join("").length < 5) {
-                //                                 objErrData.no = el["No*"]
-                //                                 objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
-                //                                 errData.push(objErrData)
-                //                                 objErrData = {}
-                //                             } else {
-                //                                 return {
-                //                                     ...el,
-                //                                     "Nominal Disbursement*": Number(el["Nominal Disbursement*"].split(",").join(""))
-                //                                 }
-                //                             }
-                //                         } else if ((el["Nominal Disbursement*"].indexOf('.') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 4] === '.')) {
-                //                             console.log('masuk titik bener');
-                //                             if (el["Nominal Disbursement*"].split(".").join("").length < 5) {
-                //                                 objErrData.no = el["No*"]
-                //                                 objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
-                //                                 errData.push(objErrData)
-                //                                 objErrData = {}
-                //                             } else {
-                //                                 return {
-                //                                     ...el,
-                //                                     "Nominal Disbursement*": Number(el["Nominal Disbursement*"].split(".").join("")),
-                //                                 }
-                //                             }
-                //                         } else if ((el["Nominal Disbursement*"].indexOf(',') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 3] === ',') || (el["Nominal Disbursement*"].indexOf('.') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 3] === '.')) {
-                //                             console.log('masuk koma salah', el["Nominal Disbursement*"].split(",")[0]);
-                //                             objErrData.no = el["No*"]
-                //                             objErrData.keterangan = 'kolom Nominal Disbursement : Tidak boleh mengandung decimal'
-                //                             errData.push(objErrData)
-                //                             objErrData = {}
-                //                         }
-                //                         // objErrData.no = el["No*"]
-                //                         // objErrData.keterangan = `kolom Nominal Disbursement : ${((el["Nominal Disbursement*"].indexOf(',') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 3] === ',') || (el["Nominal Disbursement*"].indexOf('.') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 3] === '.')) ? 'Tidak boleh mengandung decimal' : 'Tipe data salah'}.`
-                //                         // errData.push(objErrData)
-                //                         // objErrData = {}
-                //                     } else if (el["Nominal Disbursement*"].length < 5) {
-                //                         objErrData.no = el["No*"]
-                //                         objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
-                //                         errData.push(objErrData)
-                //                         objErrData = {}
-                //                     }
-                //                 } else if (typeof el["Nominal Disbursement*"] === 'number') {
-                //                     console.log('masuk number');
-                //                     if (el["Nominal Disbursement*"] < 10000) {
-                //                         objErrData.no = el["No*"]
-                //                         objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
-                //                         errData.push(objErrData)
-                //                         objErrData = {}
-                //                     } else if (el["Nominal Disbursement*"] < balanceBank.mpartballchannel_balance || el["Nominal Disbursement*"] === balanceBank.mpartballchannel_balance) {
-                //                         if (codeBank === '014') {
-                //                             if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
-                //                                 objErrData.no = el["No*"]
-                //                                 objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup.'
-                //                                 errData.push(objErrData)
-                //                                 objErrData = {}
-                //                                 sisaSaldoAlokasiPerBankTemp = {
-                //                                     ...sisaSaldoAlokasiPerBankTemp,
-                //                                     bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                                 }
-                //                             } else {
-                //                                 sisaSaldoAlokasiPerBankTemp = {
-                //                                     ...sisaSaldoAlokasiPerBankTemp,
-                //                                     bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                                 }
-                //                             }
-                //                         } else if (codeBank === '011') {
-                //                             if ((sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
-                //                                 objErrData.no = el["No*"]
-                //                                 objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup.'
-                //                                 errData.push(objErrData)
-                //                                 objErrData = {}
-                //                                 sisaSaldoAlokasiPerBankTemp = {
-                //                                     ...sisaSaldoAlokasiPerBankTemp,
-                //                                     danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                                 }
-                //                             } else {
-                //                                 sisaSaldoAlokasiPerBankTemp = {
-                //                                     ...sisaSaldoAlokasiPerBankTemp,
-                //                                     danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                                 }
-                //                             }
-                //                         } else {
-                //                             if ((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
-                //                                 objErrData.no = el["No*"]
-                //                                 objErrData.keterangan = `Saldo pada rekening ${resultBankFee.mpaytype_name} anda tidak cukup.`
-                //                                 errData.push(objErrData)
-                //                                 objErrData = {}
-                //                                 sisaSaldoAlokasiPerBankTemp = {
-                //                                     ...sisaSaldoAlokasiPerBankTemp,
-                //                                     bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                                 }
-                //                             } else {
-                //                                 sisaSaldoAlokasiPerBankTemp = {
-                //                                     ...sisaSaldoAlokasiPerBankTemp,
-                //                                     bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                                 }
-                //                             }
-                //                         }
-                //                     } else if (el["Nominal Disbursement*"] > (balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) {
-                //                         if (codeBank === '014') {
-                //                             objErrData.no = el["No*"]
-                //                             objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup.'
-                //                             errData.push(objErrData)
-                //                             objErrData = {}
-                //                             sisaSaldoAlokasiPerBankTemp = {
-                //                                 ...sisaSaldoAlokasiPerBankTemp,
-                //                                 bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                             }
-                //                         } else if (codeBank === '011') {
-                //                             objErrData.no = el["No*"]
-                //                             objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup.'
-                //                             errData.push(objErrData)
-                //                             objErrData = {}
-                //                             sisaSaldoAlokasiPerBankTemp = {
-                //                                 ...sisaSaldoAlokasiPerBankTemp,
-                //                                 danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                             }
-                //                         } else {
-                //                             objErrData.no = el["No*"]
-                //                             objErrData.keterangan = `Saldo pada rekening ${resultBankFee.mpaytype_name} anda tidak cukup.`
-                //                             errData.push(objErrData)
-                //                             objErrData = {}
-                //                             sisaSaldoAlokasiPerBankTemp = {
-                //                                 ...sisaSaldoAlokasiPerBankTemp,
-                //                                 bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
-                //                             }
-                //                         }
-                //                     }
-                //                 }
-                //             }
-                //             //pengecekan cabang bank
-                //             if (codeBank !== "014") { //selain bank BCA
-                //                 if (el["Cabang (Khusus Non-BCA)*"].length === 0) {
-                //                     objErrData.no = el["No*"]
-                //                     objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
-                //                     errData.push(objErrData)
-                //                     objErrData = {}
-                //                 } else {
-                //                     if (el["Cabang (Khusus Non-BCA)*"].trim().length === 0) { //kolom cabang bank diisi spasi kosong
-                //                         objErrData.no = el["No*"]
-                //                         objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                //                         errData.push(objErrData)
-                //                         objErrData = {}
-                //                     } else if (el["Cabang (Khusus Non-BCA)*"].split('x').join(' ').trim().length === 0 || el["Cabang (Khusus Non-BCA)*"].split('X').join(' ').trim().length === 0) {
-                //                         objErrData.no = el["No*"]
-                //                         objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                //                         errData.push(objErrData)
-                //                         objErrData = {}
-                //                     } else if (/[$-/:-?{-~!"^_`\[\]]/.test(el["Cabang (Khusus Non-BCA)*"])) {
-                //                         objErrData.no = el["No*"]
-                //                         objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                //                         errData.push(objErrData)
-                //                         objErrData = {}
-                //                     } else if (el["Cabang (Khusus Non-BCA)*"].toLowerCase() === el["Cabang (Khusus Non-BCA)*"].toUpperCase()) {
-                //                         objErrData.no = el["No*"]
-                //                         objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
-                //                         errData.push(objErrData)
-                //                         objErrData = {}
-                //                     } else if (el["Cabang (Khusus Non-BCA)*"].length < 4 && el["Cabang (Khusus Non-BCA)*"].toLowerCase() !== el["Cabang (Khusus Non-BCA)*"].toUpperCase()) {
-                //                         objErrData.no = el["No*"]
-                //                         objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                //                     // if (sameBankName !== undefined) {
+                //                     // }
+                //                 })
+                //                 console.log(resultBankFee, 'resultBankFee');
+                //                 if (resultBankFee !== undefined) {
+                //                     totalFeeDisburse += resultBankFee.fee_total
+                //                     totalFeeDisburseArr.push(resultBankFee.fee_total)
+                //                     // if (sameBankName !== undefined && bankFee.length !== 0) { //set total fee
+                //                     // }
+                //                     //pengecekan nominal disbursement
+                //                     if (el["Nominal Disbursement*"].length === 0 || el["Nominal Disbursement*"] === '0') { //nominal kosong/nol
+                //                         objErrData.no = idx + 2
+                //                         objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
                 //                         errData.push(objErrData)
                 //                         objErrData = {}
                 //                     } else {
+                //                         if (typeof el["Nominal Disbursement*"] === 'string') {
+                //                             console.log('masuk string');
+                //                             if (el["Nominal Disbursement*"].toLowerCase() !== el["Nominal Disbursement*"].toUpperCase()) {
+                //                                 console.log('ada huruf');
+                //                                 objErrData.no = idx + 2
+                //                                 objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
+                //                                 errData.push(objErrData)
+                //                                 objErrData = {}
+                //                             } else if (el["Nominal Disbursement*"].toLowerCase() === el["Nominal Disbursement*"].toUpperCase()) {
+                //                                 console.log('tidak ada huruf');
+                //                                 if ((el["Nominal Disbursement*"].indexOf(',') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 4] === ',')) {
+                //                                     console.log('masuk koma bener');
+                //                                     if (el["Nominal Disbursement*"].split(",").join("").length < 5) {
+                //                                         objErrData.no = idx + 2
+                //                                         objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                //                                         errData.push(objErrData)
+                //                                         objErrData = {}
+                //                                     } else {
+                //                                         console.log('masuk plus nominal 1');
+                //                                         totalNominalDisburse += Number(el["Nominal Disbursement*"].split(",").join(""))
+                //                                         return {
+                //                                             ...el,
+                //                                             "Nominal Disbursement*": Number(el["Nominal Disbursement*"].split(",").join(""))
+                //                                         }
+                //                                     }
+                //                                 } else if ((el["Nominal Disbursement*"].indexOf('.') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 4] === '.')) {
+                //                                     console.log('masuk titik bener');
+                //                                     if (el["Nominal Disbursement*"].split(".").join("").length < 5) {
+                //                                         objErrData.no = idx + 2
+                //                                         objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                //                                         errData.push(objErrData)
+                //                                         objErrData = {}
+                //                                     } else {
+                //                                         console.log('masuk plus nominal 2');
+                //                                         totalNominalDisburse += Number(el["Nominal Disbursement*"].split(".").join(""))
+                //                                         return {
+                //                                             ...el,
+                //                                             "Nominal Disbursement*": Number(el["Nominal Disbursement*"].split(".").join(""))
+                //                                         }
+                //                                     }
+                //                                 } else if ((el["Nominal Disbursement*"].indexOf(',') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 3] === ',') || (el["Nominal Disbursement*"].indexOf('.') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 3] === '.')) {
+                //                                     console.log('masuk koma salah', el["Nominal Disbursement*"].split(",")[0]);
+                //                                     console.log(el["Nominal Disbursement*"].split(","), 'nominal disbursement');
+                //                                     objErrData.no = idx + 2
+                //                                     objErrData.keterangan = 'kolom Nominal Disbursement : Tidak boleh mengandung decimal'
+                //                                     errData.push(objErrData)
+                //                                     objErrData = {}
+                //                                 }
+                //                             } else if (el["Nominal Disbursement*"].length < 5) {
+                //                                 objErrData.no = idx + 2
+                //                                 objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                //                                 errData.push(objErrData)
+                //                                 objErrData = {}
+                //                             }
+                //                         } else if (typeof el["Nominal Disbursement*"] === 'number') {
+                //                             console.log('masuk number');
+                //                             if (el["Nominal Disbursement*"] < 10000) {
+                //                                 objErrData.no = idx + 2
+                //                                 objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                //                                 errData.push(objErrData)
+                //                                 objErrData = {}
+                //                             } else if (el["Nominal Disbursement*"] < balanceBank.mpartballchannel_balance || el["Nominal Disbursement*"] === balanceBank.mpartballchannel_balance) {
+                //                                 if (codeBank === '014') {
+                //                                     if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
+                //                                         objErrData.no = idx + 2
+                //                                         objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup.'
+                //                                         errData.push(objErrData)
+                //                                         objErrData = {}
+                //                                         sisaSaldoAlokasiPerBankTemp = {
+                //                                             ...sisaSaldoAlokasiPerBankTemp,
+                //                                             bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                         }
+                //                                     } else {
+                //                                         console.log('masuk plus nominal 3');
+                //                                         totalNominalDisburse += el["Nominal Disbursement*"]
+                //                                         sisaSaldoAlokasiPerBankTemp = {
+                //                                             ...sisaSaldoAlokasiPerBankTemp,
+                //                                             bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                         }
+                //                                     }
+                //                                 } else if (codeBank === '011') {
+                //                                     if ((sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
+                //                                         objErrData.no = idx + 2
+                //                                         objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup.'
+                //                                         errData.push(objErrData)
+                //                                         objErrData = {}
+                //                                         sisaSaldoAlokasiPerBankTemp = {
+                //                                             ...sisaSaldoAlokasiPerBankTemp,
+                //                                             danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                         }
+                //                                     } else {
+                //                                         console.log('masuk plus nominal 4');
+                //                                         totalNominalDisburse += el["Nominal Disbursement*"]
+                //                                         sisaSaldoAlokasiPerBankTemp = {
+                //                                             ...sisaSaldoAlokasiPerBankTemp,
+                //                                             danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                         }
+                //                                     }
+                //                                 } else {
+                //                                     if ((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
+                //                                         objErrData.no = idx + 2
+                //                                         objErrData.keterangan = `Saldo pada rekening ${resultBankFee.mpaytype_name} anda tidak cukup.`
+                //                                         errData.push(objErrData)
+                //                                         objErrData = {}
+                //                                         sisaSaldoAlokasiPerBankTemp = {
+                //                                             ...sisaSaldoAlokasiPerBankTemp,
+                //                                             bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                         }
+                //                                     } else {
+                //                                         console.log('masuk plus nominal 5');
+                //                                         totalNominalDisburse += el["Nominal Disbursement*"]
+                //                                         sisaSaldoAlokasiPerBankTemp = {
+                //                                             ...sisaSaldoAlokasiPerBankTemp,
+                //                                             bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                         }
+                //                                     }
+                //                                 }
+                //                             } else if (el["Nominal Disbursement*"] > (balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) {
+                //                                 if (codeBank === '014') {
+                //                                     objErrData.no = idx + 2
+                //                                     objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup.'
+                //                                     errData.push(objErrData)
+                //                                     objErrData = {}
+                //                                     sisaSaldoAlokasiPerBankTemp = {
+                //                                         ...sisaSaldoAlokasiPerBankTemp,
+                //                                         bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                     }
+                //                                 } else if (codeBank === '011') {
+                //                                     objErrData.no = idx + 2
+                //                                     objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup.'
+                //                                     errData.push(objErrData)
+                //                                     objErrData = {}
+                //                                     sisaSaldoAlokasiPerBankTemp = {
+                //                                         ...sisaSaldoAlokasiPerBankTemp,
+                //                                         danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                     }
+                //                                 } else {
+                //                                     objErrData.no = idx + 2
+                //                                     objErrData.keterangan = `Saldo pada rekening ${resultBankFee.mpaytype_name} anda tidak cukup.`
+                //                                     errData.push(objErrData)
+                //                                     objErrData = {}
+                //                                     sisaSaldoAlokasiPerBankTemp = {
+                //                                         ...sisaSaldoAlokasiPerBankTemp,
+                //                                         bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total)
+                //                                     }
+                //                                 }
+                //                             }
+                //                         }
+                //                     }
+                //                 }
+                //                 //pengecekan nomer rekening bank
+                //                 if (String(el["No. Rekening Tujuan*"]).length === 0) { //kolom nomor rekening kosong
+                //                     objErrData.no = idx + 2
+                //                     objErrData.keterangan = 'kolom Nomor Rekening : Wajib Diisi.'
+                //                     errData.push(objErrData)
+                //                     objErrData = {}
+                //                 } else { //nomor rekening tidak valid
+                //                     if (String(el["No. Rekening Tujuan*"]).toLowerCase() !== String(el["No. Rekening Tujuan*"]).toUpperCase()) {
+                //                         objErrData.no = idx + 2
+                //                         objErrData.keterangan = 'kolom Nomor Rekening : Tipe data salah.'
+                //                         errData.push(objErrData)
+                //                         objErrData = {}
+                //                     }
+                //                 }
+                //                 //pengecekan nama pemilik rekening
+                //                 if (el["Nama Pemilik Rekening*"].length === 0) { // kolom nama kosong
+                //                     objErrData.no = idx + 2
+                //                     objErrData.keterangan = 'kolom Nama Pemilik Rekening : Wajib Diisi.'
+                //                     errData.push(objErrData)
+                //                     objErrData = {}
+                //                 }
+                //                 //pengecekan email
+                //                 if (el["Email Penerima"].length !== 0 && validator.isEmail(el["Email Penerima"]) === false) { //format email salah
+                //                     objErrData.no = idx + 2
+                //                     objErrData.keterangan = 'kolom Email Penerima : Tipe data salah.'
+                //                     errData.push(objErrData)
+                //                     objErrData = {}
+                //                 }
+                //                 //pengecekan cabang bank
+                //                 if (codeBank !== "014") { //selain bank BCA
+                //                     if (el["Cabang (Khusus Non-BCA)*"] === undefined) {
+                //                         objErrData.no = idx + 2
+                //                         objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Wajib Diisi.'
+                //                         errData.push(objErrData)
+                //                         objErrData = {}
+                //                     } else {
+                //                         if (el["Cabang (Khusus Non-BCA)*"].trim().length === 0) { //kolom cabang bank diisi spasi kosong
+                //                             objErrData.no = idx + 2
+                //                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                //                             errData.push(objErrData)
+                //                             objErrData = {}
+                //                         } else if (el["Cabang (Khusus Non-BCA)*"].split('x').join(' ').trim().length === 0 || el["Cabang (Khusus Non-BCA)*"].split('X').join(' ').trim().length === 0) {
+                //                             objErrData.no = idx + 2
+                //                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                //                             errData.push(objErrData)
+                //                             objErrData = {}
+                //                         } else if (/[$-/:-?{-~!"^_`\[\]]/.test(el["Cabang (Khusus Non-BCA)*"])) {
+                //                             objErrData.no = idx + 2
+                //                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                //                             errData.push(objErrData)
+                //                             objErrData = {}
+                //                         } else if (el["Cabang (Khusus Non-BCA)*"].toLowerCase() === el["Cabang (Khusus Non-BCA)*"].toUpperCase()) {
+                //                             objErrData.no = idx + 2
+                //                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                //                             errData.push(objErrData)
+                //                             objErrData = {}
+                //                         } else if (el["Cabang (Khusus Non-BCA)*"].length < 4 && el["Cabang (Khusus Non-BCA)*"].toLowerCase() !== el["Cabang (Khusus Non-BCA)*"].toUpperCase()) {
+                //                             objErrData.no = idx + 2
+                //                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
+                //                             errData.push(objErrData)
+                //                             objErrData = {}
+                //                         } else {
+                //                             return {
+                //                                 ...el,
+                //                                 // "No*": idx + 2,
+                //                                 "Bank Tujuan*": el["Bank Tujuan*"],
+                //                                 "Cabang (Khusus Non-BCA)*": el["Cabang (Khusus Non-BCA)*"],
+                //                                 "No. Rekening Tujuan*": el["No. Rekening Tujuan*"],
+                //                                 "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"],
+                //                                 "Nominal Disbursement*": el["Nominal Disbursement*"],
+                //                                 "Email Penerima": el["Email Penerima"],
+                //                                 "Catatan": el["Catatan"],
+                //                             }
+                //                         }
                 //                         return {
                 //                             ...el,
-                //                             "No*": el["No*"],
+                //                             // "No*": idx + 2,
                 //                             "Bank Tujuan*": el["Bank Tujuan*"],
-                //                             "Cabang (Khusus Non-BCA)*": el["Cabang (Khusus Non-BCA)*"],
+                //                             "Cabang (Khusus Non-BCA)*": el["Cabang (Khusus Non-BCA)*"].trim(),
                 //                             "No. Rekening Tujuan*": el["No. Rekening Tujuan*"],
                 //                             "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"],
                 //                             "Nominal Disbursement*": el["Nominal Disbursement*"],
@@ -458,35 +480,24 @@ function DisbursementPage() {
                 //                             "Catatan": el["Catatan"],
                 //                         }
                 //                     }
-                //                     return {
-                //                         ...el,
-                //                         "No*": el["No*"],
-                //                         "Bank Tujuan*": el["Bank Tujuan*"],
-                //                         "Cabang (Khusus Non-BCA)*": el["Cabang (Khusus Non-BCA)*"].trim(),
-                //                         "No. Rekening Tujuan*": el["No. Rekening Tujuan*"],
-                //                         "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"],
-                //                         "Nominal Disbursement*": el["Nominal Disbursement*"],
-                //                         "Email Penerima": el["Email Penerima"],
-                //                         "Catatan": el["Catatan"],
-                //                     }
-                //                 }
-                //             } else {
-                //                 if (el["Cabang (Khusus Non-BCA)*"].length === 0 || el["Cabang (Khusus Non-BCA)*"].trim().length === 0 || (el["Cabang (Khusus Non-BCA)*"].indexOf('x') >= 0 || el["Cabang (Khusus Non-BCA)*"].indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(el["Cabang (Khusus Non-BCA)*"]) || el["Cabang (Khusus Non-BCA)*"].toLowerCase() === el["Cabang (Khusus Non-BCA)*"].toUpperCase()) {
-                //                     return {
-                //                         ...el,
-                //                         "Cabang (Khusus Non-BCA)*": ''
-                //                     }
                 //                 } else {
-                //                     return {
-                //                         ...el,
-                //                         "No*": el["No*"],
-                //                         "Bank Tujuan*": el["Bank Tujuan*"],
-                //                         "Cabang (Khusus Non-BCA)*": el["Cabang (Khusus Non-BCA)*"].trim(),
-                //                         "No. Rekening Tujuan*": el["No. Rekening Tujuan*"],
-                //                         "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"],
-                //                         "Nominal Disbursement*": el["Nominal Disbursement*"],
-                //                         "Email Penerima": el["Email Penerima"],
-                //                         "Catatan": el["Catatan"],
+                //                     if (el["Cabang (Khusus Non-BCA)*"] === undefined || el["Cabang (Khusus Non-BCA)*"].trim().length === 0 || (el["Cabang (Khusus Non-BCA)*"].indexOf('x') >= 0 || el["Cabang (Khusus Non-BCA)*"].indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(el["Cabang (Khusus Non-BCA)*"]) || el["Cabang (Khusus Non-BCA)*"].toLowerCase() === el["Cabang (Khusus Non-BCA)*"].toUpperCase()) {
+                //                         return {
+                //                             ...el,
+                //                             "Cabang (Khusus Non-BCA)*": ''
+                //                         }
+                //                     } else {
+                //                         return {
+                //                             ...el,
+                //                             // "No*": idx + 2,
+                //                             "Bank Tujuan*": el["Bank Tujuan*"],
+                //                             "Cabang (Khusus Non-BCA)*": el["Cabang (Khusus Non-BCA)*"].trim(),
+                //                             "No. Rekening Tujuan*": el["No. Rekening Tujuan*"],
+                //                             "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"],
+                //                             "Nominal Disbursement*": el["Nominal Disbursement*"],
+                //                             "Email Penerima": el["Email Penerima"],
+                //                             "Catatan": el["Catatan"],
+                //                         }
                 //                     }
                 //                 }
                 //             }
@@ -1236,7 +1247,7 @@ function DisbursementPage() {
         },
         {
             name: 'Cabang (Khusus Non-BCA)',
-            selector: row => row.mbankaccountlist_branch_name,
+            selector: row => (row.mbankaccountlist_bank_code === '014' && (row.mbankaccountlist_branch_name.length === 0 || row.mbankaccountlist_branch_name === "")) ? "-" : row.mbankaccountlist_branch_name,
             width: "280px"
         },
         {
@@ -1528,7 +1539,7 @@ function DisbursementPage() {
                             number: number,
                             bankNameTujuan: bankNameTujuan,
                             bankCodeTujuan: inputData.bankCode,
-                            cabang: cabang,
+                            cabang: (cabang.length === 0 || cabang === "") ? "-" : cabang,
                             noRek : noRek,
                             nameRek: nameRek,
                             nominal: Number(nominal),
@@ -1702,7 +1713,7 @@ function DisbursementPage() {
                         number: number,
                         bankNameTujuan: bankNameTujuan,
                         bankCodeTujuan: inputData.bankCode,
-                        cabang: cabang,
+                        cabang: (cabang.length === 0 || cabang === "") ? "-" : cabang,
                         noRek : noRek,
                         nameRek: nameRek,
                         nominal: Number(nominal),
@@ -2033,7 +2044,7 @@ function DisbursementPage() {
                     number: number,
                     bankNameTujuan: bankNameTujuan,
                     bankCodeTujuan: inputData.bankCode,
-                    cabang: cabang,
+                    cabang: (cabang.length === 0 || cabang === "") ? "-" : cabang,
                     noRek : noRek,
                     nameRek: nameRek,
                     nominal: Number(nominal),
@@ -2252,7 +2263,7 @@ function DisbursementPage() {
                 number: number,
                 bankNameTujuan: bankNameTujuan,
                 bankCodeTujuan: inputData.bankCode,
-                cabang: cabang,
+                cabang: (cabang.length === 0 || cabang === "") ? "-" : cabang,
                 noRek : noRek,
                 nameRek: nameRek,
                 nominal: Number(nominal),
