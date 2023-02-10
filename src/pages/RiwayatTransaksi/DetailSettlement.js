@@ -16,7 +16,7 @@ function DetailSettlement() {
     const access_token = getToken();
     const user_role = getRole();
     const history = useHistory()
-    const { settlementId } = useParams();
+    const { settlementId, bankCode } = useParams();
     const [dataSettlement, setDataSettlement] = useState([])
     const [pendingSettlement, setPendingSettlement] = useState(false)
     const [totalPageDetailSettlement, setTotalPageDetailSettlement] = useState(0)
@@ -29,11 +29,12 @@ function DetailSettlement() {
     //     periodeSettlement: 0,
     // })
 
-    async function getDetailSettlement(settlementId, currentPage) {
+    async function getDetailSettlement(settlementId, currentPage, codeBank) {
         try {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
+            // const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
+            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -61,7 +62,7 @@ function DetailSettlement() {
 
     function handlePageChangeDetailSettlement(page) {
         setActivePageDetailSettlement(page)
-        getDetailSettlement(settlementId, page)
+        getDetailSettlement(settlementId, page, bankCode)
     }
 
     // function handleChange(e) {
@@ -86,7 +87,7 @@ function DetailSettlement() {
         // if (user_role === "102") {
         //     history.push('/404');
         // }
-        getDetailSettlement(settlementId)
+        getDetailSettlement(settlementId, 1, bankCode)
     }, [settlementId])
     
     async function ExportReportDetailSettlementHandler(settlementId, userRole) {
@@ -380,7 +381,7 @@ function DetailSettlement() {
             {
                 user_role === '102' ?
                 <span className='breadcrumbs-span'><Link to={"/laporan"}>Laporan</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
-                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/riwayattransaksi"}>Riwayat Transaksi</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
+                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Riwayat/transaksi"}>Riwayat Transaksi</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>

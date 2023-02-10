@@ -595,7 +595,7 @@ export default () => {
     {
         name: 'ID Transaksi',
         selector: row => row.tvasettl_code,
-        cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>,
+        cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${'0'}`}>{row.tvasettl_code}</Link>,
         width: "251px"
     },
     {

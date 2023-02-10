@@ -202,7 +202,7 @@ function SaldoPartner() {
                 orderField = "mstatus_name"
             }
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2" ], "paytypeID": [${payTypeId}] }`)
+            const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2", "4" ], "paytypeID": [${payTypeId}] }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -303,6 +303,89 @@ function SaldoPartner() {
                 orderIdStatus: value
             })
             filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
+        }
+    }
+
+    async function ExportReportAlokasiSaldoHandler(isFilter, dateId, dateRange, payTypeId, isDescending, orderField, partnerId, statusId) {
+        if (isFilter) {
+            async function dataExportFilter(dateId, dateRange, payTypeId, isDescending, orderField, partnerId, statusId) {
+                try {
+                    let newPayTypeId = []
+                    if (payTypeId === 0) {
+                        disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
+                    }
+                    const auth = "Bearer " + getToken()
+                    const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": 1, "row_per_page": 1000000, "order_id": 0, "order_field": "tpartballchannel_crtdt", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
+                    const headers = {
+                        'Content-Type':'application/json',
+                        'Authorization' : auth
+                    }
+                    const filterHistory = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+                    if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length === 0) {
+                        // filterHistory.data.response_data.results = filterHistory.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                        // setPageNumberRiwayatAlokasiSaldo(filterHistory.data.response_data)
+                        // setActivePageRiwayatAlokasiSaldo(filterHistory.data.response_data.page)
+                        // setTotalPageRiwayatAlokasiSaldo(filterHistory.data.response_data.max_page)
+                        // setListRiwayatAlokasiSaldo(filterHistory.data.response_data.results)
+                        // setPendingAlokasiSaldo(false)
+                    } else if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length !== 0) {
+                        setUserSession(filterHistory.data.response_new_token)
+                        // filterHistory.data.response_data.results = filterHistory.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                        // setPageNumberRiwayatAlokasiSaldo(filterHistory.data.response_data)
+                        // setActivePageRiwayatAlokasiSaldo(filterHistory.data.response_data.page)
+                        // setTotalPageRiwayatAlokasiSaldo(filterHistory.data.response_data.max_page)
+                        // setListRiwayatAlokasiSaldo(filterHistory.data.response_data.results)
+                        // setPendingAlokasiSaldo(false)
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            dataExportFilter(dateId, dateRange, payTypeId, isDescending, orderField, partnerId, statusId)
+        } else {
+            async function dataExportAlokasiSaldo(isDescending, orderField, payTypeId) {
+                try {
+                    // if ((isDescending === undefined && orderField === undefined) || (isDescending === true && orderField === "tpartballchannel_crtdt")) {
+                    //     isDescending = 0
+                    //     orderField = "tpartballchannel_crtdt"
+                    // } else if (isDescending === false && orderField === "tpartballchannel_crtdt") {
+                    //     isDescending = 1
+                    //     orderField = "tpartballchannel_crtdt"
+                    // } else if (isDescending === true && orderField === "mstatus_name") {
+                    //     isDescending = 0
+                    //     orderField = "mstatus_name"
+                    // } else if (isDescending === false && orderField === "mstatus_name") {
+                    //     isDescending = 1
+                    //     orderField = "mstatus_name"
+                    // }
+                    const auth = "Bearer " + getToken()
+                    const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": 1, "row_per_page": 1000000, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2", "4" ], "paytypeID": [${payTypeId}] }`)
+                    const headers = {
+                        'Content-Type':'application/json',
+                        'Authorization' : auth
+                    }
+                    const ballanceAllocation = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+                    if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length === 0) {
+                        // ballanceAllocation.data.response_data.results = ballanceAllocation.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                        // setPageNumberRiwayatAlokasiSaldo(ballanceAllocation.data.response_data)
+                        // setActivePageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.page)
+                        // setTotalPageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.max_page)
+                        // setListRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.results)
+                        // setPendingAlokasiSaldo(false)
+                    } else if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length !== 0) {
+                        setUserSession(ballanceAllocation.data.response_new_token)
+                        // ballanceAllocation.data.response_data.results = ballanceAllocation.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                        // setPageNumberRiwayatAlokasiSaldo(ballanceAllocation.data.response_data)
+                        // setActivePageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.page)
+                        // setTotalPageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.max_page)
+                        // setListRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.results)
+                        // setPendingAlokasiSaldo(false)
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            dataExportAlokasiSaldo(isDescending, orderField, payTypeId)
         }
     }
     
@@ -783,7 +866,8 @@ function SaldoPartner() {
                                 <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={statusRiwayatAlokasiSaldo} onChange={(e) => setStatusRiwayatAlokasiSaldo([e.target.value])}>
                                     <option defaultChecked disabled value="">Pilih Status</option>
                                     <option value={"2"}>Berhasil</option>
-                                    <option value={"1"}>In Progress</option>
+                                    <option value={"1"}>Dalam Proses</option>
+                                    <option value={"4"}>Gagal</option>
                                 </Form.Select>
                             </Col>
                         </Row>
@@ -834,6 +918,12 @@ function SaldoPartner() {
                                 </Row>
                             </Col>
                         </Row>
+                        {
+                            listRiwayatAlokasiSaldo.length !== 0 &&
+                            <div style={{ marginBottom: 30 }}>
+                                <Link to={"#"} onClick={() => ExportReportAlokasiSaldoHandler(1, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, (isDesc.orderField === "tpartballchannel_crtdt") ? isDesc.orderIdTanggal : isDesc.orderIdStatus, isDesc.orderField, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)} className="export-span">Export</Link>
+                            </div>
+                        }
                         <div className="div-table" style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center"}}>
                             {
                                 listRiwayatAlokasiSaldo.length === 0 ?

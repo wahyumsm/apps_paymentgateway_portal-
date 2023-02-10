@@ -537,7 +537,7 @@ function AlokasiSaldo() {
                 "row_per_page": 10,
                 "order_id": ${isDescending},
                 "order_field": "${orderField}",
-                "statusID": [ "1", "2" ],
+                "statusID": [ "1", "2", "4" ],
                 "paytypeID": [${payTypeId}]
             }`)
             const headers = {
