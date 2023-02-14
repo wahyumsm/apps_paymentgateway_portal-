@@ -979,7 +979,7 @@ function AlokasiSaldo() {
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "32%" }}>
                                 <span>Tujuan Alokasi</span>
                                 <Form.Select name="tujuanAlokasiSaldo" className='input-text-ez' style={{ display: "inline" }} value={tujuanAlokasiSaldo} onChange={(e) => handleChangeTujuanAlokasi(e)}>
-                                    <option defaultChecked disabled value={0}>Pilih Status</option>
+                                    <option defaultChecked disabled value={0}>Pilih Tujuan Alokasi</option>
                                     {
                                         disbursementChannel.map(item => (
                                             <option key={item.mpaytype_id} value={item.mpaytype_id}>{item.mpaytype_name}</option>

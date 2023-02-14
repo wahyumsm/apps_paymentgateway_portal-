@@ -117,6 +117,7 @@ export default (props) => {
   }
 
   function handleChangeTopUp(e) {
+    setIconGagal(false)
     setInputHandle({
       ...inputHandle,
       [e.target.name] : Number(e.target.value).toString()
@@ -203,33 +204,33 @@ export default (props) => {
 
   async function topUpConfirmation(amounts) {
     try {
-        if (inputHandle.amounts.length === 0 || inputHandle.amounts === undefined || inputHandle.amounts === 0) {
+        if (inputHandle.amounts.length < 5 || inputHandle.amounts === undefined || inputHandle.amounts < 10000) {
           setIconGagal(true)
         } else {
           setIconGagal(false)
-        }
-        const auth = "Bearer " + getToken()   
-        const dataParams = encryptData(`{"tparttopup_amount":${amounts}}`)
-        const headers = {
-          "Content-Type": "application/json",
-          'Authorization': auth,
-        };
-        const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
-        if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
-          setTopUpBalance(topUpBalance.data.response_data)
-          const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
-          const convertTimeStamps = new Date(timeStamps).getTime()
-          const date = Date.now()
-          const countDown = convertTimeStamps - date
-          setDateNow(date)
-          setCountDown(countDown)
-          setShowModalTopUp(false)
-          setShowModalKonfirmasiTopUp(true)
-        } else if (topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length !== 0) {
-          setUserSession(topUpBalance.data.response_new_token)
-          setTopUpBalance(topUpBalance.data.response_data)
-          setShowModalTopUp(false)
-          setShowModalKonfirmasiTopUp(true)
+          const auth = "Bearer " + getToken()   
+          const dataParams = encryptData(`{"tparttopup_amount":${amounts}}`)
+          const headers = {
+            "Content-Type": "application/json",
+            'Authorization': auth,
+          };
+          const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
+          if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
+            setTopUpBalance(topUpBalance.data.response_data)
+            const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
+            const convertTimeStamps = new Date(timeStamps).getTime()
+            const date = Date.now()
+            const countDown = convertTimeStamps - date
+            setDateNow(date)
+            setCountDown(countDown)
+            setShowModalTopUp(false)
+            setShowModalKonfirmasiTopUp(true)
+          } else if (topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length !== 0) {
+            setUserSession(topUpBalance.data.response_new_token)
+            setTopUpBalance(topUpBalance.data.response_data)
+            setShowModalTopUp(false)
+            setShowModalKonfirmasiTopUp(true)
+          }
         }
       } catch (error) {
         // console.log(error)
@@ -647,9 +648,9 @@ export default (props) => {
                 } */}
                 {iconGagal === true && 
                   <>
-                    <div style={{ color: "#B9121B", fontSize: 12 }}>
+                    <div className="mt-2" style={{ color: "#B9121B", fontSize: 12 }}>
                       <img src={noteIconRed} className="me-2" alt="notice" />
-                      Nominal Top Up wajib diisi
+                      Minimal Top Up Rp. 10.000
                     </div>
                   </>
                 }

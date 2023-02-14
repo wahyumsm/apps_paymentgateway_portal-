@@ -1654,6 +1654,45 @@ function EditPartner() {
                     }
                   </td>
                 </tr>
+                {/* settlementFee akhir */}
+                {/* <br/>
+                <tr>
+                  <td style={{ width: 200 }}>Settlement Fee <span style={{ color: "red" }}>*</span></td>
+                  <td>
+                    {editInput ? (
+                      <input
+                        type="number"
+                        className="input-text-ez"
+                        onChange={handleChangeSettle}
+                        value={(biayaHandle.settlementFee === undefined) ? 0 : (biayaHandle.settlementFee)}
+                        name="settlementFee"
+                        placeholder={"Rp 0"}
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
+                        onBlur={() => setEditInput(!editInput)}
+                        min={0}
+                        onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        className="input-text-ez"
+                        onChange={handleChangeSettle}
+                        value={(biayaHandle.settlementFee.length === 0) ? convertToRupiah(0, true, 2) : convertToRupiah(biayaHandle.settlementFee, true, 2)}
+                        name="settlementFee"
+                        placeholder="Rp 0"
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertSettlement ? "red" : "" }}
+                        onFocus={() => setEditInput(!editInput)}
+                        min={0}
+                      />
+                    )}
+                    {alertSettlement === true ?
+                      <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          Settlement Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                      </div> : ""
+                    }
+                  </td>
+                </tr> */}
                 <br/>
                 <tr>
                   <td style={{ width: 200 }}>Fitur <span style={{ color: "red" }}>*</span></td>

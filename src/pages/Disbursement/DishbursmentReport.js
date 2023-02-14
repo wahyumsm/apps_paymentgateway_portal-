@@ -319,6 +319,13 @@ function DisbursementReport() {
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
+            name: 'Fee Bank',
+            selector: row => convertToRupiah(row.tdishburse_fee_tax),
+            // sortable: true,
+            width: "224px",
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+        },
+        {
             name: 'Total Disbursement',
             selector: row => convertToRupiah(row.tdishburse_total_amount),
             // sortable: true,
@@ -732,7 +739,7 @@ function DisbursementReport() {
                                         <Form.Select name="statusDisbursement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
                                             <option defaultChecked disabled value="">Pilih Status</option>
                                             <option value={2}>Berhasil</option>
-                                            <option value={1}>In Progress</option>
+                                            <option value={1}>Dalam Proses</option>
                                             <option value={4}>Gagal</option>
                                             {/* <option value={7}>Menunggu Pembayaran</option> */}
                                             {/* <option value={9}>Kadaluwarsa</option> */}
