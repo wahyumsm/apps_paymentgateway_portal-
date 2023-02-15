@@ -159,8 +159,16 @@ function DisbursementPage() {
                     if (pond !== undefined) {
                         const wb = XLSX.read(pond, {type: "base64"})
                         const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
-                        let data = XLSX.utils.sheet_to_json(ws); // generate objects
-                        data = data.map((obj, idx) => ({...obj, no: idx + 1}))
+                        let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
+                        let data = []
+                        dataTemp = dataTemp.map((obj, idx) => ({...obj, no: idx + 1}))
+                        dataTemp.forEach(el => {
+                            let obj = {}
+                            Object.keys(el).forEach(e => {
+                                obj[(e.trim())] = el[e]
+                            })
+                            data.push(obj)
+                        })
                         // console.log(pond, 'pond');
                         // console.log(wb, 'wb');
                         // console.log(ws, 'ws');
@@ -453,7 +461,7 @@ function DisbursementPage() {
                                                         // console.log('masuk plus nominal 1');
                                                         const nominalDisbursementNumber = Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", ""))
                                                         totalNominalDisburse += nominalDisbursementNumber
-                                                        if (nominalDisbursementNumber < balanceBank.mpartballchannel_balance || nominalDisbursementNumber === balanceBank.mpartballchannel_balance) {
+                                                        if (nominalDisbursementNumber <= balanceBank.mpartballchannel_balance) {
                                                             if (codeBank === '014') {
                                                                 if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
                                                                     objErrData.no = idx + 2
@@ -555,7 +563,7 @@ function DisbursementPage() {
                                                         // console.log('masuk plus nominal 2');
                                                         const nominalDisbursementNumber = Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", ""))
                                                         totalNominalDisburse += nominalDisbursementNumber
-                                                        if (nominalDisbursementNumber < balanceBank.mpartballchannel_balance || nominalDisbursementNumber === balanceBank.mpartballchannel_balance) {
+                                                        if (nominalDisbursementNumber <= balanceBank.mpartballchannel_balance) {
                                                             if (codeBank === '014') {
                                                                 if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
                                                                     objErrData.no = idx + 2
@@ -659,6 +667,93 @@ function DisbursementPage() {
                                                     errData.push(objErrData)
                                                     objErrData = {}
                                                 } else if (el["Nominal Disbursement*"].indexOf(',') === -1 || el["Nominal Disbursement*"].indexOf('.') === -1) {
+                                                    const nominalDisbursementNumber = Number(el["Nominal Disbursement*"])
+                                                    if (nominalDisbursementNumber <= balanceBank.mpartballchannel_balance) {
+                                                        if (codeBank === '014') {
+                                                            if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
+                                                                objErrData.no = idx + 2
+                                                                objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup.'
+                                                                errData.push(objErrData)
+                                                                objErrData = {}
+                                                                sisaSaldoAlokasiPerBankTemp = {
+                                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                                    bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                                }
+                                                            } else {
+                                                                // console.log('masuk plus nominal 3');
+                                                                // totalNominalDisburse += el["Nominal Disbursement*"]
+                                                                sisaSaldoAlokasiPerBankTemp = {
+                                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                                    bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                                }
+                                                            }
+                                                        } else if (codeBank === '011') {
+                                                            if ((sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
+                                                                objErrData.no = idx + 2
+                                                                objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup.'
+                                                                errData.push(objErrData)
+                                                                objErrData = {}
+                                                                sisaSaldoAlokasiPerBankTemp = {
+                                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                                    danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                                }
+                                                            } else {
+                                                                // console.log('masuk plus nominal 4');
+                                                                // totalNominalDisburse += el["Nominal Disbursement*"]
+                                                                sisaSaldoAlokasiPerBankTemp = {
+                                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                                    danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                                }
+                                                            }
+                                                        } else {
+                                                            if ((sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
+                                                                objErrData.no = idx + 2
+                                                                objErrData.keterangan = `Saldo pada rekening ${resultBankFee.mpaytype_name} anda tidak cukup.`
+                                                                errData.push(objErrData)
+                                                                objErrData = {}
+                                                                sisaSaldoAlokasiPerBankTemp = {
+                                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                                    bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                                }
+                                                            } else {
+                                                                // console.log('masuk plus nominal 5');
+                                                                // totalNominalDisburse += el["Nominal Disbursement*"]
+                                                                sisaSaldoAlokasiPerBankTemp = {
+                                                                    ...sisaSaldoAlokasiPerBankTemp,
+                                                                    bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                                }
+                                                            }
+                                                        }
+                                                    } else if (nominalDisbursementNumber > (balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) {
+                                                        if (codeBank === '014') {
+                                                            objErrData.no = idx + 2
+                                                            objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup.'
+                                                            errData.push(objErrData)
+                                                            objErrData = {}
+                                                            sisaSaldoAlokasiPerBankTemp = {
+                                                                ...sisaSaldoAlokasiPerBankTemp,
+                                                                bca: (sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                            }
+                                                        } else if (codeBank === '011') {
+                                                            objErrData.no = idx + 2
+                                                            objErrData.keterangan = 'Saldo pada rekening Danamon anda tidak cukup.'
+                                                            errData.push(objErrData)
+                                                            objErrData = {}
+                                                            sisaSaldoAlokasiPerBankTemp = {
+                                                                ...sisaSaldoAlokasiPerBankTemp,
+                                                                danamon: (sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                            }
+                                                        } else {
+                                                            objErrData.no = idx + 2
+                                                            objErrData.keterangan = `Saldo pada rekening ${resultBankFee.mpaytype_name} anda tidak cukup.`
+                                                            errData.push(objErrData)
+                                                            objErrData = {}
+                                                            sisaSaldoAlokasiPerBankTemp = {
+                                                                ...sisaSaldoAlokasiPerBankTemp,
+                                                                bifast: (sisaSaldoAlokasiPerBankTemp.bifast !== 0 ? sisaSaldoAlokasiPerBankTemp.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total)
+                                                            }
+                                                        }
+                                                    }
                                                     totalNominalDisburse += Number(el["Nominal Disbursement*"])
                                                     return {
                                                         ...el,
@@ -678,8 +773,10 @@ function DisbursementPage() {
                                                 objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
                                                 errData.push(objErrData)
                                                 objErrData = {}
-                                            } else if (el["Nominal Disbursement*"] < balanceBank.mpartballchannel_balance || el["Nominal Disbursement*"] === balanceBank.mpartballchannel_balance) {
+                                            } else if (el["Nominal Disbursement*"] <= balanceBank.mpartballchannel_balance) {
+                                                // console.log('masuk number1');
                                                 if (codeBank === '014') {
+                                                    // console.log('masuk number1');
                                                     if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
                                                         objErrData.no = idx + 2
                                                         objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup.'
@@ -1846,6 +1943,7 @@ function DisbursementPage() {
         catatan,
         saveAcc
     ) {
+        // console.log('onclick tambah');
         if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
             setErrMsgEmail(true)
             return
@@ -1870,8 +1968,9 @@ function DisbursementPage() {
                 return item.channel_id === bankCodeTujuan
             }
         })
-        
-        if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
+        // console.log(nominal <= balanceBank.mpartballchannel_balance, 'masuk0');
+        if (nominal <= balanceBank.mpartballchannel_balance) {
+            // console.log('masuk1');
             setAlertSaldo(false)
             let sameFlag = 0
             dataDisburse.forEach((val) => {
@@ -1880,6 +1979,7 @@ function DisbursementPage() {
                 }
             })
             if (sameFlag === 0) {
+                // console.log('masuk2');
                 setShowModalDuplikasi(false)
                 const result = feeBank.find((item) => {
                     if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
@@ -1890,6 +1990,7 @@ function DisbursementPage() {
                     }
                 })
                 if (bankCodeTujuan === '014') {
+                    // console.log('masuk3');
                     if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
                         // console.log(sisaSaldoAlokasiPerBank.bca, 'sisaSaldoAlokasiPerBank.bca');
                         // console.log(balanceBank.mpartballchannel_balance, 'balanceBank.mpartballchannel_balance');
@@ -2059,7 +2160,7 @@ function DisbursementPage() {
 
             }
         })
-        if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
+        if (nominal <= balanceBank.mpartballchannel_balance) {
             setAlertSaldo(false)
             const result = feeBank.find((item) => {
                 if (bankCodeTujuan === "014" || bankCodeTujuan === "011") {
@@ -2257,7 +2358,7 @@ function DisbursementPage() {
                 return item.channel_id === bankCodeTujuan
             }
         })
-        if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
+        if (nominal <= balanceBank.mpartballchannel_balance) {
             setAlertSaldo(false)
             let sameFlag = 0
             const results = dataDisburse.filter(res => res.number !== number)
@@ -2483,7 +2584,7 @@ function DisbursementPage() {
                 return item.channel_id === bankCodeTujuan
             }
         })
-        if (nominal < balanceBank.mpartballchannel_balance || nominal === balanceBank.mpartballchannel_balance) {
+        if (nominal <= balanceBank.mpartballchannel_balance) {
             setAlertSaldo(false)
 
             const finding = dataDisburse.findIndex((object) => {
@@ -2747,6 +2848,7 @@ function DisbursementPage() {
                 setShowModalConfirm(false)
                 // history.push("/disbursement/disbursementpage")
                 setDataDisburse([])
+                setDataFromUploadExcel([])
                 setAllNominal([])
                 setAllFee([])
                 setShowModalStatusDisburse(true)
@@ -2759,6 +2861,7 @@ function DisbursementPage() {
                 setShowModalConfirm(false)
                 // history.push("/disbursement/disbursementpage")
                 setDataDisburse([])
+                setDataFromUploadExcel([])
                 setAllNominal([])
                 setAllFee([])
                 setShowModalStatusDisburse(true)
