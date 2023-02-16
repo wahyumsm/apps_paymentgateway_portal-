@@ -753,12 +753,12 @@ function RiwayatTransaksi() {
         }
     }
 
-    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode) {
+    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode, bankCode) {
         if (isFilter) {
-            async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
+            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, codeBank) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "bank_code": "${codeBank}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -791,12 +791,12 @@ function RiwayatTransaksi() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, dateId, periode)
+            dataExportFilter(statusId, transId, partnerId, dateId, periode, bankCode)
         } else {
             async function dataExportSettlement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "bank_code": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -1125,7 +1125,7 @@ function RiwayatTransaksi() {
                     {
                         dataRiwayatSettlement.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0)} className="export-span">Export</Link>
+                            <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.bankSettlement)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
