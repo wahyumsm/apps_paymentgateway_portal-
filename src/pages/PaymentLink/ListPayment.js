@@ -605,12 +605,12 @@ function ListPayment() {
               style={{ display: "inline" }}
             >
               {inputHandle.statusPaylink === "" && <option value={""}>Pilih Status</option>}
-              <option value={"17"}>Active</option>
-              <option value={"2"}>Success</option>
-              <option value={"18"}>Settled</option>
-              <option value={"16"}>Closed</option>
-              <option value={"7"}>Waiting For Payment</option>
-              <option value={"9"}>Expired</option>
+              <option value={"17"}>Aktif</option>
+              <option value={"2"}>Berhasil</option>
+              <option value={"18"}>Settlement</option>
+              <option value={"16"}>Ditutup</option>
+              <option value={"7"}>Menunggu Pembayaran</option>
+              <option value={"9"}>Kadaluwarsa</option>
             </Form.Select>
           </Col>
           <Col xs={4}></Col>

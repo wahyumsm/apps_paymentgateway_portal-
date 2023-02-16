@@ -480,7 +480,7 @@ function RiwayatTransaksi() {
         },
         {
             name: 'Status',
-            selector: row => row.mstatus_name,
+            selector: row => row.mstatus_name_ind,
             width: "150px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -592,7 +592,7 @@ function RiwayatTransaksi() {
         },
         {
             name: 'Status',
-            selector: row => row.mstatus_name,
+            selector: row => row.mstatus_name_ind,
             width: "140px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -889,16 +889,10 @@ function RiwayatTransaksi() {
                             <span style={{ marginRight: 41 }}>Status</span>
                             <Form.Select name="statusDanaMasuk" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Status</option>
-                                <option value={2}>Success</option>
-                                <option value={1}>In Progress</option>
-                                {/* <option value={3}>Refund</option> */}
-                                {/* <option value={4}>Canceled</option> */}
-                                <option value={7}>Waiting for Payment</option>
-                                {/* <option value={8}>Paid</option> */}
-                                <option value={9}>Expired</option>
-                                {/* <option value={10}>Withdraw</option> */}
-                                {/* <option value={11}>Idle</option> */}
-                                {/* <option value={15}>Expected Success</option> */}
+                                <option value={2}>Berhasil</option>
+                                <option value={1}>Dalam Proses</option>
+                                <option value={7}>Menunggu Pembayaran</option>
+                                <option value={9}>Kadaluwarsa</option>
                             </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
@@ -1032,16 +1026,10 @@ function RiwayatTransaksi() {
                             <span>Status</span>
                             <Form.Select name="statusSettlement" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Status</option>
-                                <option value={2}>Success</option>
-                                <option value={1}>In Progress</option>
-                                {/* <option value={3}>Refund</option> */}
-                                {/* <option value={4}>Canceled</option> */}
-                                <option value={7}>Waiting for Payment</option>
-                                {/* <option value={8}>Paid</option> */}
-                                <option value={9}>Expired</option>
-                                {/* <option value={10}>Withdraw</option> */}
-                                {/* <option value={11}>Idle</option> */}
-                                {/* <option value={15}>Expected Success</option> */}
+                                <option value={2}>Berhasil</option>
+                                <option value={1}>Dalam Proses</option>
+                                <option value={7}>Menunggu Pembayaran</option>
+                                <option value={9}>Kadaluwarsa</option>
                             </Form.Select>
                         </Col>
                     </Row>

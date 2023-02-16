@@ -962,10 +962,10 @@ export default () => {
                     <span className="pe-4">Status</span>
                     <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
                       <option defaultChecked disabled value="">Pilih Status</option>
-                      <option value={2}>Success</option>
-                      <option value={1}>In Progress</option>
-                      <option value={7}>Waiting For Payment</option>
-                      <option value={9}>Payment Expired</option>
+                      <option value={2}>Berhasil</option>
+                      <option value={1}>Dalam Proses</option>
+                      <option value={7}>Menunggu Pembayaran</option>
+                      <option value={9}>Kadaluwarsa</option>
                     </Form.Select>
                 </Col>
             </Row>
@@ -1156,10 +1156,10 @@ export default () => {
                     <span>Status</span>
                     <Form.Select name="statusSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
                       <option defaultChecked disabled value="">Pilih Status</option>
-                      <option value={2}>Success</option>
-                      <option value={1}>In Progress</option>
-                      <option value={3}>Pending</option>
-                      <option value={4}>Failed</option>
+                      <option value={2}>Berhasil</option>
+                      <option value={1}>Dalam Proses</option>
+                      {/* <option value={3}>Pending</option> */}
+                      <option value={4}>Gagal</option>
                     </Form.Select>
                 </Col>
             </Row>
