@@ -348,6 +348,9 @@ function EditPartner() {
         const source = {
           fee: Number(fee),
           fee_settle: Number(settleFee),
+          mpartfitur_min_topup_allocation: Number(minTopup),
+          mpartfitur_min_amount_trx: Number(minTransaksi),
+          mpartfitur_max_amount_trx: Number(maksTransaksi),
           fitur_id: Number(fiturId),
           fitur_name: fiturName,
           mpaytype_id: typeId,
@@ -841,11 +844,14 @@ function EditPartner() {
     {
       name: "Fitur",
       selector: (row) => row.fitur_name,
+      width: "150px",
+      wrap: true
     },
     {
       name: "Metode Pembayaran",
       selector: (row) => row.mpaytype_name.join(", "),
       width: "230px",
+      wrap: true
     },
     {
       name: "Fee",
@@ -855,6 +861,24 @@ function EditPartner() {
       name: "Settlement Fee",
       selector: (row) => convertToRupiah(row.fee_settle, true, 2),
       width: "150px",
+    },
+    {
+      name: "Minimal Topup Alokasi",
+      selector: (row) => convertToRupiah(row.mpartfitur_min_topup_allocation, true, 2),
+      width: "200px",
+      wrap: true
+    },
+    {
+      name: "Minimal Transaksi",
+      selector: (row) => convertToRupiah(row.mpartfitur_min_amount_trx, true, 2),
+      width: "180px",
+      wrap: true
+    },
+    {
+      name: "Maksimal Transaksi",
+      selector: (row) => convertToRupiah(row.mpartfitur_max_amount_trx, true, 2),
+      width: "180px",
+      wrap: true
     },
     {
       name: "Aksi",
@@ -974,60 +998,63 @@ function EditPartner() {
             setAlertSettlement(true)
           } else {
             setAlertSettlement(false)
-            const newData = {
-              fee: Number(fee),
-              fee_settle: Number(fee_settle),
-              fitur_id: Number(fiturId),
-              fitur_name: fiturName,
-              mpaytype_id: typeId,
-              mpaytype_name: typeName,
-              number: number,
-            };
-            setPayment([...payment, newData]);
-            setRedFlag(false)
-            setBiayaHandle({
-              fee: 0,
-              settlementFee: 0,
-            });
-            setFitur("", "");
-            setPaymentMethod([]);
-            setPaymentNameMethod([]);
-            // if (minTopup.length === 0 || minTopup === 0) {
-            //   setAlertMinTopup(true)
-            // } else {
-            //   setAlertMinTopup(false)
-            //   if (minTransaksi.length === 0 || minTransaksi === 0) {
-            //     setAlertMinTransaksi(true)
-            //   } else {
-            //     setAlertMinTransaksi(false)
-            //     if (maksTransaksi.length === 0 || maksTransaksi === 0) {
-            //       setAlertMaksTransaksi(true)
-            //     } else {
-            //       setAlertMaksTransaksi(false)
-            //       const newData = {
-            //         fee: Number(fee),
-            //         fee_settle: Number(fee_settle),
-            //         fitur_id: Number(fiturId),
-            //         fitur_name: fiturName,
-            //         mpaytype_id: typeId,
-            //         mpaytype_name: typeName,
-            //         number: number,
-            //       };
-            //       setPayment([...payment, newData]);
-            //       setRedFlag(false)
-            //       setBiayaHandle({
-            //         fee: 0,
-            //         settlementFee: 0,
-            //         minTopup: 0,
-            //         minTransaksi: 0,
-            //         maksTransaksi: 0
-            //       });
-            //       setFitur("", "");
-            //       setPaymentMethod([]);
-            //       setPaymentNameMethod([]);
-            //     }
-            //   }
-            // }
+            // const newData = {
+            //   fee: Number(fee),
+            //   fee_settle: Number(fee_settle),
+            //   fitur_id: Number(fiturId),
+            //   fitur_name: fiturName,
+            //   mpaytype_id: typeId,
+            //   mpaytype_name: typeName,
+            //   number: number,
+            // };
+            // setPayment([...payment, newData]);
+            // setRedFlag(false)
+            // setBiayaHandle({
+            //   fee: 0,
+            //   settlementFee: 0,
+            // });
+            // setFitur("", "");
+            // setPaymentMethod([]);
+            // setPaymentNameMethod([]);
+            if (minTopup.length === 0 || minTopup === 0) {
+              setAlertMinTopup(true)
+            } else {
+              setAlertMinTopup(false)
+              if (minTransaksi.length === 0 || minTransaksi === 0) {
+                setAlertMinTransaksi(true)
+              } else {
+                setAlertMinTransaksi(false)
+                if (maksTransaksi.length === 0 || maksTransaksi === 0) {
+                  setAlertMaksTransaksi(true)
+                } else {
+                  setAlertMaksTransaksi(false)
+                  const newData = {
+                    fee: Number(fee),
+                    fee_settle: Number(fee_settle),
+                    mpartfitur_min_topup_allocation: Number(minTopup),
+                    mpartfitur_min_amount_trx: Number(minTransaksi),
+                    mpartfitur_max_amount_trx: Number(maksTransaksi),
+                    fitur_id: Number(fiturId),
+                    fitur_name: fiturName,
+                    mpaytype_id: typeId,
+                    mpaytype_name: typeName,
+                    number: number,
+                  };
+                  setPayment([...payment, newData]);
+                  setRedFlag(false)
+                  setBiayaHandle({
+                    fee: 0,
+                    settlementFee: 0,
+                    minTopup: 0,
+                    minTransaksi: 0,
+                    maksTransaksi: 0
+                  });
+                  setFitur("", "");
+                  setPaymentMethod([]);
+                  setPaymentNameMethod([]);
+                }
+              }
+            }
           }
         }
       }
@@ -1219,6 +1246,7 @@ function EditPartner() {
       ) {
         // RouteTo('/daftarpartner')
         history.push("/daftarpartner");
+        alert("Edit Data Partner Berhasil");
       } else if (
         editPartner.status === 200 &&
         editPartner.data.response_code === 200 &&
@@ -1226,9 +1254,8 @@ function EditPartner() {
       ) {
         setUserSession(editPartner.data.response_new_token);
         history.push("/daftarpartner");
+        alert("Edit Data Partner Berhasil");
       }
-
-      alert("Edit Data Partner Berhasil");
     } catch (error) {
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
@@ -1748,10 +1775,10 @@ function EditPartner() {
                   </td>
                 </tr>
                 {/* settlementFee akhir */}
-                {/* <br/> */}
+                <br/>
                 {/* minTopup awal */}
-                {/* <tr>
-                  <td style={{ width: 200 }}>Minimal Topup <span style={{ color: "red" }}>*</span></td>
+                <tr>
+                  <td style={{ width: 200 }}>Minimal Topup Alokasi <span style={{ color: "red" }}>*</span></td>
                   <td>
                     {editMinTopup ? (
                       <input
@@ -1787,11 +1814,11 @@ function EditPartner() {
                       </div> : ""
                     }
                   </td>
-                </tr> */}
+                </tr>
                 {/* minTopup akhir */}
-                {/* <br/> */}
+                <br/>
                 {/* minTransaksi awal */}
-                {/* <tr>
+                <tr>
                   <td style={{ width: 200 }}>Minimal Transaksi <span style={{ color: "red" }}>*</span></td>
                   <td>
                     {editMinTransaksi ? (
@@ -1828,11 +1855,11 @@ function EditPartner() {
                       </div> : ""
                     }
                   </td>
-                </tr> */}
+                </tr>
                 {/* minTransaksi akhir */}
-                {/* <br/> */}
+                <br/>
                 {/* maksTransaksi awal */}
-                {/* <tr>
+                <tr>
                   <td style={{ width: 200 }}>Maksimal Transaksi <span style={{ color: "red" }}>*</span></td>
                   <td>
                     {editMaksTransaksi ? (
@@ -1869,7 +1896,7 @@ function EditPartner() {
                       </div> : ""
                     }
                   </td>
-                </tr> */}
+                </tr>
                 {/* maksTransaksi akhir */}
                 <br/>
                 <tr>

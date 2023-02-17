@@ -237,17 +237,6 @@ function DisbursementPage() {
                                 danamon: 0,
                                 bifast: 0
                             }
-                            // let dataRowLengkap = 0
-                            // data.forEach(el => {
-                            //     console.log(Object.keys(el).length, 'untuk ngecek kolom table');
-                            //     if (Object.keys(el).length === 8) {
-                            //         dataRowLengkap++
-                            //     }
-                            //     Object.keys(el).forEach((e, idx) => {
-                            //         console.log(e, idx, 'e');
-                            //     })
-                            // })
-                            // console.log(dataRowLengkap, data.length, 'ini perbandingan');
                             // console.log(data, 'data');
                             let checktableColumn = 0
                             data.map(el => {
