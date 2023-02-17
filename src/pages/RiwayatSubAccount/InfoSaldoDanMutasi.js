@@ -15,6 +15,7 @@ import axios from 'axios'
 import { useEffect } from 'react'
 import triangleInfo from "../../assets/icon/triangle-info.svg"
 import InfiniteScroll from 'react-infinite-scroll-component'
+import Pagination from 'react-js-pagination'
 
 const InfoSaldoDanMutasi = () => {
     const history = useHistory()
@@ -24,11 +25,131 @@ const InfoSaldoDanMutasi = () => {
     const [dataAkun, setDataAkun] = useState([])
     const [listMutasi, setListMutasi] = useState([])
     const [pageMutasi, setPageMutasi] = useState({})
-    const [userId, setUserId] = useState([])
     const [pendingMutasi, setPendingMutasi] = useState(true)
     const [pendingSaldo, setPendingSaldo] = useState(true)
+    const [dataMutasi, setDataMutasi] = useState([])
+    const [pageNumberMutasi, setPageNumberMutasi] = useState({})
+    const [activePageMutasi, setActivePageMutasi] = useState(1)
+    const [totalPageMutasi, setTotalPageMutasi] = useState(0)
+    const [isFilterMutasi, setIsFilterMutasi] = useState(false)
     const [errMsg, setErrMsg] = useState("")
-    console.log(errMsg, 'errMsg');
+    const [dateRangeInfoMutasi, setDateRangeInfoMutasi] = useState([])
+    const [showDateInfoMutasi, setShowDateInfoMutasi] = useState("none")
+    const [stateInfoMutasi, setStateInfoMutasi] = useState(null)
+    const [orderId, setOrderId] = useState(0);
+    const [orderField, setOrderField] = useState("");
+    const [inputMutasi, setInputMutasi] = useState({
+        idTrans: "",
+        idReff: "",
+        idReffTrans: "",
+        paymentType: 0,
+        partnerName: ""
+    })
+    console.log(activePageMutasi, 'activePageMutasi');
+    console.log(dataMutasi, 'dataMutasi');
+    console.log(pageNumberMutasi, 'pageNumberMutasi');
+    console.log(totalPageMutasi, 'totalPageMutasi');
+    console.log(dateRangeInfoMutasi, 'dateRangeInfoMutasi');
+    console.log(showDateInfoMutasi, 'showDateInfoMutasi');
+    console.log(stateInfoMutasi, 'stateInfoMutasi');
+
+    async function getListRiwayatMutasi(currentPage) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"subpartner_id":"", "toffshorebank_code":"", "trans_type": 0, "partner_name":"", "date_from":"2022-12-20", "date_to":"2022-12-26", "period":7, "page":${(currentPage < 1) ? 1 : currentPage}, "row_per_page":10, "order": 0, "order_field": "id_referensi", "id_referensi": "", "id_referensi_transaksi": ""}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const listDataMutasi = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
+            console.log(listDataMutasi, "ini data riwayat");
+            if (listDataMutasi.data.response_code === 200 && listDataMutasi.status === 200 && listDataMutasi.data.response_new_token.length === 0) {
+                listDataMutasi.data.response_data.results = listDataMutasi.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setDataMutasi(listDataMutasi.data.response_data.results)
+                setPageNumberMutasi(listDataMutasi.data.response_data)
+                setTotalPageMutasi(listDataMutasi.data.response_data.max_page)
+            } else if (listDataMutasi.data.response_code === 200 && listDataMutasi.status === 200 && listDataMutasi.data.response_new_token.length !== 0) {
+                setUserSession(listDataMutasi.data.response_new_token)
+                listDataMutasi.data.response_data.results = listDataMutasi.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setDataMutasi(listDataMutasi.data.response_data.results)
+                setPageNumberMutasi(listDataMutasi.data.response_data)
+                setTotalPageMutasi(listDataMutasi.data.response_data.max_page)
+            }
+        } catch (error) {
+          // console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function filterListRiwayatMutasi(idTrans, paymentType, partnerName, periode, dateId, page, rowPerPage, orderId, orderField, idReff, idReffTrans) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"subpartner_id":"", "toffshorebank_code":"${idTrans.length !== 0 ? idTrans : ""}", "trans_type": ${paymentType}, "partner_name":"${partnerName.length !== 0 ? partnerName : ""}", "date_from":"${periode.length !== 0 ? periode[0] : ""}", "date_to":"${periode.length !== 0 ? periode[1] : ""}", "period": ${dateId}, "page":${(page !== 0) ? page : 1}, "row_per_page": ${rowPerPage !== 0 ? rowPerPage : 10}, "order": ${orderId}, "order_field": "${orderField}", "id_referensi": "${idReff}", "id_referensi_transaksi": "${idReffTrans}"}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const listDataMutasi = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
+            console.log(listDataMutasi, "ini data riwayat");
+            if (listDataMutasi.data.response_code === 200 && listDataMutasi.status === 200 && listDataMutasi.data.response_new_token.length === 0) {
+                listDataMutasi.data.response_data.results = listDataMutasi.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setDataMutasi(listDataMutasi.data.response_data.results)
+                setPageNumberMutasi(listDataMutasi.data.response_data)
+                setTotalPageMutasi(listDataMutasi.data.response_data.max_page)
+            } else if (listDataMutasi.data.response_code === 200 && listDataMutasi.status === 200 && listDataMutasi.data.response_new_token.length !== 0) {
+                setUserSession(listDataMutasi.data.response_new_token)
+                listDataMutasi.data.response_data.results = listDataMutasi.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setDataMutasi(listDataMutasi.data.response_data.results)
+                setPageNumberMutasi(listDataMutasi.data.response_data)
+                setTotalPageMutasi(listDataMutasi.data.response_data.max_page)
+            }
+        } catch (error) {
+          // console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+    }
+
+    function handlePageChangeRiwayatMutasi(page) {
+        if (isFilterMutasi) {
+            setActivePageMutasi(page);
+            filterListRiwayatMutasi()
+        } else {
+            setActivePageMutasi(page);
+            getListRiwayatMutasi(page);
+        }
+    }
+
+    function handleChangePeriodeMutasi (e) {
+        if (e.target.value === "7") {
+            setShowDateInfoMutasi("")
+            setInputDataMutasi({
+                ...inputDataMutasi,
+                [e.target.name] : e.target.value
+            })
+        } else {
+            setShowDateInfoMutasi("none")
+            setInputDataMutasi({
+                ...inputDataMutasi,
+                [e.target.name] : e.target.value
+            })
+        }
+    }
+
+    function pickDateInfoMutasi(item) {
+        console.log(item, "item");
+        setStateInfoMutasi(item)
+        if (item !== null) {
+          item = item.map(el => el.toLocaleDateString('en-CA').split("").join(""))
+          setDateRangeInfoMutasi(item)
+        }
+    }
+
+    function handleChangeMutasi(e) {
+        setInputMutasi({
+            ...inputMutasi,
+            [e.target.name] : e.target.value
+        })
+    }
     
     async function fetchMoreData() {
         getListMutasi(inputHandle.akunPartner, pageMutasi.next_record, pageMutasi.matched_record)
@@ -61,7 +182,7 @@ const InfoSaldoDanMutasi = () => {
                 setPageMutasi(mutasiList.data.response_data.pages)
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 console.log('masuk log error');
                 setErrMsg(error.response.data.response_message)
@@ -70,9 +191,6 @@ const InfoSaldoDanMutasi = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-
-
-    console.log(listMutasi, 'listMutasi');
     
     const style = {
         height: 30,
@@ -123,9 +241,6 @@ const InfoSaldoDanMutasi = () => {
         saturday: 'Sab',
         ok: 'Terapkan',
     };
-    const [dateRangeInfoMutasi, setDateRangeInfoMutasi] = useState([])
-    const [showDateInfoMutasi, setShowDateInfoMutasi] = useState("none")
-    const [stateInfoMutasi, setStateInfoMutasi] = useState(null)
 
     function handleChange(e, listAkun) {
         listAkun = listAkun.find(item => item.partner_id === e.target.value)
@@ -145,10 +260,6 @@ const InfoSaldoDanMutasi = () => {
         setShowDateInfoMutasi("none")
     }
 
-    function loadFunc (page) {
-        console.log(page, "data load")
-    }
-
     function toDashboard() {
         history.push("/");
     }
@@ -156,40 +267,6 @@ const InfoSaldoDanMutasi = () => {
     function toLaporan() {
         history.push("/laporan");
     }
-
-    const columns = [
-        {
-            name: 'No',
-            selector: row => row.number,
-            width: '60px'
-        },
-        {
-            name: 'ID Referensi',
-            selector: row => row.Id_referensi,
-        },
-        {
-            name: 'Waktu',
-            selector: row => row.waktu,
-        },
-        {
-            name: 'Nominal',
-            selector: row => row.debit_credit === "D" ? '- ' + convertToRupiah(Number(row.nominal.replace(",", ".")), true, 2) : '+ ' + convertToRupiah(Number(row.nominal.replace(",", ".")), true, 2),
-            conditionalCellStyles: [
-                {
-                    when: row => row.debit_credit === "D",
-                    style: { color: "#B9121B" }
-                },
-                {
-                    when: row => row.debit_credit === "C",
-                    style: { color: "#077E86" }
-                }
-            ]
-        },
-        {
-            name: 'Keterangan',
-            selector: row => row.keterangan,
-        },
-    ]
 
     async function getAkunPartner() {
         try {
@@ -259,7 +336,6 @@ const InfoSaldoDanMutasi = () => {
 
     async function getListMutasi(partnerId, nextRecord, matchedRecord) {
         try {
-            console.log('masuk');
             setPendingMutasi(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"subpartner_id":"${partnerId}", "start_date":"", "end_date":"", "date_id":1, "page":{"max_record":"10", "next_record":"${nextRecord !== undefined ? nextRecord : "N"}", "matched_record":"${matchedRecord !== undefined ? matchedRecord : "0"}"}}`)
@@ -367,31 +443,6 @@ const InfoSaldoDanMutasi = () => {
         getInfoSaldo(inputHandle.akunPartner)
     }
 
-    function pickDateInfoMutasi(item) {
-        console.log(item, "item");
-        setStateInfoMutasi(item)
-        if (item !== null) {
-          item = item.map(el => el.toLocaleDateString('en-CA').split("-").join(""))
-          setDateRangeInfoMutasi(item)
-        }
-    }
-
-    function handleChangePeriodeMutasi (e) {
-        if (e.target.value === "7") {
-            setShowDateInfoMutasi("")
-            setInputDataMutasi({
-                ...inputDataMutasi,
-                [e.target.name] : e.target.value
-            })
-        } else {
-            setShowDateInfoMutasi("none")
-            setInputDataMutasi({
-                ...inputDataMutasi,
-                [e.target.name] : e.target.value
-            })
-        }
-    }
-
     const customStyles = {
         headCells: {
             style: {
@@ -413,6 +464,7 @@ const InfoSaldoDanMutasi = () => {
     );
 
     useEffect(() => {
+        getListRiwayatMutasi(activePageMutasi)
         // userDetails()
         getAkunPartner()
     }, [])
@@ -462,6 +514,67 @@ const InfoSaldoDanMutasi = () => {
                                 xs={4}
                                 className="d-flex justify-content-between align-items-center"
                             >
+                                <div>ID Referensi</div>
+                                <input
+                                    name="idReff"
+                                    value={inputMutasi.idReff}
+                                    onChange={(e) => handleChangeMutasi(e)}
+                                    type="text"
+                                    className="input-text-sub"
+                                    placeholder="Masukkan ID Referensi"
+                                />
+                            </Col>
+                            <Col
+                                xs={4}
+                                className="d-flex justify-content-between align-items-center"
+                            >
+                                <div>ID Transaksi</div>
+                                <input
+                                    name="idTrans"
+                                    value={inputMutasi.idTrans}
+                                    onChange={(e) => handleChangeMutasi(e)}
+                                    type="text"
+                                    className="input-text-sub"
+                                    placeholder="Masukkan ID Transaksi"
+                                />
+                            </Col>
+                            <Col
+                                xs={4}
+                                className="d-flex justify-content-between align-items-center"
+                            >
+                                <div>ID Referensi Transaksi</div>
+                                <input
+                                    name="idReff"
+                                    value={inputMutasi.idReffTrans}
+                                    onChange={(e) => handleChangeMutasi(e)}
+                                    type="text"
+                                    className="input-text-sub"
+                                    placeholder="Masukkan ID Referensi Transaksi"
+                                />
+                            </Col>
+                        </Row>
+                        <Row className="mt-3">
+                            <Col
+                                xs={4}
+                                className="d-flex justify-content-between align-items-center"
+                            >
+                                <div>Jenis Transaksi</div>
+                                <Form.Select
+                                    name="fiturTransaksi"
+                                    value={inputHandle.paymentType}
+                                    onChange={(e) => handleChangeMutasi(e)}
+                                    className="input-text-sub"
+                                    placeholder='Pilih Jenis Transaksi'
+                                >
+                                    <option value={0}>Pilih Jenis Transaksi</option>
+                                    <option value={1}>Transaksi Masuk ( cr )</option>
+                                    <option value={2}>Transaksi Keluar ( db )</option>
+                                </Form.Select>
+                            </Col> 
+                            <Col
+                                xs={4}
+                                className="d-flex justify-content-between align-items-center"
+                            >
                                 <div>Periode</div>
                                 <Form.Select
                                     name="periodeInfoMutasi"
@@ -476,7 +589,7 @@ const InfoSaldoDanMutasi = () => {
                                     <option value={7}>Pilih Range Tanggal</option>
                                 </Form.Select>
                             </Col>
-                            <Col xs={4} className='d-flex justify-content-center align-items-center' >
+                            <Col xs={4} className='d-flex justify-content-end align-items-center' >
                                 <div style={{ display: showDateInfoMutasi }}>
                                     <DateRangePicker
                                         value={stateInfoMutasi}
@@ -484,7 +597,7 @@ const InfoSaldoDanMutasi = () => {
                                         onChange={(e) => pickDateInfoMutasi(e)}
                                         character=' - '
                                         cleanable={true}
-                                        placement='bottomStart'
+                                        placement='bottomEnd'
                                         size='lg'
                                         placeholder="Select Date Range" 
                                         disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
@@ -495,14 +608,6 @@ const InfoSaldoDanMutasi = () => {
                                     />
                                 </div>
                             </Col>
-                            {/* <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                <span>Jenis Transaksi</span>
-                                <Form.Select name='fiturDanaMasuk' className='input-text-ez' style={{ display: "inline" }}>
-                                    <option defaultValue value={0}>Semua</option>
-                                    <option value={1}>Transaksi Masuk ( cr )</option>
-                                    <option value={2}>Transaksi Keluar ( db )</option>
-                                </Form.Select>
-                            </Col> */}
                         </Row>
                         <Row className='mt-3'>
                             <Col xs={5}>
@@ -511,7 +616,7 @@ const InfoSaldoDanMutasi = () => {
                                         <button 
                                             className={(inputDataMutasi.periodeInfoMutasi !== 0 || dateRangeInfoMutasi.length !== 0) ? 'btn-ez-on' : 'btn-noez-transfer'}
                                             disabled={inputDataMutasi.periodeInfoMutasi === 0}
-                                            onClick={() => filterGetListMutasi(inputHandle.akunPartner, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, pageMutasi.next_record, pageMutasi.matched_record)}
+                                            onClick={() => filterListRiwayatMutasi(inputMutasi.idTrans, inputMutasi.paymentType, inputMutasi.partnerName, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, 1, 10, orderId, orderField, inputMutasi.idReff, inputMutasi.idReffTrans)}
                                         >
                                             Terapkan
                                         </button>
@@ -528,9 +633,70 @@ const InfoSaldoDanMutasi = () => {
                                 </Row>
                             </Col>
                         </Row>
-                        <div className="div-table table-transfer mt-4 pb-4">
+                        <div className="div-table mt-4 pb-4" style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
+                            <div id="tableInvoice" style={{  overflowX: "auto" }} className=" table-bordered mt-3">
+                                {
+                                    dataMutasi.length !== 0 ? (
+                                        <table className='table mt-3'>
+                                            <thead style={{ borderStyle: "hidden", fontWeight: 600 }}>
+                                                <tr>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>No</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>ID Transaksi</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>ID Referensi Bank</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>ID Referensi Transaksi</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>Waktu</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>Jenis Transaksi</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>Rekening Tujuan</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>Nominal</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>Deskripsi</th>
+                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838" }}>Keterangan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="table-group-divider">
+                                                {
+                                                    dataMutasi.map((item, idx) => (
+                                                        <tr key={idx} style={{ borderStyle: "hidden" }}>
+                                                            <td style={{ textAlign: "center", padding: "0.75rem 1rem" }}>{ idx+1 }</td>
+                                                            <td style={{ padding: "0.75rem 1rem" }}>{ item.toffshorebank_code }</td>
+                                                            <td style={{ padding: "0.75rem 1rem" }}>{ item.id_referensi }</td>
+                                                            <td style={{ textAlign: "center", padding: "0.75rem 1rem" }}>{ item.id_referensi_transaksi === null ? '-' : item.id_referensi_transaksi }</td>
+                                                            <td style={{ padding: "0.75rem 1rem" }}>{ item.toffshorebank_crtdt }</td>
+                                                            <td style={{ padding: "0.75rem 1rem" }}>{ item.moffshorebank_type_name }</td>
+                                                            <td style={{ padding: "0.75rem 1rem" }}>{ item.toffshorebank_account }</td>
+                                                            <td style={{ padding: "0.75rem 1rem" }}>{ item.offshore_amount }</td>
+                                                            <td style={{ padding: "0.75rem 1rem" }}>{ item.toffshorebank_desc }</td>
+                                                            <td style={{ padding: "0.75rem 1rem" }}>{ item.keterangan === null ? "-" : item.keterangan }</td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <>
+                                            <table className='table mt-3'>
+                                                <thead style={{ borderStyle: "hidden", fontWeight: 600, }}>
+                                                    <tr>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>No</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>ID Transaksi</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>ID Referensi Bank</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>ID Referensi Transaksi</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Waktu</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Jenis Transaksi</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Rekening Tujuan</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Nominal</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Deskripsi</th>
+                                                        <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Keterangan</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <div className='text-center' style={{ color: '#393939' }}>Tidak ada data</div>
+                                        </>
+                                    )
+                                }
+                            </div>
+
                             <div id="scrollableDiv" style={{ height: 490, overflow: "auto" }} className='fixed-header-table'>
-                                <InfiniteScroll
+                                {/* <InfiniteScroll
                                     dataLength={listMutasi.length}
                                     next={fetchMoreData}
                                     hasMore={pageMutasi.next_record === "Y" ? true : false}
@@ -542,26 +708,36 @@ const InfoSaldoDanMutasi = () => {
                                         <div className='d-flex justify-content-center'><CustomLoader /></div> :
                                         <div id='table-body' >
                                             {
-                                                listMutasi.length !== 0 ? (
+                                                dataMutasi.length !== 0 ? (
                                                     <table className='table mt-3'>
                                                         <thead>
                                                             <tr>
                                                                 <th>No</th>
-                                                                <th>ID Referensi</th>
+                                                                <th>ID Transaksi</th>
+                                                                <th>ID Referensi Bank</th>
+                                                                <th>ID Referensi Transaksi</th>
                                                                 <th>Waktu</th>
+                                                                <th>Jenis Transaksi</th>
+                                                                <th>Rekening Tujuan</th>
                                                                 <th>Nominal</th>
+                                                                <th>Deskripsi</th>
                                                                 <th>Keterangan</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             {
-                                                                listMutasi.map((item, idx) => (
-                                                                    <tr key={idx}>
+                                                                dataMutasi.map((item, idx) => (
+                                                                    <tr key={idx} classNamems="ms-2">
                                                                         <td>{ idx+1 }</td>
-                                                                        <td>{ item.Id_referensi }</td>
-                                                                        <td>{ item.waktu }</td>
-                                                                        <td>{ item.nominal }</td>
-                                                                        <td>{ item.keterangan }</td>
+                                                                        <td>{ item.toffshorebank_code }</td>
+                                                                        <td>{ item.id_referensi }</td>
+                                                                        <td>{ item.id_referensi_transaksi === null ? '-' : item.id_referensi_transaksi }</td>
+                                                                        <td>{ item.toffshorebank_crtdt }</td>
+                                                                        <td>{ item.moffshorebank_type_name }</td>
+                                                                        <td>{ item.toffshorebank_account }</td>
+                                                                        <td>{ item.offshore_amount }</td>
+                                                                        <td>{ item.toffshorebank_desc }</td>
+                                                                        <td>{ item.keterangan === null ? "-" : item.keterangan }</td>
                                                                     </tr>
                                                                 ))
                                                             }
@@ -581,54 +757,39 @@ const InfoSaldoDanMutasi = () => {
                                                             </thead>
                                                         </table>
                                                         <div className='text-center' style={{ color: errMsg.length !== 0 && '#B9121B' }}>{errMsg.length === 0 ? "Tidak ada data" : `${errMsg} - Please Contact Your Admin`}</div>
+                                                        <div className='text-center' style={{ color: errMsg.length !== 0 && '#B9121B' }}>Tidak ada data</div>
                                                     </>
                                                 )
                                             }
                                         </div>
                                     }
-                                </InfiniteScroll>
+                                </InfiniteScroll> */}
                             </div>
-                            
-                            {/* <div id="scrollableDiv" className='fixed-header-table'>
-                                {
-                                    pendingMutasi ?
-                                    <div className='d-flex justify-content-center'><CustomLoader /></div> :
-                                    <div id='table-body' style={{ height: 300, overflow: "auto" }}>
-                                        <table className='table mt-3'>
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>ID Referensi</th>
-                                                    <th>Waktu</th>
-                                                    <th>Nominal</th>
-                                                    <th>Keterangan</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <InfiniteScroll
-                                                    dataLength={listMutasi.length}
-                                                    next={fetchMoreData}
-                                                    hasMore={pageMutasi.next_record === "Y" ? true : false}
-                                                    loader={<div style={{ textAlign: 'center' }}><CustomLoader /></div>}
-                                                    scrollableTarget="scrollableDiv"
-                                                >
-                                                    {
-                                                        listMutasi.map((item, idx) => (
-                                                            <tr key={idx}>
-                                                                <td>{ idx+1 }</td>
-                                                                <td>{ item.Id_referensi }</td>
-                                                                <td>{ item.waktu }</td>
-                                                                <td>{ item.nominal }</td>
-                                                                <td>{ item.keterangan }</td>
-                                                            </tr>
-                                                        ))
-                                                    }
-                                                </InfiniteScroll>
-                                            </tbody>
-                                        </table>
-                                    </div>
+
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                marginTop: -15,
+                                paddingTop: 12,
+                                borderTop: "groove",
+                            }}
+                        >
+                            <div style={{ marginRight: 10, marginTop: 10 }}>
+                                Total Page: {totalPageMutasi}
+                            </div>
+                            <Pagination
+                                activePage={activePageMutasi}
+                                itemsCountPerPage={pageNumberMutasi.row_per_page}
+                                totalItemsCount={
+                                pageNumberMutasi.row_per_page * pageNumberMutasi.max_page
                                 }
-                            </div> */}
+                                pageRangeDisplayed={5}
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                onChange={handlePageChangeRiwayatMutasi}
+                            />
                         </div>
                     </div>
                 </> :
