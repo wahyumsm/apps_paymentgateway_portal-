@@ -340,7 +340,7 @@ function DisbursementReport() {
         },
         {
             name: 'Cabang',
-            selector: row => row.branch_name === null ? "-" : row.branch_name,
+            selector: row => (row.branch_name === null || row.branch_name.length === 0) ? "-" : row.branch_name,
             // sortable: true,
             width: "224px",
         },
@@ -358,13 +358,13 @@ function DisbursementReport() {
         },
         {
             name: 'Catatan',
-            selector: row => row.notes === null ? "-" : row.notes,
+            selector: row => (row.notes === null || row.notes.length === 0) ? "-" : row.notes,
             // sortable: true,
             width: "224px",
         },
         {
             name: 'Reference No',
-            selector: row => row.reference_no !== "" ? row.reference_no : "-",
+            selector: row => (row.reference_no === null || row.reference_no.length === 0) ? "-" : row.reference_no,
             // sortable: true,
             width: "260px",
         },
@@ -446,7 +446,7 @@ function DisbursementReport() {
         },
         {
             name: 'Cabang',
-            selector: row => row.branch_name === null ? "-" : row.branch_name,
+            selector: row => (row.branch_name === null || row.branch_name.length === 0) ? "-" : row.branch_name,
             // sortable: true,
             width: "224px",
         },
@@ -464,7 +464,7 @@ function DisbursementReport() {
         },
         {
             name: 'Catatan',
-            selector: row => row.notes === null ? "-" : row.notes,
+            selector: row => (row.notes === null || row.notes.length === 0) ? "-" : row.notes,
             // sortable: true,
             width: "224px",
         },
@@ -704,13 +704,13 @@ function DisbursementReport() {
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>{(user_role === "102") ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</span> 
+            <span className='breadcrumbs-span'>{(user_role === "102") ? <><span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Disbursement</> : <><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</>}</span> 
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4">Disbursement Report</h2>
+                <h2 className="h5 mb-3 mt-4">{(user_role === "102") ? "Riwayat Disbursement" : "Disbursement Report"}</h2>
             </div>
             <div className='main-content'>
                 <div className='mt-2'>
-                    <span className='mt-4' style={{fontWeight: 600}}>Disbursement Report</span>
+                    <span className='mt-4' style={{fontWeight: 600}}>{(user_role === "102") ? "Riwayat Disbursement" : "Disbursement Report"}</span>
                     <div className='base-content mt-3'>
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         {

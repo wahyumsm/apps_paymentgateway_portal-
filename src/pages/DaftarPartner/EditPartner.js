@@ -361,6 +361,9 @@ function EditPartner() {
         setBiayaHandle({
           fee: 0,
           settlementFee: 0,
+          minTopup: 0,
+          minTransaksi: 0,
+          maksTransaksi: 0
         });
         setFitur("", "");
         setPaymentMethod([]);
@@ -1015,6 +1018,9 @@ function EditPartner() {
             //       setBiayaHandle({
             //         fee: 0,
             //         settlementFee: 0,
+            //         minTopup: 0,
+            //         minTransaksi: 0,
+            //         maksTransaksi: 0
             //       });
             //       setFitur("", "");
             //       setPaymentMethod([]);

@@ -199,6 +199,19 @@ function DisbursementPage() {
                                     </span>
                                 </div>`)
                             }, 2500);
+                        } else if (dataTemp.length === 0) {
+                            setDataFromUploadExcel([])
+                            setErrorFound([])
+                            setTimeout(() => {
+                                setLabelUpload("")
+                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Data pada file masih kosong. Harap tinjau kembali data pada file anda.</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                <div className='pb-4'>
+                                    <span class="filepond--label-action">
+                                        Ganti File
+                                    </span>
+                                </div>`)
+                            }, 2500);
                         } else {
                             // console.log(dataTemp, 'dataTemp');
                             let data = []
@@ -3373,10 +3386,10 @@ function DisbursementPage() {
                                                                 dataDisburse
                                                             )}
                                                             className={
-                                                                (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length >= 4) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= 10000 && dataDisburse.length < 10) ? 'btn-edit-disbursement' : 'btn-editno-disbursement'
+                                                                (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length >= 4) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= 10000 && dataDisburse.length <= 10) ? 'btn-edit-disbursement' : 'btn-editno-disbursement'
                                                             }
                                                             disabled={
-                                                                (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length < 4 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < 10000 || dataDisburse.length >= 10)
+                                                                (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length < 4 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < 10000 || dataDisburse.length > 10)
                                                             }
                                                         >
                                                             Simpan
