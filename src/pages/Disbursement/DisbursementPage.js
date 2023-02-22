@@ -389,7 +389,8 @@ function DisbursementPage() {
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        } else if (/[$-/:-?{-~!"^_`\[\]]/.test(String(el["Cabang (Khusus Non-BCA)*"]))) {
+                                        // } else if (/[$-/:-?{-~!"^_`\[\]]/.test(String(el["Cabang (Khusus Non-BCA)*"]))) {
+                                        } else if (String(el["Cabang (Khusus Non-BCA)*"]).split('.').join('').trim().length === 0 || String(el["Cabang (Khusus Non-BCA)*"]).split(',').join('').trim().length === 0) {
                                             objErrData.no = idx + 2
                                             objErrData.keterangan = 'kolom Cabang (Khusus Non-BCA) : Cabang tidak tersedia.'
                                             errData.push(objErrData)
@@ -3950,7 +3951,7 @@ function DisbursementPage() {
                                         <span>Harap perbaiki data terlebih dahulu sebelum mengupload ulang file. </span>
                                     </div>
                                     <div className='mt-3' style={{ maxWidth: 622, backgroundColor: 'rgba(185, 18, 27, 0.08)', width: 'auto', padding: '20px 20px 20px 30px', borderRadius: 4 }}>
-                                        <div style={{ height: 210 }}>
+                                        <div style={{ height: 'auto' }}>
                                             <table className='table-error-list-disburse' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
                                                 {
                                                     errorLoadPagination.length !== 0 &&
