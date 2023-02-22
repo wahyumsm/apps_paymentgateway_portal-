@@ -284,7 +284,7 @@ function DisbursementPage() {
                             data = data.map((el, idx) => {
                                 let objErrData = {}
                                 // console.log(el["Bank Tujuan*"], `el["Bank Tujuan*"]`);
-                                const codeBank = el !== undefined && el["Bank Tujuan*"] !== undefined ? el["Bank Tujuan*"].slice(0, 3) : undefined
+                                const codeBank = el !== undefined && el["Bank Tujuan*"] !== undefined ? String(el["Bank Tujuan*"]).slice(0, 3) : undefined
                                 const filteredListBank = bankLists.filter(item => item.is_enabled === true) //bank yg aktif
                                 const sameBankName = filteredListBank.find(list => list.mbank_code === codeBank) //bank yg sama
                                 // console.log(sameBankName, 'sameBankName');
@@ -355,7 +355,8 @@ function DisbursementPage() {
                                         return {
                                             ...el,
                                             "Bank Tujuan*": `${sameBankName.mbank_code} - ${sameBankName.mbank_name}`,
-                                            "No. Rekening Tujuan*": String(el["No. Rekening Tujuan*"]).split(' ').join('')
+                                            "No. Rekening Tujuan*": String(el["No. Rekening Tujuan*"]).split('-').join('').split(' ').join(''),
+                                            "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"] !== undefined ? el["Nama Pemilik Rekening*"].slice(0, 20) : undefined,
                                         }
                                     } else {
                                         return {
@@ -1977,6 +1978,19 @@ function DisbursementPage() {
     }
 
     function handleChangeRek(e) {
+        // if (e.target.name === 'bankNameRek' && e.target.value.length <= 20) {
+        //     setAlertSaldo(false)
+        //     setInputRekening({
+        //         ...inputRekening,
+        //         [e.target.name] : e.target.value
+        //     })
+        // } else if (e.target.name !== 'bankNameRek') {
+        //     setAlertSaldo(false)
+        //     setInputRekening({
+        //         ...inputRekening,
+        //         [e.target.name] : e.target.value
+        //     })
+        // }
         setAlertSaldo(false)
         setInputRekening({
             ...inputRekening,

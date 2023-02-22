@@ -456,6 +456,8 @@ export default (props) => {
           <Nav className="align-items-center">
 
             {
+              // (user_role === "102" && (window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/report')) && 
+              // (user_role === "102" && (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/report')) && 
               (user_role === "102") && 
               <>
               <OverlayTrigger
