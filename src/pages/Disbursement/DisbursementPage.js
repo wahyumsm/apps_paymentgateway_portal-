@@ -355,7 +355,7 @@ function DisbursementPage() {
                                         return {
                                             ...el,
                                             "Bank Tujuan*": `${sameBankName.mbank_code} - ${sameBankName.mbank_name}`,
-                                            "No. Rekening Tujuan*": String(el["No. Rekening Tujuan*"]).split('-').join('').split(' ').join(''),
+                                            "No. Rekening Tujuan*": String(el["No. Rekening Tujuan*"]).replaceAll(' ', '').replaceAll('-', '').replaceAll('‘', ''),
                                             "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"] !== undefined ? el["Nama Pemilik Rekening*"].slice(0, 20) : undefined,
                                         }
                                     } else {
