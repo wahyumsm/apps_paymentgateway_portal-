@@ -456,23 +456,24 @@ export default (props) => {
           <Nav className="align-items-center">
 
             {
-              // (user_role === "102" && (window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/report')) && 
-              // (user_role === "102" && (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/report')) && 
-              (user_role === "102") && 
+              // (user_role === "102" && (window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo')) && 
+              // (user_role === "102" && (window.location.href === 'http://reactdev/dev1/#/dev1/Disbursement/disbursementpage' || window.location.href === 'http://reactdev/dev1/#/dev1/Disbursement/report' || window.location.href === 'http://reactdev/dev1/#/dev1/riwayattopup' || window.location.href === 'http://reactdev/dev1/#/dev1/alokasisaldo')) && 
+              (user_role === "102" && (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/report' || window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup' || window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo')) && 
+              // (user_role === "102") && 
               <>
-              <OverlayTrigger
-                placement="bottom"
-                trigger={["click"]}
-                overlay={
-                  <Tooltip>Saldo Tersedia adalah saldo yang mengendap dari hasil Top Up. Untuk menggunakan saldo ini kamu harus alokasikan saldo terlebih dulu pada laman “Alokasi Saldo” didalam menu “Saldo Tersedia”.</Tooltip>
-                }
-              >
-                <img
-                  src={circleInfo}
-                  alt="circle_info"
-                  style={{ marginTop: -5 }}
-                />
-              </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["click"]}
+                  overlay={
+                    <Tooltip>Saldo Tersedia adalah saldo yang mengendap dari hasil Top Up. Untuk menggunakan saldo ini kamu harus alokasikan saldo terlebih dulu pada laman “Alokasi Saldo” didalam menu “Saldo Tersedia”.</Tooltip>
+                  }
+                >
+                  <img
+                    src={circleInfo}
+                    alt="circle_info"
+                    style={{ marginTop: -5 }}
+                  />
+                </OverlayTrigger>
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                     <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">

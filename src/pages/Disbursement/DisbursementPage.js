@@ -34,6 +34,7 @@ import encryptData from '../../function/encryptData'
 import daftarBank from '../../assets/files/Daftar Bank Tujuan Disbursement-PT. Ezeelink Indonesia.xlsx'
 import templateBulkXLSX from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.xlsx'
 import templateBulkCSV from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
+import arrowDown from "../../assets/img/icons/arrow_down.svg";
 
 registerPlugin(FilePondPluginFileEncode)
 
@@ -94,6 +95,37 @@ function DisbursementPage() {
         danamon: 0,
         bifast: 0
     })
+    const [showDetailBalance, setShowDetailBalance] = useState({
+        bca: false,
+        danamon: false,
+        otherBank: false,
+        dana: false
+    })
+    const [totalHoldBalance, setTotalHoldBalance] = useState(0)
+
+    function handleShowDetailBalance(codeBank) {
+        if (codeBank === "014") {
+            setShowDetailBalance({
+                ...showDetailBalance,
+                bca: !showDetailBalance.bca
+            })
+        } else if (codeBank === "011") {
+            setShowDetailBalance({
+                ...showDetailBalance,
+                danamon: !showDetailBalance.danamon
+            })
+        } else if (codeBank === "DANA") {
+            setShowDetailBalance({
+                ...showDetailBalance,
+                dana: !showDetailBalance.dana
+            })
+        } else {
+            setShowDetailBalance({
+                ...showDetailBalance,
+                otherBank: !showDetailBalance.otherBank
+            })
+        }
+    }
     
     async function fileCSV(newValue, bankLists, listBallanceBank, bankFee) {
         // console.log(newValue, 'newValue');
@@ -238,12 +270,7 @@ function DisbursementPage() {
                                 bifast: 0
                             }
                             // console.log(data, 'data');
-                            let checktableColumn = 0
                             data.map(el => {
-                                // console.log(Object.keys(el).length%8 !== 0, 'Object.keys(el).length%8 !== 0', Object.keys(el).length);
-                                if (Object.keys(el).length%8 !== 0) { //check format column
-                                    checktableColumn ++
-                                }
                                 //check duplicate data
                                 if(resultArray.find((object, idx) => {
                                     if(object["No. Rekening Tujuan*"] === el["No. Rekening Tujuan*"] && object["Nominal Disbursement*"] === el["Nominal Disbursement*"]) {
@@ -262,24 +289,6 @@ function DisbursementPage() {
                                     resultArray.push(el);
                                 }
                             })
-                            // console.log(checktableColumn, 'checktableColumn');
-                            // console.log(Object.keys(data[0]), 'data length');
-                            // if (checktableColumn === Object.keys(data).length) {
-                            //     console.log(checktableColumn, 'checktableColumn masuk if');
-                            //     setDataFromUploadExcel([])
-                            //     setErrorFound([])
-                            //     setTimeout(() => {
-                            //         setLabelUpload("")
-                            //         setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
-                            //         <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
-                            //         <div className='pb-4'>
-                            //             <span class="filepond--label-action">
-                            //                 Ganti File
-                            //             </span>
-                            //         </div>`)
-                            //     }, 2500);
-                            // } else {
-                            // }
                             // console.log(data, 'data2');
                             data = data.map((el, idx) => {
                                 let objErrData = {}
@@ -326,6 +335,11 @@ function DisbursementPage() {
                                             objErrData.keterangan = 'kolom Nomor Rekening : Tipe data salah.'
                                             errData.push(objErrData)
                                             objErrData = {}
+                                        } else if (sameBankName.mbank_digit_acc !== 0 && (String(el["No. Rekening Tujuan*"]).replaceAll(' ', '').replaceAll('-', '').replaceAll('‘', '')).length !== sameBankName.mbank_digit_acc) { //jumlah nomer rekening tidak sesuai
+                                            objErrData.no = idx + 2
+                                            objErrData.keterangan = 'kolom Nomor Rekening : Digit nomor rekening tidak sesuai dengan bank tujuan.'
+                                            errData.push(objErrData)
+                                            objErrData = {}
                                         }
                                     }
                                     // console.log(el["Nama Pemilik Rekening*"], 'el["Nama Pemilik Rekening*"]');
@@ -355,7 +369,7 @@ function DisbursementPage() {
                                         return {
                                             ...el,
                                             "Bank Tujuan*": `${sameBankName.mbank_code} - ${sameBankName.mbank_name}`,
-                                            "No. Rekening Tujuan*": String(el["No. Rekening Tujuan*"]).replaceAll(' ', '').replaceAll('-', '').replaceAll('‘', ''),
+                                            "No. Rekening Tujuan*": String(el["No. Rekening Tujuan*"]).replaceAll(' ', '').replaceAll('-', '').replaceAll('‘', ''), //"Digit rekening tidak sesuai dengan bank tujuan."
                                             "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"] !== undefined ? el["Nama Pemilik Rekening*"].slice(0, 20) : undefined,
                                         }
                                     } else {
@@ -1895,24 +1909,30 @@ function DisbursementPage() {
             if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length === 0) {
                 const detailBalance = getBalance.data.response_data.balance_detail
                 let total = 0
+                let totalHoldBalance = 0
                 detailBalance.forEach((item) => {
                     if (item.mpaytype_mpaycat_id === 2) {
                         total += item.mpartballchannel_balance
                     }
+                    totalHoldBalance += item.hold_balance
                 })
                 setGetBalance(total)
                 setBalanceDetail(getBalance.data.response_data.balance_detail)
+                setTotalHoldBalance(totalHoldBalance)
             } else if (getBalance.data.response_code === 200 && getBalance.status === 200 && getBalance.data.response_new_token.length !== 0) {
                 setUserSession(getBalance.data.response_new_token)
                 const detailBalance = getBalance.data.response_data.balance_detail
                 let total = 0
+                let totalHoldBalance = 0
                 detailBalance.forEach((item) => {
                     if (item.mpaytype_mpaycat_id === 2) {
                         total += item.mpartballchannel_balance
                     }
+                    totalHoldBalance += item.hold_balance
                 })
                 setGetBalance(total)
                 setBalanceDetail(getBalance.data.response_data.balance_detail)
+                setTotalHoldBalance(totalHoldBalance)
             }
         } catch (error) {
             // console.log(error)
@@ -3069,6 +3089,46 @@ function DisbursementPage() {
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
                 <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
+                <Row className='mt-4'>
+                    {
+                        balanceDetail !== 0 &&
+                        balanceDetail.map(detail => {
+                            return (
+                                <Col lg={3}>
+                                    <div className="card-information base-content-beranda" style={{ padding: ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? '12px 27px' : '12px 27px 1px', height: 'fit-content' }}>
+                                        <p className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat digunakan`}</p>
+                                        <p onClick={() => handleShowDetailBalance(detail.channel_id)} className="p-amount">{detail.mpartballchannel_balance !== 0 ? convertToRupiah(detail.mpartballchannel_balance, true) : 0}<img src={arrowDown} alt="arrow_down" className={((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? 'arrow-down-detail-open' : 'arrow-down-detail'} style={{ marginLeft: 40 }} /></p>
+                                        {
+                                            ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) &&
+                                            <Row className='mt-2'>
+                                                <Col lg={1}>
+                                                    <FontAwesomeIcon style={{ width: 5, marginRight: 5, marginTop: 3 }} icon={faCircle} />
+                                                </Col>
+                                                <Col lg={10} style={{ padding: 0 }}>
+                                                    <span style={{ color: "#888888", fontSize: 12, fontFamily: 'Nunito', fontWeight: 400 }}>Dalam proses disbursement {convertToRupiah(detail.hold_balance, true)}</span>
+                                                </Col>
+                                                <Col lg={1}>
+                                                    <FontAwesomeIcon style={{ width: 5, marginRight: 5, marginTop: 3 }} icon={faCircle} />
+                                                </Col>
+                                                <Col lg={10} style={{ padding: 0 }}>
+                                                    <span style={{ color: "#888888", fontSize: 12, fontFamily: 'Nunito', fontWeight: 400 }}>Saldo awal {convertToRupiah(detail.mpartballchannel_balance + detail.hold_balance, true)}</span>
+                                                </Col>
+                                            </Row>
+                                        }
+                                    </div>
+                                </Col>
+                            )
+                        })
+                    }
+                </Row>
+                <Row className='mt-4'>
+                    <Col lg={3}>
+                        <div className="card-information base-content-beranda" style={{ padding: '12px 27px 1px', borderLeft: '6px solid rgb(7, 126, 134)' }}>
+                            <p className="p-info">Total saldo dalam proses Disbursement</p>
+                            <p className="p-amount">{convertToRupiah(totalHoldBalance, true)}</p>
+                        </div>
+                    </Col>
+                </Row>
                 <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
                     <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
                         <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>

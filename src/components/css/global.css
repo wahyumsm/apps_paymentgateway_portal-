@@ -102,6 +102,16 @@ body {
     color: #383838;
 }
 
+.arrow-down-detail {
+    transform: rotate(0deg);
+    transition: transform 0.2s linear;
+}
+
+.arrow-down-detail-open {
+    transform: rotate(-180deg);
+    transition: transform 0.2s linear;
+}
+
 .input-text-ez {
     width: 57%;
     margin-left: 20px;
