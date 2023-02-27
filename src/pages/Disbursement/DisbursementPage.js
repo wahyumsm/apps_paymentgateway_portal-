@@ -448,7 +448,7 @@ function DisbursementPage() {
                                     }
                                 } else if (codeBank === "014" && codeBank !== undefined) {
                                     // console.log('masuk bca');
-                                    if (el["Cabang (Khusus Non-BCA)*"] === undefined || String(el["Cabang (Khusus Non-BCA)*"]).trim().length === 0 || String(el["Cabang (Khusus Non-BCA)*"]).indexOf('x') >= 0 || String(el["Cabang (Khusus Non-BCA)*"]).indexOf('X') >= 0 || /[$-/:-?{-~!"^_`\[\]]/.test(String(el["Cabang (Khusus Non-BCA)*"])) || String(el["Cabang (Khusus Non-BCA)*"]).toLowerCase() === String(el["Cabang (Khusus Non-BCA)*"]).toUpperCase()) {
+                                    if (el["Cabang (Khusus Non-BCA)*"] === undefined || String(el["Cabang (Khusus Non-BCA)*"]).trim().length === 0 || String(el["Cabang (Khusus Non-BCA)*"]).split('x').join(' ').trim().length === 0 || String(el["Cabang (Khusus Non-BCA)*"]).split('X').join(' ').trim().length === 0 || String(el["Cabang (Khusus Non-BCA)*"]).split('.').join('').trim().length === 0 || String(el["Cabang (Khusus Non-BCA)*"]).split(',').join('').trim().length === 0 || String(el["Cabang (Khusus Non-BCA)*"]).toLowerCase() === String(el["Cabang (Khusus Non-BCA)*"]).toUpperCase()) {
                                         // console.log('masuk kolom kosong');
                                         return {
                                             ...el,
@@ -3089,15 +3089,24 @@ function DisbursementPage() {
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
                 <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
-                <Row className='mt-4'>
+                {/* <Row className='mt-4'>
                     {
                         balanceDetail !== 0 &&
                         balanceDetail.map(detail => {
                             return (
                                 <Col lg={3}>
                                     <div className="card-information base-content-beranda" style={{ padding: ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? '12px 27px' : '12px 27px 1px', height: 'fit-content' }}>
-                                        <p className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat digunakan`}</p>
-                                        <p onClick={() => handleShowDetailBalance(detail.channel_id)} className="p-amount">{detail.mpartballchannel_balance !== 0 ? convertToRupiah(detail.mpartballchannel_balance, true) : 0}<img src={arrowDown} alt="arrow_down" className={((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? 'arrow-down-detail-open' : 'arrow-down-detail'} style={{ marginLeft: 40 }} /></p>
+                                        <Row>
+                                            <Col lg={12} className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat digunakan`}</Col>
+                                        </Row>
+                                        <Row>
+                                            <Col lg={8} className="p-amount" style={{ marginBottom:12 }}>
+                                                {detail.mpartballchannel_balance !== 0 ? convertToRupiah(detail.mpartballchannel_balance, true) : 0}
+                                            </Col>
+                                            <Col lg={4} onClick={() => handleShowDetailBalance(detail.channel_id)} style={{ textAlign: 'right' }}>
+                                                <img src={arrowDown} alt="arrow_down" className={((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? 'arrow-down-detail-open' : 'arrow-down-detail'} />
+                                            </Col>
+                                        </Row>
                                         {
                                             ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) &&
                                             <Row className='mt-2'>
@@ -3125,10 +3134,10 @@ function DisbursementPage() {
                     <Col lg={3}>
                         <div className="card-information base-content-beranda" style={{ padding: '12px 27px 1px', borderLeft: '6px solid rgb(7, 126, 134)' }}>
                             <p className="p-info">Total saldo dalam proses Disbursement</p>
-                            <p className="p-amount">{convertToRupiah(totalHoldBalance, true)}</p>
+                            <p className="p-amount" style={{ marginBottom: 12 }}>{convertToRupiah(totalHoldBalance, true)}</p>
                         </div>
                     </Col>
-                </Row>
+                </Row> */}
                 <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
                     <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
                         <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
