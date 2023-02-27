@@ -3089,38 +3089,38 @@ function DisbursementPage() {
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
                 <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
-                {/* <Row className='mt-4'>
+                <Row className='mt-4'>
                     {
                         balanceDetail !== 0 &&
                         balanceDetail.map(detail => {
                             return (
                                 <Col lg={3}>
-                                    <div className="card-information base-content-beranda" style={{ padding: ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? '12px 27px' : '12px 27px 1px', height: 'fit-content' }}>
+                                    <div className="card-information base-content-beranda" style={{ padding: ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? '15px 27px' : '15px 27px 1px', height: 'fit-content' }}>
                                         <Row>
-                                            <Col lg={12} className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat digunakan`}</Col>
+                                            <Col lg={12} className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat`}<br />digunakan</Col>
                                         </Row>
                                         <Row>
-                                            <Col lg={8} className="p-amount" style={{ marginBottom:12 }}>
-                                                {detail.mpartballchannel_balance !== 0 ? convertToRupiah(detail.mpartballchannel_balance, true) : 0}
+                                            <Col lg={8} className="p-amount my-3">
+                                                {convertToRupiah(detail.mpartballchannel_balance, true)}
                                             </Col>
                                             <Col lg={4} onClick={() => handleShowDetailBalance(detail.channel_id)} style={{ textAlign: 'right' }}>
-                                                <img src={arrowDown} alt="arrow_down" className={((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? 'arrow-down-detail-open' : 'arrow-down-detail'} />
+                                                <img src={arrowDown} alt="arrow_down" style={{ marginTop: 25 }} className={((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? 'arrow-down-detail-open pe-2' : 'arrow-down-detail pe-2'} />
                                             </Col>
                                         </Row>
                                         {
                                             ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) &&
-                                            <Row className='mt-2'>
-                                                <Col lg={1}>
-                                                    <FontAwesomeIcon style={{ width: 5, marginRight: 5, marginTop: 3 }} icon={faCircle} />
+                                            <Row style={{ marginTop: -5 }}>
+                                                <Col lg={2} className="d-flex justify-content-end">
+                                                    <FontAwesomeIcon style={{ width: 5, marginRight: 5, marginTop: 3, color: "#888888" }} icon={faCircle} />
                                                 </Col>
                                                 <Col lg={10} style={{ padding: 0 }}>
                                                     <span style={{ color: "#888888", fontSize: 12, fontFamily: 'Nunito', fontWeight: 400 }}>Dalam proses disbursement {convertToRupiah(detail.hold_balance, true)}</span>
                                                 </Col>
-                                                <Col lg={1}>
-                                                    <FontAwesomeIcon style={{ width: 5, marginRight: 5, marginTop: 3 }} icon={faCircle} />
+                                                <Col lg={2} className="d-flex justify-content-end">
+                                                    <FontAwesomeIcon style={{ width: 5, marginRight: 5, marginTop: 3, color: "#888888" }} icon={faCircle} />
                                                 </Col>
                                                 <Col lg={10} style={{ padding: 0 }}>
-                                                    <span style={{ color: "#888888", fontSize: 12, fontFamily: 'Nunito', fontWeight: 400 }}>Saldo awal {convertToRupiah(detail.mpartballchannel_balance + detail.hold_balance, true)}</span>
+                                                    <span style={{ color: "#888888", fontSize: 12, fontFamily: 'Nunito', fontWeight: 400 }}>Saldo awal {detail.hold_balance === 0 ? convertToRupiah(detail.mpartballchannel_balance, true) : convertToRupiah(detail.mpartballchannel_balance - detail.hold_balance, true)}</span>
                                                 </Col>
                                             </Row>
                                         }
@@ -3132,12 +3132,12 @@ function DisbursementPage() {
                 </Row>
                 <Row className='mt-4'>
                     <Col lg={3}>
-                        <div className="card-information base-content-beranda" style={{ padding: '12px 27px 1px', borderLeft: '6px solid rgb(7, 126, 134)' }}>
+                        <div className="card-information base-content-beranda" style={{ padding: '15px 27px 1px', borderLeft: '6px solid rgb(7, 126, 134)' }}>
                             <p className="p-info">Total saldo dalam proses Disbursement</p>
                             <p className="p-amount" style={{ marginBottom: 12 }}>{convertToRupiah(totalHoldBalance, true)}</p>
                         </div>
                     </Col>
-                </Row> */}
+                </Row>
                 <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
                     <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
                         <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
