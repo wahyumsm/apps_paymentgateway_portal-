@@ -3,7 +3,7 @@ import { Col, Form, Row, Table } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import jsPDF from 'jspdf';
-import { BaseURL, convertFormatNumber, convertToRupiah, errorCatch, getRole, getToken, setUserSession, terbilangVA } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, convertToRupiah, errorCatch, getRole, getToken, setUserSession, terbilangDisbursement, terbilangVA } from '../../function/helpers';
 import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
@@ -448,7 +448,7 @@ function InvoiceVA() {
                             <div style={{ fontSize: 13, fontWeight: 700 }}>
                                 <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                     <tr>
-                                        <td>Terbilang: {(dataInvoice.inv_total !== undefined) ? terbilangVA(dataInvoice.inv_total).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
+                                        <td>Terbilang: {(dataInvoice.inv_total !== undefined) ? terbilangDisbursement(dataInvoice.inv_total).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                     </tr>
                                 </table>
                                 <div>Remark:</div>

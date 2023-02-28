@@ -416,7 +416,7 @@ function InvoiceDisbursement() {
                             <div style={{ fontSize: 13, fontWeight: 700 }}>
                                 <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                     <tr>
-                                        <td>Terbilang: {(dataInvoiceDisbursement.inv_total !== undefined) ? terbilangVA(dataInvoiceDisbursement.inv_total).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
+                                        <td>Terbilang: {(dataInvoiceDisbursement.inv_total !== undefined) ? terbilangDisbursement(dataInvoiceDisbursement.inv_total).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                     </tr>
                                 </table>
                                 <div>Remark:</div>

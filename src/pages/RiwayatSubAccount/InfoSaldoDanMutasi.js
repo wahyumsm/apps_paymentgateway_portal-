@@ -514,7 +514,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const dataAkunPartner = await axios.post(BaseURL + "/SubAccount/GetBalancePartner", { data: dataParams }, { headers: headers })
-            console.log(dataAkunPartner, "data akun partner")
+            // console.log(dataAkunPartner, "data akun partner")
             if (dataAkunPartner.status === 200 && dataAkunPartner.data.response_code === 200 && dataAkunPartner.data.response_new_token.length === 0) {
                 setDataAkun(dataAkunPartner.data.response_data)
                 setLoginToSaldo(false)
@@ -547,7 +547,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const mutasiList = await axios.post(BaseURL + "/SubAccount/GetAccountStatement", { data: dataParams }, { headers: headers })
-            console.log(mutasiList, "DATA MUTASI LIST")
+            // console.log(mutasiList, "DATA MUTASI LIST")
             if (mutasiList.status === 200 && mutasiList.data.response_code === 200 && mutasiList.data.response_new_token.length === 0) {
                 mutasiList.data.response_data.data.forEach((obj) => {
                     let year = obj.waktu.slice(0, 4)
@@ -571,7 +571,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingMutasi(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 console.log('masuk log error');
@@ -594,7 +594,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const mutasiListFilter = await axios.post(BaseURL + "/SubAccount/GetAccountStatement", { data: dataParams }, { headers: headers })
-            console.log(mutasiListFilter, "DATA MUTASI LIST FILTER")
+            // console.log(mutasiListFilter, "DATA MUTASI LIST FILTER")
             if (mutasiListFilter.status === 200 && mutasiListFilter.data.response_code === 200 && mutasiListFilter.data.response_new_token.length === 0) {
                 mutasiListFilter.data.response_data.data.forEach((obj, idx) => {
                     obj.number = idx + 1
@@ -620,7 +620,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingMutasi(false)
             }
         } catch (error) {
-          console.log(error)
+        //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 console.log('masuk log error');
@@ -688,7 +688,7 @@ const InfoSaldoDanMutasi = () => {
         getListRiwayatMutasi(inputHandle.akunPartner, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField)
         // userDetails()
     }, [])
-    console.log(listMutasi, 'listMutasi');
+    // console.log(listMutasi, 'listMutasi');
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>

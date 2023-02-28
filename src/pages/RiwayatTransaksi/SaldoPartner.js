@@ -202,7 +202,7 @@ function SaldoPartner() {
                 orderField = "mstatus_name"
             }
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2" ], "paytypeID": [${payTypeId}] }`)
+            const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2", "4" ], "paytypeID": [${payTypeId}] }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -303,6 +303,92 @@ function SaldoPartner() {
                 orderIdStatus: value
             })
             filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
+        }
+    }
+
+    async function ExportReportAlokasiSaldoHandler(isFilter, dateId, dateRange, payTypeId, partnerId, statusId, disbursementChannels) {
+        if (isFilter) {
+            async function dataExportFilter(dateId, dateRange, payTypeId, partnerId, statusId) {
+                try {
+                    let newPayTypeId = []
+                    if (payTypeId === 0) {
+                        disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
+                    }
+                    const auth = "Bearer " + getToken()
+                    const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": 1, "row_per_page": 1000000, "order_id": 0, "order_field": "tpartballchannel_crtdt", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
+                    const headers = {
+                        'Content-Type':'application/json',
+                        'Authorization' : auth
+                    }
+                    const filterHistory = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+                    // console.log(filterHistory, 'filterHistory export');
+                    if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length === 0) {
+                        const data = filterHistory.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
+                    } else if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length !== 0) {
+                        setUserSession(filterHistory.data.response_new_token)
+                        const data = filterHistory.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
+                    }
+                } catch (error) {
+                    // console.log(error);
+                }
+            }
+            dataExportFilter(dateId, dateRange, payTypeId, partnerId, statusId)
+        } else {
+            async function dataExportAlokasiSaldo(disbursementChannels) {
+                try {
+                    let payTypeId = []
+                    disbursementChannels.forEach(item => payTypeId.push(String(item.payment_id)))
+                    const auth = "Bearer " + getToken()
+                    const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": 1, "row_per_page": 1000000, "order_id": 0, "order_field": "tpartballchannel_crtdt", "statusID": [ "1", "2", "4" ], "paytypeID": [${payTypeId}] }`)
+                    const headers = {
+                        'Content-Type':'application/json',
+                        'Authorization' : auth
+                    }
+                    const ballanceAllocation = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+                    // console.log(ballanceAllocation, 'ballanceAllocation export');
+                    if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length === 0) {
+                        const data = ballanceAllocation.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
+                    } else if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length !== 0) {
+                        setUserSession(ballanceAllocation.data.response_new_token)
+                        const data = ballanceAllocation.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
+                    }
+                } catch (error) {
+                    // console.log(error);
+                }
+            }
+            dataExportAlokasiSaldo(disbursementChannels)
         }
     }
     
@@ -663,7 +749,7 @@ function SaldoPartner() {
                                     <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusRiwayatTopUp} onChange={(e) => handleChange(e)}>
                                         <option defaultChecked disabled value="">Pilih Status</option>
                                         <option value={2}>Berhasil</option>
-                                        <option value={1}>In Progress</option>
+                                        <option value={1}>Dalam Proses</option>
                                         <option value={7}>Menunggu Pembayaran</option>
                                         <option value={9}>Kadaluwarsa</option>
                                     </Form.Select>
@@ -770,7 +856,7 @@ function SaldoPartner() {
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "32%" }}>
                                 <span>Tujuan Alokasi</span>
                                 <Form.Select name="tujuanAlokasiSaldo" className='input-text-ez' style={{ display: "inline" }} value={tujuanAlokasiSaldo} onChange={(e) => setTujuanAlokasiSaldo(e.target.value)}>
-                                    <option defaultChecked disabled value={0}>Pilih Tujuan</option>
+                                    <option defaultChecked disabled value={0}>Pilih Tujuan Alokasi</option>
                                     {
                                         disbursementChannel.map(item => (
                                             <option key={item.payment_id} value={item.payment_id}>{item.payment_name}</option>
@@ -783,7 +869,8 @@ function SaldoPartner() {
                                 <Form.Select name="statusRiwayatTopUp" className='input-text-ez' style={{ display: "inline" }} value={statusRiwayatAlokasiSaldo} onChange={(e) => setStatusRiwayatAlokasiSaldo([e.target.value])}>
                                     <option defaultChecked disabled value="">Pilih Status</option>
                                     <option value={"2"}>Berhasil</option>
-                                    <option value={"1"}>In Progress</option>
+                                    <option value={"1"}>Dalam Proses</option>
+                                    <option value={"4"}>Gagal</option>
                                 </Form.Select>
                             </Col>
                         </Row>
@@ -834,6 +921,12 @@ function SaldoPartner() {
                                 </Row>
                             </Col>
                         </Row>
+                        {
+                            listRiwayatAlokasiSaldo.length !== 0 &&
+                            <div style={{ marginBottom: 30 }}>
+                                <Link to={"#"} onClick={() => ExportReportAlokasiSaldoHandler(isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo, disbursementChannel)} className="export-span">Export</Link>
+                            </div>
+                        }
                         <div className="div-table" style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center"}}>
                             {
                                 listRiwayatAlokasiSaldo.length === 0 ?

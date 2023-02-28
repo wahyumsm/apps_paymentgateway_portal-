@@ -1,7 +1,7 @@
 // export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
-export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
+// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
 // export const BaseURL = "https://apid.ezeelink.co.id/snap/api2"
-// export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
+export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
 
 export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms=";
 
@@ -39,7 +39,7 @@ export function convertToRupiah(money, isRupiah, fractionDigits) {
     style: isRupiah === undefined || isRupiah === true ? "currency" : "decimal",
     currency: "IDR",
     maximumFractionDigits: fractionDigits === undefined ? 0 : fractionDigits,
-  }).format(money);
+  }).format((fractionDigits === undefined ? Math.floor(money) : money));
 }
 
 export const convertFormatNumber = (num) => {
@@ -290,10 +290,10 @@ function terb_depan(uang){
 }
 function terb_belakang(t){
 	if (t.length==0){
-		return 'Kosong';
+		return 'Nol';
 	}
 	return t
-		.split('0').join('Kosong ')
+		.split('0').join('Nol ')
 		.split('1').join('Satu ')
 		.split('2').join('Dua ')
 		.split('3').join('Tiga ')

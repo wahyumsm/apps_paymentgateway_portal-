@@ -53,11 +53,17 @@ function EditPartner() {
   const [editInput, setEditInput] = useState(false);
   const [editedSubAcc, setEditedSubAcc] = useState(false);
   const [editFee, setEditFee] = useState(false)
+  const [editMinTopup, setEditMinTopup] = useState(false)
+  const [editMinTransaksi, setEditMinTransaksi] = useState(false)
+  const [editMaksTransaksi, setEditMaksTransaksi] = useState(false)
   const [loading, setLoading] = useState(false);
   const [redFlag, setRedFlag] = useState(false)
   const [mustFill, setMustFill] = useState(false)
   const [alertFee, setAlertFee] = useState(false)
   const [alertSettlement, setAlertSettlement] = useState(false)
+  const [alertMinTopup, setAlertMinTopup] = useState(false)
+  const [alertMinTransaksi, setAlertMinTransaksi] = useState(false)
+  const [alertMaksTransaksi, setAlertMaksTransaksi] = useState(false)
   const [alertFillAgen, setAlertFillAgen] = useState(false)
   const [alertNoRek, setAlertNoRek] = useState(false)
   const [alertNameRek, setAlertNameRek] = useState(false)
@@ -83,7 +89,10 @@ function EditPartner() {
   });
   const [biayaHandle, setBiayaHandle] = useState({
     fee: 0,
-    settlementFee: 0
+    settlementFee: 0,
+    minTopup: 0,
+    minTransaksi: 0,
+    maksTransaksi: 0
   })
   const [subAccountHandle, setSubAccountHandle] = useState({
     sumberAgen: "",
@@ -181,7 +190,7 @@ function EditPartner() {
       setAlertFee(false)
       setBiayaHandle({
         ...biayaHandle,
-        [e.target.name]: e.target.value,
+        [e.target.name]: Number(e.target.value).toString(),
       });
     }
     if (e.target.value.length === 0) {
@@ -200,11 +209,47 @@ function EditPartner() {
       setAlertSettlement(false)
       setBiayaHandle({
         ...biayaHandle,
-        [e.target.name]: e.target.value,
+        [e.target.name]: Number(e.target.value).toString(),
       });
     }
     if (e.target.value.length === 0) {
       setAlertSettlement(true)
+    }
+  }
+
+  function handleChangeMinTopup(e) {
+    if (e.target.value.length === 0) {
+      setAlertMinTopup(true)
+    } else {
+      setAlertMinTopup(false)
+      setBiayaHandle({
+        ...biayaHandle,
+        [e.target.name]: Number(e.target.value).toString()
+      })
+    }
+  }
+
+  function handleChangeMinTransaksi(e) {
+    if (e.target.value.length === 0) {
+      setAlertMinTransaksi(true)
+    } else {
+      setAlertMinTransaksi(false)
+      setBiayaHandle({
+        ...biayaHandle,
+        [e.target.name]: Number(e.target.value).toString()
+      })
+    }
+  }
+
+  function handleChangeMaksTransaksi(e) {
+    if (e.target.value.length === 0) {
+      setAlertMaksTransaksi(true)
+    } else {
+      setAlertMaksTransaksi(false)
+      setBiayaHandle({
+        ...biayaHandle,
+        [e.target.name]: Number(e.target.value).toString()
+      })
     }
   }
 
@@ -277,6 +322,9 @@ function EditPartner() {
     numberId,
     fee,
     settleFee,
+    minTopup,
+    minTransaksi,
+    maksTransaksi,
     fiturId,
     fiturName,
     typeId,
@@ -302,6 +350,9 @@ function EditPartner() {
         const source = {
           fee: Number(fee),
           fee_settle: Number(settleFee),
+          mpartfitur_min_topup_allocation: Number(minTopup),
+          mpartfitur_min_amount_trx: Number(minTransaksi),
+          mpartfitur_max_amount_trx: Number(maksTransaksi),
           fitur_id: Number(fiturId),
           fitur_name: fiturName,
           mpaytype_id: typeId,
@@ -315,6 +366,9 @@ function EditPartner() {
         setBiayaHandle({
           fee: 0,
           settlementFee: 0,
+          minTopup: 0,
+          minTransaksi: 0,
+          maksTransaksi: 0
         });
         setFitur("", "");
         setPaymentMethod([]);
@@ -329,6 +383,9 @@ function EditPartner() {
     setBiayaHandle({
       fee: 0,
       settlementFee: 0,
+      minTopup: 0,
+      minTransaksi: 0,
+      maksTransaksi: 0
     });
     setFitur("", "");
     setPaymentMethod([]);
@@ -381,10 +438,6 @@ function EditPartner() {
       setAlertNoRek(false)
       setAlertNameRek(false)
       const finder = subAccount.find((item) => item.subpartner_id === sumberAgenCode)
-      console.log(finder, "finder");
-      // console.log(finder.subpartner_id, "finder sub partner id");
-      console.log(sumberAgenCode, "agen code ");
-      console.log(numberId, 'number id');
       if (finder !== undefined) {
         if (finder.number === numberId) {
           setAlertSamePartner(false)
@@ -789,11 +842,14 @@ function EditPartner() {
     {
       name: "Fitur",
       selector: (row) => row.fitur_name,
+      width: "150px",
+      wrap: true
     },
     {
       name: "Metode Pembayaran",
       selector: (row) => row.mpaytype_name.join(", "),
       width: "230px",
+      wrap: true
     },
     {
       name: "Fee",
@@ -803,6 +859,24 @@ function EditPartner() {
       name: "Settlement Fee",
       selector: (row) => convertToRupiah(row.fee_settle, true, 2),
       width: "150px",
+    },
+    {
+      name: "Minimal Topup Alokasi",
+      selector: (row) => convertToRupiah(row.mpartfitur_min_topup_allocation, true, 2),
+      width: "200px",
+      wrap: true
+    },
+    {
+      name: "Minimal Transaksi",
+      selector: (row) => convertToRupiah(row.mpartfitur_min_amount_trx, true, 2),
+      width: "180px",
+      wrap: true
+    },
+    {
+      name: "Maksimal Transaksi",
+      selector: (row) => convertToRupiah(row.mpartfitur_max_amount_trx, true, 2),
+      width: "180px",
+      wrap: true
     },
     {
       name: "Aksi",
@@ -888,6 +962,9 @@ function EditPartner() {
   function saveNewSchemaHandle(
     fee,
     fee_settle,
+    minTopup,
+    minTransaksi,
+    maksTransaksi,
     fiturId,
     fiturName,
     typeId,
@@ -911,32 +988,71 @@ function EditPartner() {
         setMustFill(true)
       } else {
         setMustFill(false)
-        if (biayaHandle.fee === "") {
+        if (biayaHandle.fee === "" || biayaHandle.fee === 0) {
           setAlertFee(true)
         } else {
           setAlertFee(false)
-          if (biayaHandle.settlementFee === "") {
+          if (biayaHandle.settlementFee === "" || biayaHandle.settlementFee === 0) {
             setAlertSettlement(true)
           } else {
             setAlertSettlement(false)
-            const newData = {
-              fee: Number(fee),
-              fee_settle: Number(fee_settle),
-              fitur_id: Number(fiturId),
-              fitur_name: fiturName,
-              mpaytype_id: typeId,
-              mpaytype_name: typeName,
-              number: number,
-            };
-            setPayment([...payment, newData]);
-            setRedFlag(false)
-            setBiayaHandle({
-              fee: 0,
-              settlementFee: 0,
-            });
-            setFitur("", "");
-            setPaymentMethod([]);
-            setPaymentNameMethod([]);
+            // const newData = {
+            //   fee: Number(fee),
+            //   fee_settle: Number(fee_settle),
+            //   fitur_id: Number(fiturId),
+            //   fitur_name: fiturName,
+            //   mpaytype_id: typeId,
+            //   mpaytype_name: typeName,
+            //   number: number,
+            // };
+            // setPayment([...payment, newData]);
+            // setRedFlag(false)
+            // setBiayaHandle({
+            //   fee: 0,
+            //   settlementFee: 0,
+            // });
+            // setFitur("", "");
+            // setPaymentMethod([]);
+            // setPaymentNameMethod([]);
+            if (minTopup.length === 0 || minTopup === 0) {
+              setAlertMinTopup(true)
+            } else {
+              setAlertMinTopup(false)
+              if (minTransaksi.length === 0 || minTransaksi === 0) {
+                setAlertMinTransaksi(true)
+              } else {
+                setAlertMinTransaksi(false)
+                if (maksTransaksi.length === 0 || maksTransaksi === 0) {
+                  setAlertMaksTransaksi(true)
+                } else {
+                  setAlertMaksTransaksi(false)
+                  const newData = {
+                    fee: Number(fee),
+                    fee_settle: Number(fee_settle),
+                    mpartfitur_min_topup_allocation: Number(minTopup),
+                    mpartfitur_min_amount_trx: Number(minTransaksi),
+                    mpartfitur_max_amount_trx: Number(maksTransaksi),
+                    fitur_id: Number(fiturId),
+                    fitur_name: fiturName,
+                    mpaytype_id: typeId,
+                    mpaytype_name: typeName,
+                    number: number,
+                  };
+                  setPayment([...payment, newData]);
+                  setRedFlag(false)
+                  setBiayaHandle({
+                    fee: 0,
+                    settlementFee: 0,
+                    minTopup: 0,
+                    minTransaksi: 0,
+                    maksTransaksi: 0
+                  });
+                  setFitur("", "");
+                  setPaymentMethod([]);
+                  setPaymentNameMethod([]);
+                }
+              }
+            }
           }
         }
       }
@@ -1127,6 +1243,7 @@ function EditPartner() {
       ) {
         // RouteTo('/daftarpartner')
         history.push("/daftarpartner");
+        alert("Edit Data Partner Berhasil");
       } else if (
         editPartner.status === 200 &&
         editPartner.data.response_code === 200 &&
@@ -1134,9 +1251,8 @@ function EditPartner() {
       ) {
         setUserSession(editPartner.data.response_new_token);
         history.push("/daftarpartner");
+        alert("Edit Data Partner Berhasil");
       }
-
-      alert("Edit Data Partner Berhasil");
     } catch (error) {
       // RouteTo(errorCatch(error.response.status))
       history.push(errorCatch(error.response.status));
@@ -1655,6 +1771,130 @@ function EditPartner() {
                     }
                   </td>
                 </tr>
+                {/* settlementFee akhir */}
+                <br/>
+                {/* minTopup awal */}
+                <tr>
+                  <td style={{ width: 200 }}>Minimal Topup Alokasi <span style={{ color: "red" }}>*</span></td>
+                  <td>
+                    {editMinTopup ? (
+                      <input
+                        type="number"
+                        className="input-text-ez"
+                        onChange={handleChangeMinTopup}
+                        value={(biayaHandle.minTopup === undefined) ? 0 : (biayaHandle.minTopup)}
+                        name="minTopup"
+                        placeholder={"Rp 0"}
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertMinTopup ? "red" : "" }}
+                        onBlur={() => setEditMinTopup(!editMinTopup)}
+                        min={0}
+                        onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                      />
+                      ) : (
+                        <input
+                          type="text"
+                          className="input-text-ez"
+                          onChange={handleChangeMinTopup}
+                          value={(biayaHandle.minTopup.length === 0) ? convertToRupiah(0, true, 2) : convertToRupiah(biayaHandle.minTopup, true, 2)}
+                          name="minTopup"
+                          placeholder="Rp 0"
+                          style={{ width: "100%", marginLeft: "unset", borderColor: alertMinTopup ? "red" : "" }}
+                          onFocus={() => setEditMinTopup(!editMinTopup)}
+                          min={0}
+                        />
+                      )
+                    }
+                    {alertMinTopup === true ?
+                      <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          Settlement Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                      </div> : ""
+                    }
+                  </td>
+                </tr>
+                {/* minTopup akhir */}
+                <br/>
+                {/* minTransaksi awal */}
+                <tr>
+                  <td style={{ width: 200 }}>Minimal Transaksi <span style={{ color: "red" }}>*</span></td>
+                  <td>
+                    {editMinTransaksi ? (
+                      <input
+                        type="number"
+                        className="input-text-ez"
+                        onChange={handleChangeMinTransaksi}
+                        value={(biayaHandle.minTransaksi === undefined) ? 0 : (biayaHandle.minTransaksi)}
+                        name="minTransaksi"
+                        placeholder={"Rp 0"}
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertMinTransaksi ? "red" : "" }}
+                        onBlur={() => setEditMinTransaksi(!editMinTransaksi)}
+                        min={0}
+                        onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                      />
+                      ) : (
+                        <input
+                          type="text"
+                          className="input-text-ez"
+                          onChange={handleChangeMinTransaksi}
+                          value={(biayaHandle.minTransaksi.length === 0) ? convertToRupiah(0, true, 2) : convertToRupiah(biayaHandle.minTransaksi, true, 2)}
+                          name="minTransaksi"
+                          placeholder="Rp 0"
+                          style={{ width: "100%", marginLeft: "unset", borderColor: alertMinTransaksi ? "red" : "" }}
+                          onFocus={() => setEditMinTransaksi(!editMinTransaksi)}
+                          min={0}
+                        />
+                      )
+                    }
+                    {alertMinTransaksi === true ?
+                      <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          Settlement Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                      </div> : ""
+                    }
+                  </td>
+                </tr>
+                {/* minTransaksi akhir */}
+                <br/>
+                {/* maksTransaksi awal */}
+                <tr>
+                  <td style={{ width: 200 }}>Maksimal Transaksi <span style={{ color: "red" }}>*</span></td>
+                  <td>
+                    {editMaksTransaksi ? (
+                      <input
+                        type="number"
+                        className="input-text-ez"
+                        onChange={handleChangeMaksTransaksi}
+                        value={(biayaHandle.maksTransaksi === undefined) ? 0 : (biayaHandle.maksTransaksi)}
+                        name="maksTransaksi"
+                        placeholder={"Rp 0"}
+                        style={{ width: "100%", marginLeft: "unset", borderColor: alertMaksTransaksi ? "red" : "" }}
+                        onBlur={() => setEditMaksTransaksi(!editMaksTransaksi)}
+                        min={0}
+                        onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                      />
+                      ) : (
+                        <input
+                          type="text"
+                          className="input-text-ez"
+                          onChange={handleChangeMaksTransaksi}
+                          value={(biayaHandle.maksTransaksi.length === 0) ? convertToRupiah(0, true, 2) : convertToRupiah(biayaHandle.maksTransaksi, true, 2)}
+                          name="maksTransaksi"
+                          placeholder="Rp 0"
+                          style={{ width: "100%", marginLeft: "unset", borderColor: alertMaksTransaksi ? "red" : "" }}
+                          onFocus={() => setEditMaksTransaksi(!editMaksTransaksi)}
+                          min={0}
+                        />
+                      )
+                    }
+                    {alertMaksTransaksi === true ?
+                      <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                          <img src={noteIconRed} className="me-2" alt="icon notice" />
+                          Settlement Fee Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                      </div> : ""
+                    }
+                  </td>
+                </tr>
+                {/* maksTransaksi akhir */}
                 <br/>
                 <tr>
                   <td style={{ width: 200 }}>Fitur <span style={{ color: "red" }}>*</span></td>
@@ -2024,6 +2264,9 @@ function EditPartner() {
                       saveNewSchemaHandle(
                         biayaHandle.fee,
                         biayaHandle.settlementFee,
+                        biayaHandle.minTopup,
+                        biayaHandle.minTransaksi,
+                        biayaHandle.maksTransaksi,
                         fitur[0],
                         fitur[1],
                         paymentMethod.filter((it) => it !== 0),
@@ -2094,6 +2337,9 @@ function EditPartner() {
                           numbering,
                           biayaHandle.fee,
                           biayaHandle.settlementFee,
+                          biayaHandle.minTopup,
+                          biayaHandle.minTransaksi,
+                          biayaHandle.maksTransaksi,
                           fitur[0],
                           fitur[1],
                           paymentMethod.filter((it) => it !== 0),

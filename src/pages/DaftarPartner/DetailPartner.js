@@ -295,12 +295,15 @@ function DetailPartner() {
         },
         {
             name: 'Fitur',
-            selector: row => row.fitur_name
+            selector: row => row.fitur_name,
+            width: "150px",
+            wrap: true
         },
         {
             name: 'Metode Pembayaran',
             selector: row => row.mpaytype_name.join(", "),
-            width: "230px"
+            width: "230px",
+            wrap: true
         },
         {
             name: 'Fee',
@@ -310,7 +313,25 @@ function DetailPartner() {
             name: 'Settlement Fee',
             selector: row => convertToRupiah(row.fee_settle, true, 2),
             width: "150px"
-        },        
+        },
+        {
+            name: "Minimal Topup Alokasi",
+            selector: (row) => convertToRupiah(row.mpartfitur_min_topup_allocation, true, 2),
+            width: "200px",
+            wrap: true
+        },
+        {
+            name: "Minimal Transaksi",
+            selector: (row) => convertToRupiah(row.mpartfitur_min_amount_trx, true, 2),
+            width: "180px",
+            wrap: true
+        },
+        {
+            name: "Maksimal Transaksi",
+            selector: (row) => convertToRupiah(row.mpartfitur_max_amount_trx, true, 2),
+            width: "180px",
+            wrap: true
+        },
         {
             name: 'Aksi',
             selector: row => row.icon,
@@ -378,7 +399,7 @@ function DetailPartner() {
                 isDetailAkun ? 
                 <>
                 <div className='detail-akun-section'>        
-                    <hr className='hr-style' style={{marginTop: -2}}/>
+                    <d className='d-style' style={{marginTop: -2}}/>
                     <br/>
                     <span className='head-title'>Profil Perusahaan</span>
                     <br/>
@@ -508,6 +529,21 @@ function DetailPartner() {
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee <span style={{color: "red"}}>*</span></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{width: 200}}>Minimal Topup Alokasi <span style={{color: "red"}}>*</span></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{width: 200}}>Minimal Transaksi <span style={{color: "red"}}>*</span></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{width: 200}}>Maksimal Transaksi <span style={{color: "red"}}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
@@ -675,7 +711,7 @@ function DetailPartner() {
                 </div>
                 </> : 
                 <> 
-                    <hr className='hr-style' style={{marginTop: -2}}/>
+                    <div className='d-style' style={{marginTop: -2}}/>
                     <div className='base-content mt-5 mb-5'>  
                         {
                         listAgen.length === 0 ?

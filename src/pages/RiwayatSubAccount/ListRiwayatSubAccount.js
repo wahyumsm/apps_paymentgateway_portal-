@@ -79,8 +79,6 @@ const ListRiwayatSubAccount = () => {
         saturday: 'Sab',
         ok: 'Terapkan',
     };
-    console.log(stateRiwayatTransfer, "inin state");
-    console.log(dateRangeRiwayatTranfer, "ini daterange");
 
     const [idTrans, setIdTrans] = useState({
         isDesc: false,
@@ -402,7 +400,7 @@ const ListRiwayatSubAccount = () => {
                 'Authorization' : auth
             }
             const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
-            console.log(listDataRiwayat, "ini data riwayat");
+            // console.log(listDataRiwayat, "ini data riwayat");
             if (listDataRiwayat.data.response_code === 200 && listDataRiwayat.status === 200 && listDataRiwayat.data.response_new_token.length === 0) {
                 listDataRiwayat.data.response_data.results = listDataRiwayat.data.response_data.results.map((obj, id) => ({ ...obj, number: (currentPage > 1) ? (id + 1)+((currentPage-1)*10) : id + 1 }));
                 setPageNumberRiwayatTransfer(listDataRiwayat.data.response_data)
@@ -435,7 +433,7 @@ const ListRiwayatSubAccount = () => {
                 'Authorization' : auth
             }
             const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
-            console.log(listDataRiwayat, "ini data riwayat");
+            // console.log(listDataRiwayat, "ini data riwayat");
             if (listDataRiwayat.data.response_code === 200 && listDataRiwayat.status === 200 && listDataRiwayat.data.response_new_token.length === 0) {
                 listDataRiwayat.data.response_data.results = listDataRiwayat.data.response_data.results.map((obj, id) => ({ ...obj, number: (page > 1) ? (id + 1)+((page-1)*10) : id + 1 }));
                 setPageNumberRiwayatTransfer(listDataRiwayat.data.response_data)
@@ -518,7 +516,7 @@ const ListRiwayatSubAccount = () => {
                         'Authorization' : auth
                     }
                     const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
-                    console.log(listDataRiwayat, "ini data riwayat");
+                    // console.log(listDataRiwayat, "ini data riwayat");
                     if (listDataRiwayat.data.response_code === 200 && listDataRiwayat.status === 200 && listDataRiwayat.data.response_new_token.length === 0) {
                         const data = listDataRiwayat.data.response_data.results;
                         let dataExcel = []

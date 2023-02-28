@@ -117,6 +117,7 @@ export default (props) => {
   }
 
   function handleChangeTopUp(e) {
+    setIconGagal(false)
     setInputHandle({
       ...inputHandle,
       [e.target.name] : Number(e.target.value).toString()
@@ -203,33 +204,33 @@ export default (props) => {
 
   async function topUpConfirmation(amounts) {
     try {
-        if (inputHandle.amounts.length === 0 || inputHandle.amounts === undefined || inputHandle.amounts === 0) {
+        if (inputHandle.amounts.length < 5 || inputHandle.amounts === undefined || inputHandle.amounts < 10000) {
           setIconGagal(true)
         } else {
           setIconGagal(false)
-        }
-        const auth = "Bearer " + getToken()   
-        const dataParams = encryptData(`{"tparttopup_amount":${amounts}}`)
-        const headers = {
-          "Content-Type": "application/json",
-          'Authorization': auth,
-        };
-        const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
-        if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
-          setTopUpBalance(topUpBalance.data.response_data)
-          const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
-          const convertTimeStamps = new Date(timeStamps).getTime()
-          const date = Date.now()
-          const countDown = convertTimeStamps - date
-          setDateNow(date)
-          setCountDown(countDown)
-          setShowModalTopUp(false)
-          setShowModalKonfirmasiTopUp(true)
-        } else if (topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length !== 0) {
-          setUserSession(topUpBalance.data.response_new_token)
-          setTopUpBalance(topUpBalance.data.response_data)
-          setShowModalTopUp(false)
-          setShowModalKonfirmasiTopUp(true)
+          const auth = "Bearer " + getToken()   
+          const dataParams = encryptData(`{"tparttopup_amount":${amounts}}`)
+          const headers = {
+            "Content-Type": "application/json",
+            'Authorization': auth,
+          };
+          const topUpBalance = await axios.post(BaseURL + "/Partner/TopupBalancePartner", { data: dataParams }, { headers: headers })
+          if(topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length === 0) {
+            setTopUpBalance(topUpBalance.data.response_data)
+            const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
+            const convertTimeStamps = new Date(timeStamps).getTime()
+            const date = Date.now()
+            const countDown = convertTimeStamps - date
+            setDateNow(date)
+            setCountDown(countDown)
+            setShowModalTopUp(false)
+            setShowModalKonfirmasiTopUp(true)
+          } else if (topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length !== 0) {
+            setUserSession(topUpBalance.data.response_new_token)
+            setTopUpBalance(topUpBalance.data.response_data)
+            setShowModalTopUp(false)
+            setShowModalKonfirmasiTopUp(true)
+          }
         }
       } catch (error) {
         // console.log(error)
@@ -454,22 +455,26 @@ export default (props) => {
           <div className="d-flex align-items-center"></div>
           <Nav className="align-items-center">
 
-            {
-              (user_role === "102") && 
+            { //https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage
+              (user_role === "102" && (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo')) && 
+              // (user_role === "102" && (window.location.href === 'http://reactdev/dev1/#/dev1/Disbursement/disbursementpage' || window.location.href === 'http://reactdev/dev1/#/dev1/Disbursement/report' || window.location.href === 'http://reactdev/dev1/#/dev1/riwayattopup' || window.location.href === 'http://reactdev/dev1/#/dev1/alokasisaldo')) && 
+              // (user_role === "102" && (window.location.href === 'http://reactdev/dev2/#/dev2/Disbursement/disbursementpage' || window.location.href === 'http://reactdev/dev2/#/dev2/Disbursement/report' || window.location.href === 'http://reactdev/dev2/#/dev2/riwayattopup' || window.location.href === 'http://reactdev/dev2/#/dev2/alokasisaldo')) && 
+              // (user_role === "102" && (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/report' || window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup' || window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo')) && 
+              // (user_role === "102") && 
               <>
-              <OverlayTrigger
-                placement="bottom"
-                trigger={["click"]}
-                overlay={
-                  <Tooltip>Saldo Tersedia adalah saldo yang mengendap dari hasil Top Up. Untuk menggunakan saldo ini kamu harus alokasikan saldo terlebih dulu pada laman “Alokasi Saldo” didalam menu “Saldo Tersedia”.</Tooltip>
-                }
-              >
-                <img
-                  src={circleInfo}
-                  alt="circle_info"
-                  style={{ marginTop: -5 }}
-                />
-              </OverlayTrigger>
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger={["click"]}
+                  overlay={
+                    <Tooltip>Saldo Tersedia adalah saldo yang mengendap dari hasil Top Up. Untuk menggunakan saldo ini kamu harus alokasikan saldo terlebih dulu pada laman “Alokasi Saldo” didalam menu “Saldo Tersedia”.</Tooltip>
+                  }
+                >
+                  <img
+                    src={circleInfo}
+                    alt="circle_info"
+                    style={{ marginTop: -5 }}
+                  />
+                </OverlayTrigger>
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                     <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
@@ -647,9 +652,9 @@ export default (props) => {
                 } */}
                 {iconGagal === true && 
                   <>
-                    <div style={{ color: "#B9121B", fontSize: 12 }}>
+                    <div className="mt-2" style={{ color: "#B9121B", fontSize: 12 }}>
                       <img src={noteIconRed} className="me-2" alt="notice" />
-                      Nominal Top Up wajib diisi
+                      Minimal Top Up Rp. 10.000
                     </div>
                   </>
                 }
@@ -854,7 +859,7 @@ export default (props) => {
         </Modal>
       </Container>
     </Navbar>
-    {topUpResult.is_update === true ?
+    {topUpResult.is_update === false ?
       <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
         <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
           <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Top Up Saldo {convertToRupiah(inputHandle.amounts)} Berhasil</Toast.Body>

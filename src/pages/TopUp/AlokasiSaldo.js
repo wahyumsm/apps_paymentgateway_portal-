@@ -537,7 +537,7 @@ function AlokasiSaldo() {
                 "row_per_page": 10,
                 "order_id": ${isDescending},
                 "order_field": "${orderField}",
-                "statusID": [ "1", "2" ],
+                "statusID": [ "1", "2", "4" ],
                 "paytypeID": [${payTypeId}]
             }`)
             const headers = {
@@ -769,42 +769,103 @@ function AlokasiSaldo() {
                                                     
                                                 } */}
                                                 {
-                                                    item.mpaytype_id === 28 && disburseInterbank.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
+                                                    // DISBURSE INTERBANK
+                                                    // kena minimal alokasi & saldo cukup
+                                                    item.mpaytype_id === 28 && disburseInterbank.minAlokasi === true && showAlertSaldoTidakCukup === false ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
-                                                    item.mpaytype_id === 28 && disburseInterbank.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
+                                                    // tidak kena minimal alokasi & saldo cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 28 && disburseInterbank.minAlokasi === false && showAlertSaldoTidakCukup === false && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Maksimal saldo yang dapat dialokasikan adalah Rp 50.000.000</span> :
+                                                    // tidak kena minimal alokasi & saldo tidak cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 28 && disburseInterbank.minAlokasi === false && showAlertSaldoTidakCukup === true && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 28 && disburseInterbank.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
+                                                    // kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 28 && disburseInterbank.minAlokasi === true && showAlertSaldoTidakCukup === true ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 31 && disburseDana.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
+                                                    // tidak kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 28 && disburseInterbank.minAlokasi === false && showAlertSaldoTidakCukup === true ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+
+                                                    // DISBURSE DANA
+                                                    // kena minimal alokasi & saldo cukup
+                                                    item.mpaytype_id === 31 && disburseDana.minAlokasi === true && showAlertSaldoTidakCukup === false ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
-                                                    item.mpaytype_id === 31 && disburseDana.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
+                                                    // tidak kena minimal alokasi & saldo cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 31 && disburseDana.minAlokasi === false && showAlertSaldoTidakCukup === false && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Maksimal saldo yang dapat dialokasikan adalah Rp 50.000.000</span> :
+                                                    // tidak kena minimal alokasi & saldo tidak cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 31 && disburseDana.minAlokasi === false && showAlertSaldoTidakCukup === true && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 31 && disburseDana.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
+                                                    // kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 31 && disburseDana.minAlokasi === true && showAlertSaldoTidakCukup === true ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 32 && disburseBCA.minAlokasi === true && showAlertSaldoTidakCukup === false ?// kena minimal alokasi & saldo cukup
+                                                    // tidak kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 31 && disburseDana.minAlokasi === false && showAlertSaldoTidakCukup === true ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+
+                                                    // DISBURSE BCA
+                                                    // kena minimal alokasi & saldo cukup
+                                                    item.mpaytype_id === 32 && disburseBCA.minAlokasi === true && showAlertSaldoTidakCukup === false ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
-                                                    item.mpaytype_id === 32 && disburseBCA.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
+                                                    // kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 32 && disburseBCA.minAlokasi === true && showAlertSaldoTidakCukup === true ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+                                                    // tidak kena minimal alokasi & saldo tidak cukup
                                                     item.mpaytype_id === 32 && disburseBCA.minAlokasi === false && showAlertSaldoTidakCukup === true ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 33 && disburseMandiri.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
+
+                                                    // DISBURSE MANDIRI
+                                                    // kena minimal alokasi & saldo cukup
+                                                    item.mpaytype_id === 33 && disburseMandiri.minAlokasi === true && showAlertSaldoTidakCukup === false ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
-                                                    item.mpaytype_id === 33 && disburseMandiri.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
+                                                    // tidak kena minimal alokasi & saldo cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 33 && disburseMandiri.minAlokasi === false && showAlertSaldoTidakCukup === false && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Maksimal saldo yang dapat dialokasikan adalah Rp 50.000.000</span> :
+                                                    // tidak kena minimal alokasi & saldo tidak cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 33 && disburseMandiri.minAlokasi === false && showAlertSaldoTidakCukup === true && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 33 && disburseMandiri.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
+                                                    // kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 33 && disburseMandiri.minAlokasi === true && showAlertSaldoTidakCukup === true ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
+                                                    // tidak kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 33 && disburseMandiri.minAlokasi === false && showAlertSaldoTidakCukup === true ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+
+                                                    // DISBURSE BIFAST
+                                                    // kena minimal alokasi & saldo cukup
+                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === true && showAlertSaldoTidakCukup === false ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
-                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
+                                                    // tidak kena minimal alokasi & saldo cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === false && showAlertSaldoTidakCukup === false && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Maksimal saldo yang dapat dialokasikan adalah Rp 50.000.000</span> :
+                                                    // tidak kena minimal alokasi & saldo tidak cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === false && showAlertSaldoTidakCukup === true && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
+                                                    // kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === true && showAlertSaldoTidakCukup === true ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === true && showAlertSaldoTidakCukup === false ? // kena minimal alokasi & saldo cukup
+                                                    // tidak kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 34 && disburseBIFAST.minAlokasi === false && showAlertSaldoTidakCukup === true ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+
+                                                    // DISBURSE DANAMON
+                                                    // kena minimal alokasi & saldo cukup
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === true && showAlertSaldoTidakCukup === false ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}>Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</span> :
-                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === true && showAlertSaldoTidakCukup === true ? // kena minimal alokasi & tidak saldo cukup
+                                                    // tidak kena minimal alokasi & saldo cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === false && showAlertSaldoTidakCukup === false && inputHandle[`nominal${item.mpaytype_name}`] > 1000000 ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Maksimal saldo yang dapat dialokasikan adalah Rp 50.000.000</span> :
+                                                    // tidak kena minimal alokasi & saldo tidak cukup & kena maksimal transfer
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === false && showAlertSaldoTidakCukup === true && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
-                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === false && showAlertSaldoTidakCukup === true ? // tidak kena minimal alokasi & tidak saldo cukup
+                                                    // kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === true && showAlertSaldoTidakCukup === true ?
                                                     <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+                                                    // tidak kena minimal alokasi & saldo tidak cukup
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === false && showAlertSaldoTidakCukup === true ?
+                                                    <span style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Saldo Tidak Mencukupi</span> :
+
+                                                    // DEFAULT
                                                     <span style={{ fontSize: 12, color: "#C4C4C4" }}>Masukkan nominal saldo yang akan dialokasikan.</span>
                                                 }
                                             </Col> : null
@@ -950,9 +1011,9 @@ function AlokasiSaldo() {
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
                                 onClick={() => setShowModalSaveAlokasiSaldo(true)}
-                                className={((disburseDana.checked === true && disburseDana.minAlokasi === true) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount === 0) || (disburseBCA.checked === true && disburseBCA.minAlokasi === true) || (disburseBCA.checked === true && disburseBCA.minAlokasi === false && disburseBCA.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === true) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount === 0) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === true) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount === 0) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === true) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === false && disburseBIFAST.addedAmount === 0) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === true) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === false && disburseDanamon.addedAmount === 0) || (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false && disburseBIFAST.checked === false && disburseDanamon.checked === false) || showAlertSaldoTidakCukup === true) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}
+                                className={((disburseDana.checked === true && disburseDana.minAlokasi === true) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount === 0) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount > 50000000) || (disburseBCA.checked === true && disburseBCA.minAlokasi === true) || (disburseBCA.checked === true && disburseBCA.minAlokasi === false && disburseBCA.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === true) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount > 50000000) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === true) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount === 0) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount > 50000000) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === true) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === false && disburseBIFAST.addedAmount === 0) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === false && disburseBIFAST.addedAmount > 50000000) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === true) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === false && disburseDanamon.addedAmount === 0) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === false && disburseDanamon.addedAmount > 50000000) || (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false && disburseBIFAST.checked === false && disburseDanamon.checked === false) || showAlertSaldoTidakCukup === true) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}
                                 style={{ maxWidth: 'max-content', padding: 7, height: 40, }}
-                                disabled={(disburseDana.checked === true && disburseDana.minAlokasi === true) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount === 0) || (disburseBCA.checked === true && disburseBCA.minAlokasi === true) || (disburseBCA.checked === true && disburseBCA.minAlokasi === false && disburseBCA.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === true) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount === 0) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === true) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount === 0) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === true) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === false && disburseBIFAST.addedAmount === 0) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === true) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === false && disburseDanamon.addedAmount === 0) || (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false && disburseBIFAST.checked === false && disburseDanamon.checked === false) || showAlertSaldoTidakCukup === true}
+                                disabled={(disburseDana.checked === true && disburseDana.minAlokasi === true) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount === 0) || (disburseDana.checked === true && disburseDana.minAlokasi === false && disburseDana.addedAmount > 50000000) || (disburseBCA.checked === true && disburseBCA.minAlokasi === true) || (disburseBCA.checked === true && disburseBCA.minAlokasi === false && disburseBCA.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === true) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount === 0) || (disburseMandiri.checked === true && disburseMandiri.minAlokasi === false && disburseMandiri.addedAmount > 50000000) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === true) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount === 0) || (disburseInterbank.checked === true && disburseInterbank.minAlokasi === false && disburseInterbank.addedAmount > 50000000) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === true) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === false && disburseBIFAST.addedAmount === 0) || (disburseBIFAST.checked === true && disburseBIFAST.minAlokasi === false && disburseBIFAST.addedAmount > 50000000) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === true) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === false && disburseDanamon.addedAmount === 0) || (disburseDanamon.checked === true && disburseDanamon.minAlokasi === false && disburseDanamon.addedAmount > 50000000) || (disburseDana.checked === false && disburseBCA.checked === false && disburseMandiri.checked === false && disburseInterbank.checked === false && disburseBIFAST.checked === false && disburseDanamon.checked === false) || showAlertSaldoTidakCukup === true}
                             >
                                 Alokasikan Saldo
                             </button>
@@ -979,7 +1040,7 @@ function AlokasiSaldo() {
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "32%" }}>
                                 <span>Tujuan Alokasi</span>
                                 <Form.Select name="tujuanAlokasiSaldo" className='input-text-ez' style={{ display: "inline" }} value={tujuanAlokasiSaldo} onChange={(e) => handleChangeTujuanAlokasi(e)}>
-                                    <option defaultChecked disabled value={0}>Pilih Status</option>
+                                    <option defaultChecked disabled value={0}>Pilih Tujuan Alokasi</option>
                                     {
                                         disbursementChannel.map(item => (
                                             <option key={item.mpaytype_id} value={item.mpaytype_id}>{item.mpaytype_name}</option>

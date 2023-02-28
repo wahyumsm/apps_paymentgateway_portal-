@@ -40,6 +40,7 @@ function RiwayatTransaksi() {
         periodeDanaMasuk: 0,
         periodeSettlement: 0,
         bankDanaMasuk: "",
+        bankSettlement: "",
         partnerTransIdDanaMasuk: "",
         fiturDanaMasuk: 0,
         fiturSettlement: 0
@@ -139,7 +140,7 @@ function RiwayatTransaksi() {
     function handlePageChangeSettlement(page) {
         if (isFilterSettlement) {
             setActivePageSettlement(page)
-            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement)
+            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, inputHandle.bankSettlement)
         } else {
             setActivePageSettlement(page)
             riwayatSettlement(page)
@@ -206,7 +207,7 @@ function RiwayatTransaksi() {
     async function riwayatSettlement(currentPage) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0, "bank_code": ""}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -303,13 +304,13 @@ function RiwayatTransaksi() {
     }
     }
 
-    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement) {
+    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement) {
         try {
             setPendingSettlement(true)
             setIsFilterSettlement(true)
             setActivePageSettlement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${bankSettlement}"}`)
             // console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
@@ -361,6 +362,7 @@ function RiwayatTransaksi() {
                 namaPartnerSettlement: "",
                 statusSettlement: [],
                 periodeSettlement: 0,
+                bankSettlement: "",
                 fiturSettlement: 0
             })
             setStateSettlement(null)
@@ -478,7 +480,7 @@ function RiwayatTransaksi() {
         },
         {
             name: 'Status',
-            selector: row => row.mstatus_name,
+            selector: row => row.mstatus_name_ind,
             width: "150px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -515,7 +517,7 @@ function RiwayatTransaksi() {
             selector: row => row.tvasettl_code,
             // sortable: true
             width: "224px",
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${inputHandle.bankSettlement.length === 0 ? '0' : inputHandle.bankSettlement}`} >{row.tvasettl_code}</Link>
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
         {
@@ -590,7 +592,7 @@ function RiwayatTransaksi() {
         },
         {
             name: 'Status',
-            selector: row => row.mstatus_name,
+            selector: row => row.mstatus_name_ind,
             width: "140px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -751,12 +753,12 @@ function RiwayatTransaksi() {
         }
     }
 
-    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode) {
+    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode, bankCode) {
         if (isFilter) {
-            async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
+            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, codeBank) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "bank_code": "${codeBank}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -789,12 +791,12 @@ function RiwayatTransaksi() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, dateId, periode)
+            dataExportFilter(statusId, transId, partnerId, dateId, periode, bankCode)
         } else {
             async function dataExportSettlement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "bank_code": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -887,16 +889,10 @@ function RiwayatTransaksi() {
                             <span style={{ marginRight: 41 }}>Status</span>
                             <Form.Select name="statusDanaMasuk" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Status</option>
-                                <option value={2}>Success</option>
-                                <option value={1}>In Progress</option>
-                                {/* <option value={3}>Refund</option> */}
-                                {/* <option value={4}>Canceled</option> */}
-                                <option value={7}>Waiting for Payment</option>
-                                {/* <option value={8}>Paid</option> */}
-                                <option value={9}>Expired</option>
-                                {/* <option value={10}>Withdraw</option> */}
-                                {/* <option value={11}>Idle</option> */}
-                                {/* <option value={15}>Expected Success</option> */}
+                                <option value={2}>Berhasil</option>
+                                <option value={1}>Dalam Proses</option>
+                                <option value={7}>Menunggu Pembayaran</option>
+                                <option value={9}>Kadaluwarsa</option>
                             </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
@@ -1030,16 +1026,10 @@ function RiwayatTransaksi() {
                             <span>Status</span>
                             <Form.Select name="statusSettlement" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Status</option>
-                                <option value={2}>Success</option>
-                                <option value={1}>In Progress</option>
-                                {/* <option value={3}>Refund</option> */}
-                                {/* <option value={4}>Canceled</option> */}
-                                <option value={7}>Waiting for Payment</option>
-                                {/* <option value={8}>Paid</option> */}
-                                <option value={9}>Expired</option>
-                                {/* <option value={10}>Withdraw</option> */}
-                                {/* <option value={11}>Idle</option> */}
-                                {/* <option value={15}>Expected Success</option> */}
+                                <option value={2}>Berhasil</option>
+                                <option value={1}>Dalam Proses</option>
+                                <option value={7}>Menunggu Pembayaran</option>
+                                <option value={9}>Kadaluwarsa</option>
                             </Form.Select>
                         </Col>
                     </Row>
@@ -1056,7 +1046,30 @@ function RiwayatTransaksi() {
                                 <option value={7}>Pilih Range Tanggal</option>
                             </Form.Select>                            
                         </Col>
-                        <Col xs={4} style={{ display: showDateSettlement }}>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center">
+                            <span>Jenis Transaksi</span>
+                            <Form.Select name='fiturSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
+                                <option defaultValue value={0}>Pilih Jenis Transaksi</option>
+                                <option value={104}>Payment Link</option>
+                                <option value={100}>Virtual Account</option>
+                            </Form.Select>
+                        </Col>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center">
+                            <span>Nama Bank</span>
+                            <Form.Select name='bankSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.bankSettlement} onChange={(e) => handleChange(e)}>
+                                <option defaultValue value={""}>Pilih Nama Bank</option>
+                                {
+                                    listBank.map((item, idx) => {
+                                        return (
+                                            <option key={idx} value={item.mbank_code}>{item.mbank_name}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Select>
+                        </Col>
+                    </Row>
+                    <Row className='mt-4'>
+                        <Col xs={4} style={{ display: showDateSettlement, marginLeft: 100 }}>
                             <div>
                                 <DateRangePicker 
                                     onChange={pickDateSettlement}
@@ -1066,23 +1079,15 @@ function RiwayatTransaksi() {
                                 />
                             </div>
                         </Col>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Jenis Transaksi</span>
-                            <Form.Select name='fiturSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
-                                <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                <option value={104}>Payment Link</option>
-                                <option value={100}>Virtual Account</option>
-                            </Form.Select>
-                        </Col>
                     </Row>
                     <Row className='mt-4'>
                         <Col xs={5}>
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement)}
-                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0}
+                                        onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, inputHandle.bankSettlement)}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.bankSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.bankSettlement.length === 0}
                                     >
                                         Terapkan
                                     </button>
@@ -1090,8 +1095,8 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Settlement")}
-                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.bankSettlement.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.bankSettlement.length === 0}
                                     >
                                         Atur Ulang
                                     </button>
@@ -1108,7 +1113,7 @@ function RiwayatTransaksi() {
                     {
                         dataRiwayatSettlement.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0)} className="export-span">Export</Link>
+                            <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.bankSettlement)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
