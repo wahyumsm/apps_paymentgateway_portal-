@@ -61,7 +61,8 @@ export function errorCatch(statusCode) {
   return code[statusCode];
 }
 
-export function convertSimpleTimeStamp(time) {
+export function convertSimpleTimeStamp(time, params) {
+	console.log(params, 'params time');
   const date = new Date(time * 1000);
   const hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
   const minutes =
@@ -72,7 +73,11 @@ export function convertSimpleTimeStamp(time) {
       ? "0" + (date.getMonth() + 1)
       : date.getMonth() + 1;
   const years = date.getFullYear();
-  return `${hours}:${minutes}, ${days}/${months}/${years}`;
+  if (params === undefined) {
+	return `${hours}:${minutes}, ${days}/${months}/${years}`;
+  } else {
+	return `${days}/${months}/${years}, ${hours}:${minutes}`;
+  }
 }
 
 export function convertDateAndTimeInfoDanSaldo(time) {

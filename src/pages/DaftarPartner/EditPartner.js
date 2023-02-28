@@ -255,6 +255,8 @@ function EditPartner() {
     }
   };
 
+  console.log(subAccount, "subAccount");
+
   function editInTableHandler(numberId) {
     setEdited(true);
     const result = payment.find((item) => item.number === numberId);
@@ -950,46 +952,31 @@ function EditPartner() {
     rekeningOwnerSubAcc,
     number
   ) {
-    if (number > 2) {
-      setAlertMaxSubAcc(true)
-      setSubAccountHandle({
-        sumberAgen: "",
-        akunBankSubAcc: "",
-        rekeningOwnerSubAcc: "",
-      })
-      setAgenName("")
-      setAgenCode("")
-    } else {
-      setAlertMaxSubAcc(false)
-      if (sumberAgenCode !== "" && sumberAgen !== "" && akunBankSubAcc !== "" && rekeningOwnerSubAcc !== "") {
-        setAlertFillAgen(false)
-        setAlertNoRek(false)
-        setAlertNameRek(false)
-        if (subAccount.length !== 0) {
-          subAccount.forEach((item) => {
-            if (item.subpartner_id === sumberAgenCode) {
-              setAlertSamePartner(true)
-            } else {
-              setAlertSamePartner(false)
-              const newDataSubAcc = {
-                bank_name: "Danamon",
-                bank_number: akunBankSubAcc,
-                bank_account_name: rekeningOwnerSubAcc,
-                subpartner_id: sumberAgenCode,
-                agen_source: sumberAgen,
-                number: number
-              }
-              setSubAccount([...subAccount, newDataSubAcc])
-              setSubAccountHandle({
-                sumberAgen: "",
-                akunBankSubAcc: "",
-                rekeningOwnerSubAcc: "",
-              })
-            }
-          })
+    // if (number > 2) {
+    //   setAlertMaxSubAcc(true)
+    //   setSubAccountHandle({
+    //     sumberAgen: "",
+    //     akunBankSubAcc: "",
+    //     rekeningOwnerSubAcc: "",
+    //   })
+    //   setAgenName("")
+    //   setAgenCode("")
+    // } else {
+    //   setAlertMaxSubAcc(false)
+      
+    // }
+    if (sumberAgenCode !== "" && sumberAgen !== "" && akunBankSubAcc !== "" && rekeningOwnerSubAcc !== "") {
+      setAlertFillAgen(false)
+      setAlertNoRek(false)
+      setAlertNameRek(false)
+      if (subAccount.length !== 0) {
+        const finder = subAccount.find((item) => (item.subpartner_id === sumberAgenCode))
+        if (finder) {
+          setAlertSamePartner(true)
         } else {
+          setAlertSamePartner(false)
           const newDataSubAcc = {
-            bank_name: "Danamon",
+            bank_name: "BANK DANAMON",
             bank_number: akunBankSubAcc,
             bank_account_name: rekeningOwnerSubAcc,
             subpartner_id: sumberAgenCode,
@@ -1004,18 +991,32 @@ function EditPartner() {
           })
         }
       } else {
-        if (sumberAgenCode === "" || sumberAgen === "") {
-          setAlertFillAgen(true)
+        const newDataSubAcc = {
+          bank_name: "BANK DANAMON",
+          bank_number: akunBankSubAcc,
+          bank_account_name: rekeningOwnerSubAcc,
+          subpartner_id: sumberAgenCode,
+          agen_source: sumberAgen,
+          number: number
         }
-        if (akunBankSubAcc === "") {
-          setAlertNoRek(true)
-        }
-        if (rekeningOwnerSubAcc === "") {
-          setAlertNameRek(true)
-        }
+        setSubAccount([...subAccount, newDataSubAcc])
+        setSubAccountHandle({
+          sumberAgen: "",
+          akunBankSubAcc: "",
+          rekeningOwnerSubAcc: "",
+        })
+      }
+    } else {
+      if (sumberAgenCode === "" || sumberAgen === "") {
+        setAlertFillAgen(true)
+      }
+      if (akunBankSubAcc === "") {
+        setAlertNoRek(true)
+      }
+      if (rekeningOwnerSubAcc === "") {
+        setAlertNameRek(true)
       }
     }
-    
   }
 
   async function editDetailPartner(
@@ -2326,11 +2327,11 @@ function EditPartner() {
                       gap: 8,
                       width: 250,
                       height: 48,
-                      color: subAccount.length >= 2 ? "#C4C4C4" : "#077E86",
+                      color: "#077E86",
                       background: "unset",
-                      border: subAccount.length >= 2 ? "1px solid #EBEBEB" : "0.6px solid #077E86",
+                      border: "0.6px solid #077E86",
                       borderRadius: 6,
-                      cursor: subAccount.length >= 2 ? "unset" : "pointer"
+                      cursor: "pointer"
                     }}
                   >
                     <FontAwesomeIcon
@@ -2459,7 +2460,7 @@ function EditPartner() {
                 )}
               </Col>
             </Row>
-            <Row>
+            {/* <Row>
               <Col xs={2} style={{ width: 200 }}></Col>
               <Col className="ms-2">
                 {
@@ -2470,7 +2471,7 @@ function EditPartner() {
                   </div> : ""
                 }
               </Col>
-            </Row>
+            </Row> */}
 
             
             {expandedSubAcc && (

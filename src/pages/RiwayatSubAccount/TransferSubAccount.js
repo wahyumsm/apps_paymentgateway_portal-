@@ -19,6 +19,7 @@ import { useEffect } from 'react'
 import FilterSubAccount from '../../components/FilterSubAccount'
 import Countdown from 'react-countdown'
 import encryptData from '../../function/encryptData'
+import CurrencyFormat from 'react-currency-format'
 
 const TransferSubAccount = () => {
     const history = useHistory()
@@ -85,6 +86,8 @@ const TransferSubAccount = () => {
         desc: ""
     })
 
+    const [inputNominal, setInputNominal] = useState("")
+
     const subHeaderComponentMemoBank = useMemo(() => {
         return (
             <FilterSubAccount filterText={filterTextBank} onFilter={e => setFilterTextBank(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
@@ -98,6 +101,7 @@ const TransferSubAccount = () => {
     );
 
     const handleRowClicked = row => {
+        setFilterTextBank('')
         filterItemsBank.map(item => {
             if (row.mbank_code === item.mbank_code) {
                 setInputData({
@@ -111,6 +115,7 @@ const TransferSubAccount = () => {
     };
 
     const handleRowClickedRekening = row => {
+        setFilterTextRekening('')
         setClickCheck(false)
         setIsCheckedAccBankButton(false)
         setChecking({})
@@ -156,6 +161,12 @@ const TransferSubAccount = () => {
             [e.target.name]: (e.target.name !== "desc") ? Number(e.target.value).toString() : e.target.value,
         });
     }
+
+    function handleChangeNominal(e) {
+        setInputNominal(Number(e.value))
+    }
+
+    console.log(inputNominal, "inputNominal");
     
     function completeTime() {
         setToCountdown(false)
@@ -189,7 +200,7 @@ const TransferSubAccount = () => {
         {
             name: 'No',
             selector: row => row.number,
-            width: "80px"
+            width: "67px"
         },
         {
             name: 'Nama Bank',
@@ -240,7 +251,7 @@ const TransferSubAccount = () => {
     }
 
     function toTransfer () {
-        confirmHandler(inputHandle.nomorAkun, inputTransfer.nominal, inputData.bankCode, inputTransfer.desc, otp, isChecked, inputHandle.akunPartner)
+        confirmHandler(inputHandle.nomorAkun, inputNominal, inputData.bankCode, inputTransfer.desc, otp, isChecked, inputHandle.akunPartner)
     }
 
     async function getAkunPartner() {
@@ -639,7 +650,21 @@ const TransferSubAccount = () => {
                                 Nominal Transfer <span style={{ color: "red" }}>*</span>
                             </Col>
                             <Col xs={10}>
-                                {
+                                <CurrencyFormat
+                                    className='input-text-user'
+                                    type={'text'} 
+                                    value={inputNominal === undefined ? 0 : inputNominal}
+                                    onValueChange={(e) => handleChangeNominal(e)}
+                                    placeholder='Rp 0'
+                                    displayType={'input'}
+                                    thousandSeparator={'.'}
+                                    decimalSeparator={','}
+                                    allowNegative={false}
+                                    isNumericString={true}
+                                    onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                                />
+
+                                {/* {
                                     editNominal ?
                                         <input 
                                             name="nominal" 
@@ -661,7 +686,7 @@ const TransferSubAccount = () => {
                                             onChange={handleChange}
                                             onFocus={() => setEditNominal(!editNominal)}
                                         />
-                                }
+                                } */}
                             </Col>
                         </Row>
                         <Row className='mt-3 align-items-center'>
@@ -683,8 +708,8 @@ const TransferSubAccount = () => {
                     </div>
                     <div className="d-flex justify-content-end align-items-center mt-3" >
                         <button 
-                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && inputTransfer.nominal.length >= 5 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
-                            disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || inputTransfer.nominal.length < 5 || transferFee.fee_transfer === undefined}
+                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && inputNominal >= 10000 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
+                            disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || inputNominal < 10000 || transferFee.fee_transfer === undefined}
                             style={{ width: '25%' }} 
                             onClick={() => toShowDataTransfer(isCheckedAccBankButton)}
                         >
@@ -836,7 +861,7 @@ const TransferSubAccount = () => {
                         </div>
                         <div className='d-flex justify-content-between align-items-center mt-1'>
                             <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{checking.account_name}</div>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(inputTransfer.nominal, true, 0)}</div>
+                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(inputNominal, true, 0)}</div>
                         </div>
                         <div className='d-flex justify-content-between align-items-center mt-3'>
                             <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Deskripsi</div>
@@ -847,7 +872,7 @@ const TransferSubAccount = () => {
                             <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(transferFee.fee_transfer, true, 0)}</div>
                         </div>
                         <div className='mt-3' style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>Total</div>
-                        <div className='mt-1' style={{ fontSize: 24, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah((Number(inputTransfer.nominal) + Number(transferFee.fee_transfer)), true, 0)}</div>
+                        <div className='mt-1' style={{ fontSize: 24, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah((Number(inputNominal) + Number(transferFee.fee_transfer)), true, 0)}</div>
                     </div>
                     <div className='d-flex justify-content-center align-items-center'>
                         <button

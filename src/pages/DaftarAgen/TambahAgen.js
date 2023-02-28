@@ -40,11 +40,11 @@ function TambahAgen() {
     const [errorCode, setErrorCode] = useState(0)
     const [add, setAdd] = useState(false)
 
-    async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee, nominal) {
+    async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee) {
         try {         
             const auth = "Bearer " + getToken()
             // const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
-            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}}`)
+            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${(settlementFee.length === 0) ? 0 : Number(settlementFee)}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -241,19 +241,10 @@ function TambahAgen() {
                     <Row>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Settlement Fee <span style={{ color: "red" }}>*</span>
+                                Settlement Fee
                             </span>
                         </Col>
                         <Col xs={10}>
-                            {/* <Form.Control
-                                name='settlementFee'
-                                onChange={handleChange}
-                                placeholder="Masukkan Jumlah Settlement Fee"
-                                type='number'
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
-                                style={{ width: "100%", height: 40, marginTop: '-7px' }}
-                                /> */}
                             {add ?
                                 <Form.Control
                                     name='settlementFee'
@@ -272,6 +263,7 @@ function TambahAgen() {
                                     value={convertFormatNumber(inputHandle.settlementFee)}
                                     placeholder="Masukkan Jumlah Settlement Fee"
                                     type='text'
+                                    min={0}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onFocus={() => setAdd(!add)}
                                 />
@@ -331,7 +323,7 @@ function TambahAgen() {
                 Silahkan hubungi Admin untuk menambahkan Sub Account pada agen
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
-                <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee, inputHandle.nominal)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.settlementFee === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.settlementFee === 0 }>
+                <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 }>
                     Tambahkan
                 </button>
             </div>

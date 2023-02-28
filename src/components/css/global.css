@@ -1035,3 +1035,19 @@ header.sc-dIouRR.evxAbm {
 .fixed-header-table th {
     background:#eee;
 }
+
+.saldo-sub-acc .modal-content{
+    width: 410px;
+}
+
+.input-text-saldo-sub-acc {
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 0px 10px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
