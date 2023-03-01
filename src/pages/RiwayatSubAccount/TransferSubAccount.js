@@ -165,7 +165,7 @@ const TransferSubAccount = () => {
         setInputNominal(Number(e.value))
     }
 
-    console.log(inputNominal, "inputNominal");
+    // console.log(inputNominal, "inputNominal");
     
     function completeTime() {
         setToCountdown(false)
@@ -324,7 +324,7 @@ const TransferSubAccount = () => {
                 'Authorization' : auth
             }
             const bankList = await axios.post(BaseURL + "/SubAccount/GetListAccount", { data: "" }, { headers: headers })
-            console.log(bankList, 'list bank');
+            // console.log(bankList, 'list bank');
             if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
                 bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setListRekening(bankList.data.response_data)

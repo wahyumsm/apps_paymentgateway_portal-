@@ -89,8 +89,6 @@ function DetailAkun() {
         }
     }
 
-    console.log(subAccount, "sub account");
-
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
             <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />

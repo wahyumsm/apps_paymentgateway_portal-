@@ -62,7 +62,7 @@ export function errorCatch(statusCode) {
 }
 
 export function convertSimpleTimeStamp(time, params) {
-	console.log(params, 'params time');
+	// console.log(params, 'params time');
   const date = new Date(time * 1000);
   const hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
   const minutes =

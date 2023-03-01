@@ -58,14 +58,14 @@ const InfoSaldoDanMutasi = () => {
     const [inputPass, setInputPass] = useState({
         passwordRek: ""
     })
-    console.log(activePageMutasi, 'activePageMutasi');
-    console.log(dataMutasi, 'dataMutasi');
-    console.log(pageNumberMutasi, 'pageNumberMutasi');
-    console.log(totalPageMutasi, 'totalPageMutasi');
-    console.log(stateInfoMutasi, 'stateInfoMutasi');
-    console.log(dateRangeInfoMutasi, 'dateRangeInfoMutasi');
     const passwordInputType = showPassword ? "text" : "password";
-    const passwordIconColor = showPassword ? "#262B40" : "";
+    // console.log(activePageMutasi, 'activePageMutasi');
+    // console.log(dataMutasi, 'dataMutasi');
+    // console.log(pageNumberMutasi, 'pageNumberMutasi');
+    // console.log(totalPageMutasi, 'totalPageMutasi');
+    // console.log(stateInfoMutasi, 'stateInfoMutasi');
+    // console.log(dateRangeInfoMutasi, 'dateRangeInfoMutasi');
+    // const passwordIconColor = showPassword ? "#262B40" : "";
     // console.log(dateRangeInfoMutasi, 'dateRangeInfoMutasi');
     // console.log(showDateInfoMutasi, 'showDateInfoMutasi');
     // console.log(stateInfoMutasi, 'stateInfoMutasi');
@@ -264,7 +264,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const listDataMutasi = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
-            console.log(listDataMutasi, "ini data riwayat");
+            // console.log(listDataMutasi, "ini data riwayat");
             if (listDataMutasi.data.response_code === 200 && listDataMutasi.status === 200 && listDataMutasi.data.response_new_token.length === 0) {
                 listDataMutasi.data.response_data.results = listDataMutasi.data.response_data.results.map((obj, id) => ({ ...obj, number: (currentPage > 1) ? (id + 1)+((currentPage-1)*10) : id + 1 }));
                 setDataMutasi(listDataMutasi.data.response_data.results)
@@ -297,7 +297,7 @@ const InfoSaldoDanMutasi = () => {
                 'Authorization' : auth
             }
             const listDataMutasi = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
-            console.log(listDataMutasi, "ini data riwayat");
+            // console.log(listDataMutasi, "ini data riwayat");
             if (listDataMutasi.data.response_code === 200 && listDataMutasi.status === 200 && listDataMutasi.data.response_new_token.length === 0) {
                 listDataMutasi.data.response_data.results = listDataMutasi.data.response_data.results.map((obj, id) => ({ ...obj, number: (page > 1) ? (id + 1)+((page-1)*10) : id + 1 }));
                 setDataMutasi(listDataMutasi.data.response_data.results)
@@ -313,7 +313,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingMutasi(false)
             }
         } catch (error) {
-          console.log(error)
+        //   console.log(error)
           history.push(errorCatch(error.response.status))
         }
     }
@@ -335,7 +335,7 @@ const InfoSaldoDanMutasi = () => {
     }
 
     function pickDateInfoMutasi(item) {
-        console.log(item, "item");
+        // console.log(item, "item");
         setStateInfoMutasi(item)
         if (item !== null) {
           item = item.map(el => el.toLocaleDateString('fr-CA').split("").join(""))
@@ -375,7 +375,6 @@ const InfoSaldoDanMutasi = () => {
         } catch (error) {
             // console.log(error);
             if (error.response.status === 400 && error.response.data.response_code === 400) {
-                console.log('masuk log error');
                 setErrMsg(error.response.data.response_message)
                 setPendingMutasi(false)
             }
@@ -395,7 +394,7 @@ const InfoSaldoDanMutasi = () => {
         nomorAkun: "",
         namaAkun: ""
     })
-    console.log(inputHandle.akunPartner, "partner id ");
+    // console.log(inputHandle.akunPartner, "partner id ");
     const [inputDataMutasi, setInputDataMutasi] = useState({
         periodeInfoMutasi: 0
     })
@@ -435,7 +434,7 @@ const InfoSaldoDanMutasi = () => {
 
     function handleChange(e, listAkun) {
         listAkun = listAkun.find(item => item.partner_id === e.target.value)
-        console.log(listAkun.partner_id, "list akun");
+        // console.log(listAkun.partner_id, "list akun");
         getListRiwayatMutasi(listAkun.partner_id, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField)
         setInputHandle({
             ...inputHandle,
@@ -471,7 +470,7 @@ const InfoSaldoDanMutasi = () => {
           const listPartnerAkun = await axios.post(BaseURL + "/SubAccount/GetAgenAccount", { data: "" }, { headers: headers })
           if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length === 0) {
             listPartnerAkun.data.response_data = listPartnerAkun.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-            console.log(listAkunPartner, "list partner");
+            // console.log(listAkunPartner, "list partner");
             setListAkunPartner(listPartnerAkun.data.response_data)
             if (listPartnerAkun.data.response_data.length !== 0) {
                 setInputHandle({
@@ -574,7 +573,6 @@ const InfoSaldoDanMutasi = () => {
             // console.log(error)
             // RouteTo(errorCatch(error.response.status))
             if (error.response.status === 400 && error.response.data.response_code === 400) {
-                console.log('masuk log error');
                 setListMutasi([])
                 setErrMsg(error.response.data.response_message)
                 setPendingMutasi(false)
@@ -623,7 +621,6 @@ const InfoSaldoDanMutasi = () => {
         //   console.log(error)
             // RouteTo(errorCatch(error.response.status))
             if (error.response.status === 400 && error.response.data.response_code === 400) {
-                console.log('masuk log error');
                 setListMutasi([])
                 setErrMsg(error.response.data.response_message)
                 setPendingMutasi(false)
@@ -647,7 +644,7 @@ const InfoSaldoDanMutasi = () => {
         setDateRangeInfoMutasi([])
         setShowDateInfoMutasi("none")
     }
-    console.log(inputDataMutasi.periodeInfoMutasi, 'inputDataMutasi.periodeInfoMutasi');
+    // console.log(inputDataMutasi.periodeInfoMutasi, 'inputDataMutasi.periodeInfoMutasi');
     
     function viewSaldo () {
         getInfoSaldo(inputHandle.akunPartner, inputPass.passwordRek)
