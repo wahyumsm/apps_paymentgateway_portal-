@@ -250,7 +250,7 @@ const TransferSubAccount = () => {
     }
 
     function toTransfer () {
-        confirmHandler(inputHandle.nomorAkun, inputNominal, inputData.bankCode, inputTransfer.desc, otp, isChecked, inputHandle.akunPartner)
+        confirmHandler(inputDataRekening.noRek, inputNominal, inputData.bankCode, inputTransfer.desc, otp, isChecked, inputHandle.akunPartner)
     }
 
     async function getAkunPartner() {

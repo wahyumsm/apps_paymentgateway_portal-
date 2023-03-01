@@ -320,7 +320,7 @@ function DisbursementReport() {
         },
         {
             name: 'Fee Bank',
-            selector: row => convertToRupiah(row.tdishburse_fee_tax),
+            selector: row => convertToRupiah(row.tdishburse_fee_bank),
             // sortable: true,
             width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
@@ -589,7 +589,7 @@ function DisbursementReport() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, "Status": data[i].mstatus_name_ind })
+                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Fee Bank": data[i].tdishburse_fee_bank, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, "Status": data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -600,7 +600,7 @@ function DisbursementReport() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, "Status": data[i].mstatus_name_ind })
+                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Fee Bank": data[i].tdishburse_fee_bank, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, "Status": data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -665,7 +665,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Fee Bank": data[i].tdishburse_fee_bank, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, "Status": data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -676,7 +676,7 @@ function DisbursementReport() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].tdishburse_code, "Waktu": convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nominal Disbursement": data[i].tdishburse_amount, "Fee Disbursement": data[i].tdishburse_fee, "Fee Tax": data[i].tdishburse_fee_tax, "Fee Bank": data[i].tdishburse_fee_bank, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].reference_no === "" ? "-" : data[i].reference_no, "Status": data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();

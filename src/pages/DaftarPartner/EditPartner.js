@@ -300,7 +300,7 @@ function EditPartner() {
     }
   };
 
-  console.log(subAccount, "subAccount");
+  // console.log(subAccount, "subAccount");
 
   function editInTableHandler(numberId) {
     setEdited(true);
