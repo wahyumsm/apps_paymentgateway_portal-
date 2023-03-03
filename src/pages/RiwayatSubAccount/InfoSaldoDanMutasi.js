@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import { BaseURL, convertDateAndTimeInfoDanSaldo, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import SubAccountComponent from '../../components/SubAccountComponent'
-import { Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
 import iconMata from "../../assets/icon/toggle_mata_icon.svg"
 import noteIconError from "../../assets/icon/note_icon_red.svg"
 import DataTable from 'react-data-table-component'
@@ -23,6 +23,7 @@ import {
     faSortUp,
     faSortDown,
 } from "@fortawesome/free-solid-svg-icons";
+import transferFailed from "../../assets/icon/gagaltopup_icon.svg"
 
 const InfoSaldoDanMutasi = () => {
     const history = useHistory()
@@ -30,6 +31,7 @@ const InfoSaldoDanMutasi = () => {
     const [showSaldoSubAcc, setShowSaldoSubAcc] = useState(false)
     const [loginToSaldo, setLoginToSaldo] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
+    const [showErrSistem, setShowErrSistem] = useState(false)
     const [listAkunPartner, setListAkunPartner] = useState([])
     const [dataAkun, setDataAkun] = useState([])
     const [listMutasi, setListMutasi] = useState([])
@@ -531,6 +533,10 @@ const InfoSaldoDanMutasi = () => {
             // RouteTo(errorCatch(error.response.status))
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 setErrMsg(error.response.data.response_message)
+            } else if (error.response.status === 400 && error.response.data.response_code === 450) {
+                setInputPass("")
+                setLoginToSaldo(false)
+                setShowErrSistem(true)
             }
             history.push(errorCatch(error.response.status))
         }
@@ -948,7 +954,7 @@ const InfoSaldoDanMutasi = () => {
                                 activePage={activePageMutasi}
                                 itemsCountPerPage={pageNumberMutasi.row_per_page}
                                 totalItemsCount={
-                                pageNumberMutasi.row_per_page * pageNumberMutasi.max_page
+                                    pageNumberMutasi.row_per_page * pageNumberMutasi.max_page
                                 }
                                 pageRangeDisplayed={5}
                                 itemClass="page-item"
@@ -1006,6 +1012,43 @@ const InfoSaldoDanMutasi = () => {
                 </Modal.Body>
             </Modal>
 
+            <Modal className="saldo-sub-acc" size="xs" centered show={showErrSistem} onHide={() => setShowErrSistem(false)}>
+                <Modal.Header className="border-0">
+                    <Button
+                        className="position-absolute top-0 end-0 m-3"
+                        variant="close"
+                        aria-label="Close"
+                        onClick={() => setShowErrSistem(false)}
+                    />
+                </Modal.Header>
+                <Modal.Title className="mt-3 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
+                    <div><img src={transferFailed} alt="success transfer" /></div> 
+                    <div className='mt-3'>Sistem Sedang Bermasalah</div> 
+                </Modal.Title>
+                <Modal.Body >
+                    <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>Saat ini sistem kami sedang mengalami gangguan sehingga tidak dapat menampilkan saldo anda. Mohon coba beberapa saat lagi</div>
+                    <div className='px-4 mt-4'>
+                        <button
+                            onClick={() => setShowErrSistem(false)}
+                            className='d-flex justify-content-center align-items-center text-center mt-3 mb-2'
+                            style={{
+                                width: "100%",
+                                fontFamily: "Exo",
+                                fontSize: 16,
+                                fontWeight: 700,
+                                alignItems: "center",
+                                padding: "12px 24px",
+                                gap: 8,
+                                background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                                border: "0.6px solid #383838",
+                                borderRadius: 6,
+                            }}
+                        >
+                            Oke
+                        </button>
+                    </div>
+                </Modal.Body>
+            </Modal>
 
             <Modal className="history-modal" size="xs" centered show={showSaldoSubAcc} onHide={() => setShowSaldoSubAcc(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
