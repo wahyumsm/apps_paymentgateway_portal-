@@ -3101,7 +3101,7 @@ function DisbursementPage() {
                                         </Row>
                                         <Row>
                                             <Col lg={8} className="p-amount my-3">
-                                                {convertToRupiah(detail.mpartballchannel_balance, true)}
+                                                {detail.hold_balance === 0 ? convertToRupiah(detail.mpartballchannel_balance, true) : convertToRupiah(detail.mpartballchannel_balance - detail.hold_balance, true)}
                                             </Col>
                                             <Col lg={4} onClick={() => handleShowDetailBalance(detail.channel_id)} style={{ textAlign: 'right' }}>
                                                 <img src={arrowDown} alt="arrow_down" style={{ marginTop: 25 }} className={((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? 'arrow-down-detail-open pe-2' : 'arrow-down-detail pe-2'} />
@@ -3120,7 +3120,7 @@ function DisbursementPage() {
                                                     <FontAwesomeIcon style={{ width: 5, marginRight: 5, marginTop: 3, color: "#888888" }} icon={faCircle} />
                                                 </Col>
                                                 <Col lg={10} style={{ padding: 0 }}>
-                                                    <span style={{ color: "#888888", fontSize: 12, fontFamily: 'Nunito', fontWeight: 400 }}>Saldo awal {detail.hold_balance === 0 ? convertToRupiah(detail.mpartballchannel_balance, true) : convertToRupiah(detail.mpartballchannel_balance - detail.hold_balance, true)}</span>
+                                                    <span style={{ color: "#888888", fontSize: 12, fontFamily: 'Nunito', fontWeight: 400 }}>Saldo awal {convertToRupiah(detail.mpartballchannel_balance, true)}</span>
                                                 </Col>
                                             </Row>
                                         }

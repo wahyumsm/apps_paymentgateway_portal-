@@ -1404,3 +1404,12 @@ header.sc-dIouRR.evxAbm {
 .scroll-disburse::-webkit-scrollbar-button:single-button:vertical:increment:active {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(128, 128, 128)'><polygon points='0,0 100,0 50,50'/></svg>");
 }
+
+.modal-invoice .modal-content {
+    max-width: 1000px;
+}
+
+@media (min-width: 576px) {
+    .modal-invoice .modal-dialog {
+        max-width: 1000px;
+}}

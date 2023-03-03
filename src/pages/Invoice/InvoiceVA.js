@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Form, Row, Table } from '@themesberg/react-bootstrap'
+import { Col, Form, Modal, Row, Table } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import jsPDF from 'jspdf';
-import { BaseURL, convertFormatNumber, convertToRupiah, errorCatch, getRole, getToken, setUserSession, terbilangVA } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, convertToRupiah, errorCatch, getRole, getToken, setUserSession, terbilangDisbursement, terbilangVA } from '../../function/helpers';
 import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
@@ -24,10 +24,43 @@ function InvoiceVA() {
     const [errorMessage, setErrorMessage] = useState("")
     const [isIgnoreZeroAmount, setIsIgnoreZeroAmount] = useState(false)
     const [invoiceDate, setInvoiceDate] = useState("")
+    const [showModalKonfirmasiInvoiceVA, setShowModalKonfirmasiInvoiceVA] = useState(false)
+    const [invoiceNumber, setInvoiceNumber] = useState('')
+    const [inputHandle, setInputHandle] = useState({})
+    const [totalAmount, setTotalAmount] = useState(0)
+    const [taxTotalAmount, setTaxTotalAmount] = useState(0)
+
+    function handleChange(e, idx, qty, priceUnit) {
+        setInputHandle({
+            ...inputHandle,
+            [e.target.name]: e.target.value,
+            [`priceTotal${idx+1}`]: e.target.value * priceUnit
+        })
+        setTotalAmount(totalAmount + ((e.target.value > qty) ? (e.target.value - qty) * priceUnit : (qty - e.target.value) * priceUnit))
+        setTaxTotalAmount((totalAmount + ((e.target.value > qty) ? (e.target.value - qty) * priceUnit : (qty - e.target.value) * priceUnit)) * 0.11)
+        // console.log(totalAmount + (e.target.value * priceUnit), 'totalAmount');
+        // console.log((totalAmount + (e.target.value * priceUnit)) * 0.11, 'taxTotalAmount');
+    }
+
+    function toPreviewInvoice(objData) {
+        let totalBiaya = 0
+        let totalTax = 0
+        for (const key in objData) {
+            if (key.slice(5, 10) === 'Total') {
+                totalBiaya = totalBiaya + objData[key]
+            }
+        }
+        totalTax = totalBiaya*0.11
+        setTotalAmount(totalBiaya)
+        setTaxTotalAmount(totalTax)
+        // console.log(totalBiaya + totalTax);
+        setShowModalKonfirmasiInvoiceVA(true)
+    }
 
     const SaveAsPDFHandler = () => {
         generateInvoice(dateRangeSettlement, namaPartner, invoiceDate, isIgnoreZeroAmount, true)
-        const dom = document.getElementById('tableInvoice');
+        // const dom = document.getElementById('tableInvoice');
+        const dom = document.getElementById('tableInvoiceModal');
         toPng(dom)
             .then((dataUrl) => {
                 const img = new Image();
@@ -87,10 +120,11 @@ function InvoiceVA() {
                         // data 10
                         // pdf.addImage(imgData, imageType, 45, 15, (pdfWidth*0.8), (pageHeight*0.8));
                         // data diatas 15
-                        pdf.addImage(imgData, imageType, (dataInvoice.inv_products.length < 11 ? 60 : 80), (dataInvoice.inv_products.length < 9 ? 75 : dataInvoice.inv_products.length < 11 ? 70 : 75), (dataInvoice.inv_products.length <= 10 ? pdfWidth*0.75 : pdfWidth*0.6), (dataInvoice.inv_products.length <= 10 ? pageHeight*0.75 : pageHeight*0.6));
+                        pdf.addImage(imgData, imageType, (dataInvoice.inv_products.length < 11 ? 60 : 90), (dataInvoice.inv_products.length < 9 ? 75 : dataInvoice.inv_products.length < 11 ? 70 : 75), (dataInvoice.inv_products.length <= 10 ? pdfWidth*0.75 : pdfWidth*0.6), (dataInvoice.inv_products.length <= 10 ? pageHeight*0.75 : pageHeight*0.55));
                     }
                     // Output / Save
                     pdf.save(`invoice-settlementva-${dataInvoice.partner_detail.partner_name}-${dataInvoice.inv_date}.pdf`);
+                    setShowModalKonfirmasiInvoiceVA(false)
                 };
             })
             .catch((error) => {
@@ -160,10 +194,30 @@ function InvoiceVA() {
             const invoiceData = await axios.post(BaseURL + "/Report/GetInvoiceSettlementVA", { data: dataParams }, { headers: headers })
             // console.log(invoiceData, 'ini invoice data');
             if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token === null) {
+                let objQTY = {}
+                invoiceData.data.response_data.inv_products.forEach((e, i) => {
+                    objQTY[`QTYTransaksi${i+1}`] = e.qty_trx
+                    objQTY[`priceUnit${i+1}`] = e.price_unit
+                    objQTY[`priceTotal${i+1}`] = e.price_total
+                });
                 setDataInvoice(invoiceData.data.response_data)
+                setTotalAmount(invoiceData.data.response_data.inv_dpp)
+                setTaxTotalAmount(invoiceData.data.response_data.inv_ppn)
+                setInvoiceNumber(invoiceData.data.response_data.inv_no)
+                setInputHandle(objQTY)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
                 setUserSession(invoiceData.data.response_new_token)
+                let objQTY = {}
+                invoiceData.data.response_data.inv_products.forEach((e, i) => {
+                    objQTY[`QTYTransaksi${i+1}`] = e.qty_trx
+                    objQTY[`priceUnit${i+1}`] = e.price_unit
+                    objQTY[`priceTotal${i+1}`] = e.price_total
+                });
                 setDataInvoice(invoiceData.data.response_data)
+                setTotalAmount(invoiceData.data.response_data.inv_dpp)
+                setTaxTotalAmount(invoiceData.data.response_data.inv_ppn)
+                setInvoiceNumber(invoiceData.data.response_data.inv_no)
+                setInputHandle(objQTY)
             }
         } catch (error) {
             // console.log(error)
@@ -195,8 +249,6 @@ function InvoiceVA() {
         listPartner()
     }, [access_token, user_role])
     
-    // console.log(dataInvoice.inv_products);
-
     return (
         <div className="content-page mt-6">
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Invoice</span>
@@ -286,7 +338,14 @@ function InvoiceVA() {
                                         <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Invoice No</td>
                                             <td style={{ width: 1, borderRight: 'hidden', paddingRight: 10 }}>:</td>
-                                            <td style={{ fontWeight: 700 }}>{dataInvoice.inv_no ? dataInvoice.inv_no : "-"}</td>
+                                            <td style={{ fontWeight: 700 }}>
+                                                {
+                                                    invoiceNumber.length !== 0 ?
+                                                    <input name="invoiceNumber" onChange={(e) => setInvoiceNumber(e.target.value)} value={invoiceNumber} type='text' style={{ marginTop: 6, marginBottom: 6, width: 230, height: 40, borderRadius: 8, border: '1px solid #E0E0E0' }} placeholder='-'/> :
+                                                    "-"
+                                                }
+                                                {/* {dataInvoice.inv_no ? dataInvoice.inv_no : "-"} */}
+                                            </td>
                                         </tr>
                                         <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Tgl</td>
@@ -368,9 +427,12 @@ function InvoiceVA() {
                                                     <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
                                                         <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
                                                         <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, true, 2) : "Rp 0"}</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, true, 2) : "Rp 0"}</td>
+                                                        <td style={{ padding: 0, textAlign: "end", borderRight: 'hidden' }}>
+                                                            <input name={`QTYTransaksi${idx+1}`} onChange={(e) => handleChange(e, idx, inputHandle[`QTYTransaksi${idx+1}`], inputHandle[`priceUnit${idx+1}`])} value={inputHandle[`QTYTransaksi${idx+1}`] === undefined ? 0 : convertFormatNumber(inputHandle[`QTYTransaksi${idx+1}`])} type='number' style={{ width: 75, height: 40, borderRadius: 8, border: '1px solid #E0E0E0' }} placeholder='0'/>
+                                                            {/* { convertFormatNumber(item.qty_trx) } */}
+                                                        </td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
                                             }) :
@@ -408,7 +470,7 @@ function InvoiceVA() {
                                             <td></td>
                                             <td>Harga Jual</td>
                                             <td style={{ textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
@@ -424,7 +486,7 @@ function InvoiceVA() {
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
@@ -432,7 +494,7 @@ function InvoiceVA() {
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(dataInvoice.inv_ppn !== undefined) ? convertToRupiah(dataInvoice.inv_ppn, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
@@ -440,7 +502,7 @@ function InvoiceVA() {
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_total !== undefined) ? convertToRupiah(dataInvoice.inv_total, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_dpp !== undefined || dataInvoice.inv_ppn !== undefined) ? convertToRupiah((totalAmount + taxTotalAmount), true, 2).slice(3) : "0"}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -448,7 +510,7 @@ function InvoiceVA() {
                             <div style={{ fontSize: 13, fontWeight: 700 }}>
                                 <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                     <tr>
-                                        <td>Terbilang: {(dataInvoice.inv_total !== undefined) ? terbilangVA(dataInvoice.inv_total).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
+                                        <td>Terbilang: {(dataInvoice.inv_dpp !== undefined || dataInvoice.inv_ppn !== undefined) ? terbilangDisbursement((totalAmount + taxTotalAmount).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                     </tr>
                                 </table>
                                 <div>Remark:</div>
@@ -458,17 +520,222 @@ function InvoiceVA() {
                         </div>
                         <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                             <button
-                                onClick={SaveAsPDFHandler}
+                                // onClick={SaveAsPDFHandler}
+                                onClick={() => toPreviewInvoice(inputHandle)}
                                 className={(Object.keys(dataInvoice).length === 0) ? "btn-off mb-3" : 'add-button mb-3'}
                                 style={{ maxWidth: 'fit-content' }}
                                 disabled={Object.keys(dataInvoice).length === 0}
                             >
-                                Download PDF
+                                Preview Invoice
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+            {/* Modal invoice */}
+            <Modal className='modal-invoice' show={showModalKonfirmasiInvoiceVA} onHide={() => setShowModalKonfirmasiInvoiceVA(false)} style={{ borderRadius: 8 }}>
+                <Modal.Body style={{ width: "100%", padding: "0px 24px" }}>
+                    <div id='tableInvoiceModal'>
+                        <Row style={{ fontSize: 18 }}>
+                            <Col xs={4}></Col>
+                            <Col xs={4}>
+                                <span className='d-flex justify-content-center' style={{ fontWeight: 700 }}>INVOICE</span>
+                            </Col>
+                            <Col xs={4}>
+                                <span className='d-flex justify-content-center'>ORIGINAL</span>
+                            </Col>
+                        </Row>
+                        <div className='div-table' style={{ display: "flex", justifyContent: "center", marginBottom: -17 }}>
+                            <table className='table table-bordered responsive' style={{ tableLayout: 'fixed' }}>
+                                {/* <tbody> */}
+                                    {/* section 1 */}
+                                    <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Invoice No</td>
+                                        <td style={{ width: 1, borderRight: 'hidden', paddingRight: 10 }}>:</td>
+                                        <td style={{ fontWeight: 700 }}>{invoiceNumber ? invoiceNumber : "-"}</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Tgl</td>
+                                        <td style={{ borderRight: 'hidden' }}>:</td>
+                                        <td style={{ fontWeight: 700 }}>{dataInvoice.inv_date ? dataInvoice.inv_date : "-"}</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden' }}>PO No.</td>
+                                        <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
+                                        {/* <td style={{ paddingBottom: 20 }}>:</td> */}
+                                    </tr>
+                                    {/* section 2 */}
+                                    <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', textDecoration: 'underline', fontWeight: 700, borderRight: 'hidden' }}>Pembeli</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Nama</td>
+                                        <td style={{ borderRight: 'hidden' }}>:</td>
+                                        <td style={{ fontWeight: 700 }}>{dataInvoice.partner_detail ? dataInvoice.partner_detail.partner_name.toUpperCase() : "-"}</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid', width: '50%' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
+                                        <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
+                                        <td style={{ paddingRight: 50, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>{dataInvoice.partner_detail ? dataInvoice.partner_detail.partner_address.toUpperCase() : "-"}</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Attn.</td>
+                                        <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
+                                        {/* <td style={{ paddingBottom: 20 }}>:</td> */}
+                                    </tr>
+                                    {/* section 3 */}
+                                    <tr style={{ borderBottom: 'hidden', borderTop: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', textDecoration: 'underline', fontWeight: 700, borderRight: 'hidden' }}>Penjual</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: 'hidden', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', borderRight: 'hidden' }}>Nama</td>
+                                        <td style={{ borderRight: 'hidden' }}>:</td>
+                                        <td style={{ fontWeight: 700 }}>PT. EZEELINK INDONESIA</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
+                                        <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
+                                        <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
+                                        <td style={{ paddingRight: 366, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                    </tr>
+                                {/* </tbody> */}
+                            </table>
+                        </div>
+                        <div className='div-table' style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
+                            <Table bordered>
+                                <thead style={{ backgroundColor: "#F2F2F2", border: 'solid' }}>
+                                    <tr>
+                                        <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle", borderBottom: 'solid' }}>
+                                            No
+                                        </th>
+                                        <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
+                                            Nama Barang
+                                        </th>
+                                        <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
+                                            Qty TRANSAKSI
+                                        </th>
+                                        <th colSpan={2} style={{ textAlign: "center", borderBottomWidth: 0, borderRight: 'hidden' }}>
+                                            Harga (Rp)
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ textAlign: "center" }}>
+                                            Satuan
+                                        </th>
+                                        <th style={{ textAlign: "center", borderRight: 'hidden' }}>
+                                            Total
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="table-group-divider">
+                                    {
+                                        dataInvoice.inv_products ?
+                                        dataInvoice.inv_products.map((item, idx) => {
+                                            return (
+                                                <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
+                                                    <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
+                                                    <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
+                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ inputHandle[`QTYTransaksi${idx+1}`] }</td>
+                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                </tr>
+                                            )
+                                        }) :
+                                        <tr style={{ border: 'solid', borderBottom: 'hidden' }}>
+                                            <td style={{ paddingLeft: 16, width: 155, textAlign: "center", borderRight: 'hidden' }}>1</td>
+                                            <td style={{ borderRight: 'hidden' }}>{(errorMessage.length !== 0) ? errorMessage : "-"}</td>
+                                            <td style={{ textAlign: "end", borderRight: 'hidden' }}>0</td>
+                                            <td style={{ textAlign: "end", borderRight: 'hidden' }}>Rp 0</td>
+                                            <td style={{ textAlign: "end", borderRight: 'hidden' }}>Rp 0</td>
+                                        </tr>
+                                    }
+                                    <tr style={{ border: 'solid' }}>
+                                        <td style={{ borderRight: "hidden", borderLeft: 'solid', borderBottom: 'solid' }}></td>
+                                        <td style={{ borderRight: "hidden", borderBottom: 'solid' }}></td>
+                                        <td style={{ borderRight: "hidden", borderBottom: 'solid' }}></td>
+                                        <td style={{ borderRight: "hidden", borderBottom: 'solid' }}></td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'solid', borderWidth: 0 }}></td>
+                                        <br />
+                                        <br />
+                                        <br />
+                                    </tr>
+                                    <tr>
+                                        <td style={{ borderRight: "hidden", borderLeft: 'hidden'  }}></td>
+                                        <td style={{ borderRight: "hidden",  }}></td>
+                                        <td style={{ borderRight: "hidden",  }}></td>
+                                        <td style={{ borderRight: "hidden",  }}></td>
+                                        <td style={{ borderRight: "hidden" }}></td>
+                                        <br />
+                                        <br />
+                                        <br />
+                                    </tr>
+                                    <tr style={{ border: '0px hidden transparent',fontWeight: 700 }}>
+                                        <td></td>
+                                        {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", borderTop: "solid" }}></td> */}
+                                        <td></td>
+                                        <td>Harga Jual</td>
+                                        <td style={{ textAlign: "end" }}>: Rp</td>
+                                        <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                        {/* <td style={{ textAlign: "end" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, true, 2).slice(3) : "0"}</td> */}
+                                    </tr>
+                                    <tr style={{ fontWeight: 700 }}>
+                                        <td style={{ border: 'hidden' }}></td>
+                                        {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
+                                        <td style={{ border: 'hidden' }}></td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0</td>
+                                    </tr>
+                                    <tr style={{ fontWeight: 700 }}>
+                                        <td style={{ border: 'hidden' }}></td>
+                                        {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
+                                        <td style={{ border: 'hidden' }}></td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                    </tr>
+                                    <tr style={{ fontWeight: 700 }}>
+                                        <td style={{ border: 'hidden' }}></td>
+                                        {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden" }}></td> */}
+                                        <td style={{ border: 'hidden' }}></td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0"}</td>
+                                    </tr>
+                                    <tr style={{ fontWeight: 700 }}>
+                                        <td style={{ border: 'hidden' }}></td>
+                                        {/* <td style={{ paddingLeft: 16, width: 155, borderRight: "hidden", background: "#077E86", color: "#FFFFFF" }}></td> */}
+                                        <td style={{ border: 'hidden' }}></td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
+                                        <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined || taxTotalAmount !== undefined) ? convertToRupiah((totalAmount + taxTotalAmount), true, 2).slice(3) : "0"}</td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700 }}>
+                            <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
+                                <tr>
+                                    <td>Terbilang: {(totalAmount !== undefined || taxTotalAmount !== undefined) ? terbilangDisbursement((totalAmount + taxTotalAmount).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
+                                </tr>
+                            </table>
+                            <div>Remark:</div>
+                            <div style={{ textAlign: 'end', marginTop: 150, marginBottom: 25 }}>........................................</div>
+                            <div style={{ display: "flex", justifyContent: "flex-start", borderTop: "solid", fontWeight: 700 }}>Page 1 of 1</div>
+                        </div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
+                        <button
+                            onClick={SaveAsPDFHandler}
+                            // onClick={() => setShowModalKonfirmasiInvoiceVA(true)}
+                            className={(Object.keys(dataInvoice).length === 0) ? "btn-off mb-3" : 'add-button mb-3'}
+                            style={{ maxWidth: 'fit-content' }}
+                            disabled={Object.keys(dataInvoice).length === 0}
+                        >
+                            Download PDF
+                        </button>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     )
 }
