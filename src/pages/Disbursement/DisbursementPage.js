@@ -1987,6 +1987,7 @@ function DisbursementPage() {
     }
 
     function handleChangeNominal(e) {
+        // console.log(e, "e");
         if (Number(e.value) >= 10000) {
             setAlertSaldo(false)
             setAlertMinSaldo(false)  
@@ -3298,15 +3299,17 @@ function DisbursementPage() {
                                         <Col xs={10}>
                                             <CurrencyFormat
                                                 className='input-text-user'
-                                                type='text'
+                                                type='tel'
                                                 value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
                                                 onValueChange={(e) => handleChangeNominal(e)}
                                                 placeholder="Rp 0"
                                                 displayType={'input'}
                                                 thousandSeparator={'.'}
                                                 decimalSeparator={','}
+                                                decimalScale={2}
                                                 allowNegative={false}
                                                 isNumericString={true}
+                                                inputMode="numeric"
                                                 onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                                             />
 

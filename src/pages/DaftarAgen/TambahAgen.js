@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertFormatNumber, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -233,7 +233,7 @@ function TambahAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row className='align-items-center mb-2'>
+                    <Row className='align-items-center mb-3'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
@@ -259,7 +259,7 @@ function TambahAgen() {
                             </span>
                         </Col>
                         <Col xs={10}>
-                            <CurrencyFormat
+                            {/* <CurrencyFormat
                                 className='input-text-user'
                                 type={'text'}
                                 value={inputHandle.settlementFee}
@@ -271,8 +271,8 @@ function TambahAgen() {
                                 allowNegative={false}
                                 isNumericString={true}
                                 onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
-                            />
-                            {/* {add ?
+                            /> */}
+                            {add ?
                                 <Form.Control
                                     name='settlementFee'
                                     onChange={handleChange}
@@ -280,21 +280,21 @@ function TambahAgen() {
                                     value={inputHandle.settlementFee}
                                     type='number'
                                     min={0}
-                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                                    onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onBlur={() => setAdd(!add)}
                                 /> :
                                 <Form.Control
                                     name='settlementFee'
                                     onChange={handleChange}
-                                    value={convertFormatNumber(inputHandle.settlementFee)}
+                                    value={convertToRupiah(inputHandle.settlementFee, false, 2)}
                                     placeholder="Masukkan Jumlah Settlement Fee"
                                     type='text'
                                     min={0}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onFocus={() => setAdd(!add)}
                                 />
-                            } */}
+                            }
                         </Col>
                     </Row>
                     {/* <Row className='mt-4'>
