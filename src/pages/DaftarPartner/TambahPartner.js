@@ -27,6 +27,7 @@ import deleted from "../../assets/icon/delete_icon.svg";
 import { useRef } from "react";
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import alertIcon from "../../assets/icon/alert_icon.svg";
+import CurrencyFormat from 'react-currency-format'
 
 function TambahPartner() {
   const [addPartner, setAddPartner] = useState({});
@@ -97,6 +98,17 @@ function TambahPartner() {
       [e.target.name]: e.target.value,
     });
   }
+
+  // function handleChangeFee(e) {
+  //   setAlertFee(false)
+  //   setBiayaHandle({
+  //     ...biayaHandle,
+  //     fee: Number(e.value),
+  //   });
+  //   if (e.value.length === 0) {
+  //     setAlertFee(true)
+  //   }
+  // }
 
   function handleChangeFee(e) {
     setAlertFee(false)
@@ -957,6 +969,23 @@ function toDashboard() {
               </span>
             </Col>
             <Col xs={10}>
+              {/* <CurrencyFormat
+                className="fee-partner"
+                type="text"
+                value={biayaHandle.fee === 0 ? "" : ("Rp " + biayaHandle.fee)}
+                onValueChange={(e) => handleChangeFee(e)}
+                style={{
+                  borderColor: alertFee ? "red" : ""
+                }}
+                placeholder="Rp 0,00"
+                displayType={'text'}
+                thousandSeparator={'.'}
+                decimalSeparator={','}
+                allowNegative={false}
+                isNumericString={true}
+                onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+              /> */}
+
               {editFee ?
                 <Form.Control
                   name="fee"

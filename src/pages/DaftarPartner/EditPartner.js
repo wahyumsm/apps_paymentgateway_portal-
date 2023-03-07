@@ -309,6 +309,9 @@ function EditPartner() {
     setBiayaHandle({
       fee: result.fee,
       settlementFee: result.fee_settle,
+      minTopup: result.mpartfitur_min_topup_allocation,
+      minTransaksi: result.mpartfitur_min_amount_trx,
+      maksTransaksi: result.mpartfitur_max_amount_trx
     });
     if (result.fitur_id) {
       setFitur([result.fitur_id, result.fitur_name]);

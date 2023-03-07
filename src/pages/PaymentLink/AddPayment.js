@@ -23,7 +23,7 @@ import time from "../../assets/icon/time_icon.svg";
 import Buttons from "../../components/Button";
 import { useRef } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-
+import CurrencyFormat from 'react-currency-format'
 
 function AddPayment() {
   const [showModal, setShowModal] = useState(false);
@@ -65,7 +65,7 @@ function AddPayment() {
   });
 
   const [inputHandle, setInputHandle] = useState({
-    nominal: null,
+    nominal: "",
     refId: "",
     expDate: "",
     useLimit: 1,
@@ -236,8 +236,19 @@ function AddPayment() {
       [e.target.name]: e.target.value,
     });
     setNotCompleteData({
-      nominal: false,
+      // nominal: false,
       refId: false
+    });
+  }
+
+  function handleChangeNominal(e) {
+    setInputHandle({
+      ...inputHandle,
+      nominal: Number(e.value)
+    })
+    setNotCompleteData({
+      nominal: false,
+      // refId: false
     });
   }
 
@@ -351,13 +362,30 @@ function AddPayment() {
             <div className="my-1">
               Amount <span style={{ color: "red" }}>*</span>
             </div>
-            <input
+            <CurrencyFormat
+              className={
+                (isNotCompleteData.nominal === true || isNotCompleteData.minNominal === true)
+                  ? "form-control is-invalid"
+                  : "input-text-user"
+              }
+              type={'text'}
+              value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
+              onValueChange={(e) => handleChangeNominal(e)}
+              placeholder="Masukkan Nominal Tagihan"
+              displayType={'input'}
+              thousandSeparator={'.'}
+              decimalSeparator={','}
+              allowNegative={false}
+              isNumericString={true}
+              onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+            />
+            {/* <input
               type="number"
               name="nominal"
               min={10000}
               onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
               onChange={handleChange}
-              class={
+              className={
                 (isNotCompleteData.nominal === true || isNotCompleteData.minNominal === true)
                   ? "form-control is-invalid"
                   : "input-text-user"
@@ -365,7 +393,7 @@ function AddPayment() {
               placeholder="Masukkan Nominal Tagihan"
               value={inputHandle.nominal}
               required
-            />
+            /> */}
             {
               isNotCompleteData.minNominal &&
               <div className="my-1" style={{ fontSize: "12px", color: "#B9121B" }}>

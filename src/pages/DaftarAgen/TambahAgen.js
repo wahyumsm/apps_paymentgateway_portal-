@@ -10,6 +10,7 @@ import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
 import alertIcon from "../../assets/icon/alert_icon.svg";
+import CurrencyFormat from 'react-currency-format'
 
 function TambahAgen() {
 
@@ -34,6 +35,13 @@ function TambahAgen() {
         setInputHandle({
             ...inputHandle,
             [e.target.name] : e.target.value
+        })
+    }
+
+    function handleChangeNominal(e) {
+        setInputHandle({
+            ...inputHandle,
+            settlementFee: Number(e.value)
         })
     }
 
@@ -120,6 +128,7 @@ function TambahAgen() {
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='nama'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Agen"
@@ -139,6 +148,7 @@ function TambahAgen() {
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='email'
                                 onChange={handleChange}
                                 placeholder="Masukkan Email Agen"
@@ -163,6 +173,7 @@ function TambahAgen() {
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='mobileNumber'
                                 onChange={handleChange}
                                 placeholder="Masukkan No Hp Agen"
@@ -189,6 +200,7 @@ function TambahAgen() {
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='bankName'
                                 placeholder="BCA"
                                 type='text'
@@ -200,7 +212,7 @@ function TambahAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row className='mb-4'>
+                    <Row className='mb-3'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 No Rekening <span style={{ color: "red" }}>*</span>
@@ -208,6 +220,7 @@ function TambahAgen() {
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='akunBank'
                                 onChange={handleChange}
                                 placeholder="Masukkan No Rekening"
@@ -220,7 +233,7 @@ function TambahAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row className='mb-2'>
+                    <Row className='align-items-center mb-2'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
@@ -228,6 +241,7 @@ function TambahAgen() {
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='rekeningOwner'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Pemilik Rekening"
@@ -238,14 +252,27 @@ function TambahAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className='align-items-center'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                 Settlement Fee
                             </span>
                         </Col>
                         <Col xs={10}>
-                            {add ?
+                            <CurrencyFormat
+                                className='input-text-user'
+                                type={'text'}
+                                value={inputHandle.settlementFee}
+                                onValueChange={(e) => handleChangeNominal(e)}
+                                placeholder="Masukkan Jumlah Settlement Fee"
+                                displayType={'input'}
+                                thousandSeparator={'.'}
+                                decimalSeparator={','}
+                                allowNegative={false}
+                                isNumericString={true}
+                                onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                            />
+                            {/* {add ?
                                 <Form.Control
                                     name='settlementFee'
                                     onChange={handleChange}
@@ -267,7 +294,7 @@ function TambahAgen() {
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onFocus={() => setAdd(!add)}
                                 />
-                            }
+                            } */}
                         </Col>
                     </Row>
                     {/* <Row className='mt-4'>

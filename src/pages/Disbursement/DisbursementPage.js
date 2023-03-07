@@ -35,6 +35,7 @@ import daftarBank from '../../assets/files/Daftar Bank Tujuan Disbursement-PT. E
 import templateBulkXLSX from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.xlsx'
 import templateBulkCSV from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
 import arrowDown from "../../assets/img/icons/arrow_down.svg";
+import CurrencyFormat from 'react-currency-format'
 
 registerPlugin(FilePondPluginFileEncode)
 
@@ -1628,18 +1629,6 @@ function DisbursementPage() {
         catatan: ""
     })
 
-    // console.log(inputData.bankName,"bankName");
-    // console.log(inputData.bankCode,"bankCode");
-    // console.log(inputRekening.bankNameRek,"bankNameRek");
-    // console.log(inputRekening.bankNumberRek,"bankNumberRek");
-    // console.log(inputHandle.bankCabang,"bankCabang");
-    // console.log(inputHandle.nominal,"nominal");
-    // console.log(inputHandle.emailPenerima.length,"emailPenerima");
-    // console.log(inputHandle.catatan,"catatan");
-    // console.log(isChecked,"saveAcc");
-    // console.log(dataDisburse,"dataDisburse");
-    // console.log(allFee, "all fee");
-
     const columns = [
         {
           name: "No",
@@ -1981,13 +1970,13 @@ function DisbursementPage() {
         if (e.target.name === "emailPenerima") {
             setErrMsgEmail(false)
         }
-        if (e.target.name === "nominal" && Number(e.target.value) >= 10000) {
-            setAlertSaldo(false)
-            setAlertMinSaldo(false)
-        } else if (e.target.name === "nominal" && Number(e.target.value) < 10000) {
-            setAlertSaldo(false)
-            setAlertMinSaldo(true)
-        }
+        // if (e.target.name === "nominal" && Number(e.target.value) >= 10000) {
+        //     setAlertSaldo(false)
+        //     setAlertMinSaldo(false)
+        // } else if (e.target.name === "nominal" && Number(e.target.value) < 10000) {
+        //     setAlertSaldo(false)
+        //     setAlertMinSaldo(true)
+        // }
         if (e.target.name === "bankCabang") {
             setAlertNotValid(false)
         }
@@ -1996,6 +1985,32 @@ function DisbursementPage() {
             [e.target.name] : (e.target.name === "nominal") ? Number(e.target.value).toString() : e.target.value
         })
     }
+
+    function handleChangeNominal(e) {
+        if (Number(e.value) >= 10000) {
+            setAlertSaldo(false)
+            setAlertMinSaldo(false)  
+        } else {
+            setAlertSaldo(false)
+            setAlertMinSaldo(true)
+        }
+
+        setInputHandle({
+            ...inputHandle,
+            nominal: Number(e.value)
+        })
+    }
+    // console.log(inputData.bankName,"bankName");
+    // console.log(inputData.bankCode,"bankCode");
+    // console.log(inputRekening.bankNameRek,"bankNameRek");
+    // console.log(inputRekening.bankNumberRek,"bankNumberRek");
+    // console.log(inputHandle.bankCabang,"bankCabang");
+    // console.log(inputHandle.nominal,"nominal");
+    // console.log(inputHandle.emailPenerima.length,"emailPenerima");
+    // console.log(inputHandle.catatan,"catatan");
+    // console.log(isChecked,"saveAcc");
+    // console.log(dataDisburse,"dataDisburse");
+    // console.log(allFee, "all fee");
 
     function handleChangeRek(e) {
         // if (e.target.name === 'bankNameRek' && e.target.value.length <= 20) {
@@ -3281,7 +3296,21 @@ function DisbursementPage() {
                                             Nominal Disbursement <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
-                                            {
+                                            <CurrencyFormat
+                                                className='input-text-user'
+                                                type='text'
+                                                value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
+                                                onValueChange={(e) => handleChangeNominal(e)}
+                                                placeholder="Rp 0"
+                                                displayType={'input'}
+                                                thousandSeparator={'.'}
+                                                decimalSeparator={','}
+                                                allowNegative={false}
+                                                isNumericString={true}
+                                                onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                                            />
+
+                                            {/* {
                                                 editNominal ?
                                                 <Form.Control
                                                     placeholder="Rp 0"
@@ -3303,7 +3332,7 @@ function DisbursementPage() {
                                                     onChange={(e) => handleChange(e)}
                                                     onFocus={() => setEditNominal(!editNominal)}
                                                 />
-                                            }
+                                            } */}
                                         </Col>
                                     </Row>
                                     <Row className="mt-2 mb-3">
