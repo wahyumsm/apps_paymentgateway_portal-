@@ -9,6 +9,7 @@ import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { toPng } from 'html-to-image';
 import '../../assets/arial-normal'
+import ReactSelect, { components } from 'react-select';
 
 function InvoiceVA() {
 
@@ -29,6 +30,25 @@ function InvoiceVA() {
     const [inputHandle, setInputHandle] = useState({})
     const [totalAmount, setTotalAmount] = useState(0)
     const [taxTotalAmount, setTaxTotalAmount] = useState(0)
+    const [selectedPartnerInvoiceVA, setSelectedPartnerInvoiceVA] = useState([])
+
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black"
+        })
+    }
 
     function handleChange(e, idx, qty, priceUnit) {
         setInputHandle({
@@ -172,10 +192,24 @@ function InvoiceVA() {
             const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             // console.log(listPartner, 'ini list partner');
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
                 setUserSession(listPartner.data.response_new_token)
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             }
         } catch (error) {
             // console.log(error);
@@ -272,8 +306,22 @@ function InvoiceVA() {
                                 </div>
                             </Col>
                             <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
-                                <span>Nama Partner*</span>
-                                <Form.Select name='namaPartner' className="input-text-ez" style={{ marginLeft: 65 }} value={namaPartner} onChange={(e) => setNamaPartner(e.target.value)}>
+                                <span className='me-2'>Nama Partner*</span>
+                                <div className="dropdown dropPartner">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={dataListPartner}
+                                        // allowSelectAll={true}
+                                        value={selectedPartnerInvoiceVA}
+                                        onChange={(selected) => setSelectedPartnerInvoiceVA([selected])}
+                                        placeholder="Pilih Nama Partner"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
+                                {/* <Form.Select name='namaPartner' className="input-text-ez" style={{ marginLeft: 65 }} value={namaPartner} onChange={(e) => setNamaPartner(e.target.value)}>
                                     <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                     {
                                         dataListPartner.map((item, index) => {
@@ -282,7 +330,7 @@ function InvoiceVA() {
                                             )
                                         })
                                     }
-                                </Form.Select>
+                                </Form.Select> */}
                             </Col>
                         </Row>
                         <Row className='mt-2 mb-4'>
