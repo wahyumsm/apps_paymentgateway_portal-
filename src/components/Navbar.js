@@ -811,7 +811,6 @@ export default (props) => {
                   columns={columns}
                   data={listRiwayat}
                   customStyles={customStyles}
-                  // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                   pagination
                   highlightOnHover
                   // progressPending={pending}

@@ -15,10 +15,8 @@ import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import saveIcon from "../../assets/icon/save_icon.svg";
 import triangleAlertIcon from "../../assets/icon/alert_icon.svg";
 import DataTable from 'react-data-table-component'
-import { agenLists } from '../../data/tables'
 import axios from 'axios'
 import FilterSubAccount from '../../components/FilterSubAccount'
-import { Base64 } from 'js-base64'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import validator from "validator";
@@ -3546,7 +3544,7 @@ function DisbursementPage() {
                                                                         {item.nameRek}
                                                                     </td>
                                                                     <td className='ps-3'>
-                                                                        {convertToRupiah(item.nominal, true, 2)}
+                                                                        {convertToRupiah(item.nominal, true, 0)}
                                                                     </td>
                                                                     <td className='ps-3'>
                                                                         {item.emailPenerima.length === 0 ? "-" : item.emailPenerima}

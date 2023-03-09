@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import SubAccountComponent from '../../components/SubAccountComponent'
 import { useHistory } from 'react-router-dom'
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
@@ -32,7 +32,6 @@ const TransferSubAccount = () => {
     const [toCountdown, setToCountdown] = useState(false)
     const [showTransferBerhasil, setShowTransferBerhasil] = useState(false)
     const [otp, setOtp] = useState('')
-    let otps = useRef('')
     const renderer = ({ minutes, seconds }) => {  return <span>{minutes !== 0 && `${minutes} menit`} {seconds} detik</span>; }
     const [listBank, setListBank] = useState([])
     const [listRekening, setListRekening] = useState([])
@@ -55,7 +54,6 @@ const TransferSubAccount = () => {
         item => (item.moffshorebankacclist_name && item.moffshorebankacclist_name.toLowerCase().includes(filterTextRekening.toLowerCase())) || (item.moffshorebankacclist_number && item.moffshorebankacclist_number.toLowerCase().includes(filterTextRekening.toLowerCase()))
     )
     
-    // console.log(sendOtp, 'sendOtp');
     const [inputHandle, setInputHandle] = useState({
         akunPartner: "",
         nomorAkun: "",
@@ -84,8 +82,6 @@ const TransferSubAccount = () => {
         nominal: "",
         desc: ""
     })
-
-    const [inputNominal, setInputNominal] = useState("")
 
     const subHeaderComponentMemoBank = useMemo(() => {
         return (
@@ -154,7 +150,6 @@ const TransferSubAccount = () => {
     }
 
     function handleChange(e) {
-        // console.log(e.target.value, "e.target.value");
         setInputTransfer({
             ...inputTransfer,
             [e.target.name]: (e.target.name !== "desc") ? Number(e.target.value).toString() : e.target.value,
@@ -530,7 +525,7 @@ const TransferSubAccount = () => {
   
     const CustomLoader = () => (
       <div style={{ padding: '24px' }}>
-        <img className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+        <img className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} alt="loading" />
         <div>Loading...</div>
       </div>
     );
