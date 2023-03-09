@@ -23,7 +23,7 @@ import time from "../../assets/icon/time_icon.svg";
 import Buttons from "../../components/Button";
 import { useRef } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import CurrencyFormat from 'react-currency-format'
+import CurrencyInput from "react-currency-input-field";
 
 function AddPayment() {
   const [showModal, setShowModal] = useState(false);
@@ -244,11 +244,10 @@ function AddPayment() {
   function handleChangeNominal(e) {
     setInputHandle({
       ...inputHandle,
-      nominal: Number(e.value)
+      nominal: e
     })
     setNotCompleteData({
       nominal: false,
-      // refId: false
     });
   }
 
@@ -362,22 +361,18 @@ function AddPayment() {
             <div className="my-1">
               Amount <span style={{ color: "red" }}>*</span>
             </div>
-            <CurrencyFormat
+            <CurrencyInput
               className={
                 (isNotCompleteData.nominal === true || isNotCompleteData.minNominal === true)
                   ? "form-control is-invalid"
                   : "input-text-user"
               }
-              type={'text'}
               value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
               onValueChange={(e) => handleChangeNominal(e)}
               placeholder="Masukkan Nominal Tagihan"
-              displayType={'input'}
-              thousandSeparator={'.'}
+              groupSeparator={"."}
               decimalSeparator={','}
-              allowNegative={false}
-              isNumericString={true}
-              onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+              allowDecimals={false}
             />
             {/* <input
               type="number"

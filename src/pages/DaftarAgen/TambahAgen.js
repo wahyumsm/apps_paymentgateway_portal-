@@ -10,7 +10,7 @@ import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
 import alertIcon from "../../assets/icon/alert_icon.svg";
-import CurrencyFormat from 'react-currency-format'
+import CurrencyInput from 'react-currency-input-field'
 
 function TambahAgen() {
 
@@ -41,7 +41,7 @@ function TambahAgen() {
     function handleChangeNominal(e) {
         setInputHandle({
             ...inputHandle,
-            settlementFee: Number(e.value)
+            settlementFee: e
         })
     }
 
@@ -52,7 +52,7 @@ function TambahAgen() {
         try {         
             const auth = "Bearer " + getToken()
             // const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
-            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${(settlementFee.length === 0) ? 0 : Number(settlementFee)}}`)
+            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${(settlementFee.length === 0 || settlementFee === undefined) ? 0 : Number(settlementFee.replaceAll(',', '.'))}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -259,20 +259,16 @@ function TambahAgen() {
                             </span>
                         </Col>
                         <Col xs={10}>
-                            {/* <CurrencyFormat
+                            <CurrencyInput
                                 className='input-text-user'
-                                type={'text'}
-                                value={inputHandle.settlementFee}
-                                onValueChange={(e) => handleChangeNominal(e)}
                                 placeholder="Masukkan Jumlah Settlement Fee"
-                                displayType={'input'}
-                                thousandSeparator={'.'}
+                                defaultValue={inputHandle.settlementFee === undefined ? 0 : inputHandle.settlementFee}
+                                onValueChange={(e) => handleChangeNominal(e)}
+                                groupSeparator={"."}
                                 decimalSeparator={','}
-                                allowNegative={false}
-                                isNumericString={true}
-                                onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
-                            /> */}
-                            {add ?
+                            />
+
+                            {/* {add ?
                                 <Form.Control
                                     name='settlementFee'
                                     onChange={handleChange}
@@ -294,7 +290,7 @@ function TambahAgen() {
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onFocus={() => setAdd(!add)}
                                 />
-                            }
+                            } */}
                         </Col>
                     </Row>
                     {/* <Row className='mt-4'>
@@ -397,7 +393,7 @@ function TambahAgen() {
                             </tr>
                             <tr>
                                 <td>Settlement Fee</td>
-                                <td style={{ fontWeight: 600 }}>: {detailNewAgen.settlement_fee}</td>
+                                <td style={{ fontWeight: 600 }}>: {convertToRupiah(detailNewAgen.settlement_fee, false, detailNewAgen.settlement_fee === 0 ? 0 : 2)}</td>
                             </tr>
                         </Table>
                         <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>ID Agen & Kode Unik</p>

@@ -524,27 +524,27 @@ function DetailPartner() {
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>Fee <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Minimal Topup Alokasi <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Minimal Transaksi <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Maksimal Transaksi <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>

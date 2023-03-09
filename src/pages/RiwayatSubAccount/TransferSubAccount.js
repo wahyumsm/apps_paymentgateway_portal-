@@ -19,7 +19,7 @@ import { useEffect } from 'react'
 import FilterSubAccount from '../../components/FilterSubAccount'
 import Countdown from 'react-countdown'
 import encryptData from '../../function/encryptData'
-import CurrencyFormat from 'react-currency-format'
+import CurrencyInput from 'react-currency-input-field'
 
 const TransferSubAccount = () => {
     const history = useHistory()
@@ -162,10 +162,9 @@ const TransferSubAccount = () => {
     }
 
     function handleChangeNominal(e) {
-        // setInputNominal(Number(e.value))
         setInputTransfer({
             ...inputTransfer,
-            nominal: Number(e.value)
+            nominal: e
         })
     }
     
@@ -649,18 +648,14 @@ const TransferSubAccount = () => {
                                 Nominal Transfer <span style={{ color: "red" }}>*</span>
                             </Col>
                             <Col xs={10}>
-                                <CurrencyFormat
+                                <CurrencyInput
                                     className='input-text-user'
-                                    type={'text'} 
                                     value={inputTransfer.nominal === undefined ? 0 : inputTransfer.nominal}
                                     onValueChange={(e) => handleChangeNominal(e)}
-                                    placeholder='Rp 0'
-                                    displayType={'input'}
-                                    thousandSeparator={'.'}
+                                    placeholder="Masukkan Nominal Transfer"
+                                    groupSeparator={"."}
                                     decimalSeparator={','}
-                                    allowNegative={false}
-                                    isNumericString={true}
-                                    onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                                    allowDecimals={false}
                                 />
 
                                 {/* {
@@ -707,8 +702,8 @@ const TransferSubAccount = () => {
                     </div>
                     <div className="d-flex justify-content-end align-items-center mt-3" >
                         <button 
-                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && inputTransfer.nominal >= 10000 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
-                            disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || inputTransfer.nominal < 10000 || transferFee.fee_transfer === undefined}
+                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && Number(inputTransfer.nominal) >= 10000 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
+                            disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || Number(inputTransfer.nominal) < 10000 || transferFee.fee_transfer === undefined}
                             style={{ width: '25%' }} 
                             onClick={() => toShowDataTransfer(isCheckedAccBankButton)}
                         >
@@ -999,7 +994,7 @@ const TransferSubAccount = () => {
                     <div className='text-center px-5' style={{ fontSize: 16, fontWeight: 400, color: "#888888", fontFamily: "Source Sans Pro" }}>Batas maksimum adalah 3 permintaan OTP  per-hari. Coba lagi dalam 1x24 jam kedepan untuk melakukan permintaan OTP. </div>
                     <div className='px-5 mx-4'>
                         <button
-                        onClick={() => window.location.reload()}
+                            onClick={() => window.location.reload()}
                             className='d-flex justify-content-center align-items-center text-center mt-3 mb-2'
                             style={{
                                 width: "100%",

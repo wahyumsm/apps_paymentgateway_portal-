@@ -35,7 +35,7 @@ import daftarBank from '../../assets/files/Daftar Bank Tujuan Disbursement-PT. E
 import templateBulkXLSX from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.xlsx'
 import templateBulkCSV from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
 import arrowDown from "../../assets/img/icons/arrow_down.svg";
-import CurrencyFormat from 'react-currency-format'
+import CurrencyInput from 'react-currency-input-field'
 
 registerPlugin(FilePondPluginFileEncode)
 
@@ -1958,10 +1958,11 @@ function DisbursementPage() {
             bankName: row.mbank_name
         })
         setInputHandle({
+            ...inputHandle,
             bankCabang: row.mbankaccountlist_branch_name,
-            nominal: inputHandle.nominal,
-            emailPenerima: inputHandle.emailPenerima,
-            catatan: inputHandle.catatan
+            // nominal: Number(inputHandle.nominal),
+            // emailPenerima: inputHandle.emailPenerima,
+            // catatan: inputHandle.catatan
         })
         setShowDaftarRekening(false)
     };
@@ -1988,7 +1989,7 @@ function DisbursementPage() {
 
     function handleChangeNominal(e) {
         // console.log(e, "e");
-        if (Number(e.value) >= 10000) {
+        if (Number(e) >= 10000) {
             setAlertSaldo(false)
             setAlertMinSaldo(false)  
         } else {
@@ -1998,9 +1999,10 @@ function DisbursementPage() {
 
         setInputHandle({
             ...inputHandle,
-            nominal: Number(e.value)
+            nominal: e
         })
     }
+    
     // console.log(inputData.bankName,"bankName");
     // console.log(inputData.bankCode,"bankCode");
     // console.log(inputRekening.bankNameRek,"bankNameRek");
@@ -2012,7 +2014,7 @@ function DisbursementPage() {
     // console.log(isChecked,"saveAcc");
     // console.log(dataDisburse,"dataDisburse");
     // console.log(allFee, "all fee");
-
+    
     function handleChangeRek(e) {
         // if (e.target.name === 'bankNameRek' && e.target.value.length <= 20) {
         //     setAlertSaldo(false)
@@ -3297,20 +3299,15 @@ function DisbursementPage() {
                                             Nominal Disbursement <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
-                                            <CurrencyFormat
+                                            <CurrencyInput
                                                 className='input-text-user'
-                                                type='tel'
                                                 value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
                                                 onValueChange={(e) => handleChangeNominal(e)}
                                                 placeholder="Rp 0"
-                                                displayType={'input'}
-                                                thousandSeparator={'.'}
+                                                groupSeparator={"."}
                                                 decimalSeparator={','}
-                                                decimalScale={2}
-                                                allowNegative={false}
-                                                isNumericString={true}
-                                                inputMode="numeric"
-                                                onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
+                                                prefix="Rp "
+                                                allowDecimals={false}
                                             />
 
                                             {/* {
@@ -3422,7 +3419,7 @@ function DisbursementPage() {
                                                         inputHandle.bankCabang,
                                                         inputRekening.bankNumberRek,
                                                         inputRekening.bankNameRek,
-                                                        inputHandle.nominal,
+                                                        Number(inputHandle.nominal),
                                                         inputHandle.emailPenerima,
                                                         inputHandle.catatan,
                                                         isChecked
@@ -3485,7 +3482,7 @@ function DisbursementPage() {
                                                                 inputHandle.bankCabang,
                                                                 inputRekening.bankNumberRek,
                                                                 inputRekening.bankNameRek,
-                                                                inputHandle.nominal,
+                                                                Number(inputHandle.nominal),
                                                                 inputHandle.emailPenerima,
                                                                 inputHandle.catatan,
                                                                 isChecked,
@@ -4381,7 +4378,7 @@ function DisbursementPage() {
                                                     inputHandle.bankCabang,
                                                     inputRekening.bankNumberRek,
                                                     inputRekening.bankNameRek,
-                                                    inputHandle.nominal,
+                                                    Number(inputHandle.nominal),
                                                     inputHandle.emailPenerima,
                                                     inputHandle.catatan,
                                                     isChecked
@@ -4393,7 +4390,7 @@ function DisbursementPage() {
                                                     inputHandle.bankCabang,
                                                     inputRekening.bankNumberRek,
                                                     inputRekening.bankNameRek,
-                                                    inputHandle.nominal,
+                                                    Number(inputHandle.nominal),
                                                     inputHandle.emailPenerima,
                                                     inputHandle.catatan,
                                                     isChecked

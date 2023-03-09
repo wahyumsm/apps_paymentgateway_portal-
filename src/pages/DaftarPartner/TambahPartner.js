@@ -27,7 +27,7 @@ import deleted from "../../assets/icon/delete_icon.svg";
 import { useRef } from "react";
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import alertIcon from "../../assets/icon/alert_icon.svg";
-import CurrencyFormat from 'react-currency-format'
+import CurrencyInput from 'react-currency-input-field'
 
 function TambahPartner() {
   const [addPartner, setAddPartner] = useState({});
@@ -108,74 +108,118 @@ function TambahPartner() {
     });
   }
 
-  // function handleChangeFee(e) {
-  //   setAlertFee(false)
-  //   setBiayaHandle({
-  //     ...biayaHandle,
-  //     fee: Number(e.value),
-  //   });
-  //   if (e.value.length === 0) {
-  //     setAlertFee(true)
-  //   }
-  // }
-
   function handleChangeFee(e) {
     setAlertFee(false)
     setBiayaHandle({
       ...biayaHandle,
-      [e.target.name]: Number(e.target.value).toString(),
+      fee: e,
     });
-    if (e.target.value.length === 0) {
+    if (e === undefined || e === "") {
       setAlertFee(true)
     }
   }
+
+  // function handleChangeFee(e) {
+  //   setAlertFee(false)
+  //   setBiayaHandle({
+  //     ...biayaHandle,
+  //     [e.target.name]: Number(e.target.value).toString(),
+  //   });
+  //   if (e.target.value.length === 0) {
+  //     setAlertFee(true)
+  //   }
+  // }
 
   function handleChangeSettlement(e) {
     setAlertSettlement(false)
     setBiayaHandle({
       ...biayaHandle,
-      [e.target.name]: Number(e.target.value).toString(),
+      settlementFee: e,
     });
-    if (e.target.value.length === 0) {
+    if (e === undefined || e === "") {
       setAlertSettlement(true)
     }
   }
 
+  // function handleChangeSettlement(e) {
+  //   setAlertSettlement(false)
+  //   setBiayaHandle({
+  //     ...biayaHandle,
+  //     [e.target.name]: Number(e.target.value).toString(),
+  //   });
+  //   if (e.target.value.length === 0) {
+  //     setAlertSettlement(true)
+  //   }
+  // }
+
   function handleChangeMinTopup(e) {
-    if (e.target.value.length === 0) {
+    setAlertMinTopup(false)
+    setBiayaHandle({
+      ...biayaHandle,
+      minTopup: e,
+    });
+    if (e === undefined || e === "") {
       setAlertMinTopup(true)
-    } else {
-      setAlertMinTopup(false)
-      setBiayaHandle({
-        ...biayaHandle,
-        [e.target.name]: Number(e.target.value).toString()
-      })
     }
   }
+
+  // function handleChangeMinTopup(e) {
+  //   if (e.target.value.length === 0) {
+  //     setAlertMinTopup(true)
+  //   } else {
+  //     setAlertMinTopup(false)
+  //     setBiayaHandle({
+  //       ...biayaHandle,
+  //       [e.target.name]: Number(e.target.value).toString()
+  //     })
+  //   }
+  // }
 
   function handleChangeMinTransaksi(e) {
-    if (e.target.value.length === 0) {
+    setAlertMinTransaksi(false)
+    setBiayaHandle({
+      ...biayaHandle,
+      minTransaksi: e,
+    });
+    if (e === undefined || e === "") {
       setAlertMinTransaksi(true)
-    } else {
-      setAlertMinTransaksi(false)
-      setBiayaHandle({
-        ...biayaHandle,
-        [e.target.name]: Number(e.target.value).toString()
-      })
     }
   }
 
+  // function handleChangeMinTransaksi(e) {
+  //   if (e.target.value.length === 0) {
+  //     setAlertMinTransaksi(true)
+  //   } else {
+  //     setAlertMinTransaksi(false)
+  //     setBiayaHandle({
+  //       ...biayaHandle,
+  //       [e.target.name]: Number(e.target.value).toString()
+  //     })
+  //   }
+  // }
+
   function handleChangeMaksTransaksi(e) {
-    if (e.target.value.length === 0) {
+    setAlertMaksTransaksi(false)
+    setBiayaHandle({
+      ...biayaHandle,
+      maksTransaksi: e,
+    });
+    if (e === undefined || e === "") {
       setAlertMaksTransaksi(true)
-    } else {
-      setAlertMaksTransaksi(false)
-      setBiayaHandle({
-        ...biayaHandle,
-        [e.target.name]: Number(e.target.value).toString()
-      })
     }
   }
+
+  // function handleChangeMaksTransaksi(e) {
+  //   if (e.target.value.length === 0) {
+  //     setAlertMaksTransaksi(true)
+  //   } else {
+  //     setAlertMaksTransaksi(false)
+  //     setBiayaHandle({
+  //       ...biayaHandle,
+  //       [e.target.name]: Number(e.target.value).toString()
+  //     })
+  //   }
+  // }
 
   const handleChoosenPaymentType = useCallback(
     (e, payTypeId, payTypeName, listMethod) => {
@@ -333,11 +377,11 @@ function TambahPartner() {
       })
       if (sameFlag === 0) {
         const source = {
-          fee: Number(fee),
-          fee_settle: Number(settleFee),
-          mpartfitur_min_topup_allocation: Number(minTopup),
-          mpartfitur_min_amount_trx: Number(minTransaksi),
-          mpartfitur_max_amount_trx: Number(maksTransaksi),
+          fee: typeof fee === "string" ? Number(fee.replaceAll(',', '.')) : fee,
+          fee_settle: typeof settleFee === "string" ? Number(settleFee.replaceAll(',', '.')) : settleFee,
+          mpartfitur_min_topup_allocation: typeof minTopup === "string" ? Number(minTopup.replaceAll(',', '.')) : minTopup,
+          mpartfitur_min_amount_trx: typeof minTransaksi === "string" ? Number(minTransaksi.replaceAll(',', '.')) : minTransaksi,
+          mpartfitur_max_amount_trx: typeof maksTransaksi === "string" ? Number(maksTransaksi.replaceAll(',', '.')) : maksTransaksi,
           fitur_id: Number(fiturId),
           fitur_name: fiturName,
           mpaytype_id: typeId,
@@ -425,50 +469,32 @@ function TambahPartner() {
         setMustFill(true)
       } else {
         setMustFill(false)
-        if (biayaHandle.fee === "") {
+        if (fee === undefined || fee.length === 0) {
           setAlertFee(true)
         } else {
           setAlertFee(false)
-          if (biayaHandle.settlementFee === "") {
+          if (fee_settle === undefined || fee_settle.length === 0) {
             setAlertSettlement(true)
           } else {
             setAlertSettlement(false)
-            // const newData = {
-            //   fee: Number(fee),
-            //   fee_settle: Number(fee_settle),
-            //   fitur_id: fiturId,
-            //   fitur_name: fiturName,
-            //   mpaytype_id: typeId,
-            //   mpaytype_name: typeName,
-            //   number: Number(number),
-            // };
-            // setPayment((values) => [...values, newData]);
-            // setRedFlag(false)
-            // setBiayaHandle({
-            //   fee: 0,
-            //   settlementFee: 0,
-            // });
-            // setFitur("", "");
-            // setPaymentMethod([]);
-            // setPaymentNameMethod([]);
-            if (minTopup.length === 0 || minTopup === 0) {
+            if (minTopup === undefined || minTopup.length === 0) {
               setAlertMinTopup(true)
             } else {
               setAlertMinTopup(false)
-              if (minTransaksi.length === 0 || minTransaksi === 0) {
+              if (minTransaksi === undefined || minTransaksi.length === 0) {
                 setAlertMinTransaksi(true)
               } else {
                 setAlertMinTransaksi(false)
-                if (maksTransaksi.length === 0 || maksTransaksi === 0) {
+                if (maksTransaksi === undefined || maksTransaksi.length === 0) {
                   setAlertMaksTransaksi(true)
                 } else {
                   setAlertMaksTransaksi(false)
                   const newData = {
-                    fee: Number(fee),
-                    fee_settle: Number(fee_settle),
-                    mpartfitur_min_topup_allocation: Number(minTopup),
-                    mpartfitur_min_amount_trx: Number(minTransaksi),
-                    mpartfitur_max_amount_trx: Number(maksTransaksi),
+                    fee: Number(fee.replaceAll(',', '.')),
+                    fee_settle: Number(fee_settle.replaceAll(',', '.')),
+                    mpartfitur_min_topup_allocation: Number(minTopup.replaceAll(',', '.')),
+                    mpartfitur_min_amount_trx: Number(minTransaksi.replaceAll(',', '.')),
+                    mpartfitur_max_amount_trx: Number(maksTransaksi.replaceAll(',', '.')),
                     fitur_id: Number(fiturId),
                     fitur_name: fiturName,
                     mpaytype_id: typeId,
@@ -789,7 +815,7 @@ function toDashboard() {
       </div>
       <div className="base-content" style={{ width: "100%", padding: 50 }}>
         <div>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -799,20 +825,18 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="namaPerusahaan"
                 onChange={handleChange}
                 placeholder="Masukkan Nama Perusahaan"
                 type="text"
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
-                  marginLeft: "unset",
+                  marginLeft: "unset"
                 }}
               />
             </Col>
           </Row>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -822,20 +846,18 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="emailPerusahaan"
                 onChange={handleChange}
                 placeholder="Masukkan Email Perusahaan"
                 type="text"
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
-                  marginLeft: "unset",
+                  marginLeft: "unset"
                 }}
               />
             </Col>
           </Row>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -845,21 +867,19 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="phoneNumber"
                 onChange={handleChange}
                 placeholder="Masukkan Nomor Telepon"
                 type="number"
                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
-                  marginLeft: "unset",
+                  marginLeft: "unset"
                 }}
               />
             </Col>
           </Row>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -869,15 +889,13 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="alamat"
                 onChange={handleChange}
                 placeholder="Masukkan Alamat"
                 type="text"
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
-                  marginLeft: "unset",
+                  marginLeft: "unset"
                 }}
               />
             </Col>
@@ -891,7 +909,7 @@ function toDashboard() {
       </div>
       <div className="base-content" style={{ width: "100%", padding: 50 }}>
         <div>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -901,21 +919,19 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="noNpwp"
                 onChange={handleChange}
                 placeholder="Masukkan Nomor NPWP"
                 type="number"
                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
                   marginLeft: "unset",
                 }}
               />
             </Col>
           </Row>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -925,14 +941,12 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="namaNpwp"
                 onChange={handleChange}
                 placeholder="Masukkan Nama NPWP"
                 type="text"
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
                   marginLeft: "unset",
                 }}
               />
@@ -947,7 +961,7 @@ function toDashboard() {
       </div>
       <div className="base-content" style={{ width: "100%", padding: 50 }}>
         <div>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -957,20 +971,18 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="nama"
                 onChange={handleChange}
                 placeholder="Masukkan Nama Direktur"
                 type="text"
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
                   marginLeft: "unset",
                 }}
               />
             </Col>
           </Row>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -980,15 +992,13 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="noHp"
                 onChange={handleChange}
                 placeholder="Masukkan No HP Direktur"
                 type="number"
                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
                   marginLeft: "unset",
                 }}
               />
@@ -1003,7 +1013,7 @@ function toDashboard() {
       </div>
       <div className="base-content" style={{ width: "100%", padding: 50 }}>
         <div>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -1013,21 +1023,19 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="bankName"
                 onChange={handleChange}
                 placeholder="BCA"
                 type="text"
                 disabled
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
                   marginLeft: "unset",
                 }}
               />
             </Col>
           </Row>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -1037,21 +1045,19 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="akunBank"
                 onChange={handleChange}
                 placeholder="Masukkan Nomor Rekening"
                 type="number"
                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
                   marginLeft: "unset",
                 }}
               />
             </Col>
           </Row>
-          <Row className="mb-4">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -1061,14 +1067,12 @@ function toDashboard() {
             </Col>
             <Col xs={10}>
               <Form.Control
+                className="input-text-user"
                 name="rekeningOwner"
                 onChange={handleChange}
                 placeholder="Masukkan Nama Pemilik Rekening"
                 type="text"
                 style={{
-                  width: "100%",
-                  height: 40,
-                  marginTop: "-7px",
                   marginLeft: "unset",
                 }}
               />
@@ -1083,7 +1087,7 @@ function toDashboard() {
       </div>
       <div className="base-content" style={{ width: "100%", padding: 50 }}>
         <div>
-          <Row className="mb-4 align-items-center">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -1092,24 +1096,20 @@ function toDashboard() {
               </span>
             </Col>
             <Col xs={10}>
-              {/* <CurrencyFormat
-                className="fee-partner"
-                type="text"
-                value={biayaHandle.fee === 0 ? "" : ("Rp " + biayaHandle.fee)}
+              <CurrencyInput
+                className="input-text-user"
+                value={biayaHandle.fee}
                 onValueChange={(e) => handleChangeFee(e)}
+                placeholder="Masukkan Fee"
                 style={{
                   borderColor: alertFee ? "red" : ""
                 }}
-                placeholder="Rp 0,00"
-                displayType={'text'}
-                thousandSeparator={'.'}
+                groupSeparator={"."}
                 decimalSeparator={','}
-                allowNegative={false}
-                isNumericString={true}
-                onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
-              /> */}
+                prefix={"Rp "}
+              />
 
-              {editFee ?
+              {/* {editFee ?
                 <Form.Control
                   name="fee"
                   onChange={handleChangeFee}
@@ -1143,7 +1143,7 @@ function toDashboard() {
                   // min={0}
                   onFocus={() => setEditFee(!editFee)}
                 />
-              }
+              } */}
               {alertFee === true ?
                 <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
                   <img src={noteIconRed} className="me-2" alt="icon notice" />
@@ -1152,7 +1152,7 @@ function toDashboard() {
               }
             </Col>
           </Row>
-          <Row className="mb-4 align-items-center">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -1161,7 +1161,20 @@ function toDashboard() {
               </span>
             </Col>
             <Col xs={10}>
-              {editSettle ?
+              <CurrencyInput
+                className="input-text-user"
+                value={biayaHandle.settlementFee}
+                onValueChange={(e) => handleChangeSettlement(e)}
+                placeholder="Masukkan Settlement Fee"
+                style={{
+                  borderColor: alertSettlement ? "red" : ""
+                }}
+                groupSeparator={"."}
+                decimalSeparator={','}
+                prefix={"Rp "}
+              />
+
+              {/* {editSettle ?
                 <Form.Control
                   name="settlementFee"
                   onChange={handleChangeSettlement}
@@ -1195,7 +1208,7 @@ function toDashboard() {
                   // min={0}
                   onFocus={() => setEditSettle(!editSettle)}
                 />
-              }
+              } */}
               {alertSettlement === true ?
                 <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
                   <img src={noteIconRed} className="me-2" alt="icon notice" />
@@ -1204,7 +1217,7 @@ function toDashboard() {
               }
             </Col>
           </Row>
-          <Row className="mb-4 align-items-center">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -1213,7 +1226,20 @@ function toDashboard() {
               </span>
             </Col>
             <Col xs={10}>
-              {editMinTopup ?
+              <CurrencyInput
+                className="input-text-user"
+                value={biayaHandle.minTopup}
+                onValueChange={(e) => handleChangeMinTopup(e)}
+                placeholder="Masukkan Minimal Top Up Alokasi"
+                style={{
+                  borderColor: alertMinTopup ? "red" : ""
+                }}
+                groupSeparator={"."}
+                decimalSeparator={','}
+                prefix={"Rp "}
+              />
+
+              {/* {editMinTopup ?
                 <Form.Control
                   name="minTopup"
                   onChange={handleChangeMinTopup}
@@ -1247,10 +1273,16 @@ function toDashboard() {
                   // min={0}
                   onFocus={() => setEditMinTopup(!editMinTopup)}
                 />
+              } */}
+              {alertMinTopup === true ?
+                <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                    Minimal Topup Alokasi Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                </div> : ""
               }
             </Col>
           </Row>
-          <Row className="mb-4 align-items-center">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -1259,7 +1291,20 @@ function toDashboard() {
               </span>
             </Col>
             <Col xs={10}>
-              {editMinTransaksi ?
+              <CurrencyInput
+                className="input-text-user"
+                value={biayaHandle.minTransaksi}
+                onValueChange={(e) => handleChangeMinTransaksi(e)}
+                placeholder="Masukkan Minimal Transaksi"
+                style={{
+                  borderColor: alertMinTransaksi ? "red" : ""
+                }}
+                groupSeparator={"."}
+                decimalSeparator={','}
+                prefix={"Rp "}
+              />
+
+              {/* {editMinTransaksi ?
                 <Form.Control
                   name="minTransaksi"
                   onChange={handleChangeMinTransaksi}
@@ -1293,10 +1338,16 @@ function toDashboard() {
                   // min={0}
                   onFocus={() => setEditMinTransaksi(!editMinTransaksi)}
                 />
+              } */}
+              {alertMinTransaksi === true ?
+                <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                    Minimal Transaksi Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                </div> : ""
               }
             </Col>
           </Row>
-          <Row className="mb-4 align-items-center">
+          <Row className="mb-3 align-items-center">
             <Col xs={2} style={{ width: "14%", paddingRight: "unset" }}>
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
@@ -1305,7 +1356,20 @@ function toDashboard() {
               </span>
             </Col>
             <Col xs={10}>
-              {editMaxTransaksi ?
+              <CurrencyInput
+                className="input-text-user"
+                value={biayaHandle.maksTransaksi}
+                onValueChange={(e) => handleChangeMaksTransaksi(e)}
+                placeholder="Masukkan Maksimal Transaksi"
+                style={{
+                  borderColor: alertMaksTransaksi ? "red" : ""
+                }}
+                groupSeparator={"."}
+                decimalSeparator={','}
+                prefix={"Rp "}
+              />
+
+              {/* {editMaxTransaksi ?
                 <Form.Control
                   name="maksTransaksi"
                   onChange={handleChangeMaksTransaksi}
@@ -1339,6 +1403,12 @@ function toDashboard() {
                   // min={0}
                   onFocus={() => setEditMaxTransaksi(!editMaxTransaksi)}
                 />
+              } */}
+              {alertMaksTransaksi === true ?
+                <div style={{color: "#B9121B", fontSize: 12}} className="mt-1">
+                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                    Maksimal Transaksi Wajib Diisi. Jika tidak dikenakan biaya silahkan tulis 0
+                </div> : ""
               }
             </Col>
           </Row>

@@ -57,6 +57,7 @@ import encryptData from "../function/encryptData";
 import { useCallback } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import gagalMasukAlokasi from '../assets/icon/gagaltopup_icon.svg'
+import CurrencyInput from "react-currency-input-field";
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -116,11 +117,20 @@ export default (props) => {
     })
   }
 
+  
+  // function handleChangeTopUp(e) {
+  //   setIconGagal(false)
+  //   setInputHandle({
+  //     ...inputHandle,
+  //     [e.target.name] : Number(e.target.value).toString()
+  //   })
+  // }
+
   function handleChangeTopUp(e) {
     setIconGagal(false)
     setInputHandle({
       ...inputHandle,
-      [e.target.name] : Number(e.target.value).toString()
+      amounts : e
     })
   }
 
@@ -202,14 +212,14 @@ export default (props) => {
     }
   }
 
-  async function topUpConfirmation(amounts) {
+  async function topUpConfirmation(amountTopUp) {
     try {
-        if (inputHandle.amounts.length < 5 || inputHandle.amounts === undefined || inputHandle.amounts < 10000) {
+        if (amountTopUp.length < 5 || amountTopUp === undefined || amountTopUp < 10000) {
           setIconGagal(true)
         } else {
           setIconGagal(false)
           const auth = "Bearer " + getToken()   
-          const dataParams = encryptData(`{"tparttopup_amount":${amounts}}`)
+          const dataParams = encryptData(`{"tparttopup_amount":${Number(amountTopUp.replaceAll(',', '.'))}}`)
           const headers = {
             "Content-Type": "application/json",
             'Authorization': auth,
@@ -225,11 +235,13 @@ export default (props) => {
             setCountDown(countDown)
             setShowModalTopUp(false)
             setShowModalKonfirmasiTopUp(true)
+            setInputHandle({amounts: 0})
           } else if (topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length !== 0) {
             setUserSession(topUpBalance.data.response_new_token)
             setTopUpBalance(topUpBalance.data.response_data)
             setShowModalTopUp(false)
             setShowModalKonfirmasiTopUp(true)
+            setInputHandle({amounts: 0})
           }
         }
       } catch (error) {
@@ -457,11 +469,17 @@ export default (props) => {
 
             { //https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage
               (user_role === "102" && (
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage') ||
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report') ||
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report') ||
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup') ||
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo')
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage') ||
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report') ||
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report') ||
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup') ||
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo')
+
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/disbursementpage') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/report' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/report') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/disbursement-report') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/riwayattopup') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/alokasisaldo')
                 )
               ) && 
               // (user_role === "102" && (window.location.href === 'http://reactdev/dev1/#/dev1/Disbursement/disbursementpage' || window.location.href === 'http://reactdev/dev1/#/dev1/Disbursement/report' || window.location.href === 'http://reactdev/dev1/#/dev1/riwayattopup' || window.location.href === 'http://reactdev/dev1/#/dev1/alokasisaldo')) && 
@@ -644,10 +662,20 @@ export default (props) => {
             <Form action="#">
               <Form.Group className="mb-3">
                 <Form.Label>Nominal Top Up Saldo</Form.Label>
-                {nominalTopup ? 
+                <CurrencyInput
+                  className="input-text-user"
+                  value={inputHandle.amounts === undefined ? 0 : inputHandle.amounts}
+                  onValueChange={(e) => handleChangeTopUp(e)}
+                  placeholder="Masukkan Nominal To Up Saldo"
+                  groupSeparator={"."}
+                  decimalSeparator={','}
+                  prefix={"Rp "}
+                  allowDecimals={false}
+                />
+                {/* {nominalTopup ? 
                   <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChangeTopUp} placeholder="Rp" name="amounts" type='number' min={0} value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} /> :
                   <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={inputHandle.amounts === 0 ? "Rp" : convertFormatNumber(inputHandle.amounts)} />
-                }
+                } */}
                 {/* {getBalance.topupAmount_temp !== 0 ?
                   <>
                     <div style={{ color: "#383838", fontSize: 12 }} className="mt-1">
