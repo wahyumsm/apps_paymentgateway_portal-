@@ -19,6 +19,7 @@ import noticeIcon from '../../assets/icon/notice_icon.svg'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker/dist/DateRangePicker'
 import Checklist from '../../assets/icon/checklist_icon.svg'
 import * as XLSX from "xlsx"
+import ReactSelect, { components } from 'react-select';
 
 function RiwayatTopUp() {
 
@@ -42,11 +43,30 @@ function RiwayatTopUp() {
     const [showStatusTopup, setShowStatusTopup] = useState(false)
     const [inputHandle, setInputHandle] = useState({
         idTransaksiRiwayatTopUp: "",
-        namaPartnerRiwayatTopUp: "",
+        // namaPartnerRiwayatTopUp: "",
         statusRiwayatTopUp: [],
         periodeRiwayatTopUp: 0,
     })
     const [isFilterTopUp, setIsFilterTopUp] = useState(false)
+    const [selectedPartnerRiwayatTopUp, setSelectedPartnerRiwayatTopUp] = useState([])
+
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black"
+        })
+    }
 
     const startColorNumber = (money) => {  
         if (money !== 0) {
@@ -93,10 +113,26 @@ function RiwayatTopUp() {
             }
             const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
+                // setDataListPartner(listPartner.data.response_data)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
                 setUserSession(listPartner.data.response_new_token)
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
+                // setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
             // console.log(error);
@@ -190,7 +226,7 @@ function RiwayatTopUp() {
 
     function handlePageChangeTopUp(page) {
         setActivePageRiwayatTopUp(page)
-        listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, inputHandle.namaPartnerRiwayatTopUp, isFilterTopUp)
+        listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, selectedPartnerRiwayatTopUp.length !== 0 ? selectedPartnerRiwayatTopUp[0].value : "", isFilterTopUp)
     }
 
     function resetButtonHandle() {
@@ -199,8 +235,9 @@ function RiwayatTopUp() {
             idTransaksiRiwayatTopUp: "",
             statusRiwayatTopUp: [],
             periodeRiwayatTopUp: 0,
-            namaPartnerRiwayatTopUp: ""
+            // namaPartnerRiwayatTopUp: ""
         })
+        setSelectedPartnerRiwayatTopUp([])
         setStateRiwayatTopup(null)
         setDateRangeRiwayatTopUp([])
         setShowDateRiwayatTopUp("none")
@@ -626,8 +663,22 @@ function RiwayatTopUp() {
                                             <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiRiwayatTopUp} name="idTransaksiRiwayatTopUp" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
                                         </Col>
                                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                            <span>Nama Partner</span>
-                                            <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={inputHandle.namaPartnerRiwayatTopUp} onChange={(e) => handleChange(e)}>
+                                            <span className='me-2'>Nama Partner</span>
+                                            <div className="dropdown dropPartner">
+                                                <ReactSelect
+                                                    // isMulti
+                                                    closeMenuOnSelect={true}
+                                                    hideSelectedOptions={false}
+                                                    options={dataListPartner}
+                                                    // allowSelectAll={true}
+                                                    value={selectedPartnerRiwayatTopUp}
+                                                    onChange={(selected) => setSelectedPartnerRiwayatTopUp([selected])}
+                                                    placeholder="Pilih Nama Partner"
+                                                    components={{ Option }}
+                                                    styles={customStylesSelectedOption}
+                                                />
+                                            </div>
+                                            {/* <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={inputHandle.namaPartnerRiwayatTopUp} onChange={(e) => handleChange(e)}>
                                                 <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                                 {
                                                     dataListPartner.map((item, index) => {
@@ -636,7 +687,7 @@ function RiwayatTopUp() {
                                                         )
                                                     })
                                                 }
-                                            </Form.Select>
+                                            </Form.Select> */}
                                         </Col>
                                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                                             <span>Status</span>
@@ -679,7 +730,7 @@ function RiwayatTopUp() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1, inputHandle.namaPartnerRiwayatTopUp, true)}
+                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1, selectedPartnerRiwayatTopUp.length !== 0 ? selectedPartnerRiwayatTopUp[0].value : "", true)}
                                                 className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
                                             >
@@ -701,7 +752,7 @@ function RiwayatTopUp() {
                             {
                                 listRiwayat.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.namaPartnerRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 0)} className="export-span">Export</Link>
+                                    <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, selectedPartnerRiwayatTopUp.length !== 0 ? selectedPartnerRiwayatTopUp[0].value : "", inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 0)} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-4">

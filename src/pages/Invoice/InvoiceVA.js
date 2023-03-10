@@ -56,10 +56,8 @@ function InvoiceVA() {
             [e.target.name]: e.target.value,
             [`priceTotal${idx+1}`]: e.target.value * priceUnit
         })
-        setTotalAmount(totalAmount + ((e.target.value > qty) ? (e.target.value - qty) * priceUnit : (qty - e.target.value) * priceUnit))
-        setTaxTotalAmount((totalAmount + ((e.target.value > qty) ? (e.target.value - qty) * priceUnit : (qty - e.target.value) * priceUnit)) * 0.11)
-        // console.log(totalAmount + (e.target.value * priceUnit), 'totalAmount');
-        // console.log((totalAmount + (e.target.value * priceUnit)) * 0.11, 'taxTotalAmount');
+        setTotalAmount(totalAmount + ((e.target.value - qty) * priceUnit))
+        setTaxTotalAmount((totalAmount + ((e.target.value - qty) * priceUnit)) * 0.11)
     }
 
     function toPreviewInvoice(objData) {
@@ -78,7 +76,7 @@ function InvoiceVA() {
     }
 
     const SaveAsPDFHandler = () => {
-        generateInvoice(dateRangeSettlement, namaPartner, invoiceDate, isIgnoreZeroAmount, true)
+        generateInvoice(dateRangeSettlement, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, true)
         // const dom = document.getElementById('tableInvoice');
         const dom = document.getElementById('tableInvoiceModal');
         toPng(dom)
@@ -155,7 +153,7 @@ function InvoiceVA() {
     function resetButtonHandle() {
         setStateSettlement(null)
         setDateRangeSettlement([])
-        setNamaPartner("")
+        setSelectedPartnerInvoiceVA([])
         setInvoiceDate("")
         setIsIgnoreZeroAmount(false)
     }
@@ -354,18 +352,18 @@ function InvoiceVA() {
                             </Col>
                         </Row>
                         <button
-                            onClick={() => generateInvoice(dateRangeSettlement, namaPartner, invoiceDate, isIgnoreZeroAmount, false)}
-                            className={(stateSettlement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? "btn-off" : "add-button"}
+                            onClick={() => generateInvoice(dateRangeSettlement, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, false)}
+                            className={(stateSettlement === null || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0) ? "btn-off" : "add-button"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                            disabled={(stateSettlement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? true : false}
+                            disabled={(stateSettlement === null || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0) ? true : false}
                         >
                             Generate
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateSettlement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                            className={(stateSettlement !== null && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                            disabled={(stateSettlement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? false : true}
+                            disabled={(stateSettlement !== null && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0) ? false : true}
                         >
                             Atur Ulang
                         </button>

@@ -11,6 +11,7 @@ import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteInfo from "../../assets/icon/note_icon.svg"
+import ReactSelect, { components } from 'react-select';
 
 function DisbursementReport() {
 
@@ -25,11 +26,11 @@ function DisbursementReport() {
     const [showDateDisbursement, setShowDateDisbursement] = useState("none")
     const [inputHandle, setInputHandle] = useState({
         idTransaksiDisbursement: "",
-        namaPartnerDisbursement: "",
+        // namaPartnerDisbursement: "",
         statusDisbursement: [],
         periodeDisbursement: 0,
         partnerTransId: "",
-        paymentCode: "",
+        // paymentCode: "",
         referenceNo: ""
     })
     const [pendingDisbursement, setPendingDisbursement] = useState(true)
@@ -38,6 +39,27 @@ function DisbursementReport() {
     const [totalPageDisbursement, setTotalPageDisbursement] = useState(0)
     const [isFilterDisbursement, setIsFilterDisbursement] = useState(false)
     const [listDisburseChannel, setListDisburseChannel] = useState([])
+
+    const [selectedPartnerDisbursement, setSelectedPartnerDisbursement] = useState([])
+    const [selectedPaymentDisbursement, setSelectedPaymentDisbursement] = useState([])
+
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black"
+        })
+    }
 
     function handleChange(e) {
         setInputHandle({
@@ -73,7 +95,7 @@ function DisbursementReport() {
     function handlePageChangeDisbursement(page) {
         if (isFilterDisbursement) {
             setActivePageDisbursement(page)
-            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.paymentCode, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)
+            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)
         } else {
             setActivePageDisbursement(page)
             disbursementReport(page, user_role)
@@ -97,10 +119,26 @@ function DisbursementReport() {
             }
             const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
+                // setDataListPartner(listPartner.data.response_data)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
                 setUserSession(listPartner.data.response_new_token)
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
+                // setDataListPartner(listPartner.data.response_data)
             }
         } catch (error) {
             // console.log(error);
@@ -118,10 +156,26 @@ function DisbursementReport() {
             const listDisburse = await axios.post(BaseURL + "/Home/GetPaymentType", {data: ""}, {headers: headers})
             // console.log(listDisburse, "list disburse");
             if (listDisburse.status === 200 && listDisburse.data.response_code === 200 && listDisburse.data.response_new_token.length === 0) {
-                setListDisburseChannel(listDisburse.data.response_data)
+                let newArr = []
+                listDisburse.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.payment_code
+                    obj.label = e.payment_name
+                    newArr.push(obj)
+                })
+                setListDisburseChannel(newArr)
+                // setListDisburseChannel(listDisburse.data.response_data)
             } else if (listDisburse.status === 200 && listDisburse.data.response_code === 200 && listDisburse.data.response_new_token.length !== 0) {
                 setUserSession(listDisburse.data.response_new_token)
-                setListDisburseChannel(listDisburse.data.response_data)
+                let newArr = []
+                listDisburse.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.payment_code
+                    obj.label = e.payment_name
+                    newArr.push(obj)
+                })
+                setListDisburseChannel(newArr)
+                // setListDisburseChannel(listDisburse.data.response_data)
             }
         } catch (error) {
             // console.log(error);
@@ -241,13 +295,15 @@ function DisbursementReport() {
         setInputHandle({
             ...inputHandle,
             idTransaksiDisbursement: "",
-            namaPartnerDisbursement: "",
+            // namaPartnerDisbursement: "",
             statusDisbursement: [],
             periodeDisbursement: 0,
             partnerTransId: "",
-            paymentCode: "",
+            // paymentCode: "",
             referenceNo: ""
         })
+        setSelectedPartnerDisbursement([])
+        setSelectedPaymentDisbursement([])
         setStateDisbursement(null)
         setDateRangeDisbursement([])
         setShowDateDisbursement("none")
@@ -722,8 +778,22 @@ function DisbursementReport() {
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-ez' placeholder='Masukkan ID Transaksi'/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                        <span>Nama Partner</span>
-                                        <Form.Select name='namaPartnerDisbursement' className="input-text-ez" value={inputHandle.namaPartnerDisbursement} onChange={(e) => handleChange(e)} style={{ marginLeft: 35 }}>
+                                        <span className='me-2'>Nama Partner</span>
+                                        <div className="dropdown dropPartner">
+                                            <ReactSelect
+                                                // isMulti
+                                                closeMenuOnSelect={true}
+                                                hideSelectedOptions={false}
+                                                options={dataListPartner}
+                                                // allowSelectAll={true}
+                                                value={selectedPartnerDisbursement}
+                                                onChange={(selected) => setSelectedPartnerDisbursement([selected])}
+                                                placeholder="Pilih Nama Partner"
+                                                components={{ Option }}
+                                                styles={customStylesSelectedOption}
+                                            />
+                                        </div>
+                                        {/* <Form.Select name='namaPartnerDisbursement' className="input-text-ez" value={inputHandle.namaPartnerDisbursement} onChange={(e) => handleChange(e)} style={{ marginLeft: 35 }}>
                                             <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                             {
                                                 dataListPartner.map((item, index) => {
@@ -732,7 +802,7 @@ function DisbursementReport() {
                                                     )
                                                 })
                                             }
-                                        </Form.Select>
+                                        </Form.Select> */}
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span className='me-5'>Status</span>
@@ -765,7 +835,21 @@ function DisbursementReport() {
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: "33%"}}>
                                         <span>Tipe Pembayaran</span>
-                                        <Form.Select name="paymentCode" className='input-text-riwayat ' style={{ display: "inline" }} value={inputHandle.paymentCode} onChange={(e) => handleChange(e)}>
+                                        <div className="dropdown dropPartner">
+                                            <ReactSelect
+                                                // isMulti
+                                                closeMenuOnSelect={true}
+                                                hideSelectedOptions={false}
+                                                options={listDisburseChannel}
+                                                // allowSelectAll={true}
+                                                value={selectedPaymentDisbursement}
+                                                onChange={(selected) => setSelectedPaymentDisbursement([selected])}
+                                                placeholder="Pilih Pembayaran"
+                                                components={{ Option }}
+                                                styles={customStylesSelectedOption}
+                                            />
+                                        </div>
+                                        {/* <Form.Select name="paymentCode" className='input-text-riwayat ' style={{ display: "inline" }} value={inputHandle.paymentCode} onChange={(e) => handleChange(e)}>
                                             <option defaultChecked disabled value="">Pilih Pembayaran</option>
                                             {
                                                 listDisburseChannel.map((item, index) => {
@@ -774,7 +858,7 @@ function DisbursementReport() {
                                                     )
                                                 })
                                             }
-                                        </Form.Select>
+                                        </Form.Select> */}
                                     </Col>
                                 </Row>
                                 <Row className='mt-4' style={{ display: showDateDisbursement }}>
@@ -850,7 +934,7 @@ function DisbursementReport() {
                                 <Row>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, inputHandle.paymentCode, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)}
+                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)}
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
@@ -880,7 +964,7 @@ function DisbursementReport() {
                         {
                             dataDisbursement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, inputHandle.paymentCode, inputHandle.idTransaksiDisbursement, inputHandle.namaPartnerDisbursement, inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo)} className="export-span">Export</Link>
+                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", inputHandle.idTransaksiDisbursement, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo)} className="export-span">Export</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">

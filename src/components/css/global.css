@@ -828,6 +828,14 @@ width: 150px;
     max-width: 400px !important;
 }
 
+/* select option in dashboard */
+
+.dropPartnerAddUser .css-g1d714-ValueContainer {
+    overflow-y: auto !important;
+    max-height: 43px !important;
+    max-width: 1020px !important;
+}
+
 /* Alokasi saldo */
 .alokasi-saldo .form-check-input {
     background-color: #FFFFFF;

@@ -19,6 +19,7 @@ import { chartColors } from "../data/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import Pagination from "react-js-pagination";
+import ReactSelect, { components } from 'react-select';
 
 export default () => {
 
@@ -41,7 +42,7 @@ export default () => {
   const [inputHandle, setInputHandle] = useState({
     idTransaksiDanaMasuk: "",
     idTransaksiSettlement: "",
-    namaAgenDanaMasuk: "",
+    // namaAgenDanaMasuk: "",
     bankDanaMasuk: "",
     partnerTransIdDanaMasuk: "",
     statusDanaMasuk: [],
@@ -65,6 +66,26 @@ export default () => {
   const [isFilterSettlement, setIsFilterSettlement] = useState(false)
   const currentDate = new Date().toISOString().split('T')[0]
   const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
+
+  const [selectedAgenDanaMasuk, setSelectedAgenDanaMasuk] = useState([])
+
+  const Option = (props) => {
+      return (
+          <div>
+              <components.Option {...props}>
+                  <label>{props.label}</label>
+              </components.Option>
+          </div>
+      );
+  };
+
+  const customStylesSelectedOption = {
+      option: (provided, state) => ({
+          ...provided,
+          backgroundColor: "none",
+          color: "black"
+      })
+  }
 
   function handleChange(e) {
     setInputHandle({
@@ -126,7 +147,7 @@ export default () => {
     // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
     if (isFilterDanaMasuk) {
         setActivePageDanaMasuk(page)
-        filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)
+        filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)
     } else {
         setActivePageDanaMasuk(page)
         getListTransferDana(partnerId, page)
@@ -167,7 +188,15 @@ export default () => {
       const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", { data: dataParams }, { headers: headers })
       // console.log(listAgen, 'ini list agen');
       if (listAgen.status === 200 && listAgen.data.response_code == 200 && listAgen.data.response_new_token.length === 0) {
-        setListAgen(listAgen.data.response_data)
+        let newArr = []
+        listAgen.data.response_data.forEach(e => {
+            let obj = {}
+            obj.value = e.agen_id
+            obj.label = e.agen_name
+            newArr.push(obj)
+        })
+        setListAgen(newArr)
+        // setListAgen(listAgen.data.response_data)
       } else if (listAgen.status === 200 && listAgen.data.response_code == 200 && listAgen.data.response_new_token.length !== 0) {
         setUserSession(listAgen.data.response_new_token)
         setListAgen(listAgen.data.response_data)
@@ -444,13 +473,14 @@ export default () => {
       setInputHandle({
           ...inputHandle,
           idTransaksiDanaMasuk: "",
-          namaAgenDanaMasuk: "",
+          // namaAgenDanaMasuk: "",
           statusDanaMasuk: [],
           periodeDanaMasuk: 0,
           partnerTransIdDanaMasuk: "",
           bankDanaMasuk: "",        
           fiturDanaMasuk: 0
       })
+      setSelectedAgenDanaMasuk([])
       setStateDanaMasuk(null)
       setDateRangeDanaMasuk([])
       setShowDateDanaMasuk("none")
@@ -945,7 +975,21 @@ export default () => {
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span className="pe-3">Nama Agen</span>
-                    <Form.Select name="namaAgenDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
+                    <div className="dropdown dropPartner">
+                      <ReactSelect
+                        // isMulti
+                        closeMenuOnSelect={true}
+                        hideSelectedOptions={false}
+                        options={listAgen}
+                        // allowSelectAll={true}
+                        value={selectedAgenDanaMasuk}
+                        onChange={(selected) => setSelectedAgenDanaMasuk([selected])}
+                        placeholder="Pilih Nama Partner"
+                        components={{ Option }}
+                        styles={customStylesSelectedOption}
+                      />
+                    </div>
+                    {/* <Form.Select name="namaAgenDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
                       <option defaultValue value="">Pilih Nama Agen</option>
                       {
                         listAgen.length !== 0 &&
@@ -955,7 +999,7 @@ export default () => {
                           )
                         })
                       }
-                    </Form.Select>
+                    </Form.Select> */}
                     {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaAgenDanaMasuk} name="namaAgenDanaMasuk" type='text'className='input-text-ez' placeholder='Masukkan Nama Agen'/> */}
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
@@ -1023,12 +1067,12 @@ export default () => {
                     <Row>
                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                             <button
-                              onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)}
+                              onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)}
                               // className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
                               // disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
                               // onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0)}
-                              className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                              disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                              className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                              disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                             >
                               Terapkan
                             </button>
@@ -1036,8 +1080,8 @@ export default () => {
                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                             <button
                               onClick={() => resetButtonHandle("Dana Masuk")}
-                              className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                              disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                              className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                              disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                             >
                               Atur Ulang
                             </button>
@@ -1049,7 +1093,7 @@ export default () => {
               // listTransferDana.length !== 0 &&
               listTransferDana.length !== 0 &&
               <div>
-                <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
+                <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
               </div>
             }
             <br/>
