@@ -896,7 +896,7 @@ function RiwayatTransaksi() {
                             </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
-                            <span style={{ marginRight: 40 }}>Periode*</span>
+                            <span style={{ marginRight: 40 }}>Periode<span style={{ color: "red" }}>*</span></span>
                             <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-3" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>

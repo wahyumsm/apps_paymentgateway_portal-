@@ -729,7 +729,7 @@ function SaldoPartner() {
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>ID Transaksi</span>
-                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiRiwayatTopUp} name="idTransaksiRiwayatTopUp" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
+                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiRiwayatTopUp} name="idTransaksiRiwayatTopUp" type='text'className='input-text-report me-2' placeholder='Masukkan ID Transaksi'/>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Nama Partner</span>
@@ -757,7 +757,7 @@ function SaldoPartner() {
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
-                                    <span className='me-4'>Periode*</span>
+                                    <span className='me-4'>Periode <span style={{ color: "red" }}>*</span></span>
                                     <Form.Select name='periodeRiwayatTopUp' className="input-text-ez" value={(inputHandle.periodeRiwayatTopUp !== undefined) ? inputHandle.periodeRiwayatTopUp : 0} onChange={(e) => handleChangePeriodeRiwayatTopUp(e)}>
                                         <option defaultChecked disabled value={0}>Pilih Periode</option>
                                         <option value={2}>Hari Ini</option>
