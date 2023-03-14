@@ -469,17 +469,17 @@ export default (props) => {
 
             { //https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage
               (user_role === "102" && (
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage') ||
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report') ||
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report') ||
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup') ||
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo')
+                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/disbursementpage') ||
+                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Disbursement/report') ||
+                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report') ||
+                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup') ||
+                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo')
 
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/disbursementpage') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/report' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/report') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/disbursement-report') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/riwayattopup') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/alokasisaldo')
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/disbursementpage' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/disbursementpage') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Disbursement/report' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/Disbursement/report') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/disbursement-report') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/riwayattopup') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg#/ezeepg/alokasisaldo')
                 )
               ) && 
               // (user_role === "102" && (window.location.href === 'http://reactdev/dev1/#/dev1/Disbursement/disbursementpage' || window.location.href === 'http://reactdev/dev1/#/dev1/Disbursement/report' || window.location.href === 'http://reactdev/dev1/#/dev1/riwayattopup' || window.location.href === 'http://reactdev/dev1/#/dev1/alokasisaldo')) && 

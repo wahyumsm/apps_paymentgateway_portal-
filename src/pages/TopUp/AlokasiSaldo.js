@@ -969,7 +969,7 @@ function AlokasiSaldo() {
                                                     item.mpaytype_id === 35 && disburseDanamon.minAlokasi === true && showAlertSaldoTidakCukup === false ?
                                                     <div style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Minimal saldo yang dialokasikan {(item.min_topup_allocation === 0) ? `lebih dari ${item.min_topup_allocation}` : convertFormatNumber(item.min_topup_allocation)}</div> :
                                                     // tidak kena minimal alokasi & saldo cukup & kena maksimal transfer
-                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === false && showAlertSaldoTidakCukup === false && inputHandle[`nominal${item.mpaytype_name}`] > 1000000 ?
+                                                    item.mpaytype_id === 35 && disburseDanamon.minAlokasi === false && showAlertSaldoTidakCukup === false && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
                                                     <div style={{ fontSize: 12, color: "#B9121B" }}><img src={noteIconRed} alt='iconRed' className='me-1' />Maksimal saldo yang dapat dialokasikan adalah Rp 50.000.000</div> :
                                                     // tidak kena minimal alokasi & saldo tidak cukup & kena maksimal transfer
                                                     item.mpaytype_id === 35 && disburseDanamon.minAlokasi === false && showAlertSaldoTidakCukup === true && inputHandle[`nominal${item.mpaytype_name}`] > 50000000 ?
