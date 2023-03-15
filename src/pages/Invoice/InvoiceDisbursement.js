@@ -34,10 +34,8 @@ function InvoiceDisbursement() {
             [e.target.name]: e.target.value,
             [`priceTotal${idx+1}`]: e.target.value * priceUnit
         })
-        setTotalAmount(totalAmount + ((e.target.value > qty) ? (e.target.value - qty) * priceUnit : (qty - e.target.value) * priceUnit))
-        setTaxTotalAmount((totalAmount + ((e.target.value > qty) ? (e.target.value - qty) * priceUnit : (qty - e.target.value) * priceUnit)) * 0.11)
-        // console.log(totalAmount + (e.target.value * priceUnit), 'totalAmount');
-        // console.log((totalAmount + (e.target.value * priceUnit)) * 0.11, 'taxTotalAmount');
+        setTotalAmount(totalAmount + ((e.target.value - qty) * priceUnit))
+        setTaxTotalAmount((totalAmount + ((e.target.value - qty) * priceUnit)) * 0.11)
     }
 
     function toPreviewInvoice(objData) {
@@ -407,8 +405,8 @@ function InvoiceDisbursement() {
                                                             {/* { convertFormatNumber(item.qty_trx) } */}
                                                         </td>
                                                         {/* <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td> */}
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, true, 2) : "Rp 0"}</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, true, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
                                             }) :

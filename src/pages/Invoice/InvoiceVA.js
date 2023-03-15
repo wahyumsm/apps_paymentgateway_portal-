@@ -36,10 +36,8 @@ function InvoiceVA() {
             [e.target.name]: e.target.value,
             [`priceTotal${idx+1}`]: e.target.value * priceUnit
         })
-        setTotalAmount(totalAmount + ((e.target.value > qty) ? (e.target.value - qty) * priceUnit : (qty - e.target.value) * priceUnit))
-        setTaxTotalAmount((totalAmount + ((e.target.value > qty) ? (e.target.value - qty) * priceUnit : (qty - e.target.value) * priceUnit)) * 0.11)
-        // console.log(totalAmount + (e.target.value * priceUnit), 'totalAmount');
-        // console.log((totalAmount + (e.target.value * priceUnit)) * 0.11, 'taxTotalAmount');
+        setTotalAmount(totalAmount + ((e.target.value - qty) * priceUnit))
+        setTaxTotalAmount((totalAmount + ((e.target.value - qty) * priceUnit)) * 0.11)
     }
 
     function toPreviewInvoice(objData) {
