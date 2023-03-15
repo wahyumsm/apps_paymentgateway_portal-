@@ -1458,3 +1458,7 @@ header.sc-dIouRR.evxAbm {
     border: 0.0625rem solid #D1D7E0;
     border-radius: 0.5rem;
 }
+
+th {
+    border-style: none;
+}
