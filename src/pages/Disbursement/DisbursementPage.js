@@ -3105,15 +3105,15 @@ function DisbursementPage() {
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
                 <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
-                <Row className='mt-4'>
+                <Row className='mt-1'>
                     {
                         balanceDetail !== 0 &&
                         balanceDetail.map(detail => {
                             return (
                                 <Col lg={3}>
-                                    <div className="card-information base-content-beranda" style={{ padding: ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? '15px 27px' : '15px 27px 1px', height: 'fit-content' }}>
+                                    <div className="card-information base-content-beranda mt-3" style={{ padding: ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? '15px 27px' : '15px 27px 1px', height: 'fit-content' }}>
                                         <Row>
-                                            <Col lg={12} className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat`}<br />digunakan</Col>
+                                            <Col lg={12} className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat digunakan`}</Col>
                                         </Row>
                                         <Row>
                                             <Col lg={8} className="p-amount my-3">
