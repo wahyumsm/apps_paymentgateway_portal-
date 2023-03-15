@@ -64,8 +64,6 @@ function RiwayatTransaksi() {
     const [selectedBankDanaMasuk, setSelectedBankDanaMasuk] = useState([])
     const [selectedPartnerSettlement, setSelectedPartnerSettlement] = useState([])
     const [selectedBankSettlement, setSelectedBankSettlement] = useState([])
-    console.log(selectedPartnerSettlement, 'selectedPartnerSettlement');
-    console.log(selectedBankSettlement, 'selectedBankSettlement');
     
     const Option = (props) => {
         return (

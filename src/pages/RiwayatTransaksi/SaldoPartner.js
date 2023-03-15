@@ -72,8 +72,13 @@ function SaldoPartner() {
     const [namaPartnerAlokasiSaldo, setNamaPartnerAlokasiSaldo] = useState("")
     const [statusRiwayatAlokasiSaldo, setStatusRiwayatAlokasiSaldo] = useState([])
 
+    const [listHistorySaldo, setListHistorySaldo] = useState([])
+    const [pendingHistorySaldo, setPendingHistorySaldo] = useState(true)
+    // const [namaPartnerHistorySaldo, setNamaPartnerHistorySaldo] = useState("")
+
     const [selectedPartnerAdminTopUp, setSelectedPartnerAdminTopUp] = useState([])
     const [selectedPartnerAlokasiSaldo, setSelectedPartnerAlokasiSaldo] = useState([])
+    const [selectedPartnerSaldoPartner, setSelectedPartnerSaldoPartner] = useState([])
 
     const Option = (props) => {
         return (
@@ -341,6 +346,32 @@ function SaldoPartner() {
         }
     }
 
+    async function historySaldoPartner(partnerId) {
+        try {
+            setPendingHistorySaldo(true)
+            const auth = "Bearer " + access_token
+            const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}" }`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const historySaldo = await axios.post(BaseURL + "/Partner/GetListPartnerBalanceChannel", { data: dataParams }, { headers: headers })
+            // console.log(historySaldo, 'historySaldo');
+            if (historySaldo.status === 200 && historySaldo.data.response_code === 200 && historySaldo.data.response_new_token.length === 0) {
+                historySaldo.data.response_data = historySaldo.data.response_data.map((obj, idx) => ({...obj, number: idx + 1}));
+                setListHistorySaldo(historySaldo.data.response_data)
+                setPendingHistorySaldo(false)
+        } else if (historySaldo.status === 200 && historySaldo.data.response_code === 200 && historySaldo.data.response_new_token.length !== 0) {
+                historySaldo.data.response_data = historySaldo.data.response_data.map((obj, idx) => ({...obj, number: idx + 1}));
+                setUserSession(historySaldo.data.response_new_token)
+                setListHistorySaldo(historySaldo.data.response_data)
+                setPendingHistorySaldo(false)
+            }
+        } catch (error) {
+            // console.log(error);
+        }
+    }
+
     async function ExportReportAlokasiSaldoHandler(isFilter, dateId, dateRange, payTypeId, partnerId, statusId, disbursementChannels) {
         if (isFilter) {
             async function dataExportFilter(dateId, dateRange, payTypeId, partnerId, statusId) {
@@ -430,8 +461,10 @@ function SaldoPartner() {
     function handleChangeNamaPartner(e, jenisTransaksi) {
         if (jenisTransaksi === 'adminTopUp') {
             setSelectedPartnerAdminTopUp([e])
-        } else {
+        }else if (jenisTransaksi === 'alokasiPartner') {
             setSelectedPartnerAlokasiSaldo([e])
+        } else {
+            setSelectedPartnerSaldoPartner([e])
         }
     }
     
@@ -590,6 +623,7 @@ function SaldoPartner() {
         listPartner()
         listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false)
         getDisbursementChannel()
+        historySaldoPartner()
     }, [access_token, user_role])
     
     const columnsRiwayatTopUpAdmin = [
@@ -655,6 +689,38 @@ function SaldoPartner() {
                     style: { background: "#F0F0F0", paddingLeft: "unset" }
                 }
             ],
+        },
+    ];
+
+    const columnsRiwayatSaldoPartner = [
+        {
+            name: 'No',
+            selector: row => row.number,
+            width: "57px",
+            style: { justifyContent: "center" }
+        },
+        {
+            name: 'Nama Partner',
+            selector: row => row.mpartner_name,
+            sortable: true,
+            // width: "260px",
+            wrap: true,
+            style: { wordBreak: 'break-word', whiteSpace: 'normal', paddingLeft: 80 }
+        },
+        {
+            name: 'Channel',
+            selector: row => row.mpartballchannel_name,
+            // sortable: true,
+            // width: "260px",
+            wrap: true,
+            style: { wordBreak: 'break-word', whiteSpace: 'normal', justifyContent: "center", paddingRight: 11 }
+        },
+        {
+            name: 'Saldo',
+            selector: row => convertToRupiah(row.mpartballchannel_balance),
+            style: { justifyContent: "flex-end", paddingRight: 100 },
+            // width: "150px",
+            // sortable: true,
         },
     ];
 
@@ -1094,6 +1160,78 @@ function SaldoPartner() {
                                 />
                             </div>
                         }
+                    </div>
+                </div>
+                <div className='mt-5 mb-5'>
+                    <div className='mt-4'>
+                        <span className='mt-4' style={{fontWeight: 600}}>Saldo Partner</span>
+                        <div className='base-content mt-3'>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                            {/* untuk admin */}
+                            <Row className='mt-4'>
+                                <Col xs={6} className="d-flex justify-content-start align-items-center">
+                                    <span className='me-2'>Nama Partner</span>
+                                    <div className="dropdown dropPartner">
+                                        <ReactSelect
+                                            // isMulti
+                                            closeMenuOnSelect={true}
+                                            hideSelectedOptions={false}
+                                            options={dataListPartner}
+                                            // allowSelectAll={true}
+                                            value={selectedPartnerSaldoPartner}
+                                            onChange={(selected) => handleChangeNamaPartner(selected, 'saldoPartner')}
+                                            placeholder="Pilih Nama Partner"
+                                            components={{ Option }}
+                                            styles={customStylesSelectedOption}
+                                        />
+                                    </div>
+                                    {/* <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={namaPartnerHistorySaldo} onChange={(e) => setNamaPartnerHistorySaldo(e.target.value)}>
+                                        <option defaultChecked disabled value="">Pilih Nama Partner</option>
+                                        {
+                                            dataListPartner.map((item, index) => {
+                                                return (
+                                                    <option key={index} value={item.partner_id}>{item.nama_perusahaan}</option>
+                                                )
+                                            })
+                                        }
+                                    </Form.Select> */}
+                                </Col>
+                            </Row>
+                            <Row className='mt-4'>
+                                <Col xs={5}>
+                                    <Row>
+                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => historySaldoPartner(selectedPartnerSaldoPartner.length !== 0 ? selectedPartnerSaldoPartner[0].value : "")}
+                                                className={(selectedPartnerSaldoPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                                disabled={selectedPartnerSaldoPartner.length === 0}
+                                            >
+                                                Terapkan
+                                            </button>
+                                        </Col>
+                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => setSelectedPartnerSaldoPartner([])}
+                                                className={selectedPartnerSaldoPartner.length !== 0 ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={selectedPartnerSaldoPartner.length === 0}
+                                            >
+                                                Atur Ulang
+                                            </button>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <div className="div-table mt-4 pb-5">
+                                <DataTable
+                                    columns={columnsRiwayatSaldoPartner}
+                                    data={listHistorySaldo}
+                                    customStyles={customStyles}
+                                    pagination
+                                    progressPending={pendingHistorySaldo}
+                                    progressComponent={<CustomLoader />}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
