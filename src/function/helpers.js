@@ -138,120 +138,125 @@ export function isNotEnableButton(minutes, hour, date) {
 }
 
 export function terbilangVA(a){
-	var bilangan = ['','Satu','Dua','Tiga','Empat','Lima','Enam','Tujuh','Delapan','Sembilan','Sepuluh','Sebelas'];
+	let bilangan = ['','Satu','Dua','Tiga','Empat','Lima','Enam','Tujuh','Delapan','Sembilan','Sepuluh','Sebelas'];
+
+	let utama
+	let depan
+	let belakang
+	let kalimat
 
 	// 1 - 11
 	if(a < 12){
-		var kalimat = bilangan[a];
+		kalimat = bilangan[a];
 	}
 	// 12 - 19
 	else if(a < 20){
-		var kalimat = bilangan[a-10]+' Belas';
+		kalimat = bilangan[a-10]+' Belas';
 	}
 	// 20 - 99
 	else if(a < 100){
-		var utama = a/10;
-		var depan = parseInt(String(utama).substr(0,1));
-		var belakang = a%10;
-		var kalimat = bilangan[depan]+' Puluh '+bilangan[belakang];
+		utama = a/10;
+		depan = parseInt(String(utama).substr(0,1));
+		belakang = a%10;
+		kalimat = bilangan[depan]+' Puluh '+bilangan[belakang];
 	}
 	// 100 - 199
 	else if(a < 200){
-		var kalimat = 'Seratus '+ terbilangVA(a - 100);
+		kalimat = 'Seratus '+ terbilangVA(a - 100);
 	}
 	// 200 - 999
 	else if(a < 1000){
-		var utama = a/100;
-		var depan = parseInt(String(utama).substr(0,1));
-		var belakang = a%100;
-		var kalimat = bilangan[depan] + ' Ratus '+ terbilangVA(belakang);
+		utama = a/100;
+		depan = parseInt(String(utama).substr(0,1));
+		belakang = a%100;
+		kalimat = bilangan[depan] + ' Ratus '+ terbilangVA(belakang);
 	}
 	// 1,000 - 1,999
 	else if(a < 2000){
-		var kalimat = 'Seribu '+ terbilangVA(a - 1000);
+		kalimat = 'Seribu '+ terbilangVA(a - 1000);
 	}
 	// 2,000 - 9,999
 	else if(a < 10000){
-		var utama = a/1000;
-		var depan = parseInt(String(utama).substr(0,1));
-		var belakang = a%1000;
-		var kalimat = bilangan[depan] + ' Ribu '+ terbilangVA(belakang);
+		utama = a/1000;
+		depan = parseInt(String(utama).substr(0,1));
+		belakang = a%1000;
+		kalimat = bilangan[depan] + ' Ribu '+ terbilangVA(belakang);
 	}
 	// 10,000 - 99,999
 	else if(a < 100000){
-		var utama = a/100;
-		var depan = parseInt(String(utama).substr(0,2));
-		var belakang = a%1000;
-		var kalimat = terbilangVA(depan) + ' Ribu '+ terbilangVA(belakang);
+		utama = a/100;
+		depan = parseInt(String(utama).substr(0,2));
+		belakang = a%1000;
+		kalimat = terbilangVA(depan) + ' Ribu '+ terbilangVA(belakang);
 	}
 	// 100,000 - 999,999
 	else if(a < 1000000){
-		var utama = a/1000;
-		var depan = parseInt(String(utama).substr(0,3));
-		var belakang = a%1000;
-		var kalimat = terbilangVA(depan) + ' Ribu '+ terbilangVA(belakang);
+		utama = a/1000;
+		depan = parseInt(String(utama).substr(0,3));
+		belakang = a%1000;
+		kalimat = terbilangVA(depan) + ' Ribu '+ terbilangVA(belakang);
 	}
 	// 1,000,000 - 	99,999,999
 	else if(a < 100000000){
-		var utama = a/1000000;
-		var depan = parseInt(String(utama).substr(0,4));
-		var belakang = a%1000000;
-		var kalimat = terbilangVA(depan) + ' Juta '+ terbilangVA(belakang);
+		utama = a/1000000;
+		depan = parseInt(String(utama).substr(0,4));
+		belakang = a%1000000;
+		kalimat = terbilangVA(depan) + ' Juta '+ terbilangVA(belakang);
 	}
 	else if(a < 1000000000){
-		var utama = a/1000000;
-		var depan = parseInt(String(utama).substr(0,4));
-		var belakang = a%1000000;
-		var kalimat = terbilangVA(depan) + ' Juta '+ terbilangVA(belakang);
+		utama = a/1000000;
+		depan = parseInt(String(utama).substr(0,4));
+		belakang = a%1000000;
+		kalimat = terbilangVA(depan) + ' Juta '+ terbilangVA(belakang);
 	}
 	else if(a < 10000000000){
-		var utama = a/1000000000;
-		var depan = parseInt(String(utama).substr(0,1));
-		var belakang = a%1000000000;
-		var kalimat = terbilangVA(depan) + ' Milyar '+ terbilangVA(belakang);
+		utama = a/1000000000;
+		depan = parseInt(String(utama).substr(0,1));
+		belakang = a%1000000000;
+		kalimat = terbilangVA(depan) + ' Milyar '+ terbilangVA(belakang);
 	}
 	else if(a < 100000000000){
-		var utama = a/1000000000;
-		var depan = parseInt(String(utama).substr(0,2));
-		var belakang = a%1000000000;
-		var kalimat = terbilangVA(depan) + ' Milyar '+ terbilangVA(belakang);
+		utama = a/1000000000;
+		depan = parseInt(String(utama).substr(0,2));
+		belakang = a%1000000000;
+		kalimat = terbilangVA(depan) + ' Milyar '+ terbilangVA(belakang);
 	}
 	else if(a < 1000000000000){
-		var utama = a/1000000000;
-		var depan = parseInt(String(utama).substr(0,3));
-		var belakang = a%1000000000;
-		var kalimat = terbilangVA(depan) + ' Milyar '+ terbilangVA(belakang);
+		utama = a/1000000000;
+		depan = parseInt(String(utama).substr(0,3));
+		belakang = a%1000000000;
+		kalimat = terbilangVA(depan) + ' Milyar '+ terbilangVA(belakang);
 	}
 	else if(a < 10000000000000){
-		var utama = a/10000000000;
-		var depan = parseInt(String(utama).substr(0,1));
-		var belakang = a%10000000000;
-		var kalimat = terbilangVA(depan) + ' Triliun '+ terbilangVA(belakang);
+		utama = a/10000000000;
+		depan = parseInt(String(utama).substr(0,1));
+		belakang = a%10000000000;
+		kalimat = terbilangVA(depan) + ' Triliun '+ terbilangVA(belakang);
 	}
 	else if(a < 100000000000000){
-		var utama = a/1000000000000;
-		var depan = parseInt(String(utama).substr(0,2));
-		var belakang = a%1000000000000;
-		var kalimat = terbilangVA(depan) + ' Triliun '+ terbilangVA(belakang);
+		utama = a/1000000000000;
+		depan = parseInt(String(utama).substr(0,2));
+		belakang = a%1000000000000;
+		kalimat = terbilangVA(depan) + ' Triliun '+ terbilangVA(belakang);
 	}
 
 	else if(a < 1000000000000000){
-		var utama = a/1000000000000;
-		var depan = parseInt(String(utama).substr(0,3));
-		var belakang = a%1000000000000;
-		var kalimat = terbilangVA(depan) + ' Triliun '+ terbilangVA(belakang);
+		utama = a/1000000000000;
+		depan = parseInt(String(utama).substr(0,3));
+		belakang = a%1000000000000;
+		kalimat = terbilangVA(depan) + ' Triliun '+ terbilangVA(belakang);
 	}
 
 	else if(a < 10000000000000000){
-		var utama = a/1000000000000000;
-		var depan = parseInt(String(utama).substr(0,1));
-		var belakang = a%1000000000000000;
-		var kalimat = terbilangVA(depan) + ' Kuadriliun '+ terbilangVA(belakang);
+		utama = a/1000000000000000;
+		depan = parseInt(String(utama).substr(0,1));
+		belakang = a%1000000000000000;
+		kalimat = terbilangVA(depan) + ' Kuadriliun '+ terbilangVA(belakang);
 	}
 
-	var pisah = kalimat.split(' ');
-	var full = [];
-	for(var i=0;i<pisah.length;i++){
+	let pisah = kalimat.split(' ');
+	let full = [];
+	for(let i=0;i<pisah.length;i++){
 		if(pisah[i] != ""){full.push(pisah[i]);}
 	}
 	return full.join(' ');
