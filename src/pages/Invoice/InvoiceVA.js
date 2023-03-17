@@ -9,6 +9,7 @@ import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { toPng } from 'html-to-image';
 import '../../assets/arial-normal'
+import ReactSelect, { components } from 'react-select';
 
 function InvoiceVA() {
 
@@ -29,6 +30,25 @@ function InvoiceVA() {
     const [inputHandle, setInputHandle] = useState({})
     const [totalAmount, setTotalAmount] = useState(0)
     const [taxTotalAmount, setTaxTotalAmount] = useState(0)
+    const [selectedPartnerInvoiceVA, setSelectedPartnerInvoiceVA] = useState([])
+
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black"
+        })
+    }
 
     function handleChange(e, idx, qty, priceUnit) {
         setInputHandle({
@@ -56,7 +76,7 @@ function InvoiceVA() {
     }
 
     const SaveAsPDFHandler = () => {
-        generateInvoice(dateRangeSettlement, namaPartner, invoiceDate, isIgnoreZeroAmount, true)
+        generateInvoice(dateRangeSettlement, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, true)
         // const dom = document.getElementById('tableInvoice');
         const dom = document.getElementById('tableInvoiceModal');
         toPng(dom)
@@ -133,7 +153,7 @@ function InvoiceVA() {
     function resetButtonHandle() {
         setStateSettlement(null)
         setDateRangeSettlement([])
-        setNamaPartner("")
+        setSelectedPartnerInvoiceVA([])
         setInvoiceDate("")
         setIsIgnoreZeroAmount(false)
     }
@@ -170,10 +190,24 @@ function InvoiceVA() {
             const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             // console.log(listPartner, 'ini list partner');
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
                 setUserSession(listPartner.data.response_new_token)
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             }
         } catch (error) {
             // console.log(error);
@@ -259,7 +293,7 @@ function InvoiceVA() {
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-2 mb-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span style={{ marginRight: 73 }}>Periode*</span>
+                                <span className='me-5'>Periode<span style={{ color: "red" }}>*</span></span>
                                 <div>
                                     <DateRangePicker 
                                         onChange={pickDateSettlement}
@@ -269,9 +303,23 @@ function InvoiceVA() {
                                     />
                                 </div>
                             </Col>
-                            <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
-                                <span>Nama Partner*</span>
-                                <Form.Select name='namaPartner' className="input-text-ez" style={{ marginLeft: 65 }} value={namaPartner} onChange={(e) => setNamaPartner(e.target.value)}>
+                            <Col xs={6} className="d-flex justify-content-start align-items-center">
+                                <span className='me-5'>Nama Partner <span style={{ color: "red" }}>*</span></span>
+                                <div className="dropdown dropTopupPartner">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={dataListPartner}
+                                        // allowSelectAll={true}
+                                        value={selectedPartnerInvoiceVA}
+                                        onChange={(selected) => setSelectedPartnerInvoiceVA([selected])}
+                                        placeholder="Pilih Nama Partner"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
+                                {/* <Form.Select name='namaPartner' className="input-text-ez" style={{ marginLeft: 65 }} value={namaPartner} onChange={(e) => setNamaPartner(e.target.value)}>
                                     <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                     {
                                         dataListPartner.map((item, index) => {
@@ -280,17 +328,17 @@ function InvoiceVA() {
                                             )
                                         })
                                     }
-                                </Form.Select>
+                                </Form.Select> */}
                             </Col>
                         </Row>
                         <Row className='mt-2 mb-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span className='me-3'>Tanggal Invoice*</span>
+                                <span className='me-3'>Tanggal Invoice <span style={{ color: "red" }}>*</span></span>
                                 <div>
                                     <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
                                 </div>
                             </Col>
-                            <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
+                            <Col xs={6} className="d-flex justify-content-start align-items-center">
                                 <span className='me-4'>Include Zero Amount</span>
                                 <div>
                                     <Form.Check
@@ -304,18 +352,18 @@ function InvoiceVA() {
                             </Col>
                         </Row>
                         <button
-                            onClick={() => generateInvoice(dateRangeSettlement, namaPartner, invoiceDate, isIgnoreZeroAmount, false)}
-                            className={(stateSettlement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? "btn-off" : "add-button"}
+                            onClick={() => generateInvoice(dateRangeSettlement, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, false)}
+                            className={(stateSettlement === null || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0) ? "btn-off" : "add-button"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                            disabled={(stateSettlement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? true : false}
+                            disabled={(stateSettlement === null || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0) ? true : false}
                         >
                             Generate
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateSettlement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                            className={(stateSettlement !== null && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                            disabled={(stateSettlement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? false : true}
+                            disabled={(stateSettlement !== null && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0) ? false : true}
                         >
                             Atur Ulang
                         </button>

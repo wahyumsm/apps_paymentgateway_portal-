@@ -21,6 +21,7 @@ import Checklist from '../../assets/icon/checklist_icon.svg'
 import * as XLSX from "xlsx"
 import { faSortUp, faSortDown } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ReactSelect, { components } from 'react-select'
 
 function SaldoPartner() {
 
@@ -73,8 +74,29 @@ function SaldoPartner() {
 
     const [listHistorySaldo, setListHistorySaldo] = useState([])
     const [pendingHistorySaldo, setPendingHistorySaldo] = useState(true)
-    const [namaPartnerHistorySaldo, setNamaPartnerHistorySaldo] = useState("")
+    // const [namaPartnerHistorySaldo, setNamaPartnerHistorySaldo] = useState("")
 
+    const [selectedPartnerAdminTopUp, setSelectedPartnerAdminTopUp] = useState([])
+    const [selectedPartnerAlokasiSaldo, setSelectedPartnerAlokasiSaldo] = useState([])
+    const [selectedPartnerSaldoPartner, setSelectedPartnerSaldoPartner] = useState([])
+
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black"
+        })
+    }
 
     const startColorNumber = (money) => {  
         if (money !== 0) {
@@ -121,10 +143,24 @@ function SaldoPartner() {
             }
             const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
                 setUserSession(listPartner.data.response_new_token)
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             }
         } catch (error) {
             // console.log(error);
@@ -421,6 +457,16 @@ function SaldoPartner() {
             dataExportAlokasiSaldo(disbursementChannels)
         }
     }
+
+    function handleChangeNamaPartner(e, jenisTransaksi) {
+        if (jenisTransaksi === 'adminTopUp') {
+            setSelectedPartnerAdminTopUp([e])
+        }else if (jenisTransaksi === 'alokasiPartner') {
+            setSelectedPartnerAlokasiSaldo([e])
+        } else {
+            setSelectedPartnerSaldoPartner([e])
+        }
+    }
     
     function handleChange(e) {
         setInputHandle({
@@ -473,7 +519,7 @@ function SaldoPartner() {
 
     function handlePageChangeTopUp(page) {
         setActivePageRiwayatTopUp(page)
-        listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, inputHandle.namaPartnerRiwayatTopUp, isFilterTopUp)
+        listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", isFilterTopUp)
     }
     
     function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse, partnerId, statusId) {
@@ -497,6 +543,7 @@ function SaldoPartner() {
             periodeRiwayatTopUp: 0,
             namaPartnerRiwayatTopUp: ""
         })
+        setSelectedPartnerAdminTopUp([])
         setStateRiwayatTopup(null)
         setDateRangeRiwayatTopUp([])
         setShowDateRiwayatTopUp("none")
@@ -504,6 +551,7 @@ function SaldoPartner() {
     
     function resetButtonHandleAlokasiSaldo() {
         setNamaPartnerAlokasiSaldo("")
+        setSelectedPartnerAlokasiSaldo([])
         setStatusRiwayatAlokasiSaldo([])
         setPeriodeRiwayatAlokasiSaldo(0)
         setDateRangeRiwayatAlokasiSaldo([])
@@ -796,7 +844,21 @@ function SaldoPartner() {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Nama Partner</span>
-                                    <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={inputHandle.namaPartnerRiwayatTopUp} onChange={(e) => handleChange(e)}>
+                                    <div className="dropdown dropSaldoPartner ms-3">
+                                        <ReactSelect
+                                            // isMulti
+                                            closeMenuOnSelect={true}
+                                            hideSelectedOptions={false}
+                                            options={dataListPartner}
+                                            // allowSelectAll={true}
+                                            value={selectedPartnerAdminTopUp}
+                                            onChange={(selected) => handleChangeNamaPartner(selected, 'adminTopUp')}
+                                            placeholder="Pilih Nama Partner"
+                                            components={{ Option }}
+                                            styles={customStylesSelectedOption}
+                                        />
+                                    </div>
+                                    {/* <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={inputHandle.namaPartnerRiwayatTopUp} onChange={(e) => handleChange(e)}>
                                         <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                         {
                                             dataListPartner.map((item, index) => {
@@ -805,7 +867,7 @@ function SaldoPartner() {
                                                 )
                                             })
                                         }
-                                    </Form.Select>
+                                    </Form.Select> */}
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Status</span>
@@ -831,8 +893,8 @@ function SaldoPartner() {
                                         <option value={7}>Pilih Range Tanggal</option>
                                     </Form.Select>
                                 </Col>
-                                <Col xs={1} className="d-flex justify-content-center align-items-center">
-                                    <div style={{ display: showDateRiwayatTopUp }}>
+                                <Col xs={4} className="d-flex justify-content-end align-items-center">
+                                    <div style={{ display: showDateRiwayatTopUp }} className='pe-3'>
                                         <DateRangePicker 
                                             onChange={pickDateRiwayatTopUp}
                                             value={stateRiwayatTopup}
@@ -846,7 +908,7 @@ function SaldoPartner() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1, inputHandle.namaPartnerRiwayatTopUp, true)}
+                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", true)}
                                                 className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
                                             >
@@ -868,7 +930,7 @@ function SaldoPartner() {
                             {
                                 listRiwayatTopUpPartner.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.namaPartnerRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 0)} className="export-span">Export</Link>
+                                    <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 0)} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-5">
@@ -904,8 +966,22 @@ function SaldoPartner() {
                         <span style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>Nama Partner</span>
-                                <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez ms-4" value={namaPartnerAlokasiSaldo} onChange={(e) => setNamaPartnerAlokasiSaldo(e.target.value)}>
+                                <span className='pe-4'>Nama Partner</span>
+                                <div className="dropdown dropSaldoPartner">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={dataListPartner}
+                                        // allowSelectAll={true}
+                                        value={selectedPartnerAlokasiSaldo}
+                                        onChange={(selected) => handleChangeNamaPartner(selected, 'alokasiPartner')}
+                                        placeholder="Pilih Nama Partner"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
+                                {/* <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez ms-4" value={namaPartnerAlokasiSaldo} onChange={(e) => setNamaPartnerAlokasiSaldo(e.target.value)}>
                                     <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                     {
                                         dataListPartner.map((item, index) => {
@@ -914,7 +990,7 @@ function SaldoPartner() {
                                             )
                                         })
                                     }
-                                </Form.Select>
+                                </Form.Select> */}
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "32%" }}>
                                 <span>Tujuan Alokasi</span>
@@ -939,7 +1015,7 @@ function SaldoPartner() {
                         </Row>
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
-                                <span style={{ marginRight: 42 }}>Periode*</span>
+                                <span style={{ marginRight: 42 }}>Periode <span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeRiwayatAlokasiSaldo' className="input-text-ez" value={(periodeRiwayatAlokasiSaldo !== 0) ? periodeRiwayatAlokasiSaldo : 0} onChange={(e) => handleChangePeriodeRiwayatAlokasiSaldo(e)}>
                                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                                     <option value={2}>Hari Ini</option>
@@ -965,7 +1041,7 @@ function SaldoPartner() {
                                 <Row>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterHistoryAlokasiSaldo(1, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, (isDesc.orderField === "tpartballchannel_crtdt") ? isDesc.orderIdTanggal : isDesc.orderIdStatus, isDesc.orderField, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)}
+                                            onClick={() => filterHistoryAlokasiSaldo(1, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, (isDesc.orderField === "tpartballchannel_crtdt") ? isDesc.orderIdTanggal : isDesc.orderIdStatus, isDesc.orderField, selectedPartnerAlokasiSaldo.length !== 0 ? selectedPartnerAlokasiSaldo[0].value : "", statusRiwayatAlokasiSaldo)}
                                             className={(periodeRiwayatAlokasiSaldo !== 0 || (periodeRiwayatAlokasiSaldo !== 0 && dateRangeRiwayatAlokasiSaldo.length !== 0)) ? "btn-ez-on" : "btn-ez"}
                                             disabled={(periodeRiwayatAlokasiSaldo === 0 || (periodeRiwayatAlokasiSaldo === 0 && dateRangeRiwayatAlokasiSaldo.length === 0))}
                                         >
@@ -987,7 +1063,7 @@ function SaldoPartner() {
                         {
                             listRiwayatAlokasiSaldo.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link to={"#"} onClick={() => ExportReportAlokasiSaldoHandler(isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo, disbursementChannel)} className="export-span">Export</Link>
+                                <Link to={"#"} onClick={() => ExportReportAlokasiSaldoHandler(isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, selectedPartnerAlokasiSaldo.length !== 0 ? selectedPartnerAlokasiSaldo[0].value : "", statusRiwayatAlokasiSaldo, disbursementChannel)} className="export-span">Export</Link>
                             </div>
                         }
                         <div className="div-table" style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center"}}>
@@ -999,7 +1075,7 @@ function SaldoPartner() {
                                         <tr>
                                             <th style={{ width: 55, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>No</th>
                                             <th style={{ width: 155, background: "#F3F4F5" }}>Nama Partner</th>
-                                            <th onClick={() => sortingHandle("tpartballchannel_crtdt", !isDesc.orderIdTanggal, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)} style={{ width: 155, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
+                                            <th onClick={() => sortingHandle("tpartballchannel_crtdt", !isDesc.orderIdTanggal, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel, selectedPartnerAlokasiSaldo.length !== 0 ? selectedPartnerAlokasiSaldo[0].value : "", statusRiwayatAlokasiSaldo)} style={{ width: 155, background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
                                                 Tanggal
                                                 {
                                                     isDesc.orderIdTanggal ?
@@ -1011,7 +1087,7 @@ function SaldoPartner() {
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Total Alokasi</th>
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Saldo Awal Tersedia</th>
                                             <th style={{ width: 155, background: "#F3F4F5", textAlign: "center" }}>Sisa Saldo Tersedia</th>
-                                            <th onClick={() => sortingHandle("mstatus_name", !isDesc.orderIdStatus, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)} style={{ width: 155, textAlign: "center", background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
+                                            <th onClick={() => sortingHandle("mstatus_name", !isDesc.orderIdStatus, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, disbursementChannel, selectedPartnerAlokasiSaldo.length !== 0 ? selectedPartnerAlokasiSaldo[0].value : "", statusRiwayatAlokasiSaldo)} style={{ width: 155, textAlign: "center", background: "#F3F4F5", cursor: "pointer", textAlign: "center" }}>
                                                 Status
                                                 {
                                                     isDesc.orderIdStatus ?
@@ -1080,7 +1156,7 @@ function SaldoPartner() {
                                     pageRangeDisplayed={5}
                                     itemClass="page-item"
                                     linkClass="page-link"
-                                    onChange={(e) => handlePageChangeAlokasiSaldo(e, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, isDesc, disbursementChannel, namaPartnerAlokasiSaldo, statusRiwayatAlokasiSaldo)}
+                                    onChange={(e) => handlePageChangeAlokasiSaldo(e, isFilterHistory, periodeRiwayatAlokasiSaldo, dateRangeRiwayatAlokasiSaldo, tujuanAlokasiSaldo, isDesc, disbursementChannel, selectedPartnerAlokasiSaldo.length !== 0 ? selectedPartnerAlokasiSaldo[0].value : "", statusRiwayatAlokasiSaldo)}
                                 />
                             </div>
                         }
@@ -1093,9 +1169,23 @@ function SaldoPartner() {
                             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                             {/* untuk admin */}
                             <Row className='mt-4'>
-                                <Col xs={6} className="d-flex justify-content-start align-items-center">
-                                    <span>Nama Partner</span>
-                                    <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={namaPartnerHistorySaldo} onChange={(e) => setNamaPartnerHistorySaldo(e.target.value)}>
+                                <Col xs={12} className="d-flex justify-content-start align-items-center">
+                                    <span className='me-4'>Nama Partner</span>
+                                    <div className="dropdown dropSaldoPartner">
+                                        <ReactSelect
+                                            // isMulti
+                                            closeMenuOnSelect={true}
+                                            hideSelectedOptions={false}
+                                            options={dataListPartner}
+                                            // allowSelectAll={true}
+                                            value={selectedPartnerSaldoPartner}
+                                            onChange={(selected) => handleChangeNamaPartner(selected, 'saldoPartner')}
+                                            placeholder="Pilih Nama Partner"
+                                            components={{ Option }}
+                                            styles={customStylesSelectedOption}
+                                        />
+                                    </div>
+                                    {/* <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez me-4" value={namaPartnerHistorySaldo} onChange={(e) => setNamaPartnerHistorySaldo(e.target.value)}>
                                         <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                         {
                                             dataListPartner.map((item, index) => {
@@ -1104,7 +1194,7 @@ function SaldoPartner() {
                                                 )
                                             })
                                         }
-                                    </Form.Select>
+                                    </Form.Select> */}
                                 </Col>
                             </Row>
                             <Row className='mt-4'>
@@ -1112,18 +1202,18 @@ function SaldoPartner() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => historySaldoPartner(namaPartnerHistorySaldo)}
-                                                className={(namaPartnerHistorySaldo.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                                disabled={namaPartnerHistorySaldo.length === 0}
+                                                onClick={() => historySaldoPartner(selectedPartnerSaldoPartner.length !== 0 ? selectedPartnerSaldoPartner[0].value : "")}
+                                                className={(selectedPartnerSaldoPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                                disabled={selectedPartnerSaldoPartner.length === 0}
                                             >
                                                 Terapkan
                                             </button>
                                         </Col>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => setNamaPartnerHistorySaldo("")}
-                                                className={namaPartnerHistorySaldo.length !== 0 ? "btn-reset" : "btn-ez-reset"}
-                                                disabled={namaPartnerHistorySaldo.length === 0}
+                                                onClick={() => setSelectedPartnerSaldoPartner([])}
+                                                className={selectedPartnerSaldoPartner.length !== 0 ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={selectedPartnerSaldoPartner.length === 0}
                                             >
                                                 Atur Ulang
                                             </button>

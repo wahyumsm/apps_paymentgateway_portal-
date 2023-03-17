@@ -15,6 +15,7 @@ import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import ReactSelect, { components } from 'react-select';
 
 function AddUser() {
   const history = useHistory();
@@ -31,7 +32,7 @@ function AddUser() {
     agenId: "",
   });
   const [listRole, setListRole] = useState([]);
-  const [listPartner, setDataListPartner] = useState([]);
+  const [dataListPartner, setDataListPartner] = useState([]);
   const [addUser, setAddUser] = useState([]);
   const [dataListAgenFromPartner, setDataListAgenFromPartner] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
@@ -39,6 +40,28 @@ function AddUser() {
   const [isChecked, setIsChecked] = useState(false);
   const passwordIconColor = showPassword ? "#262B40" : "";
   const [errorMsg, setErrorMsg] = useState("")
+  const [selectedPartnerAddUser, setSelectedPartnerAddUser] = useState([])
+  const [selectedAgenAddUser, setSelectedAgenAddUser] = useState([])
+
+  const Option = (props) => {
+      return (
+          <div>
+              <components.Option {...props}>
+                  <label>{props.label}</label>
+              </components.Option>
+          </div>
+      );
+  };
+
+  const customStylesSelectedOption = {
+      option: (provided, state) => ({
+          ...provided,
+          backgroundColor: "none",
+          color: "black",
+          width: 1020
+      })
+  }
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -93,14 +116,28 @@ function AddUser() {
         listPartner.data.response_code === 200 &&
         listPartner.data.response_new_token.length === 0
       ) {
-        setDataListPartner(listPartner.data.response_data);
+        let newArr = []
+        listPartner.data.response_data.forEach(e => {
+            let obj = {}
+            obj.value = e.partner_id
+            obj.label = e.nama_perusahaan
+            newArr.push(obj)
+        })
+        setDataListPartner(newArr)
       } else if (
         listPartner.status === 200 &&
         listPartner.data.response_code === 200 &&
         listPartner.data.response_new_token.length !== 0
       ) {
         setUserSession(listPartner.data.response_new_token);
-        setDataListPartner(listPartner.data.response_data);
+        let newArr = []
+        listPartner.data.response_data.forEach(e => {
+            let obj = {}
+            obj.value = e.partner_id
+            obj.label = e.nama_perusahaan
+            newArr.push(obj)
+        })
+        setDataListPartner(newArr)
       }
     } catch (e) {
       // console.log(e);
@@ -125,14 +162,28 @@ function AddUser() {
         listAgenFromPartner.data.response_code === 200 &&
         listAgenFromPartner.data.response_new_token.length === 0
       ) {
-        setDataListAgenFromPartner(listAgenFromPartner.data.response_data);
+        let newArr = []
+        listAgenFromPartner.data.response_data.forEach(e => {
+            let obj = {}
+            obj.value = e.agen_id
+            obj.label = e.agen_name
+            newArr.push(obj)
+        })
+        setDataListAgenFromPartner(newArr);
       } else if (
         listAgenFromPartner.status === 200 &&
         listAgenFromPartner.data.response_code === 200 &&
         listAgenFromPartner.data.response_new_token.length !== 0
       ) {
         setUserSession(listAgenFromPartner.data.response_new_token);
-        setDataListAgenFromPartner(listAgenFromPartner.data.response_data);
+        let newArr = []
+        listAgenFromPartner.data.response_data.forEach(e => {
+            let obj = {}
+            obj.value = e.agen_id
+            obj.label = e.agen_name
+            newArr.push(obj)
+        })
+        setDataListAgenFromPartner(newArr);
       }
     } catch (e) {
       // console.log(e);
@@ -194,10 +245,10 @@ function AddUser() {
       getListPartner();
     }
     getListRole();
-    if (inputHandle.role === "104" && inputHandle.partnerId !== "") {
-      getListAgen(inputHandle.partnerId);
+    if (inputHandle.role === "104" && selectedPartnerAddUser.length !== 0) {
+      getListAgen(selectedPartnerAddUser[0].value);
     }
-  }, [access_token, inputHandle.role, inputHandle.partnerId, user_role]);
+  }, [access_token, inputHandle.role, selectedPartnerAddUser, user_role]);
 
   return (
     <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
@@ -289,7 +340,21 @@ function AddUser() {
               }}
             >
               <Form.Label style={{ fontFamily: "Nunito" }}>Partner</Form.Label>
-              <Form.Select
+              <div className="dropdown dropPartnerAddUser">
+                <ReactSelect
+                  // isMulti
+                  closeMenuOnSelect={true}
+                  hideSelectedOptions={false}
+                  options={dataListPartner}
+                  // allowSelectAll={true}
+                  value={selectedPartnerAddUser}
+                  onChange={(selected) => setSelectedPartnerAddUser([selected])}
+                  placeholder="--- Choose Partner ---"
+                  components={{ Option }}
+                  styles={customStylesSelectedOption}
+                />
+              </div>
+              {/* <Form.Select
                 name="partnerId"
                 onChange={handleChange}
                 value={inputHandle.partnerId}
@@ -302,19 +367,33 @@ function AddUser() {
                     </option>
                   );
                 })}
-              </Form.Select>
+              </Form.Select> */}
             </Form.Group>
             <Form.Group
               className="mb-3"
               style={{
                 display:
-                  inputHandle.role === "104" && inputHandle.partnerId !== ""
+                  inputHandle.role === "104" && selectedPartnerAddUser.length !== 0
                     ? ""
                     : "none",
               }}
             >
               <Form.Label style={{ fontFamily: "Nunito" }}>Agen</Form.Label>
-              <Form.Select
+              <div className="dropdown dropPartnerAddUser">
+                <ReactSelect
+                  // isMulti
+                  closeMenuOnSelect={true}
+                  hideSelectedOptions={false}
+                  options={dataListAgenFromPartner}
+                  // allowSelectAll={true}
+                  value={selectedAgenAddUser}
+                  onChange={(selected) => setSelectedAgenAddUser([selected])}
+                  placeholder="--- Choose Agen ---"
+                  components={{ Option }}
+                  styles={customStylesSelectedOption}
+                />
+              </div>
+              {/* <Form.Select
                 name="agenId"
                 onChange={handleChange}
                 value={inputHandle.agenId}
@@ -327,7 +406,7 @@ function AddUser() {
                     </option>
                   );
                 })}
-              </Form.Select>
+              </Form.Select> */}
             </Form.Group>
             <Form.Check
               label="Active Status"
@@ -354,8 +433,8 @@ function AddUser() {
               inputHandle.password,
               inputHandle.role,
               isChecked,
-              inputHandle.partnerId,
-              inputHandle.agenId
+              selectedPartnerAddUser.length !== 0 ? selectedPartnerAddUser[0].value : "",
+              selectedAgenAddUser.length !== 0 ? selectedAgenAddUser[0].value : ""
             )
           }
           className={

@@ -11,6 +11,7 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import ReactSelect, { components } from 'react-select';
 
 function RiwayatTransaksi() {
 
@@ -58,6 +59,35 @@ function RiwayatTransaksi() {
     const [isFilterDanaMasuk, setIsFilterDanaMasuk] = useState(false)
     const [isFilterSettlement, setIsFilterSettlement] = useState(false)
 
+    const [selectedPartnerDanaMasuk, setSelectedPartnerDanaMasuk] = useState([])
+    const [selectedAgenDanaMasuk, setSelectedAgenDanaMasuk] = useState([])
+    const [selectedBankDanaMasuk, setSelectedBankDanaMasuk] = useState([])
+    const [selectedPartnerSettlement, setSelectedPartnerSettlement] = useState([])
+    const [selectedBankSettlement, setSelectedBankSettlement] = useState([])
+    
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    {/* <input
+                        type='select'
+                        checked={props.isSelected}
+                        onChange={() => null}
+                    />{" "} */}
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black"
+        })
+    }
+
     async function getListAgenFromPartner(pertnerId) {
         try {
             const auth = 'Bearer ' + getToken();
@@ -68,7 +98,14 @@ function RiwayatTransaksi() {
             }
             const listAgenFromPartner = await axios.post(BaseURL + "/Partner/GetListAgen", {data: dataParams}, {headers: headers})
             if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length === 0) {
-                setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
+                let newArr = []
+                listAgenFromPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.agen_id
+                    obj.label = e.agen_name
+                    newArr.push(obj)
+                })
+                setDataListAgenFromPartner(newArr)
             } else if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length !== 0) {
                 setUserSession(listAgenFromPartner.data.response_new_token)
                 setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
@@ -86,12 +123,13 @@ function RiwayatTransaksi() {
         })
     }
 
-    function handleChangeNamaPartner(e) {
-        getListAgenFromPartner(e.target.value)
-        setInputHandle({
-            ...inputHandle,
-            [e.target.name] : e.target.value
-        })
+    function handleChangeNamaPartner(e, jenisTransaksi) {
+        if (jenisTransaksi === 'danaMasuk') {
+            getListAgenFromPartner(e.value)
+            setSelectedPartnerDanaMasuk([e])
+        } else {
+            setSelectedPartnerSettlement([e])
+        }
     }
 
     function handleChangePeriodeTransfer(e) {
@@ -130,7 +168,7 @@ function RiwayatTransaksi() {
     function handlePageChangeDanaMasuk(page) {
         if (isFilterDanaMasuk) {
             setActivePageDanaMasuk(page)
-            filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)
+            filterRiwayatDanaMasuk(page, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, selectedPartnerDanaMasuk.length !== 0 ? selectedPartnerDanaMasuk[0].value : "", selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)
         } else {
             setActivePageDanaMasuk(page)
             riwayatDanaMasuk(page)
@@ -140,7 +178,7 @@ function RiwayatTransaksi() {
     function handlePageChangeSettlement(page) {
         if (isFilterSettlement) {
             setActivePageSettlement(page)
-            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, inputHandle.bankSettlement)
+            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "")
         } else {
             setActivePageSettlement(page)
             riwayatSettlement(page)
@@ -156,10 +194,24 @@ function RiwayatTransaksi() {
             }
             const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
                 setUserSession(listPartner.data.response_new_token)
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             }
         } catch (error) {
             // console.log(error);
@@ -245,9 +297,24 @@ function RiwayatTransaksi() {
             }
             const listBankName = await axios.post(BaseURL + "/Home/BankGetList", {data: dataParams}, { headers: headers });
             if (listBankName.status === 200 && listBankName.data.response_code === 200 && listBankName.data.response_new_token.length === 0) {
-                setListBank(listBankName.data.response_data)
+                let newArr = []
+                listBankName.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.mbank_code
+                    obj.label = e.mbank_name
+                    newArr.push(obj)
+                })
+                setListBank(newArr)
             } else if (listBankName.status === 200 && listBankName.data.response_code === 200 && listBankName.data.response_new_token.length !== 0) {
-                setListBank(listBankName.data.response_data)
+                setUserSession(listBankName.data.response_new_token)
+                let newArr = []
+                listBankName.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.mbank_code
+                    obj.label = e.mbank_name
+                    newArr.push(obj)
+                })
+                setListBank(newArr)
             }
         } catch (error) {
             // console.log(error)
@@ -277,7 +344,7 @@ function RiwayatTransaksi() {
             setIsFilterDanaMasuk(true)
             setActivePageDanaMasuk(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10},  "partner_transid": "${partnerTransId}", "bank_code":"${bankDanaMasuk}", "fitur_id": ${fiturDanaMasuk}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "subPartnerID": "${(subPartnerId !== undefined) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10},  "partner_transid": "${partnerTransId}", "bank_code":"${bankDanaMasuk !== undefined ? bankDanaMasuk : ""}", "fitur_id": ${fiturDanaMasuk}}`)
             // console.log(dataParams, "filter dana masuk");
             const headers = {
                 'Content-Type': 'application/json',
@@ -310,7 +377,7 @@ function RiwayatTransaksi() {
             setIsFilterSettlement(true)
             setActivePageSettlement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${bankSettlement}"}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${bankSettlement !== undefined ? bankSettlement : ""}"}`)
             // console.log(dataParams, 'ini data params filter');
             const headers = {
                 'Content-Type': 'application/json',
@@ -352,6 +419,9 @@ function RiwayatTransaksi() {
                 partnerTransIdDanaMasuk: "",
                 fiturDanaMasuk: 0
             })
+            setSelectedPartnerDanaMasuk([])
+            setSelectedAgenDanaMasuk([])
+            setSelectedBankDanaMasuk([])
             setStateDanaMasuk(null)
             setDateRangeDanaMasuk([])
             setShowDateDanaMasuk("none")
@@ -365,6 +435,8 @@ function RiwayatTransaksi() {
                 bankSettlement: "",
                 fiturSettlement: 0
             })
+            setSelectedPartnerSettlement([])
+            setSelectedBankSettlement([])
             setStateSettlement(null)
             setDateRangeSettlement([])
             setShowDateSettlement("none")
@@ -517,7 +589,7 @@ function RiwayatTransaksi() {
             selector: row => row.tvasettl_code,
             // sortable: true
             width: "224px",
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${inputHandle.bankSettlement.length === 0 ? '0' : inputHandle.bankSettlement}`} >{row.tvasettl_code}</Link>
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${selectedBankSettlement.length === 0 ? '0' : selectedBankSettlement[0].value}`} >{row.tvasettl_code}</Link>
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
         {
@@ -688,7 +760,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -699,7 +771,7 @@ function RiwayatTransaksi() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -726,7 +798,7 @@ function RiwayatTransaksi() {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -737,7 +809,7 @@ function RiwayatTransaksi() {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -858,8 +930,22 @@ function RiwayatTransaksi() {
                             {/* <input type='text'className='input-text-riwayat me-2' placeholder='Masukkan ID Transaksi'/>            */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Nama Partner</span>
-                            <Form.Select name='namaPartnerDanaMasuk' className="input-text-riwayat ms-3" value={inputHandle.namaPartnerDanaMasuk} onChange={(e) => handleChangeNamaPartner(e)}>
+                            <span className='me-3'>Nama Partner</span>
+                            <div className="dropdown dropSaldoPartner">
+                                <ReactSelect
+                                    // isMulti
+                                    closeMenuOnSelect={true}
+                                    hideSelectedOptions={false}
+                                    options={dataListPartner}
+                                    // allowSelectAll={true}
+                                    value={selectedPartnerDanaMasuk}
+                                    onChange={(selected) => handleChangeNamaPartner(selected, 'danaMasuk')}
+                                    placeholder="Pilih Nama Partner"
+                                    components={{ Option }}
+                                    styles={customStylesSelectedOption}
+                                />
+                            </div>
+                            {/* <Form.Select name='namaPartnerDanaMasuk' className="input-text-riwayat ms-3" value={inputHandle.namaPartnerDanaMasuk} onChange={(e) => handleChangeNamaPartner(e)}>
                                 <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                 {
                                     dataListPartner.map((item, index) => {
@@ -868,11 +954,25 @@ function RiwayatTransaksi() {
                                         )
                                     })
                                 }
-                            </Form.Select>
+                            </Form.Select> */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className="me-2">Nama Agen</span>
-                            <Form.Select name='namaAgenDanaMasuk' style={{ display: "inline" }} className="input-text-riwayat ms-4" value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
+                            <span className="me-4">Nama Agen</span>
+                            <div className="dropdown dropSaldoPartner">
+                                <ReactSelect
+                                    // isMulti
+                                    closeMenuOnSelect={true}
+                                    hideSelectedOptions={false}
+                                    options={dataListAgenFromPartner}
+                                    // allowSelectAll={true}
+                                    value={selectedAgenDanaMasuk}
+                                    onChange={(selected) => setSelectedAgenDanaMasuk([selected])}
+                                    placeholder="Pilih Nama Agen"
+                                    components={{ Option }}
+                                    styles={customStylesSelectedOption}
+                                />
+                            </div>
+                            {/* <Form.Select name='namaAgenDanaMasuk' style={{ display: "inline" }} className="input-text-riwayat ms-4" value={inputHandle.namaAgenDanaMasuk} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Nama Agen</option>
                                 {
                                     dataListAgenFromPartner.map((item, index) => {
@@ -881,7 +981,7 @@ function RiwayatTransaksi() {
                                         )
                                     })
                                 }
-                            </Form.Select>
+                            </Form.Select> */}
                         </Col>
                     </Row>
                     <Row className='mt-4'>
@@ -918,8 +1018,22 @@ function RiwayatTransaksi() {
                     </Row>
                     <Row className="mt-4">
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Nama Bank</span>
-                            <Form.Select name='bankDanaMasuk' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.bankDanaMasuk} onChange={(e) => handleChange(e)}>
+                            <span className="me-4">Nama Bank</span>
+                            <div className="dropdown dropSaldoPartner">
+                                <ReactSelect
+                                    // isMulti
+                                    closeMenuOnSelect={true}
+                                    hideSelectedOptions={false}
+                                    options={listBank}
+                                    // allowSelectAll={true}
+                                    value={selectedBankDanaMasuk}
+                                    onChange={(selected) => setSelectedBankDanaMasuk([selected])}
+                                    placeholder="Pilih Nama Bank"
+                                    components={{ Option }}
+                                    styles={customStylesSelectedOption}
+                                />
+                            </div>
+                            {/* <Form.Select name='bankDanaMasuk' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={selectedBankDanaMasuk[0].value} onChange={(e) => handleChange(e)}>
                                 <option defaultValue value={""}>Pilih Nama Bank</option>
                                 {
                                     listBank.map((item, idx) => {
@@ -928,9 +1042,9 @@ function RiwayatTransaksi() {
                                         )
                                     })
                                 }
-                            </Form.Select>
+                            </Form.Select> */}
                         </Col>
-                        <Col xs={4} style={{ display: showDateDanaMasuk }}>
+                        <Col xs={4} style={{ display: showDateDanaMasuk }} className='text-end pe-4'>
                             <DateRangePicker 
                                 onChange={pickDateDanaMasuk}
                                 value={stateDanaMasuk}
@@ -948,9 +1062,9 @@ function RiwayatTransaksi() {
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)}
-                                        className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.partnerTransIdDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.partnerTransIdDanaMasuk.length === 0 | inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                                        onClick={() => filterRiwayatDanaMasuk(1, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, selectedPartnerDanaMasuk.length !== 0 ? selectedPartnerDanaMasuk[0].value : "", selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)}
+                                        className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk[0].value !== undefined || dateRangeDanaMasuk.length !== 0 && inputHandle.partnerTransIdDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedBankDanaMasuk[0].value !== undefined || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk[0].value === undefined || inputHandle.periodeDanaMasuk === 0 && inputHandle.partnerTransIdDanaMasuk.length === 0 | inputHandle.periodeDanaMasuk === 0 && selectedBankDanaMasuk[0].value === undefined || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                     >
                                         Terapkan
                                     </button>
@@ -958,8 +1072,8 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Dana Masuk")}
-                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.partnerTransIdDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.bankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.partnerTransIdDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.bankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                                        className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk[0].value !== undefined || dateRangeDanaMasuk.length !== 0 && inputHandle.partnerTransIdDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedBankDanaMasuk[0].value !== undefined || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                        disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk[0].value === undefined || inputHandle.periodeDanaMasuk === 0 && inputHandle.partnerTransIdDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedBankDanaMasuk[0].value === undefined || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                     >
                                         Atur Ulang
                                     </button>
@@ -970,7 +1084,7 @@ function RiwayatTransaksi() {
                     {
                         dataRiwayatDanaMasuk.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportTransferDanaMasukHandler(isFilterDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, inputHandle.namaPartnerDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.partnerTransIdDanaMasuk, inputHandle.bankDanaMasuk, inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
+                            <Link onClick={() => ExportReportTransferDanaMasukHandler(isFilterDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.idTransaksiDanaMasuk, selectedPartnerDanaMasuk.length !== 0 ? selectedPartnerDanaMasuk[0].value : "", selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
@@ -1008,8 +1122,22 @@ function RiwayatTransaksi() {
                             <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} name="idTransaksiSettlement" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Nama Partner</span>
-                            <Form.Select name='namaPartnerSettlement' className="input-text-riwayat ms-3" value={inputHandle.namaPartnerSettlement} onChange={(e) => handleChange(e)}>
+                            <span className='me-3'>Nama Partner</span>
+                            <div className="dropdown dropSaldoPartner">
+                                <ReactSelect
+                                    // isMulti
+                                    closeMenuOnSelect={true}
+                                    hideSelectedOptions={false}
+                                    options={dataListPartner}
+                                    // allowSelectAll={true}
+                                    value={selectedPartnerSettlement}
+                                    onChange={(selected) => handleChangeNamaPartner(selected, 'settlement')}
+                                    placeholder="Pilih Nama Partner"
+                                    components={{ Option }}
+                                    styles={customStylesSelectedOption}
+                                />
+                            </div>
+                            {/* <Form.Select name='namaPartnerSettlement' className="input-text-riwayat ms-3" value={selectedPartnerSettlement[0].value} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                 {
                                     dataListPartner.map((item, index) => {
@@ -1018,13 +1146,13 @@ function RiwayatTransaksi() {
                                         )
                                     })
                                 }
-                            </Form.Select>
-                            {/* <input onChange={(e) => handleChange(e)} value={inputHandle.namaPartnerSettlement} name="namaPartnerSettlement" type='text'className='input-text-riwayat me-2' placeholder='Masukkan ID Transaksi'/> */}
+                            </Form.Select> */}
+                            {/* <input onChange={(e) => handleChange(e)} value={selectedPartnerSettlement[0].value} name="namaPartnerSettlement" type='text'className='input-text-riwayat me-2' placeholder='Masukkan ID Transaksi'/> */}
                             {/* <input type='text'className='input-text-riwayat' placeholder='Masukkan Nama Partner'/> */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Status</span>
-                            <Form.Select name="statusSettlement" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
+                            <Form.Select name="statusSettlement" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Status</option>
                                 <option value={2}>Berhasil</option>
                                 <option value={1}>Dalam Proses</option>
@@ -1035,7 +1163,7 @@ function RiwayatTransaksi() {
                     </Row>
                     <Row className='mt-4'>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "33.2%" : "33.2%" }}>
-                            <span style={{ marginRight: 26 }}>Periode*</span>
+                            <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
                             <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
@@ -1055,8 +1183,22 @@ function RiwayatTransaksi() {
                             </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Nama Bank</span>
-                            <Form.Select name='bankSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.bankSettlement} onChange={(e) => handleChange(e)}>
+                            <span className="me-2">Nama Bank</span>
+                            <div className="dropdown dropSaldoPartner">
+                                <ReactSelect
+                                    // isMulti
+                                    closeMenuOnSelect={true}
+                                    hideSelectedOptions={false}
+                                    options={listBank}
+                                    // allowSelectAll={true}
+                                    value={selectedBankSettlement}
+                                    onChange={(selected) => setSelectedBankSettlement([selected])}
+                                    placeholder="Pilih Nama Bank"
+                                    components={{ Option }}
+                                    styles={customStylesSelectedOption}
+                                />
+                            </div>
+                            {/* <Form.Select name='bankSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={selectedBankSettlement[0].value} onChange={(e) => handleChange(e)}>
                                 <option defaultValue value={""}>Pilih Nama Bank</option>
                                 {
                                     listBank.map((item, idx) => {
@@ -1065,7 +1207,7 @@ function RiwayatTransaksi() {
                                         )
                                     })
                                 }
-                            </Form.Select>
+                            </Form.Select> */}
                         </Col>
                     </Row>
                     <Row className='mt-4'>
@@ -1085,9 +1227,9 @@ function RiwayatTransaksi() {
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, inputHandle.bankSettlement)}
-                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.bankSettlement.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.bankSettlement.length === 0}
+                                        onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "")}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && selectedBankSettlement[0].value !== undefined) ? "btn-ez-on" : "btn-ez"}
+                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && selectedBankSettlement[0].value === undefined}
                                     >
                                         Terapkan
                                     </button>
@@ -1095,8 +1237,8 @@ function RiwayatTransaksi() {
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonHandle("Settlement")}
-                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.bankSettlement.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.bankSettlement.length === 0}
+                                        className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && selectedBankSettlement[0].value !== undefined) ? "btn-reset" : "btn-ez-reset"}
+                                        disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && selectedBankSettlement[0].value === undefined}
                                     >
                                         Atur Ulang
                                     </button>
@@ -1113,7 +1255,7 @@ function RiwayatTransaksi() {
                     {
                         dataRiwayatSettlement.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, inputHandle.namaPartnerSettlement, inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.bankSettlement)} className="export-span">Export</Link>
+                            <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "")} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">

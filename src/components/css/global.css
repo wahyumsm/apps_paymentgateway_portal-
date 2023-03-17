@@ -814,6 +814,49 @@ width: 150px;
     color: #C4C4C4;
 }
 
+/* select option in riwayat Top up admin */
+.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropSaldoPartner .css-1s2u09g-control {
+    min-height: 40px;
+    min-width: 182px;
+    border-radius: 8px;
+}
+
+.dropTopupPartner .css-1pahdxg-control, .dropSaldoPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control {
+    min-height: 40px;
+    min-width: 182px;
+    border-radius: 8px;
+}
+
+/* select option in laporan */
+.dropLaporanPartner .css-1s2u09g-control {
+    min-height: 40px;
+    min-width: 105%;
+    border-radius: 8px;
+}
+
+.dropLaporanPartner .css-1pahdxg-control {
+    min-height: 35px;
+    min-width: 105%;
+    border-radius: 8px;
+}
+
+/* select option in laporan */
+.dropLaporanPartner .css-1s2u09g-control {
+    min-height: 40px;
+    min-width: 105%;
+    border-radius: 8px;
+}
+
+.dropLaporanPartner .css-1pahdxg-control {
+    min-height: 35px;
+    min-width: 105%;
+    border-radius: 8px;
+}
+
+.css-14el2xx-placeholder {
+    font-size: 14px;
+}
+
 /* select option in dashboard */
 
 .dropPartner .css-b62m3t-container {
@@ -841,6 +884,19 @@ width: 150px;
     overflow-y: auto !important;
     max-height: 43px !important;
     max-width: 400px !important;
+}
+
+/* select option in add user */
+
+.dropPartnerAddUser .css-g1d714-ValueContainer {
+    overflow-y: auto !important;
+    max-height: 43px !important;
+    max-width: 1020px !important;
+}
+
+.dropPartnerAddUser .css-1s2u09g-control {
+    min-height: 43px;
+    border-radius: 8px;
 }
 
 /* Alokasi saldo */

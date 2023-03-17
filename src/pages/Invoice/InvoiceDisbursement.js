@@ -8,6 +8,7 @@ import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { toPng } from 'html-to-image';
+import ReactSelect, { components } from 'react-select';
 
 function InvoiceDisbursement() {
 
@@ -27,6 +28,25 @@ function InvoiceDisbursement() {
     const [inputHandle, setInputHandle] = useState({})
     const [totalAmount, setTotalAmount] = useState(0)
     const [taxTotalAmount, setTaxTotalAmount] = useState(0)
+    const [selectedPartnerInvoiceDisbursement, setSelectedPartnerInvoiceDisbursement] = useState([])
+
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black"
+        })
+    }
 
     function handleChange(e, idx, qty, priceUnit) {
         setInputHandle({
@@ -56,7 +76,7 @@ function InvoiceDisbursement() {
     function resetButtonHandle() {
         setStateInvoiceDisbursement(null)
         setDateRangeInvoiceDisbursement([])
-        setNamaPartner("")
+        setSelectedPartnerInvoiceDisbursement([])
     }
 
     function handleChangeNamaPartner(e) {
@@ -81,10 +101,24 @@ function InvoiceDisbursement() {
             const listPartner = await axios.post(BaseURL + "/Partner/ListPartner", {data: ""}, {headers: headers})
             // console.log(listPartner, 'ini list partner');
             if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length === 0) {
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             } else if (listPartner.status === 200 && listPartner.data.response_code === 200 && listPartner.data.response_new_token.length !== 0) {
                 setUserSession(listPartner.data.response_new_token)
-                setDataListPartner(listPartner.data.response_data)
+                let newArr = []
+                listPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.partner_id
+                    obj.label = e.nama_perusahaan
+                    newArr.push(obj)
+                })
+                setDataListPartner(newArr)
             }
         } catch (error) {
             // console.log(error);
@@ -138,7 +172,7 @@ function InvoiceDisbursement() {
     }
     
     const SaveAsPDFHandler = () => {
-        generateInvoiceDisbursement(dateRangeInvoiceDisbursement, namaPartner, invoiceDate, isIgnoreZeroAmount, true)
+        generateInvoiceDisbursement(dateRangeInvoiceDisbursement, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, true)
         // const dom = document.getElementById('tableInvoice');
         const dom = document.getElementById('tableInvoiceModal');
         toPng(dom)
@@ -235,7 +269,7 @@ function InvoiceDisbursement() {
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-2 mb-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span style={{ marginRight: 73 }}>Periode*</span>
+                                <span className='me-5'>Periode<span style={{ color: "red" }}>*</span></span>
                                 <div>
                                     <DateRangePicker 
                                         onChange={pickDateInvoiceDisbursement}
@@ -245,9 +279,23 @@ function InvoiceDisbursement() {
                                     />
                                 </div>                                
                             </Col>
-                            <Col xs={7} className="d-flex justify-content-start align-items-center ms-4">
-                                <span>Nama Partner</span>
-                                <Form.Select name='namaPartner' className="input-text-ez me-4" value={namaPartner} onChange={(e) => handleChangeNamaPartner(e)}>
+                            <Col xs={6} className="d-flex justify-content-start align-items-center">
+                                <span className='me-5'>Nama Partner <span style={{ color: "red" }}>*</span></span>
+                                <div className="dropdown dropTopupPartner">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={dataListPartner}
+                                        // allowSelectAll={true}
+                                        value={selectedPartnerInvoiceDisbursement}
+                                        onChange={(selected) => setSelectedPartnerInvoiceDisbursement([selected])}
+                                        placeholder="Pilih Nama Partner"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
+                                {/* <Form.Select name='namaPartner' className="input-text-ez me-4" value={namaPartner} onChange={(e) => handleChangeselectedPartnerInvoiceDisbursement(e)}>
                                     <option defaultChecked disabled value="">Pilih Nama Partner</option>
                                     {
                                         dataListPartner.map((item, index) => {
@@ -256,17 +304,17 @@ function InvoiceDisbursement() {
                                             )
                                         })
                                     }
-                                </Form.Select>
+                                </Form.Select> */}
                             </Col>
                         </Row>
                         <Row className='mt-2 mb-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span className='me-3'>Tanggal Invoice*</span>
+                                <span className='me-3'>Tanggal Invoice<span style={{ color: "red" }}>*</span></span>
                                 <div>
                                     <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
                                 </div>
                             </Col>
-                            <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
+                            <Col xs={6} className="d-flex justify-content-start align-items-center">
                                 <span className='me-4'>Include Zero Amount</span>
                                 <div>
                                     <Form.Check
@@ -280,18 +328,18 @@ function InvoiceDisbursement() {
                             </Col>
                         </Row>
                         <button
-                            onClick={() => generateInvoiceDisbursement(dateRangeInvoiceDisbursement, namaPartner, invoiceDate, isIgnoreZeroAmount, false)}
-                            className={(stateInvoiceDisbursement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? 'btn-off' : 'add-button'}
+                            onClick={() => generateInvoiceDisbursement(dateRangeInvoiceDisbursement, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, false)}
+                            className={(stateInvoiceDisbursement === null || selectedPartnerInvoiceDisbursement.length === 0 || invoiceDate.length === 0) ? 'btn-off' : 'add-button'}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                            disabled={(stateInvoiceDisbursement === null || namaPartner.length === 0 || invoiceDate.length === 0) ? true : false}
+                            disabled={(stateInvoiceDisbursement === null || selectedPartnerInvoiceDisbursement.length === 0 || invoiceDate.length === 0) ? true : false}
                         >
                             Generate
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateInvoiceDisbursement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                            className={(stateInvoiceDisbursement !== null && selectedPartnerInvoiceDisbursement.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                            disabled={(stateInvoiceDisbursement !== null && namaPartner.length !== 0 && invoiceDate.length !== 0) ? false : true}
+                            disabled={(stateInvoiceDisbursement !== null && selectedPartnerInvoiceDisbursement.length !== 0 && invoiceDate.length !== 0) ? false : true}
                         >
                             Atur Ulang
                         </button>

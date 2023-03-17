@@ -6,6 +6,7 @@ import axios from "axios";
 import encryptData from "../../function/encryptData";
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import ReactSelect, { components } from 'react-select';
 
 function UpdateUser() {
     const history = useHistory();
@@ -28,6 +29,28 @@ function UpdateUser() {
         agenId: "",
     });
 
+    const [selectedPartnerUpdateUser, setSelectedPartnerUpdateUser] = useState([])
+    const [selectedAgenUpdateUser, setSelectedAgenUpdateUser] = useState([])
+
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black",
+            width: 1020
+        })
+    }
+
     function handleChange(e) {
         setInputHandle({
             ...inputHandle,
@@ -43,11 +66,13 @@ function UpdateUser() {
     }
 
     function handleChangeToAgen(e) {
-        getListAgen(e.target.value)
-        setInputHandle({
-            ...inputHandle,
-            [e.target.name] : e.target.value
-        })
+        setSelectedPartnerUpdateUser([e])
+        getListAgen(e.value)
+        // setInputHandle({
+        //     ...inputHandle,
+        //     [e.target.name] : e.target.value
+        // })
+        setSelectedAgenUpdateUser([])
     }
 
     async function getDetailUser(muserId) {
@@ -71,7 +96,8 @@ function UpdateUser() {
                 const dataDetail = detailUser.data.response_data
                 setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan, agenId: dataDetail.sub_partnerid})
                 if (dataDetail.role_id === 102 || dataDetail.role_id === 104) {
-                    getListAgen(dataDetail.partner_id)
+                    getListPartner(dataDetail.partner_id);
+                    getListAgen(dataDetail.partner_id, dataDetail.sub_partnerid)
                 }
             } else if (
                 detailUser.status === 200 &&
@@ -82,13 +108,14 @@ function UpdateUser() {
                 setUserSession(detailUser.data.response_new_token);
                 setInputHandle({nameUser: dataDetail.name, emailUser: dataDetail.email, roleUser: dataDetail.role_id, isActive: dataDetail.is_active, roleName: dataDetail.role_name, partnerId: dataDetail.partner_id, namaPerusahaan: dataDetail.nama_perusahaan, agenId: dataDetail.sub_partnerid})
                 if (dataDetail.role_id === 102 || dataDetail.role_id === 104) {
-                    getListAgen(dataDetail.partner_id)
+                    getListPartner(dataDetail.partner_id);
+                    getListAgen(dataDetail.partner_id, dataDetail.sub_partnerid)
                 }
                 
             }
         } catch (error) {
             // console.log(error);
-            history.push(errorCatch(error.response.status));
+            // history.push(errorCatch(error.response.status));
         }
     }        
 
@@ -143,7 +170,7 @@ function UpdateUser() {
             }
         }
 
-        async function getListPartner() {
+        async function getListPartner(partnerId) {
             try {
                 const auth = "Bearer " + getToken();
                 const headers = {
@@ -160,21 +187,38 @@ function UpdateUser() {
                     listPartner.data.response_code === 200 &&
                     listPartner.data.response_new_token.length === 0
                 ) {
-                    setListPartner(listPartner.data.response_data);
+                    let newArr = []
+                    listPartner.data.response_data.forEach(e => {
+                        let obj = {}
+                        obj.value = e.partner_id
+                        obj.label = e.nama_perusahaan
+                        newArr.push(obj)
+                    })
+                    setListPartner(newArr)
+                    setSelectedPartnerUpdateUser(newArr.find(e => e.value === partnerId))
+                    // setListPartner(listPartner.data.response_data);
                 } else if (
                     listPartner.status === 200 &&
                     listPartner.data.response_code === 200 &&
                     listPartner.data.response_new_token.length !== 0
                 ) {
                     setUserSession(listPartner.data.response_new_token);
-                    setListPartner(listPartner.data.response_data);
+                    let newArr = []
+                    listPartner.data.response_data.forEach(e => {
+                        let obj = {}
+                        obj.value = e.partner_id
+                        obj.label = e.nama_perusahaan
+                        newArr.push(obj)
+                    })
+                    setListPartner(newArr)
+                    // setListPartner(listPartner.data.response_data);
                 }
             } catch (error) {
                 history.push(errorCatch(error.response.status))
             }
         }
 
-        async function getListAgen(partnerId) {
+        async function getListAgen(partnerId, subPartnerId) {
             try {
                 const auth = 'Bearer ' + getToken();
                 const dataParams = encryptData(`{"partner_id": "${partnerId}"}`);
@@ -184,10 +228,32 @@ function UpdateUser() {
                 }
                 const listAgen = await axios.post(BaseURL + "/Partner/GetListAgen", {data: dataParams}, {headers: headers})
                 if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length === 0) {
-                    setListAgen(listAgen.data.response_data)
+                    let newArr = []
+                    listAgen.data.response_data.forEach(e => {
+                        let obj = {}
+                        obj.value = e.agen_id
+                        obj.label = e.agen_name
+                        newArr.push(obj)
+                        if (subPartnerId !== undefined && subPartnerId === e.agen_id) {
+                            setSelectedAgenUpdateUser([{ value: e.agen_id, label: e.agen_name }])
+                        }
+                    })
+                    setListAgen(newArr);
+                    // setListAgen(listAgen.data.response_data)
                 } else if (listAgen.status === 200 && listAgen.data.response_code === 200 && listAgen.data.response_new_token.length !== 0) {
                     setUserSession(listAgen.data.response_new_token)
-                    setListAgen(listAgen.data.response_data)
+                    let newArr = []
+                    listAgen.data.response_data.forEach(e => {
+                        let obj = {}
+                        obj.value = e.agen_id
+                        obj.label = e.agen_name
+                        newArr.push(obj)
+                        if (subPartnerId !== undefined && subPartnerId === e.agen_id) {
+                            setSelectedAgenUpdateUser([{ value: e.agen_id, label: e.agen_name }])
+                        }
+                    })
+                    setListAgen(newArr);
+                    // setListAgen(listAgen.data.response_data)
                 }
             } catch (error) {
                 history.push(errorCatch(error.response.status))
@@ -202,7 +268,7 @@ function UpdateUser() {
             }
             getDetailUser(muserId);
             getMenuRole();
-            getListPartner();
+            // getListPartner();
         }, [access_token, muserId, user_role]);
 
         const goBack = () => {
@@ -275,7 +341,21 @@ function UpdateUser() {
                                 style={{ display: inputHandle.roleUser === 102 ? "" : (inputHandle.roleUser === 104)  ? "" : "none" }}
                             >
                                 <h6>Partner</h6>
-                                <Form.Select
+                                <div className="dropdown dropPartnerAddUser">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={listPartner}
+                                        // allowSelectAll={true}
+                                        value={selectedPartnerUpdateUser}
+                                        onChange={(selected) => handleChangeToAgen(selected)}
+                                        placeholder="Select Partner"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
+                                {/* <Form.Select
                                     name="partnerId"
                                     className="input-text-user"
                                     style={{ display: "inline" }}
@@ -290,7 +370,7 @@ function UpdateUser() {
                                             </option>
                                         );
                                     })}
-                                </Form.Select>
+                                </Form.Select> */}
                             </Col>
                             <Col
                                 xs={12}
@@ -298,7 +378,21 @@ function UpdateUser() {
                                 style={{ display: (inputHandle.partnerId !== undefined && inputHandle.roleUser === 104) ? "" : (inputHandle.partnerId !== undefined && inputHandle.roleUser === 102) ? "" : "none" }}
                             >
                                 <h6>Agen</h6>
-                                <Form.Select
+                                <div className="dropdown dropPartnerAddUser">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={listAgen}
+                                        // allowSelectAll={true}
+                                        value={selectedAgenUpdateUser}
+                                        onChange={(selected) => setSelectedAgenUpdateUser([selected])}
+                                        placeholder="Select Agen"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
+                                {/* <Form.Select
                                     name="agenId"
                                     className="input-text-user"
                                     style={{ display: "inline" }}
@@ -313,7 +407,7 @@ function UpdateUser() {
                                             </option>
                                         );
                                     })}
-                                </Form.Select>
+                                </Form.Select> */}
                             </Col>
                             <Col xs={12} className="mt-2 mb-5">
                                 <h6>Status</h6>

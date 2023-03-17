@@ -850,7 +850,7 @@ const ListRiwayatSubAccount = () => {
                                 </Form.Select>
                             </Col>
                         </Row>
-                        <Row className='mt-3'>
+                        <Row className='mt-4'>
                             <Col xs={4}></Col>
                             <Col xs={4} className='d-flex justify-content-end align-items-center' >
                                 <div style={{ display: showDateRiwayatTranfer }}>
