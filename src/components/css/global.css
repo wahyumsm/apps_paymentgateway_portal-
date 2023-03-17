@@ -817,6 +817,14 @@ width: 150px;
     box-shadow: 0 0 0 1px #888888;
 }
 
+.dropPartner .css-qqcyw1-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropPartner .css-17rpq10-option:hover {
+    background-color: #3b8aff;
+}
+
 .dropPartner .css-1s2u09g-control {
     min-height: 43px;
     border-radius: 8px;
@@ -828,12 +836,20 @@ width: 150px;
     max-width: 400px !important;
 }
 
-/* select option in dashboard */
+/* select option in addUser */
 
 .dropPartnerAddUser .css-g1d714-ValueContainer {
     overflow-y: auto !important;
     max-height: 43px !important;
     max-width: 1020px !important;
+}
+
+.dropPartnerAddUser .css-1g68nbp-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropPartnerAddUser .css-17qycrf-option:hover {
+    background-color: #3b8aff;
 }
 
 /* Alokasi saldo */
