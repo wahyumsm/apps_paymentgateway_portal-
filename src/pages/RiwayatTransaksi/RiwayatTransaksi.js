@@ -1211,8 +1211,8 @@ function RiwayatTransaksi() {
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={4} style={{ display: showDateSettlement, marginLeft: 100 }}>
-                            <div>
+                        <Col xs={4} style={{ display: showDateSettlement }} className='text-end'>
+                            <div className='me-4' style={{ paddingRight: "0.5rem" }}>
                                 <DateRangePicker 
                                     onChange={pickDateSettlement}
                                     value={stateSettlement}

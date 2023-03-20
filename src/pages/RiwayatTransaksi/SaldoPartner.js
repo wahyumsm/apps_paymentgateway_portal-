@@ -893,7 +893,7 @@ function SaldoPartner() {
                                         <option value={7}>Pilih Range Tanggal</option>
                                     </Form.Select>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-end align-items-center">
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <div style={{ display: showDateRiwayatTopUp }} className='pe-3'>
                                         <DateRangePicker 
                                             onChange={pickDateRiwayatTopUp}
@@ -1013,7 +1013,7 @@ function SaldoPartner() {
                                 </Form.Select>
                             </Col>
                         </Row>
-                        <Row className='mt-4'>
+                        <Row className='mt-3'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
                                 <span style={{ marginRight: 42 }}>Periode <span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeRiwayatAlokasiSaldo' className="input-text-ez" value={(periodeRiwayatAlokasiSaldo !== 0) ? periodeRiwayatAlokasiSaldo : 0} onChange={(e) => handleChangePeriodeRiwayatAlokasiSaldo(e)}>

@@ -831,7 +831,7 @@ function DisbursementReport() {
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>Partner Trans ID</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder='Masukkan Partner Trans ID'/>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report ms-2' placeholder='Masukkan Partner Trans ID'/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: "33%"}}>
                                         <span>Tipe Pembayaran</span>
@@ -916,8 +916,8 @@ function DisbursementReport() {
                                         <span>Partner Trans ID</span>
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder='Masukkan Partner Trans ID'/>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-center align-items-center" >
-                                        <div style={{ display: showDateDisbursement}}>
+                                    <Col xs={4} className="d-flex justify-content-end align-items-center" >
+                                        <div style={{ display: showDateDisbursement}} className='me-4'>
                                             <DateRangePicker 
                                                 onChange={pickDateDisbursement}
                                                 value={stateDateDisbursement}

@@ -1052,7 +1052,7 @@ export default () => {
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span className="me-2">Nama Bank</span>
-                    <div className="dropdown dropLaporanPartner">
+                    <div className="dropdown dropLaporanPartnerBank">
                       <ReactSelect
                         // isMulti
                         closeMenuOnSelect={true}

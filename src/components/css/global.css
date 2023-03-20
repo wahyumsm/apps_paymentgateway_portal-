@@ -814,47 +814,50 @@ width: 150px;
     color: #C4C4C4;
 }
 
-/* select option in riwayat Top up admin */
-.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropSaldoPartner .css-1s2u09g-control {
+/* select option in riwayat Top up admin and disburse report*/
+.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control {
     min-height: 40px;
-    min-width: 182px;
+    min-width: 188px;
     border-radius: 8px;
 }
 
-.dropTopupPartner .css-1pahdxg-control, .dropSaldoPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control {
+/* select option in riwayat transaksi admin */
+.dropSaldoPartner .css-1s2u09g-control, .dropSaldoPartner .css-1pahdxg-control {
     min-height: 40px;
-    min-width: 182px;
+    min-width: 180px;
     border-radius: 8px;
 }
 
 /* select option in laporan */
-.dropLaporanPartner .css-1s2u09g-control {
+.dropLaporanPartner .css-1s2u09g-control, .dropLaporanPartner .css-1pahdxg-control  {
     min-height: 40px;
-    min-width: 105%;
+    min-width: 107%;
     border-radius: 8px;
 }
 
-.dropLaporanPartner .css-1pahdxg-control {
-    min-height: 35px;
-    min-width: 105%;
-    border-radius: 8px;
-}
-
-/* select option in laporan */
-.dropLaporanPartner .css-1s2u09g-control {
+.dropLaporanPartnerBank .css-1s2u09g-control {
     min-height: 40px;
-    min-width: 105%;
+    min-width: 116%;
     border-radius: 8px;
 }
 
-.dropLaporanPartner .css-1pahdxg-control {
+.dropLaporanPartnerBank .css-1pahdxg-control {
     min-height: 35px;
-    min-width: 105%;
+    min-width: 116%;
     border-radius: 8px;
 }
 
 .css-14el2xx-placeholder {
     font-size: 14px;
+}
+
+/* untuk di dashboard */
+.dropPartner .css-qqcyw1-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropPartner .css-17rpq10-option:hover {
+    background-color: #3b8aff;
 }
 
 /* select option in dashboard */
@@ -897,6 +900,14 @@ width: 150px;
 .dropPartnerAddUser .css-1s2u09g-control {
     min-height: 43px;
     border-radius: 8px;
+}
+
+.dropPartnerAddUser .css-1g68nbp-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropPartnerAddUser .css-17qycrf-option:hover {
+    background-color: #3b8aff;
 }
 
 /* Alokasi saldo */

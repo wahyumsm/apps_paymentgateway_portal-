@@ -616,11 +616,10 @@ function ListPayment() {
           <Col xs={4}></Col>
           <Col xs={4}>
             <span></span>
-            <div className="ms-5 ps-2" style={{ display: showDatePaylink }}>
+            <div className="text-end" style={{ display: showDatePaylink }}>
               <DateRangePicker
                 onChange={pickDatePaylink}
                 value={statePaylink}
-                className="ms-5"
                 clearIcon={null}
               />
             </div>
