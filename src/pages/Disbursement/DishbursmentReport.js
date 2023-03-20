@@ -806,7 +806,7 @@ function DisbursementReport() {
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span className='me-5'>Status</span>
-                                        <Form.Select name="statusDisbursement" className='input-text-ez ms-5' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
+                                        <Form.Select name="statusDisbursement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
                                             <option defaultChecked disabled value="">Pilih Status</option>
                                             <option value={2}>Berhasil</option>
                                             <option value={1}>Dalam Proses</option>
@@ -835,7 +835,7 @@ function DisbursementReport() {
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: "33%"}}>
                                         <span>Tipe Pembayaran</span>
-                                        <div className="dropdown dropDisbursePartner">
+                                        <div className="dropdown dropDisbursePartner me-4">
                                             <ReactSelect
                                                 // isMulti
                                                 closeMenuOnSelect={true}
