@@ -47,6 +47,7 @@ export const Routes = {
     ListRiwayatSubAccount: {path: "/Sub Account Bank/riwayat-sub-account"},
     InfoSaldoDanMutasi: {path: "/Sub Account Bank/info-saldo-dan-mutasi"},
     TransferSubAccount: {path: "/Sub Account Bank/transfer"},
+    RiwayatDirectDebit: {path: "/riwayat-direct-debit"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
