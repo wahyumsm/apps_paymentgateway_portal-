@@ -852,11 +852,11 @@ width: 150px;
 }
 
 /* untuk di dashboard */
-.dropPartner .css-qqcyw1-option:hover {
+.dropPartner .css-qqcyw1-option:hover, .dropSaldoPartner .css-qqcyw1-option:hover {
     background-color: #3b8aff;
 }
 
-.dropPartner .css-17rpq10-option:hover {
+.dropPartner .css-17rpq10-option:hover, .dropSaldoPartner .css-17rpq10-option:hover {
     background-color: #3b8aff;
 }
 

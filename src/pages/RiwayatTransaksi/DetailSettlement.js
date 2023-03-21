@@ -381,7 +381,7 @@ function DetailSettlement() {
             {
                 user_role === '102' ?
                 <span className='breadcrumbs-span'><Link to={"/laporan"}>Laporan</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
-                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Riwayat/transaksi"}>Riwayat Transaksi</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
+                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>

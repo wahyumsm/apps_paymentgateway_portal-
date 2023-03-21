@@ -5,6 +5,7 @@ export const Routes = {
     // DashboardOverview: { path: "/dashboard" },
     RiwayatTransaksi: { path: "/Riwayat/transaksi"},
     SaldoPartner: { path: "/Riwayat/saldopartner"},
+    Settlement: { path: "/settlement"},
     DetailSettlement: { path: "/detailsettlement/:settlementId/:bankCode"},
     DetailAkun : { path: "/detailakun"},
     Transactions: { path: "/laporan" },

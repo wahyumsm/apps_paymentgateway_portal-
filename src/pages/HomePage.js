@@ -79,6 +79,7 @@ import TransferSubAccount from './RiwayatSubAccount/TransferSubAccount';
 import SaldoPartner from './RiwayatTransaksi/SaldoPartner';
 import DisbursementPage from './Disbursement/DisbursementPage';
 import RiwayatDirectDebit from './Riwayat/RiwayatDirectDebit';
+import SettlementPage from './Settlement/SettlementPage';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -146,6 +147,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
     <RouteWithSidebar exact path={Routes.SaldoPartner.path} component={SaldoPartner} />
+    <RouteWithSidebar exact path={Routes.Settlement.path} component={SettlementPage} />
     <RouteWithSidebar exact path={Routes.DetailSettlement.path} component={DetailSettlement} />
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
     <RouteWithSidebar exact path={Routes.TambahPartner.path} component={TambahPartner}/>
