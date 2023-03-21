@@ -91,7 +91,7 @@ const RiwayatDirectDebit = () => {
                 <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Filter</span>
                 <Row className='mt-4'>
                     <Col xs={4} className="d-flex justify-content-between align-items-center">
-                        <div>Payment ID</div>
+                        <div>Nama User</div>
                         <input
                             type="text"
                             className="input-text-edit"
@@ -141,7 +141,7 @@ const RiwayatDirectDebit = () => {
                     <Col xs={4} className="d-flex justify-content-between align-items-center">
                         <div>Status</div>
                         <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }}>
-                        <option defaultChecked value="">Pilih Status</option>
+                        <option defaultChecked value="">Status Transaksi</option>
                         <option value={2}>Berhasil</option>
                         <option value={1}>Dalam Proses</option>
                         <option value={7}>Menunggu Pembayaran</option>

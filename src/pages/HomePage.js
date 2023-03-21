@@ -78,7 +78,7 @@ import InfoSaldoDanMutasi from './RiwayatSubAccount/InfoSaldoDanMutasi';
 import TransferSubAccount from './RiwayatSubAccount/TransferSubAccount';
 import SaldoPartner from './RiwayatTransaksi/SaldoPartner';
 import DisbursementPage from './Disbursement/DisbursementPage';
-import RiwayatDirectDebit from './Riwayat/RiwayatDirectDebit';
+import RiwayatDirectDebit from './Riwayat/DirectDebit';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
