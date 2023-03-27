@@ -74,7 +74,7 @@ const RiwayatDirectDebit = () => {
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span' style={{ fontSize: 14 }}>
                 <span style={{ cursor: "pointer" }}>
-                    Beranda
+                    Laporan
                 </span>{" "}
                 <img alt="" src={breadcrumbsIcon} /> &nbsp;
                 <span style={{ cursor: "pointer" }}>

@@ -79,6 +79,9 @@ import TransferSubAccount from './RiwayatSubAccount/TransferSubAccount';
 import SaldoPartner from './RiwayatTransaksi/SaldoPartner';
 import DisbursementPage from './Disbursement/DisbursementPage';
 import RiwayatDirectDebit from './Riwayat/DirectDebit';
+import VaDanPaymentLink from './Riwayat/VaDanPaymentLink';
+import Disbursement from './Riwayat/Disbursement';
+import InfoSaldoMutasi from './Riwayat/InfoSaldoDanMutasi';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -179,6 +182,9 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InfoSaldoDanMutasi.path} component={InfoSaldoDanMutasi} />
     <RouteWithSidebar exact path={Routes.TransferSubAccount.path} component={TransferSubAccount} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
+    <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
+    <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
+    <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

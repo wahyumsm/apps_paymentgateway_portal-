@@ -48,6 +48,9 @@ export const Routes = {
     InfoSaldoDanMutasi: {path: "/Sub Account Bank/info-saldo-dan-mutasi"},
     TransferSubAccount: {path: "/Sub Account Bank/transfer"},
     RiwayatDirectDebit: {path: "/riwayat-direct-debit"},
+    VaDanPaymentLink: {path: "/riwayat-dana-masuk"},
+    Disbursement: {path: "/riwayat-disbursement"},
+    SubAccount: {path: "/riwayat-sub-account"}
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
