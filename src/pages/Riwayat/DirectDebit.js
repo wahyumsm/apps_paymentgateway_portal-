@@ -56,12 +56,22 @@ const RiwayatDirectDebit = () => {
             name: 'Nominal Transaksi',
             selector: row => row.noRekening,
             width: "170px"
-          },
+        },
         {
             name: 'Status',
             selector: row => row.status,
             width: "150px",
-            
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4, fontFamily: "Nunito", fontSize: 14, fontWeight: 600 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status === "Aktif",
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
+                },
+                {
+                    when: row => row.status === "Tidak Aktif",
+                    style: { background: "#FDEAEA", color: "#EE2E2C" }
+                }
+            ],
         },
     ];
 
@@ -135,7 +145,17 @@ const RiwayatDirectDebit = () => {
             name: 'Status',
             selector: row => row.status,
             width: "150px",
-            
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4, fontFamily: "Nunito", fontSize: 14, fontWeight: 600 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status === "Aktif",
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
+                },
+                {
+                    when: row => row.status === "Tidak Aktif",
+                    style: { background: "#FDEAEA", color: "#EE2E2C" }
+                }
+            ],
         },
     ];
 
