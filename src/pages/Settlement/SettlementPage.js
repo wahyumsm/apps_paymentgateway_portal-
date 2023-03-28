@@ -756,8 +756,8 @@ function SettlementPage() {
             <div className='main-content'>
                 {
                     (user_role !== "102") ?
-                    <div className='riwayat-settlement-div mt-3'>
-                        <span className='mt-4' style={{fontWeight: 600}}>Riwayat Settlement</span>
+                    <div className='riwayat-settlement-div mt-3 mb-4'>
+                        <span className='mt-4' style={{fontWeight: 600}}>Table Riwayat Settlement Partner</span>
                         <div className='base-content mt-3'>
                             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                             <Row className='mt-4'>
