@@ -1056,7 +1056,6 @@ function EditPartner() {
                   setAlertMaksTransaksi(true)
                 } else {
                   setAlertMaksTransaksi(false)
-                  console.log(fee, "fee");
                   const newData = {
                     fee: typeof fee === "string" ? Number(fee.replaceAll(',', '.')) : fee,
                     fee_settle: typeof fee_settle === "string" ? Number(fee_settle.replaceAll(',', '.')) : fee_settle,
