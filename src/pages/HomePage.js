@@ -173,6 +173,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DetailPayment.path} component={DetailPayment} />
     <RouteWithSidebar exact path={Routes.AddPayment.path} component={AddPayment} />
     <RouteWithSidebar exact path={Routes.CustomDesignPayment.path} component={CustomDesignPayment} />
+    <RouteWithSidebar exact path={Routes.ListRiwayatSubAccountAdmin.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccount.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.InfoSaldoDanMutasi.path} component={InfoSaldoDanMutasi} />
     <RouteWithSidebar exact path={Routes.TransferSubAccount.path} component={TransferSubAccount} />

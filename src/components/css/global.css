@@ -126,6 +126,20 @@ body {
     color: #888888;
 }
 
+.input-text-report {
+    width: 57%;
+    margin-left: 20px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 0px 10px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
+
 .input-text-riwayat {
     width: 57%;
     height: 40px;
@@ -795,8 +809,55 @@ width: 150px;
     width: 100%;
     height: 40px;
     background: #EBEBEB;
+    border: 0.6px solid #EBEBEB;
     border-radius: 6px;
     color: #C4C4C4;
+}
+
+/* select option in riwayat Top up admin and disburse report*/
+.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control {
+    min-height: 40px;
+    min-width: 188px;
+    border-radius: 8px;
+}
+
+/* select option in riwayat transaksi admin */
+.dropSaldoPartner .css-1s2u09g-control, .dropSaldoPartner .css-1pahdxg-control {
+    min-height: 40px;
+    min-width: 180px;
+    border-radius: 8px;
+}
+
+/* select option in laporan */
+.dropLaporanPartner .css-1s2u09g-control, .dropLaporanPartner .css-1pahdxg-control  {
+    min-height: 40px;
+    min-width: 107%;
+    border-radius: 8px;
+}
+
+.dropLaporanPartnerBank .css-1s2u09g-control, .dropLaporanPartnerBank .css-1pahdxg-control {
+    min-height: 40px;
+    min-width: 116%;
+    border-radius: 8px;
+}
+
+/* .dropLaporanPartnerBank .css-1pahdxg-control {
+    min-height: 35px;
+    min-width: 116%;
+    border-radius: 8px;
+} */
+
+.css-14el2xx-placeholder {
+    font-size: 14px;
+}
+
+/* untuk di dashboard */
+.dropPartner .css-qqcyw1-option:hover, .dropDisbursePartner .css-qqcyw1-option:hover, .dropSaldoPartner .css-qqcyw1-option:hover, .dropLaporanPartner .css-qqcyw1-option:hover, .dropLaporanPartnerBank .css-qqcyw1-option:hover, .dropTopupPartner .css-qqcyw1-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropPartner .css-17rpq10-option:hover, .dropDisbursePartner .css-17rpq10-option:hover, .dropSaldoPartner .css-17rpq10-option:hover, .dropLaporanPartner .css-17rpq10-option:hover, .dropLaporanPartnerBank .css-17rpq10-option:hover, .dropTopupPartner .css-17rpq10-option:hover {
+    background-color: #3b8aff;
 }
 
 /* select option in dashboard */
@@ -842,6 +903,11 @@ width: 150px;
     overflow-y: auto !important;
     max-height: 43px !important;
     max-width: 1020px !important;
+}
+
+.dropPartnerAddUser .css-1s2u09g-control {
+    min-height: 43px;
+    border-radius: 8px;
 }
 
 .dropPartnerAddUser .css-1g68nbp-option:hover {
@@ -1083,7 +1149,7 @@ header.sc-dIouRR.evxAbm {
 
 .fixed-header-table {
     overflow: overlay;
-    height: 300px;
+    height: 490px;
 }
 .fixed-header-table thead th {
     position: sticky;
@@ -1104,6 +1170,21 @@ header.sc-dIouRR.evxAbm {
     background:#eee;
 }
 
+.saldo-sub-acc .modal-content{
+    width: 410px;
+}
+
+.input-text-saldo-sub-acc {
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 0px 10px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
 .form-confirm label.form-check-label {
     font-family: 'Nunito';
     font-size: 16px;
@@ -1437,3 +1518,22 @@ header.sc-dIouRR.evxAbm {
     .modal-invoice .modal-dialog {
         max-width: 1000px;
 }}
+
+.fee-partner {
+    width: 100%;
+    height: 40px;
+    margin-top: -7px;
+    margin-left: "unset";
+    display: block;
+    padding: 0.55rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5px;
+    color: #66799E;
+    background-clip: padding-box;
+    border: 0.0625rem solid #D1D7E0;
+    border-radius: 0.5rem;
+}
+
+th {
+    border-style: none;
+}

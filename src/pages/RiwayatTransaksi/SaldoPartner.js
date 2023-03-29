@@ -840,11 +840,11 @@ function SaldoPartner() {
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>ID Transaksi</span>
-                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiRiwayatTopUp} name="idTransaksiRiwayatTopUp" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
+                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiRiwayatTopUp} name="idTransaksiRiwayatTopUp" type='text'className='input-text-report me-2' placeholder='Masukkan ID Transaksi'/>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Nama Partner</span>
-                                    <div className="dropdown dropPartner">
+                                    <div className="dropdown dropSaldoPartner ms-3">
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -882,7 +882,7 @@ function SaldoPartner() {
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
-                                    <span className='me-4'>Periode*</span>
+                                    <span className='me-4'>Periode <span style={{ color: "red" }}>*</span></span>
                                     <Form.Select name='periodeRiwayatTopUp' className="input-text-ez" value={(inputHandle.periodeRiwayatTopUp !== undefined) ? inputHandle.periodeRiwayatTopUp : 0} onChange={(e) => handleChangePeriodeRiwayatTopUp(e)}>
                                         <option defaultChecked disabled value={0}>Pilih Periode</option>
                                         <option value={2}>Hari Ini</option>
@@ -893,8 +893,8 @@ function SaldoPartner() {
                                         <option value={7}>Pilih Range Tanggal</option>
                                     </Form.Select>
                                 </Col>
-                                <Col xs={1} className="d-flex justify-content-center align-items-center">
-                                    <div style={{ display: showDateRiwayatTopUp }}>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <div style={{ display: showDateRiwayatTopUp }} className='pe-3'>
                                         <DateRangePicker 
                                             onChange={pickDateRiwayatTopUp}
                                             value={stateRiwayatTopup}
@@ -966,8 +966,8 @@ function SaldoPartner() {
                         <span style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>Nama Partner</span>
-                                <div className="dropdown dropPartner">
+                                <span className='pe-4'>Nama Partner</span>
+                                <div className="dropdown dropSaldoPartner">
                                     <ReactSelect
                                         // isMulti
                                         closeMenuOnSelect={true}
@@ -1013,9 +1013,9 @@ function SaldoPartner() {
                                 </Form.Select>
                             </Col>
                         </Row>
-                        <Row className='mt-4'>
+                        <Row className='mt-3'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
-                                <span style={{ marginRight: 42 }}>Periode*</span>
+                                <span style={{ marginRight: 42 }}>Periode <span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeRiwayatAlokasiSaldo' className="input-text-ez" value={(periodeRiwayatAlokasiSaldo !== 0) ? periodeRiwayatAlokasiSaldo : 0} onChange={(e) => handleChangePeriodeRiwayatAlokasiSaldo(e)}>
                                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                                     <option value={2}>Hari Ini</option>
@@ -1169,9 +1169,9 @@ function SaldoPartner() {
                             <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                             {/* untuk admin */}
                             <Row className='mt-4'>
-                                <Col xs={6} className="d-flex justify-content-start align-items-center">
-                                    <span className='me-2'>Nama Partner</span>
-                                    <div className="dropdown dropPartner">
+                                <Col xs={12} className="d-flex justify-content-start align-items-center">
+                                    <span className='me-4'>Nama Partner</span>
+                                    <div className="dropdown dropSaldoPartner">
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}

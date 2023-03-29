@@ -5,6 +5,7 @@ import encryptData from '../../function/encryptData';
 import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import alertIcon from "../../assets/icon/alert_icon.svg";
 
 function DetailAgen() {
 
@@ -66,7 +67,7 @@ function DetailAgen() {
                 <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Detail Agen</div>
                 {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
+            <div className='base-content' style={{ width:"100%", padding: 50 }}>
                 <div>
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
@@ -209,59 +210,82 @@ function DetailAgen() {
             <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Rekening Sub Account</div>
             </div>
-            <div className='base-content' style={{ width:"93%", padding: 50 }}>
-                <div>
-                    <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
-                            <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Bank
-                            </span>
-                        </Col>
-                        <Col xs={9}>
-                            <Form.Control
-                                value={detailAgen.agen_bank}
-                                type='text'
-                                disabled
-                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                />
-                        </Col>
-                    </Row>
-                    <Row className='mb-4'>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
-                            <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                No Rekening
-                            </span>
-                        </Col>
-                        <Col xs={9}>
-                            <Form.Control
-                                name='akunBank'
-                                value={detailAgen.agen_bank_number}
-                                type='text'
-                                disabled
-                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
-                            <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Pemilik Rekening
-                            </span>
-                        </Col>
-                        <Col xs={9}>
-                            <Form.Control
-                                value={detailAgen.agen_bank_name}
-                                type='text'
-                                disabled
-                                style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                />
-                        </Col>
-                    </Row>
-                </div>
-            </div>
+            {
+                detailAgen.subaccount_acc_number !== null ?
+                (
+                    <div className='base-content' style={{ width:"100%", padding: 50 }}>
+                        <div>
+                            <Row className='mb-4'>
+                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                        Nama Bank
+                                    </span>
+                                </Col>
+                                <Col xs={9}>
+                                    <Form.Control
+                                        value={detailAgen.subaccount_bank_name}
+                                        type='text'
+                                        disabled
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                        />
+                                </Col>
+                            </Row>
+                            <Row className='mb-4'>
+                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                        No Rekening
+                                    </span>
+                                </Col>
+                                <Col xs={9}>
+                                    <Form.Control
+                                        name='akunBank'
+                                        value={detailAgen.subaccount_acc_number}
+                                        type='text'
+                                        disabled
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                        />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                        Nama Pemilik Rekening
+                                    </span>
+                                </Col>
+                                <Col xs={9}>
+                                    <Form.Control
+                                        value={detailAgen.subaccount_acc_name}
+                                        type='text'
+                                        disabled
+                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                        />
+                                </Col>
+                            </Row>
+                        </div>
+                    </div>
+                ) : (
+                    <div
+                        style={{
+                            width:"100%",
+                            fontSize: "14px",
+                            background: "rgba(255, 214, 0, 0.16)",
+                            borderRadius: "4px",
+                            fontStyle: "italic",
+                            padding: "12px",
+                            gap: 10,
+                        }}
+                        className="text-start my-1"
+                    >
+                        <span className="mx-2">
+                            <img src={alertIcon} alt="alert" />
+                        </span>
+                        Silahkan hubungi Admin untuk menambahkan Sub Account pada agen
+                    </div>
+                )
+            }
             {
                 user_role === "102" ?
-                <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
+                <div style={{ display: "flex", justifyContent: "end", marginTop: 16}}>
                     <button onClick={() => editAgen(agenId)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                         Edit
                     </button>

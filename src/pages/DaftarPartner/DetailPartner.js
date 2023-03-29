@@ -146,6 +146,7 @@ function DetailPartner() {
         {
           name: 'ID Agen',
           selector: row => row.agen_id,
+          cell: (row) => <Link style={{textDecoration: "underline", color: "#077E86"}} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>,
           wrap: true,
           sortable: true,
           width: "150px"
@@ -176,8 +177,8 @@ function DetailPartner() {
           width: "150px"
         },
         {
-            name: 'Nama Pemilik Rekening',
-            selector: row => row.nama_pemilik_rekening,
+            name: 'No Rekening Sub Account',
+            selector: row => row.subaccount_acc_number === null ? "-" : row.subaccount_acc_number,
             sortable: true,
             width: "240px"
         },
@@ -383,7 +384,7 @@ function DetailPartner() {
     }
 
     return (
-        <div className='container-content-partner mt-5'>
+        <div className='container-content-partner mt-5' style={{padding: "37px 27px 37px 27px"}}>
             {isDetailAkun ? <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Partner</span>
             : <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftarpartner"}>Daftar Partner</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Daftar Agen</span>}
             <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
@@ -523,27 +524,27 @@ function DetailPartner() {
                             <tbody>
                                 <tr>
                                     <td style={{width: 200}}>Fee <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Settlement Fee <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Minimal Topup Alokasi <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Minimal Transaksi <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Maksimal Transaksi <span style={{color: "red"}}>*</span></td>
-                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 2)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
                                 <tr>
@@ -675,13 +676,13 @@ function DetailPartner() {
                             </tbody>
                         </table>
                         {expandedSubAcc ?
-                            <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
-                                <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
-                                    Sembunyikan daftar Sub Account <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
+                            <div style={{display: "flex", justifyContent: "end", alignItems: "end"}}>
+                                <button className='mb-4 pb-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, textAlign: "end", gap: 8, width: 500, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                                    Sembunyikan daftar akun Sub Account <FontAwesomeIcon icon={faChevronUp} className="mx-2" />
                                 </button>
                             </div> :
-                            <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
-                                <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
+                            <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "end"}} >
+                                <button className='mb-4 pb-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, textAlign: "end", gap: 8, width: 500, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
                                     Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
                                 </button>
                             </div>                                            

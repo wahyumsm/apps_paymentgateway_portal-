@@ -5,6 +5,7 @@ import encryptData from '../../function/encryptData';
 import { BaseURL, convertFormatNumber, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import alertIcon from "../../assets/icon/alert_icon.svg";
 
 function EditAgen() {
     const history = useHistory()
@@ -27,6 +28,12 @@ function EditAgen() {
         rekeningOwner: "",
         active: false,
         nominal: 0
+    })
+
+    const [inputDataSubAcc, setInputDataSubAcc] = useState({
+        bankNameSubAcc: "",
+        akunBankSubAcc: "",
+        rekeningOwnerSubAcc: ""
     })
 
     function handleChange(e) {
@@ -67,6 +74,7 @@ function EditAgen() {
                 }
                 const dataDetail = detailAgen.data.response_data
                 setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
+                setInputDataSubAcc({bankNameSubAcc: dataDetail.subaccount_bank_name, akunBankSubAcc: dataDetail.subaccount_acc_number, rekeningOwnerSubAcc: dataDetail.subaccount_acc_name})
                 // setDetailAgen(detailAgen.data.response_data)
             } else if (detailAgen.status === 200 && detailAgen.data.response_code === 200 && detailAgen.data.response_new_token.length !== 0) {
                 setUserSession(detailAgen.data.response_new_token)
@@ -83,6 +91,7 @@ function EditAgen() {
                 }
                 const dataDetail = detailAgen.data.response_data
                 setInputHandle({namaAgen: dataDetail.agen_name, emailAgen: dataDetail.agen_email, phoneNumber: dataDetail.agen_mobile, akunBank:dataDetail.agen_bank_number, rekeningOwner: dataDetail.agen_bank_name, active: dataDetail.status, nominal: dataDetail.nominal_topup})
+                setInputDataSubAcc({bankNameSubAcc: dataDetail.subaccount_bank_name, akunBankSubAcc: dataDetail.subaccount_acc_number, rekeningOwnerSubAcc: dataDetail.subaccount_acc_name})
                 // setDetailAgen(detailAgen.data.response_data)
             }
         } catch (error) {
@@ -158,7 +167,7 @@ function EditAgen() {
                     <div className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>Detail Agen</div>
                     {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
                 </div>
-                <div className='base-content' style={{ width:"93%", padding: 50 }}>
+                <div className='base-content' style={{ width:"100%", padding: 50 }}>
                     <div>
                         <Row className='mb-4'>
                             <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
@@ -322,61 +331,84 @@ function EditAgen() {
                     </div>
                 </div>
                 <div className="head-title">
-                <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Rekening Sub Account</div>
+                    <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Rekening Sub Account</div>
                 </div>
-                    <div className='base-content' style={{ width:"93%", padding: 50 }}>
-                        <div>
-                            <Row className='mb-4'>
-                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
-                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                        Nama Bank
-                                    </span>
-                                </Col>
-                                <Col xs={9}>
-                                    <Form.Control
-                                        value={inputHandle.bankName && "Bank Danamon"}
-                                        placeholder="Bank Danamon"
-                                        type='text'
-                                        disabled
-                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className='mb-4'>
-                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
-                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                        No Rekening
-                                    </span>
-                                </Col>
-                                <Col xs={9}>
-                                    <Form.Control
-                                        name='akunBank'
-                                        value={inputHandle.akunBank}
-                                        type='text'
-                                        disabled
-                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }} 
-                                    />
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
-                                    <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                        Nama Pemilik Rekening
-                                    </span>
-                                </Col>
-                                <Col xs={9}>
-                                    <Form.Control
-                                        name='rekeningOwner'
-                                        value={inputHandle.rekeningOwner}
-                                        type='text'
-                                        disabled
-                                        style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}   
-                                    />
-                                </Col>
-                            </Row>
+                {
+                    inputDataSubAcc.akunBankSubAcc !== null ?
+                    (
+                        <div className='base-content' style={{ width:"100%", padding: 50 }}>
+                            <div>
+                                <Row className='mb-4'>
+                                    <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                        <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                            Nama Bank
+                                        </span>
+                                    </Col>
+                                    <Col xs={9}>
+                                        <Form.Control
+                                            value={inputDataSubAcc.bankNameSubAcc && "Bank Danamon"}
+                                            placeholder="Bank Danamon"
+                                            type='text'
+                                            disabled
+                                            style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row className='mb-4'>
+                                    <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                        <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                            No Rekening
+                                        </span>
+                                    </Col>
+                                    <Col xs={9}>
+                                        <Form.Control
+                                            name='akunBank'
+                                            value={inputDataSubAcc.akunBankSubAcc}
+                                            type='text'
+                                            disabled
+                                            style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }} 
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
+                                        <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                            Nama Pemilik Rekening
+                                        </span>
+                                    </Col>
+                                    <Col xs={9}>
+                                        <Form.Control
+                                            name='rekeningOwner'
+                                            value={inputDataSubAcc.rekeningOwnerSubAcc}
+                                            type='text'
+                                            disabled
+                                            style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}   
+                                        />
+                                    </Col>
+                                </Row>
+                            </div>
                         </div>
-                    </div>
-                <div className='mb-5 mt-4 me-4 pe-5' style={{ display: "flex", justifyContent: "end"}}>
+                    ) : (
+                        <div
+                            style={{
+                                width:"100%",
+                                fontSize: "14px",
+                                background: "rgba(255, 214, 0, 0.16)",
+                                borderRadius: "4px",
+                                fontStyle: "italic",
+                                padding: "12px",
+                                gap: 10,
+                            }}
+                            className="text-start my-1"
+                        >
+                            <span className="mx-2">
+                                <img src={alertIcon} alt="alert" />
+                            </span>
+                            Silahkan hubungi Admin untuk menambahkan Sub Account pada agen
+                        </div>
+                    )
+                }
+                <div className='mb-5 mt-4 ' style={{ display: "flex", justifyContent: "end"}}>
                     <button onClick={() => setShowModalBatalEdit(true)} className='mx-2' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", gap: 8, width: 136, height: 45, background: "#FFFFFF", color:"#888888", border: "0.6px solid #EBEBEB", borderRadius: 6 }}>
                         Batal
                     </button>

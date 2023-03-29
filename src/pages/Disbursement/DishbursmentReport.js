@@ -775,11 +775,11 @@ function DisbursementReport() {
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>ID Transaksi</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-ez' placeholder='Masukkan ID Transaksi'/>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-report' placeholder='Masukkan ID Transaksi'/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                        <span className='me-2'>Nama Partner</span>
-                                        <div className="dropdown dropPartner">
+                                        <span className='me-4'>Nama Partner</span>
+                                        <div className="dropdown dropDisbursePartner">
                                             <ReactSelect
                                                 // isMulti
                                                 closeMenuOnSelect={true}
@@ -818,7 +818,7 @@ function DisbursementReport() {
                                 </Row>
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: (showDateDisbursement === "none") ? "33.2%" : "33.2%" }}>
-                                        <span style={{ marginRight: 26 }}>Periode*</span>
+                                        <span style={{ marginRight: 26 }}>Periode <span style={{ color: "red" }}>*</span></span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
                                             <option defaultChecked disabled value={0}>Pilih Periode</option> 
                                             <option value={2}>Hari Ini</option>
@@ -831,11 +831,11 @@ function DisbursementReport() {
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>Partner Trans ID</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-ez' placeholder='Masukkan Partner Trans ID'/>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report ms-2' placeholder='Masukkan Partner Trans ID'/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: "33%"}}>
                                         <span>Tipe Pembayaran</span>
-                                        <div className="dropdown dropPartner">
+                                        <div className="dropdown dropDisbursePartner me-4">
                                             <ReactSelect
                                                 // isMulti
                                                 closeMenuOnSelect={true}
@@ -863,7 +863,7 @@ function DisbursementReport() {
                                 </Row>
                                 <Row className='mt-4' style={{ display: showDateDisbursement }}>
                                     <Col xs={4}>
-                                        <div >
+                                        <div className='text-end me-4'>
                                             <DateRangePicker 
                                                 onChange={pickDateDisbursement}
                                                 value={stateDateDisbursement}
@@ -876,7 +876,7 @@ function DisbursementReport() {
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span>Reference No</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.referenceNo} name="referenceNo" type='text'className='input-text-ez' placeholder='Masukkan Reference No'/>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.referenceNo} name="referenceNo" type='text'className='input-text-report' placeholder='Masukkan Reference No'/>
                                     </Col>
                                 </Row>
                             </> :
@@ -884,11 +884,11 @@ function DisbursementReport() {
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                                         <span className='me-4'>ID Transaksi</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-ez me-2' placeholder='Masukkan ID Transaksi'/>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-report' placeholder='Masukkan ID Transaksi'/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: "34%" }}>
-                                        <span style={{ marginRight: 26 }}>Periode*</span>
-                                        <Form.Select name='periodeDisbursement' className="input-text-ez me-4" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
+                                        <span style={{ marginRight: 26 }}>Periode <span style={{ color: "red" }}>*</span></span>
+                                        <Form.Select name='periodeDisbursement' className="input-text-ez me-2" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
                                             <option defaultChecked disabled value={0}>Pilih Periode</option>
                                             <option value={2}>Hari Ini</option>
                                             <option value={3}>Kemarin</option>
@@ -914,10 +914,10 @@ function DisbursementReport() {
                                 <Row className='mt-3'>
                                     <Col xs={4} className='d-flex justify-content-start align-items-center'>
                                         <span>Partner Trans ID</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-ez' placeholder='Masukkan Partner Trans ID'/>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder='Masukkan Partner Trans ID'/>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-center align-items-center" >
-                                        <div style={{ display: showDateDisbursement}}>
+                                    <Col xs={4} className="d-flex justify-content-end align-items-center" >
+                                        <div style={{ display: showDateDisbursement}} className='me-4'>
                                             <DateRangePicker 
                                                 onChange={pickDateDisbursement}
                                                 value={stateDateDisbursement}

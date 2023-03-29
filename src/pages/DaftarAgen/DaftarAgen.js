@@ -79,7 +79,9 @@ function DaftarAgen() {
     {
       name: 'ID Agen',
       selector: row => row.agen_id,
-      cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>
+      sortable: true,
+      cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>,
+      width: '150px'
     },
     {
       name: 'Nama Agen',
@@ -92,29 +94,38 @@ function DaftarAgen() {
       name: 'Email',
       selector: row => row.agen_email,
       wrap: true,
+      width: '150px'
     },
     {
-      name: 'No Hp',
+      name: 'No Telepon',
       selector: row => row.agen_mobile,
+      width: '130px'
     },
     {
       name: 'No Rekening',
       selector: row => row.agen_bank_number,
+      width: '150px'
     },
     
     {
       name: 'No Rekening Sub Account',
-      selector: row => row.agen_bank_number,
+      selector: row => row.subaccount_acc_number === null ? "-" : row.subaccount_acc_number,
       width: '220px'
     },
     {
       name: "Default",
       selector: row => row.is_default === true ? "Default Partner" : "-",
+      width: '130px'
+    },
+    {
+      name: "Kode Unik",
+      selector: row => row.agen_unique_code,
     },
     {
       name: 'Status',
       selector: row => row.status,
-      width: "90px",
+      sortable: true,
+      width: "130px",
       style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
       conditionalCellStyles: [
         {

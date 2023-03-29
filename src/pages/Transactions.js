@@ -266,7 +266,7 @@ export default () => {
   async function getBankNameHandler() {
     try {
         const auth = 'Bearer ' + getToken();
-        const dataParams = encryptData(`{"fitur_id": 100}`)
+        const dataParams = encryptData(`{"fitur_id":"100"}`)
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': auth
@@ -991,7 +991,7 @@ export default () => {
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span className="pe-3">Nama Agen</span>
-                    <div className="dropdown dropPartner">
+                    <div className="dropdown dropDisbursePartner ps-3">
                       <ReactSelect
                         // isMulti
                         closeMenuOnSelect={true}
@@ -1031,7 +1031,7 @@ export default () => {
             </Row>
             <Row className='mt-4'>
                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
-                  <span className="me-3">Periode*</span>
+                  <span className="me-3">Periode<span style={{ color: "red" }}>*</span></span>
                   <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-5" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                     <option value={2}>Hari Ini</option>
@@ -1052,7 +1052,7 @@ export default () => {
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span className="me-2">Nama Bank</span>
-                    <div className="dropdown dropPartner">
+                    <div className="dropdown dropDisbursePartner">
                       <ReactSelect
                         // isMulti
                         closeMenuOnSelect={true}
@@ -1215,7 +1215,7 @@ export default () => {
                     <input name="idTransaksiSettlement" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
-                    <span >Periode*</span>
+                    <span >Periode<span style={{ color: "red" }}>*</span></span>
                     <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                       <option defaultChecked disabled value={0}>Pilih Periode</option>
                       <option value={2}>Hari Ini</option>

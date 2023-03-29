@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import SubAccountComponent from '../../components/SubAccountComponent'
 import { useHistory } from 'react-router-dom'
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
@@ -19,6 +19,7 @@ import { useEffect } from 'react'
 import FilterSubAccount from '../../components/FilterSubAccount'
 import Countdown from 'react-countdown'
 import encryptData from '../../function/encryptData'
+import CurrencyInput from 'react-currency-input-field'
 
 const TransferSubAccount = () => {
     const history = useHistory()
@@ -31,7 +32,6 @@ const TransferSubAccount = () => {
     const [toCountdown, setToCountdown] = useState(false)
     const [showTransferBerhasil, setShowTransferBerhasil] = useState(false)
     const [otp, setOtp] = useState('')
-    let otps = useRef('')
     const renderer = ({ minutes, seconds }) => {  return <span>{minutes !== 0 && `${minutes} menit`} {seconds} detik</span>; }
     const [listBank, setListBank] = useState([])
     const [listRekening, setListRekening] = useState([])
@@ -54,7 +54,6 @@ const TransferSubAccount = () => {
         item => (item.moffshorebankacclist_name && item.moffshorebankacclist_name.toLowerCase().includes(filterTextRekening.toLowerCase())) || (item.moffshorebankacclist_number && item.moffshorebankacclist_number.toLowerCase().includes(filterTextRekening.toLowerCase()))
     )
     
-    // console.log(sendOtp, 'sendOtp');
     const [inputHandle, setInputHandle] = useState({
         akunPartner: "",
         nomorAkun: "",
@@ -97,6 +96,7 @@ const TransferSubAccount = () => {
     );
 
     const handleRowClicked = row => {
+        setFilterTextBank('')
         filterItemsBank.map(item => {
             if (row.mbank_code === item.mbank_code) {
                 setInputData({
@@ -110,6 +110,7 @@ const TransferSubAccount = () => {
     };
 
     const handleRowClickedRekening = row => {
+        setFilterTextRekening('')
         setClickCheck(false)
         setIsCheckedAccBankButton(false)
         setChecking({})
@@ -149,11 +150,17 @@ const TransferSubAccount = () => {
     }
 
     function handleChange(e) {
-        // console.log(e.target.value, "e.target.value");
         setInputTransfer({
             ...inputTransfer,
             [e.target.name]: (e.target.name !== "desc") ? Number(e.target.value).toString() : e.target.value,
         });
+    }
+
+    function handleChangeNominal(e) {
+        setInputTransfer({
+            ...inputTransfer,
+            nominal: e
+        })
     }
     
     function completeTime() {
@@ -188,7 +195,7 @@ const TransferSubAccount = () => {
         {
             name: 'No',
             selector: row => row.number,
-            width: "80px"
+            width: "67px"
         },
         {
             name: 'Nama Bank',
@@ -239,7 +246,7 @@ const TransferSubAccount = () => {
     }
 
     function toTransfer () {
-        confirmHandler(inputHandle.nomorAkun, inputTransfer.nominal, inputData.bankCode, inputTransfer.desc, otp, isChecked, inputHandle.akunPartner)
+        confirmHandler(inputDataRekening.noRek, inputTransfer.nominal, inputData.bankCode, inputTransfer.desc, otp, isChecked, inputHandle.akunPartner)
     }
 
     async function getAkunPartner() {
@@ -312,15 +319,15 @@ const TransferSubAccount = () => {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const rekeningList = await axios.post(BaseURL + "/SubAccount/GetListAccount", { data: "" }, { headers: headers })
-            // console.log(rekeningList, 'list rekening');
-            if (rekeningList.status === 200 && rekeningList.data.response_code === 200 && rekeningList.data.response_new_token.length === 0) {
-                rekeningList.data.response_data = rekeningList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-                setListRekening(rekeningList.data.response_data)
-            } else if (rekeningList.status === 200 && rekeningList.data.response_code === 200 && rekeningList.data.response_new_token.length !== 0) {
-                setUserSession(rekeningList.data.response_new_token)
-                rekeningList.data.response_data = rekeningList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
-                setListRekening(rekeningList.data.response_data)
+            const bankList = await axios.post(BaseURL + "/SubAccount/GetListAccount", { data: "" }, { headers: headers })
+            // console.log(bankList, 'list bank');
+            if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length === 0) {
+                bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListRekening(bankList.data.response_data)
+            } else if (bankList.status === 200 && bankList.data.response_code === 200 && bankList.data.response_new_token.length !== 0) {
+                setUserSession(bankList.data.response_new_token)
+                bankList.data.response_data = bankList.data.response_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                setListRekening(bankList.data.response_data)
             }
         } catch (error) {
         //   console.log(error)
@@ -487,6 +494,16 @@ const TransferSubAccount = () => {
         }
     }
 
+    function batalIn (param) {
+        if (param === "rekening") {
+            setShowDaftarRekening(false)
+            setFilterTextRekening('')
+        } else {
+            setShowBank(false)
+            setFilterTextBank('')
+        }
+    }
+
     const customStyles = {
         headCells: {
             style: {
@@ -508,7 +525,7 @@ const TransferSubAccount = () => {
   
     const CustomLoader = () => (
       <div style={{ padding: '24px' }}>
-        <img className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+        <img className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} alt="loading" />
         <div>Loading...</div>
       </div>
     );
@@ -562,7 +579,11 @@ const TransferSubAccount = () => {
                                 <input type='number' name='noRek' value={inputDataRekening.noRek} onChange={(e) => handleChangeRek(e)} className="input-text-user" placeholder='Masukkan No. Rekening Tujuan' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}/>
                             </Col>
                             <Col xs={2} >
-                                <button onClick={() => checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, true)} className='btn-ez-transfer'>
+                                <button 
+                                    onClick={() => checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, true)} 
+                                    className={(inputDataRekening.noRek.length !== 0 && inputData.bankCode.length !== 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
+                                    disabled={inputDataRekening.noRek.length === 0 || inputData.bankCode.length === 0}
+                                >
                                     Periksa
                                 </button>
                             </Col>
@@ -622,7 +643,17 @@ const TransferSubAccount = () => {
                                 Nominal Transfer <span style={{ color: "red" }}>*</span>
                             </Col>
                             <Col xs={10}>
-                                {
+                                <CurrencyInput
+                                    className='input-text-user'
+                                    value={inputTransfer.nominal === undefined ? 0 : inputTransfer.nominal}
+                                    onValueChange={(e) => handleChangeNominal(e)}
+                                    placeholder="Masukkan Nominal Transfer"
+                                    groupSeparator={"."}
+                                    decimalSeparator={','}
+                                    allowDecimals={false}
+                                />
+
+                                {/* {
                                     editNominal ?
                                         <input 
                                             name="nominal" 
@@ -644,7 +675,7 @@ const TransferSubAccount = () => {
                                             onChange={handleChange}
                                             onFocus={() => setEditNominal(!editNominal)}
                                         />
-                                }
+                                } */}
                             </Col>
                         </Row>
                         <Row className='mt-3 align-items-center'>
@@ -666,8 +697,8 @@ const TransferSubAccount = () => {
                     </div>
                     <div className="d-flex justify-content-end align-items-center mt-3" >
                         <button 
-                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && inputTransfer.nominal.length >= 5 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
-                            disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || inputTransfer.nominal.length < 5 || transferFee.fee_transfer === undefined}
+                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && Number(inputTransfer.nominal) >= 10000 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
+                            disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || Number(inputTransfer.nominal) < 10000 || transferFee.fee_transfer === undefined}
                             style={{ width: '25%' }} 
                             onClick={() => toShowDataTransfer(isCheckedAccBankButton)}
                         >
@@ -685,7 +716,7 @@ const TransferSubAccount = () => {
                         className="position-absolute top-0 end-0 m-3"
                         variant="close"
                         aria-label="Close"
-                        onClick={() => setShowBank(false)}
+                        onClick={() => batalIn('bank')}
                     />
                     
                 </Modal.Header>
@@ -708,6 +739,27 @@ const TransferSubAccount = () => {
                             fixedHeaderScrollHeight="300px"
                         />
                     </div>
+                    <div className='text-center my-1'>
+                        <button
+                            onClick={() => batalIn('bank')}
+                            style={{
+                                fontFamily: "Exo",
+                                fontSize: 16,
+                                fontWeight: 900,
+                                alignItems: "center",
+                                padding: "12px 24px",
+                                gap: 8,
+                                width: 136,
+                                height: 45,
+                                background: "#FFFFFF",
+                                color: "#888888",
+                                border: "0.6px solid #EBEBEB",
+                                borderRadius: 6,
+                            }}
+                        >
+                            Batal
+                        </button>
+                    </div>
                 </Modal.Body>
             </Modal>
 
@@ -718,7 +770,7 @@ const TransferSubAccount = () => {
                         className="position-absolute top-0 end-0 m-3"
                         variant="close"
                         aria-label="Close"
-                        onClick={() => setShowDaftarRekening(false)}
+                        onClick={() => batalIn('rekening')}
                     />
                     
                 </Modal.Header>
@@ -740,6 +792,27 @@ const TransferSubAccount = () => {
                             fixedHeader={true}
                             fixedHeaderScrollHeight="300px"
                         />
+                    </div>
+                    <div className='text-center my-1'>
+                        <button
+                            onClick={() => batalIn('rekening')}
+                            style={{
+                                fontFamily: "Exo",
+                                fontSize: 16,
+                                fontWeight: 900,
+                                alignItems: "center",
+                                padding: "12px 24px",
+                                gap: 8,
+                                width: 136,
+                                height: 45,
+                                background: "#FFFFFF",
+                                color: "#888888",
+                                border: "0.6px solid #EBEBEB",
+                                borderRadius: 6,
+                            }}
+                        >
+                            Batal
+                        </button>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -916,7 +989,7 @@ const TransferSubAccount = () => {
                     <div className='text-center px-5' style={{ fontSize: 16, fontWeight: 400, color: "#888888", fontFamily: "Source Sans Pro" }}>Batas maksimum adalah 3 permintaan OTP  per-hari. Coba lagi dalam 1x24 jam kedepan untuk melakukan permintaan OTP. </div>
                     <div className='px-5 mx-4'>
                         <button
-                        onClick={() => window.location.reload()}
+                            onClick={() => window.location.reload()}
                             className='d-flex justify-content-center align-items-center text-center mt-3 mb-2'
                             style={{
                                 width: "100%",

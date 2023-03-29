@@ -290,7 +290,7 @@ function RiwayatTransaksi() {
     async function getBankNameHandler() {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"fitur_id": 100}`)
+            const dataParams = encryptData(`{"fitur_id":"100"}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -930,8 +930,8 @@ function RiwayatTransaksi() {
                             {/* <input type='text'className='input-text-riwayat me-2' placeholder='Masukkan ID Transaksi'/>            */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Nama Partner</span>
-                            <div className="dropdown dropPartner">
+                            <span className='me-3'>Nama Partner</span>
+                            <div className="dropdown dropSaldoPartner">
                                 <ReactSelect
                                     // isMulti
                                     closeMenuOnSelect={true}
@@ -957,8 +957,8 @@ function RiwayatTransaksi() {
                             </Form.Select> */}
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className="me-2">Nama Agen</span>
-                            <div className="dropdown dropPartner">
+                            <span className="me-4">Nama Agen</span>
+                            <div className="dropdown dropSaldoPartner">
                                 <ReactSelect
                                     // isMulti
                                     closeMenuOnSelect={true}
@@ -996,7 +996,7 @@ function RiwayatTransaksi() {
                             </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
-                            <span style={{ marginRight: 40 }}>Periode*</span>
+                            <span style={{ marginRight: 40 }}>Periode<span style={{ color: "red" }}>*</span></span>
                             <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-3" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
@@ -1018,8 +1018,8 @@ function RiwayatTransaksi() {
                     </Row>
                     <Row className="mt-4">
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className="me-2">Nama Bank</span>
-                            <div className="dropdown dropPartner">
+                            <span className="me-4">Nama Bank</span>
+                            <div className="dropdown dropSaldoPartner">
                                 <ReactSelect
                                     // isMulti
                                     closeMenuOnSelect={true}
@@ -1044,7 +1044,7 @@ function RiwayatTransaksi() {
                                 }
                             </Form.Select> */}
                         </Col>
-                        <Col xs={4} style={{ display: showDateDanaMasuk }}>
+                        <Col xs={4} style={{ display: showDateDanaMasuk }} className='text-end pe-4'>
                             <DateRangePicker 
                                 onChange={pickDateDanaMasuk}
                                 value={stateDanaMasuk}
@@ -1122,8 +1122,8 @@ function RiwayatTransaksi() {
                             <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlement} name="idTransaksiSettlement" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Nama Partner</span>
-                            <div className="dropdown dropPartner">
+                            <span className='me-3'>Nama Partner</span>
+                            <div className="dropdown dropSaldoPartner">
                                 <ReactSelect
                                     // isMulti
                                     closeMenuOnSelect={true}
@@ -1152,7 +1152,7 @@ function RiwayatTransaksi() {
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Status</span>
-                            <Form.Select name="statusSettlement" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
+                            <Form.Select name="statusSettlement" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
                                 <option defaultChecked disabled value="">Pilih Status</option>
                                 <option value={2}>Berhasil</option>
                                 <option value={1}>Dalam Proses</option>
@@ -1163,7 +1163,7 @@ function RiwayatTransaksi() {
                     </Row>
                     <Row className='mt-4'>
                         <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlement === "none") ? "33.2%" : "33.2%" }}>
-                            <span style={{ marginRight: 26 }}>Periode*</span>
+                            <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
                             <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlement} onChange={(e) => handleChangePeriodeSettlement(e)}>
                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                 <option value={2}>Hari Ini</option>
@@ -1184,7 +1184,7 @@ function RiwayatTransaksi() {
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span className="me-2">Nama Bank</span>
-                            <div className="dropdown dropPartner">
+                            <div className="dropdown dropSaldoPartner">
                                 <ReactSelect
                                     // isMulti
                                     closeMenuOnSelect={true}
@@ -1211,8 +1211,8 @@ function RiwayatTransaksi() {
                         </Col>
                     </Row>
                     <Row className='mt-4'>
-                        <Col xs={4} style={{ display: showDateSettlement, marginLeft: 100 }}>
-                            <div>
+                        <Col xs={4} style={{ display: showDateSettlement }} className='text-end'>
+                            <div className='me-4' style={{ paddingRight: "0.5rem" }}>
                                 <DateRangePicker 
                                     onChange={pickDateSettlement}
                                     value={stateSettlement}

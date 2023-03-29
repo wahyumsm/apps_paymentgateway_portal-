@@ -64,13 +64,13 @@ export default (props = {}) => {
 
     return (
       <Nav.Item className={navItemClassName} onClick={() => setShow(false)}>
-        <Nav.Link {...linkProps} target={target} className={classNames}>
-          <span>
+        <Nav.Link {...linkProps} target={target} className={` d-flex justify-content-start align-items-center ${classNames}`}>
+          <div>
             {icon ? <span className="sidebar-icon"><FontAwesomeIcon icon={icon} /> </span> : null}
             {image ? <Image src={image} width={20} height={20} className="sidebar-icon svg-icon" /> : null}
 
-            <span className="sidebar-text">{title}</span>
-          </span>
+          </div>
+          <div className={title === "Riwayat Transaksi Sub Account Admin" ? " ms-2 sidebar-text" : "sidebar-text"}>{title}</div>
           {badgeText ? (
             <Badge pill bg={badgeBg} text={badgeColor} className="badge-md notification-count ms-2">{badgeText}</Badge>
           ) : null}
@@ -135,7 +135,7 @@ export default (props = {}) => {
                       // image={(item.label === "Dashboard") ? BerandaIcon : (item.label === "Report") ? LaporanIcon : (item.label === "Daftar Agen") ? DaftarAgenIcon : ""}
                       image={item.icon}
                       // link={Routes.Transactions.path}
-                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 20) ? Routes.ListPayment.path : (item.id === 21) ? Routes.DisbursementReport.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 25) ? "" : ""}
+                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 20) ? Routes.ListPayment.path : (item.id === 21) ? Routes.DisbursementReport.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 25) ? Routes.ListRiwayatSubAccountAdmin.path : ""}
                     /> :
                     <CollapsableNavItem eventKey={item.label} key={item.id} title={item.label} image={item.icon}>
                       {

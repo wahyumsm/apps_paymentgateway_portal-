@@ -15,10 +15,8 @@ import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import saveIcon from "../../assets/icon/save_icon.svg";
 import triangleAlertIcon from "../../assets/icon/alert_icon.svg";
 import DataTable from 'react-data-table-component'
-import { agenLists } from '../../data/tables'
 import axios from 'axios'
 import FilterSubAccount from '../../components/FilterSubAccount'
-import { Base64 } from 'js-base64'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import validator from "validator";
@@ -35,6 +33,7 @@ import daftarBank from '../../assets/files/Daftar Bank Tujuan Disbursement-PT. E
 import templateBulkXLSX from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.xlsx'
 import templateBulkCSV from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
 import arrowDown from "../../assets/img/icons/arrow_down.svg";
+import CurrencyInput from 'react-currency-input-field'
 
 registerPlugin(FilePondPluginFileEncode)
 
@@ -1628,18 +1627,6 @@ function DisbursementPage() {
         catatan: ""
     })
 
-    // console.log(inputData.bankName,"bankName");
-    // console.log(inputData.bankCode,"bankCode");
-    // console.log(inputRekening.bankNameRek,"bankNameRek");
-    // console.log(inputRekening.bankNumberRek,"bankNumberRek");
-    // console.log(inputHandle.bankCabang,"bankCabang");
-    // console.log(inputHandle.nominal,"nominal");
-    // console.log(inputHandle.emailPenerima.length,"emailPenerima");
-    // console.log(inputHandle.catatan,"catatan");
-    // console.log(isChecked,"saveAcc");
-    // console.log(dataDisburse,"dataDisburse");
-    // console.log(allFee, "all fee");
-
     const columns = [
         {
           name: "No",
@@ -1969,10 +1956,11 @@ function DisbursementPage() {
             bankName: row.mbank_name
         })
         setInputHandle({
+            ...inputHandle,
             bankCabang: row.mbankaccountlist_branch_name,
-            nominal: inputHandle.nominal,
-            emailPenerima: inputHandle.emailPenerima,
-            catatan: inputHandle.catatan
+            // nominal: Number(inputHandle.nominal),
+            // emailPenerima: inputHandle.emailPenerima,
+            // catatan: inputHandle.catatan
         })
         setShowDaftarRekening(false)
     };
@@ -1981,13 +1969,13 @@ function DisbursementPage() {
         if (e.target.name === "emailPenerima") {
             setErrMsgEmail(false)
         }
-        if (e.target.name === "nominal" && Number(e.target.value) >= 10000) {
-            setAlertSaldo(false)
-            setAlertMinSaldo(false)
-        } else if (e.target.name === "nominal" && Number(e.target.value) < 10000) {
-            setAlertSaldo(false)
-            setAlertMinSaldo(true)
-        }
+        // if (e.target.name === "nominal" && Number(e.target.value) >= 10000) {
+        //     setAlertSaldo(false)
+        //     setAlertMinSaldo(false)
+        // } else if (e.target.name === "nominal" && Number(e.target.value) < 10000) {
+        //     setAlertSaldo(false)
+        //     setAlertMinSaldo(true)
+        // }
         if (e.target.name === "bankCabang") {
             setAlertNotValid(false)
         }
@@ -1997,6 +1985,34 @@ function DisbursementPage() {
         })
     }
 
+    function handleChangeNominal(e) {
+        // console.log(e, "e");
+        if (Number(e) >= 10000) {
+            setAlertSaldo(false)
+            setAlertMinSaldo(false)  
+        } else {
+            setAlertSaldo(false)
+            setAlertMinSaldo(true)
+        }
+
+        setInputHandle({
+            ...inputHandle,
+            nominal: e
+        })
+    }
+    
+    // console.log(inputData.bankName,"bankName");
+    // console.log(inputData.bankCode,"bankCode");
+    // console.log(inputRekening.bankNameRek,"bankNameRek");
+    // console.log(inputRekening.bankNumberRek,"bankNumberRek");
+    // console.log(inputHandle.bankCabang,"bankCabang");
+    // console.log(inputHandle.nominal,"nominal");
+    // console.log(inputHandle.emailPenerima.length,"emailPenerima");
+    // console.log(inputHandle.catatan,"catatan");
+    // console.log(isChecked,"saveAcc");
+    // console.log(dataDisburse,"dataDisburse");
+    // console.log(allFee, "all fee");
+    
     function handleChangeRek(e) {
         // if (e.target.name === 'bankNameRek' && e.target.value.length <= 20) {
         //     setAlertSaldo(false)
@@ -3089,15 +3105,15 @@ function DisbursementPage() {
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
                 <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
-                <Row className='mt-4'>
+                <Row className='mt-1'>
                     {
                         balanceDetail !== 0 &&
                         balanceDetail.map(detail => {
                             return (
                                 <Col lg={3}>
-                                    <div className="card-information base-content-beranda" style={{ padding: ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? '15px 27px' : '15px 27px 1px', height: 'fit-content' }}>
+                                    <div className="card-information base-content-beranda mt-3" style={{ padding: ((detail.channel_id === "014" && showDetailBalance.bca === true) || (detail.channel_id === "011" && showDetailBalance.danamon === true) || (detail.channel_id === "BIF" && showDetailBalance.otherBank === true) || (detail.channel_id === "DANA" && showDetailBalance.dana === true)) ? '15px 27px' : '15px 27px 1px', height: 'fit-content' }}>
                                         <Row>
-                                            <Col lg={12} className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat`}<br />digunakan</Col>
+                                            <Col lg={12} className="p-info">{`Saldo ${detail.mpaytype_name} yang dapat digunakan`}</Col>
                                         </Row>
                                         <Row>
                                             <Col lg={8} className="p-amount my-3">
@@ -3281,7 +3297,18 @@ function DisbursementPage() {
                                             Nominal Disbursement <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
-                                            {
+                                            <CurrencyInput
+                                                className='input-text-user'
+                                                value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
+                                                onValueChange={(e) => handleChangeNominal(e)}
+                                                placeholder="Rp 0"
+                                                groupSeparator={"."}
+                                                decimalSeparator={','}
+                                                prefix="Rp "
+                                                allowDecimals={false}
+                                            />
+
+                                            {/* {
                                                 editNominal ?
                                                 <Form.Control
                                                     placeholder="Rp 0"
@@ -3303,7 +3330,7 @@ function DisbursementPage() {
                                                     onChange={(e) => handleChange(e)}
                                                     onFocus={() => setEditNominal(!editNominal)}
                                                 />
-                                            }
+                                            } */}
                                         </Col>
                                     </Row>
                                     <Row className="mt-2 mb-3">
@@ -3390,7 +3417,7 @@ function DisbursementPage() {
                                                         inputHandle.bankCabang,
                                                         inputRekening.bankNumberRek,
                                                         inputRekening.bankNameRek,
-                                                        inputHandle.nominal,
+                                                        Number(inputHandle.nominal),
                                                         inputHandle.emailPenerima,
                                                         inputHandle.catatan,
                                                         isChecked
@@ -3453,7 +3480,7 @@ function DisbursementPage() {
                                                                 inputHandle.bankCabang,
                                                                 inputRekening.bankNumberRek,
                                                                 inputRekening.bankNameRek,
-                                                                inputHandle.nominal,
+                                                                Number(inputHandle.nominal),
                                                                 inputHandle.emailPenerima,
                                                                 inputHandle.catatan,
                                                                 isChecked,
@@ -3517,7 +3544,7 @@ function DisbursementPage() {
                                                                         {item.nameRek}
                                                                     </td>
                                                                     <td className='ps-3'>
-                                                                        {convertToRupiah(item.nominal, true, 2)}
+                                                                        {convertToRupiah(item.nominal, true, 0)}
                                                                     </td>
                                                                     <td className='ps-3'>
                                                                         {item.emailPenerima.length === 0 ? "-" : item.emailPenerima}
@@ -4349,7 +4376,7 @@ function DisbursementPage() {
                                                     inputHandle.bankCabang,
                                                     inputRekening.bankNumberRek,
                                                     inputRekening.bankNameRek,
-                                                    inputHandle.nominal,
+                                                    Number(inputHandle.nominal),
                                                     inputHandle.emailPenerima,
                                                     inputHandle.catatan,
                                                     isChecked
@@ -4361,7 +4388,7 @@ function DisbursementPage() {
                                                     inputHandle.bankCabang,
                                                     inputRekening.bankNumberRek,
                                                     inputRekening.bankNameRek,
-                                                    inputHandle.nominal,
+                                                    Number(inputHandle.nominal),
                                                     inputHandle.emailPenerima,
                                                     inputHandle.catatan,
                                                     isChecked

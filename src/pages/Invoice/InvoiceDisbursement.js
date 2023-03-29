@@ -269,7 +269,7 @@ function InvoiceDisbursement() {
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-2 mb-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span style={{ marginRight: 73 }}>Periode*</span>
+                                <span className='me-5'>Periode<span style={{ color: "red" }}>*</span></span>
                                 <div>
                                     <DateRangePicker 
                                         onChange={pickDateInvoiceDisbursement}
@@ -279,9 +279,9 @@ function InvoiceDisbursement() {
                                     />
                                 </div>                                
                             </Col>
-                            <Col xs={7} className="d-flex justify-content-start align-items-center ms-4">
-                                <span className='me-2'>Nama Partner</span>
-                                <div className="dropdown dropPartner">
+                            <Col xs={6} className="d-flex justify-content-start align-items-center">
+                                <span className='me-5'>Nama Partner <span style={{ color: "red" }}>*</span></span>
+                                <div className="dropdown dropTopupPartner">
                                     <ReactSelect
                                         // isMulti
                                         closeMenuOnSelect={true}
@@ -309,12 +309,12 @@ function InvoiceDisbursement() {
                         </Row>
                         <Row className='mt-2 mb-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span className='me-3'>Tanggal Invoice*</span>
+                                <span className='me-3'>Tanggal Invoice<span style={{ color: "red" }}>*</span></span>
                                 <div>
                                     <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
                                 </div>
                             </Col>
-                            <Col xs={6} className="d-flex justify-content-start align-items-center ms-4">
+                            <Col xs={6} className="d-flex justify-content-start align-items-center">
                                 <span className='me-4'>Include Zero Amount</span>
                                 <div>
                                     <Form.Check
@@ -453,8 +453,8 @@ function InvoiceDisbursement() {
                                                             {/* { convertFormatNumber(item.qty_trx) } */}
                                                         </td>
                                                         {/* <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td> */}
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(item.price_unit, true, 2) : "Rp 0"}</td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(item.price_total, true, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
                                             }) :

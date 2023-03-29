@@ -4,12 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertFormatNumber, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
 import alertIcon from "../../assets/icon/alert_icon.svg";
+import CurrencyInput from 'react-currency-input-field'
 
 function TambahAgen() {
 
@@ -37,14 +38,21 @@ function TambahAgen() {
         })
     }
 
+    function handleChangeNominal(e) {
+        setInputHandle({
+            ...inputHandle,
+            settlementFee: e
+        })
+    }
+
     const [errorCode, setErrorCode] = useState(0)
     const [add, setAdd] = useState(false)
 
-    async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee, nominal) {
+    async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee) {
         try {         
             const auth = "Bearer " + getToken()
             // const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
-            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}}`)
+            const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${(settlementFee.length === 0 || settlementFee === undefined) ? 0 : Number(settlementFee.replaceAll(',', '.'))}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -115,11 +123,12 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Agen*
+                                Nama Agen <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='nama'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Agen"
@@ -134,11 +143,12 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Email Agen*
+                                Email Agen <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='email'
                                 onChange={handleChange}
                                 placeholder="Masukkan Email Agen"
@@ -158,11 +168,12 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                No Hp Agen*
+                                No Hp Agen <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='mobileNumber'
                                 onChange={handleChange}
                                 placeholder="Masukkan No Hp Agen"
@@ -184,11 +195,12 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Bank*
+                                Nama Bank <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='bankName'
                                 placeholder="BCA"
                                 type='text'
@@ -200,14 +212,15 @@ function TambahAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row className='mb-4'>
+                    <Row className='mb-3'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                No Rekening*
+                                No Rekening <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='akunBank'
                                 onChange={handleChange}
                                 placeholder="Masukkan No Rekening"
@@ -220,14 +233,15 @@ function TambahAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row className='mb-2'>
+                    <Row className='align-items-center mb-3'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Pemilik Rekening*
+                                Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
                             <Form.Control
+                                className='input-text-user'
                                 name='rekeningOwner'
                                 onChange={handleChange}
                                 placeholder="Masukkan Nama Pemilik Rekening"
@@ -238,23 +252,23 @@ function TambahAgen() {
                                 />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className='align-items-center'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Settlement Fee*
+                                Settlement Fee
                             </span>
                         </Col>
                         <Col xs={10}>
-                            {/* <Form.Control
-                                name='settlementFee'
-                                onChange={handleChange}
+                            <CurrencyInput
+                                className='input-text-user'
                                 placeholder="Masukkan Jumlah Settlement Fee"
-                                type='number'
-                                // aria-label="Masukkan Nama Agen"
-                                // aria-describedby="basic-addon2"
-                                style={{ width: "100%", height: 40, marginTop: '-7px' }}
-                                /> */}
-                            {add ?
+                                defaultValue={inputHandle.settlementFee === undefined ? 0 : inputHandle.settlementFee}
+                                onValueChange={(e) => handleChangeNominal(e)}
+                                groupSeparator={"."}
+                                decimalSeparator={','}
+                            />
+
+                            {/* {add ?
                                 <Form.Control
                                     name='settlementFee'
                                     onChange={handleChange}
@@ -262,20 +276,21 @@ function TambahAgen() {
                                     value={inputHandle.settlementFee}
                                     type='number'
                                     min={0}
-                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
+                                    onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onBlur={() => setAdd(!add)}
                                 /> :
                                 <Form.Control
                                     name='settlementFee'
                                     onChange={handleChange}
-                                    value={convertFormatNumber(inputHandle.settlementFee)}
+                                    value={convertToRupiah(inputHandle.settlementFee, false, 2)}
                                     placeholder="Masukkan Jumlah Settlement Fee"
                                     type='text'
+                                    min={0}
                                     style={{ width: "100%", height: 40, marginTop: '-7px' }}
                                     onFocus={() => setAdd(!add)}
                                 />
-                            }
+                            } */}
                         </Col>
                     </Row>
                     {/* <Row className='mt-4'>
@@ -331,7 +346,7 @@ function TambahAgen() {
                 Silahkan hubungi Admin untuk menambahkan Sub Account pada agen
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
-                <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee, inputHandle.nominal)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.settlementFee === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 || inputHandle.settlementFee === 0 }>
+                <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 }>
                     Tambahkan
                 </button>
             </div>
@@ -378,7 +393,7 @@ function TambahAgen() {
                             </tr>
                             <tr>
                                 <td>Settlement Fee</td>
-                                <td style={{ fontWeight: 600 }}>: {detailNewAgen.settlement_fee}</td>
+                                <td style={{ fontWeight: 600 }}>: {convertToRupiah(detailNewAgen.settlement_fee, false, detailNewAgen.settlement_fee === 0 ? 0 : 2)}</td>
                             </tr>
                         </Table>
                         <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>ID Agen & Kode Unik</p>
