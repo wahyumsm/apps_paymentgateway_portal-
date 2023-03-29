@@ -835,28 +835,28 @@ width: 150px;
     border-radius: 8px;
 }
 
-.dropLaporanPartnerBank .css-1s2u09g-control {
+.dropLaporanPartnerBank .css-1s2u09g-control, .dropLaporanPartnerBank .css-1pahdxg-control {
     min-height: 40px;
     min-width: 116%;
     border-radius: 8px;
 }
 
-.dropLaporanPartnerBank .css-1pahdxg-control {
+/* .dropLaporanPartnerBank .css-1pahdxg-control {
     min-height: 35px;
     min-width: 116%;
     border-radius: 8px;
-}
+} */
 
 .css-14el2xx-placeholder {
     font-size: 14px;
 }
 
 /* untuk di dashboard */
-.dropPartner .css-qqcyw1-option:hover, .dropSaldoPartner .css-qqcyw1-option:hover {
+.dropPartner .css-qqcyw1-option:hover, .dropDisbursePartner .css-qqcyw1-option:hover, .dropSaldoPartner .css-qqcyw1-option:hover, .dropLaporanPartner .css-qqcyw1-option:hover, .dropLaporanPartnerBank .css-qqcyw1-option:hover, .dropTopupPartner .css-qqcyw1-option:hover {
     background-color: #3b8aff;
 }
 
-.dropPartner .css-17rpq10-option:hover, .dropSaldoPartner .css-17rpq10-option:hover {
+.dropPartner .css-17rpq10-option:hover {
     background-color: #3b8aff;
 }
 
@@ -878,6 +878,14 @@ width: 150px;
     box-shadow: 0 0 0 1px #888888;
 }
 
+.dropPartner .css-qqcyw1-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropPartner .css-17rpq10-option:hover {
+    background-color: #3b8aff;
+}
+
 .dropPartner .css-1s2u09g-control {
     min-height: 43px;
     border-radius: 8px;
@@ -889,7 +897,7 @@ width: 150px;
     max-width: 400px !important;
 }
 
-/* select option in add user */
+/* select option in addUser */
 
 .dropPartnerAddUser .css-g1d714-ValueContainer {
     overflow-y: auto !important;

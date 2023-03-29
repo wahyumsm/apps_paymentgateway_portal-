@@ -991,7 +991,7 @@ export default () => {
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span className="pe-3">Nama Agen</span>
-                    <div className="dropdown dropLaporanPartner ps-3">
+                    <div className="dropdown dropDisbursePartner ps-3">
                       <ReactSelect
                         // isMulti
                         closeMenuOnSelect={true}
@@ -1052,7 +1052,7 @@ export default () => {
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span className="me-2">Nama Bank</span>
-                    <div className="dropdown dropLaporanPartnerBank">
+                    <div className="dropdown dropDisbursePartner">
                       <ReactSelect
                         // isMulti
                         closeMenuOnSelect={true}
