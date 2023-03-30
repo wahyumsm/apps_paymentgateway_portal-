@@ -5,8 +5,6 @@ export const Routes = {
     // DashboardOverview: { path: "/dashboard" },
     RiwayatTransaksi: { path: "/Riwayat/transaksi"},
     SaldoPartner: { path: "/Riwayat/saldopartner"},
-    Settlement: { path: "/settlement"},
-    UserDirectDebit: { path: "/user-direct-debit"},
     DetailSettlement: { path: "/detailsettlement/:settlementId/:bankCode"},
     DetailAkun : { path: "/detailakun"},
     Transactions: { path: "/laporan" },
@@ -49,10 +47,15 @@ export const Routes = {
     ListRiwayatSubAccount: {path: "/Sub Account Bank/riwayat-sub-account"},
     InfoSaldoDanMutasi: {path: "/Sub Account Bank/info-saldo-dan-mutasi"},
     TransferSubAccount: {path: "/Sub Account Bank/transfer"},
-    RiwayatDirectDebit: {path: "/riwayat-direct-debit"},
-    VaDanPaymentLink: {path: "/riwayat-dana-masuk"},
-    Disbursement: {path: "/riwayat-disbursement"},
-    SubAccount: {path: "/riwayat-sub-account"}
+    // revamp menu
+    RiwayatDirectDebit: {path: "/Riwayat/direct-debit"},
+    VaDanPaymentLink: {path: "/Riwayat/va-dan-paylink"},
+    Disbursement: {path: "/Riwayat/disbursement"},
+    SubAccount: {path: "/Riwayat/sub-account"},
+    Settlement: { path: "/settlement"},
+    UserDirectDebit: { path: "/user-direct-debit"},
+    InvoiceVASubMenu: { path: "/Invoice/settlement" },
+    InvoiceDisbursementSubMenu: { path: "/Invoice/disbursement" },
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
