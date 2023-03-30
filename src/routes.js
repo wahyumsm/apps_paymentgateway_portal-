@@ -56,6 +56,7 @@ export const Routes = {
     UserDirectDebit: { path: "/user-direct-debit"},
     InvoiceVASubMenu: { path: "/Invoice/settlement" },
     InvoiceDisbursementSubMenu: { path: "/Invoice/disbursement" },
+    SaldoPartnerMenu: { path: "/riwayat-saldo-partner"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
