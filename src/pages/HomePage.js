@@ -151,8 +151,6 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Transactions.path} component={Transactions} />
     <RouteWithSidebar exact path={Routes.RiwayatTransaksi.path} component={RiwayatTransaksi} />
     <RouteWithSidebar exact path={Routes.SaldoPartner.path} component={SaldoPartner} />
-    <RouteWithSidebar exact path={Routes.Settlement.path} component={SettlementPage} />
-    <RouteWithSidebar exact path={Routes.UserDirectDebit.path} component={DaftarUserDirectDebit} />
     <RouteWithSidebar exact path={Routes.DetailSettlement.path} component={DetailSettlement} />
     <RouteWithSidebar exact path={Routes.DaftarPartner.path} component={DaftarPartner}/>
     <RouteWithSidebar exact path={Routes.TambahPartner.path} component={TambahPartner}/>
@@ -185,10 +183,16 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccount.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.InfoSaldoDanMutasi.path} component={InfoSaldoDanMutasi} />
     <RouteWithSidebar exact path={Routes.TransferSubAccount.path} component={TransferSubAccount} />
+    {/* revamp menu */}
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
+    <RouteWithSidebar exact path={Routes.Settlement.path} component={SettlementPage} />
+    <RouteWithSidebar exact path={Routes.UserDirectDebit.path} component={DaftarUserDirectDebit} />
+    <RouteWithSidebar exact path={Routes.InvoiceVASubMenu.path} component={InvoiceVA}/>
+    <RouteWithSidebar exact path={Routes.InvoiceDisbursementSubMenu.path} component={InvoiceDisbursement}/>
+    <RouteWithSidebar exact path={Routes.SaldoPartnerMenu.path} component={SaldoPartner} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}
