@@ -123,11 +123,19 @@ function ListMenuAccess() {
     }
 
     function handleCheck(e, menuName, menuId, details, item, isAccessValue) {
+        // console.log(e.target.name, 'e.target.name');
+        // console.log(menuName, 'menuName');
+        // console.log(item, 'item');
         const stringMenuId = menuId.toString()
-        let access = `isAccess${menuName}`
-        let insert = `isInsertable${menuName}`
-        let update = `isUpdateable${menuName}`
-        let deleted = `isDeleteable${menuName}`
+        let access = `isAccess${menuName+stringMenuId}`
+        let insert = `isInsertable${menuName+stringMenuId}`
+        let update = `isUpdateable${menuName+stringMenuId}`
+        let deleted = `isDeleteable${menuName+stringMenuId}`
+        // console.log(access, 'access');
+        // console.log(insert, 'insert');
+        // console.log(update, 'update');
+        // console.log(deleted, 'deleted');
+        // console.log(stringMenuId, 'stringMenuId');
         if (e.target.name === insert && isAccessValue === false || e.target.name === update && isAccessValue === false || e.target.name === deleted && isAccessValue === false) {
             alert("Please checked access menu!")
         } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 6 && details === undefined) {
@@ -146,10 +154,10 @@ function ListMenuAccess() {
         } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 4) {
             if (details.length !== 0) {
                 details.forEach(el => {
-                    let access2 = `isAccess${el.label}`
-                    let insert2 = `isInsertable${el.label}`
-                    let update2 = `isUpdateable${el.label}`
-                    let deleted2 = `isDeleteable${el.label}`
+                    let access2 = `isAccess${el.label+el.id}`
+                    let insert2 = `isInsertable${el.label+el.id}`
+                    let update2 = `isUpdateable${el.label+el.id}`
+                    let deleted2 = `isDeleteable${el.label+el.id}`
                     // let visibled2 = `isVisibled${el.label}`
                     setInputCheck({
                         ...inputCheck,
@@ -202,12 +210,13 @@ function ListMenuAccess() {
         //         [e.target.name] : e.target.checked
         //     })
         } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 2 && details.length !== 0) {
+            // console.log('masuk sini');
             let dataObj = {}
             listAccessMenu.forEach(item => {
-                let access1 = `isAccess${item.label}`
-                let insert1 = `isInsertable${item.label}`
-                let update1 = `isUpdateable${item.label}`
-                let deleted1 = `isDeleteable${item.label}`
+                let access1 = `isAccess${item.label+item.id}`
+                let insert1 = `isInsertable${item.label+item.id}`
+                let update1 = `isUpdateable${item.label+item.id}`
+                let deleted1 = `isDeleteable${item.label+item.id}`
                 if (details.length !== 0 && access !== access1) {
                     dataObj[access1] = (inputCheck[access1] === undefined) ? item.is_access : inputCheck[access1]
                     dataObj[insert1] = (inputCheck[insert1] === undefined) ? item.is_insertable : inputCheck[insert1]
@@ -219,20 +228,20 @@ function ListMenuAccess() {
                     dataObj[update] = e.target.checked
                     dataObj[deleted] = e.target.checked
                     item.detail.forEach(item2 => {
-                        let access2 = `isAccess${item2.label}`
-                        let insert2 = `isInsertable${item2.label}`
-                        let update2 = `isUpdateable${item2.label}`
-                        let deleted2 = `isDeleteable${item2.label}`
+                        let access2 = `isAccess${item2.label+item2.id}`
+                        let insert2 = `isInsertable${item2.label+item2.id}`
+                        let update2 = `isUpdateable${item2.label+item2.id}`
+                        let deleted2 = `isDeleteable${item2.label+item2.id}`
                         dataObj[access2] = e.target.checked
                         dataObj[insert2] = e.target.checked
                         dataObj[update2] = e.target.checked
                         dataObj[deleted2] = e.target.checked
                         if (item2.detail.length !== 0) {
                             item2.detail.forEach(item3 => {
-                                let access3 = `isAccess${item3.label}`
-                                let insert3 = `isInsertable${item3.label}`
-                                let update3 = `isUpdateable${item3.label}`
-                                let deleted3 = `isDeleteable${item3.label}`
+                                let access3 = `isAccess${item3.label+item3.id}`
+                                let insert3 = `isInsertable${item3.label+item3.id}`
+                                let update3 = `isUpdateable${item3.label+item3.id}`
+                                let deleted3 = `isDeleteable${item3.label+item3.id}`
                                 dataObj[access3] = e.target.checked
                                 dataObj[insert3] = e.target.checked
                                 dataObj[update3] = e.target.checked
@@ -285,10 +294,10 @@ function ListMenuAccess() {
     function handleCheckParent(e, listAccessMenu, inputCheckData) {
         let dataObj = {}
         listAccessMenu.forEach(el => {
-            let access = `isAccess${el.label}`
-            let insert = `isInsertable${el.label}`
-            let update = `isUpdateable${el.label}`
-            let deleted = `isDeleteable${el.label}`
+            let access = `isAccess${el.label+el.id}`
+            let insert = `isInsertable${el.label+el.id}`
+            let update = `isUpdateable${el.label+el.id}`
+            let deleted = `isDeleteable${el.label+el.id}`
             if (e.target.name === "#" && e.target.checked === false) {
                 if (el.detail.length !== 0) {
                     dataObj[access] = e.target.checked
@@ -296,20 +305,20 @@ function ListMenuAccess() {
                     dataObj[update] = e.target.checked
                     dataObj[deleted] = e.target.checked
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         dataObj[access2] = e.target.checked
                         dataObj[insert2] = e.target.checked
                         dataObj[update2] = e.target.checked
                         dataObj[deleted2] = e.target.checked
                         if (item.detail !== undefined) {
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 dataObj[access3] = e.target.checked
                                 dataObj[insert3] = e.target.checked
                                 dataObj[update3] = e.target.checked
@@ -335,20 +344,20 @@ function ListMenuAccess() {
                     dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
                     dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         dataObj[access2] = e.target.checked
                         dataObj[insert2] = (inputCheckData[insert2] === undefined) ? item.is_insertable : inputCheckData[insert2] // false
                         dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                         dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                         if (item.detail !== undefined) {
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 dataObj[access3] = e.target.checked
                                 dataObj[insert3] = (inputCheckData[insert3] === undefined) ? item2.is_insertable : inputCheckData[insert3] //false
                                 dataObj[update3] = (inputCheckData[update3] === undefined) ? item2.is_insertable : inputCheckData[update3]
@@ -375,10 +384,10 @@ function ListMenuAccess() {
                     dataObj[update] = accessData
                     dataObj[deleted] = accessData
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === false && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -386,10 +395,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2
                             dataObj[deleted2] = accessData2
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -409,10 +418,10 @@ function ListMenuAccess() {
                             dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                             dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -444,10 +453,10 @@ function ListMenuAccess() {
                     dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
                     dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === true && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -455,10 +464,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2
                             dataObj[deleted2] = accessData2
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -478,10 +487,10 @@ function ListMenuAccess() {
                             dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                             dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -526,10 +535,10 @@ function ListMenuAccess() {
                     dataObj[update] = accessData
                     dataObj[deleted] = accessData
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === false && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -537,10 +546,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2
                             dataObj[deleted2] = accessData2
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -560,10 +569,10 @@ function ListMenuAccess() {
                             dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                             dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -595,10 +604,10 @@ function ListMenuAccess() {
                     dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
                     dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === true && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -606,10 +615,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2
                             dataObj[deleted2] = accessData2
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -629,10 +638,10 @@ function ListMenuAccess() {
                             dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                             dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -677,10 +686,10 @@ function ListMenuAccess() {
                     dataObj[update] = e.target.checked //e.target.checked === false
                     dataObj[deleted] = accessData
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === false && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -688,10 +697,10 @@ function ListMenuAccess() {
                             dataObj[update2] = e.target.checked //e.target.checked === false
                             dataObj[deleted2] = accessData2
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -711,10 +720,10 @@ function ListMenuAccess() {
                             dataObj[update2] = e.target.checked //e.target.checked === false
                             dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -746,10 +755,10 @@ function ListMenuAccess() {
                     dataObj[update] = e.target.checked //e.target.checked === false
                     dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === true && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -757,10 +766,10 @@ function ListMenuAccess() {
                             dataObj[update2] = e.target.checked //e.target.checked === false
                             dataObj[deleted2] = accessData2
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -780,10 +789,10 @@ function ListMenuAccess() {
                             dataObj[update2] = e.target.checked //e.target.checked === false
                             dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -828,10 +837,10 @@ function ListMenuAccess() {
                     dataObj[update] = accessData //e.target.checked === true
                     dataObj[deleted] = accessData
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === false && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -839,10 +848,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2 //e.target.checked === true
                             dataObj[deleted2] = accessData2
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -862,10 +871,10 @@ function ListMenuAccess() {
                             dataObj[update2] = e.target.checked //e.target.checked === true
                             dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -897,10 +906,10 @@ function ListMenuAccess() {
                     dataObj[update] = e.target.checked //e.target.checked === true
                     dataObj[deleted] = (inputCheckData[deleted] === undefined) ? el.is_deletable : inputCheckData[deleted]
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === true && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -908,10 +917,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2 //e.target.checked === true
                             dataObj[deleted2] = accessData2
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -931,10 +940,10 @@ function ListMenuAccess() {
                             dataObj[update2] = e.target.checked //e.target.checked === true
                             dataObj[deleted2] = (inputCheckData[deleted2] === undefined) ? item.is_deletable : inputCheckData[deleted2]
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -979,10 +988,10 @@ function ListMenuAccess() {
                     dataObj[update] = accessData
                     dataObj[deleted] = e.target.checked //e.target.checked === false
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === false && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -990,10 +999,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2
                             dataObj[deleted2] = e.target.checked //e.target.checked === false
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -1013,10 +1022,10 @@ function ListMenuAccess() {
                             dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                             dataObj[deleted2] = e.target.checked //e.target.checked === false
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -1048,10 +1057,10 @@ function ListMenuAccess() {
                     dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
                     dataObj[deleted] = e.target.checked //e.target.checked === false
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === true && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -1059,10 +1068,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2
                             dataObj[deleted2] = e.target.checked //e.target.checked === false
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -1082,10 +1091,10 @@ function ListMenuAccess() {
                             dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                             dataObj[deleted2] = e.target.checked //e.target.checked === false
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -1130,10 +1139,10 @@ function ListMenuAccess() {
                     dataObj[update] = accessData
                     dataObj[deleted] = accessData //e.target.checked === true
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === false && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -1141,10 +1150,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2
                             dataObj[deleted2] = accessData2 //e.target.checked === true
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -1164,10 +1173,10 @@ function ListMenuAccess() {
                             dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                             dataObj[deleted2] = e.target.checked //e.target.checked === true
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === false && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -1199,10 +1208,10 @@ function ListMenuAccess() {
                     dataObj[update] = (inputCheckData[update] === undefined) ? el.is_updatable : inputCheckData[update]
                     dataObj[deleted] = e.target.checked //e.target.checked === true
                     el.detail.forEach(item => {
-                        let access2 = `isAccess${item.label}`
-                        let insert2 = `isInsertable${item.label}`
-                        let update2 = `isUpdateable${item.label}`
-                        let deleted2 = `isDeleteable${item.label}`
+                        let access2 = `isAccess${item.label+item.id}`
+                        let insert2 = `isInsertable${item.label+item.id}`
+                        let update2 = `isUpdateable${item.label+item.id}`
+                        let deleted2 = `isDeleteable${item.label+item.id}`
                         let accessData2 = (inputCheckData[access2] === undefined) ? item.is_access : inputCheckData[access2]
                         if (item.detail !== undefined && accessData === true && accessData2 === false) {
                             dataObj[access2] = accessData2
@@ -1210,10 +1219,10 @@ function ListMenuAccess() {
                             dataObj[update2] = accessData2
                             dataObj[deleted2] = accessData2 //e.target.checked === true
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === false && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -1233,10 +1242,10 @@ function ListMenuAccess() {
                             dataObj[update2] = (inputCheckData[update2] === undefined) ? item.is_updatable : inputCheckData[update2]
                             dataObj[deleted2] = e.target.checked //e.target.checked === true
                             item.detail.forEach(item2 => {
-                                let access3 = `isAccess${item2.label}`
-                                let insert3 = `isInsertable${item2.label}`
-                                let update3 = `isUpdateable${item2.label}`
-                                let deleted3 = `isDeleteable${item2.label}`
+                                let access3 = `isAccess${item2.label+item2.id}`
+                                let insert3 = `isInsertable${item2.label+item2.id}`
+                                let update3 = `isUpdateable${item2.label+item2.id}`
+                                let deleted3 = `isDeleteable${item2.label+item2.id}`
                                 let accessData3 = (inputCheckData[access3] === undefined) ? item2.is_access : inputCheckData[access3]
                                 if (item.detail !== undefined && accessData === true && accessData2 === true && accessData3 === false) {
                                     dataObj[access3] = accessData3
@@ -1322,6 +1331,9 @@ function ListMenuAccess() {
         },
     };
 
+    console.log(inputCheck, 'inputCheck');
+    console.log(listAccessMenu, 'listAccessMenu');
+
     return (
         <div className="content-page mt-6">
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/managementuser"}>Management User</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Access Menu User</span>
@@ -1368,7 +1380,7 @@ function ListMenuAccess() {
                                             return (
                                                 <tr key={index}>
                                                     <td>
-                                                        <Form.Check onChange={(e) => handleCheck(e, item.label, item.id, item.detail, item, (inputCheck[`isAccess${item.label}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label}`])} checked={(inputCheck[`isAccess${item.label}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label}`]} name={`isAccess${item.label}`} htmlFor={`isAccess${item.label}`} />
+                                                        <Form.Check onChange={(e) => handleCheck(e, item.label, item.id, item.detail, item, (inputCheck[`isAccess${item.label+item.id}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label+item.id}`])} checked={(inputCheck[`isAccess${item.label+item.id}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label+item.id}`]} name={`isAccess${item.label+item.id}`} htmlFor={`isAccess${item.label}`} />
                                                     </td>
                                                     <td style={{ fontSize: 16, fontWeight: 700, fontFamily: "Exo" }}>
                                                         {item.label}
@@ -1379,7 +1391,7 @@ function ListMenuAccess() {
                                                                     <>
                                                                         <Row key={index} style={{ margin: "10px 0px 5px" }}>
                                                                             <td>
-                                                                                <Form.Check onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, itemDetail, (inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`])} checked={(inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`]} label={itemDetail.label} name={`isAccess${itemDetail.label}`} htmlFor={`isAccess${itemDetail.label}`} />
+                                                                                <Form.Check onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, itemDetail, (inputCheck[`isAccess${itemDetail.label+itemDetail.id}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label+itemDetail.id}`])} checked={(inputCheck[`isAccess${itemDetail.label+itemDetail.id}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label+itemDetail.id}`]} label={itemDetail.label} name={`isAccess${itemDetail.label+itemDetail.id}`} htmlFor={`isAccess${itemDetail.label}`} />
                                                                                 {
                                                                                     itemDetail.detail.length !== 0 ?
                                                                                     itemDetail.detail.map((itemDetails, index) => {
@@ -1387,7 +1399,7 @@ function ListMenuAccess() {
                                                                                             <>
                                                                                                 <Row key={index} style={{ margin: "10px 0px 5px" }}>
                                                                                                     <td>
-                                                                                                        <Form.Check style={{marginLeft: 20}} onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, itemDetails, (inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`])} checked={(inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`]} label={itemDetails.label} name={`isAccess${itemDetails.label}`} htmlFor={`isAccess${itemDetails.label}`} />
+                                                                                                        <Form.Check style={{marginLeft: 20}} onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, itemDetails, (inputCheck[`isAccess${itemDetails.label+itemDetails.id}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label+itemDetails.id}`])} checked={(inputCheck[`isAccess${itemDetails.label+itemDetails.id}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label+itemDetails.id}`]} label={itemDetails.label} name={`isAccess${itemDetails.label+itemDetails.id}`} htmlFor={`isAccess${itemDetails.label}`} />
                                                                                                     </td>
                                                                                                 </Row>
                                                                                             </>
@@ -1402,7 +1414,7 @@ function ListMenuAccess() {
                                                         }
                                                     </td>
                                                     <td>
-                                                        <Form.Check onChange={(e) => handleCheck(e, item.label, item.id, item.detail, item, (inputCheck[`isAccess${item.label}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label}`])} checked={(inputCheck[`isInsertable${item.label}`] === undefined) ? item.is_insertable : inputCheck[`isInsertable${item.label}`]} label={(inputCheck[`isInsertable${item.label}`] === undefined && item.is_insertable) ? "Granted" : (inputCheck[`isInsertable${item.label}`] === undefined && item.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${item.label}`] === true && item.is_insertable) ? "Granted" : (inputCheck[`isInsertable${item.label}`] === false && item.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${item.label}`] === true && item.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${item.label}`} htmlFor={`isInsertable${item.label}`} />
+                                                        <Form.Check onChange={(e) => handleCheck(e, item.label, item.id, item.detail, item, (inputCheck[`isAccess${item.label+item.id}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label+item.id}`])} checked={(inputCheck[`isInsertable${item.label+item.id}`] === undefined) ? item.is_insertable : inputCheck[`isInsertable${item.label+item.id}`]} label={(inputCheck[`isInsertable${item.label+item.id}`] === undefined && item.is_insertable) ? "Granted" : (inputCheck[`isInsertable${item.label+item.id}`] === undefined && item.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${item.label+item.id}`] === true && item.is_insertable) ? "Granted" : (inputCheck[`isInsertable${item.label+item.id}`] === false && item.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${item.label+item.id}`] === true && item.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${item.label+item.id}`} htmlFor={`isInsertable${item.label}`} />
                                                         {
                                                             item.detail.length !== 0 ?
                                                             item.detail.map(itemDetail => {
@@ -1410,7 +1422,7 @@ function ListMenuAccess() {
                                                                     <>
                                                                         <Row key={itemDetail.id} style={{ margin: "10px 0px 5px" }}>
                                                                             <td>
-                                                                                <Form.Check style={{ marginLeft: -12 }} onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, itemDetail, (inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`])} checked={(inputCheck[`isInsertable${itemDetail.label}`] === undefined) ? itemDetail.is_insertable : inputCheck[`isInsertable${itemDetail.label}`]} label={(inputCheck[`isInsertable${itemDetail.label}`] === undefined && itemDetail.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetail.label}`] === undefined && itemDetail.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${itemDetail.label}`] === true && itemDetail.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetail.label}`] === false && itemDetail.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${itemDetail.label}`] === true && itemDetail.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${itemDetail.label}`} htmlFor={`isInsertable${itemDetail.label}`} />
+                                                                                <Form.Check style={{ marginLeft: -12 }} onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, itemDetail, (inputCheck[`isAccess${itemDetail.label+itemDetail.id}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label+itemDetail.id}`])} checked={(inputCheck[`isInsertable${itemDetail.label+itemDetail.id}`] === undefined) ? itemDetail.is_insertable : inputCheck[`isInsertable${itemDetail.label+itemDetail.id}`]} label={(inputCheck[`isInsertable${itemDetail.label+itemDetail.id}`] === undefined && itemDetail.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetail.label+itemDetail.id}`] === undefined && itemDetail.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${itemDetail.label+itemDetail.id}`] === true && itemDetail.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetail.label+itemDetail.id}`] === false && itemDetail.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${itemDetail.label+itemDetail.id}`] === true && itemDetail.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${itemDetail.label+itemDetail.id}`} htmlFor={`isInsertable${itemDetail.label}`} />
                                                                                 {
                                                                                     itemDetail.detail.length !== 0 ?
                                                                                     itemDetail.detail.map(itemDetails => {
@@ -1418,7 +1430,7 @@ function ListMenuAccess() {
                                                                                             <>
                                                                                                 <Row key={itemDetails.id} style={{ margin: "10px 0px 5px" }}>
                                                                                                     <td>
-                                                                                                        <Form.Check style={{ marginLeft: -24 }} onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, itemDetails, (inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`])} checked={(inputCheck[`isInsertable${itemDetails.label}`] === undefined) ? itemDetails.is_insertable : inputCheck[`isInsertable${itemDetails.label}`]} label={(inputCheck[`isInsertable${itemDetails.label}`] === undefined && itemDetails.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetails.label}`] === undefined && itemDetails.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${itemDetails.label}`] === true && itemDetails.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetails.label}`] === false && itemDetails.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${itemDetails.label}`] === true && itemDetails.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${itemDetails.label}`} htmlFor={`isInsertable${itemDetails.label}`} />
+                                                                                                        <Form.Check style={{ marginLeft: -24 }} onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, itemDetails, (inputCheck[`isAccess${itemDetails.label+itemDetails.id}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label+itemDetails.id}`])} checked={(inputCheck[`isInsertable${itemDetails.label+itemDetails.id}`] === undefined) ? itemDetails.is_insertable : inputCheck[`isInsertable${itemDetails.label+itemDetails.id}`]} label={(inputCheck[`isInsertable${itemDetails.label+itemDetails.id}`] === undefined && itemDetails.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetails.label+itemDetails.id}`] === undefined && itemDetails.is_insertable === false) ? "Disabled" : (inputCheck[`isInsertable${itemDetails.label+itemDetails.id}`] === true && itemDetails.is_insertable) ? "Granted" : (inputCheck[`isInsertable${itemDetails.label+itemDetails.id}`] === false && itemDetails.is_insertable) ? "Disabled" : (inputCheck[`isInsertable${itemDetails.label+itemDetails.id}`] === true && itemDetails.is_insertable === false) ? "Granted" : "Disabled"} name={`isInsertable${itemDetails.label+itemDetails.id}`} htmlFor={`isInsertable${itemDetails.label}`} />
                                                                                                     </td>
                                                                                                 </Row>
                                                                                             </>
@@ -1433,7 +1445,7 @@ function ListMenuAccess() {
                                                         }
                                                     </td>
                                                     <td>
-                                                        <Form.Check onChange={(e) => handleCheck(e, item.label, item.id, item.detail, item, (inputCheck[`isAccess${item.label}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label}`])} checked={(inputCheck[`isUpdateable${item.label}`] === undefined) ? item.is_updatable : inputCheck[`isUpdateable${item.label}`]} label={(inputCheck[`isUpdateable${item.label}`] === undefined && item.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${item.label}`] === undefined && item.is_updatable === false) ? "Disabled" : (inputCheck[`isUpdateable${item.label}`] === true && item.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${item.label}`] === false && item.is_updatable) ? "Disabled" : (inputCheck[`isUpdateable${item.label}`] === true && item.is_updatable === false) ? "Granted" : "Disabled"} name={`isUpdateable${item.label}`} htmlFor={`isUpdateable${item.label}`} />
+                                                        <Form.Check onChange={(e) => handleCheck(e, item.label, item.id, item.detail, item, (inputCheck[`isAccess${item.label+item.id}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label+item.id}`])} checked={(inputCheck[`isUpdateable${item.label+item.id}`] === undefined) ? item.is_updatable : inputCheck[`isUpdateable${item.label+item.id}`]} label={(inputCheck[`isUpdateable${item.label+item.id}`] === undefined && item.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${item.label+item.id}`] === undefined && item.is_updatable === false) ? "Disabled" : (inputCheck[`isUpdateable${item.label+item.id}`] === true && item.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${item.label+item.id}`] === false && item.is_updatable) ? "Disabled" : (inputCheck[`isUpdateable${item.label+item.id}`] === true && item.is_updatable === false) ? "Granted" : "Disabled"} name={`isUpdateable${item.label+item.id}`} htmlFor={`isUpdateable${item.label}`} />
                                                         {
                                                             item.detail.length !== 0 ?
                                                             item.detail.map(itemDetail => {
@@ -1441,7 +1453,7 @@ function ListMenuAccess() {
                                                                     <>
                                                                         <Row key={itemDetail.id} style={{ margin: "10px 0px 5px" }}>
                                                                             <td>
-                                                                                <Form.Check style={{ marginLeft: -12 }} onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, itemDetail, (inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`])} checked={(inputCheck[`isUpdateable${itemDetail.label}`] === undefined) ? itemDetail.is_updatable : inputCheck[`isUpdateable${itemDetail.label}`]} label={(inputCheck[`isUpdateable${itemDetail.label}`] === undefined && itemDetail.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetail.label}`] === undefined && itemDetail.is_updatable === false) ? "Disabled" : (inputCheck[`isUpdateable${itemDetail.label}`] === true && itemDetail.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetail.label}`] === false && itemDetail.is_updatable) ? "Disabled" : (inputCheck[`isUpdateable${itemDetail.label}`] === true && itemDetail.is_updatable === false) ? "Granted" : "Disabled"} name={`isUpdateable${itemDetail.label}`} htmlFor={`isUpdateable${itemDetail.label}`} />
+                                                                                <Form.Check style={{ marginLeft: -12 }} onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, itemDetail, (inputCheck[`isAccess${itemDetail.label+itemDetail.id}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label+itemDetail.id}`])} checked={(inputCheck[`isUpdateable${itemDetail.label+itemDetail.id}`] === undefined) ? itemDetail.is_updatable : inputCheck[`isUpdateable${itemDetail.label+itemDetail.id}`]} label={(inputCheck[`isUpdateable${itemDetail.label+itemDetail.id}`] === undefined && itemDetail.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetail.label+itemDetail.id}`] === undefined && itemDetail.is_updatable === false) ? "Disabled" : (inputCheck[`isUpdateable${itemDetail.label+itemDetail.id}`] === true && itemDetail.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetail.label+itemDetail.id}`] === false && itemDetail.is_updatable) ? "Disabled" : (inputCheck[`isUpdateable${itemDetail.label+itemDetail.id}`] === true && itemDetail.is_updatable === false) ? "Granted" : "Disabled"} name={`isUpdateable${itemDetail.label+itemDetail.id}`} htmlFor={`isUpdateable${itemDetail.label}`} />
                                                                                 {
                                                                                     itemDetail.detail.length !== 0 ?
                                                                                     itemDetail.detail.map(itemDetails => {
@@ -1449,7 +1461,7 @@ function ListMenuAccess() {
                                                                                             <>
                                                                                                 <Row key={itemDetails.id} style={{ margin: "10px 0px 5px" }}>
                                                                                                     <td>
-                                                                                                        <Form.Check style={{ marginLeft: -24 }} onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, itemDetails, (inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`])} checked={(inputCheck[`isUpdateable${itemDetails.label}`] === undefined) ? itemDetails.is_updatable : inputCheck[`isUpdateable${itemDetails.label}`]} label={(inputCheck[`isUpdateable${itemDetails.label}`] === undefined && itemDetails.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetails.label}`] === undefined && itemDetails.is_updatable === false) ? "Disabled" : (inputCheck[`isUpdateable${itemDetails.label}`] === true && itemDetails.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetails.label}`] === false && itemDetails.is_updatable) ? "Disabled" : (inputCheck[`isUpdateable${itemDetails.label}`] === true && itemDetails.is_updatable === false) ? "Granted" : "Disabled"} name={`isUpdateable${itemDetails.label}`} htmlFor={`isUpdateable${itemDetails.label}`} />
+                                                                                                        <Form.Check style={{ marginLeft: -24 }} onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, itemDetails, (inputCheck[`isAccess${itemDetails.label+itemDetails.id}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label+itemDetails.id}`])} checked={(inputCheck[`isUpdateable${itemDetails.label+itemDetails.id}`] === undefined) ? itemDetails.is_updatable : inputCheck[`isUpdateable${itemDetails.label+itemDetails.id}`]} label={(inputCheck[`isUpdateable${itemDetails.label+itemDetails.id}`] === undefined && itemDetails.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetails.label+itemDetails.id}`] === undefined && itemDetails.is_updatable === false) ? "Disabled" : (inputCheck[`isUpdateable${itemDetails.label+itemDetails.id}`] === true && itemDetails.is_updatable) ? "Granted" : (inputCheck[`isUpdateable${itemDetails.label+itemDetails.id}`] === false && itemDetails.is_updatable) ? "Disabled" : (inputCheck[`isUpdateable${itemDetails.label+itemDetails.id}`] === true && itemDetails.is_updatable === false) ? "Granted" : "Disabled"} name={`isUpdateable${itemDetails.label+itemDetails.id}`} htmlFor={`isUpdateable${itemDetails.label}`} />
                                                                                                     </td>
                                                                                                 </Row>
                                                                                             </>
@@ -1464,7 +1476,7 @@ function ListMenuAccess() {
                                                         }
                                                     </td>
                                                     <td>
-                                                        <Form.Check onChange={(e) => handleCheck(e, item.label, item.id, item.detail, item, (inputCheck[`isAccess${item.label}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label}`])} checked={(inputCheck[`isDeleteable${item.label}`] === undefined) ? item.is_deletable : inputCheck[`isDeleteable${item.label}`]} label={(inputCheck[`isDeleteable${item.label}`] === undefined && item.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${item.label}`] === undefined && item.is_deletable === false) ? "Disabled" : (inputCheck[`isDeleteable${item.label}`] === true && item.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${item.label}`] === false && item.is_deletable) ? "Disabled" : (inputCheck[`isDeleteable${item.label}`] === true && item.is_deletable === false) ? "Granted" : "Disabled"} name={`isDeleteable${item.label}`} htmlFor={`isDeleteable${item.label}`} />
+                                                        <Form.Check onChange={(e) => handleCheck(e, item.label, item.id, item.detail, item, (inputCheck[`isAccess${item.label+item.id}`] === undefined) ? item.is_access : inputCheck[`isAccess${item.label+item.id}`])} checked={(inputCheck[`isDeleteable${item.label+item.id}`] === undefined) ? item.is_deletable : inputCheck[`isDeleteable${item.label+item.id}`]} label={(inputCheck[`isDeleteable${item.label+item.id}`] === undefined && item.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${item.label+item.id}`] === undefined && item.is_deletable === false) ? "Disabled" : (inputCheck[`isDeleteable${item.label+item.id}`] === true && item.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${item.label+item.id}`] === false && item.is_deletable) ? "Disabled" : (inputCheck[`isDeleteable${item.label+item.id}`] === true && item.is_deletable === false) ? "Granted" : "Disabled"} name={`isDeleteable${item.label+item.id}`} htmlFor={`isDeleteable${item.label}`} />
                                                         {
                                                             item.detail.length !== 0 ?
                                                             item.detail.map(itemDetail => {
@@ -1472,7 +1484,7 @@ function ListMenuAccess() {
                                                                     <>
                                                                         <Row key={itemDetail.id} style={{ margin: "10px 0px 5px" }}>
                                                                             <td>
-                                                                                <Form.Check style={{ marginLeft: -12 }} onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, itemDetail, (inputCheck[`isAccess${itemDetail.label}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label}`])} checked={(inputCheck[`isDeleteable${itemDetail.label}`] === undefined) ? itemDetail.is_deletable : inputCheck[`isDeleteable${itemDetail.label}`]} label={(inputCheck[`isDeleteable${itemDetail.label}`] === undefined && itemDetail.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetail.label}`] === undefined && itemDetail.is_deletable === false) ? "Disabled" : (inputCheck[`isDeleteable${itemDetail.label}`] === true && itemDetail.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetail.label}`] === false && itemDetail.is_deletable) ? "Disabled" : (inputCheck[`isDeleteable${itemDetail.label}`] === true && itemDetail.is_deletable === false) ? "Granted" : "Disabled"} name={`isDeleteable${itemDetail.label}`} htmlFor={`isDeleteable${itemDetail.label}`} />
+                                                                                <Form.Check style={{ marginLeft: -12 }} onChange={(e) => handleCheck(e, itemDetail.label, itemDetail.id, itemDetail.detail, itemDetail, (inputCheck[`isAccess${itemDetail.label+itemDetail.id}`] === undefined) ? itemDetail.is_access : inputCheck[`isAccess${itemDetail.label+itemDetail.id}`])} checked={(inputCheck[`isDeleteable${itemDetail.label+itemDetail.id}`] === undefined) ? itemDetail.is_deletable : inputCheck[`isDeleteable${itemDetail.label+itemDetail.id}`]} label={(inputCheck[`isDeleteable${itemDetail.label+itemDetail.id}`] === undefined && itemDetail.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetail.label+itemDetail.id}`] === undefined && itemDetail.is_deletable === false) ? "Disabled" : (inputCheck[`isDeleteable${itemDetail.label+itemDetail.id}`] === true && itemDetail.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetail.label+itemDetail.id}`] === false && itemDetail.is_deletable) ? "Disabled" : (inputCheck[`isDeleteable${itemDetail.label+itemDetail.id}`] === true && itemDetail.is_deletable === false) ? "Granted" : "Disabled"} name={`isDeleteable${itemDetail.label+itemDetail.id}`} htmlFor={`isDeleteable${itemDetail.label}`} />
                                                                                 {
                                                                                     itemDetail.detail.length !== 0 ?
                                                                                     itemDetail.detail.map(itemDetails => {
@@ -1480,7 +1492,7 @@ function ListMenuAccess() {
                                                                                             <>
                                                                                                 <Row key={itemDetails.id} style={{ margin: "10px 0px 5px" }}>
                                                                                                     <td>
-                                                                                                        <Form.Check style={{ marginLeft: -24 }} onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, itemDetails, (inputCheck[`isAccess${itemDetails.label}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label}`])} checked={(inputCheck[`isDeleteable${itemDetails.label}`] === undefined) ? itemDetails.is_deletable : inputCheck[`isDeleteable${itemDetails.label}`]} label={(inputCheck[`isDeleteable${itemDetails.label}`] === undefined && itemDetails.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetails.label}`] === undefined && itemDetails.is_deletable === false) ? "Disabled" : (inputCheck[`isDeleteable${itemDetails.label}`] === true && itemDetails.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetails.label}`] === false && itemDetails.is_deletable) ? "Disabled" : (inputCheck[`isDeleteable${itemDetails.label}`] === true && itemDetails.is_deletable === false) ? "Granted" : "Disabled"} name={`isDeleteable${itemDetails.label}`} htmlFor={`isDeleteable${itemDetails.label}`} />
+                                                                                                        <Form.Check style={{ marginLeft: -24 }} onChange={(e) => handleCheck(e, itemDetails.label, itemDetails.id, itemDetails.detail, itemDetails, (inputCheck[`isAccess${itemDetails.label+itemDetails.id}`] === undefined) ? itemDetails.is_access : inputCheck[`isAccess${itemDetails.label+itemDetails.id}`])} checked={(inputCheck[`isDeleteable${itemDetails.label+itemDetails.id}`] === undefined) ? itemDetails.is_deletable : inputCheck[`isDeleteable${itemDetails.label+itemDetails.id}`]} label={(inputCheck[`isDeleteable${itemDetails.label+itemDetails.id}`] === undefined && itemDetails.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetails.label+itemDetails.id}`] === undefined && itemDetails.is_deletable === false) ? "Disabled" : (inputCheck[`isDeleteable${itemDetails.label+itemDetails.id}`] === true && itemDetails.is_deletable) ? "Granted" : (inputCheck[`isDeleteable${itemDetails.label+itemDetails.id}`] === false && itemDetails.is_deletable) ? "Disabled" : (inputCheck[`isDeleteable${itemDetails.label+itemDetails.id}`] === true && itemDetails.is_deletable === false) ? "Granted" : "Disabled"} name={`isDeleteable${itemDetails.label+itemDetails.id}`} htmlFor={`isDeleteable${itemDetails.label}`} />
                                                                                                     </td>
                                                                                                 </Row>
                                                                                             </>
