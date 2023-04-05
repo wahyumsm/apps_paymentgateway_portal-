@@ -166,6 +166,8 @@ function ListMenuAccess() {
                         [update]: e.target.checked,
                         [deleted]: e.target.checked,
                         // [visibled]: e.target.checked,
+                    })
+                    setInputCheck({
                         [access2]: e.target.checked,
                         [insert2]: e.target.checked,
                         [update2]: e.target.checked,
@@ -210,19 +212,27 @@ function ListMenuAccess() {
         //         [e.target.name] : e.target.checked
         //     })
         } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 2 && details.length !== 0) {
-            // console.log('masuk sini');
+            console.log('masuk sini');
+            console.log(access, 'access');
             let dataObj = {}
             listAccessMenu.forEach(item => {
                 let access1 = `isAccess${item.label+item.id}`
                 let insert1 = `isInsertable${item.label+item.id}`
                 let update1 = `isUpdateable${item.label+item.id}`
                 let deleted1 = `isDeleteable${item.label+item.id}`
+                console.log(access1, 'access1');
                 if (details.length !== 0 && access !== access1) {
+                    console.log('masuk tidak sama');
+                    console.log(dataObj[access1], 'dataObj[access1]');
+                    console.log(inputCheck[access1], 'inputCheck[access1]');
+                    console.log(item.is_access, 'item.is_access');
                     dataObj[access1] = (inputCheck[access1] === undefined) ? item.is_access : inputCheck[access1]
                     dataObj[insert1] = (inputCheck[insert1] === undefined) ? item.is_insertable : inputCheck[insert1]
                     dataObj[update1] = (inputCheck[update1] === undefined) ? item.is_updatable : inputCheck[update1]
                     dataObj[deleted1] = (inputCheck[deleted1] === undefined) ? item.is_deletable : inputCheck[deleted1]
+                    console.log(dataObj[access1], 'dataObj[access1] 222222');
                 } else if (details.length !== 0 && access === access1) {
+                    console.log('masuk sama');
                     dataObj[access] = e.target.checked
                     dataObj[insert] = e.target.checked
                     dataObj[update] = e.target.checked
@@ -261,6 +271,7 @@ function ListMenuAccess() {
                     dataObj[deleted] = e.target.checked
                 }
             })
+            console.log(dataObj, 'dataObj');
             if (Object.keys(dataObj).length !== 0) {
                 setInputCheck(dataObj)
             }
@@ -283,12 +294,12 @@ function ListMenuAccess() {
                 [e.target.name] : e.target.checked
             })
         }
-        else {
-            setInputCheck({
-                ...inputCheck,
-                [e.target.name] : e.target.checked
-            })
-        }
+        // else {
+        //     setInputCheck({
+        //         ...inputCheck,
+        //         [e.target.name] : e.target.checked
+        //     })
+        // }
     }
 
     function handleCheckParent(e, listAccessMenu, inputCheckData) {
