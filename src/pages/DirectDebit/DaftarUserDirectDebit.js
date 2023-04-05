@@ -1,11 +1,14 @@
-import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
-import React from 'react'
+import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
+import React, { useCallback } from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import noteIconGrey from "../../assets/icon/note_icon_grey.svg"
+import copy from "../../assets/icon/iconcopy_icon.svg"
 import DataTable, { defaultThemes } from 'react-data-table-component'
+import CopyToClipboard from "react-copy-to-clipboard";
 
 function DaftarUserDirectDebit() {
 
@@ -13,6 +16,8 @@ function DaftarUserDirectDebit() {
     const [namaUserDirectDebit, setNamaUserDirectDebit] = useState("")
     const [channelDirectDebit, setChannelDirectDebit] = useState(0)
     const [statusDirectDebit, setStatusDirectDebit] = useState(0)
+    const [showModalDaftarDirectDebit, setShowModalDaftarDirectDebit] = useState(false)
+    const [copied, setCopied] = useState(false)
 
     const data = [
         {
@@ -91,36 +96,34 @@ function DaftarUserDirectDebit() {
         {
             name: 'ID User',
             selector: row => row.idUser,
-            width: "224px",
-            // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${selectedBankSettlement.length === 0 ? '0' : selectedBankSettlement[0].value}`} >{row.tvasettl_code}</Link>
+            width: "150px",
+            cell: (row) => <Link style={{ textDecoration: "unset", color: "#077E86" }} onClick={() => setShowModalDaftarDirectDebit(true)} >{row.idUser}</Link>
         },
         {
             name: 'Nama Partner',
             selector: row => row.namaPartner,
-            width: "224px",
+            width: "150px",
             wrap: true,
         },
         {
             name: 'Nama User',
             selector: row => row.namaUser,
-            width: "224px",
+            width: "150px",
         },
         {
             name: 'No Handphone',
             selector: row => row.noHP,
-            width: "224px",
-            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+            width: "150px",
         },
         {
             name: 'Channel Direct Debit',
             selector: row => row.channel,
-            width: "224px",
+            width: "200px",
             // style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Status',
             selector: row => row.isActive === true ? "Aktif" : "Tidak Aktif",
-            width: "140px",
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
@@ -134,7 +137,16 @@ function DaftarUserDirectDebit() {
             ],
         },
     ];
-    
+
+    const onCopy = React.useCallback(() => {
+        setCopied(true);
+    }, [])
+
+    const onClick = useCallback(({target: {innerText}}) => {
+        // console.log(`Clicked on "${innerText}"!`);
+        alert("Copied!")
+    }, [])
+
     const customStyles = {
         headCells: {
             style: {
@@ -144,27 +156,7 @@ function DaftarUserDirectDebit() {
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                '&:not(:last-of-type)': {
-                    borderRightStyle: 'solid',
-                    borderRightWidth: '1px',
-                    borderRightColor: defaultThemes.default.divider.default,
-                },
-            },
-        },
-        cells: {
-            style: {
-                '&:not(:last-of-type)': {
-                    borderRightStyle: 'solid',
-                    borderRightWidth: '1px',
-                    borderRightColor: defaultThemes.default.divider.default,
-                },
-            },
-        },
-        headRow: {
-            style: {
-                borderTopStyle: 'solid',
-                borderTopWidth: '1px',
-                borderTopColor: defaultThemes.default.divider.default,
+                width: '150px'
             },
         },
     };
@@ -184,7 +176,7 @@ function DaftarUserDirectDebit() {
         <div className="content-page mt-6">
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar User Direct Debit</span>
             <div className='head-title'>
-                <h2 className="h5 mb-1 mt-4">Daftar User Direct Debit</h2>
+                <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Daftar User Direct Debit</h2>
             </div>
             <div className='main-content'>
                 <div className='base-content mt-3 mb-4'>
@@ -291,9 +283,9 @@ function DaftarUserDirectDebit() {
                             columns={columns}
                             data={data}
                             customStyles={customStyles}
+                            highlightOnHover
                             // progressPending={pendingSettlement}
                             progressComponent={<CustomLoader />}
-                            dense
                         />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
@@ -310,6 +302,41 @@ function DaftarUserDirectDebit() {
                     </div>
                 </div>
             </div>
+            <Modal centered show={showModalDaftarDirectDebit} onHide={() => setShowModalDaftarDirectDebit(false)} style={{ borderRadius: 8 }}>
+                <Modal.Header className="border-0">
+                    <Button
+                        className="position-absolute top-0 end-0 m-3"
+                        variant="close"
+                        aria-label="Close"
+                        onClick={() => setShowModalDaftarDirectDebit(false)}
+                    />
+                </Modal.Header>
+                <Modal.Title className="mt-1 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
+                    Detail ID User
+                </Modal.Title>
+                <center>
+                    <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
+                </center>
+                <Modal.Body className='mt-2' style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
+                    <div className='d-flex justify-content-center align-items-center py-2 px-3' style={{ background: "rgba(255, 214, 0, 0.16)", borderRadius: 4, color: "#383838", fontFamily: "Nunito", fontSize: 14 }}>
+                        <img src={noteIconGrey} alt="icon grey" />
+                        <div className='ms-2' style={{ fontStyle: "italic" }}>
+                            ID User adalah kode unik yang didapat dari Bank berupa kombinasi angka dan alphanumerik serta tidak dapat diubah oleh admin
+                        </div>
+                    </div>
+                    <div className='text-justify p-3 mt-4' style={{ background: "#F0F0F0", borderRadius: 8, border: "1.4px solid #C4C4C4", color: "#383838", fontFamily: "Nunito", fontSize: 14, wordWrap: "break-word" }}>
+                        765457899876545909876569098765456890987679876876567876789876567890987654345678909876543345678888888888888888900000000000000000000000000000087654322222222222123456788888888888888888888876543224778890907755323245678990998676565676767787889897755231334566878909000909090909
+                    </div>
+                    <div className='mt-4 pb-2' style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                        <CopyToClipboard onCopy={onCopy}>
+                            <Button className='d-flex justify-content-center align-items-center' variant="primary" onClick={onClick} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxHeight: 45, width: "100%", height: "100%" }}>
+                                <img src={copy} alt="copy" />
+                                <div className='ms-2'>ID Tersalin</div>
+                            </Button>
+                        </CopyToClipboard>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     )
 }
