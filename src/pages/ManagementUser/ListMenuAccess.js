@@ -6,6 +6,7 @@ import { Link, useHistory, useParams } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData'
 import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { data } from 'jquery'
 
 function ListMenuAccess() {
 
@@ -123,19 +124,11 @@ function ListMenuAccess() {
     }
 
     function handleCheck(e, menuName, menuId, details, item, isAccessValue) {
-        // console.log(e.target.name, 'e.target.name');
-        // console.log(menuName, 'menuName');
-        // console.log(item, 'item');
         const stringMenuId = menuId.toString()
         let access = `isAccess${menuName+stringMenuId}`
         let insert = `isInsertable${menuName+stringMenuId}`
         let update = `isUpdateable${menuName+stringMenuId}`
         let deleted = `isDeleteable${menuName+stringMenuId}`
-        // console.log(access, 'access');
-        // console.log(insert, 'insert');
-        // console.log(update, 'update');
-        // console.log(deleted, 'deleted');
-        // console.log(stringMenuId, 'stringMenuId');
         if (e.target.name === insert && isAccessValue === false || e.target.name === update && isAccessValue === false || e.target.name === deleted && isAccessValue === false) {
             alert("Please checked access menu!")
         } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 6 && details === undefined) {
@@ -212,27 +205,40 @@ function ListMenuAccess() {
         //         [e.target.name] : e.target.checked
         //     })
         } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 2 && details.length !== 0) {
-            console.log('masuk sini');
-            console.log(access, 'access');
             let dataObj = {}
             listAccessMenu.forEach(item => {
                 let access1 = `isAccess${item.label+item.id}`
                 let insert1 = `isInsertable${item.label+item.id}`
                 let update1 = `isUpdateable${item.label+item.id}`
                 let deleted1 = `isDeleteable${item.label+item.id}`
-                console.log(access1, 'access1');
                 if (details.length !== 0 && access !== access1) {
-                    console.log('masuk tidak sama');
-                    console.log(dataObj[access1], 'dataObj[access1]');
-                    console.log(inputCheck[access1], 'inputCheck[access1]');
-                    console.log(item.is_access, 'item.is_access');
                     dataObj[access1] = (inputCheck[access1] === undefined) ? item.is_access : inputCheck[access1]
                     dataObj[insert1] = (inputCheck[insert1] === undefined) ? item.is_insertable : inputCheck[insert1]
                     dataObj[update1] = (inputCheck[update1] === undefined) ? item.is_updatable : inputCheck[update1]
                     dataObj[deleted1] = (inputCheck[deleted1] === undefined) ? item.is_deletable : inputCheck[deleted1]
-                    console.log(dataObj[access1], 'dataObj[access1] 222222');
+                    item.detail.forEach(item2 => {
+                        let access2 = `isAccess${item2.label+item2.id}`
+                        let insert2 = `isInsertable${item2.label+item2.id}`
+                        let update2 = `isUpdateable${item2.label+item2.id}`
+                        let deleted2 = `isDeleteable${item2.label+item2.id}`
+                        dataObj[access2] = (inputCheck[access2] === undefined) ? item.is_access : inputCheck[access2]
+                        dataObj[insert2] = (inputCheck[insert2] === undefined) ? item.is_insertable : inputCheck[insert2]
+                        dataObj[update2] = (inputCheck[update2] === undefined) ? item.is_updatable : inputCheck[update2]
+                        dataObj[deleted2] = (inputCheck[deleted2] === undefined) ? item.is_deletable : inputCheck[deleted2]
+                        if (item2.detail.length !== 0) {
+                            item2.detail.forEach(item3 => {
+                                let access3 = `isAccess${item3.label+item3.id}`
+                                let insert3 = `isInsertable${item3.label+item3.id}`
+                                let update3 = `isUpdateable${item3.label+item3.id}`
+                                let deleted3 = `isDeleteable${item3.label+item3.id}`
+                                dataObj[access3] = (inputCheck[access3] === undefined) ? item.is_access : inputCheck[access3]
+                                dataObj[insert3] = (inputCheck[insert3] === undefined) ? item.is_insertable : inputCheck[insert3]
+                                dataObj[update3] = (inputCheck[update3] === undefined) ? item.is_updatable : inputCheck[update3]
+                                dataObj[deleted3] = (inputCheck[deleted3] === undefined) ? item.is_deletable : inputCheck[deleted3]
+                            })
+                        }
+                    })
                 } else if (details.length !== 0 && access === access1) {
-                    console.log('masuk sama');
                     dataObj[access] = e.target.checked
                     dataObj[insert] = e.target.checked
                     dataObj[update] = e.target.checked
@@ -271,7 +277,6 @@ function ListMenuAccess() {
                     dataObj[deleted] = e.target.checked
                 }
             })
-            console.log(dataObj, 'dataObj');
             if (Object.keys(dataObj).length !== 0) {
                 setInputCheck(dataObj)
             }
@@ -294,12 +299,12 @@ function ListMenuAccess() {
                 [e.target.name] : e.target.checked
             })
         }
-        // else {
-        //     setInputCheck({
-        //         ...inputCheck,
-        //         [e.target.name] : e.target.checked
-        //     })
-        // }
+        else {
+            setInputCheck({
+                ...inputCheck,
+                [e.target.name] : e.target.checked
+            })
+        }
     }
 
     function handleCheckParent(e, listAccessMenu, inputCheckData) {
@@ -1341,9 +1346,6 @@ function ListMenuAccess() {
             },
         },
     };
-
-    console.log(inputCheck, 'inputCheck');
-    console.log(listAccessMenu, 'listAccessMenu');
 
     return (
         <div className="content-page mt-6">
