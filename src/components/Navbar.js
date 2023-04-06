@@ -261,12 +261,18 @@ export default (props) => {
           if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
             setTopUpResult(topUpResult.data.response_data)
             setShowModalKonfirmasiTopUp(false)
-            setShowStatusTopup(true)
+            setTimeout(() => {
+              history.push("/riwayattopup")
+            }, 500);
+            // setShowStatusTopup(true)
           } else if (topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length !== 0) {
             setUserSession(topUpResult.data.response_new_token)
             setTopUpResult(topUpResult.data.response_data)
             setShowModalKonfirmasiTopUp(false)
-            setShowStatusTopup(true)
+            setTimeout(() => {
+              history.push("/riwayattopup")
+            }, 500);
+            // setShowStatusTopup(true)
           }
         } catch (error) {
           // console.log(error)
