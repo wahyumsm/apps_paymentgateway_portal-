@@ -815,7 +815,7 @@ width: 150px;
 }
 
 /* select option in riwayat Top up admin and disburse report*/
-.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control {
+.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control  {
     min-height: 40px;
     min-width: 188px;
     border-radius: 8px;
@@ -852,7 +852,7 @@ width: 150px;
 }
 
 /* untuk di dashboard */
-.dropPartner .css-qqcyw1-option:hover, .dropDisbursePartner .css-qqcyw1-option:hover, .dropSaldoPartner .css-qqcyw1-option:hover, .dropLaporanPartner .css-qqcyw1-option:hover, .dropLaporanPartnerBank .css-qqcyw1-option:hover, .dropTopupPartner .css-qqcyw1-option:hover {
+.dropPartner .css-qqcyw1-option:hover, .dropDisbursePartner .css-qqcyw1-option:hover, .dropSaldoPartner .css-qqcyw1-option:hover, .dropLaporanPartner .css-qqcyw1-option:hover, .dropLaporanPartnerBank .css-qqcyw1-option:hover, .dropTopupPartner .css-qqcyw1-option:hover, .dropDirectDebit .css-qqcyw1-option:hover  {
     background-color: #3b8aff;
 }
 
