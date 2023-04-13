@@ -1,10 +1,12 @@
-import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import DataTable from 'react-data-table-component';
+import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 
 function ReNotifyVA() {
 
@@ -13,7 +15,23 @@ function ReNotifyVA() {
     const history = useHistory()
     const [noVA, setNoVA] = useState("")
     const [dataVirtualAccount, setDataVirtualAccount] = useState({})
+    const [dataHistoryNotify, setDataHistoryNotify] = useState({})
     const [showModalSubmit, setShowModalSubmit] = useState(false)
+    
+    const columns = [
+        {
+            name: "Waktu",
+            selector: row => row.date
+        },
+        {
+            name: "URL",
+            selector: row => row.url
+        },
+        {
+            name: "HTTP Status",
+            selector: row => row.response_code
+        }
+    ]
 
     async function searchVA(noVA) {
         try {
@@ -25,14 +43,19 @@ function ReNotifyVA() {
             }
             const dataVA = await axios.post(BaseURL + "/HelpDesk/GetReNotifyVA", { data: dataParams }, { headers: headers })
             if (dataVA.status === 200 && dataVA.data.response_code === 200 && dataVA.data.response_new_token === null) {
+                dataVA.data.response_data.results.history_notify = dataVA.data.response_data.results.history_notify.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataVirtualAccount(dataVA.data.response_data.results)
+                setDataHistoryNotify(dataVA.data.response_data.results.history_notify)
+                // console.log(dataVA.data.response_data.results.history_notify[0].request_data, 'response_data');
             } else if (dataVA.status === 200 && dataVA.data.response_code === 200 && dataVA.data.response_new_token !== null) {
+                dataVA.data.response_data.results.history_notify = dataVA.data.response_data.results.history_notify.map((obj, idx) => ({...obj, number: idx + 1}))
                 setUserSession(dataVA.data.response_new_token)
                 setDataVirtualAccount(dataVA.data.response_data.results)
+                setDataHistoryNotify(dataVA.data.response_data.results.history_notify)
             }
         } catch (error) {
             // console.log(error);
-            history.push(errorCatch(error.response.status))
+            // history.push(errorCatch(error.response.status))
         }
     }
 
@@ -67,6 +90,53 @@ function ReNotifyVA() {
             history.push(errorCatch(error.response.status))
         }
     }
+
+    async function resendNotify(noVA) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"virtual_account": "${noVA}"}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const resendedNotify = await axios.post(BaseURL + "/HelpDesk/ReSendNotificationVA", { data: dataParams }, { headers: headers })
+            if (resendedNotify.status === 200 && resendedNotify.data.response_code === 200 && resendedNotify.data.response_new_token === null) {
+                alert(resendedNotify.data.response_data.results.Message)
+                window.location.reload()
+            } else if (resendedNotify.status === 200 && resendedNotify.data.response_code === 200 && resendedNotify.data.response_new_token !== null) {
+                setUserSession(resendedNotify.data.response_new_token)
+                alert(resendedNotify.data.response_data.results.Message)
+                window.location.reload()
+            }
+        } catch (error) {
+            // console.log(error);
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+            }
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#F2F2F2',
+                border: '12px',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                width: '150px'
+            },
+        },
+    };
+
+    const CustomLoader = () => (
+        <div style={{ padding: '24px' }}>
+          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+          <div>Loading...</div>
+        </div>
+      );
 
     useEffect(() => {
         if (!access_token) {
@@ -231,7 +301,30 @@ function ReNotifyVA() {
                             }
                         </Row>
                     </div>
+
+                    <div className='base-content mt-4' style={{ width:"100%", padding: 50 }}>
+                        <div className="pb-2" style={{ fontFamily: "Exo", fontWeight: 700, fontSize: 16, color: "#383838" }}>Tabel Notifikasi</div>
+                        <div className="div-table">
+                            <DataTable
+                                columns={columns}
+                                data={dataHistoryNotify}
+                                customStyles={customStyles}
+                                // pagination
+                                highlightOnHover
+                                progressComponent={<CustomLoader />}
+                            />
+                        </div>
+                    </div>
+
                     <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
+                        <button
+                            onClick={() => resendNotify(noVA)}
+                            className={(dataVirtualAccount.is_success === undefined || dataVirtualAccount.is_success === false) ? "btn-off mt-3 mb-3 me-2" : 'add-button mt-3 mb-3 me-2'}
+                            style={{ maxWidth: 'max-content', padding: 7, height: 40, }}
+                            disabled={dataVirtualAccount.is_success === undefined || dataVirtualAccount.is_success === false}
+                        >
+                            Resend Notification
+                        </button>
                         <button
                             onClick={() => setShowModalSubmit(true)}
                             className={(dataVirtualAccount.is_success === undefined || dataVirtualAccount.is_success !== false) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}

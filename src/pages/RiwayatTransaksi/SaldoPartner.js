@@ -48,6 +48,7 @@ function SaldoPartner() {
         namaPartnerRiwayatTopUp: "",
         statusRiwayatTopUp: [],
         periodeRiwayatTopUp: 0,
+        tipeTopup: 0,
     })
     const [isFilterTopUp, setIsFilterTopUp] = useState(false)
 
@@ -637,13 +638,13 @@ function SaldoPartner() {
             name: 'ID Transaksi',
             selector: row => row.tparttopup_code,
             // sortable: true
-            // width: "224px",
+            width: "180px",
             // style: { justifyContent: "center" }
         },
         {
             name: 'Tanggal',
             selector: row => row.tparttopup_crtdt_format,
-            // width: "224px",
+            width: "150px",
             // style: { justifyContent: "center", },
             // sortable: true,
         },
@@ -651,16 +652,24 @@ function SaldoPartner() {
             name: 'Nama Partner',
             selector: row => row.mpartnerdtl_sub_name,
             // sortable: true
-            // width: "260px",
-            wrap: true,
-            style: { wordBreak: 'break-word', whiteSpace: 'normal' }
+            width: "150px",
         },
         {
             name: 'Nominal Topup',
             selector: row => row.tparttopup_trf_amount_rp,
             style: { justifyContent: "flex-end" },
-            // width: "150px",
+            width: "150px",
             // sortable: true,
+        },
+        {
+            name: 'Tipe Top Up',
+            selector: row => row.tparttopup_type_name,
+            width: "140px",
+        },
+        {
+            name: 'Reference ID',
+            selector: row => row.refund_reff_id,
+            width: "180px",
         },
         {
             name: 'Status',
@@ -703,23 +712,23 @@ function SaldoPartner() {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             sortable: true,
-            // width: "260px",
-            wrap: true,
-            style: { wordBreak: 'break-word', whiteSpace: 'normal', paddingLeft: 80 }
+            width: "260px",
+            // wrap: true,
+            // style: { wordBreak: 'break-word', whiteSpace: 'normal', paddingLeft: 80 }
         },
         {
             name: 'Channel',
             selector: row => row.mpartballchannel_name,
             // sortable: true,
             // width: "260px",
-            wrap: true,
-            style: { wordBreak: 'break-word', whiteSpace: 'normal', justifyContent: "center", paddingRight: 11 }
+            // wrap: true,
+            // style: { wordBreak: 'break-word', whiteSpace: 'normal', justifyContent: "center", paddingRight: 11 }
         },
         {
             name: 'Saldo',
             selector: row => convertToRupiah(row.mpartballchannel_balance),
-            style: { justifyContent: "flex-end", paddingRight: 100 },
-            // width: "150px",
+            // style: { justifyContent: "flex-end", paddingRight: 100 },
+            width: "150px",
             // sortable: true,
         },
     ];
@@ -732,7 +741,7 @@ function SaldoPartner() {
                 fontWeight: 'bold',
                 fontSize: '16px',
                 display: 'flex',
-                justifyContent: 'center',
+                justifyContent: 'start',
             },
         },
     };
@@ -752,7 +761,7 @@ function SaldoPartner() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, Tanggal: data[i].tparttopup_crtdt_format, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Tanggal": data[i].tparttopup_crtdt_format, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, "Tipe Top Up": data[i].tparttopup_type_name, "Reference ID": data[i].refund_reff_id, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -763,7 +772,7 @@ function SaldoPartner() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, Tanggal: data[i].tparttopup_crtdt_format, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Tanggal": data[i].tparttopup_crtdt_format, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, "Tipe Top Up": data[i].tparttopup_type_name, "Reference ID": data[i].refund_reff_id, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -790,7 +799,7 @@ function SaldoPartner() {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, Tanggal: data[i].tparttopup_crtdt_format, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Tanggal": data[i].tparttopup_crtdt_format, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, "Tipe Top Up": data[i].tparttopup_type_name, "Reference ID": data[i].refund_reff_id, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -801,7 +810,7 @@ function SaldoPartner() {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, Tanggal: data[i].tparttopup_crtdt_format, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Tanggal": data[i].tparttopup_crtdt_format, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, "Tipe Top Up": data[i].tparttopup_type_name, "Reference ID": data[i].refund_reff_id, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -893,8 +902,18 @@ function SaldoPartner() {
                                         <option value={7}>Pilih Range Tanggal</option>
                                     </Form.Select>
                                 </Col>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
+                                    <span className='me-3'>Tipe Topup</span>
+                                    <Form.Select name='tipeTopup' className="input-text-ez" value={inputHandle.tipeTopup !== undefined} onChange={(e) => handleChange(e)}>
+                                        <option defaultChecked value={0}>Pilih Tipe Topup</option>
+                                        <option value={100}>Transfer</option>
+                                        <option value={101}>Refund</option>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <Row className='mt-4' style={{ display: showDateRiwayatTopUp }}>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <div style={{ display: showDateRiwayatTopUp }} className='pe-3'>
+                                    <div  className='pe-3'>
                                         <DateRangePicker 
                                             onChange={pickDateRiwayatTopUp}
                                             value={stateRiwayatTopup}
