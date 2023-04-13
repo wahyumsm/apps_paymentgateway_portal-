@@ -169,13 +169,13 @@ function SaldoPartner() {
         }
     }
 
-    async function listRiwayatTopUp (statusId, transaksiId, dateId, dateRange, currentPage, namaPartner, isFilter) {
+    async function listRiwayatTopUp (statusId, transaksiId, dateId, dateRange, currentPage, namaPartner, isFilter, typeTopup) {
         try {
             setPendingTopup(true)
             setIsFilterTopUp(isFilter)
             setActivePageRiwayatTopUp(currentPage)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "sub_partner_id": "${(namaPartner !== undefined) ? namaPartner : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "sub_partner_id": "${(namaPartner !== undefined) ? namaPartner : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10, "topup_type_id": ${typeTopup !== undefined ? typeTopup : 0}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -476,6 +476,8 @@ function SaldoPartner() {
         })
     }
 
+    console.log((inputHandle.tipeTopup));
+
     function pickDateRiwayatTopUp(item) {
         setStateRiwayatTopup(item)
         if (item !== null) {
@@ -520,7 +522,7 @@ function SaldoPartner() {
 
     function handlePageChangeTopUp(page) {
         setActivePageRiwayatTopUp(page)
-        listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", isFilterTopUp)
+        listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", isFilterTopUp, inputHandle.tipeTopup)
     }
     
     function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse, partnerId, statusId) {
@@ -542,7 +544,8 @@ function SaldoPartner() {
             idTransaksiRiwayatTopUp: "",
             statusRiwayatTopUp: [],
             periodeRiwayatTopUp: 0,
-            namaPartnerRiwayatTopUp: ""
+            namaPartnerRiwayatTopUp: "",
+            tipeTopup: 0
         })
         setSelectedPartnerAdminTopUp([])
         setStateRiwayatTopup(null)
@@ -622,7 +625,7 @@ function SaldoPartner() {
             history.push('/404');
         }
         listPartner()
-        listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false)
+        listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false, undefined)
         getDisbursementChannel()
         historySaldoPartner()
     }, [access_token, user_role])
@@ -746,12 +749,12 @@ function SaldoPartner() {
         },
     };
 
-    function ExportReportTopUpHandler(isFilter, userRole, statusId, transId, partnerId, dateId, periode) {
+    function ExportReportTopUpHandler(isFilter, userRole, statusId, transId, partnerId, dateId, periode, typeTopup) {
         if (isFilter === true && userRole !== "102") {
-            async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
+            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, typeTopup) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "topup_type_id": ${(typeTopup !== 0) ? typeTopup : 0}, "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -784,12 +787,12 @@ function SaldoPartner() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, dateId, periode)
+            dataExportFilter(statusId, transId, partnerId, dateId, periode, typeTopup)
         } else if (isFilter === false && userRole !== "102") {
             async function dataExportTopUp() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "sub_partner_id": "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "sub_partner_id": "", "dateID": 2, "date_from": "", "date_to": "", "topup_type_id": 0, "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -904,8 +907,8 @@ function SaldoPartner() {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
                                     <span className='me-3'>Tipe Topup</span>
-                                    <Form.Select name='tipeTopup' className="input-text-ez" value={inputHandle.tipeTopup !== undefined} onChange={(e) => handleChange(e)}>
-                                        <option defaultChecked value={0}>Pilih Tipe Topup</option>
+                                    <Form.Select name='tipeTopup' className="input-text-ez" value={inputHandle.tipeTopup !== undefined ? inputHandle.tipeTopup : 0} onChange={(e) => handleChange(e)}>
+                                        <option defaultChecked disabled  value={0}>Pilih Tipe Topup</option>
                                         <option value={100}>Transfer</option>
                                         <option value={101}>Refund</option>
                                     </Form.Select>
@@ -927,7 +930,7 @@ function SaldoPartner() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", true)}
+                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", true, Number(inputHandle.tipeTopup))}
                                                 className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
                                             >

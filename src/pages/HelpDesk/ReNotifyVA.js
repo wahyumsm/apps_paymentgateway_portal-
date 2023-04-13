@@ -7,6 +7,7 @@ import encryptData from '../../function/encryptData';
 import { BaseURL, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import DataTable from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import JSONPretty from 'react-json-pretty';
 
 function ReNotifyVA() {
 
@@ -16,8 +17,20 @@ function ReNotifyVA() {
     const [noVA, setNoVA] = useState("")
     const [dataVirtualAccount, setDataVirtualAccount] = useState({})
     const [dataHistoryNotify, setDataHistoryNotify] = useState({})
+    const [getDetailNotification, setDetailNotification] = useState({})
     const [showModalSubmit, setShowModalSubmit] = useState(false)
+    const [showModalDataNotify, setShowModalDataNotify] = useState(false)
     
+    console.log(dataHistoryNotify);
+    console.log(JSON.stringify(getDetailNotification.response_data));
+
+    function getDetailNotif (id) {
+        setShowModalDataNotify(true)
+        const findData = dataHistoryNotify.find(item => item.number === id)
+        console.log(findData, "findData");
+        setDetailNotification(findData)
+    }
+
     const columns = [
         {
             name: "Waktu",
@@ -30,7 +43,16 @@ function ReNotifyVA() {
         {
             name: "HTTP Status",
             selector: row => row.response_code
-        }
+        },
+        {
+            name: 'Aksi',
+            width: "200px",
+            cell: (row) => (
+                <div className='text-center p-1' onClick={() => getDetailNotif(row.number)} style={{ cursor: "pointer", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838", borderRadius: 6, fontFamily: "Exo", color: "#2C1919", fontWeight: 700, fontSize: 14, width: 152 }}>
+                    Lihat Detail
+                </div>
+            )
+        },
     ]
 
     async function searchVA(noVA) {
@@ -356,6 +378,39 @@ function ReNotifyVA() {
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSubmit(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
                         <Button onClick={() => submitReNotify(noVA)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                size="lg"
+                centered
+                show={showModalDataNotify}
+                onHide={() => setShowModalDataNotify(false)}
+                style={{ display: "flex", borderRadius: 8, justifyContent: "center" }}
+            >
+                <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
+                    <div style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>
+                        <div className='pb-3'>Request Data</div>
+                        <div style={{ fontFamily: "Nunito", fontSize: 16 }}><JSONPretty id="json-pretty" data={getDetailNotification.request_data}></JSONPretty></div>
+                    </div>
+                    <hr />
+                    <div style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>
+                        <div className='pb-3'>Response Data</div>
+                        {/* <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, overflowX: "hidden", border: "1px solid #EBEBEB", borderRadius: 6 }}>{getDetailNotification.response_data}</div> */}
+                        {
+                            JSON.stringify(getDetailNotification.response_data) ? (
+                                <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, overflowX: "hidden", border: "1px solid #EBEBEB", borderRadius: 6 }}><JSONPretty id="json-pretty" data={getDetailNotification.response_data}></JSONPretty></div>
+                            ) : (
+                                <div style={{ fontFamily: "Nunito", fontSize: 16 }} dangerouslySetInnerHTML={{ __html: getDetailNotification.response_data }} />
+                            )
+                        }
+                        {/* <div style={{ fontFamily: "Nunito", fontSize: 16 }} dangerouslySetInnerHTML={{ __html: getDetailNotification.response_data }} /> */}
+                    </div>   
+                    <hr />           
+                    <div className="d-flex justify-content-center my-3">
+                        <Button onClick={() => setShowModalDataNotify(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">OKE</Button>
+                        {/* <Button onClick={() => submitReNotify(noVA)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button> */}
                     </div>
                 </Modal.Body>
             </Modal>
