@@ -752,12 +752,12 @@ function SaldoPartner() {
             async function dataExportFilter(statusId, transId, partnerId, dateId, periode, typeTopup) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "topup_type_id": ${(typeTopup !== 0) ? typeTopup : 0}, "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${statusId}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "topup_type_id": ${(typeTopup !== 0) ? typeTopup : 0}, "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post(BaseURL + "/Report/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
@@ -795,7 +795,7 @@ function SaldoPartner() {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportTopUp = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
+                    const dataExportTopUp = await axios.post(BaseURL + "/Report/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
                     if (dataExportTopUp.status === 200 && dataExportTopUp.data.response_code === 200 && dataExportTopUp.data.response_new_token.length === 0) {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
@@ -950,7 +950,7 @@ function SaldoPartner() {
                             {
                                 listRiwayatTopUpPartner.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 0)} className="export-span">Export</Link>
+                                    <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, Number(inputHandle.tipeTopup))} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-5">
