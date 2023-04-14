@@ -32,15 +32,19 @@ function ReNotifyVA() {
     const columns = [
         {
             name: "Waktu",
-            selector: row => row.date
+            selector: row => row.date,
+            width: "200px"
         },
         {
             name: "URL",
-            selector: row => row.url
+            selector: row => row.url,
+            wrap: true,
+            width: "340px"
         },
         {
             name: "HTTP Status",
-            selector: row => row.response_code
+            selector: row => row.response_code,
+            width: "150px"
         },
         {
             name: 'Aksi',
@@ -75,7 +79,7 @@ function ReNotifyVA() {
             }
         } catch (error) {
             // console.log(error);
-            // history.push(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
         }
     }
 
