@@ -20,9 +20,7 @@ function ReNotifyVA() {
     const [getDetailNotification, setDetailNotification] = useState({})
     const [showModalSubmit, setShowModalSubmit] = useState(false)
     const [showModalDataNotify, setShowModalDataNotify] = useState(false)
-    
-    console.log(dataHistoryNotify);
-    console.log(JSON.stringify(getDetailNotification.response_data));
+    var isHTML = RegExp.prototype.test.bind(/(<([^>]+)>)/i);
 
     function getDetailNotif (id) {
         setShowModalDataNotify(true)
@@ -392,25 +390,22 @@ function ReNotifyVA() {
                 <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
                     <div style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>
                         <div className='pb-3'>Request Data</div>
-                        <div style={{ fontFamily: "Nunito", fontSize: 16 }}><JSONPretty id="json-pretty" data={getDetailNotification.request_data}></JSONPretty></div>
+                        <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6 }}><JSONPretty id="json-pretty" data={getDetailNotification.request_data}></JSONPretty></div>
                     </div>
                     <hr />
                     <div style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>
                         <div className='pb-3'>Response Data</div>
-                        {/* <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, overflowX: "hidden", border: "1px solid #EBEBEB", borderRadius: 6 }}>{getDetailNotification.response_data}</div> */}
                         {
-                            JSON.stringify(getDetailNotification.response_data) ? (
-                                <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, overflowX: "hidden", border: "1px solid #EBEBEB", borderRadius: 6 }}><JSONPretty id="json-pretty" data={getDetailNotification.response_data}></JSONPretty></div>
+                            isHTML(getDetailNotification.response_data) !== true ? (
+                                <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6 }}><JSONPretty id="json-pretty" data={getDetailNotification.response_data}></JSONPretty></div>
                             ) : (
                                 <div style={{ fontFamily: "Nunito", fontSize: 16 }} dangerouslySetInnerHTML={{ __html: getDetailNotification.response_data }} />
                             )
                         }
-                        {/* <div style={{ fontFamily: "Nunito", fontSize: 16 }} dangerouslySetInnerHTML={{ __html: getDetailNotification.response_data }} /> */}
                     </div>   
                     <hr />           
                     <div className="d-flex justify-content-center my-3">
                         <Button onClick={() => setShowModalDataNotify(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">OKE</Button>
-                        {/* <Button onClick={() => submitReNotify(noVA)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button> */}
                     </div>
                 </Modal.Body>
             </Modal>

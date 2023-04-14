@@ -476,8 +476,6 @@ function SaldoPartner() {
         })
     }
 
-    console.log((inputHandle.tipeTopup));
-
     function pickDateRiwayatTopUp(item) {
         setStateRiwayatTopup(item)
         if (item !== null) {
