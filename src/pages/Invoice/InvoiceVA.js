@@ -654,7 +654,7 @@ function InvoiceVA() {
                                             No
                                         </th>
                                         <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                            Nama Barang
+                                            Nama Barang/Jasa
                                         </th>
                                         <th rowSpan={2} style={{ textAlign: "center", verticalAlign: "middle" }}>
                                             Qty TRANSAKSI
