@@ -78,6 +78,7 @@ import InfoSaldoDanMutasi from './RiwayatSubAccount/InfoSaldoDanMutasi';
 import TransferSubAccount from './RiwayatSubAccount/TransferSubAccount';
 import SaldoPartner from './RiwayatTransaksi/SaldoPartner';
 import DisbursementPage from './Disbursement/DisbursementPage';
+import EWallet from './RiwayatTransaksi/EWallet';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -177,6 +178,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccount.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.InfoSaldoDanMutasi.path} component={InfoSaldoDanMutasi} />
     <RouteWithSidebar exact path={Routes.TransferSubAccount.path} component={TransferSubAccount} />
+    <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

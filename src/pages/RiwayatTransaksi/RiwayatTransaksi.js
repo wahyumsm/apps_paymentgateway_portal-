@@ -368,7 +368,7 @@ function RiwayatTransaksi() {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
-    }
+        }
     }
 
     async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement) {
@@ -403,7 +403,7 @@ function RiwayatTransaksi() {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
-    }
+        }
     }
 
     function resetButtonHandle(param) {

@@ -40,6 +40,9 @@ function ListMenuAccess() {
 
     async function saveAccessMenu(dataObj, userId, listAccess) {
         try {
+            // console.log(dataObj, "dataObj");
+            // console.log(userId, "userId");
+            // console.log(listAccess, "listAccess");
             let obj = {
                 maccessuser_user_id: userId,
                 accUser: []
@@ -47,10 +50,10 @@ function ListMenuAccess() {
             let newObj = {}
             userId = parseInt(userId)
                 listAccess.forEach(item => {
-                    let access = `isAccess${item.label}`
-                    let insert = `isInsertable${item.label}`
-                    let update = `isUpdateable${item.label}`
-                    let deleted = `isDeleteable${item.label}`
+                    let access = `isAccess${item.label+item.id}`
+                    let insert = `isInsertable${item.label+item.id}`
+                    let update = `isUpdateable${item.label+item.id}`
+                    let deleted = `isDeleteable${item.label+item.id}`
                     if ((dataObj[access] === true && item.detail.length !== 0) || (dataObj[access] === undefined && dataObj[access] === undefined && item.is_access === true && item.detail.length !== 0)) {
                         newObj.maccessuser_access_id = item.id
                         newObj.maccessuser_is_insertable = (dataObj[insert] !== undefined) ? dataObj[insert] : item.is_insertable
@@ -59,10 +62,10 @@ function ListMenuAccess() {
                         obj.accUser.push(newObj)
                         newObj = {}
                         item.detail.forEach(item2 => {
-                            let access2 = `isAccess${item2.label}`
-                            let insert2 = `isInsertable${item2.label}`
-                            let update2 = `isUpdateable${item2.label}`
-                            let deleted2 = `isDeleteable${item2.label}`
+                            let access2 = `isAccess${item2.label+item2.id}`
+                            let insert2 = `isInsertable${item2.label+item2.id}`
+                            let update2 = `isUpdateable${item2.label+item2.id}`
+                            let deleted2 = `isDeleteable${item2.label+item2.id}`
                             if ((dataObj[access2] === true && item2.detail.length !== 0) || (dataObj[access2] === undefined && item2.is_access === true && item2.detail.length !== 0)) {
                                 newObj.maccessuser_access_id = item2.id
                                 newObj.maccessuser_is_insertable = (dataObj[insert2] !== undefined) ? dataObj[insert2] : item2.is_insertable
@@ -71,10 +74,10 @@ function ListMenuAccess() {
                                 obj.accUser.push(newObj)
                                 newObj = {}
                                 item2.detail.forEach(item3 => {
-                                    let access3 = `isAccess${item3.label}`
-                                    let insert3 = `isInsertable${item3.label}`
-                                    let update3 = `isUpdateable${item3.label}`
-                                    let deleted3 = `isDeleteable${item3.label}`
+                                    let access3 = `isAccess${item3.label+item3.id}`
+                                    let insert3 = `isInsertable${item3.label+item3.id}`
+                                    let update3 = `isUpdateable${item3.label+item3.id}`
+                                    let deleted3 = `isDeleteable${item3.label+item3.id}`
                                     if ((dataObj[access3] === true) || (dataObj[access3] === undefined && item3.is_access === true)) {
                                         newObj.maccessuser_access_id = item3.id
                                         newObj.maccessuser_is_insertable = (dataObj[insert3] !== undefined) ? dataObj[insert3] : item3.is_insertable
@@ -278,6 +281,7 @@ function ListMenuAccess() {
                 }
             })
             if (Object.keys(dataObj).length !== 0) {
+                // console.log(dataObj, "dataObj");
                 setInputCheck(dataObj)
             }
         } else if (e.target.name === access && e.target.checked === false && stringMenuId.length === 2 && details.length === 0) {
