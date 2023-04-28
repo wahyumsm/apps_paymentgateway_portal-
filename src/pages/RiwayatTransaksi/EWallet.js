@@ -420,7 +420,8 @@ function EWallet() {
             name: 'Waktu',
             selector: row => row.processDate,
             // sortable: true,          
-            width: "143px",
+            width: "120px",
+            wrap: true
         },
         {
             name: 'Partner Trans ID',
@@ -523,7 +524,8 @@ function EWallet() {
             selector: row => row.processDate,
             // sortable: true,          
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
-            width: "143px",
+            width: "120px",
+            wrap: true
         },
         {
             name: 'Partner Trans ID',
