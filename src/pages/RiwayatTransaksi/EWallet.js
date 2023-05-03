@@ -442,14 +442,15 @@ function EWallet() {
             selector: row => row.ewalletName,
             // sortable: true,
             // width: "175px"
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", },
             width: "160px",
         },
-        {
-            name: 'No Handphone',
-            selector: row => row.partnerMobile,
-            // sortable: true,
-            // width: "175px"
-        },
+        // {
+        //     name: 'No Handphone',
+        //     selector: row => row.partnerMobile,
+        //     // sortable: true,
+        //     // width: "175px"
+        // },
         {
             name: 'Nominal Transaksi',
             selector: row => `Rp ${row.amount}`,
@@ -462,7 +463,7 @@ function EWallet() {
             selector: row => `Rp ${row.ewalletFee}`,
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
-            // width: "173px"
+            width: "140px"
         },
         {
             name: 'Biaya Pajak',
@@ -532,8 +533,8 @@ function EWallet() {
             selector: row => row.referenceNumber,
             // sortable: true,          
             wrap: true,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center"},
-            width: "150px",
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-start"},
+            // width: "150px",
         },
         {
             name: 'Channel eWallet',
@@ -543,20 +544,20 @@ function EWallet() {
             // width: "175px"
             width: "160px",
         },
-        {
-            name: 'No Handphone',
-            selector: row => row.partnerMobile,
-            // sortable: true,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", },
-            width: "175px"
-            // width: "150px",
-        },
+        // {
+        //     name: 'No Handphone',
+        //     selector: row => row.partnerMobile,
+        //     // sortable: true,
+        //     style: { display: "flex", flexDirection: "row", justifyContent: "center", },
+        //     width: "175px"
+        //     // width: "150px",
+        // },
         {
             name: 'Nominal Transaksi',
             selector: row => `Rp ${row.amount}`,
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
-            // width: "173px"
+            width: "173px"
         },
         {
             name: 'Status',
