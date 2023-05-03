@@ -25,7 +25,7 @@ function ReNotifyVA() {
     function getDetailNotif (id) {
         setShowModalDataNotify(true)
         const findData = dataHistoryNotify.find(item => item.number === id)
-        console.log(findData, "findData");
+        // console.log(findData, "findData");
         setDetailNotification(findData)
     }
 
