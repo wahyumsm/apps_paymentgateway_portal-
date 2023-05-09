@@ -2,7 +2,6 @@ import { Button, Col, Container, Form, Image, Modal, Row } from '@themesberg/rea
 import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
-import { agenLists } from '../../data/tables';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import { Link, useHistory } from 'react-router-dom';
@@ -21,6 +20,8 @@ const RiwayatDirectDebit = () => {
     const access_token = getToken();
     const history = useHistory();
     const [partnerId, setPartnerId] = useState("")
+    const [dataListUser, setDataListUser] = useState([])
+    const [selectedNamaUserDirectDebit, setSelectedNamaUserDirectDebit] = useState([])
     const [dataDirectDebit, setDataDirectDebit] = useState([])
     const [dataListPartner, setDataListPartner] = useState([])
     const [activePageDirectDebit, setActivePageDirectDebit] = useState(1)
@@ -42,10 +43,7 @@ const RiwayatDirectDebit = () => {
         statusId: [],
         fiturId: 0,
         periode: 0,
-
     })
-
-    console.log(inputHandle.idTrans, "inputHandle.idTrans");
 
     const { allowedMaxDays, allowedRange, combine } = DateRangePicker;
     const currentDate = new Date().toISOString().split('T')[0]
@@ -98,7 +96,7 @@ const RiwayatDirectDebit = () => {
     function handlePageChangeRiwayatDirectDebit(page) {
         if (isFilterDirectDebit) {
             setActivePageDirectDebit(page);
-            filterListDirectDebit(inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, inputHandle.partnerId, inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, page, 10)
+            filterListDirectDebit(inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, user_role === "102" ? inputHandle.partnerId : selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit[0].value, inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, page, 10)
         } else {
             setActivePageDirectDebit(page);
             getDirectDebit(page);
@@ -187,10 +185,46 @@ const RiwayatDirectDebit = () => {
         }
     }
 
+    async function listUser() {
+        try {
+          const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"partner_id": "", "mobile_number":""}`)
+            const headers = {
+              'Content-Type':'application/json',
+              'Authorization' : auth
+          }
+          const dataUser = await axios.post(BaseURL + "/Home/GetAllDirectDebitUser", { data: dataParams }, { headers: headers })
+        //   console.log(dataUser, 'ini user detal funct');
+          if (dataUser.status === 200 && dataUser.data.response_code === 200 && dataUser.data.response_new_token.length === 0) {
+            let newDataUser = []
+            dataUser.data.response_data.results.forEach(e => {
+                let obj = {}
+                obj.value = e.mdirdebituser_mobile
+                obj.label = e.mdirdebituser_fullname
+                newDataUser.push(obj)
+            })
+            setDataListUser(newDataUser)
+          } else if (dataUser.status === 200 && dataUser.data.response_code === 200 && dataUser.data.response_new_token.length !== 0) {
+            setUserSession(dataUser.data.response_new_token)
+            let newDataUser = []
+            dataUser.data.response_data.results.forEach(e => {
+                let obj = {}
+                obj.value = e.mdirdebituser_mobile
+                obj.label = e.mdirdebituser_fullname
+                newDataUser.push(obj)
+            })
+            setDataListUser(newDataUser)
+          }
+    } catch (error) {
+          // console.log(error);
+          history.push(errorCatch(error.response.status))
+        }
+    }
+
     async function getDirectDebit(currentPage, partnerId) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"transactionID":"", "date_from":"", "date_to":"", "dateID":1, "partner_id": "${user_role === "102" ? partnerId : ""}", "partner_transid": "", "fitur_id": 0, "statusID":[2,4], "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"transactionID":"", "date_from":"", "date_to":"", "dateID": 0, "partner_id": "${user_role === "102" ? partnerId : ""}", "mobile_number":"", "partner_transid": "", "fitur_id": 0, "statusID":[2,4], "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -214,12 +248,12 @@ const RiwayatDirectDebit = () => {
         }
     }
 
-    async function filterListDirectDebit(idTrans, periode, dateId, partnerId, partnerTransId, fiturId, statusId, page, rowPerPage) {
+    async function filterListDirectDebit(idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId, page, rowPerPage) {
         try {
             setIsFilterDirectDebit(true)
             setActivePageDirectDebit(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"transactionID": "${idTrans.length !== 0 ? idTrans : ""}", "date_from":"${periode.length !== 0 ? periode[0] : ""}", "date_to":"${periode.length !== 0 ? periode[1] : ""}", "dateID": ${dateId}, "partner_id": "${partnerId}", "partner_transid": "${partnerTransId}", "fitur_id": ${fiturId}, "statusID": [${(statusId.length !== 0) ? statusId : [2,4]}], "page":${(page !== 0) ? page : 1}, "row_per_page": ${rowPerPage !== 0 ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"transactionID": "${idTrans.length !== 0 ? idTrans : ""}", "date_from":"${periode.length !== 0 ? periode[0] : ""}", "date_to":"${periode.length !== 0 ? periode[1] : ""}", "dateID": ${dateId}, "partner_id": "${partnerId}", "mobile_number":"${userMobile}", "partner_transid": "${partnerTransId}", "fitur_id": ${fiturId}, "statusID": [${(statusId.length !== 0) ? statusId : [2,4]}], "page":${(page !== 0) ? page : 1}, "row_per_page": ${rowPerPage !== 0 ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -251,10 +285,11 @@ const RiwayatDirectDebit = () => {
     }
 
     function resetButtonDirectDebit(param) {
+        getDirectDebit(activePageDirectDebit, user_role === "102" ? partnerId : "")
         if (param === "Direct Debit") {
             setInputHandle({
                 ...inputHandle,
-                idTrans: 0,
+                idTrans: "",
                 partnerId: "",
                 partnerTransId: "",
                 statusId: [],
@@ -268,12 +303,12 @@ const RiwayatDirectDebit = () => {
         } 
     }
 
-    function ExportDataDirectDebit (isFilter, idTrans, periode, dateId, partnerId, partnerTransId, fiturId, statusId) {
+    function ExportDataDirectDebit (isFilter, idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId) {
         if (isFilter) {
-            async function dataExportFilter (idTrans, periode, dateId, partnerId, partnerTransId, fiturId, statusId) {
+            async function dataExportFilter (idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId) {
                 try {
                     const auth = "Bearer " + getToken()
-                    const dataParams = encryptData(`{"transactionID":"${idTrans.length !== 0 ? idTrans : ""}", "date_from":"${periode.length !== 0 ? periode[0] : ""}", "date_to":"${periode.length !== 0 ? periode[1] : ""}", "dateID": ${dateId}, "partner_id": "${partnerId}", "partner_transid": "${partnerTransId}", "fitur_id": ${fiturId}, "statusID": [${(statusId.length !== 0) ? statusId : [2,4]}], "page":1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transactionID":"${idTrans.length !== 0 ? idTrans : ""}", "date_from":"${periode.length !== 0 ? periode[0] : ""}", "date_to":"${periode.length !== 0 ? periode[1] : ""}", "dateID": ${dateId}, "partner_id": "${partnerId}", "mobile_number":"${userMobile}", "partner_transid": "${partnerTransId}", "fitur_id": ${fiturId}, "statusID": [${(statusId.length !== 0) ? statusId : [2,4]}], "page":1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth
@@ -285,11 +320,11 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_transaction_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_transaction_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -302,11 +337,11 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_transaction_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_transaction_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -319,12 +354,12 @@ const RiwayatDirectDebit = () => {
                   history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(idTrans, periode, dateId, partnerId, partnerTransId, fiturId, statusId)
+            dataExportFilter(idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId)
         } else {
             async function dataExportDefault () {
                 try {
                     const auth = "Bearer " + getToken()
-                    const dataParams = encryptData(`{"transactionID": "", "date_from":"", "date_to":"", "dateID":1, "partner_id": "", "partner_transid": "", "fitur_id": 0, "statusID":[2,4], "page":1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transactionID": "", "date_from":"", "date_to":"", "dateID":1, "partner_id": "", "mobile_number":"", "partner_transid": "", "fitur_id": 0, "statusID":[2,4], "page":1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth
@@ -336,11 +371,11 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Partner Trans ID": data[i].tdirectdebit_partner_id, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_transaction_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Partner Trans ID": data[i].tdirectdebit_partner_id, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_transaction_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -353,11 +388,11 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Partner Trans ID": data[i].tdirectdebit_partner_id, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_transaction_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Partner Trans ID": data[i].tdirectdebit_partner_id, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_transaction_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -527,8 +562,9 @@ const RiwayatDirectDebit = () => {
             style: {
                 backgroundColor: '#F2F2F2',
                 border: '12px',
-                fontWeight: 'bold',
-                fontSize: '16px',
+                fontWeight: '600',
+                fontSize: '14px',
+                fontFamily: "Exo",
                 display: 'flex',
                 justifyContent: 'flex-start',
                 width: '150px'
@@ -553,6 +589,7 @@ const RiwayatDirectDebit = () => {
 
     useEffect(() => {
         getDirectDebit(activePageDirectDebit, partnerId)
+        listUser()
         if (user_role !== "102") {
             listPartner()
         } else {
@@ -585,14 +622,18 @@ const RiwayatDirectDebit = () => {
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <div>Nama User</div>
-                                    <input
-                                        type="text"
-                                        className="input-text-edit"
-                                        placeholder="Masukkan Nama User"
-                                        name='partnerId'
-                                        value={inputHandle.partnerId}
-                                        onChange={(e) => handleChange(e)}
-                                    />
+                                    <div className="dropdown dropTopupPartner">
+                                        <ReactSelect
+                                            closeMenuOnSelect={true}
+                                            hideSelectedOptions={false}
+                                            options={dataListUser}
+                                            value={selectedNamaUserDirectDebit}
+                                            onChange={(selected) => setSelectedNamaUserDirectDebit([selected])}
+                                            placeholder="Pilih Nama User"
+                                            components={{ Option }}
+                                            styles={customStylesSelectedOption}
+                                        />
+                                    </div>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <div>Channel</div>
@@ -621,7 +662,7 @@ const RiwayatDirectDebit = () => {
                             </Row>
                             <Row className='mt-3'>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div>Periode</div>
+                                    <div>Periode <span style={{ color: "red" }}>*</span></div>
                                     <Form.Select
                                         name="periode"
                                         className="input-text-ez"
@@ -671,7 +712,7 @@ const RiwayatDirectDebit = () => {
                             <Row className='mt-3' >
                                 <Col xs={6} style={{ width: "unset", padding: "8px 16px" }}>
                                     <button 
-                                        onClick={() => filterListDirectDebit(inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, partnerId, inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10)}
+                                        onClick={() => filterListDirectDebit(inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, partnerId, selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10)}
                                         className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || ((dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0))) ? 'btn-ez-on' : 'btn-ez'} 
                                         disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
                                     >
@@ -689,9 +730,9 @@ const RiwayatDirectDebit = () => {
                                 </Col>
                             </Row>
                             <div className='mt-3 mb-5'>
-                                <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >Export</Link>
+                                <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >Export</Link>
                             </div>
-                            <div className="div-table mt-3">
+                            <div className="div-table mt-3 scroll-direct-debit">
                                 <DataTable
                                     columns={columnPartner}
                                     data={dataDirectDebit}
@@ -746,14 +787,18 @@ const RiwayatDirectDebit = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <div>Nama User</div>
-                                    <input
-                                        type="text"
-                                        className="input-text-edit"
-                                        placeholder="Masukkan Nama User"
-                                        name='partnerId'
-                                        value={inputHandle.partnerId}
-                                        onChange={(e) => handleChange(e)}
-                                    />
+                                    <div className="dropdown dropTopupPartner">
+                                        <ReactSelect
+                                            closeMenuOnSelect={true}
+                                            hideSelectedOptions={false}
+                                            options={dataListUser}
+                                            value={selectedNamaUserDirectDebit}
+                                            onChange={(selected) => setSelectedNamaUserDirectDebit([selected])}
+                                            placeholder="Pilih Nama User"
+                                            components={{ Option }}
+                                            styles={customStylesSelectedOption}
+                                        />
+                                    </div>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <div>ID Transaksi</div>
@@ -762,23 +807,12 @@ const RiwayatDirectDebit = () => {
                                         className="input-text-edit"
                                         placeholder="ID Transaksi"
                                         name="idTrans"
-                                        value={inputHandle.idTrans === 0 ? "" : inputHandle.idTrans}
+                                        value={inputHandle.idTrans.length === 0 ? "" : inputHandle.idTrans}
                                         onChange={(e) => handleChange(e)}
                                     />
                                 </Col>
                             </Row>
                             <Row className='mt-3'>
-                                {/* <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div>Partner Trans ID</div>
-                                    <input
-                                        type="text"
-                                        className="input-text-edit"
-                                        placeholder="Masukkan Partner Trans ID"
-                                        name='partnerTransId'
-                                        value={inputHandle.partnerTransId}
-                                        onChange={(e) => handleChange(e)}
-                                    />
-                                </Col> */}
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <div>Channel</div>
                                     <Form.Select
@@ -793,7 +827,7 @@ const RiwayatDirectDebit = () => {
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div>Periode</div>
+                                    <div>Periode <span style={{ color: "red" }}>*</span></div>
                                     <Form.Select
                                         name="periode"
                                         className="input-text-ez"
@@ -850,10 +884,10 @@ const RiwayatDirectDebit = () => {
                                 </Col>
                                 <Col xs={4}></Col>
                             </Row>
-                            <Row className='mt-3'>
+                            <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "8px 16px" }}>
                                     <button 
-                                        onClick={() => filterListDirectDebit(inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10)}
+                                        onClick={() => filterListDirectDebit(inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10)}
                                         className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-ez-on' : 'btn-ez'} 
                                         disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && selectedPartnerDirectDebit.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
                                     >
@@ -871,9 +905,9 @@ const RiwayatDirectDebit = () => {
                                 </Col>
                             </Row>
                             <div className='mt-3 mb-5'>
-                                <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >Export</Link>
+                                <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >Export</Link>
                             </div>
-                            <div className="div-table mt-3">
+                            <div className="div-table mt-3 scroll-direct-debit">
                                 <DataTable
                                     columns={columnAdmin}
                                     data={dataDirectDebit}

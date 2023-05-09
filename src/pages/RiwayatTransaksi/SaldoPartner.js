@@ -48,6 +48,7 @@ function SaldoPartner() {
         namaPartnerRiwayatTopUp: "",
         statusRiwayatTopUp: [],
         periodeRiwayatTopUp: 0,
+        tipeTopup: 0,
     })
     const [isFilterTopUp, setIsFilterTopUp] = useState(false)
 
@@ -168,13 +169,13 @@ function SaldoPartner() {
         }
     }
 
-    async function listRiwayatTopUp (statusId, transaksiId, dateId, dateRange, currentPage, namaPartner, isFilter) {
+    async function listRiwayatTopUp (statusId, transaksiId, dateId, dateRange, currentPage, namaPartner, isFilter, typeTopup) {
         try {
             setPendingTopup(true)
             setIsFilterTopUp(isFilter)
             setActivePageRiwayatTopUp(currentPage)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "sub_partner_id": "${(namaPartner !== undefined) ? namaPartner : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId !== undefined) ? statusId : [1,2,7,9]}], "transID" : "${(transaksiId !== undefined) ? transaksiId : ""}", "sub_partner_id": "${(namaPartner !== undefined) ? namaPartner : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "page": ${(currentPage !== undefined) ? currentPage : 1}, "row_per_page": 10, "topup_type_id": ${typeTopup !== undefined ? typeTopup : 0}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -519,7 +520,7 @@ function SaldoPartner() {
 
     function handlePageChangeTopUp(page) {
         setActivePageRiwayatTopUp(page)
-        listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", isFilterTopUp)
+        listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", isFilterTopUp, inputHandle.tipeTopup)
     }
     
     function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse, partnerId, statusId) {
@@ -541,7 +542,8 @@ function SaldoPartner() {
             idTransaksiRiwayatTopUp: "",
             statusRiwayatTopUp: [],
             periodeRiwayatTopUp: 0,
-            namaPartnerRiwayatTopUp: ""
+            namaPartnerRiwayatTopUp: "",
+            tipeTopup: 0
         })
         setSelectedPartnerAdminTopUp([])
         setStateRiwayatTopup(null)
@@ -621,7 +623,7 @@ function SaldoPartner() {
             history.push('/404');
         }
         listPartner()
-        listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false)
+        listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false, undefined)
         getDisbursementChannel()
         historySaldoPartner()
     }, [access_token, user_role])
@@ -637,13 +639,13 @@ function SaldoPartner() {
             name: 'ID Transaksi',
             selector: row => row.tparttopup_code,
             // sortable: true
-            // width: "224px",
+            width: "180px",
             // style: { justifyContent: "center" }
         },
         {
             name: 'Tanggal',
             selector: row => row.tparttopup_crtdt_format,
-            // width: "224px",
+            width: "150px",
             // style: { justifyContent: "center", },
             // sortable: true,
         },
@@ -651,16 +653,24 @@ function SaldoPartner() {
             name: 'Nama Partner',
             selector: row => row.mpartnerdtl_sub_name,
             // sortable: true
-            // width: "260px",
-            wrap: true,
-            style: { wordBreak: 'break-word', whiteSpace: 'normal' }
+            width: "150px",
         },
         {
             name: 'Nominal Topup',
             selector: row => row.tparttopup_trf_amount_rp,
             style: { justifyContent: "flex-end" },
-            // width: "150px",
+            width: "150px",
             // sortable: true,
+        },
+        {
+            name: 'Tipe Top Up',
+            selector: row => row.tparttopup_type_name,
+            width: "140px",
+        },
+        {
+            name: 'Reference ID',
+            selector: row => row.refund_reff_id,
+            width: "180px",
         },
         {
             name: 'Status',
@@ -703,23 +713,23 @@ function SaldoPartner() {
             name: 'Nama Partner',
             selector: row => row.mpartner_name,
             sortable: true,
-            // width: "260px",
-            wrap: true,
-            style: { wordBreak: 'break-word', whiteSpace: 'normal', paddingLeft: 80 }
+            width: "260px",
+            // wrap: true,
+            // style: { wordBreak: 'break-word', whiteSpace: 'normal', paddingLeft: 80 }
         },
         {
             name: 'Channel',
             selector: row => row.mpartballchannel_name,
             // sortable: true,
             // width: "260px",
-            wrap: true,
-            style: { wordBreak: 'break-word', whiteSpace: 'normal', justifyContent: "center", paddingRight: 11 }
+            // wrap: true,
+            // style: { wordBreak: 'break-word', whiteSpace: 'normal', justifyContent: "center", paddingRight: 11 }
         },
         {
             name: 'Saldo',
             selector: row => convertToRupiah(row.mpartballchannel_balance),
-            style: { justifyContent: "flex-end", paddingRight: 100 },
-            // width: "150px",
+            // style: { justifyContent: "flex-end", paddingRight: 100 },
+            width: "150px",
             // sortable: true,
         },
     ];
@@ -732,27 +742,27 @@ function SaldoPartner() {
                 fontWeight: 'bold',
                 fontSize: '16px',
                 display: 'flex',
-                justifyContent: 'center',
+                justifyContent: 'start',
             },
         },
     };
 
-    function ExportReportTopUpHandler(isFilter, userRole, statusId, transId, partnerId, dateId, periode) {
+    function ExportReportTopUpHandler(isFilter, userRole, statusId, transId, partnerId, dateId, periode, typeTopup) {
         if (isFilter === true && userRole !== "102") {
-            async function dataExportFilter(statusId, transId, partnerId, dateId, periode) {
+            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, typeTopup) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${statusId}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "topup_type_id": ${(typeTopup !== 0) ? typeTopup : 0}, "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post(BaseURL + "/Report/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, Tanggal: data[i].tparttopup_crtdt_format, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Tanggal": data[i].tparttopup_crtdt_format, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, "Tipe Top Up": data[i].tparttopup_type_name, "Reference ID": data[i].refund_reff_id, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -763,7 +773,7 @@ function SaldoPartner() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, Tanggal: data[i].tparttopup_crtdt_format, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Tanggal": data[i].tparttopup_crtdt_format, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, "Tipe Top Up": data[i].tparttopup_type_name, "Reference ID": data[i].refund_reff_id, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -775,22 +785,22 @@ function SaldoPartner() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, dateId, periode)
+            dataExportFilter(statusId, transId, partnerId, dateId, periode, typeTopup)
         } else if (isFilter === false && userRole !== "102") {
             async function dataExportTopUp() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "sub_partner_id": "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "sub_partner_id": "", "dateID": 2, "date_from": "", "date_to": "", "topup_type_id": 0, "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportTopUp = await axios.post(BaseURL + "/partner/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
+                    const dataExportTopUp = await axios.post(BaseURL + "/Report/HistoryTopUpPartnerFilter", {data: dataParams}, { headers: headers });
                     if (dataExportTopUp.status === 200 && dataExportTopUp.data.response_code === 200 && dataExportTopUp.data.response_new_token.length === 0) {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, Tanggal: data[i].tparttopup_crtdt_format, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Tanggal": data[i].tparttopup_crtdt_format, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, "Tipe Top Up": data[i].tparttopup_type_name, "Reference ID": data[i].refund_reff_id, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -801,7 +811,7 @@ function SaldoPartner() {
                         const data = dataExportTopUp.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, Tanggal: data[i].tparttopup_crtdt_format, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tparttopup_code, "Tanggal": data[i].tparttopup_crtdt_format, "Nama Partner": data[i].mpartnerdtl_sub_name, Nominal: data[i].tparttopup_trf_amount, "Tipe Top Up": data[i].tparttopup_type_name, "Reference ID": data[i].refund_reff_id, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -893,8 +903,18 @@ function SaldoPartner() {
                                         <option value={7}>Pilih Range Tanggal</option>
                                     </Form.Select>
                                 </Col>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.4%" }}>
+                                    <span className='me-3'>Tipe Topup</span>
+                                    <Form.Select name='tipeTopup' className="input-text-ez" value={inputHandle.tipeTopup !== undefined ? inputHandle.tipeTopup : 0} onChange={(e) => handleChange(e)}>
+                                        <option defaultChecked disabled  value={0}>Pilih Tipe Topup</option>
+                                        <option value={100}>Transfer</option>
+                                        <option value={101}>Refund</option>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <Row className='mt-4' style={{ display: showDateRiwayatTopUp }}>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <div style={{ display: showDateRiwayatTopUp }} className='pe-3'>
+                                    <div  className='pe-3'>
                                         <DateRangePicker 
                                             onChange={pickDateRiwayatTopUp}
                                             value={stateRiwayatTopup}
@@ -908,7 +928,7 @@ function SaldoPartner() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", true)}
+                                                onClick={() => listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 1, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", true, Number(inputHandle.tipeTopup))}
                                                 className={(inputHandle.periodeRiwayatTopUp !== 0 || (dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.idTransaksiRiwayatTopUp !== 0) || ((dateRangeRiwayatTopUp === undefined || dateRangeRiwayatTopUp.length !== 0) && inputHandle.statusRiwayatTopUp !== 0)) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeRiwayatTopUp === 0 || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.statusRiwayatTopUp === 0) || (inputHandle.periodeRiwayatTopUp === 0 && inputHandle.idTransaksiRiwayatTopUp.length === 0 && inputHandle.statusRiwayatTopUp === 0)}
                                             >
@@ -930,7 +950,7 @@ function SaldoPartner() {
                             {
                                 listRiwayatTopUpPartner.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, 0)} className="export-span">Export</Link>
+                                    <Link to={"#"} onClick={() => ExportReportTopUpHandler(isFilterTopUp, user_role, inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", inputHandle.periodeRiwayatTopUp, dateRangeRiwayatTopUp, Number(inputHandle.tipeTopup))} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-5">

@@ -1383,23 +1383,23 @@ header.sc-dIouRR.evxAbm {
     background: #FFFFFF;
 }
 
-.scroll-confirm::-webkit-scrollbar {
+.scroll-confirm::-webkit-scrollbar, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar {
     width: "100%";
     height: 6px;
     background-color: #FFFFFF;
 }
 
-.scroll-confirm::-webkit-scrollbar-track {
+.scroll-confirm::-webkit-scrollbar-track, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-track {
     box-shadow: inset 0 0 1px grey;
     border-radius: 6px;
 }
 
-.scroll-confirm::-webkit-scrollbar-thumb {
+.scroll-confirm::-webkit-scrollbar-thumb, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-thumb {
     border-radius: 6px;
     background: #c4c4c4;
 }
 
-.scroll-confirm::-webkit-scrollbar-button:single-button {
+.scroll-confirm::-webkit-scrollbar-button:single-button, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-button:single-button {
     /* background-color: rgb(64, 64, 64); */
 
     display: block;
@@ -1410,7 +1410,7 @@ header.sc-dIouRR.evxAbm {
 }
 
 /* Left */
-.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:decrement {
+.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:decrement, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-button:single-button:horizontal:decrement {
     height: 12px;
     width: 16px;
     background-position: center;
@@ -1418,18 +1418,18 @@ header.sc-dIouRR.evxAbm {
     fill: rgb(96, 96, 96);
 }
 
-.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:decrement:hover {
+.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:decrement:hover, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-button:single-button:horizontal:decrement:hover {
     background-image: url("../../assets/icon/left_icon.svg");
     fill:'rgb(112, 112, 112)'
 }
 
-.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:decrement:active {
+.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:decrement:active, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-button:single-button:horizontal:decrement:active {
     background-image: url("../../assets/icon/left_icon.svg");
     fill:'rgb(112, 112, 112)'
 }
 
 /* Right */
-.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:increment {
+.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:increment, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-button:single-button:horizontal:increment {
     height: 12px;
     width: 16px;
     background-position: center;
@@ -1437,12 +1437,12 @@ header.sc-dIouRR.evxAbm {
     fill: rgb(96, 96, 96);
 }
 
-.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:increment:hover {
+.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:increment:hover, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-button:single-button:horizontal:increment:hover {
     background-image: url("../../assets/icon/right_icon.svg");
     fill:'rgb(112, 112, 112)'
 }
 
-.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:increment:active {
+.scroll-confirm::-webkit-scrollbar-button:single-button:horizontal:increment:active, .scroll-direct-debit .sc-dmRaPn::-webkit-scrollbar-button:single-button:horizontal:increment:active {
     background-image: url("../../assets/icon/right_icon.svg");
     fill:'rgb(112, 112, 112)'
 }

@@ -1,10 +1,13 @@
-import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData';
 import { BaseURL, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import DataTable from 'react-data-table-component';
+import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import JSONPretty from 'react-json-pretty';
 
 function ReNotifyVA() {
 
@@ -13,7 +16,46 @@ function ReNotifyVA() {
     const history = useHistory()
     const [noVA, setNoVA] = useState("")
     const [dataVirtualAccount, setDataVirtualAccount] = useState({})
+    const [dataHistoryNotify, setDataHistoryNotify] = useState({})
+    const [getDetailNotification, setDetailNotification] = useState({})
     const [showModalSubmit, setShowModalSubmit] = useState(false)
+    const [showModalDataNotify, setShowModalDataNotify] = useState(false)
+    var isHTML = RegExp.prototype.test.bind(/(<([^>]+)>)/i);
+
+    function getDetailNotif (id) {
+        setShowModalDataNotify(true)
+        const findData = dataHistoryNotify.find(item => item.number === id)
+        // console.log(findData, "findData");
+        setDetailNotification(findData)
+    }
+
+    const columns = [
+        {
+            name: "Waktu",
+            selector: row => row.date,
+            width: "200px"
+        },
+        {
+            name: "URL",
+            selector: row => row.url,
+            wrap: true,
+            width: "340px"
+        },
+        {
+            name: "HTTP Status",
+            selector: row => row.response_code,
+            width: "150px"
+        },
+        {
+            name: 'Aksi',
+            width: "200px",
+            cell: (row) => (
+                <div className='text-center p-1' onClick={() => getDetailNotif(row.number)} style={{ cursor: "pointer", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838", borderRadius: 6, fontFamily: "Exo", color: "#2C1919", fontWeight: 700, fontSize: 14, width: 152 }}>
+                    Lihat Detail
+                </div>
+            )
+        },
+    ]
 
     async function searchVA(noVA) {
         try {
@@ -25,10 +67,15 @@ function ReNotifyVA() {
             }
             const dataVA = await axios.post(BaseURL + "/HelpDesk/GetReNotifyVA", { data: dataParams }, { headers: headers })
             if (dataVA.status === 200 && dataVA.data.response_code === 200 && dataVA.data.response_new_token === null) {
+                dataVA.data.response_data.results.history_notify = dataVA.data.response_data.results.history_notify.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataVirtualAccount(dataVA.data.response_data.results)
+                setDataHistoryNotify(dataVA.data.response_data.results.history_notify)
+                // console.log(dataVA.data.response_data.results.history_notify[0].request_data, 'response_data');
             } else if (dataVA.status === 200 && dataVA.data.response_code === 200 && dataVA.data.response_new_token !== null) {
+                dataVA.data.response_data.results.history_notify = dataVA.data.response_data.results.history_notify.map((obj, idx) => ({...obj, number: idx + 1}))
                 setUserSession(dataVA.data.response_new_token)
                 setDataVirtualAccount(dataVA.data.response_data.results)
+                setDataHistoryNotify(dataVA.data.response_data.results.history_notify)
             }
         } catch (error) {
             // console.log(error);
@@ -67,6 +114,53 @@ function ReNotifyVA() {
             history.push(errorCatch(error.response.status))
         }
     }
+
+    async function resendNotify(noVA) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"virtual_account": "${noVA}"}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const resendedNotify = await axios.post(BaseURL + "/HelpDesk/ReSendNotificationVA", { data: dataParams }, { headers: headers })
+            if (resendedNotify.status === 200 && resendedNotify.data.response_code === 200 && resendedNotify.data.response_new_token === null) {
+                alert(resendedNotify.data.response_data.results.Message)
+                window.location.reload()
+            } else if (resendedNotify.status === 200 && resendedNotify.data.response_code === 200 && resendedNotify.data.response_new_token !== null) {
+                setUserSession(resendedNotify.data.response_new_token)
+                alert(resendedNotify.data.response_data.results.Message)
+                window.location.reload()
+            }
+        } catch (error) {
+            // console.log(error);
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+            }
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#F2F2F2',
+                border: '12px',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                width: '150px'
+            },
+        },
+    };
+
+    const CustomLoader = () => (
+        <div style={{ padding: '24px' }}>
+          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+          <div>Loading...</div>
+        </div>
+      );
 
     useEffect(() => {
         if (!access_token) {
@@ -231,7 +325,30 @@ function ReNotifyVA() {
                             }
                         </Row>
                     </div>
+
+                    <div className='base-content mt-4' style={{ width:"100%", padding: 50 }}>
+                        <div className="pb-2" style={{ fontFamily: "Exo", fontWeight: 700, fontSize: 16, color: "#383838" }}>Tabel Notifikasi</div>
+                        <div className="div-table">
+                            <DataTable
+                                columns={columns}
+                                data={dataHistoryNotify}
+                                customStyles={customStyles}
+                                // pagination
+                                highlightOnHover
+                                progressComponent={<CustomLoader />}
+                            />
+                        </div>
+                    </div>
+
                     <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
+                        <button
+                            onClick={() => resendNotify(noVA)}
+                            className={(dataVirtualAccount.is_success === undefined || dataVirtualAccount.is_success === false) ? "btn-off mt-3 mb-3 me-2" : 'add-button mt-3 mb-3 me-2'}
+                            style={{ maxWidth: 'max-content', padding: 7, height: 40, }}
+                            disabled={dataVirtualAccount.is_success === undefined || dataVirtualAccount.is_success === false}
+                        >
+                            Resend Notification
+                        </button>
                         <button
                             onClick={() => setShowModalSubmit(true)}
                             className={(dataVirtualAccount.is_success === undefined || dataVirtualAccount.is_success !== false) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}
@@ -263,6 +380,36 @@ function ReNotifyVA() {
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSubmit(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
                         <Button onClick={() => submitReNotify(noVA)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                size="lg"
+                centered
+                show={showModalDataNotify}
+                onHide={() => setShowModalDataNotify(false)}
+                style={{ display: "flex", borderRadius: 8, justifyContent: "center" }}
+            >
+                <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
+                    <div style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>
+                        <div className='pb-3'>Request Data</div>
+                        <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6 }}><JSONPretty id="json-pretty" data={getDetailNotification.request_data}></JSONPretty></div>
+                    </div>
+                    <hr />
+                    <div style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>
+                        <div className='pb-3'>Response Data</div>
+                        {
+                            isHTML(getDetailNotification.response_data) !== true ? (
+                                <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6 }}><JSONPretty id="json-pretty" data={getDetailNotification.response_data}></JSONPretty></div>
+                            ) : (
+                                <div style={{ fontFamily: "Nunito", fontSize: 16 }} dangerouslySetInnerHTML={{ __html: getDetailNotification.response_data }} />
+                            )
+                        }
+                    </div>   
+                    <hr />           
+                    <div className="d-flex justify-content-center my-3">
+                        <Button onClick={() => setShowModalDataNotify(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">OKE</Button>
                     </div>
                 </Modal.Body>
             </Modal>

@@ -84,6 +84,7 @@ import Disbursement from './Riwayat/Disbursement';
 import InfoSaldoMutasi from './Riwayat/InfoSaldoDanMutasi';
 import SettlementPage from './Settlement/SettlementPage';
 import DaftarUserDirectDebit from './DirectDebit/DaftarUserDirectDebit';
+import EWallet from './RiwayatTransaksi/EWallet';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -193,6 +194,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceVASubMenu.path} component={InvoiceVA}/>
     <RouteWithSidebar exact path={Routes.InvoiceDisbursementSubMenu.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.SaldoPartnerMenu.path} component={SaldoPartner} />
+    <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

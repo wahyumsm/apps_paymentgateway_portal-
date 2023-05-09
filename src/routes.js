@@ -58,6 +58,8 @@ export const Routes = {
     InvoiceDisbursementSubMenu: { path: "/Invoice/disbursement" },
     SaldoPartnerMenu: { path: "/riwayat-saldo-partner"},
 
+    eWallet: {path: "/Riwayat/ewallet"},
+
     // docs
     // DocsOverview: { path: "/documentation/overview" },
     // DocsDownload: { path: "/documentation/download" },

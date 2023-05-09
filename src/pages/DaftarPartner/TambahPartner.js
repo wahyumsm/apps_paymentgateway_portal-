@@ -490,11 +490,11 @@ function TambahPartner() {
                 } else {
                   setAlertMaksTransaksi(false)
                   const newData = {
-                    fee: Number(fee.replaceAll(',', '.')),
-                    fee_settle: Number(fee_settle.replaceAll(',', '.')),
-                    mpartfitur_min_topup_allocation: Number(minTopup.replaceAll(',', '.')),
-                    mpartfitur_min_amount_trx: Number(minTransaksi.replaceAll(',', '.')),
-                    mpartfitur_max_amount_trx: Number(maksTransaksi.replaceAll(',', '.')),
+                    fee: typeof fee === "string" ? Number(fee.replaceAll(',', '.')) : fee,
+                    fee_settle: typeof fee_settle === "string" ? Number(fee_settle.replaceAll(',', '.')) : fee_settle,
+                    mpartfitur_min_topup_allocation: typeof minTopup === "string" ? Number(minTopup.replaceAll(',', '.')) : minTopup,
+                    mpartfitur_min_amount_trx: typeof minTransaksi === "string" ? Number(minTransaksi.replaceAll(',', '.')) : minTransaksi,
+                    mpartfitur_max_amount_trx: typeof maksTransaksi === "string" ? Number(maksTransaksi.replaceAll(',', '.')) : maksTransaksi,
                     fitur_id: Number(fiturId),
                     fitur_name: fiturName,
                     mpaytype_id: typeId,

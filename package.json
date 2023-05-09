@@ -55,6 +55,7 @@
     "react-github-btn": "^1.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-js-pagination": "^3.0.3",
+    "react-json-pretty": "^2.2.0",
     "react-live": "^2.2.3",
     "react-otp-input": "^2.4.0",
     "react-redux": "^8.0.2",
