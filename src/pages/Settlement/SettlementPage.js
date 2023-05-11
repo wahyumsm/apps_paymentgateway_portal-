@@ -751,15 +751,15 @@ function SettlementPage() {
         <div className="content-page mt-6">
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Settlement</span>
             <div className='head-title'>
-                <h2 className="h5 mb-1 mt-4">Settlement</h2>
+                <h2 className="h5 mb-1 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Settlement</h2>
             </div>
             <div className='main-content'>
                 {
                     (user_role !== "102") ?
                     <div className='riwayat-settlement-div mt-3 mb-4'>
-                        <span className='mt-4' style={{fontWeight: 600}}>Table Riwayat Settlement Partner</span>
+                        <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Tabel Riwayat Settlement Partner</span>
                         <div className='base-content mt-3'>
-                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Filter</span>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>ID Transaksi</span>
@@ -900,161 +900,108 @@ function SettlementPage() {
                             </div>
                         </div>
                     </div> :
-                    <div className='base-content'>
-                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
-                        {/* {dataChartTransfer.length > 0 ? */}
-                            {/* <Line
-                                    className="mt-3 mb-3"
-                                    data={{
-                                    labels: dataChartTransfer.map(obj => obj.dates),
-                                    datasets: [
-                                        {
-                                        label: null,
-                                        fill: true,
-                                        // backgroundColor: gradient,
-                                        backgroundColor: "rgba(156, 67, 223, 0.38)",
-                                        borderColor: "#9C43DF",
-                                        pointBackgroundColor: "rgba(220, 220, 220, 1)",
-                                        pointBorderColor: "#9C43DF",
-                                        data: dataChartTransfer.map(obj => obj.nominal_day)
-                                        },
-                                    ],
-                                    }}
-                                    height={100}
-                                    width={200}
-                                    options= {{
-                                    plugins: {
-                                        legend: {
-                                        display: false
-                                        },
-                                    },
-                                    responsive: true,
-                                    scales: {
-                                        xAxes: {
-                                        beginAtZero: false,
-                                        ticks: {
-                                            autoSkip: false,
-                                            maxRotation: 45,
-                                            minRotation: 45
-                                        }
-                                        },
-                                        yAxes: {
-                                        beginAtZero: true,
-                                        ticks: {
-                                            stepSize: 2000
-                                        }
-                                        }
-                                    }
-                                    }}
+                    <div className='riwayat-settlement-div mt-3 mb-4'>
+                        <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Tabel Riwayat Settlement Partner</span>
+                        <div className='base-content'>
+                            <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Filter</span>
+                            <Row className='mt-4'>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <span className="me-1">ID Transaksi</span>
+                                    <input name="idTransaksiSettlementPartner" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlementPartner} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                                </Col>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlementPartner === "none") ? "33%" : "33%" }}>
+                                    <span >Periode<span style={{ color: "red" }}>*</span></span>
+                                    <Form.Select name='periodeSettlementPartner' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlementPartner} onChange={(e) => handleChangePeriodeSettlement(e, "partner")}>
+                                        <option defaultChecked disabled value={0}>Pilih Periode</option>
+                                        <option value={2}>Hari Ini</option>
+                                        <option value={3}>Kemarin</option>
+                                        <option value={4}>7 Hari Terakhir</option>
+                                        <option value={5}>Bulan Ini</option>
+                                        <option value={6}>Bulan Kemarin</option>
+                                        <option value={7}>Pilih Range Tanggal</option>
+                                    </Form.Select>                    
+                                </Col>                
+                                <Col xs={4}>
+                                    <span>Status</span>
+                                    <Form.Select name="statusSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlementPartner} onChange={(e) => handleChange(e)}>
+                                        <option defaultChecked disabled value="">Pilih Status</option>
+                                        <option value={2}>Berhasil</option>
+                                        <option value={1}>Dalam Proses</option>
+                                        <option value={4}>Gagal</option>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <Row className='mt-4'>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <span>Jenis Transaksi</span>
+                                    <Form.Select name="fiturSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlementPartner} onChange={(e) => handleChange(e)}>
+                                        <option defaultValue value={0}>Pilih Jenis Transaksi</option>
+                                        <option value={104}>Payment Link</option>
+                                        <option value={100}>VA Partner</option>
+                                        <option value={107}>Direct Debit</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col xs={4} style={{ display: showDateSettlementPartner }}>
+                                    <DateRangePicker
+                                        onChange={pickDateSettlementPartner}
+                                        value={stateSettlementPartner}
+                                        clearIcon={null}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row className='mt-4'>
+                                <Col xs={5}>
+                                    <Row>
+                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, 1, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner)}
+                                                className={(inputHandle.periodeSettlementPartner !== 0 || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                                disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
+                                            >
+                                                Terapkan
+                                            </button>
+                                        </Col>
+                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => resetButtonHandle("partner")}
+                                                className={(inputHandle.periodeSettlementPartner || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
+                                            >
+                                                Atur Ulang
+                                            </button>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            {
+                                dataRiwayatSettlementPartner.length !== 0 &&
+                                    <div>
+                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, oneMonthAgo, currentDate)} className="export-span">Export</Link>
+                                    </div>
+                            }
+                            <br/>
+                            <br/>
+                            <div className="div-table">
+                                <DataTable
+                                    columns={columnsSettlementPartner}
+                                    data={dataRiwayatSettlementPartner}
+                                    customStyles={customStylesPartner}
+                                    progressPending={pendingSettlementPartner}
+                                    progressComponent={<CustomLoader />}
                                 />
-                            */}
-                            {/* <Row>
-                                    <Col xs={12}>
-                                        <div className="div-chart">
-                                            <Chart type='line' data={data} />
-                                        </div>
-                                    </Col>
-                                </Row>
-                            */}
-                            {/* <br/> */}
-                        <Row className='mt-4'>
-                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span className="me-1">ID Transaksi</span>
-                                <input name="idTransaksiSettlementPartner" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlementPartner} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
-                            </Col>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlementPartner === "none") ? "33%" : "33%" }}>
-                                <span >Periode<span style={{ color: "red" }}>*</span></span>
-                                <Form.Select name='periodeSettlementPartner' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlementPartner} onChange={(e) => handleChangePeriodeSettlement(e, "partner")}>
-                                    <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                    <option value={2}>Hari Ini</option>
-                                    <option value={3}>Kemarin</option>
-                                    <option value={4}>7 Hari Terakhir</option>
-                                    <option value={5}>Bulan Ini</option>
-                                    <option value={6}>Bulan Kemarin</option>
-                                    <option value={7}>Pilih Range Tanggal</option>
-                                </Form.Select>                    
-                            </Col>                
-                            <Col xs={4}>
-                                <span>Status</span>
-                                <Form.Select name="statusSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlementPartner} onChange={(e) => handleChange(e)}>
-                                    <option defaultChecked disabled value="">Pilih Status</option>
-                                    <option value={2}>Berhasil</option>
-                                    <option value={1}>Dalam Proses</option>
-                                    <option value={4}>Gagal</option>
-                                </Form.Select>
-                            </Col>
-                        </Row>
-                        <Row className='mt-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>Jenis Transaksi</span>
-                                <Form.Select name="fiturSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlementPartner} onChange={(e) => handleChange(e)}>
-                                    <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                    <option value={104}>Payment Link</option>
-                                    <option value={100}>VA Partner</option>
-                                    <option value={107}>Direct Debit</option>
-                                </Form.Select>
-                            </Col>
-                            <Col xs={4} style={{ display: showDateSettlementPartner }}>
-                                <DateRangePicker
-                                    onChange={pickDateSettlementPartner}
-                                    value={stateSettlementPartner}
-                                    clearIcon={null}
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlementPartner}</div>
+                                <Pagination
+                                    activePage={activePageSettlementPartner}
+                                    itemsCountPerPage={pageNumberSettlementPartner.row_per_page}
+                                    totalItemsCount={(pageNumberSettlementPartner.row_per_page*pageNumberSettlementPartner.max_page)}
+                                    pageRangeDisplayed={5}
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    onChange={handlePageChangeSettlementPartner}
                                 />
-                            </Col>
-                        </Row>
-                        <Row className='mt-4'>
-                            <Col xs={5}>
-                                <Row>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                        <button
-                                            onClick={() => filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, 1, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner)}
-                                            className={(inputHandle.periodeSettlementPartner !== 0 || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                            disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
-                                        >
-                                            Terapkan
-                                        </button>
-                                    </Col>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                        <button
-                                            onClick={() => resetButtonHandle("partner")}
-                                            className={(inputHandle.periodeSettlementPartner || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                            disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
-                                        >
-                                            Atur Ulang
-                                        </button>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        {
-                            dataRiwayatSettlementPartner.length !== 0 &&
-                                <div>
-                                    <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, oneMonthAgo, currentDate)} className="export-span">Export</Link>
-                                </div>
-                        }
-                        <br/>
-                        <br/>
-                        <div className="div-table">
-                            <DataTable
-                                columns={columnsSettlementPartner}
-                                data={dataRiwayatSettlementPartner}
-                                customStyles={customStylesPartner}
-                                progressPending={pendingSettlementPartner}
-                                progressComponent={<CustomLoader />}
-                            />
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlementPartner}</div>
-                            <Pagination
-                                activePage={activePageSettlementPartner}
-                                itemsCountPerPage={pageNumberSettlementPartner.row_per_page}
-                                totalItemsCount={(pageNumberSettlementPartner.row_per_page*pageNumberSettlementPartner.max_page)}
-                                pageRangeDisplayed={5}
-                                itemClass="page-item"
-                                linkClass="page-link"
-                                onChange={handlePageChangeSettlementPartner}
-                            />
+                            </div>
                         </div>
                     </div>
                 }

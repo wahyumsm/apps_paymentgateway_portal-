@@ -9,7 +9,7 @@ import noteIconGrey from "../../assets/icon/note_icon_grey.svg"
 import copy from "../../assets/icon/iconcopy_icon.svg"
 import DataTable from 'react-data-table-component'
 import CopyToClipboard from "react-copy-to-clipboard";
-import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, errorCatch, getRole, getToken, replaceText, setUserSession } from '../../function/helpers'
 import axios from 'axios'
 import ReactSelect, { components } from 'react-select';
 import encryptData from '../../function/encryptData'
@@ -72,7 +72,7 @@ function DaftarUserDirectDebit() {
         },
         {
             name: 'Channel Direct Debit',
-            selector: row => row.mpaytype_name,
+            selector: row => replaceText(row.mpaytype_name),
             width: "200px",
         },
         {
@@ -116,7 +116,7 @@ function DaftarUserDirectDebit() {
         },
         {
             name: 'Channel Direct Debit',
-            selector: row => row.mpaytype_name,
+            selector: row => replaceText(row.mpaytype_name),
             width: "220px",
         },
         {

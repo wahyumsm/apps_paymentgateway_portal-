@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, replaceText, setUserSession } from '../../function/helpers';
 import { Link, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -45,28 +45,10 @@ const RiwayatDirectDebit = () => {
         periode: 0,
     })
 
-    const { allowedMaxDays, allowedRange, combine } = DateRangePicker;
+    const { afterToday } = DateRangePicker;
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate() + 1).toISOString().split('T')[0]
-    const threeMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 3, new Date().getDate() + 1).toISOString().split('T')[0]
-    const column = [
-        {
-            label: <><img src={triangleInfo} alt="triangle_info" style={{ marginRight: 3, marginTop: -6 }} /> Range Tanggal maksimal 7 hari dan periode mutasi paling lama 90 hari</>,
-            style: {
-                color: '#383838',
-                width: 'max-content',
-                padding: '14px 25px 14px 14px',
-                fontSize: 13,
-                fontStyle: 'italic',
-                textAlign: 'left',
-                whiteSpace: 'normal',
-                backgroundColor: 'rgba(255, 214, 0, 0.16)',
-                opacity: 'unset'
-            },
-            placement: 'bottom',
-            
-        },
-    ]
+    const column = [{}]
     const Locale = {
         sunday: 'Min',
         monday: 'Sen',
@@ -277,12 +259,13 @@ const RiwayatDirectDebit = () => {
         }
     }
 
-    function getDetailDataDirectDebit (idTrans) {
-        const findData = dataDirectDebit.find((item) => item.tdirectdebit_id === idTrans) 
+    function getDetailDataDirectDebit (number) {
+        const findData = dataDirectDebit.find((item) => item.number === number) 
         console.log(findData);
         setDataDetail(findData)
         setShowModalDetailDirectDebit(true)
     }
+
 
     function resetButtonDirectDebit(param) {
         getDirectDebit(activePageDirectDebit, user_role === "102" ? partnerId : "")
@@ -417,7 +400,7 @@ const RiwayatDirectDebit = () => {
         },
         {
             name: 'ID Transaksi',
-            selector: row => row.tdirectdebit_transaction_id,
+            selector: row => row.tdirectdebit_transaction_id
         },
         {
             name: 'Waktu',
@@ -436,7 +419,7 @@ const RiwayatDirectDebit = () => {
         },
         {
             name: 'Channel Direct Debit',
-            selector: row => row.mpaytype_name,
+            selector: row => replaceText(row.mpaytype_name),
             width: "185px"
         },
         {
@@ -471,7 +454,7 @@ const RiwayatDirectDebit = () => {
         {
             name: 'ID Transaksi',
             selector: row => row.tdirectdebit_transaction_id,
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => getDetailDataDirectDebit(row.tdirectdebit_id)}>{row.tdirectdebit_transaction_id}</Link>,
+            cell: (row) => <div style={{ textDecoration: "underline", color: "#077E86", cursor: "pointer" }} onClick={() => getDetailDataDirectDebit(row.number)}>{row.tdirectdebit_transaction_id}</div>,
             width: "180px"
         },
         {
@@ -496,7 +479,7 @@ const RiwayatDirectDebit = () => {
         },
         {
             name: 'Channel Direct Debit',
-            selector: row => row.mpaytype_name,
+            selector: row => replaceText(row.mpaytype_name),
             width: "185px"
         },
         {
@@ -700,7 +683,7 @@ const RiwayatDirectDebit = () => {
                                             placement='bottomStart'
                                             size='lg'
                                             placeholder="Select Date Range" 
-                                            disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
+                                            disabledDate={afterToday()}
                                             className='datePicker'
                                             locale={Locale}
                                             format="yyyy-MM-dd"
@@ -874,7 +857,7 @@ const RiwayatDirectDebit = () => {
                                             placement='bottomEnd'
                                             size='lg'
                                             placeholder="Select Date Range" 
-                                            disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
+                                            disabledDate={afterToday()}
                                             className='datePicker'
                                             locale={Locale}
                                             format="yyyy-MM-dd"
