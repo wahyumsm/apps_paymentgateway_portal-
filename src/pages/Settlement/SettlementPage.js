@@ -807,7 +807,7 @@ function SettlementPage() {
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Jenis Transaksi</span>
                                     <Form.Select name='fiturSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={0}>Pilih Jenis Transaksi</option>
+                                        <option defaultValue disabled value={0}>Pilih Jenis Transaksi</option>
                                         <option value={104}>Payment Link</option>
                                         <option value={100}>Virtual Account</option>
                                         <option value={107}>Direct Debit</option>

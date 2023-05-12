@@ -14,6 +14,7 @@ import axios from 'axios'
 import ReactSelect, { components } from 'react-select';
 import encryptData from '../../function/encryptData'
 import Pagination from 'react-js-pagination'
+import check from "../../assets/icon/checklistpayment_icon.svg";
 
 function DaftarUserDirectDebit() {
 
@@ -35,6 +36,7 @@ function DaftarUserDirectDebit() {
     const [partnerId, setPartnerId] = useState("")
     const [dataDetailUser, setDataDetailUser] = useState({})
     const [copied, setCopied] = useState(false)
+    const [save, setSave] = useState(false)
 
     function getDetailIdUserDirectDebit (number) {
         const findData = daftarUserDirectDebit.find((item) => item.number === number)
@@ -311,8 +313,13 @@ function DaftarUserDirectDebit() {
 
     const onClick = useCallback(({target: {innerText}}) => {
         // console.log(`Clicked on "${innerText}"!`);
-        alert("Copied!")
+        setSave(true)
     }, [])
+
+    const closeModal = () => {
+        setShowModalDaftarDirectDebit(false);
+        setSave(false);
+      };
 
     const customStylesSelectedOption = {
         option: (provided, state) => ({
@@ -487,13 +494,13 @@ function DaftarUserDirectDebit() {
                     </div>
                 </div>
             </div>
-            <Modal centered show={showModalDaftarDirectDebit} onHide={() => setShowModalDaftarDirectDebit(false)} style={{ borderRadius: 8 }}>
+            <Modal centered show={showModalDaftarDirectDebit} onHide={() => closeModal()} style={{ borderRadius: 8 }}>
                 <Modal.Header className="border-0">
                     <Button
                         className="position-absolute top-0 end-0 m-3"
                         variant="close"
                         aria-label="Close"
-                        onClick={() => setShowModalDaftarDirectDebit(false)}
+                        onClick={() => closeModal()}
                     />
                 </Modal.Header>
                 <Modal.Title className="mt-1 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
@@ -512,14 +519,25 @@ function DaftarUserDirectDebit() {
                     <div className='text-justify p-3 mt-4' style={{ background: "#F0F0F0", borderRadius: 8, border: "1.4px solid #C4C4C4", color: "#383838", fontFamily: "Nunito", fontSize: 14, wordWrap: "break-word" }}>
                         {dataDetailUser.mdirdebituser_ref_id}
                     </div>
-                    <div className='mt-4 pb-2' style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                        <CopyToClipboard onCopy={onCopy} text={dataDetailUser.mdirdebituser_ref_id}>
-                            <Button className='d-flex justify-content-center align-items-center' variant="primary" onClick={onClick} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxHeight: 45, width: "100%", height: "100%" }}>
-                                <img src={copy} alt="copy" />
-                                <div className='ms-2'>ID Tersalin</div>
-                            </Button>
-                        </CopyToClipboard>
-                    </div>
+                    {
+                        save ? (
+                            <div className='mt-4 pb-2' style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                                <Button className='d-flex justify-content-center align-items-center' variant="primary" style={{ cursor: "unset", fontFamily: "Exo", color: "#FFFFFF", background: "#492E20", maxHeight: 45, width: "100%", height: "100%" }}>
+                                    <img src={check} alt="copy" />
+                                    <div className='ms-2'>ID Tersalin</div>
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className='mt-4 pb-2' style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                                <CopyToClipboard onCopy={onCopy} text={dataDetailUser.mdirdebituser_ref_id}>
+                                    <Button className='d-flex justify-content-center align-items-center' variant="primary" onClick={onClick} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxHeight: 45, width: "100%", height: "100%" }}>
+                                        <img src={copy} alt="copy" />
+                                        <div className='ms-2'>Salin ID</div>
+                                    </Button>
+                                </CopyToClipboard>
+                            </div>
+                        )
+                    }
                 </Modal.Body>
             </Modal>
         </div>

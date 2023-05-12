@@ -25,6 +25,7 @@ export default (props = {}) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const access_token = getToken()
+  const user_role = getRole()
   const { pathname } = location;
   const [show, setShow] = useState(false);
   const showClass = show ? "show" : "";
@@ -147,7 +148,7 @@ export default (props = {}) => {
                               title={item2.label}
                               // icon={faAngleRight}
                               image={item2.icon}
-                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1603) ? Routes.VaDanPaymentLink.path : (item2.id === 1604) ? Routes.RiwayatDirectDebit.path : (item2.id === 1605) ? Routes.Disbursement.path : (item2.id === 1606) ? Routes.SubAccount.path : (item2.id === 1701) ? Routes.InvoiceVASubMenu.path : (item2.id === 1702) ? Routes.InvoiceDisbursementSubMenu.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2402) ? Routes.TransferSubAccount.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 2601) ? Routes.DisbursementPage.path : (item2.id === 2602) ? Routes.RiwayatDisbursement.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
+                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1603) ? Routes.VaDanPaymentLinkAdmin.path : (item2.id === 1604) ? Routes.RiwayatDirectDebitAdmin.path : (item2.id === 1605) ? Routes.DisbursementAdmin.path : (item2.id === 1606) ? Routes.SubAccountAdmin.path : (item2.id === 1701) ? Routes.InvoiceVASubMenu.path : (item2.id === 1702) ? Routes.InvoiceDisbursementSubMenu.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2402) ? Routes.TransferSubAccount.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 2601) ? Routes.DisbursementPage.path : (item2.id === 2602) ? Routes.RiwayatDisbursement.path : (item2.id === 3001) ? Routes.VaDanPaymentLink.path : (item2.id === 3002) ? Routes.RiwayatDirectDebit.path : (item2.id === 3003) ? Routes.Disbursement.path : (item2.id === 3004) ? Routes.SubAccount.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
                             /> :
                             <CollapsableNavItem key={item2.id} title={item2.label} image={item2.icon}>
                               {

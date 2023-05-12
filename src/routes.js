@@ -27,7 +27,7 @@ export const Routes = {
     ReNotifyVA : { path: "/HelpDesk/renotifyva" },
     DisbursementPage : { path: "/Disbursement/disbursementpage" },
     RiwayatDisbursement : { path: "/Disbursement/report" },
-    DisbursementReport : { path: "/disbursement-report" },
+    // DisbursementReport : { path: "/disbursement-report" },
     // Billing: { path: "/examples/billing" },
     InvoiceVA: { path: "/invoiceva" },
     InvoiceDisbursement: { path: "/invoicedisbursement" },
@@ -48,15 +48,22 @@ export const Routes = {
     InfoSaldoDanMutasi: {path: "/Sub Account Bank/info-saldo-dan-mutasi"},
     TransferSubAccount: {path: "/Sub Account Bank/transfer"},
     // revamp menu
-    RiwayatDirectDebit: {path: "/Riwayat/direct-debit"},
-    VaDanPaymentLink: {path: "/Riwayat/va-dan-paylink"},
-    Disbursement: {path: "/Riwayat/disbursement"},
-    SubAccount: {path: "/Riwayat/sub-account"},
     Settlement: { path: "/settlement"},
     UserDirectDebit: { path: "/user-direct-debit"},
     InvoiceVASubMenu: { path: "/Invoice/settlement" },
     InvoiceDisbursementSubMenu: { path: "/Invoice/disbursement" },
     SaldoPartnerMenu: { path: "/riwayat-saldo-partner"},
+    // admin
+    VaDanPaymentLinkAdmin: {path: "/Transaksi/va-dan-paylink"},
+    RiwayatDirectDebitAdmin: {path: "/Transaksi/direct-debit"},
+    DisbursementAdmin: {path: "/Transaksi/disbursement"},
+    SubAccountAdmin: {path: "/Transaksi/sub-account"},
+    
+    // partner
+    VaDanPaymentLink: {path: "/Riwayat Transaksi/va-dan-paylink"},
+    RiwayatDirectDebit: {path: "/Riwayat Transaksi/direct-debit"},
+    Disbursement: {path: "/Riwayat Transaksi/disbursement"},
+    SubAccount: {path: "/Riwayat Transaksi/sub-account"},
 
     eWallet: {path: "/Riwayat/ewallet"},
 

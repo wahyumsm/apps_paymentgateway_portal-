@@ -341,5 +341,9 @@ export function terbilangDisbursement(nAngka) {
 }
 
 export function replaceText (text) {
-	return text.replace("Direct Debit", "")
+	if (text === "Direct Debit Oneklik") {
+		return text.replace("Direct Debit Oneklik", "OneKlik")
+	} else {
+		return text.replace("Direct Debit", "")
+	}
 }
