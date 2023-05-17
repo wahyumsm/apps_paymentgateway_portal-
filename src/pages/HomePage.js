@@ -170,7 +170,6 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceVA.path} component={InvoiceVA}/>
     <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
-    <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
     <RouteWithSidebar exact path={Routes.RiwayatDisbursement.path} component={DisbursementReport}/>
     {/* <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/> */}
     {/* <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} /> */}
@@ -183,13 +182,14 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccountAdmin.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccount.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.InfoSaldoDanMutasi.path} component={InfoSaldoDanMutasi} />
-    <RouteWithSidebar exact path={Routes.TransferSubAccount.path} component={TransferSubAccount} />
     {/* revamp menu */}
     <RouteWithSidebar exact path={Routes.Settlement.path} component={SettlementPage} />
     <RouteWithSidebar exact path={Routes.UserDirectDebit.path} component={DaftarUserDirectDebit} />
     <RouteWithSidebar exact path={Routes.InvoiceVASubMenu.path} component={InvoiceVA}/>
     <RouteWithSidebar exact path={Routes.InvoiceDisbursementSubMenu.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.SaldoPartnerMenu.path} component={SaldoPartner} />
+    <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
+    <RouteWithSidebar exact path={Routes.SubAccountTransfer.path} component={TransferSubAccount} />
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />

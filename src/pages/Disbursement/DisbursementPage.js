@@ -2986,7 +2986,7 @@ function DisbursementPage() {
     }
 
     function toReportDisburse () {
-        history.push('/disbursement/report')
+        history.push('/Riwayat Transaksi/disbursement')
     }
 
     function pindahHalaman (param) {
@@ -3104,7 +3104,7 @@ function DisbursementPage() {
                 </div>
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
+                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/Riwayat Transaksi/va-dan-paylink"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
                 <Row className='mt-1'>
                     {
                         balanceDetail !== 0 &&

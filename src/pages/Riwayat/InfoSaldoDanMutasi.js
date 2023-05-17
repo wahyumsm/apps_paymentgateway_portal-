@@ -641,7 +641,7 @@ const InfoSaldoDanMutasi = () => {
     }
 
     function toLaporan() {
-        history.push("/laporan");
+        history.push("/Riwayat Transaksi/va-dan-paylink");
     }
 
     async function getAkunPartner() {

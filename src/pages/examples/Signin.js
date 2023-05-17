@@ -38,11 +38,23 @@ export default () => {
       if (dataUserAccessMenu.status === 200 && dataUserAccessMenu.data.response_code === 200) {
         if (dataUserAccessMenu.data.response_data[0].detail.length !== 0) {
           switch (dataUserAccessMenu.data.response_data[0].detail[0].id) {
-            case 1601:
-              history.push("/Riwayat/transaksi")  
-              break;
-            case 1602:
-              history.push("/Riwayat/saldopartner")  
+            case 1603:
+              history.push("/Transaksi/va-dan-paylink")  
+            break;
+            case 1604:
+              history.push("/Transaksi/direct-debit")  
+            break;
+            case 1605:
+              history.push("/Transaksi/disbursement")  
+            break;
+            case 1606:
+              history.push("/Transaksi/sub-account")  
+            break;
+            case 1701:
+              history.push("/Buat Invoice/settlement")  
+            break;
+            case 1702:
+              history.push("/Buat Invoice/disbursement")  
             break;
             case 1901:
               history.push("/HelpDesk/renotifyva")  
@@ -61,6 +73,9 @@ export default () => {
             break;
             case 2602:
               history.push("/Disbursement/report")  
+            break;
+            case 3001:
+              history.push("/Riwayat Transaksi/va-dan-paylink")  
             break;
           }
         } else {
@@ -100,6 +115,21 @@ export default () => {
             break;
             case 23:
               history.push("/invoicedisbursement")
+            break;
+            case 24:
+              history.push("/transfer-sub-account")
+            break;
+            case 27:
+              history.push("/user-direct-debit")
+            break;
+            case 28:
+              history.push("/settlement")
+            break;
+            case 29:
+              history.push("/riwayat-saldo-partner")
+            break;
+            case 31:
+              history.push("/disbursement")
             break;
           }
         }

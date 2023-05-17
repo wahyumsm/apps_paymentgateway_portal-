@@ -25,7 +25,6 @@ export const Routes = {
     RiwayatTopUp : { path: "/riwayattopup" },
     AlokasiSaldo : { path: "/alokasisaldo" },
     ReNotifyVA : { path: "/HelpDesk/renotifyva" },
-    DisbursementPage : { path: "/Disbursement/disbursementpage" },
     RiwayatDisbursement : { path: "/Disbursement/report" },
     // DisbursementReport : { path: "/disbursement-report" },
     // Billing: { path: "/examples/billing" },
@@ -50,9 +49,11 @@ export const Routes = {
     // revamp menu
     Settlement: { path: "/settlement"},
     UserDirectDebit: { path: "/user-direct-debit"},
-    InvoiceVASubMenu: { path: "/Invoice/settlement" },
-    InvoiceDisbursementSubMenu: { path: "/Invoice/disbursement" },
+    InvoiceVASubMenu: { path: "/Buat Invoice/settlement" },
+    InvoiceDisbursementSubMenu: { path: "/Buat Invoice/disbursement" },
     SaldoPartnerMenu: { path: "/riwayat-saldo-partner"},
+    DisbursementPage : { path: "/disbursement" },
+    SubAccountTransfer: {path: "/transfer-sub-account"},
     // admin
     VaDanPaymentLinkAdmin: {path: "/Transaksi/va-dan-paylink"},
     RiwayatDirectDebitAdmin: {path: "/Transaksi/direct-debit"},
