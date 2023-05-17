@@ -49,6 +49,7 @@ export const Routes = {
     TransferSubAccount: {path: "/Sub Account Bank/transfer"},
 
     eWallet: {path: "/Riwayat/ewallet"},
+    SettlementManual: {path: "/settlement-manual"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
