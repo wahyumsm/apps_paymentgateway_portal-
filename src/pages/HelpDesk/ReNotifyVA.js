@@ -176,7 +176,7 @@ function ReNotifyVA() {
         <div className="content-page mt-6">
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Re-Notify Virtual Account</span>
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4">Re-Notify Virtual Account</h2>
+                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Re-Notify Virtual Account</h2>
             </div>
             <div className='main-content'>
                 <div className='base-content mt-3 mb-3'>

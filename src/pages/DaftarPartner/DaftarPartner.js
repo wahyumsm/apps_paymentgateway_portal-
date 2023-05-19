@@ -145,7 +145,7 @@ function DaftarPartner() {
     <div className='main-content mt-5' style={{padding: "37px 27px 37px 27px"}}>
         <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Partner</span>
         <div className="head-title">
-            <h2 className="h4 mt-4 mb-5">Daftar Partner</h2>
+            <h2 className="h4 mt-4 mb-5" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Daftar Partner</h2>
         </div>
         <div style={{ display: "flex", justifyContent: "end", marginTop: -88, paddingBottom: 24 }}>
             <button onClick={() => tambahPartner()} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 201, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>

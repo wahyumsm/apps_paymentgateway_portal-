@@ -708,8 +708,8 @@ export default () => {
     <>
       <div className="py-5 mt-5 content-page">
         <div className="head-title">
-          <h2 className="h5 mb-2">Ringkasan</h2>
-          <p>{currentDate}</p>
+          <h2 className="h5 mb-2" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Ringkasan</h2>
+          <p style={{ fontFamily: "Nunito", fontSize: 16 }}>{currentDate}</p>
         </div>
         <br />
         <div className="main-content">

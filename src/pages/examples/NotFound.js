@@ -65,6 +65,9 @@ export default () => {
           case 23:
             history.push("/invoicedisbursement")
           break;
+          case 30:
+            history.push("/Riwayat Transaksi/va-dan-paylink")
+          break;
         }
       }
     } catch (error) {

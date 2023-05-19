@@ -145,7 +145,7 @@ function DaftarAgen() {
   }
 
   function toLaporan() {
-    history.push("/laporan");
+    history.push("/Riwayat Transaksi/va-dan-paylink");
   }
 
   useEffect(() => {
@@ -177,7 +177,7 @@ function DaftarAgen() {
     <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
       <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen</span>
       <div className="head-title">
-        <h2 className="h4 mt-4 mb-5">Daftar Agen</h2>
+        <h2 className="h4 mt-4 mb-5" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Daftar Agen</h2>
       </div>
       <div style={{ display: "flex", justifyContent: "end", marginTop: -88, paddingBottom: 24 }}>
         <button onClick={() => tambahAgen()} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 183, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>

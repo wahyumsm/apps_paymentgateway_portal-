@@ -174,7 +174,7 @@ function ListUser () {
       <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
         <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Management User</span>
         <div className="head-title">
-          <h2 className="h4 mt-4">Management User</h2>
+          <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Management User</h2>
         </div>
         <button className="my-3" onClick={() => tambahUser()} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 201, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
             <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah Data

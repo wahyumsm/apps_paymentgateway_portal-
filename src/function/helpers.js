@@ -340,3 +340,11 @@ export function terbilangDisbursement(nAngka) {
 	sub = tanda + sub.replace('  ',' ') +'Koma '+ subkoma.replace('  ',' ');
 	return sub.replace('  ', ' ');
 }
+
+export function replaceText (text) {
+	if (text === "Direct Debit Oneklik") {
+		return text.replace("Direct Debit Oneklik", "OneKlik")
+	} else {
+		return text.replace("Direct Debit", "")
+	}
+}
