@@ -49,6 +49,7 @@ export const Routes = {
     TransferSubAccount: {path: "/Sub Account Bank/transfer"},
 
     eWallet: {path: "/Riwayat/ewallet"},
+    disbursementTimeout: {path: "/disbursement-timeout"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },

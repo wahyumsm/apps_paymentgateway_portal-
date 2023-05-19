@@ -147,7 +147,7 @@ export default (props = {}) => {
                               title={item2.label}
                               // icon={faAngleRight}
                               image={item2.icon}
-                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1603) ? Routes.eWallet.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2402) ? Routes.TransferSubAccount.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 2601) ? Routes.DisbursementPage.path : (item2.id === 2602) ? Routes.RiwayatDisbursement.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
+                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1603) ? Routes.eWallet.path : (item2.id === 1607) ? Routes.disbursementTimeout.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2402) ? Routes.TransferSubAccount.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 2601) ? Routes.DisbursementPage.path : (item2.id === 2602) ? Routes.RiwayatDisbursement.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
                             /> :
                             <CollapsableNavItem key={item2.id} title={item2.label} image={item2.icon}>
                               {
