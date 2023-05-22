@@ -9,6 +9,7 @@ import axios from 'axios'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import DataTable, { defaultThemes } from 'react-data-table-component';
+import encryptData from '../../function/encryptData'
 
 function SettlementManual() {
 
@@ -169,8 +170,42 @@ function SettlementManual() {
         }
     }
 
+    async function getVAList() {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"partner_id": "", "date_from": "", "date_to": ""}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const dataVAList = await axios.post(BaseURL + "/Settlement/GetVirtualAccountList", {data: dataParams}, {headers: headers})
+            console.log(dataVAList, 'dataVAList');
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function getEMoneyList() {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"partner_id": "", "date_from": "", "date_to": ""}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const dataEmoneyList = await axios.post(BaseURL + "/Settlement/GetEmoneyList", {data: dataParams}, {headers: headers})
+            console.log(dataEmoneyList, 'dataEmoneyList');
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     useEffect(() => {
         listPartner()
+        getVAList()
+        getEMoneyList()
     }, [])
     
     const columnsSettlVA = [
