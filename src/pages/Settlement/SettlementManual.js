@@ -17,18 +17,18 @@ function SettlementManual() {
     const history = useHistory()
     const [isSettlementVA, setisSettlementVA] = useState(true)
     const [dataListPartner, setDataListPartner] = useState([])
+    const [dataListVA, setDataListVA] = useState([])
+    const [dataListEMoney, setDataListEMoney] = useState([])
     const [selectedPartnerSettlementVA, setSelectedPartnerSettlementVA] = useState([])
     const [selectedPartnerSettlementEMoney, setSelectedPartnerSettlementEMoney] = useState([])
-    const [showDateSettlementVA, setShowDateSettlementVA] = useState("none")
-    const [showDateSettlementEMoney, setShowDateSettlementEMoney] = useState("none")
     const [periodeSettlementVA, setPeriodeSettlementVA] = useState(0)
     const [periodeSettlementEMoney, setPeriodeSettlementEMoney] = useState(0)
     const [stateSettlementVA, setStateSettlementVA] = useState(null)
     const [stateSettlementEMoney, setStateSettlementEMoney] = useState(null)
     const [dateRangeSettlementVA, setDateRangeSettlementVA] = useState([])
     const [dateRangeSettlementEMoney, setDateRangeSettlementEMoney] = useState([])
-    const [pendingSettlementVA, setPendingSettlementVA] = useState(true)
-    const [pendingSettlementEMoney, setPendingSettlementEMoney] = useState(true)
+    const [pendingSettlementVA, setPendingSettlementVA] = useState(false)
+    const [pendingSettlementEMoney, setPendingSettlementEMoney] = useState(false)
     const [totalSettlementVA, setTotalSettlementVA] = useState([])
     const [totalSettlementEMoney, setTotalSettlementEMoney] = useState([])
     
@@ -59,12 +59,10 @@ function SettlementManual() {
         if (param === "VA") {
             setPeriodeSettlementVA(0)
             setSelectedPartnerSettlementVA([])
-            setShowDateSettlementVA("none")
             setStateSettlementVA(null)
         } else {
             setPeriodeSettlementEMoney(0)
             setSelectedPartnerSettlementEMoney([])
-            setShowDateSettlementEMoney("none")
             setStateSettlementEMoney(null)
         }
     }
@@ -88,18 +86,14 @@ function SettlementManual() {
     function handleChangePeriodeSettlement(e, tabs) {
         if (tabs === "VA") {
             if (e.target.value === "7") {
-                setShowDateSettlementVA("")
                 setPeriodeSettlementVA(e.target.value)
             } else {
-                setShowDateSettlementVA("none")
                 setPeriodeSettlementVA(e.target.value)
             }
         } else {
             if (e.target.value === "7") {
-                setShowDateSettlementEMoney("")
                 setPeriodeSettlementEMoney(e.target.value)
             } else {
-                setShowDateSettlementEMoney("none")
                 setPeriodeSettlementEMoney(e.target.value)
             }
         }
@@ -496,7 +490,7 @@ function SettlementManual() {
                             <>
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                        <span className='me-3'>Nama Partner</span>
+                                        <span className='me-3'>Nama Partner<span style={{ color: "red" }}>*</span></span>
                                         <div className="dropdown dropSaldoPartner">
                                             <ReactSelect
                                                 // isMulti
@@ -512,19 +506,8 @@ function SettlementManual() {
                                             />
                                         </div>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlementVA === "none") ? "33.2%" : "33.2%" }}>
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.2%" }}>
                                         <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
-                                        <Form.Select name='periodeSettlementVA' className="input-text-riwayat ms-3" value={periodeSettlementVA} onChange={(e) => handleChangePeriodeSettlement(e, "VA")}>
-                                            <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                            <option value={2}>Hari Ini</option>
-                                            <option value={3}>Kemarin</option>
-                                            <option value={4}>7 Hari Terakhir</option>
-                                            <option value={5}>Bulan Ini</option>
-                                            <option value={6}>Bulan Kemarin</option>
-                                            <option value={7}>Pilih Range Tanggal</option>
-                                        </Form.Select>                            
-                                    </Col>
-                                    <Col xs={4} style={{ display: showDateSettlementVA }} className='text-end'>
                                         <div className='me-4' style={{ paddingRight: "0.5rem" }}>
                                             <DateRangePicker 
                                                 onChange={(e) => pickDateSettlement(e, "VA")}
@@ -570,7 +553,7 @@ function SettlementManual() {
                                 <div className="div-table mt-4 pb-4">
                                     <DataTable
                                         columns={columnsSettlVA}
-                                        data={"dataRiwayatSettlement"}
+                                        data={dataListVA}
                                         customStyles={customStylesSettlement}
                                         progressPending={pendingSettlementVA}
                                         progressComponent={<CustomLoader />}
@@ -594,7 +577,7 @@ function SettlementManual() {
                             <>
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                        <span className='me-3'>Nama Partner emoney</span>
+                                        <span className='me-3'>Nama Partner eMoney<span style={{ color: "red" }}>*</span></span>
                                         <div className="dropdown dropSaldoPartner">
                                             <ReactSelect
                                                 // isMulti
@@ -610,19 +593,8 @@ function SettlementManual() {
                                             />
                                         </div>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlementEMoney === "none") ? "33.2%" : "33.2%" }}>
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.2%" }}>
                                         <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
-                                        <Form.Select name='periodeSettlementEMoney' className="input-text-riwayat ms-3" value={periodeSettlementEMoney} onChange={(e) => handleChangePeriodeSettlement(e, "eMoney")}>
-                                            <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                            <option value={2}>Hari Ini</option>
-                                            <option value={3}>Kemarin</option>
-                                            <option value={4}>7 Hari Terakhir</option>
-                                            <option value={5}>Bulan Ini</option>
-                                            <option value={6}>Bulan Kemarin</option>
-                                            <option value={7}>Pilih Range Tanggal</option>
-                                        </Form.Select>                            
-                                    </Col>
-                                    <Col xs={4} style={{ display: showDateSettlementEMoney }} className='text-end'>
                                         <div className='me-4' style={{ paddingRight: "0.5rem" }}>
                                             <DateRangePicker 
                                                 onChange={(e) => pickDateSettlement(e, "eMoney")}
@@ -630,7 +602,7 @@ function SettlementManual() {
                                                 clearIcon={null}
                                                 // calendarIcon={null}
                                             />
-                                        </div>
+                                        </div>                          
                                     </Col>
                                 </Row>
                                 <Row className='mt-4'>
@@ -668,7 +640,7 @@ function SettlementManual() {
                                 <div className="div-table mt-4 pb-4">
                                     <DataTable
                                         columns={columnsSettlEMoney}
-                                        data={"dataRiwayatSettlement"}
+                                        data={dataListEMoney}
                                         customStyles={customStylesSettlement}
                                         progressPending={pendingSettlementEMoney}
                                         progressComponent={<CustomLoader />}
