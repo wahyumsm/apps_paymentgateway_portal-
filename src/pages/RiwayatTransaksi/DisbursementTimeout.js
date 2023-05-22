@@ -10,6 +10,11 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import axios from 'axios';
 import encryptData from '../../function/encryptData';
 import Pagination from 'react-js-pagination';
+import * as XLSX from "xlsx"
+import { Link } from 'react-router-dom';
+import $ from 'jquery'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const DisbursementTimeout = () => {
     const history = useHistory()
@@ -22,6 +27,7 @@ const DisbursementTimeout = () => {
     const [pageNumberDisbursementTimeout, setPageNumberDisbursementTimeout] = useState({})
     const [totalPageDisbursementTimeout, setTotalPageDisbursementTimeout] = useState(0)
     const [isFilterDisburseTimeout, setIsFilterDisburseTimeout] = useState(false)
+    const [isDisbursementManual, setIsDisbursementManual] = useState(true)
 
     const [stateDateDisbursementTimeout, setStateDisbursementTimeout] = useState(null)
     const [dateRangeDisbursementTimeout, setDateRangeDisbursementTimeout] = useState([])
@@ -33,6 +39,9 @@ const DisbursementTimeout = () => {
         partnerTransId: "",
         reffNo: "",
     })
+
+    const [inputPartnerTransId, setInputPartnerTransId] = useState("")
+    const [dataRefundDisburse, setDataRefundDisburse] = useState([])
 
     function toDashboard() {
         history.push("/");
@@ -72,6 +81,16 @@ const DisbursementTimeout = () => {
             disbursementTimeoutReport(page)
         }
     }
+
+    function handleChange(e) {
+        setInputPartnerTransId(e.target.value)
+    }
+
+    function saveNewDataRefund (partnerTransId) {
+        setDataRefundDisburse([...dataRefundDisburse, partnerTransId])
+    }
+
+    console.log(inputPartnerTransId);
 
     function resetButtonHandle() {
         disbursementTimeoutReport(activePageDisbursementTimeout)
@@ -127,7 +146,7 @@ const DisbursementTimeout = () => {
     async function disbursementTimeoutReport(currentPage) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"transID" : "", "sub_partner_id":"", "dateID": 7, "date_from": "2023-04-11", "date_to": "2023-04-16", "partner_trans_id":"", "partner_reference_no": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "partner_reference_no": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -187,6 +206,62 @@ const DisbursementTimeout = () => {
         }
     }
 
+    function exportDisburseTimeoutReport (isFilter, transId, subPartnerId, dateId, periode, partnerTransId, reffNo) {
+        if (isFilter) {
+            async function dataExportFilter(transId, subPartnerId, dateId, periode, partnerTransId, reffNo) {
+                try {
+                    const auth = 'Bearer ' + getToken();
+                    const dataParams = encryptData(`{"transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id":"${subPartnerId}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId === undefined ? "" : partnerTransId}", "partner_reference_no":"${(reffNo.length !== 0) ? reffNo : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth
+                    }
+                    const dataExportFilter = await axios.post(BaseURL + "/Report/HistoryTimeoutDisburse", {data: dataParams}, { headers: headers });
+                    if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
+                        const data = dataExportFilter.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].transID, "Waktu": data[i].processDate, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partnerName, "Nominal": data[i].amount, "Biaya": data[i].fee, "Biaya Bank": data[i].feeBank, "Total Biaya": data[i].totalAmount, "Tujuan": data[i].payment_type, "Cabang": data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, "Catatan": data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].partner_reference_no === "" ? "-" : data[i].partner_reference_no, "Status": data[i].status })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Disbursement Timeout.xlsx");
+                    }
+                } catch (error) {
+                    history.push(errorCatch(error.response.status))
+                }
+            }
+            dataExportFilter(transId, subPartnerId, dateId, periode, partnerTransId, reffNo)
+        } else {
+            async function dataExportNonFilter() {
+                try {
+                    const auth = 'Bearer ' + getToken();
+                    const dataParams = encryptData(`{"transID" : "", "sub_partner_id": "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id": "", "partner_reference_no": "", "page": 1, "row_per_page": 1000000}`)
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth
+                    }
+                    const dataExportFilter = await axios.post(BaseURL + "/Report/HistoryTimeoutDisburse", {data: dataParams}, { headers: headers });
+                    if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
+                        const data = dataExportFilter.data.response_data.results
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ "No": i + 1, "ID Transaksi": data[i].transID, "Waktu": data[i].processDate, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partnerName, "Nominal": data[i].amount, "Biaya": data[i].fee, "Biaya Bank": data[i].feeBank, "Total Biaya": data[i].totalAmount, "Tujuan": data[i].payment_type, "Cabang": data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, "Catatan": data[i].notes === null ? "-" : data[i].notes, "Reference No": data[i].partner_reference_no === "" ? "-" : data[i].partner_reference_no, "Status": data[i].status })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Disbursement Timeout.xlsx");
+                    }
+                } catch (error) {
+                    history.push(errorCatch(error.response.status))
+                }
+            }
+            dataExportNonFilter()
+        }
+    }
+
     const columnDisburseTimeout = [
         {
             name: 'No',
@@ -234,9 +309,38 @@ const DisbursementTimeout = () => {
             width: "130px"
         },
         {
+            name: 'Tujuan',
+            selector: row => row.payment_type,
+            width: "100px"
+        },
+        {
+            name: 'Cabang',
+            selector: row => row.branch_name === null ? "-" : row.branch_name,
+            width: "120px",
+            wrap: true
+        },
+        {
+            name: 'Nomor Rekening Tujuan',
+            selector: row => row.tdishburse_acc_num,
+            width: "220px",
+            wrap: true
+        },
+        {
+            name: 'Nama Pemilik Rekening',
+            selector: row => row.tdishburse_acc_name === null ? "-" : row.tdishburse_acc_name,
+            width: "220px",
+            wrap: true
+        },
+        {
+            name: 'Catatan',
+            selector: row => row.notes === null ? "-" : row.notes,
+            width: "150px",
+            wrap: true
+        },
+        {
             name: 'Reference No',
-            selector: row => row.partner_reference_no,
-            width: "190px",
+            selector: row => row.partner_reference_no === null ? "-" : row.partner_reference_no,
+            width: "150px",
             wrap: true
         },
         {
@@ -310,7 +414,29 @@ const DisbursementTimeout = () => {
       }
       
     }, [])
-    
+
+    function disbursementTabs(isTabs){
+        setIsDisbursementManual(isTabs)
+        if(!isTabs) {
+            $('#detailakuntab').removeClass('menu-detail-akun-hr-active')
+            $('#detailakunspan').removeClass('menu-detail-akun-span-active')
+            $('#konfigurasitab').addClass('menu-detail-akun-hr-active')
+            $('#konfigurasispan').addClass('menu-detail-akun-span-active')
+        } else {
+            $('#konfigurasitab').removeClass('menu-detail-akun-hr-active')
+            $('#konfigurasispan').removeClass('menu-detail-akun-span-active')
+            $('#detailakuntab').addClass('menu-detail-akun-hr-active')
+            $('#detailakunspan').addClass('menu-detail-akun-span-active')
+        }
+    }
+
+    function pindahHalaman (param) {
+        if (param === "manual") {
+            disbursementTabs(true)
+        } else {
+            disbursementTabs(false)
+        }
+    }
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
@@ -402,6 +528,14 @@ const DisbursementTimeout = () => {
                             </Row>
                         </Col>
                     </Row>
+
+                    {
+                        dataDisbursementTimeout.length !== 0 &&
+                        <div style={{ marginBottom: 30 }}>
+                            <Link to={"#"} onClick={() => exportDisburseTimeoutReport(isFilterDisburseTimeout, inputHandleTimeout.transID, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandleTimeout.periodeDisburseTimeout, dateRangeDisbursementTimeout, inputHandleTimeout.partnerTransId, inputHandleTimeout.reffNo)} className="export-span">Export</Link>
+                        </div>
+                    }
+
                     <div className="div-table mt-4 pb-4">
                         <DataTable
                                 columns={columnDisburseTimeout}
@@ -427,6 +561,107 @@ const DisbursementTimeout = () => {
                         </div>
                 </div>
             </div>
+
+            <div className='head-title'>
+                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Refund Disbursement</h2>
+            </div>
+
+            <div className='detail-akun-menu mt-2' style={{display: 'flex', height: 33}}>
+                <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
+                    <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
+                </div>
+                <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => pindahHalaman("bulk")} id="konfigurasitab">
+                    <span className='menu-detail-akun-span' id="konfigurasispan">Disbursement Bulk</span>
+                </div>
+            </div>
+
+            {
+                isDisbursementManual ? (
+                    <>
+                        <div id='disbursement-manual' className='main-content'>
+                            <hr className='hr-style' style={{marginTop: -2}}/>
+                            <div className='base-content mt-3'>
+                                <div>
+                                    <Row className='align-items-center' style={{ fontSize: 14 }}>
+                                        <Col xs={2} style={{ fontFamily: 'Nunito' }}>
+                                            Partner Trans ID
+                                        </Col>
+                                        <Col xs={10}>
+                                            <Form.Control 
+                                                placeholder='Masukkan Partner Trans ID'
+                                                type='text'
+                                                className='input-text-user'
+                                                name='inpurPartnerTransId'
+                                                value={inputPartnerTransId}
+                                                onChange={(e) => handleChange(e)}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row className='mt-3'>
+                                        <Col xs={2}></Col>
+                                        <Col>
+                                            <button
+                                                onClick={() => saveNewDataRefund(inputPartnerTransId)}
+                                                className='btn-ez-disbursement'
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={faPlus}
+                                                    style={{ marginRight: 10 }}
+                                                />{" "}
+                                                Tambah Data Refund
+                                            </button>
+                                        </Col>
+                                    </Row>
+
+                                    {/* {
+                                        dataRefundDisburse.length !== 0 ?
+                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                            <table
+                                                className="table mt-5"
+                                                id="tableInvoice"
+                                                hover
+                                            >
+                                                <thead>
+                                                    <tr>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div> : ""
+                                    } */}
+                                    <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                        <table
+                                            className="table mt-5"
+                                            id="tableInvoice"
+                                            hover
+                                        >
+                                            <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                <tr className='ms-3' >
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                ) : ""
+            }
         </div>
     )
 }
