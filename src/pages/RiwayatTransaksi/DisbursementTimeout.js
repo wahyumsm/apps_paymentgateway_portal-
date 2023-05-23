@@ -86,9 +86,16 @@ const DisbursementTimeout = () => {
         setInputPartnerTransId(e.target.value)
     }
 
-    function saveNewDataRefund (partnerTransId) {
-        setDataRefundDisburse([...dataRefundDisburse, partnerTransId])
+    function saveNewDataRefund (number, partnerTransId) {
+        const newData = {
+            number : number,
+            partnerTransId : partnerTransId
+        }
+        setDataRefundDisburse([...dataRefundDisburse, newData])
+        setInputPartnerTransId("")
     }
+
+    console.log(dataRefundDisburse, "dataRefundDisburse");
 
     console.log(inputPartnerTransId);
 
@@ -601,7 +608,7 @@ const DisbursementTimeout = () => {
                                         <Col xs={2}></Col>
                                         <Col>
                                             <button
-                                                onClick={() => saveNewDataRefund(inputPartnerTransId)}
+                                                onClick={() => saveNewDataRefund(dataRefundDisburse.length + 1, inputPartnerTransId)}
                                                 className='btn-ez-disbursement'
                                             >
                                                 <FontAwesomeIcon
@@ -612,53 +619,70 @@ const DisbursementTimeout = () => {
                                             </button>
                                         </Col>
                                     </Row>
-
-                                    {/* {
-                                        dataRefundDisburse.length !== 0 ?
-                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
-                                            <table
-                                                className="table mt-5"
-                                                id="tableInvoice"
-                                                hover
-                                            >
-                                                <thead>
-                                                    <tr>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td></td>
-                                                        <td></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div> : ""
-                                    } */}
-                                    <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
-                                        <table
-                                            className="table mt-5"
-                                            id="tableInvoice"
-                                            hover
-                                        >
-                                            <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                                <tr className='ms-3' >
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <Row>
+                                        <Col xs={2}></Col>
+                                        <Col>
+                                            {
+                                                dataRefundDisburse.length !== 0 ?
+                                                <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                                    <table
+                                                        className="table mt-5"
+                                                        id="tableInvoice"
+                                                        hover
+                                                    >
+                                                        <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                            <tr className='ms-3' >
+                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
+                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                dataRefundDisburse.map((item) => {
+                                                                    return (
+                                                                        <tr>
+                                                                            <td className='ps-3'>{item.number}</td>
+                                                                            <td className='ps-3'>{item.partnerTransId}</td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div> : 
+                                                <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                                    <table
+                                                        className="table mt-5"
+                                                        id="tableInvoice"
+                                                        hover
+                                                    >
+                                                        <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                            <tr className='ms-3' >
+                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
+                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                    <div className='text-center pb-3'>Belum ada data</div>
+                                                </div>
+                                            }
+                                        </Col>
+                                    </Row>
                                 </div>
                             </div>
                         </div>
+
+                        <div className="d-flex justify-content-end align-items-center mt-2">
+                            <button
+                                // onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
+                                className='btn-ez-transfer'
+                                style={{ width: '25%' }}
+                            >
+                                Lakukan Refund Disbursement
+                            </button>
+                        </div>
+
+                        
                     </>
                 ) : ""
             }
