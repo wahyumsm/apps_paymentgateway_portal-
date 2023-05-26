@@ -2948,7 +2948,7 @@ function DisbursementPage() {
             formData.append('file_excel', data, 'file_data_karyawan.xlsx')
             
             // var formDataOrigin = new FormData()
-            formData.append('file_excel', dataOrigin, 'file_data_karyawan_original_upload.xlsx')
+            formData.append('file_excel', (isDisbursementManual ? data : dataOrigin), 'file_data_karyawan_original_upload.xlsx')
             const headers = {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
