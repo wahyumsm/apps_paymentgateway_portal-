@@ -77,6 +77,15 @@ export default () => {
             case 3001:
               history.push("/Riwayat Transaksi/va-dan-paylink")  
             break;
+            case 3002:
+              history.push("/Riwayat Transaksi/direct-debit")  
+            break;
+            case 3003:
+              history.push("/Riwayat Transaksi/disbursement")  
+            break;
+            case 3004:
+              history.push("/Riwayat Transaksi/sub-account")  
+            break;
           }
         } else {
           switch (dataUserAccessMenu.data.response_data[0].id) {

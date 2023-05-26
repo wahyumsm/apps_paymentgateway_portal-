@@ -15,10 +15,13 @@ import { Link } from 'react-router-dom';
 import $ from 'jquery'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FilePond, registerPlugin } from 'react-filepond';
+import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 
 const DisbursementTimeout = () => {
     const history = useHistory()
     const user_role = getRole();
+    const [files, setFiles] = useState([])
     const [dataListPartner, setDataListPartner] = useState([])
     const [selectedPartnerDisbursement, setSelectedPartnerDisbursement] = useState([])
     const [dataDisbursementTimeout, setDataDisbursementTimeout] = useState([])
@@ -40,8 +43,11 @@ const DisbursementTimeout = () => {
         reffNo: "",
     })
 
+    registerPlugin(FilePondPluginFileEncode)
+
     const [inputPartnerTransId, setInputPartnerTransId] = useState("")
     const [dataRefundDisburse, setDataRefundDisburse] = useState([])
+    const [saveDataRefundDisburse, setSaveDataRefundDisburse] = useState([])
 
     function toDashboard() {
         history.push("/");
@@ -269,6 +275,29 @@ const DisbursementTimeout = () => {
         }
     }
 
+    async function refundDataDisbursement(partnerTransId) {
+        try {
+            partnerTransId = partnerTransId.map(a => a.partnerTransId)
+            console.log(partnerTransId, "partnerTransId");
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"partner_trans_id": ${JSON.stringify(partnerTransId)}}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const dataDisburseTimeout = await axios.post(BaseURL + "/Report/RefundTransactionDisburse", {data: dataParams}, { headers: headers });
+            if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length === 0) {
+                setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
+            } else if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length !== 0) {
+                setUserSession(dataDisburseTimeout.data.response_new_token)
+                setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     const columnDisburseTimeout = [
         {
             name: 'No',
@@ -366,6 +395,19 @@ const DisbursementTimeout = () => {
             ]
         },
 
+    ]
+
+    const columnRefundDisburse = [
+        {
+            name: 'No',
+            selector: row => row.no,
+            width: "67px"
+        },
+        {
+            name: 'Partner Trans ID',
+            selector: row => row.partnerTransId,
+            width: "180px"
+        },
     ]
 
     const Option = (props) => {
@@ -609,7 +651,8 @@ const DisbursementTimeout = () => {
                                         <Col>
                                             <button
                                                 onClick={() => saveNewDataRefund(dataRefundDisburse.length + 1, inputPartnerTransId)}
-                                                className='btn-ez-disbursement'
+                                                className={inputPartnerTransId.length !== 0 ? 'btn-ez-disbursement' : 'btn-disbursement-reset'}
+                                                disabled={inputPartnerTransId.length === 0}
                                             >
                                                 <FontAwesomeIcon
                                                     icon={faPlus}
@@ -677,6 +720,7 @@ const DisbursementTimeout = () => {
                                 // onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
                                 className='btn-ez-transfer'
                                 style={{ width: '25%' }}
+                                onClick={() => refundDataDisbursement(dataRefundDisburse)}
                             >
                                 Lakukan Refund Disbursement
                             </button>
@@ -684,7 +728,43 @@ const DisbursementTimeout = () => {
 
                         
                     </>
-                ) : ""
+                ) : (
+                    <>
+                        <div id='disbursement-bulk'>
+                            <hr className='hr-style' style={{marginTop: -2}}/>
+                            <div className='base-content'>
+                                <div className='mt-3 position-relative' style={{ marginBottom: 100 }}>
+                                    {/* <div className='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                    <div className='d-flex justify-content-center align-items-center pb-4'>
+                                        <div className="filepond--label-action text-center">
+                                            Upload File
+                                        </div>
+                                    </div> */}
+                                    <FilePond
+                                        className='dragdrop'
+                                        files={files}
+                                        onupdatefiles={setFiles}
+                                        allowMultiple={true}
+                                        server="/api"
+                                        name="files"
+                                        labelIdle={`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                        <div className='pb-4'>
+                                            <span class="filepond--label-action">
+                                                Upload File
+                                            </span>
+                                        </div>`}
+                                    />
+                                </div>
+                                <div className='div-table pt-3 pb-5'>
+                                    <DataTable
+                                        columns={columnRefundDisburse}
+                                        // data={}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )
             }
         </div>
     )
