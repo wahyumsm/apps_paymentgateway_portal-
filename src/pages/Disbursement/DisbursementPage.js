@@ -2941,14 +2941,14 @@ function DisbursementPage() {
         setShowModalConfirm(true)
     }
 
-    async function sendDataDisburse (data, dataOrigin) {
+    async function sendDataDisburse (data, dataOrigin, isDisburseManual) {
         try {
             const auth = "Bearer " + getToken()
             var formData = new FormData()
             formData.append('file_excel', data, 'file_data_karyawan.xlsx')
             
             // var formDataOrigin = new FormData()
-            formData.append('file_excel', (isDisbursementManual ? data : dataOrigin), 'file_data_karyawan_original_upload.xlsx')
+            formData.append('file_excel', (isDisburseManual ? data : dataOrigin), 'file_data_karyawan_original_upload.xlsx')
             const headers = {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
@@ -4340,7 +4340,7 @@ function DisbursementPage() {
                                 Batal
                             </button>
                             <button 
-                                onClick={() => sendDataDisburse(dataExcelDisburse, dataExcelOriginDisburse)}
+                                onClick={() => sendDataDisburse(dataExcelDisburse, dataExcelOriginDisburse, isDisbursementManual)}
                                 className={isCheckedConfirm === true ? 'btn-ez-transfer ms-3' : 'btn-noez-transfer ms-3'}
                                 disabled={isCheckedConfirm === false}
                                 style={{ width: '25%' }}
