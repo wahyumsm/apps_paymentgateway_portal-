@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { useHistory } from 'react-router';
 import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
-import { Col, Form, Image, Row } from '@themesberg/react-bootstrap';
+import { Col, Form, Image, Row, Toast } from '@themesberg/react-bootstrap';
 import ReactSelect, { components } from 'react-select';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DataTable, { defaultThemes } from 'react-data-table-component';
@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
+import Checklist from '../../assets/icon/checklist_icon.svg'
 
 const DisbursementTimeout = () => {
     registerPlugin(FilePondPluginFileEncode)
@@ -44,6 +45,8 @@ const DisbursementTimeout = () => {
     const [stateDateDisbursementTimeout, setStateDisbursementTimeout] = useState(null)
     const [dateRangeDisbursementTimeout, setDateRangeDisbursementTimeout] = useState([])
     const [showDateDisbursementTimeout, setShowDateDisbursementTimeout] = useState("none")
+
+    const [showModalStatusRefundDsiburse, setShowModalStatusRefundDsiburse] = useState(false)
 
     const [inputHandleTimeout, setInputHandleTimeout] = useState({
         transID: "",
@@ -304,11 +307,21 @@ const DisbursementTimeout = () => {
             const dataDisburseTimeout = await axios.post(BaseURL + "/Report/RefundTransactionDisburse", {data: dataParams}, { headers: headers });
             if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length === 0) {
                 setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
-                window.location.reload()
+                setDataFromExcel([])
+                setDataRefundDisburse([])
+                setShowModalStatusRefundDsiburse(true)
+                setTimeout(() => {
+                    setShowModalStatusRefundDsiburse(false)
+                }, 10000);
             } else if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length !== 0) {
                 setUserSession(dataDisburseTimeout.data.response_new_token)
                 setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
-                window.location.reload()
+                setDataFromExcel([])
+                setDataRefundDisburse([])
+                setShowModalStatusRefundDsiburse(true)
+                setTimeout(() => {
+                    setShowModalStatusRefundDsiburse(false)
+                }, 10000);
             }
         } catch (error) {
             history.push(errorCatch(error.response.status))
@@ -456,19 +469,6 @@ const DisbursementTimeout = () => {
 
     ]
 
-    const columnRefundDisburse = [
-        {
-            name: 'No',
-            selector: row => row.no,
-            width: "67px"
-        },
-        {
-            name: 'Partner Trans ID',
-            selector: row => row["Partner Trans ID"],
-            width: "180px"
-        },
-    ]
-
     const Option = (props) => {
         return (
             <div>
@@ -515,17 +515,6 @@ const DisbursementTimeout = () => {
         },
     };
 
-    const customStyles = {
-        headCells: {
-            style: {
-                backgroundColor: '#F2F2F2',
-                border: '12px',
-                fontWeight: 'bold',
-                fontSize: '16px'
-            },
-        },
-    };
-
     useEffect(() => {
       listPartner()
       if (user_role !== "102") {
@@ -552,331 +541,338 @@ const DisbursementTimeout = () => {
     function pindahHalaman (param) {
         if (param === "manual") {
             disbursementTabs(true)
+            setDataFromExcel([])
+            setLabelExcel(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                <div className='pb-4'>
+                    <span class="filepond--label-action">
+                        Upload File
+                    </span>
+                </div>`
+            )
         } else {
             disbursementTabs(false)
+            setDataRefundDisburse([])
+            setInputPartnerTransId("")
         }
     }
 
     console.log(dataFromExcel, "dataFromExcel");
 
     return (
-        <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Timeout</span>
-            <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{(user_role === "102") ? "Riwayat Disbursement" : "Disbursement Timeout"}</h2>
-            </div>
-            <div className='main-content mt-2'>
-                <div className='base-content mt-3'>
-                    <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
-                    <Row className='mt-4'>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className='me-3'>ID Transaksi</span>
-                            <input type='text'className='input-text-report' placeholder='Masukkan ID Transaksi'/>
-                        </Col>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className='me-4'>Nama Partner</span>
-                            <div className="dropdown dropDisbursePartner">
-                                <ReactSelect
-                                    // isMulti
-                                    closeMenuOnSelect={true}
-                                    hideSelectedOptions={false}
-                                    options={dataListPartner}
-                                    // allowSelectAll={true}
-                                    value={selectedPartnerDisbursement}
-                                    onChange={(selected) => setSelectedPartnerDisbursement([selected])}
-                                    placeholder="Pilih Nama Partner"
-                                    components={{ Option }}
-                                    styles={customStylesSelectedOption}
-                                />
-                            </div>
-                        </Col>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: (showDateDisbursementTimeout === "none") ? "33.2%" : "33.2%" }}>
-                            <span style={{ marginRight: 26 }}>Periode <span style={{ color: "red" }}>*</span></span>
-                            <Form.Select name='periodeDisburseTimeout' className="input-text-ez" value={inputHandleTimeout.periodeDisburseTimeout} onChange={(e) => handleChangePeriodeDisburseTimeout(e)}>
-                                <option defaultChecked disabled value={0}>Pilih Periode</option> 
-                                <option value={2}>Hari Ini</option>
-                                <option value={3}>Kemarin</option>
-                                <option value={4}>7 Hari Terakhir</option>
-                                <option value={5}>Bulan Ini</option>
-                                <option value={6}>Bulan Kemarin</option>
-                                <option value={7}>Pilih Range Tanggal</option>
-                            </Form.Select>
-                        </Col>
-                    </Row>
-                    <Row className='mt-4'>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span>Partner Trans ID</span>
-                            <input type='text'className='input-text-report ms-2' placeholder='Masukkan Partner Trans ID'/>
-                        </Col>
-                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className='me-2'>Reference No</span>
-                            <input type='text'className='input-text-report' placeholder='Masukkan Reference No'/>
-                        </Col>
-                        <Col xs={4} style={{ display: showDateDisbursementTimeout }}>
-                            <div className='text-end me-4'>
-                                <DateRangePicker 
-                                    onChange={pickDateDisbursementTimeout}
-                                    value={stateDateDisbursementTimeout}
-                                    clearIcon={null}
-                                    // calendarIcon={null}
-                                />
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row className='mt-4'>
-                        <Col xs={5}>
-                            <Row>
-                                <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                    <button
-                                        onClick={() => filterDisbursementTimeout(inputHandleTimeout.transID, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandleTimeout.periodeDisburseTimeout, dateRangeDisbursementTimeout, inputHandleTimeout.partnerTransId, inputHandleTimeout.reffNo, 1, 10)}
-                                        className={(inputHandleTimeout.periodeDisburseTimeout || dateRangeDisbursementTimeout.length !== 0 || (dateRangeDisbursementTimeout.length !== 0 && selectedPartnerDisbursement.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.transID.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.partnerTransId.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.reffNo)) ? 'btn-ez-on' : 'btn-ez'}
-                                        disabled={inputHandleTimeout.periodeDisburseTimeout === 0|| (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.transID.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && selectedPartnerDisbursement.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.partnerTransId.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.reffNo.length === 0)}
-                                    >
-                                        Terapkan
-                                    </button>
-                                </Col>
-                                <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                    <button
-                                        onClick={() => resetButtonHandle()}
-                                        className={(inputHandleTimeout.periodeDisburseTimeout || dateRangeDisbursementTimeout.length !== 0 || (dateRangeDisbursementTimeout.length !== 0 && selectedPartnerDisbursement.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.transID.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.partnerTransId.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.reffNo)) ? 'btn-reset' : 'btn-ez-reset'}
-                                        disabled={inputHandleTimeout.periodeDisburseTimeout === 0|| (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.transID.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && selectedPartnerDisbursement.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.partnerTransId.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.reffNo.length === 0)}
-                                    >
-                                        Atur Ulang
-                                    </button>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-
-                    {
-                        dataDisbursementTimeout.length !== 0 &&
-                        <div style={{ marginBottom: 30 }}>
-                            <Link to={"#"} onClick={() => exportDisburseTimeoutReport(isFilterDisburseTimeout, inputHandleTimeout.transID, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandleTimeout.periodeDisburseTimeout, dateRangeDisbursementTimeout, inputHandleTimeout.partnerTransId, inputHandleTimeout.reffNo)} className="export-span">Export</Link>
-                        </div>
-                    }
-
-                    <div className="div-table mt-4 pb-4">
-                        <DataTable
-                                columns={columnDisburseTimeout}
-                                data={dataDisbursementTimeout}
-                                customStyles={customStylesDisbursement}
-                                progressPending={pendingDisbursementTimeout}
-                                progressComponent={<CustomLoader />}
-                                // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
-                                // pagination
-                            />
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDisbursementTimeout}</div>
-                            <Pagination
-                                activePage={activePageDisbursementTimeout}
-                                itemsCountPerPage={pageNumberDisbursementTimeout.row_per_page}
-                                totalItemsCount={(pageNumberDisbursementTimeout.row_per_page*pageNumberDisbursementTimeout.max_page)}
-                                pageRangeDisplayed={5}
-                                itemClass="page-item"
-                                linkClass="page-link"
-                                onChange={handlePageChangeDisbursement}
-                            />
-                        </div>
-                </div>
-            </div>
-
-            <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Refund Disbursement</h2>
-            </div>
-
-            <div className='detail-akun-menu mt-2' style={{display: 'flex', height: 33}}>
-                <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
-                    <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
-                </div>
-                <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => pindahHalaman("bulk")} id="konfigurasitab">
-                    <span className='menu-detail-akun-span' id="konfigurasispan">Disbursement Bulk</span>
-                </div>
-            </div>
-
+        <>
             {
-                isDisbursementManual ? (
-                    <>
-                        <div id='disbursement-manual' className='main-content'>
-                            <hr className='hr-style' style={{marginTop: -2}}/>
-                            <div className='base-content mt-3'>
-                                <div>
-                                    <Row className='align-items-center' style={{ fontSize: 14 }}>
-                                        <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            Partner Trans ID
-                                        </Col>
-                                        <Col xs={10}>
-                                            <Form.Control 
-                                                placeholder='Masukkan Partner Trans ID'
-                                                type='text'
-                                                className='input-text-user'
-                                                name='inpurPartnerTransId'
-                                                value={inputPartnerTransId}
-                                                onChange={(e) => handleChange(e)}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    <Row className='mt-3'>
-                                        <Col xs={2}></Col>
-                                        <Col>
-                                            <button
-                                                onClick={() => saveNewDataRefund(dataRefundDisburse.length + 1, inputPartnerTransId)}
-                                                className={inputPartnerTransId.length !== 0 ? 'btn-ez-disbursement' : 'btn-disbursement-reset'}
-                                                disabled={inputPartnerTransId.length === 0}
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faPlus}
-                                                    style={{ marginRight: 10 }}
-                                                />{" "}
-                                                Tambah Data Refund
-                                            </button>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col xs={2}></Col>
-                                        <Col>
-                                            {
-                                                dataRefundDisburse.length !== 0 ?
-                                                <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
-                                                    <table
-                                                        className="table mt-5"
-                                                        id="tableInvoice"
-                                                        hover
-                                                    >
-                                                        <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                                            <tr className='ms-3' >
-                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                dataRefundDisburse.map((item) => {
-                                                                    return (
-                                                                        <tr>
-                                                                            <td className='ps-3'>{item.number}</td>
-                                                                            <td className='ps-3'>{item.partnerTransId}</td>
-                                                                        </tr>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div> : 
-                                                <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
-                                                    <table
-                                                        className="table mt-5"
-                                                        id="tableInvoice"
-                                                        hover
-                                                    >
-                                                        <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                                            <tr className='ms-3' >
-                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                    <div className='text-center pb-3'>Belum ada data</div>
-                                                </div>
-                                            }
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <div id='disbursement-bulk'>
-                            <hr className='hr-style' style={{marginTop: -2}}/>
-                            <div className='base-content'>
-                                <div className='mt-3 position-relative' style={{ marginBottom: 100 }}>
-                                    {/* <div className='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
-                                    <div className='d-flex justify-content-center align-items-center pb-4'>
-                                        <div className="filepond--label-action text-center">
-                                            Upload File
-                                        </div>
-                                    </div> */}
-                                    <FilePond
-                                        className='dragdrop'
-                                        files={files}
-                                        onupdatefiles={(value) => fileCsv(value)}
-                                        server="/api"
-                                        name="files"
-                                        labelIdle={labelExcel}
-                                    />
-                                </div>
-                                {/* <div className='div-table mt-3 pb-5'>
-                                    <DataTable
-                                        columns={columnRefundDisburse}
-                                        data={dataFromExcel}
-                                        customStyles={customStyles}
-                                        progressPending={pendingDisbursementTimeout}
-                                        progressComponent={<CustomLoader />}
-                                    />
-                                </div> */}
-
-                                {
-                                    dataFromExcel.length !== 0 ?
-                                    <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
-                                        <table
-                                            className="table mt-1"
-                                            id="tableInvoice"
-                                            hover
-                                        >
-                                            <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                                <tr className='ms-3' >
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    dataFromExcel.map((item) => {
-                                                        return (
-                                                            <tr>
-                                                                <td className='ps-3'>{item.no}</td>
-                                                                <td className='ps-3'>{item["Partner Trans ID"]}</td>
-                                                            </tr>
-                                                        )
-                                                    })
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div> :
-                                    <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
-                                        <table
-                                            className="table mt-5"
-                                            id="tableInvoice"
-                                            hover
-                                        >
-                                            <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                                <tr className='ms-3' >
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                        <div className='text-center pb-3'>Belum ada data</div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </>
-                )
+                showModalStatusRefundDsiburse &&
+                <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
+                    <Toast style={{ width: "900px", backgroundColor: "#383838" }} position="bottom-center" className="text-center">
+                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Refund Disbursement Berhasil. </Toast.Body>
+                    </Toast>
+                </div>
             }
-            
-            <div className="d-flex justify-content-end align-items-center mt-2">
-                <button
-                    // onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
-                    className='btn-ez-transfer'
-                    style={{ width: '25%' }}
-                    onClick={() => refundDataDisbursement(isDisbursementManual, dataRefundDisburse, dataFromExcel)}
-                >
-                    Lakukan Refund Disbursement
-                </button>
+            <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
+                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Timeout</span>
+                <div className='head-title'>
+                    <h2 className="h5 mb-3 mt-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{(user_role === "102") ? "Riwayat Disbursement" : "Disbursement Timeout"}</h2>
+                </div>
+                <div className='main-content mt-2'>
+                    <div className='base-content mt-3'>
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                        <Row className='mt-4'>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span className='me-3'>ID Transaksi</span>
+                                <input type='text'className='input-text-report' placeholder='Masukkan ID Transaksi'/>
+                            </Col>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span className='me-4'>Nama Partner</span>
+                                <div className="dropdown dropDisbursePartner">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={dataListPartner}
+                                        // allowSelectAll={true}
+                                        value={selectedPartnerDisbursement}
+                                        onChange={(selected) => setSelectedPartnerDisbursement([selected])}
+                                        placeholder="Pilih Nama Partner"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
+                            </Col>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: (showDateDisbursementTimeout === "none") ? "33.2%" : "33.2%" }}>
+                                <span style={{ marginRight: 26 }}>Periode <span style={{ color: "red" }}>*</span></span>
+                                <Form.Select name='periodeDisburseTimeout' className="input-text-ez" value={inputHandleTimeout.periodeDisburseTimeout} onChange={(e) => handleChangePeriodeDisburseTimeout(e)}>
+                                    <option defaultChecked disabled value={0}>Pilih Periode</option> 
+                                    <option value={2}>Hari Ini</option>
+                                    <option value={3}>Kemarin</option>
+                                    <option value={4}>7 Hari Terakhir</option>
+                                    <option value={5}>Bulan Ini</option>
+                                    <option value={6}>Bulan Kemarin</option>
+                                    <option value={7}>Pilih Range Tanggal</option>
+                                </Form.Select>
+                            </Col>
+                        </Row>
+                        <Row className='mt-4'>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span>Partner Trans ID</span>
+                                <input type='text'className='input-text-report ms-2' placeholder='Masukkan Partner Trans ID'/>
+                            </Col>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span className='me-2'>Reference No</span>
+                                <input type='text'className='input-text-report' placeholder='Masukkan Reference No'/>
+                            </Col>
+                            <Col xs={4} style={{ display: showDateDisbursementTimeout }}>
+                                <div className='text-end me-4'>
+                                    <DateRangePicker 
+                                        onChange={pickDateDisbursementTimeout}
+                                        value={stateDateDisbursementTimeout}
+                                        clearIcon={null}
+                                        // calendarIcon={null}
+                                    />
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row className='mt-4'>
+                            <Col xs={5}>
+                                <Row>
+                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <button
+                                            onClick={() => filterDisbursementTimeout(inputHandleTimeout.transID, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandleTimeout.periodeDisburseTimeout, dateRangeDisbursementTimeout, inputHandleTimeout.partnerTransId, inputHandleTimeout.reffNo, 1, 10)}
+                                            className={(inputHandleTimeout.periodeDisburseTimeout || dateRangeDisbursementTimeout.length !== 0 || (dateRangeDisbursementTimeout.length !== 0 && selectedPartnerDisbursement.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.transID.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.partnerTransId.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.reffNo)) ? 'btn-ez-on' : 'btn-ez'}
+                                            disabled={inputHandleTimeout.periodeDisburseTimeout === 0|| (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.transID.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && selectedPartnerDisbursement.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.partnerTransId.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.reffNo.length === 0)}
+                                        >
+                                            Terapkan
+                                        </button>
+                                    </Col>
+                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <button
+                                            onClick={() => resetButtonHandle()}
+                                            className={(inputHandleTimeout.periodeDisburseTimeout || dateRangeDisbursementTimeout.length !== 0 || (dateRangeDisbursementTimeout.length !== 0 && selectedPartnerDisbursement.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.transID.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.partnerTransId.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.reffNo)) ? 'btn-reset' : 'btn-ez-reset'}
+                                            disabled={inputHandleTimeout.periodeDisburseTimeout === 0|| (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.transID.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && selectedPartnerDisbursement.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.partnerTransId.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.reffNo.length === 0)}
+                                        >
+                                            Atur Ulang
+                                        </button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+
+                        {
+                            dataDisbursementTimeout.length !== 0 &&
+                            <div style={{ marginBottom: 30 }}>
+                                <Link to={"#"} onClick={() => exportDisburseTimeoutReport(isFilterDisburseTimeout, inputHandleTimeout.transID, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandleTimeout.periodeDisburseTimeout, dateRangeDisbursementTimeout, inputHandleTimeout.partnerTransId, inputHandleTimeout.reffNo)} className="export-span">Export</Link>
+                            </div>
+                        }
+
+                        <div className="div-table mt-4 pb-4">
+                            <DataTable
+                                    columns={columnDisburseTimeout}
+                                    data={dataDisbursementTimeout}
+                                    customStyles={customStylesDisbursement}
+                                    progressPending={pendingDisbursementTimeout}
+                                    progressComponent={<CustomLoader />}
+                                    // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                                    // pagination
+                                />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDisbursementTimeout}</div>
+                                <Pagination
+                                    activePage={activePageDisbursementTimeout}
+                                    itemsCountPerPage={pageNumberDisbursementTimeout.row_per_page}
+                                    totalItemsCount={(pageNumberDisbursementTimeout.row_per_page*pageNumberDisbursementTimeout.max_page)}
+                                    pageRangeDisplayed={5}
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    onChange={handlePageChangeDisbursement}
+                                />
+                            </div>
+                    </div>
+                </div>
+
+                <div className='head-title'>
+                    <h2 className="h5 mb-3 mt-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Refund Disbursement</h2>
+                </div>
+
+                <div className='detail-akun-menu mt-2' style={{display: 'flex', height: 33}}>
+                    <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
+                        <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
+                    </div>
+                    <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => pindahHalaman("bulk")} id="konfigurasitab">
+                        <span className='menu-detail-akun-span' id="konfigurasispan">Disbursement Bulk</span>
+                    </div>
+                </div>
+
+                {
+                    isDisbursementManual ? (
+                        <>
+                            <div id='disbursement-manual' className='main-content'>
+                                <hr className='hr-style' style={{marginTop: -2}}/>
+                                <div className='base-content mt-3'>
+                                    <div>
+                                        <Row className='align-items-center' style={{ fontSize: 14 }}>
+                                            <Col xs={2} style={{ fontFamily: 'Nunito' }}>
+                                                Partner Trans ID
+                                            </Col>
+                                            <Col xs={10}>
+                                                <Form.Control 
+                                                    placeholder='Masukkan Partner Trans ID'
+                                                    type='text'
+                                                    className='input-text-user'
+                                                    name='inpurPartnerTransId'
+                                                    value={inputPartnerTransId}
+                                                    onChange={(e) => handleChange(e)}
+                                                />
+                                            </Col>
+                                        </Row>
+                                        <Row className='mt-3'>
+                                            <Col xs={2}></Col>
+                                            <Col>
+                                                <button
+                                                    onClick={() => saveNewDataRefund(dataRefundDisburse.length + 1, inputPartnerTransId)}
+                                                    className={inputPartnerTransId.length !== 0 ? 'btn-ez-disbursement' : 'btn-disbursement-reset'}
+                                                    disabled={inputPartnerTransId.length === 0}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faPlus}
+                                                        style={{ marginRight: 10 }}
+                                                    />{" "}
+                                                    Tambah Data Refund
+                                                </button>
+                                            </Col>
+                                        </Row>
+                                        {
+                                            dataRefundDisburse.length !== 0 ?
+                                            <div className='scroll-confirm' style={{ overflowX: 'auto' }}>
+                                                <table
+                                                    className="table mt-5"
+                                                    id="tableInvoice"
+                                                    hover
+                                                >
+                                                    <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                        <tr className='ms-3' >
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            dataRefundDisburse.map((item) => {
+                                                                return (
+                                                                    <tr>
+                                                                        <td className='ps-3'>{item.number}</td>
+                                                                        <td className='ps-3'>{item.partnerTransId}</td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div> : 
+                                            <div className='scroll-confirm' style={{ overflowX: 'auto' }}>
+                                                <table
+                                                    className="table mt-5"
+                                                    id="tableInvoice"
+                                                    hover
+                                                >
+                                                    <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                        <tr className='ms-3' >
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                                <div className='text-center pb-3'>Belum ada data</div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div id='disbursement-bulk'>
+                                <hr className='hr-style' style={{marginTop: -2}}/>
+                                <div className='base-content'>
+                                    <div className='mt-3 position-relative' style={{ marginBottom: 100 }}>
+                                        {/* <div className='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                        <div className='d-flex justify-content-center align-items-center pb-4'>
+                                            <div className="filepond--label-action text-center">
+                                                Upload File
+                                            </div>
+                                        </div> */}
+                                        <FilePond
+                                            className='dragdrop'
+                                            files={files}
+                                            onupdatefiles={(value) => fileCsv(value)}
+                                            server="/api"
+                                            name="files"
+                                            labelIdle={labelExcel}
+                                        />
+                                    </div>
+
+                                    {
+                                        dataFromExcel.length !== 0 ?
+                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'auto' }}>
+                                            <table
+                                                className="table mt-1"
+                                                id="tableInvoice"
+                                                hover
+                                            >
+                                                <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                    <tr className='ms-3' >
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        dataFromExcel.map((item) => {
+                                                            return (
+                                                                <tr>
+                                                                    <td className='ps-3'>{item.no}</td>
+                                                                    <td className='ps-3'>{item["Partner Trans ID"]}</td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div> :
+                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'auto' }}>
+                                            <table
+                                                className="table mt-5"
+                                                id="tableInvoice"
+                                                hover
+                                            >
+                                                <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                    <tr className='ms-3' >
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <div className='text-center pb-3'>Belum ada data</div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+                
+                <div className="d-flex justify-content-end align-items-center mt-2">
+                    <button
+                        // onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
+                        className={(dataFromExcel.length !== 0 || dataRefundDisburse.length !== 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
+                        disabled={isDisbursementManual ? dataRefundDisburse.length === 0 : dataFromExcel.length === 0}
+                        style={{ width: '25%' }}
+                        onClick={() => refundDataDisbursement(isDisbursementManual, dataRefundDisburse, dataFromExcel)}
+                    >
+                        Lakukan Refund Disbursement
+                    </button>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 
