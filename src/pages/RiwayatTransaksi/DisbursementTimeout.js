@@ -19,9 +19,18 @@ import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 
 const DisbursementTimeout = () => {
+    registerPlugin(FilePondPluginFileEncode)
     const history = useHistory()
     const user_role = getRole();
     const [files, setFiles] = useState([])
+    const [dataFromExcel, setDataFromExcel] = useState([])
+    const [labelExcel, setLabelExcel] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+        <div className='pb-4'>
+            <span class="filepond--label-action">
+                Upload File
+            </span>
+        </div>`
+    )
     const [dataListPartner, setDataListPartner] = useState([])
     const [selectedPartnerDisbursement, setSelectedPartnerDisbursement] = useState([])
     const [dataDisbursementTimeout, setDataDisbursementTimeout] = useState([])
@@ -43,7 +52,6 @@ const DisbursementTimeout = () => {
         reffNo: "",
     })
 
-    registerPlugin(FilePondPluginFileEncode)
 
     const [inputPartnerTransId, setInputPartnerTransId] = useState("")
     const [dataRefundDisburse, setDataRefundDisburse] = useState([])
@@ -52,6 +60,8 @@ const DisbursementTimeout = () => {
     function toDashboard() {
         history.push("/");
     }
+
+    console.log(files, "files");
 
     function pickDateDisbursementTimeout(item) {
         setStateDisbursementTimeout(item)
@@ -275,26 +285,75 @@ const DisbursementTimeout = () => {
         }
     }
 
-    async function refundDataDisbursement(partnerTransId) {
+    async function refundDataDisbursement(isDisburseManual, partnerTransIdManual, partnerTransIdBulk) {
         try {
-            partnerTransId = partnerTransId.map(a => a.partnerTransId)
-            console.log(partnerTransId, "partnerTransId");
+            let partnerTransId
+            if (isDisburseManual) {
+                partnerTransId = partnerTransIdManual.map(a => a.partnerTransId)
+            } else {
+                partnerTransId = partnerTransIdBulk.map(a => a[`Partner Trans ID`])
+            }
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"partner_trans_id": ${JSON.stringify(partnerTransId)}}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
+            console.log(dataParams, "dataParams");
+            console.log(partnerTransId, "partnerTransId");
             const dataDisburseTimeout = await axios.post(BaseURL + "/Report/RefundTransactionDisburse", {data: dataParams}, { headers: headers });
             if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length === 0) {
                 setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
+                window.location.reload()
             } else if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length !== 0) {
                 setUserSession(dataDisburseTimeout.data.response_new_token)
                 setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
+                window.location.reload()
             }
         } catch (error) {
-            // console.log(error)
             history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function fileCsv (value) {
+        try {
+            console.log(value, "value");
+            const pond = await value[0].getFileEncodeBase64String()
+            console.log(pond, "pond");
+            if (pond !== undefined) {
+                const wb = XLSX.read(pond, {type: "base64"})
+                console.log(wb, "wb");
+                const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
+                console.log(ws, "ws");
+                let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
+                console.log(dataTemp, "dataTemp");
+                let data = []
+                dataTemp = dataTemp.map((obj, idx) => ({...obj, no: idx + 1}))
+                dataTemp.forEach(el => {
+                    let obj = {}
+                    Object.keys(el).forEach(e => {
+                        obj[(e.trim())] = String(el[e])
+                    })
+                    data.push(obj)
+                })
+                setDataFromExcel([])
+                setTimeout(() => {
+                    setLabelExcel("")
+                    setLabelExcel(`<div class='mt-2 style-label-drag-drop-filename'>${value[0].file.name}</div>
+                    <div class='py-4 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                    <div className='pb-4'>
+                        <span class="filepond--label-action">
+                            Ganti File
+                        </span>
+                    </div>`)
+                }, 2000)
+
+                setTimeout(() => {
+                    setDataFromExcel(data)
+                }, 2500)
+            }
+        } catch (e) {
+            console.log(e, "e");
         }
     }
 
@@ -405,7 +464,7 @@ const DisbursementTimeout = () => {
         },
         {
             name: 'Partner Trans ID',
-            selector: row => row.partnerTransId,
+            selector: row => row["Partner Trans ID"],
             width: "180px"
         },
     ]
@@ -456,6 +515,17 @@ const DisbursementTimeout = () => {
         },
     };
 
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#F2F2F2',
+                border: '12px',
+                fontWeight: 'bold',
+                fontSize: '16px'
+            },
+        },
+    };
+
     useEffect(() => {
       listPartner()
       if (user_role !== "102") {
@@ -486,6 +556,8 @@ const DisbursementTimeout = () => {
             disbursementTabs(false)
         }
     }
+
+    console.log(dataFromExcel, "dataFromExcel");
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
@@ -556,20 +628,18 @@ const DisbursementTimeout = () => {
                             <Row>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        className='btn-ez-on'
                                         onClick={() => filterDisbursementTimeout(inputHandleTimeout.transID, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandleTimeout.periodeDisburseTimeout, dateRangeDisbursementTimeout, inputHandleTimeout.partnerTransId, inputHandleTimeout.reffNo, 1, 10)}
-                                        // className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                        // disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
+                                        className={(inputHandleTimeout.periodeDisburseTimeout || dateRangeDisbursementTimeout.length !== 0 || (dateRangeDisbursementTimeout.length !== 0 && selectedPartnerDisbursement.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.transID.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.partnerTransId.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.reffNo)) ? 'btn-ez-on' : 'btn-ez'}
+                                        disabled={inputHandleTimeout.periodeDisburseTimeout === 0|| (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.transID.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && selectedPartnerDisbursement.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.partnerTransId.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.reffNo.length === 0)}
                                     >
                                         Terapkan
                                     </button>
                                 </Col>
                                 <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                     <button
-                                        className='btn-reset'
                                         onClick={() => resetButtonHandle()}
-                                        // className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                        // disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
+                                        className={(inputHandleTimeout.periodeDisburseTimeout || dateRangeDisbursementTimeout.length !== 0 || (dateRangeDisbursementTimeout.length !== 0 && selectedPartnerDisbursement.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.transID.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.partnerTransId.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.reffNo)) ? 'btn-reset' : 'btn-ez-reset'}
+                                        disabled={inputHandleTimeout.periodeDisburseTimeout === 0|| (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.transID.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && selectedPartnerDisbursement.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.partnerTransId.length === 0) || (inputHandleTimeout.periodeDisburseTimeout === 0 && inputHandleTimeout.reffNo.length === 0)}
                                     >
                                         Atur Ulang
                                     </button>
@@ -714,19 +784,6 @@ const DisbursementTimeout = () => {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="d-flex justify-content-end align-items-center mt-2">
-                            <button
-                                // onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
-                                className='btn-ez-transfer'
-                                style={{ width: '25%' }}
-                                onClick={() => refundDataDisbursement(dataRefundDisburse)}
-                            >
-                                Lakukan Refund Disbursement
-                            </button>
-                        </div>
-
-                        
                     </>
                 ) : (
                     <>
@@ -743,29 +800,82 @@ const DisbursementTimeout = () => {
                                     <FilePond
                                         className='dragdrop'
                                         files={files}
-                                        onupdatefiles={setFiles}
-                                        allowMultiple={true}
+                                        onupdatefiles={(value) => fileCsv(value)}
                                         server="/api"
                                         name="files"
-                                        labelIdle={`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
-                                        <div className='pb-4'>
-                                            <span class="filepond--label-action">
-                                                Upload File
-                                            </span>
-                                        </div>`}
+                                        labelIdle={labelExcel}
                                     />
                                 </div>
-                                <div className='div-table pt-3 pb-5'>
+                                {/* <div className='div-table mt-3 pb-5'>
                                     <DataTable
                                         columns={columnRefundDisburse}
-                                        // data={}
+                                        data={dataFromExcel}
+                                        customStyles={customStyles}
+                                        progressPending={pendingDisbursementTimeout}
+                                        progressComponent={<CustomLoader />}
                                     />
-                                </div>
+                                </div> */}
+
+                                {
+                                    dataFromExcel.length !== 0 ?
+                                    <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                        <table
+                                            className="table mt-1"
+                                            id="tableInvoice"
+                                            hover
+                                        >
+                                            <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                <tr className='ms-3' >
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    dataFromExcel.map((item) => {
+                                                        return (
+                                                            <tr>
+                                                                <td className='ps-3'>{item.no}</td>
+                                                                <td className='ps-3'>{item["Partner Trans ID"]}</td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div> :
+                                    <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                        <table
+                                            className="table mt-5"
+                                            id="tableInvoice"
+                                            hover
+                                        >
+                                            <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                <tr className='ms-3' >
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <div className='text-center pb-3'>Belum ada data</div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </>
                 )
             }
+            
+            <div className="d-flex justify-content-end align-items-center mt-2">
+                <button
+                    // onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
+                    className='btn-ez-transfer'
+                    style={{ width: '25%' }}
+                    onClick={() => refundDataDisbursement(isDisbursementManual, dataRefundDisburse, dataFromExcel)}
+                >
+                    Lakukan Refund Disbursement
+                </button>
+            </div>
         </div>
     )
 }

@@ -191,19 +191,19 @@ export default () => (
     <RouteWithSidebar exact path={Routes.SaldoPartnerMenu.path} component={SaldoPartner} />
     <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
     <RouteWithSidebar exact path={Routes.SubAccountTransfer.path} component={TransferSubAccount} />
-    {/* partner */}
+    {/* admin */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.DisbursementAdmin.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccountAdmin.path} component={InfoSaldoMutasi} />
-    {/* admin */}
+    <RouteWithSidebar exact path={Routes.DisbursementTimeout.path} component={DisbursementTimeout} />
+    {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLinkAdmin.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebitAdmin.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
 
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
-    <RouteWithSidebar exact path={Routes.disbursementTimeout.path} component={DisbursementTimeout} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

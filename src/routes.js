@@ -59,6 +59,7 @@ export const Routes = {
     RiwayatDirectDebitAdmin: {path: "/Transaksi/direct-debit"},
     DisbursementAdmin: {path: "/Transaksi/disbursement"},
     SubAccountAdmin: {path: "/Transaksi/sub-account"},
+    DisbursementTimeout: {path: "/Transaksi/disbursement-timeout"},
     
     // partner
     VaDanPaymentLink: {path: "/Riwayat Transaksi/va-dan-paylink"},
@@ -67,7 +68,6 @@ export const Routes = {
     SubAccount: {path: "/Riwayat Transaksi/sub-account"},
 
     eWallet: {path: "/Riwayat/ewallet"},
-    disbursementTimeout: {path: "/disbursement-timeout"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
