@@ -260,7 +260,7 @@ const RiwayatDirectDebit = () => {
 
     function getDetailDataDirectDebit (number) {
         const findData = dataDirectDebit.find((item) => item.number === number) 
-        console.log(findData);
+        // console.log(findData);
         setDataDetail(findData)
         setShowModalDetailDirectDebit(true)
     }

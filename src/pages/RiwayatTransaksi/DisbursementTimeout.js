@@ -64,8 +64,6 @@ const DisbursementTimeout = () => {
         history.push("/");
     }
 
-    console.log(files, "files");
-
     function pickDateDisbursementTimeout(item) {
         setStateDisbursementTimeout(item)
         if (item !== null) {
@@ -113,10 +111,6 @@ const DisbursementTimeout = () => {
         setDataRefundDisburse([...dataRefundDisburse, newData])
         setInputPartnerTransId("")
     }
-
-    console.log(dataRefundDisburse, "dataRefundDisburse");
-
-    console.log(inputPartnerTransId);
 
     function resetButtonHandle() {
         disbursementTimeoutReport(activePageDisbursementTimeout)
@@ -302,8 +296,6 @@ const DisbursementTimeout = () => {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            console.log(dataParams, "dataParams");
-            console.log(partnerTransId, "partnerTransId");
             const dataDisburseTimeout = await axios.post(BaseURL + "/Report/RefundTransactionDisburse", {data: dataParams}, { headers: headers });
             if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length === 0) {
                 setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
@@ -330,16 +322,11 @@ const DisbursementTimeout = () => {
 
     async function fileCsv (value) {
         try {
-            console.log(value, "value");
             const pond = await value[0].getFileEncodeBase64String()
-            console.log(pond, "pond");
             if (pond !== undefined) {
                 const wb = XLSX.read(pond, {type: "base64"})
-                console.log(wb, "wb");
                 const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
-                console.log(ws, "ws");
                 let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
-                console.log(dataTemp, "dataTemp");
                 let data = []
                 dataTemp = dataTemp.map((obj, idx) => ({...obj, no: idx + 1}))
                 dataTemp.forEach(el => {
@@ -366,7 +353,7 @@ const DisbursementTimeout = () => {
                 }, 2500)
             }
         } catch (e) {
-            console.log(e, "e");
+            // console.log(e, "e");
         }
     }
 
@@ -555,8 +542,6 @@ const DisbursementTimeout = () => {
             setInputPartnerTransId("")
         }
     }
-
-    console.log(dataFromExcel, "dataFromExcel");
 
     return (
         <>

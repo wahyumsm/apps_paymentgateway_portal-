@@ -328,7 +328,7 @@ const InfoSaldoDanMutasi = () => {
             }
         } else if (role === "admin") {
             if (orderField === "toffshorebank_code" && isFilter === false) {
-                console.log("masuk idtrans dan nofilter");
+                // console.log("masuk idtrans dan nofilter");
                 setOrderFieldAdmin("toffshorebank_code");
                 showIdTransAdmin()
                 setOrderIdAdmin(orderId)
