@@ -301,6 +301,14 @@ const DisbursementTimeout = () => {
                 setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
                 setDataFromExcel([])
                 setDataRefundDisburse([])
+                setLabelExcel(
+                    `<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                    <div className='pb-4'>
+                        <span class="filepond--label-action">
+                            Upload File
+                        </span>
+                    </div>`
+                )
                 setShowModalStatusRefundDsiburse(true)
                 setTimeout(() => {
                     setShowModalStatusRefundDsiburse(false)
@@ -310,6 +318,14 @@ const DisbursementTimeout = () => {
                 setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
                 setDataFromExcel([])
                 setDataRefundDisburse([])
+                setLabelExcel(
+                    `<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                    <div className='pb-4'>
+                        <span class="filepond--label-action">
+                            Upload File
+                        </span>
+                    </div>`
+                )
                 setShowModalStatusRefundDsiburse(true)
                 setTimeout(() => {
                     setShowModalStatusRefundDsiburse(false)
