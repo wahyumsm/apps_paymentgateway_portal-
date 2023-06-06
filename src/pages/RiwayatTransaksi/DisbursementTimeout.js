@@ -60,6 +60,8 @@ const DisbursementTimeout = () => {
     const [dataRefundDisburse, setDataRefundDisburse] = useState([])
     const [saveDataRefundDisburse, setSaveDataRefundDisburse] = useState([])
 
+    console.log(saveDataRefundDisburse, "saveDataRefundDisburse");
+
     function toDashboard() {
         history.push("/");
     }
@@ -298,7 +300,7 @@ const DisbursementTimeout = () => {
             }
             const dataDisburseTimeout = await axios.post(BaseURL + "/Report/RefundTransactionDisburse", {data: dataParams}, { headers: headers });
             if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length === 0) {
-                setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
+                setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data.results)
                 setDataFromExcel([])
                 setDataRefundDisburse([])
                 setLabelExcel(
@@ -315,7 +317,7 @@ const DisbursementTimeout = () => {
                 }, 10000);
             } else if (dataDisburseTimeout.status === 200 && dataDisburseTimeout.data.response_code === 200 && dataDisburseTimeout.data.response_new_token.length !== 0) {
                 setUserSession(dataDisburseTimeout.data.response_new_token)
-                setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data)
+                setSaveDataRefundDisburse(dataDisburseTimeout.data.response_data.results)
                 setDataFromExcel([])
                 setDataRefundDisburse([])
                 setLabelExcel(
@@ -373,6 +375,21 @@ const DisbursementTimeout = () => {
         }
     }
 
+    function exportDataRefundDisburse () {
+        try {
+            let dataExcel = []
+            for (let i = 0; i < saveDataRefundDisburse.length; i++) {
+                dataExcel.push({ "No": i + 1, "Partner Trans ID": saveDataRefundDisburse[i].partner_trans_id, "Status": saveDataRefundDisburse[i].error_message})
+            }
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            XLSX.writeFile(workBook, "Refund Disbursement.xlsx");
+        } catch (error) {
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     const columnDisburseTimeout = [
         {
             name: 'No',
@@ -382,7 +399,8 @@ const DisbursementTimeout = () => {
         {
             name: 'ID Transaksi',
             selector: row => row.transID,
-            width: "160px"
+            width: "160px",
+            wrap: true
         },
         {
             name: 'Waktu',
@@ -445,32 +463,38 @@ const DisbursementTimeout = () => {
         {
             name: 'Catatan',
             selector: row => row.notes === null ? "-" : row.notes,
-            width: "150px",
+            width: "100px",
             wrap: true
         },
         {
             name: 'Reference No',
-            selector: row => row.partner_reference_no === null ? "-" : row.partner_reference_no,
+            selector: row => (row.partner_reference_no === null) ? "-" : (row.partner_reference_no.length === 0 ) ? "-" : row.partner_reference_no,
             width: "150px",
             wrap: true
         },
         {
             name: 'Status',
             selector: row => row.status,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px 0px", width: "100%", borderRadius: 4 },
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px 0px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
+                    when: row => row.statusID === 1,
+                    style: { background: "rgba(247, 148, 33, 0.08)", color: "#F79421" }
+                },
+                {
                     when: row => row.statusID === 2,
-                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", paddingLeft: "unset" }
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
                 },
                 {
                     when: row => row.statusID === 4,
-                    style: { background: "#FDEAEA", color: "#EE2E2C", paddingLeft: "unset" }
+                    style: { background: "#FDEAEA", color: "#EE2E2C" }
                 }
             ]
         },
 
     ]
+
+    console.log(dataDisbursementTimeout, "dataDisbursementTimeout");
 
     const Option = (props) => {
         return (
@@ -499,7 +523,7 @@ const DisbursementTimeout = () => {
     const customStylesDisbursement = {
         headCells: {
             style: {
-                width: 'max-content',
+                // width: 'max-content',
                 backgroundColor: '#F2F2F2',
                 border: '12px',
                 fontWeight: 'bold',
@@ -565,7 +589,7 @@ const DisbursementTimeout = () => {
                 showModalStatusRefundDsiburse &&
                 <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
                     <Toast style={{ width: "900px", backgroundColor: "#383838" }} position="bottom-center" className="text-center">
-                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Refund Disbursement Berhasil. </Toast.Body>
+                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Anda Telah Melakukan Refund Disbursement. </Toast.Body>
                     </Toast>
                 </div>
             }
@@ -753,6 +777,7 @@ const DisbursementTimeout = () => {
                                                         <tr className='ms-3' >
                                                             <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
                                                             <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -762,6 +787,7 @@ const DisbursementTimeout = () => {
                                                                     <tr>
                                                                         <td className='ps-3'>{item.number}</td>
                                                                         <td className='ps-3'>{item.partnerTransId}</td>
+                                                                        <td className='ps-3'>{`Pending`}</td>
                                                                     </tr>
                                                                 )
                                                             })
@@ -769,6 +795,40 @@ const DisbursementTimeout = () => {
                                                     </tbody>
                                                 </table>
                                             </div> : 
+                                            saveDataRefundDisburse.length !== 0 ?
+                                            <>
+                                                <div style={{ marginBottom: 30 }}>
+                                                    <Link to={"#"} onClick={() => exportDataRefundDisburse()} className="export-span">Export</Link>
+                                                </div>
+                                                <div className='scroll-confirm mt-3' style={{  maxWidth: 'auto'  }}>
+                                                    <table
+                                                        className="table mt-5"
+                                                        id="tableInvoice"
+                                                        hover
+                                                    >
+                                                        <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                            <tr className='ms-3' >
+                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
+                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                saveDataRefundDisburse.map((item, idx) => {
+                                                                    return (
+                                                                        <tr>
+                                                                            <td className='ps-3'>{idx+1}</td>
+                                                                            <td className='ps-3'>{item.partner_trans_id}</td>
+                                                                            <td className='ps-3'>{item.error_message}</td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </> :
                                             <div className='scroll-confirm' style={{ overflowX: 'auto' }}>
                                                 <table
                                                     className="table mt-5"
@@ -779,6 +839,7 @@ const DisbursementTimeout = () => {
                                                         <tr className='ms-3' >
                                                             <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
                                                             <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Status</th>
                                                         </tr>
                                                     </thead>
                                                 </table>
@@ -795,12 +856,6 @@ const DisbursementTimeout = () => {
                                 <hr className='hr-style' style={{marginTop: -2}}/>
                                 <div className='base-content'>
                                     <div className='mt-3 position-relative' style={{ marginBottom: 100 }}>
-                                        {/* <div className='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
-                                        <div className='d-flex justify-content-center align-items-center pb-4'>
-                                            <div className="filepond--label-action text-center">
-                                                Upload File
-                                            </div>
-                                        </div> */}
                                         <FilePond
                                             className='dragdrop'
                                             files={files}
@@ -823,6 +878,7 @@ const DisbursementTimeout = () => {
                                                     <tr className='ms-3' >
                                                         <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
                                                         <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -832,6 +888,7 @@ const DisbursementTimeout = () => {
                                                                 <tr>
                                                                     <td className='ps-3'>{item.no}</td>
                                                                     <td className='ps-3'>{item["Partner Trans ID"]}</td>
+                                                                    <td className='ps-3'>{`Pending`}</td>
                                                                 </tr>
                                                             )
                                                         })
@@ -839,6 +896,40 @@ const DisbursementTimeout = () => {
                                                 </tbody>
                                             </table>
                                         </div> :
+                                        saveDataRefundDisburse.length !== 0 ?
+                                        <>
+                                            <div style={{ marginBottom: 30 }}>
+                                                <Link to={"#"} onClick={() => exportDataRefundDisburse()} className="export-span">Export</Link>
+                                            </div>
+                                            <div className='scroll-confirm' style={{  maxWidth: 'auto'  }}>
+                                                <table
+                                                    className="table mt-5"
+                                                    id="tableInvoice"
+                                                    hover
+                                                >
+                                                    <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
+                                                        <tr className='ms-3' >
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                            <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            saveDataRefundDisburse.map((item, idx) => {
+                                                                return (
+                                                                    <tr>
+                                                                        <td className='ps-3'>{idx+1}</td>
+                                                                        <td className='ps-3'>{item.partner_trans_id}</td>
+                                                                        <td className='ps-3'>{item.error_message}</td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </> :
                                         <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'auto' }}>
                                             <table
                                                 className="table mt-5"
@@ -849,6 +940,7 @@ const DisbursementTimeout = () => {
                                                     <tr className='ms-3' >
                                                         <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: "15%" }}>No</th>
                                                         <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Trans ID</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Status</th>
                                                     </tr>
                                                 </thead>
                                             </table>
