@@ -58,6 +58,7 @@ function DisbursementPage() {
     const [responMsg, setResponMsg] = useState(0)
     const [errMsgEmail, setErrMsgEmail] = useState(false)
     const [dataExcelDisburse, setDataExcelDisburse] = useState({})
+    const [dataExcelOriginDisburse, setDataExcelOriginDisburse] = useState({})
     const [isManual, setIsManual] = useState((sessionStorage.getItem('disbursement') !== 'manual' || sessionStorage.getItem('disbursement') === null) ? true : false)
     const [isBulk, setIsBulk] = useState((sessionStorage.getItem('disbursement') !== 'bulk' || sessionStorage.getItem('disbursement') === null) ? false : true)
     const [showStatusTransfer, setShowStatusTransfer] = useState(false)
@@ -79,6 +80,7 @@ function DisbursementPage() {
     </div>`)
     const [files, setFiles] = useState([])
     const [dataFromUpload, setDataFromUpload] = useState([])
+    const [dataOriginFromUpload, setDataOriginFromUpload] = useState([])
     const [dataFromUploadExcel, setDataFromUploadExcel] = useState([])
     const [errorFound, setErrorFound] = useState([])
     const [errorLoadPagination, setErrorLoadPagination] = useState([])
@@ -127,7 +129,6 @@ function DisbursementPage() {
     }
     
     async function fileCSV(newValue, bankLists, listBallanceBank, bankFee) {
-        // console.log(newValue, 'newValue');
         if (errorFound.length !== 0) {
             setErrorFound([])
         }
@@ -244,7 +245,7 @@ function DisbursementPage() {
                                 </div>`)
                             }, 2500);
                         } else {
-                            // console.log(dataTemp, 'dataTemp');
+                            setDataOriginFromUpload(dataTemp)
                             let data = []
                             dataTemp = dataTemp.map((obj, idx) => ({...obj, no: idx + 1}))
                             dataTemp.forEach(el => {
@@ -275,7 +276,8 @@ function DisbursementPage() {
                                     if(object["No. Rekening Tujuan*"] === el["No. Rekening Tujuan*"] && object["Nominal Disbursement*"] === el["Nominal Disbursement*"]) {
                                         //if the object exists iterate times
                                         object.times++;
-                                        sameNumberData.push(el.no + 1)
+                                        sameNumberData.push(object.no)
+                                        sameNumberData.push(el.no)
                                         return true;
                                         //if it does not return false
                                     } else {
@@ -1563,17 +1565,6 @@ function DisbursementPage() {
             <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
         );	}, [filterTextRekening]
     );
-
-    const conditionalRowStyles = [
-        {
-            when: row => row.is_enabled === false,
-            style: {
-                '&:hover': {
-                    cursor: 'unset',
-                },
-            },
-        },
-    ];
 
     const handleChangeCheckBox = () => {
         setIsChecked(!isChecked)
@@ -2921,8 +2912,9 @@ function DisbursementPage() {
         })
     }
 
-    function createDataDisburseExcel (dataDisburse, isDisburseManual) {
+    function createDataDisburseExcel (dataDisburse, isDisburseManual, dataBulkOrigin) {
         // console.log(isDisburseManual, '!isDisbursementManual');
+        // console.log(dataBulkOrigin, 'dataBulkOrigin');
         let dataExcel = []
         for (let i = 0; i < dataDisburse.length; i++) {
             // dataExcel.push({"bank_code": (isDisburseManual === true ? dataDisburse[i].bankCodeTujuan : dataDisburse[i].bankCode), "branch_name": (isDisburseManual === true ? dataDisburse[i].cabang : dataDisburse[i].cabangBank), "account_number": (isDisburseManual === true ? dataDisburse[i].noRek : dataDisburse[i].noRekening), "account_name": (isDisburseManual === true ? dataDisburse[i].nameRek : dataDisburse[i].ownerName), "amount": (isDisburseManual === true ? dataDisburse[i].nominal : dataDisburse[i].nominalDisbursement), "email": (isDisburseManual === true ? dataDisburse[i].emailPenerima : dataDisburse[i].email), "description": (isDisburseManual === true ? dataDisburse[i].catatan : dataDisburse[i].note), "save_account_number": (isDisburseManual === true ? dataDisburse[i].saveAcc : false)}) //untuk csv
@@ -2934,21 +2926,35 @@ function DisbursementPage() {
         // XLSX.writeFile(workBook, "Disbursement Report.xlsx");
         const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "array"})
         var data = new Blob([new Uint8Array(convertFile)], { type: "application/octet-stream"})
+        // origin data bulk
+        if (dataBulkOrigin !== undefined) {
+            let workSheetOrigin = XLSX.utils.json_to_sheet(dataBulkOrigin)
+            let workBookOrigin = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBookOrigin, workSheetOrigin, "Sheet1");
+            // XLSX.writeFile(workBookOrigin, "Disbursement Report Origin.xlsx");
+            const convertFileOrigin = XLSX.write(workBookOrigin, {bookType: "xlsx", type: "array"})
+            var dataOriginBulk = new Blob([new Uint8Array(convertFileOrigin)], { type: "application/octet-stream"})
+            setDataExcelOriginDisburse(dataOriginBulk)
+        }
         // console.log(workBook, 'workBook');
         setDataExcelDisburse(data)
         setShowModalConfirm(true)
     }
 
-    async function sendDataDisburse (data) {
+    async function sendDataDisburse (data, dataOrigin, isDisburseManual) {
         try {
-            
             const auth = "Bearer " + getToken()
             var formData = new FormData()
             formData.append('file_excel', data, 'file_data_karyawan.xlsx')
+            
+            // var formDataOrigin = new FormData()
+            formData.append('file_excel', (isDisburseManual ? data : dataOrigin), 'file_data_karyawan_original_upload.xlsx')
             const headers = {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
             }
+            // console.log(formData, 'formData');
+            // console.log(formDataOrigin, 'formDataOrigin');
             const dataSendHandler = await axios.post(BaseURL + "/Partner/UploadDisbursementFile", formData, {headers: headers})
             // console.log(dataSendHandler, 'dataSendHandler');
             if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length === 0) {
@@ -3085,6 +3091,13 @@ function DisbursementPage() {
             }
         },
     };
+
+    const conditionalRowStylesBulk = [
+        {
+            when: row => row.times >= 2 || row.times === undefined,
+            style: { color: 'red' }
+        }
+    ]
 
     useEffect(() => {
         getBankList()
@@ -3667,21 +3680,6 @@ function DisbursementPage() {
                             </Modal.Title>
                             <Modal.Body>
                                 <div className="div-table mt-3">
-                                    {/* <DataTable 
-                                        columns={columnsBank}
-                                        data={filterItemsBank}
-                                        customStyles={customStyles}
-                                        // progressComponent={<CustomLoader />}
-                                        highlightOnHover
-                                        subHeader
-                                        subHeaderComponent={subHeaderComponentMemoBank}
-                                        noDataComponent={<div className='mt-3'>No Data</div>}
-                                        persistTableHead
-                                        onRowClicked={handleRowClicked}
-                                        fixedHeader={true}
-                                        fixedHeaderScrollHeight="300px"
-                                        conditionalRowStyles={conditionalRowStyles}
-                                    /> */}
                                     <div style={{ fontFamily: 'Nunito', fontSize: 14}}>Cari Data Bank :</div>
                                     <div className="d-flex justify-content-between align-items-center position-relative mt-2 mb-3" style={{width: "100%"}}>
                                         <div className="position-absolute left-3 px-1"><img src={search} alt="search" /></div>
@@ -3898,6 +3896,7 @@ function DisbursementPage() {
                                         // data={dataFromUpload} //untuk csv
                                         data={dataFromUploadExcel} //untuk excel
                                         customStyles={customStyles}
+                                        conditionalRowStyles={conditionalRowStylesBulk}
                                         noDataComponent={<div style={{ marginBottom: 10 }}>Belum ada data tujuan Disbursement</div>}
                                         pagination
                                         highlightOnHover
@@ -3915,7 +3914,7 @@ function DisbursementPage() {
                                     disabled={dataFromUploadExcel.length === 0} //untuk excel
                                     style={{ width: '25%' }}
                                     // onClick={() => createDataDisburseExcel(dataFromUpload, isDisbursementManual)} //untuk csv
-                                    onClick={() => createDataDisburseExcel(dataFromUploadExcel, isDisbursementManual)} //untuk excel
+                                    onClick={() => createDataDisburseExcel(dataFromUploadExcel, isDisbursementManual, dataOriginFromUpload)} //untuk excel
                                 >
                                     Lakukan Disbursement
                                 </button>
@@ -4191,6 +4190,7 @@ function DisbursementPage() {
                                         // data={dataFromUpload} //untuk csv
                                         data={dataFromUploadExcel} //untuk excel
                                         customStyles={customStyles}
+                                        conditionalRowStyles={conditionalRowStylesBulk}
                                         noDataComponent={<div style={{ marginBottom: 10 }}>Belum ada data tujuan Disbursement</div>}
                                         pagination
                                         highlightOnHover
@@ -4340,7 +4340,7 @@ function DisbursementPage() {
                                 Batal
                             </button>
                             <button 
-                                onClick={() => sendDataDisburse(dataExcelDisburse)}
+                                onClick={() => sendDataDisburse(dataExcelDisburse, dataExcelOriginDisburse, isDisbursementManual)}
                                 className={isCheckedConfirm === true ? 'btn-ez-transfer ms-3' : 'btn-noez-transfer ms-3'}
                                 disabled={isCheckedConfirm === false}
                                 style={{ width: '25%' }}
@@ -4360,7 +4360,7 @@ function DisbursementPage() {
                         {
                             duplicateData.length === 0 ?
                             <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data yang ingin Anda tambahkan sudah tersedia di tabel.</div> :
-                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data pada baris ke <b style={{ wordBreak: 'break-word' }}>{duplicateData.join(",")}</b> : Terindikasi data duplikasi</div>
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data pada baris ke <b style={{ wordBreak: 'break-word', color: 'red' }}>{duplicateData.join(", ")}</b> : Terindikasi data duplikasi</div>
                         }
                         <div className='d-flex justify-content-center align-items-center mt-3'>
                             {
