@@ -287,9 +287,7 @@ function SettlementManual() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            console.log(dataParams, 'dataParams');
             const settlementManual = await axios.post(BaseURL + "/Settlement/ProcessManualSettlement", {data: dataParams}, {headers: headers})
-            console.log(settlementManual, 'settlementManual');
             if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
                 resetButtonHandle(settleType === 100 ? "VA" : "eMoney")
                 setShowModalFormSettlementManual(false)
@@ -322,7 +320,6 @@ function SettlementManual() {
                 'Authorization': auth
             }
             const dataVAList = await axios.post(BaseURL + "/Settlement/GetVirtualAccountList", {data: dataParams}, {headers: headers})
-            console.log(dataVAList, 'dataVAList');
             if (dataVAList.data.response_code === 200 && dataVAList.status === 200 && dataVAList.data.response_new_token === null) {
                 dataVAList.data.response_data.results.list = dataVAList.data.response_data.results.list.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setDataListVA(dataVAList.data.response_data.results.list)
@@ -353,7 +350,6 @@ function SettlementManual() {
                 'Authorization': auth
             }
             const dataEmoneyList = await axios.post(BaseURL + "/Settlement/GetEmoneyList", {data: dataParams}, {headers: headers})
-            console.log(dataEmoneyList, 'dataEmoneyList');
             if (dataEmoneyList.data.response_code === 200 && dataEmoneyList.status === 200 && dataEmoneyList.data.response_new_token === null) {
                 dataEmoneyList.data.response_data.results.list = dataEmoneyList.data.response_data.results.list.map((obj, id) => ({ ...obj, number: id + 1 }));
                 setDataListEMoney(dataEmoneyList.data.response_data.results.list)

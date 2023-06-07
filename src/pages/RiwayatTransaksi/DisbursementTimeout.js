@@ -62,7 +62,7 @@ const DisbursementTimeout = () => {
     const [saveDataRefundDisburse, setSaveDataRefundDisburse] = useState([])
     const [errorFound, setErrorFound] = useState([])
 
-    console.log(saveDataRefundDisburse, "saveDataRefundDisburse");
+    // console.log(saveDataRefundDisburse, "saveDataRefundDisburse");
 
     function toDashboard() {
         history.push("/");
@@ -362,8 +362,6 @@ const DisbursementTimeout = () => {
                     const wb = XLSX.read(pond, {type: "base64"})
                     const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
                     let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
-                    console.log(wb, 'wb');
-                    console.log(ws, Object.keys(ws), 'ws');
                     if (wb.SheetNames.length !== 1) {
                         setDataFromExcel([])
                         setErrorFound([])
@@ -577,7 +575,7 @@ const DisbursementTimeout = () => {
 
     ]
 
-    console.log(dataDisbursementTimeout, "dataDisbursementTimeout");
+    // console.log(dataDisbursementTimeout, "dataDisbursementTimeout");
 
     const Option = (props) => {
         return (
