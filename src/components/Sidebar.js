@@ -25,6 +25,7 @@ export default (props = {}) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const access_token = getToken()
+  const user_role = getRole()
   const { pathname } = location;
   const [show, setShow] = useState(false);
   const showClass = show ? "show" : "";
@@ -135,7 +136,7 @@ export default (props = {}) => {
                       // image={(item.label === "Dashboard") ? BerandaIcon : (item.label === "Report") ? LaporanIcon : (item.label === "Daftar Agen") ? DaftarAgenIcon : ""}
                       image={item.icon}
                       // link={Routes.Transactions.path}
-                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 20) ? Routes.ListPayment.path : (item.id === 21) ? Routes.DisbursementReport.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 25) ? Routes.ListRiwayatSubAccountAdmin.path : (item.id === 33) ? Routes.SettlementManual.path : ""}
+                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 20) ? Routes.ListPayment.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 25) ? Routes.ListRiwayatSubAccountAdmin.path : (item.id === 27) ? Routes.UserDirectDebit.path : (item.id === 28) ? Routes.Settlement.path : (item.id === 29) ? Routes.SaldoPartnerMenu.path : (item.id === 31) ? Routes.DisbursementPage.path : (item.id === 32) ? Routes.SubAccountTransfer.path : (item.id === 33) ? Routes.SettlementManual.path :  ""}
                     /> :
                     <CollapsableNavItem eventKey={item.label} key={item.id} title={item.label} image={item.icon}>
                       {
@@ -146,8 +147,8 @@ export default (props = {}) => {
                               key={item2.id}
                               title={item2.label}
                               // icon={faAngleRight}
-                              image={item2.icon}
-                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1603) ? Routes.eWallet.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2402) ? Routes.TransferSubAccount.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 2601) ? Routes.DisbursementPage.path : (item2.id === 2602) ? Routes.RiwayatDisbursement.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
+                              // image={item2.icon} (item2.id === 1603) ? Routes.eWallet.path : 
+                              link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1603) ? Routes.VaDanPaymentLinkAdmin.path : (item2.id === 1604) ? Routes.RiwayatDirectDebitAdmin.path : (item2.id === 1605) ? Routes.DisbursementAdmin.path : (item2.id === 1606) ? Routes.SubAccountAdmin.path : (item2.id === 1607) ? Routes.DisbursementTimeout.path : (item2.id === 1701) ? Routes.InvoiceVASubMenu.path : (item2.id === 1702) ? Routes.InvoiceDisbursementSubMenu.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 2602) ? Routes.RiwayatDisbursement.path : (item2.id === 3001) ? Routes.VaDanPaymentLink.path : (item2.id === 3002) ? Routes.RiwayatDirectDebit.path : (item2.id === 3003) ? Routes.Disbursement.path : (item2.id === 3004) ? Routes.SubAccount.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
                             /> :
                             <CollapsableNavItem key={item2.id} title={item2.label} image={item2.icon}>
                               {

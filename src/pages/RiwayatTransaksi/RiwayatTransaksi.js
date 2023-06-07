@@ -113,7 +113,7 @@ function RiwayatTransaksi() {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
-    }
+        }
     }
 
     function handleChange(e) {
@@ -141,6 +141,7 @@ function RiwayatTransaksi() {
             })
         } else {
             setShowDateDanaMasuk("none")
+            setDateRangeDanaMasuk([])
             setInputHandle({
                 ...inputHandle,
                 [e.target.name] : e.target.value
@@ -253,7 +254,7 @@ function RiwayatTransaksi() {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
-    }
+        }
     }
 
     async function riwayatSettlement(currentPage) {
@@ -325,7 +326,7 @@ function RiwayatTransaksi() {
     function pickDateDanaMasuk(item) {
         setStateDanaMasuk(item)
         if (item !== null) {
-            item = item.map(el => el.toLocaleDateString('en-CA'))
+            item = item.map(el => el.toLocaleDateString('fr-CA').split("").join(""))
             setDateRangeDanaMasuk(item)
         }
     }
