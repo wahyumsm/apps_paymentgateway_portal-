@@ -18,6 +18,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import Checklist from '../../assets/icon/checklist_icon.svg'
+import noteIconRed from "../../assets/icon/note_icon_red.svg";
 
 const DisbursementTimeout = () => {
     registerPlugin(FilePondPluginFileEncode)
@@ -59,6 +60,7 @@ const DisbursementTimeout = () => {
     const [inputPartnerTransId, setInputPartnerTransId] = useState("")
     const [dataRefundDisburse, setDataRefundDisburse] = useState([])
     const [saveDataRefundDisburse, setSaveDataRefundDisburse] = useState([])
+    const [errorFound, setErrorFound] = useState([])
 
     console.log(saveDataRefundDisburse, "saveDataRefundDisburse");
 
@@ -340,35 +342,115 @@ const DisbursementTimeout = () => {
 
     async function fileCsv (value) {
         try {
-            const pond = await value[0].getFileEncodeBase64String()
-            if (pond !== undefined) {
-                const wb = XLSX.read(pond, {type: "base64"})
-                const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
-                let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
-                let data = []
-                dataTemp = dataTemp.map((obj, idx) => ({...obj, no: idx + 1}))
-                dataTemp.forEach(el => {
-                    let obj = {}
-                    Object.keys(el).forEach(e => {
-                        obj[(e.trim())] = String(el[e])
-                    })
-                    data.push(obj)
-                })
+            if (value.length === 0) {
                 setDataFromExcel([])
-                setTimeout(() => {
-                    setLabelExcel("")
-                    setLabelExcel(`<div class='mt-2 style-label-drag-drop-filename'>${value[0].file.name}</div>
-                    <div class='py-4 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
-                    <div className='pb-4'>
-                        <span class="filepond--label-action">
-                            Ganti File
-                        </span>
-                    </div>`)
-                }, 2000)
-
-                setTimeout(() => {
-                    setDataFromExcel(data)
-                }, 2500)
+            } else if (value.length !== 0 && value[0].file.type !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                setDataFromExcel([])
+                setErrorFound([])
+                setLabelExcel("")
+                setLabelExcel(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />File yang digunakan harus berformat Excel</div>
+                        <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                        <div className='pb-4'>
+                            <span class="filepond--label-action">
+                                Ganti File
+                            </span>
+                        </div>`
+                )
+            } else if (value.length !== 0 && value[0].file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                const pond = await value[0].getFileEncodeBase64String()
+                if (pond !== undefined) {
+                    const wb = XLSX.read(pond, {type: "base64"})
+                    const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
+                    let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
+                    console.log(wb, 'wb');
+                    console.log(ws, Object.keys(ws), 'ws');
+                    if (wb.SheetNames.length !== 1) {
+                        setDataFromExcel([])
+                        setErrorFound([])
+                        setTimeout(() => {
+                            setLabelExcel("")
+                            setLabelExcel(
+                                `<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Jumlah Sheet pada file Excel lebih dari 1. Harap tinjau kembali file anda agar sesuai dengan template.</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                <div className='pb-4'>
+                                    <span class="filepond--label-action">
+                                        Ganti File
+                                    </span>
+                                </div>`
+                            )
+                        }, 2500);
+                    } else if (ws.A1 === undefined) {
+                        setDataFromExcel([])
+                        setErrorFound([])
+                        setTimeout(() => {
+                            setLabelExcel("")
+                            setLabelExcel(
+                                `<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                <div className='pb-4'>
+                                    <span class="filepond--label-action">
+                                        Ganti File
+                                    </span>
+                                </div>`
+                            )
+                        }, 2500);
+                    } else if (ws.A1.h.trim() !== "Partner Trans ID") {
+                        setDataFromExcel([])
+                        setErrorFound([])
+                        setTimeout(() => {
+                            setLabelExcel("")
+                            setLabelExcel(
+                                `<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                <div className='pb-4'>
+                                    <span class="filepond--label-action">
+                                        Ganti File
+                                    </span>
+                                </div>`
+                            )
+                        }, 2500);
+                    } else if (dataTemp.length === 0) {
+                        setDataFromExcel([])
+                        setErrorFound([])
+                        setTimeout(() => {
+                            setLabelExcel("")
+                            setLabelExcel(
+                                `<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Data pada file masih kosong. Harap tinjau kembali data pada file anda.</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                <div className='pb-4'>
+                                    <span class="filepond--label-action">
+                                        Ganti File
+                                    </span>
+                                </div>`
+                            )
+                        }, 2500);
+                    } else {
+                        let data = []
+                        dataTemp = dataTemp.map((obj, idx) => ({...obj, no: idx + 1}))
+                        dataTemp.forEach(el => {
+                            let obj = {}
+                            Object.keys(el).forEach(e => {
+                                obj[(e.trim())] = String(el[e])
+                            })
+                            data.push(obj)
+                        })
+                        setDataFromExcel([])
+                        setTimeout(() => {
+                            setLabelExcel("")
+                            setLabelExcel(`<div class='mt-2 style-label-drag-drop-filename'>${value[0].file.name}</div>
+                            <div class='py-4 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                            <div className='pb-4'>
+                                <span class="filepond--label-action">
+                                    Ganti File
+                                </span>
+                            </div>`)
+                        }, 2000)
+        
+                        setTimeout(() => {
+                            setDataFromExcel(data)
+                        }, 2500)
+                    }
+                }
             }
         } catch (e) {
             // console.log(e, "e");
@@ -416,7 +498,8 @@ const DisbursementTimeout = () => {
         {
             name: 'Nama Partner',
             selector: row => row.partnerName,
-            width: "140px"
+            width: "140px",
+            wrap: true
         },
         {
             name: 'Nominal',

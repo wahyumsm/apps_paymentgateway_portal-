@@ -38,26 +38,53 @@ export default () => {
       if (dataUserAccessMenu.status === 200 && dataUserAccessMenu.data.response_code === 200) {
         if (dataUserAccessMenu.data.response_data[0].detail.length !== 0) {
           switch (dataUserAccessMenu.data.response_data[0].detail[0].id) {
-            case 1603:
+            case 1101:
+              history.push("/Riwayat Transaksi/va-dan-paylink")  
+            break;
+            case 1102:
+              history.push("/Riwayat Transaksi/disbursement")  
+            break;
+            case 1103:
+              history.push("/Riwayat Transaksi/ewallet")  
+            break;
+            case 1104:
+              history.push("/Riwayat Transaksi/direct-debit")  
+            break;
+            case 1105:
+              history.push("/Riwayat Transaksi/sub-account")  
+            break;
+            case 1601:
               history.push("/Transaksi/va-dan-paylink")  
+            break;
+            case 1602:
+              history.push("/Transaksi/disbursement")  
+            break;
+            case 1603:
+              history.push("/Transaksi/ewallet")  
             break;
             case 1604:
               history.push("/Transaksi/direct-debit")  
             break;
             case 1605:
-              history.push("/Transaksi/disbursement")  
-            break;
-            case 1606:
               history.push("/Transaksi/sub-account")  
             break;
+            case 1606:
+              history.push("/Transaksi/disbursement-timeout")  
+            break;
             case 1701:
-              history.push("/Buat Invoice/settlement")  
+              history.push("/Settlement/riwayat-settlement")  
             break;
             case 1702:
-              history.push("/Buat Invoice/disbursement")  
+              history.push("/Settlement/settlement-manual")  
             break;
             case 1901:
               history.push("/HelpDesk/renotifyva")  
+            break;
+            case 2301:
+              history.push("/Buat Invoice/disbursement")  
+            break;
+            case 2302:
+              history.push("/Buat Invoice/settlement")  
             break;
             case 2401:
               history.push("/Sub Account Bank/info-saldo-dan-mutasi")  
@@ -73,18 +100,6 @@ export default () => {
             break;
             case 2602:
               history.push("/Disbursement/report")  
-            break;
-            case 3001:
-              history.push("/Riwayat Transaksi/va-dan-paylink")  
-            break;
-            case 3002:
-              history.push("/Riwayat Transaksi/direct-debit")  
-            break;
-            case 3003:
-              history.push("/Riwayat Transaksi/disbursement")  
-            break;
-            case 3004:
-              history.push("/Riwayat Transaksi/sub-account")  
             break;
           }
         } else {
@@ -128,11 +143,14 @@ export default () => {
             case 24:
               history.push("/transfer-sub-account")
             break;
+            case 26:
+              history.push("/disbursement")
+            break;
             case 27:
-              history.push("/user-direct-debit")
+              history.push("/riwayat-saldo-partner")
             break;
             case 28:
-              history.push("/settlement")
+              history.push("/user-direct-debit")
             break;
             case 29:
               history.push("/riwayat-saldo-partner")

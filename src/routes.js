@@ -46,20 +46,23 @@ export const Routes = {
     ListRiwayatSubAccount: {path: "/Sub Account Bank/riwayat-sub-account"},
     InfoSaldoDanMutasi: {path: "/Sub Account Bank/info-saldo-dan-mutasi"},
     TransferSubAccount: {path: "/Sub Account Bank/transfer"},
+
     // revamp menu
-    Settlement: { path: "/settlement"},
     UserDirectDebit: { path: "/user-direct-debit"},
     InvoiceVASubMenu: { path: "/Buat Invoice/settlement" },
     InvoiceDisbursementSubMenu: { path: "/Buat Invoice/disbursement" },
     SaldoPartnerMenu: { path: "/riwayat-saldo-partner"},
     DisbursementPage : { path: "/disbursement" },
     SubAccountTransfer: {path: "/transfer-sub-account"},
+    Settlement: { path: "/Settlement/riwayat-settlement"},
+
     // admin
     VaDanPaymentLinkAdmin: {path: "/Transaksi/va-dan-paylink"},
     RiwayatDirectDebitAdmin: {path: "/Transaksi/direct-debit"},
     DisbursementAdmin: {path: "/Transaksi/disbursement"},
     SubAccountAdmin: {path: "/Transaksi/sub-account"},
     DisbursementTimeout: {path: "/Transaksi/disbursement-timeout"},
+    SettlementManual: {path: "/Settlement/settlement-manual"},
     
     // partner
     VaDanPaymentLink: {path: "/Riwayat Transaksi/va-dan-paylink"},
@@ -67,8 +70,8 @@ export const Routes = {
     Disbursement: {path: "/Riwayat Transaksi/disbursement"},
     SubAccount: {path: "/Riwayat Transaksi/sub-account"},
 
-    eWallet: {path: "/Riwayat/ewallet"},
-    SettlementManual: {path: "/settlement-manual"},
+    eWalletAdmin: {path: "/Transaksi/ewallet"},
+    eWallet: {path: "/Riwayat Transaksi/ewallet"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
