@@ -24,6 +24,7 @@ import CurrencyInput from 'react-currency-input-field'
 const TransferSubAccount = () => {
     const history = useHistory()
     const user_role = getRole()
+    const access_token = getToken()
     const [showDaftarRekening, setShowDaftarRekening] = useState(false)
     const [showBank, setShowBank] = useState(false)
     const [showTransfer, setShowTransfer] = useState(false)
@@ -531,6 +532,9 @@ const TransferSubAccount = () => {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getAkunPartner()
         getBankList()
         getRekeningList()

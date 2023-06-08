@@ -19,6 +19,7 @@ import CurrencyInput from 'react-currency-input-field'
 function AlokasiSaldo() {
 
     const user_role = getRole()
+    const access_token = getToken()
     const [balance, setBalance] = useState({})
     const history = useHistory();
     const [balanceDetail, setBalanceDetail] = useState([])
@@ -710,6 +711,9 @@ function AlokasiSaldo() {
     }
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getBalance()
         getDisbursementChannel()
     }, [])

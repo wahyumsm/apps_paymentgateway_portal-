@@ -19,6 +19,7 @@ import check from "../../assets/icon/checklistpayment_icon.svg";
 function DaftarUserDirectDebit() {
 
     const user_role = getRole()
+    const access_token = getToken()
     const [daftarUserDirectDebit, setDaftarUserDirectDebit] = useState([])
     const [channelDirectDebit, setChannelDirectDebit] = useState(0)
     const [statusDirectDebit, setStatusDirectDebit] = useState(0)
@@ -369,6 +370,9 @@ function DaftarUserDirectDebit() {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getDaftarUserDirectDebit(activePageDaftarDirectDebit)
         listUser()
         if (user_role !== "102") {
@@ -376,7 +380,6 @@ function DaftarUserDirectDebit() {
         } else {
             userDetails()
         }
-        
     }, [])
     
 

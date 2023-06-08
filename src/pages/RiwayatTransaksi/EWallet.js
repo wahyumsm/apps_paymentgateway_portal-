@@ -394,10 +394,10 @@ function EWallet() {
             // RouteTo("/login")
             history.push('/login');
         }
-        // if (user_role === "102") {
-        //     history.push('/404');
-        // }
-        listPartner()
+        if (user_role !== "102" || user_role !== "104") {
+            // history.push('/404');
+            listPartner()
+        }
         transaksiEwallet(activePageEWallet)
     }, [access_token, user_role])
     

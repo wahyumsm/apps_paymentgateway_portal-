@@ -40,6 +40,7 @@ registerPlugin(FilePondPluginFileEncode)
 function DisbursementPage() {
 
     const user_role = getRole()
+    const access_token = getToken()
     const [isDisbursementManual, setisDisbursementManual] = useState(true)
     const history = useHistory()
     const [listBank, setListBank] = useState([])
@@ -3100,6 +3101,9 @@ function DisbursementPage() {
     ]
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getBankList()
         getRekeningList()
         feeBankList()

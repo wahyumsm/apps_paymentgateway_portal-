@@ -24,6 +24,7 @@ import {
 
 const ListRiwayatSubAccount = () => {
     const user_role = getRole()
+    const access_token = getToken()
     const [listAkunPartner, setListAkunPartner] = useState([])
     const column = [
         {
@@ -581,6 +582,9 @@ const ListRiwayatSubAccount = () => {
     }
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getListRiwayatTransfer(activePageRiwayatTransfer, inputHandle.rowPerPage, orderId, orderField)
         if (user_role !== '100') {
             getAkunPartner()

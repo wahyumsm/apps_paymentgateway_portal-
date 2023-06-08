@@ -20,6 +20,7 @@ function SettlementManual() {
 
     const user_role = getRole()
     const history = useHistory()
+    const access_token = getToken()
     const [isSettlementVA, setIsSettlementVA] = useState(100)
     const [dataListPartner, setDataListPartner] = useState([])
     const [dataListVA, setDataListVA] = useState([])
@@ -371,6 +372,12 @@ function SettlementManual() {
     }
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
+        if (user_role === "102" || user_role === "104") {
+            history.push("/404")
+        }
         listPartner()
         getBankNameHandler()
         // getVAList()

@@ -581,6 +581,9 @@ const RiwayatDirectDebit = () => {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getDirectDebit(activePageDirectDebit, partnerId)
         listUser()
         if (user_role !== "102") {

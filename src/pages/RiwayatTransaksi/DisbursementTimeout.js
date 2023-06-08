@@ -24,6 +24,7 @@ const DisbursementTimeout = () => {
     registerPlugin(FilePondPluginFileEncode)
     const history = useHistory()
     const user_role = getRole();
+    const access_token = getToken()
     const [files, setFiles] = useState([])
     const [dataFromExcel, setDataFromExcel] = useState([])
     const [labelExcel, setLabelExcel] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
@@ -624,11 +625,14 @@ const DisbursementTimeout = () => {
     };
 
     useEffect(() => {
-      listPartner()
-      if (user_role !== "102") {
-          disbursementTimeoutReport(activePageDisbursementTimeout)
-      }
-      
+        if (!access_token) {
+            history.push('/login');
+        }
+        if (user_role === "102" || user_role === "104") {
+            history.push('/404');
+        }
+        listPartner()
+        disbursementTimeoutReport(activePageDisbursementTimeout)
     }, [])
 
     function disbursementTabs(isTabs){

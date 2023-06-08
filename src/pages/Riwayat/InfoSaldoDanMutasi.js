@@ -26,6 +26,7 @@ import * as XLSX from "xlsx"
 const InfoSaldoDanMutasi = () => {
     const history = useHistory()
     const user_role = getRole()
+    const access_token = getToken()
     const [showSaldoSubAcc, setShowSaldoSubAcc] = useState(false)
     const [loginToSaldo, setLoginToSaldo] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
@@ -1080,6 +1081,9 @@ const InfoSaldoDanMutasi = () => {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         if (user_role === "102") {
             getAkunPartner()
             getListRiwayatMutasi(inputHandle.akunPartner, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField)

@@ -911,13 +911,13 @@ const VaDanPaymentLink = () => {
         if (!access_token) {
           history.push('/login');
         }
-        if (user_role === "102") {
+        if (user_role === "102" || user_role === "104") {
             userDetails()
-            getBankNameHandler()
-        } else if (user_role === "100") {
+        } else {
             listPartner()
             riwayatDanaMasukAdmin(activePageDanaMasukAdmin)
         }
+        getBankNameHandler()
       }, [access_token])
 
     return (
