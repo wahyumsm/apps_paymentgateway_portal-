@@ -15,12 +15,17 @@ import triangleInfo from "../../assets/icon/triangle-info.svg"
 import * as XLSX from "xlsx"
 import CurrencyInput from "react-currency-input-field";
 import Checklist from '../../assets/icon/checklist_icon.svg'
+import { useDispatch, useSelector } from 'react-redux'
+import { GetUserAccessMenu } from '../../redux/ActionCreators/UserAccessMenuAction'
 
 function SettlementManual() {
 
     const user_role = getRole()
     const history = useHistory()
     const access_token = getToken()
+    const userAccessMenu = useSelector(state => state.userAccessMenuReducer.userAccessMenu)
+    const foundedAccessMenu = userAccessMenu?.find(el => el.id === 17)
+    const foundedAccessSubMenu2 = foundedAccessMenu?.detail.find(el => el.id === 1702)
     const [isSettlementVA, setIsSettlementVA] = useState(100)
     const [dataListPartner, setDataListPartner] = useState([])
     const [dataListVA, setDataListVA] = useState([])
@@ -511,13 +516,13 @@ function SettlementManual() {
     const columnsSummarySettlVA = [
         {
             name: 'Description',
-            selector: row => row.description,
+            selector: row => row.Description,
             // width: "57px",
             // style: { justifyContent: "center", }
         },
         {
             name: 'Amount',
-            selector: row => row.description === "Total Transaksi" ? row.amount : convertToRupiah(row.amount, true, 2),
+            selector: row => row.Description === "Total Transaksi" ? row.Amount : convertToRupiah(row.Amount, true, 2),
             // sortable: true
             // width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
@@ -877,17 +882,20 @@ function SettlementManual() {
                                         // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                                     />
                                 </div>
-                                <div className='mt-3' style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
-                                    <button
-                                        // onClick={() => settlementManualVAOrEMoney(selectedPartnerSettlementVA, dateRangeSettlementVA, isSettlementVA)}
-                                        onClick={() => setShowModalFormSettlementManual(true)}
-                                        className={dataListVA.length !== 0 && dataListSummaryVA.length !== 0 ? 'add-button mb-3' : 'btn-off mb-3'}
-                                        style={{ maxWidth: 'fit-content' }}
-                                        disabled={dataListVA.length === 0 && dataListSummaryVA.length === 0}
-                                    >
-                                        Settlement
-                                    </button>
-                                </div>
+                                {
+                                    foundedAccessSubMenu2?.is_updatable &&
+                                    <div className='mt-3' style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
+                                        <button
+                                            // onClick={() => settlementManualVAOrEMoney(selectedPartnerSettlementVA, dateRangeSettlementVA, isSettlementVA)}
+                                            onClick={() => setShowModalFormSettlementManual(true)}
+                                            className={dataListVA.length !== 0 && dataListSummaryVA.length !== 0 ? 'add-button mb-3' : 'btn-off mb-3'}
+                                            style={{ maxWidth: 'fit-content' }}
+                                            disabled={dataListVA.length === 0 && dataListSummaryVA.length === 0}
+                                        >
+                                            Settlement
+                                        </button>
+                                    </div>
+                                }
                             </> :
                             <>
                                 <Row className='mt-4'>
@@ -990,16 +998,19 @@ function SettlementManual() {
                                         // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
                                     />
                                 </div>
-                                <div className='mt-3' style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
-                                    <button
-                                        onClick={() => setShowModalFormSettlementManual(true)}
-                                        className={dataListEMoney.length !== 0 && dataListSummaryEMoney.length !== 0 ? 'add-button mb-3' : 'btn-off mb-3'}
-                                        style={{ maxWidth: 'fit-content' }}
-                                        disabled={dataListEMoney.length === 0 && dataListSummaryEMoney.length === 0}
-                                    >
-                                        Settlement
-                                    </button>
-                                </div>
+                                {
+                                    foundedAccessSubMenu2?.is_updatable &&
+                                    <div className='mt-3' style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
+                                        <button
+                                            onClick={() => setShowModalFormSettlementManual(true)}
+                                            className={dataListEMoney.length !== 0 && dataListSummaryEMoney.length !== 0 ? 'add-button mb-3' : 'btn-off mb-3'}
+                                            style={{ maxWidth: 'fit-content' }}
+                                            disabled={dataListEMoney.length === 0 && dataListSummaryEMoney.length === 0}
+                                        >
+                                            Settlement
+                                        </button>
+                                    </div>
+                                }
                             </>
                         }
                     </div>

@@ -19,12 +19,16 @@ import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import Checklist from '../../assets/icon/checklist_icon.svg'
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
+import { useDispatch, useSelector } from 'react-redux';
 
 const DisbursementTimeout = () => {
     registerPlugin(FilePondPluginFileEncode)
     const history = useHistory()
     const user_role = getRole();
     const access_token = getToken()
+    const userAccessMenu = useSelector(state => state.userAccessMenuReducer.userAccessMenu)
+    const foundedAccessMenu = userAccessMenu?.find(el => el.id === 16)
+    const foundedAccessSubMenu2 = foundedAccessMenu?.detail.find(el => el.id === 1606)
     const [files, setFiles] = useState([])
     const [dataFromExcel, setDataFromExcel] = useState([])
     const [labelExcel, setLabelExcel] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
@@ -1037,18 +1041,20 @@ const DisbursementTimeout = () => {
                         </>
                     )
                 }
-                
-                <div className="d-flex justify-content-end align-items-center mt-2">
-                    <button
-                        // onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
-                        className={(dataFromExcel.length !== 0 || dataRefundDisburse.length !== 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
-                        disabled={isDisbursementManual ? dataRefundDisburse.length === 0 : dataFromExcel.length === 0}
-                        style={{ width: '25%' }}
-                        onClick={() => refundDataDisbursement(isDisbursementManual, dataRefundDisburse, dataFromExcel)}
-                    >
-                        Lakukan Refund Disbursement
-                    </button>
-                </div>
+                {
+                    foundedAccessSubMenu2?.is_updatable &&
+                    <div className="d-flex justify-content-end align-items-center mt-2">
+                        <button
+                            // onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
+                            className={(dataFromExcel.length !== 0 || dataRefundDisburse.length !== 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
+                            disabled={isDisbursementManual ? dataRefundDisburse.length === 0 : dataFromExcel.length === 0}
+                            style={{ width: '25%' }}
+                            onClick={() => refundDataDisbursement(isDisbursementManual, dataRefundDisburse, dataFromExcel)}
+                        >
+                            Lakukan Refund Disbursement
+                        </button>
+                    </div>
+                }
             </div>
         </>
     )
