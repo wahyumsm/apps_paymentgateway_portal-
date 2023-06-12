@@ -283,7 +283,7 @@ const VaDanPaymentLink = () => {
             'Authorization' : auth
           }
           const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
-          // console.log(listTransferDana, 'ini list dana masuk');
+        //   console.log(listTransferDana, 'ini list dana masuk');
           if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token === null) {
             listTransferDana.data.response_data.results.list = listTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
             setPageNumberDanaMasuk(listTransferDana.data.response_data)
@@ -312,7 +312,7 @@ const VaDanPaymentLink = () => {
           const auth = "Bearer " + getToken()
           const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "partner_trans_id": "${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturDanaMasuk}}`)
           // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
-          // console.log(dataParams, "ini data params dana masuk filter");
+        //   console.log(dataParams, "ini data params dana masuk filter");
           const headers = {
             'Content-Type':'application/json',
             'Authorization' : auth
@@ -582,11 +582,12 @@ const VaDanPaymentLink = () => {
     }
 
     function handlePageChangeDanaMasukAdmin(page) {
-        if (isFilterDanaMasuk) {
-            setActivePageDanaMasuk(page)
+        // console.log(isFilterDanaMasukAdmin, 'masuk');
+        if (isFilterDanaMasukAdmin) {
+            setActivePageDanaMasukAdmin(page)
             filterRiwayatDanaMasukAdmin(page, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin)
         } else {
-            setActivePageDanaMasuk(page)
+            setActivePageDanaMasukAdmin(page)
             riwayatDanaMasukAdmin(page)
         }
     }
