@@ -204,6 +204,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
 
+    <RouteWithSidebar exact path={Routes.eWalletAdmin.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.SettlementManual.path} component={SettlementManual} />
 

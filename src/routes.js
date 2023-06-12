@@ -63,14 +63,15 @@ export const Routes = {
     SubAccountAdmin: {path: "/Transaksi/sub-account"},
     DisbursementTimeout: {path: "/Transaksi/disbursement-timeout"},
     SettlementManual: {path: "/Settlement/settlement-manual"},
+    eWalletAdmin: {path: "/Transaksi/ewallet"},
     
     // partner
     VaDanPaymentLink: {path: "/Riwayat Transaksi/va-dan-paylink"},
     RiwayatDirectDebit: {path: "/Riwayat Transaksi/direct-debit"},
     Disbursement: {path: "/Riwayat Transaksi/disbursement"},
     SubAccount: {path: "/Riwayat Transaksi/sub-account"},
+    eWallet: {path: "/Riwayat Transaksi/ewallet"},
 
-    eWallet: {path: "/Transaksi/ewallet"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
