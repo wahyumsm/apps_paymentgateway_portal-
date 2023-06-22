@@ -424,6 +424,13 @@ function Disbursement() {
             width: "260px",
         },
         {
+            name: 'Keterangan',
+            selector: row => (row.tdishburse_message === null || row.tdishburse_message.length === 0) ? "-" : row.tdishburse_message,
+            // sortable: true,
+            wrap: true,
+            width: "224px",
+        },
+        {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
             width: "140px",
