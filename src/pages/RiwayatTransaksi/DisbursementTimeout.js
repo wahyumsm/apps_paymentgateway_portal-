@@ -73,6 +73,13 @@ const DisbursementTimeout = () => {
         history.push("/");
     }
 
+    function handleChangeForm(e) {
+        setInputHandleTimeout({
+            ...inputHandleTimeout,
+            [ e.target.name ] : e.target.value
+        })
+    }
+
     function pickDateDisbursementTimeout(item) {
         setStateDisbursementTimeout(item)
         if (item !== null) {
@@ -693,7 +700,7 @@ const DisbursementTimeout = () => {
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span className='me-3'>ID Transaksi</span>
-                                <input type='text'className='input-text-report' placeholder='Masukkan ID Transaksi'/>
+                                <input onChange={(e) => handleChangeForm(e)} value={inputHandleTimeout.transID} name='transID' type='text'className='input-text-report' placeholder='Masukkan ID Transaksi'/>
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span className='me-4'>Nama Partner</span>
@@ -728,11 +735,11 @@ const DisbursementTimeout = () => {
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span>Partner Trans ID</span>
-                                <input type='text'className='input-text-report ms-2' placeholder='Masukkan Partner Trans ID'/>
+                                <input onChange={(e) => handleChangeForm(e)} value={inputHandleTimeout.partnerTransId} name='partnerTransId' type='text'className='input-text-report ms-2' placeholder='Masukkan Partner Trans ID'/>
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span className='me-2'>Reference No</span>
-                                <input type='text'className='input-text-report' placeholder='Masukkan Reference No'/>
+                                <input onChange={(e) => handleChangeForm(e)} value={inputHandleTimeout.reffNo} name='reffNo' type='text'className='input-text-report' placeholder='Masukkan Reference No'/>
                             </Col>
                             <Col xs={4} style={{ display: showDateDisbursementTimeout }}>
                                 <div className='text-end me-4'>
