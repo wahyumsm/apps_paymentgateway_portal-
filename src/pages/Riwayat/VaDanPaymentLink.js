@@ -109,12 +109,26 @@ const VaDanPaymentLink = () => {
           // width: "145px"
         },
         {
-            name: 'Total Akhir',
+            name: 'Nominal Transaksi',
             selector: row => row.amount,
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
-            width: "145px"
-          },
+            width: "170px"
+        },
+        {
+            name: 'Fee',
+            selector: row => row.total_fee,
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.total_fee) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            // width: "130px"
+        },
+        {
+            name: 'Total Settlement',
+            selector: row => row.total_settlement,
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.total_settlement) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "170px"
+        },
         {
             name: 'Status',
             selector: row => row.status,
@@ -357,7 +371,7 @@ const VaDanPaymentLink = () => {
                 const data = dataExportFilter.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -368,7 +382,7 @@ const VaDanPaymentLink = () => {
                 const data = dataExportFilter.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -396,7 +410,7 @@ const VaDanPaymentLink = () => {
                 const data = dataExportDefault.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -408,7 +422,7 @@ const VaDanPaymentLink = () => {
                 const data = dataExportDefault.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
