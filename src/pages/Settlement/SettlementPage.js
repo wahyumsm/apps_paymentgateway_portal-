@@ -819,6 +819,7 @@ function SettlementPage() {
                                         <option value={104}>Payment Link</option>
                                         <option value={100}>Virtual Account</option>
                                         <option value={107}>Direct Debit</option>
+                                        {/* <option value={105}>E-Money</option> */}
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">

@@ -236,7 +236,7 @@ function EWallet() {
             async function dataExportFilter(statusId, transId, subPartnerId, dateId, periode, eWalletId) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "reference_no": "${partnerTransId}", "walletID": ${eWalletId}}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "reference_no": "${partnerTransId}", "walletID": ${eWalletId}}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -313,7 +313,7 @@ function EWallet() {
             async function dataExportFilter(statusId, transId, subPartnerId, dateId, periode, eWalletId) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "reference_no": "${partnerTransId}", "walletID": ${eWalletId}}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "reference_no": "${partnerTransId}", "walletID": ${eWalletId}}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
