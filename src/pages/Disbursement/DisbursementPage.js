@@ -537,6 +537,8 @@ function DisbursementPage() {
                                                             errData.push(objErrData)
                                                             objErrData = {}
                                                         } else if (Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "")) > resultBankFee.mpartfitur_max_amount_trx) {
+                                                            // console.log(Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "")), 'Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", ""))');
+                                                            // console.log(resultBankFee.mpartfitur_max_amount_trx, 'resultBankFee.mpartfitur_max_amount_trx');
                                                             objErrData.no = idx + 2
                                                             objErrData.keterangan = `kolom Nominal Disbursement : Maksimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
                                                             errData.push(objErrData)
@@ -857,7 +859,9 @@ function DisbursementPage() {
                                                     objErrData.keterangan = `kolom Nominal Disbursement : Minimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_min_amount_trx)}`
                                                     errData.push(objErrData)
                                                     objErrData = {}
-                                                } else if (el["Nominal Disbursement*"] < resultBankFee.mpartfitur_max_amount_trx) {
+                                                } else if (el["Nominal Disbursement*"] > resultBankFee.mpartfitur_max_amount_trx) {
+                                                    // console.log(el["Nominal Disbursement*"], 'el["Nominal Disbursement*"]');
+                                                    // console.log(resultBankFee.mpartfitur_max_amount_trx, 'resultBankFee.mpartfitur_max_amount_trx');
                                                     objErrData.no = idx + 2
                                                     objErrData.keterangan = `kolom Nominal Disbursement : Maksimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
                                                     errData.push(objErrData)
