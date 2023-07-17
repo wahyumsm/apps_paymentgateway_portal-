@@ -73,6 +73,14 @@ function SettlementPage() {
         })
     }
 
+    function toDashboard() {
+        history.push("/");
+    }
+
+    function toLaporan() {
+        history.push("/Riwayat Transaksi/va-dan-paylink");
+    }
+
     function handleChange(e) {
         setInputHandle({
             ...inputHandle,
@@ -749,7 +757,7 @@ function SettlementPage() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Settlement</span>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Settlement</span>
             <div className='head-title'>
                 <h2 className="h5 mb-1 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Settlement</h2>
             </div>
@@ -811,6 +819,7 @@ function SettlementPage() {
                                         <option value={104}>Payment Link</option>
                                         <option value={100}>Virtual Account</option>
                                         <option value={107}>Direct Debit</option>
+                                        {/* <option value={105}>E-Money</option> */}
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
@@ -902,7 +911,7 @@ function SettlementPage() {
                     </div> :
                     <div className='riwayat-settlement-div mt-3 mb-4'>
                         <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Tabel Riwayat Settlement Partner</span>
-                        <div className='base-content'>
+                        <div className='base-content mt-3'>
                             <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Filter</span>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">

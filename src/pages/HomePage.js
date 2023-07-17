@@ -85,6 +85,8 @@ import InfoSaldoMutasi from './Riwayat/InfoSaldoDanMutasi';
 import SettlementPage from './Settlement/SettlementPage';
 import DaftarUserDirectDebit from './DirectDebit/DaftarUserDirectDebit';
 import EWallet from './RiwayatTransaksi/EWallet';
+import DisbursementTimeout from './RiwayatTransaksi/DisbursementTimeout';
+import SettlementManual from './Settlement/SettlementManual';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -170,7 +172,6 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceVA.path} component={InvoiceVA}/>
     <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
-    <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
     <RouteWithSidebar exact path={Routes.RiwayatDisbursement.path} component={DisbursementReport}/>
     {/* <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/> */}
     {/* <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} /> */}
@@ -183,25 +184,29 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccountAdmin.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccount.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.InfoSaldoDanMutasi.path} component={InfoSaldoDanMutasi} />
-    <RouteWithSidebar exact path={Routes.TransferSubAccount.path} component={TransferSubAccount} />
     {/* revamp menu */}
     <RouteWithSidebar exact path={Routes.Settlement.path} component={SettlementPage} />
     <RouteWithSidebar exact path={Routes.UserDirectDebit.path} component={DaftarUserDirectDebit} />
     <RouteWithSidebar exact path={Routes.InvoiceVASubMenu.path} component={InvoiceVA}/>
     <RouteWithSidebar exact path={Routes.InvoiceDisbursementSubMenu.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.SaldoPartnerMenu.path} component={SaldoPartner} />
-    {/* partner */}
+    <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
+    <RouteWithSidebar exact path={Routes.SubAccountTransfer.path} component={TransferSubAccount} />
+    {/* admin */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.DisbursementAdmin.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccountAdmin.path} component={InfoSaldoMutasi} />
-    {/* admin */}
+    <RouteWithSidebar exact path={Routes.DisbursementTimeout.path} component={DisbursementTimeout} />
+    {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLinkAdmin.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebitAdmin.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
 
+    <RouteWithSidebar exact path={Routes.eWalletAdmin.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
+    <RouteWithSidebar exact path={Routes.SettlementManual.path} component={SettlementManual} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

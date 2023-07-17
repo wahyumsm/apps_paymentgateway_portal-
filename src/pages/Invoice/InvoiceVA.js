@@ -282,10 +282,10 @@ function InvoiceVA() {
     }, [access_token, user_role])
     
     return (
-        <div className="content-page mt-6">
+        <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Invoice</span>
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4">Invoice</h2>
+                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Invoice</h2>
             </div>
             <div className='main-content'>
                 <div className='riwayat-dana-masuk-div mt-4'>

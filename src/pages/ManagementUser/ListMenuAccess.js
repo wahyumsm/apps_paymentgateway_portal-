@@ -115,10 +115,12 @@ function ListMenuAccess() {
                     if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length === 0) {
                         alert("Access Menu berhasil disimpan")
                         history.push("/managementuser")
+                        window.location.reload()
                     } else if (saveAccess.status === 200 && saveAccess.data.response_code === 200 && saveAccess.data.response_new_token.length !== 0) {
                         setUserSession(saveAccess.data.response_new_token)
                         alert("Access Menu berhasil disimpan")
                         history.push("/managementuser")
+                        window.location.reload()
                     }
         } catch (error) {
             // console.log(error)

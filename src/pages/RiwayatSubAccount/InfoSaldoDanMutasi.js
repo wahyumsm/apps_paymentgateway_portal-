@@ -28,6 +28,7 @@ import transferFailed from "../../assets/icon/gagaltopup_icon.svg"
 const InfoSaldoDanMutasi = () => {
     const history = useHistory()
     const user_role = getRole()
+    const access_token = getToken()
     const [showSaldoSubAcc, setShowSaldoSubAcc] = useState(false)
     const [loginToSaldo, setLoginToSaldo] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
@@ -687,6 +688,9 @@ const InfoSaldoDanMutasi = () => {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getAkunPartner()
         getListRiwayatMutasi(inputHandle.akunPartner, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField)
         // userDetails()

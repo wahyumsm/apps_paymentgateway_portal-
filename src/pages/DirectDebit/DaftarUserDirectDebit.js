@@ -19,6 +19,7 @@ import check from "../../assets/icon/checklistpayment_icon.svg";
 function DaftarUserDirectDebit() {
 
     const user_role = getRole()
+    const access_token = getToken()
     const [daftarUserDirectDebit, setDaftarUserDirectDebit] = useState([])
     const [channelDirectDebit, setChannelDirectDebit] = useState(0)
     const [statusDirectDebit, setStatusDirectDebit] = useState(0)
@@ -42,6 +43,14 @@ function DaftarUserDirectDebit() {
         const findData = daftarUserDirectDebit.find((item) => item.number === number)
         setDataDetailUser(findData)
         setShowModalDaftarDirectDebit(true)
+    }
+
+    function toDashboard() {
+        history.push("/");
+    }
+
+    function toLaporan() {
+        history.push("/Riwayat Transaksi/va-dan-paylink");
     }
 
     const columnsAdmin = [
@@ -361,6 +370,9 @@ function DaftarUserDirectDebit() {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getDaftarUserDirectDebit(activePageDaftarDirectDebit)
         listUser()
         if (user_role !== "102") {
@@ -368,13 +380,12 @@ function DaftarUserDirectDebit() {
         } else {
             userDetails()
         }
-        
     }, [])
     
 
     return (
-        <div className="content-page mt-6">
-            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar User Direct Debit</span>
+        <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar User Direct Debit</span>
             <div className='head-title'>
                 <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Daftar User Direct Debit</h2>
             </div>
@@ -385,7 +396,7 @@ function DaftarUserDirectDebit() {
                         {
                             user_role !== "102" ? (
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className='me-3'>Nama Partner</span>
+                                    <span className='me-4'>Nama Partner</span>
                                     <div className="dropdown dropSaldoPartner">
                                         <ReactSelect
                                             closeMenuOnSelect={true}
@@ -402,7 +413,7 @@ function DaftarUserDirectDebit() {
                             ) : ""
                         }
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className='me-3'>Nama User</span>
+                            <span className='me-5'>Nama User</span>
                             <div className="dropdown dropSaldoPartner">
                                 <ReactSelect
                                     closeMenuOnSelect={true}

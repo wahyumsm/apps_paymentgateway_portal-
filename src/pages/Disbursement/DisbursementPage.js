@@ -40,6 +40,7 @@ registerPlugin(FilePondPluginFileEncode)
 function DisbursementPage() {
 
     const user_role = getRole()
+    const access_token = getToken()
     const [isDisbursementManual, setisDisbursementManual] = useState(true)
     const history = useHistory()
     const [listBank, setListBank] = useState([])
@@ -90,6 +91,12 @@ function DisbursementPage() {
     const [alertSaldo, setAlertSaldo] = useState(false)
     const [alertNotValid, setAlertNotValid] = useState(false)
     const [alertMinSaldo, setAlertMinSaldo] = useState(false)
+    const [alertMaxSaldo, setAlertMaxSaldo] = useState(false)
+    const [alertBankTujuan, setAlertBankTujuan] = useState(false)
+    const [minMaxDisbursement, setMinMaxDisbursement] = useState({
+        minDisbursement: 0,
+        maxDisbursement: 0
+    })
     const [balanceDetail, setBalanceDetail] = useState([])
     const [sisaSaldoAlokasiPerBank, setSisaSaldoAlokasiPerBank] = useState({
         bca: 0,
@@ -524,9 +531,14 @@ function DisbursementPage() {
                                                     // console.log('tidak ada huruf');
                                                     if (el["Nominal Disbursement*"].indexOf(',') !== -1 && (el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 4] === ',' || el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 1] === ',')) {
                                                         // console.log('masuk koma bener');
-                                                        if (el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "").length < 5) {
+                                                        if (Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "")) < resultBankFee.mpartfitur_min_amount_trx) {
                                                             objErrData.no = idx + 2
-                                                            objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                                                            objErrData.keterangan = `kolom Nominal Disbursement : Minimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_min_amount_trx)}`
+                                                            errData.push(objErrData)
+                                                            objErrData = {}
+                                                        } else if (Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "")) > resultBankFee.mpartfitur_max_amount_trx) {
+                                                            objErrData.no = idx + 2
+                                                            objErrData.keterangan = `kolom Nominal Disbursement : Maksimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
                                                             errData.push(objErrData)
                                                             objErrData = {}
                                                         } else {
@@ -840,9 +852,14 @@ function DisbursementPage() {
                                                 }
                                             } else if (typeof el["Nominal Disbursement*"] === 'number') {
                                                 // console.log('masuk number');
-                                                if (el["Nominal Disbursement*"] < 10000) {
+                                                if (el["Nominal Disbursement*"] < resultBankFee.mpartfitur_min_amount_trx) {
                                                     objErrData.no = idx + 2
-                                                    objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                                                    objErrData.keterangan = `kolom Nominal Disbursement : Minimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_min_amount_trx)}`
+                                                    errData.push(objErrData)
+                                                    objErrData = {}
+                                                } else if (el["Nominal Disbursement*"] < resultBankFee.mpartfitur_max_amount_trx) {
+                                                    objErrData.no = idx + 2
+                                                    objErrData.keterangan = `kolom Nominal Disbursement : Maksimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
                                                     errData.push(objErrData)
                                                     objErrData = {}
                                                 } else if (el["Nominal Disbursement*"] <= balanceBank.mpartballchannel_balance) {
@@ -1976,14 +1993,82 @@ function DisbursementPage() {
         })
     }
 
-    function handleChangeNominal(e) {
-        // console.log(e, "e");
-        if (Number(e) >= 10000) {
+    function handleChangeNominal(e, bankFee, inputBank, bankList) {
+        if (inputBank.bankName.length === 0 && inputBank.bankCode.length === 0) {
             setAlertSaldo(false)
-            setAlertMinSaldo(false)  
+            setAlertMinSaldo(false)
+            setAlertMaxSaldo(false)
+            setAlertBankTujuan(true)
         } else {
-            setAlertSaldo(false)
-            setAlertMinSaldo(true)
+            bankFee.forEach(item => {
+                if (inputBank.bankCode === "014" && item.mpaytype_bank_code === "014") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(e) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                    } else if (Number(e) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                    }
+                } else if (inputBank.bankCode === "011" && item.mpaytype_bank_code === "011") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(e) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                    } else if (Number(e) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                    }
+                } else if ((inputBank.bankCode !== "014" && inputBank.bankCode !== "011") && (item.mpaytype_bank_code !== "014" && item.mpaytype_bank_code !== "011")) {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(e) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                    } else if (Number(e) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                    }
+                }
+            })
         }
 
         setInputHandle({
@@ -2992,7 +3077,7 @@ function DisbursementPage() {
     }
 
     function toReportDisburse () {
-        history.push('/disbursement/report')
+        history.push('/Riwayat Transaksi/disbursement')
     }
 
     function pindahHalaman (param) {
@@ -3100,6 +3185,9 @@ function DisbursementPage() {
     ]
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getBankList()
         getRekeningList()
         feeBankList()
@@ -3117,7 +3205,7 @@ function DisbursementPage() {
                 </div>
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/laporan"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
+                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/Riwayat Transaksi/va-dan-paylink"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
                 <Row className='mt-1'>
                     {
                         balanceDetail !== 0 &&
@@ -3313,7 +3401,7 @@ function DisbursementPage() {
                                             <CurrencyInput
                                                 className='input-text-user'
                                                 value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
-                                                onValueChange={(e) => handleChangeNominal(e)}
+                                                onValueChange={(e) => handleChangeNominal(e, feeBank, inputData, listBank)}
                                                 placeholder="Rp 0"
                                                 groupSeparator={"."}
                                                 decimalSeparator={','}
@@ -3359,7 +3447,19 @@ function DisbursementPage() {
                                                 alertMinSaldo === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Minimal disbursement Rp. 10.000
+                                                        Minimal disbursement {convertToRupiah(minMaxDisbursement.minDisbursement)}
+                                                    </div>
+                                                ) : 
+                                                alertMaxSaldo === true ? (
+                                                    <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
+                                                        <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
+                                                        Maksimal disbursement {convertToRupiah(minMaxDisbursement.maxDisbursement)}
+                                                    </div>
+                                                ) :
+                                                alertBankTujuan === true ? (
+                                                    <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
+                                                        <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
+                                                        Silahkan pilih tujuan bank terlebih dahulu
                                                     </div>
                                                 ) : (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#888888"}} className='text-start'>
@@ -3436,10 +3536,10 @@ function DisbursementPage() {
                                                         isChecked
                                                     )}
                                                     className={
-                                                        (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length !== 0) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= 10000 && dataDisburse.length < 10) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
+                                                        (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length !== 0) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= minMaxDisbursement.minDisbursement && Number(inputHandle.nominal) <= minMaxDisbursement.maxDisbursement && dataDisburse.length < 10) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
                                                     }
                                                     disabled={
-                                                        (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length === 0 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < 10000 || dataDisburse.length >= 10)
+                                                        (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length === 0 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < minMaxDisbursement.minDisbursement || Number(inputHandle.nominal) > minMaxDisbursement.maxDisbursement || dataDisburse.length >= 10)
                                                     }
                                                 >
                                                     <FontAwesomeIcon

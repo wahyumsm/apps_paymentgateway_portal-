@@ -109,12 +109,26 @@ const VaDanPaymentLink = () => {
           // width: "145px"
         },
         {
-            name: 'Total Akhir',
+            name: 'Nominal Transaksi',
             selector: row => row.amount,
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
-            width: "145px"
-          },
+            width: "170px"
+        },
+        {
+            name: 'Fee',
+            selector: row => row.total_fee,
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.total_fee) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            // width: "130px"
+        },
+        {
+            name: 'Total Settlement',
+            selector: row => row.total_settlement,
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.total_settlement) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "170px"
+        },
         {
             name: 'Status',
             selector: row => row.status,
@@ -283,7 +297,7 @@ const VaDanPaymentLink = () => {
             'Authorization' : auth
           }
           const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
-          // console.log(listTransferDana, 'ini list dana masuk');
+        //   console.log(listTransferDana, 'ini list dana masuk');
           if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token === null) {
             listTransferDana.data.response_data.results.list = listTransferDana.data.response_data.results.list.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
             setPageNumberDanaMasuk(listTransferDana.data.response_data)
@@ -312,7 +326,7 @@ const VaDanPaymentLink = () => {
           const auth = "Bearer " + getToken()
           const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "partner_trans_id": "${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturDanaMasuk}}`)
           // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
-          // console.log(dataParams, "ini data params dana masuk filter");
+        //   console.log(dataParams, "ini data params dana masuk filter");
           const headers = {
             'Content-Type':'application/json',
             'Authorization' : auth
@@ -357,7 +371,7 @@ const VaDanPaymentLink = () => {
                 const data = dataExportFilter.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -368,7 +382,7 @@ const VaDanPaymentLink = () => {
                 const data = dataExportFilter.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -396,7 +410,7 @@ const VaDanPaymentLink = () => {
                 const data = dataExportDefault.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -408,7 +422,7 @@ const VaDanPaymentLink = () => {
                 const data = dataExportDefault.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Total Akhir": data[i].amount, Status: data[i].status })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -582,11 +596,12 @@ const VaDanPaymentLink = () => {
     }
 
     function handlePageChangeDanaMasukAdmin(page) {
-        if (isFilterDanaMasuk) {
-            setActivePageDanaMasuk(page)
+        // console.log(isFilterDanaMasukAdmin, 'masuk');
+        if (isFilterDanaMasukAdmin) {
+            setActivePageDanaMasukAdmin(page)
             filterRiwayatDanaMasukAdmin(page, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin)
         } else {
-            setActivePageDanaMasuk(page)
+            setActivePageDanaMasukAdmin(page)
             riwayatDanaMasukAdmin(page)
         }
     }
@@ -773,7 +788,7 @@ const VaDanPaymentLink = () => {
                 setPendingTransferAdmin(false)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -911,13 +926,13 @@ const VaDanPaymentLink = () => {
         if (!access_token) {
           history.push('/login');
         }
-        if (user_role === "102") {
+        if (user_role === "102" || user_role === "104") {
             userDetails()
-            getBankNameHandler()
-        } else if (user_role === "100") {
+        } else {
             listPartner()
             riwayatDanaMasukAdmin(activePageDanaMasukAdmin)
         }
+        getBankNameHandler()
       }, [access_token])
 
     return (

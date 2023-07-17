@@ -33,6 +33,7 @@ const RiwayatDirectDebit = () => {
     const [stateDirectDebit, setStateDirectDebit] = useState(null)
     const [openDetailFee, setOpenDetailFee] = useState(false)
     const [dataDetail, setDataDetail] = useState({})
+    const [pendingDirectDebit, setPendingDirectDebit] = useState(true)
 
     const [selectedPartnerDirectDebit, setSelectedPartnerDirectDebit] = useState([])
     const [inputHandle, setInputHandle] = useState({
@@ -216,12 +217,14 @@ const RiwayatDirectDebit = () => {
                 setDataDirectDebit(dataRiwayatDirectDebit.data.response_data.results)
                 setPageNumberDirectDebit(dataRiwayatDirectDebit.data.response_data)
                 setTotalPageDirectDebit(dataRiwayatDirectDebit.data.response_data.max_page)
+                setPendingDirectDebit(false)
             } else if (dataRiwayatDirectDebit.data.response_code === 200 && dataRiwayatDirectDebit.status === 200 && dataRiwayatDirectDebit.data.response_new_token.length !== 0) {
                 setUserSession(dataRiwayatDirectDebit.data.response_new_token)
                 dataRiwayatDirectDebit.data.response_data.results = dataRiwayatDirectDebit.data.response_data.results.map((obj, id) => ({ ...obj, number: (currentPage > 1) ? (id + 1)+((currentPage-1)*10) : id + 1 }));
                 setDataDirectDebit(dataRiwayatDirectDebit.data.response_data.results)
                 setPageNumberDirectDebit(dataRiwayatDirectDebit.data.response_data)
                 setTotalPageDirectDebit(dataRiwayatDirectDebit.data.response_data.max_page)
+                setPendingDirectDebit(false)
             }
         } catch (error) {
           // console.log(error)
@@ -231,6 +234,7 @@ const RiwayatDirectDebit = () => {
 
     async function filterListDirectDebit(idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId, page, rowPerPage) {
         try {
+            setPendingDirectDebit(true)
             setIsFilterDirectDebit(true)
             setActivePageDirectDebit(page)
             const auth = "Bearer " + getToken()
@@ -245,12 +249,14 @@ const RiwayatDirectDebit = () => {
                 setDataDirectDebit(dataRiwayatDirectDebit.data.response_data.results)
                 setPageNumberDirectDebit(dataRiwayatDirectDebit.data.response_data)
                 setTotalPageDirectDebit(dataRiwayatDirectDebit.data.response_data.max_page)
+                setPendingDirectDebit(false)
             } else if (dataRiwayatDirectDebit.data.response_code === 200 && dataRiwayatDirectDebit.status === 200 && dataRiwayatDirectDebit.data.response_new_token.length !== 0) {
                 setUserSession(dataRiwayatDirectDebit.data.response_new_token)
                 dataRiwayatDirectDebit.data.response_data.results = dataRiwayatDirectDebit.data.response_data.results.map((obj, id) => ({ ...obj, number: (page > 1) ? (id + 1)+((page-1)*10) : id + 1 }));
                 setDataDirectDebit(dataRiwayatDirectDebit.data.response_data.results)
                 setPageNumberDirectDebit(dataRiwayatDirectDebit.data.response_data)
                 setTotalPageDirectDebit(dataRiwayatDirectDebit.data.response_data.max_page)
+                setPendingDirectDebit(false)
             }
         } catch (error) {
           // console.log(error)
@@ -260,7 +266,7 @@ const RiwayatDirectDebit = () => {
 
     function getDetailDataDirectDebit (number) {
         const findData = dataDirectDebit.find((item) => item.number === number) 
-        console.log(findData);
+        // console.log(findData);
         setDataDetail(findData)
         setShowModalDetailDirectDebit(true)
     }
@@ -575,6 +581,9 @@ const RiwayatDirectDebit = () => {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            history.push('/login');
+        }
         getDirectDebit(activePageDirectDebit, partnerId)
         listUser()
         if (user_role !== "102") {
@@ -725,6 +734,7 @@ const RiwayatDirectDebit = () => {
                                     data={dataDirectDebit}
                                     customStyles={customStyles}
                                     highlightOnHover
+                                    progressPending={pendingDirectDebit}
                                     progressComponent={<CustomLoader />}
                                 />
                             </div>
@@ -903,6 +913,7 @@ const RiwayatDirectDebit = () => {
                                     data={dataDirectDebit}
                                     customStyles={customStyles}
                                     highlightOnHover
+                                    progressPending={pendingDirectDebit}
                                     progressComponent={<CustomLoader />}
                                 />
                             </div>

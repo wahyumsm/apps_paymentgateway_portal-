@@ -106,7 +106,7 @@ function Disbursement() {
     }
 
     function toLaporan() {
-        history.push("/laporan");
+        history.push("/Riwayat Transaksi/va-dan-paylink");
     }
 
     async function listPartner() {
@@ -422,6 +422,13 @@ function Disbursement() {
             selector: row => (row.reference_no === null || row.reference_no.length === 0) ? "-" : row.reference_no,
             // sortable: true,
             width: "260px",
+        },
+        {
+            name: 'Keterangan',
+            selector: row => (row.tdishburse_message === null || row.tdishburse_message.length === 0) ? "-" : row.tdishburse_message,
+            // sortable: true,
+            wrap: true,
+            width: "224px",
         },
         {
             name: 'Status',
