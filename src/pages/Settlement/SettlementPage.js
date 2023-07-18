@@ -19,6 +19,7 @@ function SettlementPage() {
     const user_role = getRole();
     const [dataListPartner, setDataListPartner] = useState([])
     const [listBank, setListBank] = useState([])
+    // const [listEWallet, setListEWallet] = useState([])
     const [dataRiwayatSettlement, setDataRiwayatSettlement] = useState([])
     const [dataRiwayatSettlementPartner, setDataRiwayatSettlementPartner] = useState([])
     const [totalSettlement, setTotalSettlement] = useState([])
@@ -52,8 +53,10 @@ function SettlementPage() {
     const [isFilterSettlementPartner, setIsFilterSettlementPartner] = useState(false)
     const [selectedPartnerSettlement, setSelectedPartnerSettlement] = useState([])
     const [selectedBankSettlement, setSelectedBankSettlement] = useState([])
+    // const [selectedEWalletSettlement, setSelectedEWalletSettlement] = useState([])
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
+    // console.log(inputHandle.fiturSettlement, 'inputHandle.fiturSettlement');
 
     const Option = (props) => {
         return (
@@ -82,6 +85,11 @@ function SettlementPage() {
     }
 
     function handleChange(e) {
+        // if (e.target.name === 'fiturSettlement' && Number(e.target.value) === 105) {
+        //     setSelectedBankSettlement([])
+        // } else if (e.target.name === 'fiturSettlement' && Number(e.target.value) !== 105) {
+        //     setSelectedEWalletSettlement([])
+        // }
         setInputHandle({
             ...inputHandle,
             [e.target.name] : e.target.value
@@ -139,6 +147,42 @@ function SettlementPage() {
             riwayatSettlementPartner(page, currentDate)
         }
     }
+
+    // async function getListEWallet() {
+    //     try {
+    //         const auth = 'Bearer ' + getToken();
+    //         const headers = {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': auth
+    //         }
+    //         const dataListEmoney = await axios.post(BaseURL + "/Home/GetLisEwallet", {data: ""}, {headers: headers})
+    //         console.log(dataListEmoney, 'dataListEmoney');
+    //         if (dataListEmoney.status === 200 && dataListEmoney.data.response_code === 200 && dataListEmoney.data.response_new_token.length === 0) {
+    //             let newArr = []
+    //             dataListEmoney.data.response_data.forEach(e => {
+    //                 let obj = {}
+    //                 obj.value = e.mewallet_code
+    //                 obj.label = e.mewallet_name
+    //                 newArr.push(obj)
+    //             })
+    //             setListEWallet(newArr)
+    //         } else if (dataListEmoney.status === 200 && dataListEmoney.data.response_code === 200 && dataListEmoney.data.response_new_token.length !== 0) {
+    //             setUserSession(dataListEmoney.data.response_new_token)
+    //             let newArr = []
+    //             dataListEmoney.data.response_data.forEach(e => {
+    //                 let obj = {}
+    //                 obj.value = e.mewallet_code
+    //                 obj.label = e.mewallet_name
+    //                 newArr.push(obj)
+    //             })
+    //             setListEWallet(newArr)
+    //         }
+            
+    //     } catch (error) {
+    //         // console.log(error);
+    //         history.push(errorCatch(error.response.status))
+    //     }
+    // }
 
     async function listPartner() {
         try {
@@ -286,12 +330,15 @@ function SettlementPage() {
         }
     }
 
+    // async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement, eWalletSettlement) {
     async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement) {
         try {
+            // console.log(fiturSettlement, 'fiturSettlement');
             setPendingSettlement(true)
             setIsFilterSettlement(true)
             setActivePageSettlement(page)
             const auth = 'Bearer ' + getToken();
+            // const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${Number(fiturSettlement) === 105 ? (eWalletSettlement !== undefined ? eWalletSettlement : "") : (bankSettlement !== undefined ? bankSettlement : "")}"}`)
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${bankSettlement !== undefined ? bankSettlement : ""}"}`)
             const headers = {
                 'Content-Type': 'application/json',
@@ -365,6 +412,7 @@ function SettlementPage() {
             })
             setSelectedPartnerSettlement([])
             setSelectedBankSettlement([])
+            // setSelectedEWalletSettlement([])
             setStateSettlement(null)
             setDateRangeSettlement([])
             setShowDateSettlement("none")
@@ -394,6 +442,7 @@ function SettlementPage() {
             riwayatSettlement(activePageSettlement)
             getBankNameHandler()
         }
+        // getListEWallet()
     }, [access_token, user_role])
 
     const columnsSettl = [
@@ -406,6 +455,7 @@ function SettlementPage() {
             name: 'ID Transaksi',
             selector: row => row.tvasettl_code,
             width: "224px",
+            // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${selectedBankSettlement.length === 0 ? '0' : selectedBankSettlement[0].value}/${row.settlement_type}/${selectedEWalletSettlement.length === 0 ? "0" : selectedEWalletSettlement[0].value}`} >{row.tvasettl_code}</Link>
             cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${selectedBankSettlement.length === 0 ? '0' : selectedBankSettlement[0].value}`} >{row.tvasettl_code}</Link>
         },
         {
@@ -822,6 +872,24 @@ function SettlementPage() {
                                         {/* <option value={105}>E-Money</option> */}
                                     </Form.Select>
                                 </Col>
+                                {/* {
+                                    Number(inputHandle.fiturSettlement) === 105 ?
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                        <span className="me-2">Nama eWallet</span>
+                                        <div className="dropdown dropSaldoPartner">
+                                            <ReactSelect
+                                                closeMenuOnSelect={true}
+                                                hideSelectedOptions={false}
+                                                options={listEWallet}
+                                                value={selectedEWalletSettlement}
+                                                onChange={(selected) => setSelectedEWalletSettlement([selected])}
+                                                placeholder="Pilih Nama eWallet"
+                                                components={{ Option }}
+                                                styles={customStylesSelectedOption}
+                                            />
+                                        </div>
+                                    </Col> :
+                                } */}
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span className="me-2">Nama Bank</span>
                                     <div className="dropdown dropSaldoPartner">
@@ -854,6 +922,7 @@ function SettlementPage() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
+                                                // onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "")}
                                                 onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "")}
                                                 className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && selectedBankSettlement[0].value !== undefined) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && selectedBankSettlement[0].value === undefined}

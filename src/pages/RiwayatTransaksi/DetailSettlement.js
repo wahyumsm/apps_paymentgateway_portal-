@@ -17,11 +17,16 @@ function DetailSettlement() {
     const user_role = getRole();
     const history = useHistory()
     const { settlementId, bankCode } = useParams();
+    // const { settlementId, bankCode, settlementType, eWalletCode } = useParams();
     const [dataSettlement, setDataSettlement] = useState([])
     const [pendingSettlement, setPendingSettlement] = useState(false)
     const [totalPageDetailSettlement, setTotalPageDetailSettlement] = useState(0)
     const [activePageDetailSettlement, setActivePageDetailSettlement] = useState(1)
     const [pageNumberDetailSettlement, setPageNumberDetailSettlement] = useState({})
+    // console.log(settlementId, 'settlementId');
+    // console.log(bankCode, 'bankCode');
+    // console.log(settlementType, 'settlementType');
+    // console.log(eWalletCode, 'eWalletCode');
     // const [inputHandle, setInputHandle] = useState({
     //     idTransaksiSettlement: "",
     //     namaPartnerSettlement: "",
@@ -29,17 +34,20 @@ function DetailSettlement() {
     //     periodeSettlement: 0,
     // })
 
+    // async function getDetailSettlement(settlementId, currentPage, codeBank, typeSettlement, codeEWallet) {
     async function getDetailSettlement(settlementId, currentPage, codeBank) {
         try {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
             // const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
+            // const dataParams = encryptData(`{ "settlement_id": ${settlementId}, "settlement_type": ${typeSettlement}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "ewallet_code": "${codeEWallet.length === 0 ? "" : codeEWallet}", "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page": 10 }`);
             const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            console.log(detailsettlement, 'detailsettlement');
             if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length === 0) {
                 detailsettlement.data.response_data.results = detailsettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberDetailSettlement(detailsettlement.data.response_data)
@@ -87,6 +95,7 @@ function DetailSettlement() {
         // if (user_role === "102") {
         //     history.push('/404');
         // }
+        // getDetailSettlement(settlementId, 1, bankCode, settlementType, eWalletCode)
         getDetailSettlement(settlementId, 1, bankCode)
     }, [settlementId])
     
@@ -381,7 +390,7 @@ function DetailSettlement() {
             {
                 user_role === '102' ?
                 <span className='breadcrumbs-span'><Link to={"/laporan"}>Laporan</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
-                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
+                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>

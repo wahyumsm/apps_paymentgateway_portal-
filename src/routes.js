@@ -6,6 +6,7 @@ export const Routes = {
     RiwayatTransaksi: { path: "/Riwayat/transaksi"},
     SaldoPartner: { path: "/Riwayat/saldopartner"},
     DetailSettlement: { path: "/detailsettlement/:settlementId/:bankCode"},
+    // DetailSettlement: { path: "/detailsettlement/:settlementId/:bankCode/:settlementType/:eWalletCode"},
     DetailAkun : { path: "/detailakun"},
     Transactions: { path: "/laporan" },
     // Settings: { path: "/settings" },
