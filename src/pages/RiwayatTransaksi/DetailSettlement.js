@@ -16,7 +16,7 @@ function DetailSettlement() {
     const access_token = getToken();
     const user_role = getRole();
     const history = useHistory()
-    const { settlementId, bankCode } = useParams();
+    const { settlementId, bankCode, settlementType, eWalletCode } = useParams();
     const [dataSettlement, setDataSettlement] = useState([])
     const [pendingSettlement, setPendingSettlement] = useState(false)
     const [totalPageDetailSettlement, setTotalPageDetailSettlement] = useState(0)
@@ -29,17 +29,17 @@ function DetailSettlement() {
     //     periodeSettlement: 0,
     // })
 
-    async function getDetailSettlement(settlementId, currentPage, codeBank) {
+    async function getDetailSettlement(settlementId, currentPage, codeBank, typeSettlement, codeEWallet) {
         try {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
-            // const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
-            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page":10 }`);
+            const dataParams = encryptData(`{ "settlement_id": ${settlementId}, "settlement_type": ${typeSettlement}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "ewallet_code": "${codeEWallet.length === 0 ? "" : codeEWallet}", "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page": 10 }`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
             const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
+            // console.log(detailsettlement, 'detailsettlement');
             if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token.length === 0) {
                 detailsettlement.data.response_data.results = detailsettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberDetailSettlement(detailsettlement.data.response_data)
@@ -62,23 +62,8 @@ function DetailSettlement() {
 
     function handlePageChangeDetailSettlement(page) {
         setActivePageDetailSettlement(page)
-        getDetailSettlement(settlementId, page, bankCode)
+        getDetailSettlement(settlementId, page, bankCode, settlementType, eWalletCode)
     }
-
-    // function handleChange(e) {
-    //     setInputHandle({
-    //         ...inputHandle,
-    //         [e.target.name]: e.target.value
-    //     })
-    // }
-
-    // function handleChangePeriodeSettlement(e) {
-        
-    // }
-
-    // function pickDateSettlement(params) {
-        
-    // }
 
     useEffect(() => {
         if (!access_token) {
@@ -87,13 +72,13 @@ function DetailSettlement() {
         // if (user_role === "102") {
         //     history.push('/404');
         // }
-        getDetailSettlement(settlementId, 1, bankCode)
+        getDetailSettlement(settlementId, 1, bankCode, settlementType, eWalletCode)
     }, [settlementId])
     
-    async function ExportReportDetailSettlementHandler(settlementId, userRole) {
+    async function ExportReportDetailSettlementHandler(settlementId, userRole, codeBank, typeSettlement, codeEWallet) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{ "tvasettl_id": ${settlementId}, "page": 1, "row_per_page": 1000000 }`);
+            const dataParams = encryptData(`{ "settlement_id": ${settlementId}, "settlement_type": ${typeSettlement}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "ewallet_code": "${codeEWallet.length === 0 ? "" : codeEWallet}", "page": 1, "row_per_page": 1000000 }`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -104,9 +89,17 @@ function DetailSettlement() {
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
                     if (userRole === '102') {
-                        dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Settlement": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                        if (Number(settlementType) === 105) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Channel eWallet": data[i].mbank_name, "Nominal Settlement": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                        } else {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Settlement": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                        }
                     } else {
-                        dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Settlement": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reimbursement by VA": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                        if (Number(settlementType) === 105) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                        } else {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Settlement": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reimbursement by VA": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                        }
                     }
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -134,6 +127,105 @@ function DetailSettlement() {
             history.push(errorCatch(error.response.status))
         }
     }
+    
+    const columnsSettlEWallet = [
+        {
+            name: 'No',
+            selector: row => row.number,
+            width: "3%",
+            maxWidth: 'fit-content !important'
+        },
+        {
+            name: 'ID Transaksi',
+            selector: row => row.tvatrans_trx_id,
+            width: "120px",
+            wrap: true,
+            // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
+            // sortable: true
+        },
+        {
+            name: 'Waktu',
+            selector: row => row.tvatrans_crtdt_format,
+            // sortable: true,          
+            width: "120px",
+            wrap: true
+        },
+        {
+            name: 'Partner Trans ID',
+            selector: row => row.partner_trans_id,
+            // sortable: true,          
+            wrap: true,
+            width: "150px",
+        },
+        {
+            name: 'Nama Partner',
+            selector: row => row.mpartner_name,
+            // sortable: true
+            wrap: true,
+            width: "150px",
+        },
+        {
+            name: 'Channel eWallet',
+            selector: row => row.mbank_name,
+            // sortable: true,
+            // width: "175px"
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", },
+            width: "160px",
+        },
+        {
+            name: 'Nominal Transaksi',
+            selector: row => convertToRupiah(row.tvatrans_amount),
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "173px"
+        },
+        {
+            name: 'Biaya eWallet',
+            selector: row => convertToRupiah(row.tvatrans_partner_fee),
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "140px"
+        },
+        {
+            name: 'Biaya Pajak',
+            selector: row => convertToRupiah(row.tvatrans_fee_tax),
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            // width: "173px"
+        },
+        {
+            name: 'Total Biaya',
+            selector: row => convertToRupiah(row.tvatrans_amount - (row.tvatrans_partner_fee + row.tvatrans_fee_tax)),
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "173px"
+        },
+        {
+            name: 'Status',
+            selector: row => row.mstatus_name_ind,
+            width: "150px",
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.tvatrans_status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 1 || row.tvatrans_status_id === 7,
+                    style: { background: "#FEF4E9", color: "#F79421", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 4,
+                    style: { background: "#FDEAEA", color: "#EE2E2C", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 3 || row.tvatrans_status_id === 5 || row.tvatrans_status_id === 6 || row.tvatrans_status_id === 8 || row.tvatrans_status_id === 9 || row.tvatrans_status_id === 10 || row.tvatrans_status_id === 11 || row.tvatrans_status_id === 12 || row.tvatrans_status_id === 13 || row.tvatrans_status_id === 14 || row.tvatrans_status_id === 15,
+                    style: { background: "#F0F0F0", color: "#888888", }
+                }
+            ],
+        },
+    ];
     
     const columnsSettl = [
         {
@@ -221,6 +313,79 @@ function DetailSettlement() {
             width: "155px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.tvatrans_status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 1 || row.tvatrans_status_id === 7,
+                    style: { background: "#FEF4E9", color: "#F79421", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 4,
+                    style: { background: "#FDEAEA", color: "#EE2E2C", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 3 || row.tvatrans_status_id === 5 || row.tvatrans_status_id === 6 || row.tvatrans_status_id === 8 || row.tvatrans_status_id === 9 || row.tvatrans_status_id === 10 || row.tvatrans_status_id === 11 || row.tvatrans_status_id === 12 || row.tvatrans_status_id === 13 || row.tvatrans_status_id === 14 || row.tvatrans_status_id === 15,
+                    style: { background: "#F0F0F0", color: "#888888", }
+                }
+            ],
+        },
+    ];
+    
+    const columnsSettlPartnerEWallet = [
+        {
+            name: 'No',
+            selector: row => row.number,
+            width: "5%",
+            maxWidth: 'fit-content !important'
+        },
+        {
+            name: 'ID Transaksi',
+            selector: row => row.tvatrans_trx_id,
+            width: "120px",
+            wrap: true,
+            // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
+            // sortable: true
+        },
+        {
+            name: 'Waktu',
+            selector: row => row.tvatrans_crtdt_format,
+            // sortable: true,          
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
+            width: "120px",
+            wrap: true
+        },
+        {
+            name: 'Partner Trans ID',
+            selector: row => row.partner_trans_id,
+            // sortable: true,          
+            wrap: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-start"},
+            // width: "150px",
+        },
+        {
+            name: 'Channel eWallet',
+            selector: row => row.mbank_name,
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", },
+            // width: "175px"
+            width: "160px",
+        },
+        {
+            name: 'Nominal Transaksi',
+            selector: row => convertToRupiah(row.tvatrans_amount),
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "173px"
+        },
+        {
+            name: 'Status',
+            selector: row => row.mstatus_name_ind,
+            width: "150px",
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
                     when: row => row.tvatrans_status_id === 2,
@@ -336,25 +501,25 @@ function DetailSettlement() {
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                '&:not(:last-of-type)': {
-                    borderRightStyle: 'solid',
-                    borderRightWidth: '1px',
-                    borderRightColor: defaultThemes.default.divider.default,
-                },
+                // '&:not(:last-of-type)': {
+                //     borderRightStyle: 'solid',
+                //     borderRightWidth: '1px',
+                //     borderRightColor: defaultThemes.default.divider.default,
+                // },
             },
         },
-        cells: {
-            style: {
-                '&:not(:last-of-type)': {
-                    borderRightStyle: 'solid',
-                    borderRightWidth: '1px',
-                    borderRightColor: defaultThemes.default.divider.default,
-                    borderleftStyle: 'solid',
-                    borderleftWidth: '1px',
-                    borderleftColor: defaultThemes.default.divider.default,
-                },
-            },
-        },
+        // cells: {
+        //     style: {
+        //         '&:not(:last-of-type)': {
+        //             borderRightStyle: 'solid',
+        //             borderRightWidth: '1px',
+        //             borderRightColor: defaultThemes.default.divider.default,
+        //             borderleftStyle: 'solid',
+        //             borderleftWidth: '1px',
+        //             borderleftColor: defaultThemes.default.divider.default,
+        //         },
+        //     },
+        // },
         headRow: {
             style: {
                 borderTopStyle: 'solid',
@@ -380,8 +545,8 @@ function DetailSettlement() {
         <div className="content-page mt-6">
             {
                 user_role === '102' ?
-                <span className='breadcrumbs-span'><Link to={"/laporan"}>Laporan</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
-                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
+                <span className='breadcrumbs-span'><Link to={"/Settlement/riwayat-settlement"}>Riwayat Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
+                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>
@@ -393,12 +558,12 @@ function DetailSettlement() {
                     {
                         dataSettlement.length !== 0 &&  
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role)} className="export-span">Export</Link>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode)} className="export-span">Export</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
                         <DataTable
-                            columns={(user_role === '102') ? columnsSettlPartner : columnsSettl}
+                            columns={(user_role === '102') ? (Number(settlementType) === 105 ? columnsSettlPartnerEWallet : columnsSettlPartner) : (Number(settlementType) === 105 ? columnsSettlEWallet : columnsSettl)}
                             data={dataSettlement}
                             customStyles={customStyles}
                             progressPending={pendingSettlement}

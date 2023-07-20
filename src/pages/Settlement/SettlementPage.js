@@ -19,6 +19,7 @@ function SettlementPage() {
     const user_role = getRole();
     const [dataListPartner, setDataListPartner] = useState([])
     const [listBank, setListBank] = useState([])
+    const [listEWallet, setListEWallet] = useState([])
     const [dataRiwayatSettlement, setDataRiwayatSettlement] = useState([])
     const [dataRiwayatSettlementPartner, setDataRiwayatSettlementPartner] = useState([])
     const [totalSettlement, setTotalSettlement] = useState([])
@@ -52,6 +53,7 @@ function SettlementPage() {
     const [isFilterSettlementPartner, setIsFilterSettlementPartner] = useState(false)
     const [selectedPartnerSettlement, setSelectedPartnerSettlement] = useState([])
     const [selectedBankSettlement, setSelectedBankSettlement] = useState([])
+    const [selectedEWalletSettlement, setSelectedEWalletSettlement] = useState([])
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
 
@@ -82,6 +84,11 @@ function SettlementPage() {
     }
 
     function handleChange(e) {
+        if (e.target.name === 'fiturSettlement' && Number(e.target.value) === 105) {
+            setSelectedBankSettlement([])
+        } else if (e.target.name === 'fiturSettlement' && Number(e.target.value) !== 105) {
+            setSelectedEWalletSettlement([])
+        }
         setInputHandle({
             ...inputHandle,
             [e.target.name] : e.target.value
@@ -123,7 +130,7 @@ function SettlementPage() {
     function handlePageChangeSettlement(page) {
         if (isFilterSettlement) {
             setActivePageSettlement(page)
-            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "")
+            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "")
         } else {
             setActivePageSettlement(page)
             riwayatSettlement(page)
@@ -137,6 +144,42 @@ function SettlementPage() {
         } else {
             setActivePageSettlementPartner(page)
             riwayatSettlementPartner(page, currentDate)
+        }
+    }
+
+    async function getListEWallet() {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const dataListEmoney = await axios.post(BaseURL + "/Home/GetLisEwallet", {data: ""}, {headers: headers})
+            // console.log(dataListEmoney, 'dataListEmoney');
+            if (dataListEmoney.status === 200 && dataListEmoney.data.response_code === 200 && dataListEmoney.data.response_new_token.length === 0) {
+                let newArr = []
+                dataListEmoney.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.mewallet_code
+                    obj.label = e.mewallet_name
+                    newArr.push(obj)
+                })
+                setListEWallet(newArr)
+            } else if (dataListEmoney.status === 200 && dataListEmoney.data.response_code === 200 && dataListEmoney.data.response_new_token.length !== 0) {
+                setUserSession(dataListEmoney.data.response_new_token)
+                let newArr = []
+                dataListEmoney.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.mewallet_code
+                    obj.label = e.mewallet_name
+                    newArr.push(obj)
+                })
+                setListEWallet(newArr)
+            }
+            
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -208,25 +251,25 @@ function SettlementPage() {
     async function riwayatSettlementPartner(currentPage, currentDate) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"tvasettl_code":"", "statusID": [], "date_from":"", "date_to":"", "period": 2, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0, "bank_code": ""}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const dataSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
+            const dataSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
             // console.log(dataSettlement, "data settlement");
             if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
-                dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberSettlementPartner(dataSettlement.data.response_data)
                 setTotalPageSettlementPartner(dataSettlement.data.response_data.max_page)
-                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results)        
+                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)        
                 setPendingSettlementPartner(false)
             } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
                 setUserSession(dataSettlement.data.response_new_token)
-                dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberSettlementPartner(dataSettlement.data.response_data)
                 setTotalPageSettlementPartner(dataSettlement.data.response_data.max_page)
-                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results)        
+                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)        
                 setPendingSettlementPartner(false)
             }
         } catch (error) {
@@ -286,13 +329,13 @@ function SettlementPage() {
         }
     }
 
-    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement) {
+    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement, eWalletSettlement) {
         try {
             setPendingSettlement(true)
             setIsFilterSettlement(true)
             setActivePageSettlement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${bankSettlement !== undefined ? bankSettlement : ""}"}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${Number(fiturSettlement) === 105 ? (eWalletSettlement !== undefined ? eWalletSettlement : "") : (bankSettlement !== undefined ? bankSettlement : "")}"}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -326,22 +369,22 @@ function SettlementPage() {
             setIsFilterSettlementPartner(true)
             setActivePageSettlementPartner(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "statusID": [${(status.length !== 0) ? status : []}], "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to":"${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id":${fitur}}`)
+            const dataParams = encryptData(`{"statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "transID" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fitur}, "bank_code": ""}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const filterSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
+            const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
-                filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
-                setDataRiwayatSettlementPartner(filterSettlement.data.response_data.results)
+                filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
+                setDataRiwayatSettlementPartner(filterSettlement.data.response_data.results.list_data)
                 setTotalPageSettlementPartner(filterSettlement.data.response_data.max_page)
                 setPageNumberSettlementPartner(filterSettlement.data.response_data)
                 setPendingSettlementPartner(false)
             } else if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length !== 0) {
                 setUserSession(filterSettlement.data.response_new_token)
-                filterSettlement.data.response_data.results = filterSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
-                setDataRiwayatSettlementPartner(filterSettlement.data.response_data.results)
+                filterSettlement.data.response_data.results.list_data = filterSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}));
+                setDataRiwayatSettlementPartner(filterSettlement.data.response_data.results.list_data)
                 setTotalPageSettlementPartner(filterSettlement.data.response_data.max_page)
                 setPageNumberSettlementPartner(filterSettlement.data.response_data)
                 setPendingSettlementPartner(false)
@@ -365,6 +408,7 @@ function SettlementPage() {
             })
             setSelectedPartnerSettlement([])
             setSelectedBankSettlement([])
+            setSelectedEWalletSettlement([])
             setStateSettlement(null)
             setDateRangeSettlement([])
             setShowDateSettlement("none")
@@ -393,6 +437,7 @@ function SettlementPage() {
             listPartner()
             riwayatSettlement(activePageSettlement)
             getBankNameHandler()
+            getListEWallet()
         }
     }, [access_token, user_role])
 
@@ -406,7 +451,7 @@ function SettlementPage() {
             name: 'ID Transaksi',
             selector: row => row.tvasettl_code,
             width: "224px",
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${selectedBankSettlement.length === 0 ? '0' : selectedBankSettlement[0].value}`} >{row.tvasettl_code}</Link>
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${selectedBankSettlement.length === 0 ? '0' : selectedBankSettlement[0].value}/${row.settlement_type}/${selectedEWalletSettlement.length === 0 ? "0" : selectedEWalletSettlement[0].value}`} >{row.tvasettl_code}</Link>
         },
         {
             name: 'Waktu',
@@ -495,12 +540,12 @@ function SettlementPage() {
         {
             name: 'ID Transaksi',
             selector: row => row.tvasettl_code,
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${'0'}`}>{row.tvasettl_code}</Link>,
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${'0'}/${row.settlement_type}/${'0'}`}>{row.tvasettl_code}</Link>,
             width: "251px"
         },
         {
             name: 'Waktu',
-            selector: row => row.tvasettl_crtdt,
+            selector: row => row.tvasettl_crtdt_format,
         },
         {
             name: 'Jenis Transaksi',
@@ -514,25 +559,25 @@ function SettlementPage() {
         },
         {
             name: 'Status',
-            selector: row => row.mstatus_name,
+            selector: row => row.mstatus_name_ind,
             width: "127px",
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: 6, margin: "6px 16px", width: "50%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
-                when: row => row.tvasettl_status_id === 2,
-                style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
+                    when: row => row.tvasettl_status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
                 },
                 {
-                when: row => row.tvasettl_status_id === 1 || row.tvasettl_status_id === 7,
-                style: { background: "#FEF4E9", color: "#F79421" }
+                    when: row => row.tvasettl_status_id === 1 || row.tvasettl_status_id === 7,
+                    style: { background: "#FEF4E9", color: "#F79421" }
                 },
                 {
-                when: row => row.tvasettl_status_id === 4,
-                style: { background: "#FDEAEA", color: "#EE2E2C" }
+                    when: row => row.tvasettl_status_id === 4,
+                    style: { background: "#FDEAEA", color: "#EE2E2C" }
                 },
                 {
-                when: row => row.tvasettl_status_id === 3 || row.tvasettl_status_id === 5 || row.tvasettl_status_id === 6 || row.tvasettl_status_id === 8 || row.tvasettl_status_id === 9 || row.tvasettl_status_id === 10 || row.tvasettl_status_id === 11 || row.tvasettl_status_id === 12 || row.tvasettl_status_id === 13 || row.tvasettl_status_id === 14 || row.tvasettl_status_id === 15,
-                style: { background: "#F0F0F0", color: "#888888" }
+                    when: row => row.tvasettl_status_id === 3 || row.tvasettl_status_id === 5 || row.tvasettl_status_id === 6 || row.tvasettl_status_id === 8 || row.tvasettl_status_id === 9 || row.tvasettl_status_id === 10 || row.tvasettl_status_id === 11 || row.tvasettl_status_id === 12 || row.tvasettl_status_id === 13 || row.tvasettl_status_id === 14 || row.tvasettl_status_id === 15,
+                    style: { background: "#F0F0F0", color: "#888888" }
                 }
             ],
         },
@@ -586,12 +631,12 @@ function SettlementPage() {
         },
     };
 
-    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode, bankCode) {
+    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode, fiturSettlement, bankCode, eWalletSettlement) {
         if (isFilter) {
-            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, codeBank) {
+            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, codeBank, fiturSettlement, eWalletSettlement) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "bank_code": "${codeBank}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "fitur_id": ${fiturSettlement}, "bank_code": "${Number(fiturSettlement) === 105 ? (eWalletSettlement !== undefined ? eWalletSettlement : "") : (codeBank !== undefined ? codeBank : "")}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -601,7 +646,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_desc, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -612,7 +657,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_desc, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -624,12 +669,12 @@ function SettlementPage() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, dateId, periode, bankCode)
+            dataExportFilter(statusId, transId, partnerId, dateId, periode, bankCode, fiturSettlement, eWalletSettlement)
         } else {
             async function dataExportSettlement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "bank_code": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "fitur_id": 0, "bank_code": ""}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -639,7 +684,7 @@ function SettlementPage() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_desc, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -650,7 +695,7 @@ function SettlementPage() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_desc, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -669,79 +714,79 @@ function SettlementPage() {
     function ExportReportSettlementPartnerHandler(isFilter, idTransaksi, periode, dateId, status, fitur, oneMonthAgo, currentDate) {
         if (isFilter) {
             async function exportFilterSettlement(idTransaksi, periode, dateId, status, fitur) {
-            try {
-                const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"tvasettl_code": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "statusID": [${(status.length !== 0) ? status : []}], "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to":"${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": 1, "row_per_page": 1000000, "fitur_id":${fitur}}`)
-                const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
+                try {
+                    const auth = "Bearer " + getToken()
+                    const dataParams = encryptData(`{"statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "transID" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "fitur_id": ${fitur}, "bank_code": ""}`)
+                    const headers = {
+                        'Content-Type':'application/json',
+                        'Authorization' : auth
+                    }
+                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
+                    if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
+                        const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt_format, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                    } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {            
+                        setUserSession(dataExportFilter.data.response_new_token)
+                        const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt_format, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                    }
+                } catch (error) {
+                    // console.log(error)
+                    history.push(errorCatch(error.response.status))
                 }
-                const dataExportFilter = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
-                if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
-                const data = dataExportFilter.data.response_data.results = dataExportFilter.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-                let dataExcel = []
-                for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
-                }
-                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                let workBook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
-                } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {            
-                setUserSession(dataExportFilter.data.response_new_token)
-                const data = dataExportFilter.data.response_data.results = dataExportFilter.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-                let dataExcel = []
-                for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
-                }
-                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                let workBook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
-                }
-            } catch (error) {
-                // console.log(error)
-                history.push(errorCatch(error.response.status))
-            }
             }
             exportFilterSettlement(idTransaksi, periode, dateId, status, fitur)
         } else {
             async function exportGetSettlement(oneMonthAgo, currentDate) {
-            try {
-                const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"tvasettl_code":"", "statusID": [], "date_from":"${currentDate}", "date_to":"${currentDate}", "period": 2, "page": 1, "row_per_page": 1000000, "fitur_id": 0}`)
-                const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
+                try {
+                    const auth = "Bearer " + getToken()
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "fitur_id": 0, "bank_code": ""}`)
+                    const headers = {
+                        'Content-Type':'application/json',
+                        'Authorization' : auth
+                    }
+                    const dataSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
+                    // console.log(dataSettlement, "data settlement");
+                    if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
+                        const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt_format, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                    } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
+                        setUserSession(dataSettlement.data.response_new_token)
+                        const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt_format, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                    }
+                } catch (error) {
+                    // console.log(error)
+                    history.push(errorCatch(error.response.status))
                 }
-                const dataSettlement = await axios.post(BaseURL + "/report/GetSettlementFilter", { data: dataParams }, { headers: headers })
-                // console.log(dataSettlement, "data settlement");
-                if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
-                const data = dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-                let dataExcel = []
-                for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
-                }
-                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                let workBook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
-                } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
-                setUserSession(dataSettlement.data.response_new_token)
-                const data = dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
-                let dataExcel = []
-                for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name })
-                }
-                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                let workBook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
-                }
-            } catch (error) {
-                // console.log(error)
-                history.push(errorCatch(error.response.status))
-            }
             }
             exportGetSettlement(oneMonthAgo, currentDate)
         }
@@ -819,24 +864,42 @@ function SettlementPage() {
                                         <option value={104}>Payment Link</option>
                                         <option value={100}>Virtual Account</option>
                                         <option value={107}>Direct Debit</option>
-                                        {/* <option value={105}>E-Money</option> */}
+                                        <option value={105}>E-Money</option>
                                     </Form.Select>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="me-2">Nama Bank</span>
-                                    <div className="dropdown dropSaldoPartner">
-                                        <ReactSelect
-                                            closeMenuOnSelect={true}
-                                            hideSelectedOptions={false}
-                                            options={listBank}
-                                            value={selectedBankSettlement}
-                                            onChange={(selected) => setSelectedBankSettlement([selected])}
-                                            placeholder="Pilih Nama Bank"
-                                            components={{ Option }}
-                                            styles={customStylesSelectedOption}
-                                        />
-                                    </div>
-                                </Col>
+                                {
+                                    Number(inputHandle.fiturSettlement) === 105 ?
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                        <span className="me-2">Nama eWallet</span>
+                                        <div className="dropdown dropSaldoPartner">
+                                            <ReactSelect
+                                                closeMenuOnSelect={true}
+                                                hideSelectedOptions={false}
+                                                options={listEWallet}
+                                                value={selectedEWalletSettlement}
+                                                onChange={(selected) => setSelectedEWalletSettlement([selected])}
+                                                placeholder="Pilih Nama eWallet"
+                                                components={{ Option }}
+                                                styles={customStylesSelectedOption}
+                                            />
+                                        </div>
+                                    </Col> :
+                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                        <span className="me-2">Nama Bank</span>
+                                        <div className="dropdown dropSaldoPartner">
+                                            <ReactSelect
+                                                closeMenuOnSelect={true}
+                                                hideSelectedOptions={false}
+                                                options={listBank}
+                                                value={selectedBankSettlement}
+                                                onChange={(selected) => setSelectedBankSettlement([selected])}
+                                                placeholder="Pilih Nama Bank"
+                                                components={{ Option }}
+                                                styles={customStylesSelectedOption}
+                                            />
+                                        </div>
+                                    </Col>
+                                }
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={4} style={{ display: showDateSettlement }} className='text-end'>
@@ -854,7 +917,7 @@ function SettlementPage() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "")}
+                                                onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "")}
                                                 className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && selectedBankSettlement[0].value !== undefined) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && selectedBankSettlement[0].value === undefined}
                                             >
@@ -882,7 +945,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlement.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "")} className="export-span">Export</Link>
+                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "")} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-4">
@@ -948,6 +1011,7 @@ function SettlementPage() {
                                         <option value={104}>Payment Link</option>
                                         <option value={100}>VA Partner</option>
                                         <option value={107}>Direct Debit</option>
+                                        <option value={105}>E-Money</option>
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} style={{ display: showDateSettlementPartner }}>
