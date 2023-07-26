@@ -411,6 +411,7 @@ function SettlementManual() {
             name: 'No',
             selector: row => row.number,
             width: "57px",
+            wrap: true,
             // style: { justifyContent: "center", }
         },
         {
@@ -534,6 +535,7 @@ function SettlementManual() {
             name: 'No',
             selector: row => row.number,
             width: "57px",
+            wrap: true,
             // style: { justifyContent: "center", }
         },
         {
@@ -576,28 +578,28 @@ function SettlementManual() {
         },
         {
             name: 'Nominal Transaksi',
-            selector: row => row.amount,
+            selector: row => convertToRupiah(row.amount, true, 2),
             // sortable: true,
             width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Fee',
-            selector: row => row.ewalletFee,
+            selector: row => convertToRupiah(row.ewalletFee, true, 2),
             // sortable: true,
             width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Fee Tax',
-            selector: row => row.feeTax,
+            selector: row => convertToRupiah(row.feeTax, true, 2),
             // sortable: true,
             width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
             name: 'Total Transaksi',
-            selector: row => row.totalAmount,
+            selector: row => convertToRupiah(row.totalAmount, true, 2),
             // sortable: true,
             width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
@@ -638,7 +640,7 @@ function SettlementManual() {
         },
         {
             name: 'Amount',
-            selector: row => row.Description === "Total Transaksi" ? row.Amount : convertToRupiah(row.Amount, true, 2),
+            selector: row => row.Description === "Total Transaksi" ? convertToRupiah(row.Amount, false) : convertToRupiah(row.Amount, true, 2),
             // sortable: true
             // width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }

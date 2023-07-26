@@ -246,7 +246,7 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "No Handphone": data[i].partnerMobile, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -257,7 +257,7 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "No Handphone": data[i].partnerMobile, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -285,7 +285,7 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "No Handphone": data[i].partnerMobile, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -296,7 +296,7 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "No Handphone": data[i].partnerMobile, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -323,7 +323,7 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "No Handphone": data[i].partnerMobile, "Nominal Transaksi": data[i].amount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -334,7 +334,7 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "No Handphone": data[i].partnerMobile, "Nominal Transaksi": data[i].amount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -362,7 +362,7 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "No Handphone": data[i].partnerMobile, "Nominal Transaksi": data[i].amount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -373,7 +373,7 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "No Handphone": data[i].partnerMobile, "Nominal Transaksi": data[i].amount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -406,12 +406,13 @@ function EWallet() {
             name: 'No',
             selector: row => row.number,
             width: "3%",
+            wrap: true,
             maxWidth: 'fit-content !important'
         },
         {
             name: 'ID Transaksi',
             selector: row => row.transID,
-            width: "120px",
+            // width: "150px",
             wrap: true,
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
             // sortable: true
@@ -428,7 +429,7 @@ function EWallet() {
             selector: row => row.referenceNumber,
             // sortable: true,          
             wrap: true,
-            width: "150px",
+            width: "190px",
         },
         {
             name: 'Nama Partner',
@@ -441,40 +442,33 @@ function EWallet() {
             name: 'Channel eWallet',
             selector: row => row.ewalletName,
             // sortable: true,
-            // width: "175px"
             style: { display: "flex", flexDirection: "row", justifyContent: "center", },
             width: "160px",
         },
-        // {
-        //     name: 'No Handphone',
-        //     selector: row => row.partnerMobile,
-        //     // sortable: true,
-        //     // width: "175px"
-        // },
         {
             name: 'Nominal Transaksi',
-            selector: row => `Rp ${row.amount}`,
+            selector: row => convertToRupiah(row.amount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
         },
         {
             name: 'Biaya eWallet',
-            selector: row => `Rp ${row.ewalletFee}`,
+            selector: row => convertToRupiah(row.ewalletFee, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "140px"
         },
         {
             name: 'Biaya Pajak',
-            selector: row => `Rp ${row.feeTax}`,
+            selector: row => convertToRupiah(row.feeTax, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
-            // width: "173px"
+            width: "140px"
         },
         {
             name: 'Total Biaya',
-            selector: row => `Rp ${row.totalAmount}`,
+            selector: row => convertToRupiah(row.totalAmount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
@@ -510,6 +504,7 @@ function EWallet() {
             name: 'No',
             selector: row => row.number,
             width: "5%",
+            wrap: true,
             maxWidth: 'fit-content !important'
         },
         {
@@ -544,17 +539,9 @@ function EWallet() {
             // width: "175px"
             width: "160px",
         },
-        // {
-        //     name: 'No Handphone',
-        //     selector: row => row.partnerMobile,
-        //     // sortable: true,
-        //     style: { display: "flex", flexDirection: "row", justifyContent: "center", },
-        //     width: "175px"
-        //     // width: "150px",
-        // },
         {
             name: 'Nominal Transaksi',
-            selector: row => `Rp ${row.amount}`,
+            selector: row => convertToRupiah(row.amount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
