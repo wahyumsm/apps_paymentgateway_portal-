@@ -55,6 +55,7 @@ export const Routes = {
     DisbursementPage : { path: "/disbursement" },
     SubAccountTransfer: {path: "/transfer-sub-account"},
     Settlement: { path: "/Settlement/riwayat-settlement"},
+    RiwayatBalance: { path: "/riwayat-balance" },
 
     // admin
     VaDanPaymentLinkAdmin: {path: "/Transaksi/va-dan-paylink"},

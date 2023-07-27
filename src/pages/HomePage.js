@@ -87,6 +87,7 @@ import DaftarUserDirectDebit from './DirectDebit/DaftarUserDirectDebit';
 import EWallet from './RiwayatTransaksi/EWallet';
 import DisbursementTimeout from './RiwayatTransaksi/DisbursementTimeout';
 import SettlementManual from './Settlement/SettlementManual';
+import RiwayatBalance from './RiwayatBalance/RiwayatBalance';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -207,6 +208,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.eWalletAdmin.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.SettlementManual.path} component={SettlementManual} />
+    <RouteWithSidebar exact path={Routes.RiwayatBalance.path} component={RiwayatBalance} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

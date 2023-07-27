@@ -69,6 +69,7 @@ const VaDanPaymentLink = () => {
         {
             name: 'No',
             selector: row => row.number,
+            wrap: true,
             width: "67px"
         },
         {
@@ -496,12 +497,13 @@ const VaDanPaymentLink = () => {
             name: 'No',
             selector: row => row.number,
             width: "3%",
+            wrap: true,
             maxWidth: 'fit-content !important'
         },
         {
             name: 'ID Transaksi',
             selector: row => row.tvatrans_trx_id,
-            width: "120px",
+            width: "150px",
             cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
         // sortable: true
         },
@@ -509,14 +511,15 @@ const VaDanPaymentLink = () => {
             name: 'Waktu',
             selector: row => row.tvatrans_crtdt_format,
             // sortable: true,          
-            width: "143px",
+            // width: "143px",
+            wrap: true,
         },
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_transid,
             // sortable: true,          
             wrap: true,
-            width: "150px",
+            width: "170px",
         },
         {
             name: 'Nama Partner',
@@ -554,11 +557,43 @@ const VaDanPaymentLink = () => {
             width: "173px"
         },
         {
-            name: 'Jumlah Diterima',
+            name: 'Nominal Transaksi',
             selector: row => row.tvatrans_amount,
-            // width: "130px",
+            width: "170px",
             // sortable: true
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ convertToRupiah(row.tvatrans_amount) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "right", }
+        },
+        {
+            name: 'Jasa Layanan',
+            selector: row => row.tvatrans_partner_fee,
+            width: "130px",
+            // sortable: true
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ convertToRupiah(row.tvatrans_partner_fee) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "right", }
+        },
+        {
+            name: 'PPN atas Jasa Layanan',
+            selector: row => row.tvatrans_fee_tax,
+            width: "210px",
+            // sortable: true
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ convertToRupiah(row.tvatrans_fee_tax) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "right", }
+        },
+        {
+            name: 'Reibursement by VA',
+            selector: row => row.tvatrans_bank_fee,
+            width: "190px",
+            // sortable: true
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ convertToRupiah(row.tvatrans_bank_fee) }</div>,
+            style: { display: "flex", flexDirection: "row", justifyContent: "right", }
+        },
+        {
+            name: 'Total Settlement',
+            selector: row => row.tvatrans_amount - row.tvatrans_partner_fee - row.tvatrans_fee_tax - row.tvatrans_bank_fee,
+            width: "190px",
+            // sortable: true
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ convertToRupiah(row.tvatrans_amount - row.tvatrans_partner_fee - row.tvatrans_fee_tax - row.tvatrans_bank_fee) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
         {
@@ -681,7 +716,14 @@ const VaDanPaymentLink = () => {
                 setDataListAgenFromPartner(newArr)
             } else if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length !== 0) {
                 setUserSession(listAgenFromPartner.data.response_new_token)
-                setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
+                let newArr = []
+                listAgenFromPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.agen_id
+                    obj.label = e.agen_name
+                    newArr.push(obj)
+                })
+                setDataListAgenFromPartner(newArr)
             }
         } catch (error) {
             // console.log(error)
@@ -808,7 +850,7 @@ const VaDanPaymentLink = () => {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -819,7 +861,7 @@ const VaDanPaymentLink = () => {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -846,7 +888,7 @@ const VaDanPaymentLink = () => {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -857,7 +899,7 @@ const VaDanPaymentLink = () => {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Total Akhir": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
