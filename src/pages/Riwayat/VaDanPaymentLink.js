@@ -716,7 +716,14 @@ const VaDanPaymentLink = () => {
                 setDataListAgenFromPartner(newArr)
             } else if (listAgenFromPartner.status === 200 && listAgenFromPartner.data.response_code === 200 && listAgenFromPartner.data.response_new_token.length !== 0) {
                 setUserSession(listAgenFromPartner.data.response_new_token)
-                setDataListAgenFromPartner(listAgenFromPartner.data.response_data)
+                let newArr = []
+                listAgenFromPartner.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.agen_id
+                    obj.label = e.agen_name
+                    newArr.push(obj)
+                })
+                setDataListAgenFromPartner(newArr)
             }
         } catch (error) {
             // console.log(error)
