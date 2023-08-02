@@ -17,6 +17,7 @@ import CurrencyInput from "react-currency-input-field";
 import Checklist from '../../assets/icon/checklist_icon.svg'
 import { useDispatch, useSelector } from 'react-redux'
 import { GetUserAccessMenu } from '../../redux/ActionCreators/UserAccessMenuAction'
+import { isAfter } from 'date-fns'
 
 function SettlementManual() {
 
@@ -82,10 +83,10 @@ function SettlementManual() {
     };
     const column = [
         {
-            label: <><img src={triangleInfo} alt="triangle_info" style={{ marginRight: 3, marginTop: -6 }} /> Range Tanggal maksimal 3 hari sebelum hari ini.</>,
+            label: <><img src={triangleInfo} alt="triangle_info" style={{ marginRight: 3, marginTop: -6 }} /> Range Tanggal maksimal hari ini.</>,
             style: {
                 color: '#383838',
-                width: 'max-content',
+                width: '30rem',
                 padding: '14px 25px 14px 14px',
                 fontSize: 13,
                 fontStyle: 'italic',
@@ -815,7 +816,8 @@ function SettlementManual() {
                                                 size='lg' 
                                                 appearance="default" 
                                                 placeholder="Select Date Range" 
-                                                disabledDate={after(threeDaysAgo)}  
+                                                // disabledDate={after(threeDaysAgo)}
+                                                disabledDate={date => isAfter(date, new Date())} 
                                                 className='datePicker'
                                                 locale={Locale}
                                                 format="yyyy-MM-dd"
@@ -931,7 +933,8 @@ function SettlementManual() {
                                                 size='lg' 
                                                 appearance="default" 
                                                 placeholder="Select Date Range" 
-                                                disabledDate={after(threeDaysAgo)}  
+                                                // disabledDate={after(threeDaysAgo)} 
+                                                disabledDate={date => isAfter(date, new Date())} 
                                                 className='datePicker'
                                                 locale={Locale}
                                                 format="yyyy-MM-dd"
