@@ -3210,7 +3210,7 @@ function DisbursementPage() {
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
                 <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/Riwayat Transaksi/va-dan-paylink"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
-                <Row className='mt-1'>
+                {/* <Row className='mt-1'>
                     {
                         balanceDetail !== 0 &&
                         balanceDetail.map(detail => {
@@ -3258,7 +3258,7 @@ function DisbursementPage() {
                             <p className="p-amount" style={{ marginBottom: 12 }}>{convertToRupiah(totalHoldBalance, true)}</p>
                         </div>
                     </Col>
-                </Row>
+                </Row> */}
                 <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
                     <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
                         <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
