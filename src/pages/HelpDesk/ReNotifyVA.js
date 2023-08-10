@@ -166,9 +166,9 @@ function ReNotifyVA() {
         if (!access_token) {
             history.push("/login")
         }
-        if (user_role === "102") {
-            history.push("/404")
-        }
+        // if (user_role === "102") {
+        //     history.push("/404")
+        // }
     }, [access_token, user_role])
     
 
