@@ -90,15 +90,15 @@ function DetailSettlement() {
                 for (let i = 0; i < data.length; i++) {
                     if (userRole === '102') {
                         if (Number(settlementType) === 105) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Channel eWallet": data[i].mbank_name, "Nominal Settlement": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         } else {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Settlement": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
                         }
                     } else {
                         if (Number(settlementType) === 105) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, "Biaya eWallet": data[i].tvatrans_partner_fee, "Biaya Pajak": data[i].tvatrans_fee_tax, "Nominal Settlement": data[i].tvatrans_amount - (data[i].tvatrans_partner_fee + data[i].tvatrans_fee_tax), Status: data[i].mstatus_name_ind })
                         } else {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Settlement": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reimbursement by VA": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reimbursement by VA": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
                         }
                     }
                 }
@@ -112,9 +112,17 @@ function DetailSettlement() {
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
                     if (userRole === '102') {
-                        dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Settlement": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                        if (Number(settlementType) === 105) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                        } else {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                        }
                     } else {
-                        dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Settlement": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reimbursement by VA": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                        if (Number(settlementType) === 105) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, "Biaya eWallet": data[i].tvatrans_partner_fee, "Biaya Pajak": data[i].tvatrans_fee_tax, "Nominal Settlement": data[i].tvatrans_amount - (data[i].tvatrans_partner_fee + data[i].tvatrans_fee_tax), Status: data[i].mstatus_name_ind })
+                        } else {
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].mpartner_name, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reimbursement by VA": data[i].tvatrans_bank_fee, Status: data[i].mstatus_name_ind })
+                        }
                     }
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -194,7 +202,7 @@ function DetailSettlement() {
             // width: "173px"
         },
         {
-            name: 'Total Biaya',
+            name: 'Nominal Settlement',
             selector: row => convertToRupiah(row.tvatrans_amount - (row.tvatrans_partner_fee + row.tvatrans_fee_tax)),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
@@ -276,7 +284,7 @@ function DetailSettlement() {
             // sortable: true,
         },
         {
-            name: 'Nominal Settlement',
+            name: 'Nominal Transaksi',
             selector: row => convertToRupiah(row.tvatrans_amount),
             // sortable: true,
             width: "224px",
@@ -434,13 +442,13 @@ function DetailSettlement() {
             wrap: true,
             width: "160px"
         },
-        {
-            name: 'Nama Partner',
-            selector: row => row.mpartner_name,
-            width: "224px",
-            // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
-            // sortable: true,
-        },
+        // {
+        //     name: 'Nama Partner',
+        //     selector: row => row.mpartner_name,
+        //     width: "224px",
+        //     // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
+        //     // sortable: true,
+        // },
         {
             name: 'Nama Bank',
             selector: row => row.mbank_name,
@@ -456,7 +464,7 @@ function DetailSettlement() {
             // sortable: true,
         },
         {
-            name: 'Nominal Settlement',
+            name: 'Nominal Transaksi',
             selector: row => convertToRupiah(row.tvatrans_amount),
             // sortable: true,
             width: "224px",
