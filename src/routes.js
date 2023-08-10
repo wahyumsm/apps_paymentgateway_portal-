@@ -65,6 +65,8 @@ export const Routes = {
     DisbursementTimeout: {path: "/Transaksi/disbursement-timeout"},
     SettlementManual: {path: "/Settlement/settlement-manual"},
     eWalletAdmin: {path: "/Transaksi/ewallet"},
+    ExcludeSettlementManual: {path: "/Settlement/exclude-settlement"},
+    ProsesSettlementManual: {path: "/Settlement/proses-settlement-manual"},
     
     // partner
     VaDanPaymentLink: {path: "/Riwayat Transaksi/va-dan-paylink"},

@@ -88,6 +88,8 @@ import EWallet from './RiwayatTransaksi/EWallet';
 import DisbursementTimeout from './RiwayatTransaksi/DisbursementTimeout';
 import SettlementManual from './Settlement/SettlementManual';
 import RiwayatBalance from './RiwayatBalance/RiwayatBalance';
+import ExcludeSettlementManual from './Settlement/ExcludeSettlementManual';
+import ProsesSettlementManual from './Settlement/ProsesSettlementManual';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -199,6 +201,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DisbursementAdmin.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccountAdmin.path} component={InfoSaldoMutasi} />
     <RouteWithSidebar exact path={Routes.DisbursementTimeout.path} component={DisbursementTimeout} />
+    <RouteWithSidebar exact path={Routes.ExcludeSettlementManual.path} component={ExcludeSettlementManual} />
+    <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLinkAdmin.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebitAdmin.path} component={RiwayatDirectDebit} />

@@ -767,7 +767,7 @@ function SettlementManual() {
             }
             <span className='breadcrumbs-span'><Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Settlement Manual</span>
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4">Settlement Manual</h2>
+                <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Settlement Manual</h2>
             </div>
             <div className='main-content'>
                 <div className='riwayat-dana-masuk-div mt-4'>
