@@ -16,6 +16,29 @@ const SettlementAdminManual = () => {
         history.push("/Settlement/proses-settlement-manual")
     }
 
+    const [inputPeriodeHistorySettlement, setInputPeriodeHistorySettlement] = useState(0)
+    const [showDateHistorySettlement, setShowDateHistorySettlement] = useState("none")
+    const [stateHistorySettlement, setStateHistorySettlement] = useState(null)
+    const [dateRangeHistorySettlement, setDateRangeHistorySettlement] = useState([])
+    function handleChangePeriodeHistorySettlement(e) {
+        if (e.target.value === "7") {
+            setShowDateHistorySettlement("")
+            setInputPeriodeHistorySettlement(inputPeriodeHistorySettlement)
+        } else {
+            setShowDateHistorySettlement("none")
+            setDateRangeHistorySettlement([])
+            setInputPeriodeHistorySettlement(inputPeriodeHistorySettlement)
+        }
+    }
+
+    function pickDateHistorySettlement(item) {
+        setStateHistorySettlement(item)
+        if (item !== null) {
+            item = item.map(el => el.toLocaleDateString('fr-CA').split("").join(""))
+            setDateRangeHistorySettlement(item)
+        }
+    }
+
     const columnList = [
         {
             name: 'Partner',
@@ -92,7 +115,7 @@ const SettlementAdminManual = () => {
                         <Row className='mt-4'>
                             <Col xs={6} className="d-flex justify-content-start align-items-center" >
                                 <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
-                                <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" >
+                                <Form.Select name='inputPeriodeHistorySettlement' value={inputPeriodeHistorySettlement} className="input-text-riwayat ms-3" >
                                     <option defaultChecked value={0}>Pilih Periode</option>
                                     <option value={2}>Hari Ini</option>
                                     <option value={3}>Kemarin</option>

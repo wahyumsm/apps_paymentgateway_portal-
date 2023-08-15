@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import DataTable from 'react-data-table-component'
-import { agenLists } from '../../data/tables'
 import { Form, Image } from '@themesberg/react-bootstrap'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 
 const ProsesSettlementManual = () => {
-    const [isChecked, setIsChecked] = useState(false)
-    const handleChangeCheckBox = () => {
-        setIsChecked(!isChecked)
+
+    const [first, setFirst] = useState("")
+
+    function selectAll(e) {
+        console.log(e.target.checked, "e.target.checked");
+        if (e.target.checked) {
+
+        }
     }
 
     const customStylesPartner = {
@@ -51,8 +54,9 @@ const ProsesSettlementManual = () => {
                                     <Form.Check
                                         id="statusId"
                                         type='checkbox'
-                                        onChange={handleChangeCheckBox}
-                                        checked={isChecked}
+                                        // onChange={handleChangeCheckBox}
+                                        // checked={isChecked}
+                                        onChange={(e) => selectAll(e)}
                                     />
                                 </th>
                                 <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Name</th>
@@ -69,8 +73,10 @@ const ProsesSettlementManual = () => {
                                     <Form.Check
                                         id="statusId"
                                         type='checkbox'
-                                        onChange={handleChangeCheckBox}
-                                        checked={isChecked}
+                                        // onChange={handleChangeCheckBox}
+                                        // checked={isChecked}
+                                        name="checks"
+                                        value="hai1"
                                     />
                                 </td>
                                 <td className='ps-3'>
@@ -97,8 +103,10 @@ const ProsesSettlementManual = () => {
                                     <Form.Check
                                         id="statusId"
                                         type='checkbox'
-                                        onChange={handleChangeCheckBox}
-                                        checked={isChecked}
+                                        // onChange={handleChangeCheckBox}
+                                        // checked={isChecked}
+                                        name="checks"
+                                        value="hai2"
                                     />
                                 </td>
                                 <td className='ps-3'>
