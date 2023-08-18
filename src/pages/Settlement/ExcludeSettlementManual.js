@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -6,30 +6,55 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
 import DataTable from 'react-data-table-component'
 import { agenLists } from '../../data/tables'
-import { useState } from 'react'
+import { DateRangePicker } from 'rsuite'
+import { isAfter } from 'date-fns'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import triangleInfo from "../../assets/icon/triangle-info.svg"
+import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers'
+import encryptData from '../../function/encryptData'
+import axios from 'axios'
+import Pagination from 'react-js-pagination'
 
 const SettlementAdminManual = () => {
     const history = useHistory()
     const [pendingListSettlement, setPendingListSettlement] = useState(false)
-    function toProsesSettlement () {
-        history.push("/Settlement/proses-settlement-manual")
-    }
-
-    const [inputPeriodeHistorySettlement, setInputPeriodeHistorySettlement] = useState(0)
-    const [showDateHistorySettlement, setShowDateHistorySettlement] = useState("none")
     const [stateHistorySettlement, setStateHistorySettlement] = useState(null)
     const [dateRangeHistorySettlement, setDateRangeHistorySettlement] = useState([])
-    function handleChangePeriodeHistorySettlement(e) {
-        if (e.target.value === "7") {
-            setShowDateHistorySettlement("")
-            setInputPeriodeHistorySettlement(inputPeriodeHistorySettlement)
-        } else {
-            setShowDateHistorySettlement("none")
-            setDateRangeHistorySettlement([])
-            setInputPeriodeHistorySettlement(inputPeriodeHistorySettlement)
-        }
-    }
+    const [dataListHistorySettleManual, setDataListHistorySettleManual] = useState([])
+    const [pageNumberHistorySettleManual, setPageNumberHistorySettleManual] = useState({})
+    const [totalPageHistorySettleManual, setTotalPageHistorySettleManual] = useState(0)
+    const [activePageHistorySettleManual, setActivePageHistorySettleManual] = useState(1)
+    const [isFilterListHistorySettle, setIsFilterListHistorySettle] = useState(false)
+    const currentDate = new Date().toISOString().split('T')[0]
+    const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate() + 1).toISOString().split('T')[0]
+    const Locale = {
+        sunday: 'Min',
+        monday: 'Sen',
+        tuesday: 'Sel',
+        wednesday: 'Rab',
+        thursday: 'Kam',
+        friday: 'Jum',
+        saturday: 'Sab',
+        ok: 'Terapkan',
+    };
+    const column = [
+        {
+            label: <><img src={triangleInfo} alt="triangle_info" style={{ marginRight: 3, marginTop: -6 }} /> Range Tanggal maksimal hari ini.</>,
+            style: {
+                color: '#383838',
+                width: '30rem',
+                padding: '14px 25px 14px 14px',
+                fontSize: 13,
+                fontStyle: 'italic',
+                textAlign: 'left',
+                whiteSpace: 'normal',
+                backgroundColor: 'rgba(255, 214, 0, 0.16)',
+                opacity: 'unset'
+            },
+            placement: 'bottom',
+            
+        },
+    ]
 
     function pickDateHistorySettlement(item) {
         setStateHistorySettlement(item)
@@ -39,28 +64,109 @@ const SettlementAdminManual = () => {
         }
     }
 
+    function handlePageChangeListHistorySettle(page) {
+        if (isFilterListHistorySettle) {
+            setActivePageHistorySettleManual(page)
+            filterListHistorySettle(dateRangeHistorySettlement, page, 10)
+        } else {
+            setActivePageHistorySettleManual(page)
+            listHistorySettleManualHandler(currentDate)
+        }
+    }
+
+    function toProsesSettlement () {
+        history.push("/Settlement/proses-settlement-manual")
+    }
+
     const columnList = [
         {
             name: 'Partner',
-            selector: row => row.namaAgen,
+            selector: row => row.mpartnerdtl_sub_name,
         },
         {
             name: 'Type',
-            selector: row => row.status,
+            selector: row => row.mpaytype_name !== null ? row.mpaytype_name : "-",
         },
         {
             name: 'Date',
-            selector: row => row.noRekening,
+            selector: row => row.msettlmanual_crtdt,
         },
         {
             name: 'Create User',
-            selector: row => row.email,
+            selector: row => row.muser_username,
         },
         {
             name: 'Date User',
-            selector: row => row.noHp,
+            selector: row => row.settle_date,
         },
     ];
+
+    async function listHistorySettleManualHandler(date) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"partner_id": "", "date_from": "", "date_to": "${date}", "page": 1, "row_per_page": 10}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const settlementManual = await axios.post(BaseURL + "/Settlement/GetHistorySettlementList", {data: dataParams}, {headers: headers})
+            if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
+                settlementManual.data.response_data.results = settlementManual.data.response_data.results.map((obj) => ({...obj}))
+                setPageNumberHistorySettleManual(settlementManual.data.response_data)
+                setTotalPageHistorySettleManual(settlementManual.data.response_data.max_page)
+                setDataListHistorySettleManual(settlementManual.data.response_data.results)
+                setPendingListSettlement(false)
+            } else if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token !== null) {
+                setUserSession(settlementManual.data.response_new_token)
+                settlementManual.data.response_data.results = settlementManual.data.response_data.results.map((obj) => ({...obj}))
+                setPageNumberHistorySettleManual(settlementManual.data.response_data)
+                setTotalPageHistorySettleManual(settlementManual.data.response_data.max_page)
+                setDataListHistorySettleManual(settlementManual.data.response_data.results)
+                setPendingListSettlement(false)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function filterListHistorySettle(periode, page, rowPerPage) {
+        try {
+            setPendingListSettlement(true)
+            setIsFilterListHistorySettle(true)
+            setActivePageHistorySettleManual(page)
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"partner_id": "", "date_from": "${periode[0]}", "date_to": "${periode[1]}", "page": ${page}, "row_per_page": ${rowPerPage}}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const settlementManual = await axios.post(BaseURL + "/Settlement/GetHistorySettlementList", {data: dataParams}, {headers: headers})
+            if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
+                settlementManual.data.response_data.results = settlementManual.data.response_data.results.map((obj) => ({...obj}))
+                setPageNumberHistorySettleManual(settlementManual.data.response_data)
+                setTotalPageHistorySettleManual(settlementManual.data.response_data.max_page)
+                setDataListHistorySettleManual(settlementManual.data.response_data.results)
+                setPendingListSettlement(false)
+            } else if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token !== null) {
+                setUserSession(settlementManual.data.response_new_token)
+                settlementManual.data.response_data.results = settlementManual.data.response_data.results.map((obj) => ({...obj}))
+                setPageNumberHistorySettleManual(settlementManual.data.response_data)
+                setTotalPageHistorySettleManual(settlementManual.data.response_data.max_page)
+                setDataListHistorySettleManual(settlementManual.data.response_data.results)
+                setPendingListSettlement(false)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    function resetButtonHandle () {
+        listHistorySettleManualHandler(currentDate)
+        setDateRangeHistorySettlement([])
+        setStateHistorySettlement(null)
+    }
 
     const customStylesPartner = {
         headCells: {
@@ -81,6 +187,11 @@ const SettlementAdminManual = () => {
             <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
         </div>
     );
+
+    useEffect(() => {
+        listHistorySettleManualHandler(currentDate)
+    },[])
+    
 
     return (
         <div className="content-page mt-6">
@@ -115,15 +226,23 @@ const SettlementAdminManual = () => {
                         <Row className='mt-4'>
                             <Col xs={6} className="d-flex justify-content-start align-items-center" >
                                 <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
-                                <Form.Select name='inputPeriodeHistorySettlement' value={inputPeriodeHistorySettlement} className="input-text-riwayat ms-3" >
-                                    <option defaultChecked value={0}>Pilih Periode</option>
-                                    <option value={2}>Hari Ini</option>
-                                    <option value={3}>Kemarin</option>
-                                    <option value={4}>7 Hari Terakhir</option>
-                                    <option value={5}>Bulan Ini</option>
-                                    <option value={6}>Bulan Kemarin</option>
-                                    <option value={7}>Pilih Range Tanggal</option>
-                                </Form.Select>                            
+                                <DateRangePicker 
+                                    value={stateHistorySettlement} 
+                                    ranges={column} 
+                                    onChange={(e) => pickDateHistorySettlement(e)} 
+                                    character=' - ' 
+                                    cleanable={true} 
+                                    placement={'bottomStart'} 
+                                    size='lg' 
+                                    appearance="default" 
+                                    placeholder="Select Date Range"
+                                    disabledDate={date => isAfter(date, new Date())} 
+                                    className='datePicker'
+                                    locale={Locale}
+                                    format="yyyy-MM-dd"
+                                    style={{ width: "15rem" }}
+                                    defaultCalendarValue={[new Date(`${oneMonthAgo}`), new Date(`${currentDate}`)]}
+                                />                        
                             </Col>
                         </Row>
 
@@ -132,14 +251,18 @@ const SettlementAdminManual = () => {
                                 <Row>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
-                                            className='btn-ez-on'
+                                            className={dateRangeHistorySettlement.length !== 0 ? 'btn-ez-on' : 'btn-ez'}
+                                            disabled={dateRangeHistorySettlement.length === 0}
+                                            onClick={() => filterListHistorySettle(dateRangeHistorySettlement, activePageHistorySettleManual, 10)}
                                         >
                                             Terapkan
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                         <button
-                                            className='btn-reset'
+                                            className={dateRangeHistorySettlement.length !== 0 ? 'btn-reset' : 'btn-ez-reset'}
+                                            disabled={dateRangeHistorySettlement.length === 0}
+                                            onClick={() => resetButtonHandle()}
                                         >
                                             Atur Ulang
                                         </button>
@@ -151,10 +274,22 @@ const SettlementAdminManual = () => {
                         <div className="div-table mt-4">
                             <DataTable
                                 columns={columnList}
-                                data={agenLists}
+                                data={dataListHistorySettleManual}
                                 customStyles={customStylesPartner}
                                 progressPending={pendingListSettlement}
                                 progressComponent={<CustomLoader />}
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageHistorySettleManual}</div>
+                            <Pagination
+                                activePage={activePageHistorySettleManual}
+                                itemsCountPerPage={pageNumberHistorySettleManual.row_per_page}
+                                totalItemsCount={(pageNumberHistorySettleManual.row_per_page*pageNumberHistorySettleManual.max_page)}
+                                pageRangeDisplayed={5}
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                onChange={handlePageChangeListHistorySettle}
                             />
                         </div>
                     </div>

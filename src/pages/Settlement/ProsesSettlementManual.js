@@ -6,12 +6,13 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 
 const ProsesSettlementManual = () => {
 
-    const [first, setFirst] = useState("")
-
-    function selectAll(e) {
-        console.log(e.target.checked, "e.target.checked");
+    function selectItemPartner (e, id) {
+        console.log(e.target.checked, "e checked");
+        console.log(e.target.value, "e value");
         if (e.target.checked) {
+            if (id === "item0") {
 
+            }
         }
     }
 
@@ -52,11 +53,13 @@ const ProsesSettlementManual = () => {
                             >
                                 <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>
                                     <Form.Check
-                                        id="statusId"
+                                        id={`item0`}
                                         type='checkbox'
                                         // onChange={handleChangeCheckBox}
                                         // checked={isChecked}
-                                        onChange={(e) => selectAll(e)}
+                                        onChange={(e) => {
+                                            selectItemPartner(e, `item0`)
+                                        }}
                                     />
                                 </th>
                                 <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Partner Name</th>
@@ -68,66 +71,43 @@ const ProsesSettlementManual = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td className='ps-3'>
-                                    <Form.Check
-                                        id="statusId"
-                                        type='checkbox'
-                                        // onChange={handleChangeCheckBox}
-                                        // checked={isChecked}
-                                        name="checks"
-                                        value="hai1"
-                                    />
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className='ps-3'>
-                                    <Form.Check
-                                        id="statusId"
-                                        type='checkbox'
-                                        // onChange={handleChangeCheckBox}
-                                        // checked={isChecked}
-                                        name="checks"
-                                        value="hai2"
-                                    />
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                                <td className='ps-3'>
-                                    hai
-                                </td>
-                            </tr>
+                            {
+                                [...Array(3).keys()].map((item, idx) => {
+                                    return (
+                                        <tr key={idx}>
+                                            <td className='ps-3'>
+                                                <Form.Check
+                                                    id={`item${idx+1}`}
+                                                    type='checkbox'
+                                                    name={`checks${idx+1}`}
+                                                    value={`hai${idx+1}`}
+                                                    onChange={(e) => {
+                                                        selectItemPartner(e, `item${idx+1}`)
+                                                    }}
+                                                />
+                                            </td>
+                                            <td className='ps-3'>
+                                                hai
+                                            </td>
+                                            <td className='ps-3'>
+                                                hai
+                                            </td>
+                                            <td className='ps-3'>
+                                                hai
+                                            </td>
+                                            <td className='ps-3'>
+                                                hai
+                                            </td>
+                                            <td className='ps-3'>
+                                                hai
+                                            </td>
+                                            <td className='ps-3'>
+                                                hai
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
                         </tbody>
                     </table>
                 </div>
