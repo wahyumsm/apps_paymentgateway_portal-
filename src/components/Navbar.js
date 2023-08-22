@@ -491,7 +491,7 @@ export default (props) => {
                 (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
                 (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
                 (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
-                (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement')                
+                (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement')
 
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
@@ -531,7 +531,7 @@ export default (props) => {
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2 d-flex justify-content-center align-items-center">
-                    <div className={balanceDetail.length !== 0 ? "pe-2" : ""}>
+                    {/* <div className={balanceDetail.length !== 0 ? "pe-2" : ""}>
                       {
                         balanceDetail.length !==0 &&
                         balanceDetail.map(item => {
@@ -549,9 +549,9 @@ export default (props) => {
                           )
                         })
                       }
-                    </div>
-                    {balanceDetail.length !== 0 ? <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 135}}></div> : ""}
-                    <div className="ps-2">
+                    </div> */}
+                    {/* {balanceDetail.length !== 0 ? <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 135}}></div> : ""} */}
+                    <div className="ps-2 py-2">
                       <Dropdown.Item
                         onClick={() => setShowModalTopUp(true)}
                         className="fw-bold"
@@ -569,14 +569,14 @@ export default (props) => {
                           <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
                         </div>
                       </Dropdown.Item>
-                      <Dropdown.Item
+                      {/* <Dropdown.Item
                         className="fw-bold"
                         onClick={() => toAlokasiPage()}
                       >
                         <div className="pe-2">
                           <img alt="" src={alokasiIcon} /> Alokasi Saldo
                         </div>
-                      </Dropdown.Item>
+                      </Dropdown.Item> */}
                     </div>
                   </Dropdown.Menu>
                 </Dropdown>
