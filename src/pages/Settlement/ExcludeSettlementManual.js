@@ -70,7 +70,7 @@ const SettlementAdminManual = () => {
             filterListHistorySettle(dateRangeHistorySettlement, page, 10)
         } else {
             setActivePageHistorySettleManual(page)
-            listHistorySettleManualHandler(currentDate)
+            listHistorySettleManualHandler(currentDate, page)
         }
     }
 
@@ -101,10 +101,10 @@ const SettlementAdminManual = () => {
         },
     ];
 
-    async function listHistorySettleManualHandler(date) {
+    async function listHistorySettleManualHandler(date, page) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"partner_id": "", "date_from": "", "date_to": "${date}", "page": 1, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"partner_id": "", "date_from": "", "date_to": "${date}", "page": ${page}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -163,7 +163,7 @@ const SettlementAdminManual = () => {
     }
 
     function resetButtonHandle () {
-        listHistorySettleManualHandler(currentDate)
+        listHistorySettleManualHandler(currentDate, activePageHistorySettleManual)
         setDateRangeHistorySettlement([])
         setStateHistorySettlement(null)
     }
@@ -189,7 +189,7 @@ const SettlementAdminManual = () => {
     );
 
     useEffect(() => {
-        listHistorySettleManualHandler(currentDate)
+        listHistorySettleManualHandler(currentDate, activePageHistorySettleManual)
     },[])
     
 

@@ -1543,3 +1543,27 @@ header.sc-dIouRR.evxAbm {
 th {
     border-style: none;
 }
+
+.proses-settle-manual, .proses-settle-manual-disabled {
+    font-family: "Exo";
+    font-size: 16;
+    font-weight: 900;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+    width: 250;
+    height: 45;
+}
+
+.proses-settle-manual {
+    background: linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%);
+    border: 0.6px solid #2C1919;
+    border-radius: 6px;
+}
+
+.proses-settle-manual-disabled {
+    background: #EBEBEB;
+    border: 0.6px solid #EBEBEB;
+    border-radius: 6px;
+    color: #C4C4C4;
+}
