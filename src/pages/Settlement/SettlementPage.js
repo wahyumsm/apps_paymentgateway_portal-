@@ -56,6 +56,7 @@ function SettlementPage() {
     const [selectedEWalletSettlement, setSelectedEWalletSettlement] = useState([])
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
+    const [alertSendEmail, setAlertSendEmail] = useState("")
 
     const Option = (props) => {
         return (
@@ -395,6 +396,28 @@ function SettlementPage() {
         }
     }
 
+    async function resendEmailHandler(settlementId, settlementTypeId) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"settlement_id": ${settlementId}, "settlementtype_id" : ${settlementTypeId}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const responSendEmail = await axios.post(BaseURL + "/Settlement/ReSendEmailSettlement", { data: dataParams }, { headers: headers })
+            console.log(responSendEmail.data.response_data.results, "data settlement");
+            if (responSendEmail.status === 200 && responSendEmail.data.response_code === 200 && responSendEmail.data.response_new_token === null) {
+                alert(responSendEmail.data.response_data.results !== null ? responSendEmail.data.response_data.results : "Failed")
+            } else if (responSendEmail.status === 200 && responSendEmail.data.response_code === 200 && responSendEmail.data.response_new_token !== null) {
+                setUserSession(responSendEmail.data.response_new_token)
+                alert(responSendEmail.data.response_data.results !== null ? responSendEmail.data.response_data.results : "Failed")
+            }
+        } catch (error) {
+            console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     function resetButtonHandle(role) {
         if (role === "admin") {
             riwayatSettlement(activePageSettlement)
@@ -451,9 +474,8 @@ function SettlementPage() {
         },
         {
             name: 'Send Email',
-            selector: row => row.mpartner_email,
             width: "180px",
-            cell: (row) => <button className='btn-riwayat-settlement' >Send Email</button>
+            cell: (row) => <button className='btn-riwayat-settlement' onClick={() => resendEmailHandler(row.tvasettl_id, row.settlement_type)} >Send Email</button>
         },
         {
             name: 'ID Transaksi',
