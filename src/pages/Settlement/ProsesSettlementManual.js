@@ -48,7 +48,7 @@ const ProsesSettlementManual = () => {
                 setDataExclude([])
             } else {
                 const deletedData = dataExc.filter(item => item.number !== number)
-                console.log(deletedData, 'deletedData');
+                // console.log(deletedData, 'deletedData');
                 setDataExclude(deletedData)
             }
         }
