@@ -397,6 +397,7 @@ function SettlementPage() {
 
     function resetButtonHandle(role) {
         if (role === "admin") {
+            riwayatSettlement(activePageSettlement)
             setInputHandle({
                 ...inputHandle,
                 idTransaksiSettlement: "",
@@ -413,6 +414,7 @@ function SettlementPage() {
             setDateRangeSettlement([])
             setShowDateSettlement("none")
         } else {
+            riwayatSettlementPartner(activePageSettlementPartner, currentDate)
             setInputHandle({
                 ...inputHandle,
                 idTransaksiSettlementPartner: "",
@@ -446,6 +448,12 @@ function SettlementPage() {
             name: 'No',
             selector: row => row.number,
             width: "57px",
+        },
+        {
+            name: 'Send Email',
+            selector: row => row.mpartner_email,
+            width: "180px",
+            cell: (row) => <button className='btn-riwayat-settlement' >Send Email</button>
         },
         {
             name: 'ID Transaksi',

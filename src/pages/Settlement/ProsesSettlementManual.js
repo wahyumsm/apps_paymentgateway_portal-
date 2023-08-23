@@ -17,9 +17,6 @@ const ProsesSettlementManual = () => {
     const [activePageProsesSettlementManual, setActivePageProsesSettlementManual] = useState(1)
     const [pendingListSettlementManual, setPendingListSettlementManual] = useState(false)
     const currentDate = new Date().toISOString().split('T')[0]
-    const [partnerId, setPartnerId] = useState([])
-    const [payTypeId, setPayTypeId] = useState([])
-    const [numberId, setNumberId] = useState([])
 
     const [dataExclude, setDataExclude] = useState([])
     
@@ -33,21 +30,18 @@ const ProsesSettlementManual = () => {
                     obj.subpartner_id = element.tvatrans_sub_partner_id
                     obj.mpaytype_id = element.mpaytype_id
                     obj.number = element.number
-                    // obj.isChecked = e.target.checked
                     allData.push(obj)
                     obj = {}
                 });
                 setDataExclude(allData)
             } else {
-                console.log(e.target.checked, "e checked");
+                // console.log(e.target.checked, "e checked");
                 obj.subpartner_id = id
                 obj.mpaytype_id = typeId
                 obj.number = number
-                // obj.isChecked = e.target.checked
                 allData.push(obj)
-                console.log(dataExc, 'dataExc in funct');
+                // console.log(dataExc, 'dataExc in funct');
                 setDataExclude([...dataExc, obj])
-                // obj = {}
             }
         } else {
             if (id === "") {
@@ -58,7 +52,7 @@ const ProsesSettlementManual = () => {
                 setDataExclude(deletedData)
             }
         }
-        console.log(allData, 'allData');
+        // console.log(allData, 'allData');
 
         
     }, [])
@@ -126,19 +120,6 @@ const ProsesSettlementManual = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-
-    const customStylesPartner = {
-        headCells: {
-            style: {
-                backgroundColor: '#F2F2F2',
-                border: '12px',
-                fontWeight: 'bold',
-                fontSize: '16px',
-                paddingRight: 'none'
-                
-            },
-        },
-    };
 
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
