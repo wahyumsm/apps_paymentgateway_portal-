@@ -341,7 +341,7 @@ export default (props) => {
       dispatch(GetUserDetail("/Account/GetUserProfile"));
       if (user_role === "102") {
         GetBalanceHandle()
-        listRiwayatTopUp()
+        // listRiwayatTopUp()
       }
     }, [showModalTopUp])
 
