@@ -20,6 +20,8 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker/dist/DateRangePic
 import Checklist from '../../assets/icon/checklist_icon.svg'
 import * as XLSX from "xlsx"
 import ReactSelect, { components } from 'react-select';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 function RiwayatTopUp() {
 
@@ -46,9 +48,11 @@ function RiwayatTopUp() {
         // namaPartnerRiwayatTopUp: "",
         statusRiwayatTopUp: [],
         periodeRiwayatTopUp: 0,
+        amounts: 0,
     })
     const [isFilterTopUp, setIsFilterTopUp] = useState(false)
     const [selectedPartnerRiwayatTopUp, setSelectedPartnerRiwayatTopUp] = useState([])
+    const [isLoadingTopUpConfirm, setIsLoadingTopUpConfirm] = useState(false)
 
     const Option = (props) => {
         return (
@@ -254,6 +258,10 @@ function RiwayatTopUp() {
             const detailTopUp = await axios.post(BaseURL + "/Partner/HistoryTopUpPartnerDetail", { data: dataParams }, { headers: headers })
             if(detailTopUp.status === 200 && detailTopUp.data.response_code === 200 && detailTopUp.data.response_new_token.length === 0) {
               setDetailTopUp(detailTopUp.data.response_data)
+              setInputHandle({
+                ...inputHandle,
+                amounts: detailTopUp.data.response_data.amount_transfer
+              })
               const timeStamps = new Date(detailTopUp.data.response_data.exp_date*1000).toLocaleString()
               const convertTimeStamps = new Date(timeStamps).getTime()
               const countDown = convertTimeStamps - Date.now()
@@ -262,6 +270,14 @@ function RiwayatTopUp() {
             } else if(detailTopUp.status === 200 && detailTopUp.data.response_code === 200 && detailTopUp.data.response_new_token.length !== 0) {
               setUserSession(detailTopUp.data.response_new_token)
               setDetailTopUp(detailTopUp.data.response_data)
+              setInputHandle({
+                ...inputHandle,
+                amounts: detailTopUp.data.response_data.amount_transfer
+              })
+              const timeStamps = new Date(detailTopUp.data.response_data.exp_date*1000).toLocaleString()
+              const convertTimeStamps = new Date(timeStamps).getTime()
+              const countDown = convertTimeStamps - Date.now()
+              setCountDown(countDown)
               setShowModalKonfirmasiTopUp(true)
             }
           } catch (error) {
@@ -272,28 +288,32 @@ function RiwayatTopUp() {
 
     async function topUpHandleConfirm() {
         try {
+            setIsLoadingTopUpConfirm(true)
             const auth = "Bearer " + getToken()        
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
             const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
+            console.log(topUpResult, 'topUpResult');
             if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
                 setTopUpResult(topUpResult.data.response_data)
+                setIsLoadingTopUpConfirm(false)
                 setShowModalKonfirmasiTopUp(false)
                 setShowStatusTopup(true)
                 window.location.reload()
             } else if (topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length !== 0) {
                 setUserSession(topUpResult.data.response_new_token)
                 setTopUpResult(topUpResult.data.response_data)
+                setIsLoadingTopUpConfirm(false)
                 setShowModalKonfirmasiTopUp(false)
                 setShowStatusTopup(true)
                 window.location.reload()
             }
-            } catch (error) {
-                // console.log(error)
-                history.push(errorCatch(error.response.status))
-            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
     }
 
     useEffect(() => {
@@ -811,8 +831,8 @@ function RiwayatTopUp() {
                         <div className="text-center mt-2">
                             <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={Date.now() + countDown} daysInHours={true} /></span>
                         </div>
-                        <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-center mt-2">
-                            <div>Batas Akhir :</div>
+                        <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-start mt-2">
+                            <div style={{ width: 90 }}>Batas Akhir :</div>
                             <div className="mx-2 fw-bold">{(detailTopUp.exp_date !== undefined) ? convertDateTimeStamp(detailTopUp.exp_date) + " WIB" : null}</div>
                         </div>
                         <div className="mt-4" style={{border: "1px solid #EBEBEB", borderRadius: "8px", padding: "10px"}}>
@@ -827,7 +847,7 @@ function RiwayatTopUp() {
                                 <div style={{padding:"unset"}} className="fw-bold mt-1">Tranfer Bank</div>
                                 </div>
                                 <div className="d-flex flex-column">
-                                <div style={{padding:"unset"}} className="text-end"><img src={detailTopUp.metode_pembayaran} alt="bca" style={{width: "38px", height: "12px"}} /></div>
+                                <div style={{padding:"unset"}} className="text-end"><img src={detailTopUp.metode_pembayaran} alt="bca" style={{width: "87px", height: "37px"}} /></div>
                                 <div style={{padding:"unset"}} className="mt-1">{detailTopUp.tf_bank}</div>
                                 </div>
                             </div>
@@ -856,7 +876,7 @@ function RiwayatTopUp() {
                             <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga <span style={{ fontWeight: 600 }}>3 digit terakhir.</span></div>
                         </Table>
                         <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                            <Button onClick={() => topUpHandleConfirm()} variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
+                            <Button onClick={() => topUpHandleConfirm()} variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : "SAYA SUDAH TRANSFER"}</Button>
                         </div>
                     </Modal.Body>
                 </Modal>
