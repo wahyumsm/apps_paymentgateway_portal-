@@ -200,7 +200,7 @@ export default () => {
         return
       }
       const auth = authorization
-      const dataParams = encryptData(`{"username" : '${username}', "password" : '${password}'}`)
+      const dataParams = encryptData(`{"username" : "${username}", "password" : "${password}"}`)
       const headers = {
         'Content-Type':'application/json',
         'Authorization' : auth

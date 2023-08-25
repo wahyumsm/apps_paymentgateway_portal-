@@ -8,6 +8,7 @@ import {
   faSignOutAlt,
   faUserShield,
   faCircleInfo,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -109,6 +110,7 @@ export default (props) => {
   const [ topUpResult, setTopUpResult ] = useState({})
   const [iconGagal, setIconGagal] = useState(false)
   const [uploadGagal, setUploadGagal] = useState(false)
+  const [isLoadingTopUpConfirm, setIsLoadingTopUpConfirm] = useState(false)
 
   function handleChange(e) {
     setInputHandle({
@@ -239,6 +241,12 @@ export default (props) => {
           } else if (topUpBalance.status === 200 && topUpBalance.data.response_code === 200 && topUpBalance.data.response_new_token.length !== 0) {
             setUserSession(topUpBalance.data.response_new_token)
             setTopUpBalance(topUpBalance.data.response_data)
+            const timeStamps = new Date(topUpBalance.data.response_data.exp_date*1000).toLocaleString()
+            const convertTimeStamps = new Date(timeStamps).getTime()
+            const date = Date.now()
+            const countDown = convertTimeStamps - date
+            setDateNow(date)
+            setCountDown(countDown)
             setShowModalTopUp(false)
             setShowModalKonfirmasiTopUp(true)
             setInputHandle({amounts: 0})
@@ -252,6 +260,7 @@ export default (props) => {
 
     async function topUpHandleConfirm() {
       try {
+          setIsLoadingTopUpConfirm(true)
           const auth = "Bearer " + getToken()        
           const headers = {
               'Content-Type':'application/json',
@@ -260,6 +269,7 @@ export default (props) => {
           const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
           if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
             setTopUpResult(topUpResult.data.response_data)
+            setIsLoadingTopUpConfirm(false)
             setShowModalKonfirmasiTopUp(false)
             setTimeout(() => {
               history.push("/riwayattopup")
@@ -268,6 +278,7 @@ export default (props) => {
           } else if (topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length !== 0) {
             setUserSession(topUpResult.data.response_new_token)
             setTopUpResult(topUpResult.data.response_data)
+            setIsLoadingTopUpConfirm(false)
             setShowModalKonfirmasiTopUp(false)
             setTimeout(() => {
               history.push("/riwayattopup")
@@ -493,7 +504,7 @@ export default (props) => {
                 (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
                 (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement')
 
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
+                // || (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
@@ -758,8 +769,8 @@ export default (props) => {
               <div className="text-center mt-2">
                 <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={dateNow + countDown} daysInHours={true} /></span>
               </div>
-              <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-center mt-2">
-                <div>Batas Akhir :</div>
+              <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-start mt-2">
+                <div style={{ width: 90 }}>Batas Akhir :</div>
                 <div className="mx-2 fw-bold">{(topUpBalance.exp_date !== undefined) ? convertDateTimeStamp(topUpBalance.exp_date) + " WIB" : null}</div>
               </div>
               <div className="mt-4" style={{border: "1px solid #EBEBEB", borderRadius: "8px", padding: "10px"}}>
@@ -774,7 +785,7 @@ export default (props) => {
                       <div style={{padding:"unset"}} className="fw-bold mt-1">Tranfer Bank</div>
                     </div>
                     <div className="d-flex flex-column">
-                      <div style={{padding:"unset"}} className="text-end"><img src={topUpBalance.metode_pembayaran} alt="bca" style={{width: "38px", height: "12px"}} /></div>
+                      <div style={{padding:"unset"}} className="text-end"><img src={topUpBalance.metode_pembayaran} alt="bca" style={{width: "87px", height: "37px"}} /></div>
                       <div style={{padding:"unset"}} className="mt-1">{topUpBalance.tf_bank}</div>
                     </div>
                   </div>
@@ -803,7 +814,7 @@ export default (props) => {
                 <div className="mx-2 text-left">Lakukan transfer sesuai dengan nominal yang tertera hingga <span style={{ fontWeight: 600 }}>3 digit terakhir.</span></div>
               </Table>
               <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>SAYA SUDAH TRANSFER</Button>
+                  <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : "SAYA SUDAH TRANSFER"}</Button>
               </div>
           </Modal.Body>
         </Modal>
