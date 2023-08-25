@@ -557,7 +557,7 @@ function DetailSettlement() {
                 <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
-            <h2 className="h5 mb-3 mt-4">Detail Settlement</h2>
+            <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Detail Settlement</h2>
         </div>
         <div className='main-content'>
             <div className='riwayat-dana-masuk-div mt-4'>

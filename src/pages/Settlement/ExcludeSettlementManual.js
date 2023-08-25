@@ -3,9 +3,8 @@ import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
+import { Col, Image, Row } from '@themesberg/react-bootstrap'
 import DataTable from 'react-data-table-component'
-import { agenLists } from '../../data/tables'
 import { DateRangePicker } from 'rsuite'
 import { isAfter } from 'date-fns'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
