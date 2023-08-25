@@ -99,11 +99,11 @@ function DisbursementPage() {
     })
     const [balanceDetail, setBalanceDetail] = useState([])
     const [sisaAllSaldoTempManual, setSisaAllSaldoTempManual] = useState(0)
-    const [sisaSaldoAlokasiPerBank, setSisaSaldoAlokasiPerBank] = useState({
-        bca: 0,
-        danamon: 0,
-        bifast: 0
-    })
+    // const [sisaSaldoAlokasiPerBank, setSisaSaldoAlokasiPerBank] = useState({
+    //     bca: 0,
+    //     danamon: 0,
+    //     bifast: 0
+    // })
     const [showDetailBalance, setShowDetailBalance] = useState({
         bca: false,
         danamon: false,
@@ -272,11 +272,11 @@ function DisbursementPage() {
                             let sameNumberData = []
                             let errData = []
                             let resultArray = []
-                            let sisaSaldoAlokasiPerBankTemp = {
-                                // bca: 0,
-                                danamon: 0,
-                                bifast: 0
-                            }
+                            // let sisaSaldoAlokasiPerBankTemp = {
+                            //     // bca: 0,
+                            //     danamon: 0,
+                            //     bifast: 0
+                            // }
                             let sisaAllSaldoTemp = 0
                             // console.log(data, 'data');
                             data.map(el => {

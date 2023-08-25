@@ -337,13 +337,13 @@ export default (props) => {
         }
     }
 
-    function toAlokasiPage () {
-      if (balanceDetail.length !== 0) {
-        history.push("/alokasisaldo")
-      } else {
-        setShowModalAlokasi(true)
-      }
-    }
+    // function toAlokasiPage () {
+    //   if (balanceDetail.length !== 0) {
+    //     history.push("/alokasisaldo")
+    //   } else {
+    //     setShowModalAlokasi(true)
+    //   }
+    // }
 
     useEffect(() => {
       if (!access_token) {
@@ -495,19 +495,19 @@ export default (props) => {
                 // live
                 (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
                 (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
                 (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement') ||
                 
                 // Test Web
                 (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
                 (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
-                (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
+                // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
                 (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement')
 
-                // || (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
+                || (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
                 
                 // (window.location.href === 'http://reactdev/dev2/#/dev2/disbursement') ||
                 // (window.location.href === 'http://reactdev/dev2/#/dev2/riwayattopup') ||
@@ -516,7 +516,7 @@ export default (props) => {
                 )
               ) && 
               <>
-                <OverlayTrigger
+                {/* <OverlayTrigger
                   placement="bottom"
                   trigger={["click"]}
                   overlay={
@@ -528,7 +528,7 @@ export default (props) => {
                     alt="circle_info"
                     style={{ marginTop: -5 }}
                   />
-                </OverlayTrigger>
+                </OverlayTrigger> */}
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                     <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
@@ -850,7 +850,7 @@ export default (props) => {
           </Modal.Body>
         </Modal>
 
-        <Modal className="history-modal" size="sm" centered show={showModalAlokasi} onHide={() => setShowModalAlokasi(false)}>
+        {/* <Modal className="history-modal" size="sm" centered show={showModalAlokasi} onHide={() => setShowModalAlokasi(false)}>
             <Modal.Body>
                 <div className="text-center mt-3"><img src={gagalMasukAlokasi} alt="alokasi saldo"/></div>
                 <div
@@ -919,7 +919,7 @@ export default (props) => {
                   </Button>
                 </div>
             </Modal.Body>
-        </Modal>
+        </Modal> */}
       </Container>
     </Navbar>
     {topUpResult.is_update === false ?
