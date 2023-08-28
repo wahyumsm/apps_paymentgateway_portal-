@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Form, Image } from '@themesberg/react-bootstrap'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
@@ -11,6 +11,8 @@ import Pagination from 'react-js-pagination'
 const ProsesSettlementManual = () => {
 
     const history = useHistory()
+    const access_token = getToken()
+    const user_role = getRole()
     const [dataListProsesSettlementManual, setDataListProsesSettlementManual] = useState([])
     const [pageNumberProsesSettlementManual, setPageNumberProsesSettlementManual] = useState({})
     const [totalPageProsesSettlementManual, setTotalPageProsesSettlementManual] = useState(0)
@@ -128,8 +130,15 @@ const ProsesSettlementManual = () => {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            // RouteTo("/login")
+            history.push('/login');
+        }
+        if (user_role !== "100") {
+            history.push('/404');
+        }
         getListSettleManualHandler(currentDate, activePageProsesSettlementManual)
-    }, [])
+    }, [access_token, user_role])
     
 
     return (

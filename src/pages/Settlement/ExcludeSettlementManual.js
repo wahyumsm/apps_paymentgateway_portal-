@@ -9,13 +9,15 @@ import { DateRangePicker } from 'rsuite'
 import { isAfter } from 'date-fns'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import triangleInfo from "../../assets/icon/triangle-info.svg"
-import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
 
 const SettlementAdminManual = () => {
     const history = useHistory()
+    const access_token = getToken()
+    const user_role = getRole()
     const [pendingListSettlement, setPendingListSettlement] = useState(false)
     const [stateHistorySettlement, setStateHistorySettlement] = useState(null)
     const [dateRangeHistorySettlement, setDateRangeHistorySettlement] = useState([])
@@ -188,8 +190,15 @@ const SettlementAdminManual = () => {
     );
 
     useEffect(() => {
+        if (!access_token) {
+            // RouteTo("/login")
+            history.push('/login');
+        }
+        if (user_role !== "100") {
+            history.push('/404');
+        }
         listHistorySettleManualHandler(currentDate, activePageHistorySettleManual)
-    },[])
+    },[access_token, user_role])
     
 
     return (
