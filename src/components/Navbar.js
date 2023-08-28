@@ -90,7 +90,7 @@ export default (props) => {
   const [showModalKonfirmasiTopUp, setShowModalKonfirmasiTopUp] = useState(false)
   const [showRiwayatTopUp, setShowRiwayatTopUp] = useState(false)
   const [showStatusTopup, setShowStatusTopup] = useState(false)
-  // const [showModalAlokasi, setShowModalAlokasi] = useState(false)
+  const [showModalAlokasi, setShowModalAlokasi] = useState(false)
   const handleCloseModalTopUp = () => setShowModalTopUp(false);
   const handleCloseRiwayatTopUp = () => setShowRiwayatTopUp(false)
   const [imageTopUp, setImageTopUp] = useState({});
@@ -337,13 +337,13 @@ export default (props) => {
         }
     }
 
-    // function toAlokasiPage () {
-    //   if (balanceDetail.length !== 0) {
-    //     history.push("/alokasisaldo")
-    //   } else {
-    //     setShowModalAlokasi(true)
-    //   }
-    // }
+    function toAlokasiPage () {
+      if (balanceDetail.length !== 0) {
+        history.push("/alokasisaldo")
+      } else {
+        setShowModalAlokasi(true)
+      }
+    }
 
     useEffect(() => {
       if (!access_token) {
@@ -493,10 +493,9 @@ export default (props) => {
                 // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo')
                 
                 // live
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement') ||
+                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
+                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
+                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement') 
                 
                 // Test Web
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
@@ -504,10 +503,10 @@ export default (props) => {
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement') ||
 
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
                 
                 // (window.location.href === 'http://reactdev/dev2/#/dev2/disbursement') ||
                 // (window.location.href === 'http://reactdev/dev2/#/dev2/riwayattopup') ||
