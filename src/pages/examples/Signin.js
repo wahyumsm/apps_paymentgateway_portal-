@@ -11,6 +11,7 @@ import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
 import { authorization, BaseURL, setRoleSession, setUserSession } from "../../function/helpers";
 import validator from "validator";
+import $ from 'jquery'
 
 export default () => {
 
@@ -19,8 +20,28 @@ export default () => {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("")
+  const [isTabLanguage, setIsTabLanguage] = useState("bahasa")
   const passwordInputType = showPassword ? "text" : "password";
   const passwordIconColor = showPassword ? "#262B40" : "";
+
+  function tabLanguage (isTabs) {
+    if (isTabs === "bahasa") {
+      setIsTabLanguage("bahasa")
+      $('#bahasaTab').addClass('menu-detail-language-hr-active')
+      $('#inggrisTab').removeClass('menu-detail-language-hr-active')
+      $('#mandarinTab').removeClass('menu-detail-language-hr-active')
+    } else if (isTabs === "inggris") {
+      setIsTabLanguage("inggris")
+      $('#bahasaTab').removeClass('menu-detail-language-hr-active')
+      $('#inggrisTab').addClass('menu-detail-language-hr-active')
+      $('#mandarinTab').removeClass('menu-detail-language-hr-active')
+    } else if (isTabs === "mandarin") {
+      setIsTabLanguage("mandarin")
+      $('#bahasaTab').removeClass('menu-detail-language-hr-active')
+      $('#inggrisTab').removeClass('menu-detail-language-hr-active')
+      $('#mandarinTab').addClass('menu-detail-language-hr-active')
+    }
+  } 
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -228,9 +249,9 @@ export default () => {
           <Row className="justify-content-center form-bg-image">
             <img src={BgImage} alt="Login" className="img-fluid" style={{ maxWidth: 980, maxHeight: 536, position: "absolute" }} />
             <Col xs={12} className="d-flex align-items-center justify-content-center">
-              <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100" style={{ maxWidth: 440, maxHeight: 459, zIndex: 1, marginTop: 46, marginLeft: 88 }}>
+              <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100" style={{ maxWidth: 440, maxHeight: 495, zIndex: 1, marginTop: 25, marginLeft: 88 }}>
                 <div className="text-center text-md-center mb-4 mt-md-0">
-                  <h3 className="mb-0" style={{ fontFamily: "Exo", fontSize: 24, fontWeight: 700 }}>Login ke Ezeelink Payment Gateway</h3>
+                  <h3 className="mb-0" style={{ fontFamily: "Exo", fontSize: 24, fontWeight: 700 }}>{isTabLanguage === "bahasa" ? "Login ke Ezeelink Payment Gateway" : isTabLanguage === "inggris" ? "Login to Ezeelink Payment Gateway" : "登录Ezeelink 支付网关" }</h3>
                   {
                     errorMessage.length !== 0 &&
                     <span style={{ fontSize: 14, fontWeight: 600, color: "#B9121B" }}>{ errorMessage }</span>
@@ -238,16 +259,16 @@ export default () => {
                 </div>
                 <Form className="mt-4">
                   <Form.Group style={{ fontFamily: "Nunito" }} id="email" className="mb-4">
-                    <Form.Label>Email</Form.Label>
+                    <Form.Label>{isTabLanguage === "mandarin" ? "电子邮件" : "Email"}</Form.Label>
                     <InputGroup>
-                      <Form.Control onChange={e => setUsername(e.target.value)} autoFocus required type="email" placeholder="Masukkan Email" />
+                      <Form.Control onChange={e => setUsername(e.target.value)} autoFocus required type="email" placeholder={isTabLanguage === "bahasa" ? "Masukkan Email" : isTabLanguage === "inggris" ? "Enter Your Email" : "请输入您的电子邮箱"} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group>
                     <Form.Group style={{ fontFamily: "Nunito" }} id="password" className="mb-4">
-                      <Form.Label>Kata Sandi</Form.Label>
+                      <Form.Label>{isTabLanguage === "bahasa" ? "Kata Sandi" : isTabLanguage === "inggris" ? "Password" : "密码"}</Form.Label>
                       <InputGroup>
-                        <Form.Control onChange={e => setPassword(e.target.value)} required type={passwordInputType} placeholder="Masukkan Kata Sandi" />
+                        <Form.Control onChange={e => setPassword(e.target.value)} required type={passwordInputType} placeholder={isTabLanguage === "bahasa" ? "Masukkan Kata Sandi" : isTabLanguage === "inggris" ? "Enter Your Password" : "请输入您的密码"} />
                         <InputGroup.Text onClick={togglePasswordVisibility} className="pass-log">
                           <FontAwesomeIcon color={passwordIconColor} icon={faEye} />
                         </InputGroup.Text>
@@ -262,14 +283,28 @@ export default () => {
                     </div> */}
                   </Form.Group>
                   <Button onClick={(e) => signingInHandler(e, username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
-                    Login
+                    {isTabLanguage === "mandarin" ? "登录" : "Login"}
                   </Button>
                 </Form>
                 <div>
                   <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
                     <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>
-                      {` Lupa Kata Sandi? `}
+                      {isTabLanguage === "bahasa" ? ` Lupa Kata Sandi? ` : isTabLanguage === "inggris" ? ` Forgot Password? ` : `忘记密码`}
                     </Card.Link>
+                  </div>
+                  <div className="d-flex justify-content-center align-items-center mt-3">
+                    <div style={{ fontFamily: "Exo", fontSize: 12 }}>{isTabLanguage === "bahasa" ? "Pilih Bahasa:" : isTabLanguage === "inggris" ? "Choose Language:" : "选择语言:"}</div>
+                    <div className="detail-language-tabs menu-detail-language-hr-active mx-2" id="bahasaTab" onClick={() => tabLanguage("bahasa")}>
+                      {isTabLanguage === "bahasa" ? "Bahasa" : isTabLanguage === "inggris" ? "Indonesia" : "印尼语"}
+                    </div>
+                    <div style={{ border: "1px solid #EBEBEB", height: 18 }}></div>
+                    <div className="detail-language-tabs mx-2" id="inggrisTab" onClick={() => tabLanguage("inggris")}>
+                      {isTabLanguage === "bahasa" ? "Inggris" : isTabLanguage === "inggris" ? "English" : "英语"}
+                    </div>
+                    <div style={{ border: "1px solid #EBEBEB", height: 18 }}></div>
+                    <div className="detail-language-tabs mx-2" id="mandarinTab" onClick={() => tabLanguage("mandarin")}>
+                      {isTabLanguage === "bahasa" ? "Mandarin" : isTabLanguage === "inggris" ? "Mandarin" : "中文"}
+                    </div>
                   </div>
                 </div>
               </div>

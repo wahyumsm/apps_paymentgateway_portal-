@@ -23,7 +23,7 @@ import {
   ListGroup,
   InputGroup,
   Modal,
-  Button, Table, Alert, Toast, Tooltip, OverlayTrigger
+  Button, Table, Alert, Toast, Tooltip, OverlayTrigger, Popover
 } from "@themesberg/react-bootstrap";
 
 import NOTIFICATIONS_DATA from "../data/notifications";
@@ -59,6 +59,11 @@ import { useCallback } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import gagalMasukAlokasi from '../assets/icon/gagaltopup_icon.svg'
 import CurrencyInput from "react-currency-input-field";
+import flagIdRoundIcon from '../assets/icon/flag_id_round.svg'
+import flagEnRoundIcon from '../assets/icon/flag_en_round.svg'
+import flagRrtRoundIcon from '../assets/icon/flag_rrt_round.svg'
+import dropDownBlack from '../assets/icon/drop_down_black.svg'
+import $ from 'jquery'
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -110,13 +115,26 @@ export default (props) => {
   const [ topUpResult, setTopUpResult ] = useState({})
   const [iconGagal, setIconGagal] = useState(false)
   const [uploadGagal, setUploadGagal] = useState(false)
-  const [isLoadingTopUpConfirm, setIsLoadingTopUpConfirm] = useState(false)
+  const [isLoadingTopUpConfirm, setIsLoadingTopUpConfirm] = useState(false)    
+  const [showPopoverLang, setShowPopoverLang] = useState(false)
+  const [isTabLanguageNavbar, setIsTabLanguageNavbar] = useState("bahasa")
+  const language = sessionStorage.getItem('lang')
 
   function handleChange(e) {
     setInputHandle({
       ...inputHandle,
       [e.target.name] : e.target.value
     })
+  }
+
+  function tabLanguage (isTabs) {
+    if (isTabs === "bahasa") {
+      setIsTabLanguageNavbar("bahasa")
+    } else if (isTabs === "inggris") {
+      setIsTabLanguageNavbar("inggris")
+    } else if (isTabs === "mandarin") {
+      setIsTabLanguageNavbar("mandarin")
+    }
   }
 
   
@@ -493,9 +511,9 @@ export default (props) => {
                 // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo')
                 
                 // live
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
-                (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement') 
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement') 
                 
                 // Test Web
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
@@ -503,10 +521,10 @@ export default (props) => {
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement') ||
 
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
+                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
                 
                 // (window.location.href === 'http://reactdev/dev2/#/dev2/disbursement') ||
                 // (window.location.href === 'http://reactdev/dev2/#/dev2/riwayattopup') ||
@@ -531,7 +549,7 @@ export default (props) => {
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                     <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
-                      <span className="mb-0 font-small">Saldo Tersedia: </span>
+                      <span className="mb-0 font-small">{isTabLanguageNavbar === "bahasa" ? "Saldo Tersedia: " : isTabLanguageNavbar === "inggris" ? "Available Balance : " : "可用余额："}</span>
                       <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
                       <img
                         src={arrowDown}
@@ -540,7 +558,7 @@ export default (props) => {
                       />
                     </div>
                   </Dropdown.Toggle>
-                  <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-2 d-flex justify-content-center align-items-center">
+                  <Dropdown.Menu className="user-dropdown dropdown-menu-right mt-3 d-flex justify-content-center align-items-center">
                     {/* <div className={balanceDetail.length !== 0 ? "pe-2" : ""}>
                       {
                         balanceDetail.length !==0 &&
@@ -568,7 +586,7 @@ export default (props) => {
                         style={{width: 160}}
                       >
                         <div className="pe-2">
-                          <img alt="" src={topUpSaldoIcon} /> Top Up Saldo
+                          <img alt="" src={topUpSaldoIcon} /> {isTabLanguageNavbar === "bahasa" ? "Top Up Saldo" : isTabLanguageNavbar === "inggris" ? "Balance Top Up" : "余额充值"}
                         </div>
                       </Dropdown.Item>
                       <Dropdown.Item
@@ -668,6 +686,70 @@ export default (props) => {
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+
+            <Dropdown as={Nav.Item} >
+              <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 ms-3">
+                <div className="media d-flex align-items-center">
+                  <Image
+                    src={isTabLanguageNavbar === "bahasa" ? flagIdRoundIcon : isTabLanguageNavbar === "inggris" ? flagEnRoundIcon : flagRrtRoundIcon}
+                    className="rounded-circle"
+                    style={{ border: "1px solid #000000" }}
+                  />
+                  <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
+                    <span className="mb-0 font-small fw-bold">
+                      {isTabLanguageNavbar === "bahasa" ? "ID" : isTabLanguageNavbar === "inggris" ? "EN" : "CN"}
+                    </span>
+                    <img
+                      src={arrowDown}
+                      alt="arrow_down"
+                      style={{ marginLeft: 10 }}
+                    />
+                  </div>
+                </div>
+              </Dropdown.Toggle>
+              <Dropdown.Menu
+                className="user-dropdown dropdown-menu-right mt-2"
+                style={{ minWidth: "max-content" }}
+              >
+                <Dropdown.Item className="fw-bold" onClick={() => tabLanguage("bahasa")}>
+                  <img alt="" src={flagIdRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }} /> <span className="ms-2">ID</span>
+                </Dropdown.Item>
+                <Dropdown.Item className="fw-bold" onClick={() => tabLanguage("inggris")}>
+                  <img alt="" src={flagEnRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }}/> <span className="ms-2">EN</span>
+                </Dropdown.Item>
+                <Dropdown.Item className="fw-bold" onClick={() => tabLanguage("mandarin")}>
+                  <img alt="" src={flagRrtRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }}/> <span className="ms-2">CN</span>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+
+            {/* <Navbar.Collapse id="basic-navbar-nav" style={{ width: "20%"}}>
+              <div className="text-end" style={{ width: "100%"}} >
+                  <OverlayTrigger
+                      show={showPopoverLang}
+                      trigger={["hover", "focus"]}
+                      key={1}
+                      placement="bottom"
+                      overlay={
+                          <Popover style={{ maxWidth: 138, maxHeight: 212 }} onMouseEnter={() => setShowPopoverLang(true)} onMouseLeave={() => setShowPopoverLang(false)} id='menu'>
+                              <Popover.Body>
+                                  <div className='mt-2 mb-4' onClick={() => tabLanguage("bahasa")}>
+                                      <span className='menu-navbar-lang2' style={{ borderRadius: 4, color: "#383838", cursor: "pointer" }}><img src={flagIdRoundIcon} alt='idFlag' style={{ marginRight: 15 }} /> ID</span>
+                                  </div>
+                                  <div className='mt-4 mb-4' onClick={() => tabLanguage("inggris")}>
+                                      <span className='menu-navbar-lang2' style={{ borderRadius: 4, color: "#383838", cursor: "pointer" }}><img src={flagEnRoundIcon} alt='idFlag' style={{ marginRight: 10 }} /> EN</span>
+                                  </div>
+                                  <div className='mt-4 mb-2' onClick={() => tabLanguage("mandarin")}>
+                                      <span className='menu-navbar-lang2' style={{ borderRadius: 4, color: "#383838", cursor: "pointer" }}><img src={flagRrtRoundIcon} alt='idFlag' style={{ marginRight: 10 }} /> CN</span>
+                                  </div>
+                              </Popover.Body>
+                          </Popover>
+                      }
+                  >
+                      <span onMouseEnter={() => setShowPopoverLang(true)} onMouseLeave={() => setShowPopoverLang(false)} className='menu-navbar-home2 py-3 px-3' style={{ borderRadius: 4, color: "#FFFFFF", cursor: "pointer" }}>{isTabLanguageNavbar === 'inggris' ? <><img src={flagEnRoundIcon} alt='enFlag' /> &nbsp; EN</> : isTabLanguageNavbar === 'mandarin' ? <><img src={flagRrtRoundIcon} alt='chnFlag' /> &nbsp; CN</> : <><img src={flagIdRoundIcon} alt='idFlag' /> &nbsp; ID</>}<img src={dropDownBlack} alt='arrowDropDownBlackLanguage' className={(showPopoverLang) ? 'arrow-down-white-language-open' : "arrow-down-white-language"} style={{ marginLeft: 12 }} /></span>
+                  </OverlayTrigger>
+              </div>
+            </Navbar.Collapse> */}
           </Nav>
         </div>
 
