@@ -295,7 +295,7 @@ function RiwayatTopUp() {
                 'Authorization' : auth
             }
             const topUpResult = await axios.post(BaseURL + "/Partner/TopupConfirmation", { data: "" }, { headers: headers })
-            console.log(topUpResult, 'topUpResult');
+            // console.log(topUpResult, 'topUpResult');
             if(topUpResult.status === 200 && topUpResult.data.response_code === 200 && topUpResult.data.response_new_token.length === 0) {
                 setTopUpResult(topUpResult.data.response_data)
                 setIsLoadingTopUpConfirm(false)

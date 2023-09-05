@@ -405,7 +405,7 @@ function SettlementPage() {
                 'Authorization' : auth
             }
             const responSendEmail = await axios.post(BaseURL + "/Settlement/ReSendEmailSettlement", { data: dataParams }, { headers: headers })
-            console.log(responSendEmail.data.response_data.results, "data settlement");
+            // console.log(responSendEmail.data.response_data.results, "data settlement");
             if (responSendEmail.status === 200 && responSendEmail.data.response_code === 200 && responSendEmail.data.response_new_token === null) {
                 alert(responSendEmail.data.response_data.results !== null ? responSendEmail.data.response_data.results : "Failed")
             } else if (responSendEmail.status === 200 && responSendEmail.data.response_code === 200 && responSendEmail.data.response_new_token !== null) {
@@ -413,7 +413,7 @@ function SettlementPage() {
                 alert(responSendEmail.data.response_data.results !== null ? responSendEmail.data.response_data.results : "Failed")
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }

@@ -148,7 +148,7 @@ const ProsesSettlementManual = () => {
                 <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Exclude Settlement Manual</h2>
             </div>
             <div className='base-content mt-3'>
-                <div className='div-table pb-4'>
+                <div className='div-table' style={{ overflowX: 'auto', maxWidth: 'inherit' }}>
                     <table
                         className="table"
                         id="tableInvoice"
@@ -231,18 +231,18 @@ const ProsesSettlementManual = () => {
                         }
                     </table>
                     {pendingListSettlementManual && (<div className='text-center'><CustomLoader /></div>)}
-                    <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageProsesSettlementManual}</div>
-                        <Pagination
-                            activePage={activePageProsesSettlementManual}
-                            itemsCountPerPage={pageNumberProsesSettlementManual.row_per_page}
-                            totalItemsCount={(pageNumberProsesSettlementManual.row_per_page*pageNumberProsesSettlementManual.max_page)}
-                            pageRangeDisplayed={5}
-                            itemClass="page-item"
-                            linkClass="page-link"
-                            onChange={handlePageChangeGetListProsesSettleManual}
-                        />
-                    </div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                <div className='pb-4' style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageProsesSettlementManual}</div>
+                    <Pagination
+                        activePage={activePageProsesSettlementManual}
+                        itemsCountPerPage={pageNumberProsesSettlementManual.row_per_page}
+                        totalItemsCount={(pageNumberProsesSettlementManual.row_per_page*pageNumberProsesSettlementManual.max_page)}
+                        pageRangeDisplayed={5}
+                        itemClass="page-item"
+                        linkClass="page-link"
+                        onChange={handlePageChangeGetListProsesSettleManual}
+                    />
                 </div>
             </div>
 
