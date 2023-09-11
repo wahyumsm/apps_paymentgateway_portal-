@@ -12,6 +12,7 @@ import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteInfo from "../../assets/icon/note_icon.svg"
 import ReactSelect, { components } from 'react-select';
+import { ind } from '../../components/Language';
 
 function Disbursement() {
 
@@ -41,6 +42,8 @@ function Disbursement() {
 
     const [selectedPartnerDisbursement, setSelectedPartnerDisbursement] = useState([])
     const [selectedPaymentDisbursement, setSelectedPaymentDisbursement] = useState([])
+
+    const language = JSON.parse(sessionStorage.getItem('lang'))
 
     const Option = (props) => {
         return (
@@ -459,13 +462,13 @@ function Disbursement() {
 
     const columnsDisbursementPartner = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.number,
             width: "3%",
             maxWidth: 'fit-content !important'
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? ind.idTransaksi : language.idTransaksi,
             selector: row => row.tdishburse_code,
             // sortable: true
             wrap: true,
@@ -473,65 +476,65 @@ function Disbursement() {
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
         },
         {
-            name: 'Waktu',
+            name: language === null ? ind.waktu : language.waktu,
             selector: row => convertSimpleTimeStamp(row.tdishburse_crtdt),
             wrap: true,
             width: "150px",
             // sortable: true,
         },
         {
-            name: 'Partner Trans ID',
+            name: language === null ? ind.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trans_id,
             wrap: true,
             width: "170px",
             // sortable: true,
         },
         {
-            name: 'Nominal Disbursement',
+            name: language === null ? ind.nominalDisburse : language.nominalDisburse,
             selector: row => convertToRupiah(row.tdishburse_amount),
             // sortable: true,
             width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
-            name: 'Total Disbursement',
+            name: language === null ? ind.totalDisburse : language.totalDisburse,
             selector: row => convertToRupiah(row.tdishburse_total_amount),
             // sortable: true,
             width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
-            name: 'Tujuan Disbursement',
+            name: language === null ? ind.tujuanDisburse : language.tujuanDisburse,
             selector: row => row.payment_type,
             // sortable: true,
             width: "224px",
         },
         {
-            name: 'Cabang',
+            name: language === null ? ind.cabang : language.cabang,
             selector: row => (row.branch_name === null || row.branch_name.length === 0) ? "-" : row.branch_name,
             // sortable: true,
             width: "224px",
         },
         {
-            name: 'Nomor Rekening Tujuan',
+            name: language === null ? ind.nomorRekTujuan : language.nomorRekTujuan,
             selector: row => row.tdishburse_acc_num,
             // sortable: true,
             width: "224px",
         },
         {
-            name: 'Nama Pemilik Rekening',
+            name: language === null ? ind.namaPemilikRek : language.namaPemilikRek,
             selector: row => row.tdishburse_acc_name,
             // sortable: true,
             width: "224px",
         },
         {
-            name: 'Catatan',
+            name: language === null ? ind.catatan : language.catatan,
             selector: row => (row.notes === null || row.notes.length === 0) ? "-" : row.notes,
             // sortable: true,
             width: "224px",
         },
         {
-            name: 'Status',
+            name: language === null ? ind.status : language.status,
             selector: row => row.mstatus_name_ind,
             minWidth: "140px",
             maxWidth: "195px",
@@ -762,15 +765,15 @@ function Disbursement() {
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>{(user_role === "102") ? <><span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Disbursement</> : <><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</>}</span> 
+            <span className='breadcrumbs-span'>{(user_role === "102") ? <><span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.riwayatDisburse : language.riwayatDisburse}</> : <><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</>}</span> 
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{(user_role === "102") ? "Riwayat Disbursement" : "Disbursement Report"}</h2>
+                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{(user_role === "102") ? (language === null ? ind.riwayatDisburse : language.riwayatDisburse) : "Disbursement Report"}</h2>
             </div>
             <div className='main-content'>
                 <div className='mt-2'>
-                    <span className='mt-4' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600}}>{(user_role === "102") ? "Riwayat Disbursement" : "Disbursement Report"}</span>
+                    <span className='mt-4' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600}}>{(user_role === "102") ? (language === null ? ind.riwayatDisburse : language.riwayatDisburse) : "Disbursement Report"}</span>
                     <div className='base-content mt-3'>
-                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? ind.filter : language.filter}</span>
                         {
                             user_role !== "102" ?
                             <>
@@ -884,29 +887,29 @@ function Disbursement() {
                             </> :
                             <>
                                 <Row className='mt-4'>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                        <span className='me-4'>ID Transaksi</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-report' placeholder='Masukkan ID Transaksi'/>
+                                    <Col xs={4} className="d-flex justify-content-between  align-items-center">
+                                        <span className={language.flagName === "CN" ? 'me-5' : 'me-4'}>{language === null ? ind.idTransaksi : language.idTransaksi}</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className={language.flagName === "CN" ? 'input-text-report ms-5' : 'input-text-report '} placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: "34%" }}>
-                                        <span style={{ marginRight: 26 }}>Periode <span style={{ color: "red" }}>*</span></span>
+                                        <span style={{ marginRight: 26 }}>{language === null ? ind.periode : language.periode} <span style={{ color: "red" }}>*</span></span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez me-2" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
-                                            <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                            <option value={2}>Hari Ini</option>
-                                            <option value={3}>Kemarin</option>
-                                            <option value={4}>7 Hari Terakhir</option>
-                                            <option value={5}>Bulan Ini</option>
-                                            <option value={6}>Bulan Kemarin</option>
-                                            <option value={7}>Pilih Range Tanggal</option>
+                                            <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
+                                            <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
+                                            <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
+                                            <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                            <option value={5}>{language === null ? ind.bulanIni : language.bulanIni}</option>
+                                            <option value={6}>{language === null ? ind.bulanKemarin : language.bulanKemarin}</option>
+                                            <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                         </Form.Select>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "30%"}}>
-                                        <span>Status</span>
+                                        <span>{language === null ? ind.status : language.status}</span>
                                         <Form.Select name="statusDisbursement" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
-                                            <option defaultChecked disabled value="">Pilih Status</option>
-                                            <option value={2}>Berhasil</option>
-                                            <option value={1}>Dalam Proses</option>
-                                            <option value={4}>Gagal</option>
+                                            <option defaultChecked disabled value="">{language === null ? ind.placeholderStatus : language.placeholderStatus}</option>
+                                            <option value={2}>{language === null ? ind.berhasil : language.berhasil}</option>
+                                            <option value={1}>{language === null ? ind.dalamProses : language.dalamProses}</option>
+                                            <option value={4}>{language === null ? ind.gagal : language.gagal}</option>
                                             {/* <option value={7}>Menunggu Pembayaran</option> */}
                                             {/* <option value={9}>Kadaluwarsa</option> */}
                                         </Form.Select>
@@ -915,8 +918,8 @@ function Disbursement() {
                                 </Row>
                                 <Row className='mt-3'>
                                     <Col xs={4} className='d-flex justify-content-start align-items-center'>
-                                        <span>Partner Trans ID</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder='Masukkan Partner Trans ID'/>
+                                        <span>{language === null ? ind.partnerTransId : language.partnerTransId}</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder={language === null ? ind.placeholderPartnerTransId : language.placeholderPartnerTransId}/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-end align-items-center" >
                                         <div style={{ display: showDateDisbursement}} className='me-4'>
@@ -934,22 +937,22 @@ function Disbursement() {
                         <Row className='mt-4'>
                             <Col xs={5}>
                                 <Row>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                    <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)}
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
-                                            Terapkan
+                                            {language === null ? ind.terapkan : language.terapkan}
                                         </button>
                                     </Col>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                    <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => resetButtonHandle()}
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
-                                            Atur Ulang
+                                            {language === null ? ind.aturUlang : language.aturUlang}
                                         </button>
                                     </Col>
                                 </Row>
@@ -959,7 +962,11 @@ function Disbursement() {
                             user_role === "102" ? (
                                 <div className='d-flex justify-content-start align-items-center mt-3 mb-2' style={{ color: '#383838', padding: '12px 12px 12px 12px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" />
-                                    <div className='ms-2'>Status transaksi Disbursement Anda akan diperbaharui setiap <b>20 menit</b> sekali. Harap periksa laman ini secara berkala untuk pembaharuan status transaksi.</div>
+                                    <div className='ms-2'>{
+                                        (language === null || language.flagName === "ID") ? <>Status transaksi Disbursement Anda akan diperbaharui setiap <b>20 menit</b> sekali. Harap periksa laman ini secara berkala untuk pembaharuan status transaksi.</> :
+                                        language.flagName === "EN" ? <>Your Disbursement transaction status will be updated every <b>20 minutes</b>. Please check this page periodically for transaction status updates.</> :
+                                        <>您的付款交易状态将每 <b>20</b> 分钟更新一次。 请定期查看此页面以获取交易状态更新。</>
+                                    }</div>
                                 </div>
                             ) : ""
                         }
@@ -977,7 +984,7 @@ function Disbursement() {
                                 progressPending={pendingDisbursement}
                                 progressComponent={<CustomLoader />}
                                 dense
-                                // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                                noDataComponent={<div style={{ marginBottom: 10 }}>{language === null ? ind.tidakAdaData : language.tidakAdaData}</div>}
                                 // pagination
                             />
                         </div>

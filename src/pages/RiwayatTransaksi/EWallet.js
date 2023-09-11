@@ -12,9 +12,12 @@ import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import ReactSelect, { components } from 'react-select';
+import { ind } from '../../components/Language';
+import { id } from 'date-fns/locale';
 
 function EWallet() {
-
+    const language = JSON.parse(sessionStorage.getItem('lang'))
+    console.log(language, "language");
     const history = useHistory()
     const access_token = getToken();
     const user_role = getRole();
@@ -501,22 +504,22 @@ function EWallet() {
     ];
     const columnsPartner = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.number,
             width: "5%",
             wrap: true,
             maxWidth: 'fit-content !important'
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? ind.idTransaksi : language.idTransaksi,
             selector: row => row.transID,
-            width: "120px",
+            width: "180px",
             wrap: true,
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
             // sortable: true
         },
         {
-            name: 'Waktu',
+            name: language === null ? ind.waktu : language.waktu,
             selector: row => row.processDate,
             // sortable: true,          
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
@@ -524,7 +527,7 @@ function EWallet() {
             wrap: true
         },
         {
-            name: 'Partner Trans ID',
+            name: language === null ? ind.partnerTransId : language.partnerTransId,
             selector: row => row.referenceNumber,
             // sortable: true,          
             wrap: true,
@@ -532,7 +535,7 @@ function EWallet() {
             // width: "150px",
         },
         {
-            name: 'Channel eWallet',
+            name: language === null ? ind.channelEwallet : language.channelEwallet,
             selector: row => row.ewalletName,
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", },
@@ -540,14 +543,14 @@ function EWallet() {
             width: "160px",
         },
         {
-            name: 'Nominal Transaksi',
+            name: language === null ? ind.nominalTransaksi : language.nominalTransaksi,
             selector: row => convertToRupiah(row.amount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
         },
         {
-            name: 'Status',
+            name: language === null ? ind.status : language.status,
             selector: row => row.status,
             width: "150px",
             // sortable: true,
@@ -617,23 +620,23 @@ function EWallet() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Collection E-Wallet</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>{user_role !== "102" ? "Beranda" : (language === null ? ind.laporan : language.laporan)}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.riwayat : language.riwayat}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.collectionEwallet : language.collectionEwallet}</span>
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4">Riwayat</h2>
+                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? ind.riwayat : language.riwayat}</h2>
             </div>
             <div className='main-content'>
                 <div className='riwayat-dana-masuk-div mt-4'>
-                    <span className='mt-4' style={{fontWeight: 600}}>Collection E-Wallet</span>
+                    <span className='mt-4' style={{fontWeight: 600}}>{language === null ? ind.collectionEwallet : language.collectionEwallet}</span>
                     <div className='base-content my-3'>
-                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? ind.filter : language.filter}</span>
                         <Row className='mt-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>ID Transaksi</span>
-                                <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiEWallet} name="idTransaksiEWallet" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>{language === null ? ind.idTransaksi : language.idTransaksi}</span>
+                                <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiEWallet} name="idTransaksiEWallet" type='text'className='input-text-riwayat' placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
                             </Col>
                             {
                                 user_role !== "102" ?
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <span className='me-3'>Nama Partner</span>
                                     <div className="dropdown dropSaldoPartner">
                                         <ReactSelect
@@ -650,47 +653,47 @@ function EWallet() {
                                         />
                                     </div>
                                 </Col> :
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Channel</span>
-                                    <Form.Select name='channelEWallet' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.channelEWallet} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={0}>Channel eWallet</option>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span>{language === null ? ind.channel : language.channel}</span>
+                                    <Form.Select name='channelEWallet' className='input-text-riwayat' style={{ display: "inline" }} value={inputHandle.channelEWallet} onChange={(e) => handleChange(e)}>
+                                        <option defaultValue value={0}>{language === null ? ind.channelEwallet : language.channelEwallet}</option>
                                         <option value={1}>DANA</option>
                                         <option value={2}>OVO</option>
                                         <option value={3}>GOPAY</option>
                                     </Form.Select>
                                 </Col>
                             }
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>Partner Trans ID</span>
-                                <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdEWallet} name="partnerTransIdEWallet" type='text'className='input-text-riwayat ms-2' placeholder='Masukkan Partner Trans ID'/>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>{language === null ? ind.partnerTransId : language.partnerTransId}</span>
+                                <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdEWallet} name="partnerTransIdEWallet" type='text'className='input-text-riwayat ms-2' placeholder={language === null ? ind.placeholderPartnerTransId : language.placeholderPartnerTransId}/>
                             </Col>
                         </Row>
                         <Row className='mt-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateEWallet === "none") ? "33%" : "33%" }}>
-                                <span style={{ marginRight: 40 }}>Periode<span style={{ color: "red" }}>*</span></span>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: (showDateEWallet === "none") ? "33%" : "33%" }}>
+                                <span style={{ marginRight: 40 }}>{language === null ? ind.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeEWallet' className="input-text-riwayat ms-3" value={inputHandle.periodeEWallet} onChange={(e) => handleChangePeriodeTransfer(e)}>
-                                    <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                    <option value={2}>Hari Ini</option>
-                                    <option value={3}>Kemarin</option>
-                                    <option value={4}>7 Hari Terakhir</option>
-                                    <option value={5}>Bulan Ini</option>
-                                    <option value={6}>Bulan Kemarin</option>
-                                    <option value={7}>Pilih Range Tanggal</option>
+                                    <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
+                                    <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
+                                    <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
+                                    <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                    <option value={5}>{language === null ? ind.bulanIni : language.bulanIni}</option>
+                                    <option value={6}>{language === null ? ind.bulanKemarin : language.bulanKemarin}</option>
+                                    <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                 </Form.Select>                            
                             </Col>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span style={{ marginRight: 41 }}>Status</span>
-                                <Form.Select name="statusEWallet" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.statusEWallet} onChange={(e) => handleChange(e)}>
-                                    <option defaultChecked disabled value="">Pilih Status</option>
-                                    <option value={2}>Berhasil</option>
-                                    <option value={1}>Dalam Proses</option>
-                                    <option value={7}>Menunggu Pembayaran</option>
-                                    <option value={9}>Kadaluwarsa</option>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span style={{ marginRight: 41 }}>{language === null ? ind.status : language.status}</span>
+                                <Form.Select name="statusEWallet" className='input-text-riwayat' style={{ display: "inline" }} value={inputHandle.statusEWallet} onChange={(e) => handleChange(e)}>
+                                    <option defaultChecked disabled value="">{language === null ? ind.placeholderStatus : language.placeholderStatus}</option>
+                                    <option value={2}>{language === null ? ind.berhasil : language.berhasil}</option>
+                                    <option value={1}>{language === null ? ind.dalamProses : language.dalamProses}</option>
+                                    <option value={7}>{language === null  ? ind.menungguPembayaran : language.menungguPembayaran}</option>
+                                    <option value={9}>{language === null ? ind.kadaluwarsa : language.kadaluwarsa}</option>
                                 </Form.Select>
                             </Col>
                             {
                                 user_role !== "102" &&
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <span>Channel</span>
                                     <Form.Select name='channelEWallet' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.channelEWallet} onChange={(e) => handleChange(e)}>
                                         <option defaultValue value={0}>Channel eWallet</option>
@@ -702,7 +705,7 @@ function EWallet() {
                             }
                         </Row>
                         <Row className="mt-4">
-                            <Col xs={4} style={{ display: showDateEWallet }} className='text-end pe-5'>
+                            <Col xs={4} style={{ display: showDateEWallet }} className='text-end'>
                                 <DateRangePicker 
                                     onChange={pickDateEWallet}
                                     value={stateEWallet}
@@ -714,22 +717,22 @@ function EWallet() {
                         <Row className='mt-4'>
                             <Col xs={5}>
                                 <Row>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                    <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => filterRiwayatEWallet(1, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet)}
                                             className={(inputHandle.periodeEWallet !== 0 || dateRangeEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.idTransaksiEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.statusEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedAgenEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.partnerTransIdEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedBankEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.fiturEWallet.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeEWallet === 0 || inputHandle.periodeEWallet === 0 && inputHandle.idTransaksiEWallet.length === 0 || inputHandle.periodeEWallet === 0 && inputHandle.statusEWallet.length === 0 || inputHandle.periodeEWallet === 0 && selectedAgenEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.partnerTransIdEWallet.length === 0 | inputHandle.periodeEWallet === 0 && selectedBankEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.fiturEWallet.length === 0}
                                         >
-                                            Terapkan
+                                            {language === null ? ind.terapkan : language.terapkan}
                                         </button>
                                     </Col>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                    <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => resetButtonHandle("Dana Masuk")}
                                             className={(inputHandle.periodeEWallet || dateRangeEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.idTransaksiEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.statusEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedAgenEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.partnerTransIdEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedBankEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.fiturEWallet.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                             disabled={inputHandle.periodeEWallet === 0 || inputHandle.periodeEWallet === 0 && inputHandle.idTransaksiEWallet.length === 0 || inputHandle.periodeEWallet === 0 && inputHandle.statusEWallet.length === 0 || inputHandle.periodeEWallet === 0 && selectedAgenEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.partnerTransIdEWallet.length === 0 || inputHandle.periodeEWallet === 0 && selectedBankEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.fiturEWallet.length === 0}
                                         >
-                                            Atur Ulang
+                                            {language === null ? ind.aturUlang : language.aturUlang}
                                         </button>
                                     </Col>
                                 </Row>
@@ -749,7 +752,7 @@ function EWallet() {
                                 highlightOnHover
                                 progressPending={pendingTransfer}
                                 progressComponent={<CustomLoader />}
-                                // pagination
+                                noDataComponent={user_role === "102" && (language === null ? ind.tidakAdaData : language.tidakAdaData)}
                             />
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>

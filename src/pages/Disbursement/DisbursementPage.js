@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import $ from 'jquery'
@@ -34,11 +35,12 @@ import templateBulkXLSX from '../../assets/files/Template Bulk Disbursement PT. 
 import templateBulkCSV from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
 import arrowDown from "../../assets/img/icons/arrow_down.svg";
 import CurrencyInput from 'react-currency-input-field'
+import { ind } from '../../components/Language'
 
 registerPlugin(FilePondPluginFileEncode)
 
 function DisbursementPage() {
-
+    const language = JSON.parse(sessionStorage.getItem('lang'))
     const user_role = getRole()
     const access_token = getToken()
     const [isDisbursementManual, setisDisbursementManual] = useState(true)
@@ -73,10 +75,10 @@ function DisbursementPage() {
     const [showModalStatusDisburse, setShowModalStatusDisburse] = useState(false)
     const [filterTextBank, setFilterTextBank] = useState('')
     const [filterTextRekening, setFilterTextRekening] = useState('')
-    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
     <div className='pb-4'>
         <span class="filepond--label-action">
-            Upload File
+            ${language === null ? ind.unggahFile : language.unggahFile}
         </span>
     </div>`)
     const [files, setFiles] = useState([])
@@ -135,7 +137,13 @@ function DisbursementPage() {
             })
         }
     }
-    
+
+    console.log(((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee)), "((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee))");
+    console.log(getBalance, "getBalance");
+    console.log(totalHoldBalance, "totalHoldBalance");
+    console.log(sum(allNominal), "sum(allNominal)");
+    console.log(sum(sum(allFee)), "sum(sum(allFee))");
+
     async function fileCSV(newValue, bankLists, listBallanceBank, bankFee, allBalance, allHoldBalance) {
         if (errorFound.length !== 0) {
             setErrorFound([])
@@ -206,10 +214,10 @@ function DisbursementPage() {
                             setTimeout(() => {
                                 setLabelUpload("")
                                 setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Jumlah Sheet pada file Excel lebih dari 1. Harap tinjau kembali file anda agar sesuai dengan template.</div></div>
-                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Ganti File
+                                        ${language === null ? ind.gantiFile : language.gantiFile}
                                     </span>
                                 </div>`)
                             }, 2500);
@@ -218,11 +226,11 @@ function DisbursementPage() {
                             setErrorFound([])
                             setTimeout(() => {
                                 setLabelUpload("")
-                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
-                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>${language === null ? ind.kontenTidakSesuai : language.kontenTidakSesuai}</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Ganti File
+                                        ${language === null ? ind.gantiFile : language.gantiFile}
                                     </span>
                                 </div>`)
                             }, 2500);
@@ -231,11 +239,11 @@ function DisbursementPage() {
                             setErrorFound([])
                             setTimeout(() => {
                                 setLabelUpload("")
-                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
-                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>${language === null ? ind.kontenTidakSesuai : language.kontenTidakSesuai}</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Ganti File
+                                        ${language === null ? ind.gantiFile : language.gantiFile}
                                     </span>
                                 </div>`)
                             }, 2500);
@@ -1670,7 +1678,7 @@ function DisbursementPage() {
 
     const subHeaderComponentMemoRekening = useMemo(() => {
         return (
-            <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
+            <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title={`${language === null ? ind.cariDaftarBank : language.cariDaftarBank} :`} placeholder={`${language === null ? ind.placeholderNamaKodeBank : language.placeholderNamaKodeBank}`}/>
         );	}, [filterTextRekening]
     );
 
@@ -1807,27 +1815,27 @@ function DisbursementPage() {
 
     const columnsRekening = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: 'Bank Tujuan',
+            name: language === null ? ind.bankTujuan : language.bankTujuan,
             selector: row => row.mbank_name,
             width: "130px"
         },
         {
-            name: 'Cabang',
+            name: language === null ? ind.cabang : language.cabang,
             selector: row => (row.mbankaccountlist_bank_code === '014' && (row.mbankaccountlist_branch_name.length === 0 || row.mbankaccountlist_branch_name === "")) ? "-" : row.mbankaccountlist_branch_name,
             width: "280px"
         },
         {
-            name: 'No Rekening',
+            name: language === null ? ind.noRek : language.noRek,
             selector: row => row.mbankaccountlist_number,
             width: "150px"
         },
         {
-            name: 'Nama Pemilik Rekening',
+            name: language === null ? ind.namaPemilikRek : language.namaPemilikRek,
             selector: row => row.mbankaccountlist_name,
         },
     ]
@@ -3441,7 +3449,7 @@ function DisbursementPage() {
                 </div>
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/Riwayat Transaksi/va-dan-paylink"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
+                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/Riwayat Transaksi/va-dan-paylink"}> {language === null ? ind.laporan : language.laporan}</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.disbursement : language.disbursement}</span>
                 {/* <Row className='mt-1'>
                     {
                         balanceDetail !== 0 &&
@@ -3493,10 +3501,10 @@ function DisbursementPage() {
                 </Row> */}
                 <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
                     <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
-                        <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
+                        <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">{language === null ? ind.disbursementManual : language.disbursementManual}</span>
                     </div>
                     <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => pindahHalaman("bulk")} id="konfigurasitab">
-                        <span className='menu-detail-akun-span' id="konfigurasispan">Disbursement Bulk</span>
+                        <span className='menu-detail-akun-span' id="konfigurasispan">{language === null ? ind.disbursementBulk : language.disbursementBulk}</span>
                     </div>
                 </div>
                 {
@@ -3507,16 +3515,16 @@ function DisbursementPage() {
                             <div className='base-content mb-4 pb-4'>
                                 <div className='d-flex justify-content-start align-items-center' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" />
-                                    <div className='ms-2'>Pastikan data tujuan Disbursement sudah benar, Ezeelink tidak bertanggung jawab atas kesalahan data yang dilakukan.</div>
+                                    <div className='ms-2'>{language === null ? ind.descManualDisburse : language.descManualDisburse}</div>
                                 </div>
                                 <div className='pt-4'>
                                     <Row className='align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            Pilih Bank Tujuan <span style={{ color: "red" }}>*</span>
+                                            {language === null ? ind.pilihBankTujuan : language.pilihBankTujuan} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10} style={{ cursor: "pointer" }} className="position-relative d-flex justify-content-between align-items-center" onClick={() => setShowBank(true)}>
                                             <Form.Control
-                                                placeholder="Pilih Bank"
+                                                placeholder={language === null ? ind.pilihBank : language.pilihBank}
                                                 className='input-text-user'
                                                 type='text'
                                                 disabled
@@ -3532,17 +3540,17 @@ function DisbursementPage() {
                                         <Col xs={10}>
                                             <div style={{ fontFamily:'Nunito', fontSize: 12, color: "#888888"}} className='d-flex justify-content-start align-items-center'>
                                                 <span className='me-1'><img src={noteIconGrey} alt='icon error' /></span>
-                                                Transfer setelah jam 12 siang untuk bank tujuan selain BCA berpotensi diterima di hari berikutnya
+                                                 {language === null ? ind.descBankTujuan : language.descBankTujuan}
                                             </div>
                                         </Col>
                                     </Row>
                                     <Row className={alertNotValid === true ? `mb-1 align-items-center` : `mb-4 align-items-center`} style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            Cabang <span style={{ color: "red" }}>*</span>
+                                            {language === null ? ind.cabang : language.cabang} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
                                             <Form.Control
-                                                placeholder="Masukkan Cabang Bank "
+                                                placeholder={language === null ? ind.placeholderCabangBank : language.placeholderCabangBank}
                                                 type='text'
                                                 className='input-text-user'
                                                 name="bankCabang"
@@ -3567,11 +3575,11 @@ function DisbursementPage() {
                                     }
                                     <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            No. Rekening Tujuan <span style={{ color: "red" }}>*</span>
+                                            {language === null ? ind.noRekTujuan : language.noRekTujuan} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
                                             <Form.Control
-                                                placeholder="Masukan No. Rekening Tujuan"
+                                                placeholder={language === null ? ind.placeholderNoRekTujuan : language.placeholderNoRekTujuan}
                                                 type='number'
                                                 className='input-text-user'
                                                 name="bankNumberRek"
@@ -3583,11 +3591,11 @@ function DisbursementPage() {
                                     </Row>
                                     <Row className='align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
+                                            {language === null ? ind.namaPemilikRek : language.namaPemilikRek} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
                                             <Form.Control
-                                                placeholder="Masukan Nama Pemilik Rekening"
+                                                placeholder={language === null ? ind.placeholderNamaPemilikRek : language.placeholderNamaPemilikRek}
                                                 type='text'
                                                 className='input-text-user'
                                                 name="bankNameRek"
@@ -3602,7 +3610,7 @@ function DisbursementPage() {
                                             <div className='d-flex align-items-center justify-content-between'>
                                                 <div className='mb-3'>
                                                     <Form.Check
-                                                        label="Simpan ke Daftar Rekening"
+                                                        label={language === null ? ind.simpanKeDaftarRek : language.simpanKeDaftarRek}
                                                         id="statusId"
                                                         onChange={handleChangeCheckBox}
                                                         checked={isChecked}
@@ -3623,7 +3631,7 @@ function DisbursementPage() {
                                                         }}
                                                         onClick={() => setShowDaftarRekening(true)}
                                                     >
-                                                        Lihat Daftar Rekening
+                                                        {language === null ? ind.lihatDaftarRek : language.lihatDaftarRek}
                                                     </button>
                                                 </div>
                                             </div>
@@ -3631,7 +3639,7 @@ function DisbursementPage() {
                                     </Row>
                                     <Row className='align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>    
-                                            Nominal Disbursement <span style={{ color: "red" }}>*</span>
+                                            {language === null ? ind.nominalDisburse : language.nominalDisburse} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
                                             <CurrencyInput
@@ -3684,7 +3692,7 @@ function DisbursementPage() {
                                                 alertMinSaldo === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Minimal disbursement {convertToRupiah(minMaxDisbursement.minDisbursement)}
+                                                        {language === null ? ind.descMinimalDisburse : language.descMinimalDisburse} {convertToRupiah(minMaxDisbursement.minDisbursement)}
                                                     </div>
                                                 ) : 
                                                 alertMaxSaldo === true ? (
@@ -3696,12 +3704,12 @@ function DisbursementPage() {
                                                 alertBankTujuan === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Silahkan pilih tujuan bank terlebih dahulu
+                                                        {language === null ? ind.descPilihTujuanBank : language.descPilihTujuanBank}
                                                     </div>
                                                 ) : (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#888888"}} className='text-start'>
                                                         <span className='me-1'><img src={noteInfo} alt='icon info' /></span>
-                                                        Nominal Disbursement tidak boleh mengandung Decimal
+                                                        {language === null ? ind.descNominalDisburse : language.descNominalDisburse}
                                                     </div>
                                                 )
                                             }
@@ -3710,12 +3718,12 @@ function DisbursementPage() {
                                     <Row className='mb-3 align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
                                             <span style={{ fontFamily: "Nunito" }}>
-                                                Email Penerima
+                                                {language === null ? ind.emailPenerima : language.emailPenerima}
                                             </span>
                                         </Col>
                                         <Col xs={10}>
                                             <Form.Control
-                                                placeholder="Masukkan Alamat Email Penerima"
+                                                placeholder={language === null ? ind.placeholderEmailPenerima : language.placeholderEmailPenerima}
                                                 type='text'
                                                 className='input-text-user'
                                                 name="emailPenerima"
@@ -3739,13 +3747,13 @@ function DisbursementPage() {
                                     <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
                                             <span style={{ fontFamily: "Nunito" }}>
-                                                Catatan
+                                                {language === null ? ind.catatan : language.catatan}
                                             </span>
                                         </Col>
                                         <Col xs={10}>
                                             <textarea
                                                 className='input-text-disburs'
-                                                placeholder="Masukkan catatan bila perlu ( Maksimal 25 karakter )"
+                                                placeholder={language === null ? ind.placeholderCatatan : language.placeholderCatatan}
                                                 style={{ width: "100%", padding: 10, borderColor: "#E0E0E0"}}
                                                 name="catatan"
                                                 value={inputHandle.catatan}
@@ -3780,12 +3788,13 @@ function DisbursementPage() {
                                                     disabled={
                                                         (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length === 0 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < minMaxDisbursement.minDisbursement || Number(inputHandle.nominal) > minMaxDisbursement.maxDisbursement || dataDisburse.length >= 10)
                                                     }
+                                                    style={{ width: "40%" }}
                                                 >
                                                     <FontAwesomeIcon
                                                         icon={faPlus}
                                                         style={{ marginRight: 10 }}
                                                     />{" "}
-                                                    Tambah Tujuan Disbursement
+                                                    {language === null ? ind.tambahTujuanDisburse : language.tambahTujuanDisburse}
                                                 </button>  :
                                                 <div className='d-flex justify-content-start align-items-center'>
                                                     <div className='me-1'>
@@ -3806,7 +3815,7 @@ function DisbursementPage() {
                                                                 borderRadius: 6,
                                                             }}
                                                         >
-                                                            Batal
+                                                            {language === null ? ind.batal : language.batal}
                                                         </button>
                                                     </div>
                                                     <div className='ms-1'>
@@ -3847,7 +3856,7 @@ function DisbursementPage() {
                                                                 (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length < 4 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < 10000 || dataDisburse.length > 10)
                                                             }
                                                         >
-                                                            Simpan
+                                                            {language === null ? ind.simpan : language.simpan}
                                                         </button>
                                                     </div>  
                                                 </div>
@@ -3856,7 +3865,7 @@ function DisbursementPage() {
                                     </Row>
                                     {
                                         dataDisburse.length !== 0 ?
-                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'inherit' }}>
                                             <table
                                                 className="table mt-5"
                                                 id="tableInvoice"
@@ -3866,15 +3875,15 @@ function DisbursementPage() {
                                                     <tr 
                                                         className='ms-3'  
                                                     >
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Bank Tujuan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Cabang</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No. Rekening Tujuan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nama Pemilik Rekening</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nominal Disbursement</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Email Penerima</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Catatan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Aksi</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.no : language.no}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.bankTujuan : language.bankTujuan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.cabang : language.cabang}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.noRekTujuan : language.noRekTujuan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.namaPemilikRek : language.namaPemilikRek}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.nominalDisburse : language.nominalDisburse}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.emailPenerima : language.emailPenerima}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.catatan : language.catatan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.aksi : language.aksi}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -3934,7 +3943,7 @@ function DisbursementPage() {
                                                 </tbody>
                                             </table>
                                         </div> :
-                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'inherit' }}>
                                             <table
                                                 className="table text-center mt-5"
                                                 id="tableInvoice"
@@ -3944,42 +3953,42 @@ function DisbursementPage() {
                                                     <tr 
                                                         
                                                     >
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Bank Tujuan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Cabang</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No. Rekening Tujuan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nama Pemilik Rekening</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nominal Disbursement</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Email Penerima</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Catatan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Aksi</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.no : language.no}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.bankTujuan : language.bankTujuan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.cabang : language.cabang}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.noRekTujuan : language.noRekTujuan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.namaPemilikRek : language.namaPemilikRek}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.nominalDisburse : language.nominalDisburse}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.emailPenerima : language.emailPenerima}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.catatan : language.catatan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? ind.aksi : language.aksi}</th>
                                                     </tr>
                                                 </thead>
                                             </table>
-                                            <div className='text-center pb-3'>Belum ada data tujuan Disbursement</div>
+                                            <div className='text-center pb-3'>{language === null ? ind.belumAdaDataDisburse : language.belumAdaDataDisburse}</div>
                                         </div>
                                     }
                                     
                                     <div className='sub-base-content-disburse mt-5'>
-                                        <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>Ringkasan</div>
+                                        <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{language === null ? ind.ringkasan : language.ringkasan}</div>
                                         <div className='d-flex justify-content-between align-items-center mt-3'>
-                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Disbursement</div>
+                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>{language === null ? ind.totalDisburse : language.totalDisburse}</div>
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 2)}</div>
                                         </div>
                                         <div className='d-flex justify-content-between align-items-center mt-2'>
-                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement + Total Tax</div>
+                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>{language === null ? ind.totalFeeDisbursePlusTax : language.totalFeeDisbursePlusTax}</div>
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 2)}</div>
                                         </div>
                                         <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
                                         <div className='d-flex justify-content-between align-items-center mt-3' style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>
-                                            <div>Total Disbursement + Total Fee</div>
+                                            <div>{language === null ? ind.totalDisbursePlusFee : language.totalDisbursePlusFee}</div>
                                             <div>{convertToRupiah((sum(allNominal) + sum(allFee)), true, 2)}</div>
                                         </div>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center mt-3'>
                                         <div style={{ fontFamily: 'Nunito' }}>
-                                            <div style={{ fontSize: 14, color: '#383838' }}>Sisa Saldo Tersedia</div>
-                                            <div style={{ fontSize: 12, color: '#888888' }}>(Terhitung setelah seluruh disbursement berhasil)</div>
+                                            <div style={{ fontSize: 14, color: '#383838' }}>{language === null ? ind.sisaSaldoTersedia : language.sisaSaldoTersedia}</div>
+                                            <div style={{ fontSize: 12, color: '#888888' }}>{language === null ? ind.descTerhitung : language.descTerhitung}</div>
                                         </div>
                                         {
                                             Number(((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee))) < 0  ?
@@ -4001,7 +4010,7 @@ function DisbursementPage() {
                                 disabled={dataDisburse.length === 0 || Number((getBalance) - (sum(allNominal) + sum(allFee))) < 0}
                                 style={{ width: '25%' }}
                             >
-                                Lakukan Disbursement
+                                {language === null ? ind.lakukanDisburse : language.lakukanDisburse}
                             </button>
                         </div>
 
@@ -4017,18 +4026,18 @@ function DisbursementPage() {
                                 
                             </Modal.Header>
                             <Modal.Title className="mt-1 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                                Daftar Bank
+                                {language === null ? ind.daftarBank : language.daftarBank}
                             </Modal.Title>
                             <Modal.Body>
                                 <div className="div-table mt-3">
-                                    <div style={{ fontFamily: 'Nunito', fontSize: 14}}>Cari Data Bank :</div>
+                                    <div style={{ fontFamily: 'Nunito', fontSize: 14}}>{language === null ? ind.cariDaftarBank : language.cariDaftarBank} :</div>
                                     <div className="d-flex justify-content-between align-items-center position-relative mt-2 mb-3" style={{width: "100%"}}>
                                         <div className="position-absolute left-3 px-1"><img src={search} alt="search" /></div>
                                         <FormControl
                                             className="ps-5"
                                             id="search"
                                             type="text"
-                                            placeholder='Masukkan Nama / Kode Bank'
+                                            placeholder={language === null ? ind.placeholderDaftarBank : language.placeholderDaftarBank}
                                             aria-label="Search Input"
                                             value={filterTextBank}
                                             onChange={e => setFilterTextBank(e.target.value)}
@@ -4043,9 +4052,9 @@ function DisbursementPage() {
                                         >
                                             <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
                                                 <tr >
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 10 }}>No</th>
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 50 }}>Nama Bank</th>
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 80 }}>Kode Bank</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 10 }}>{language === null ? ind.no : language.no}</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 50 }}>{language === null ? ind.namaBank : language.namaBank}</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 80 }}>{language === null ? ind.kodeBank : language.kodeBank}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -4088,7 +4097,7 @@ function DisbursementPage() {
                                             borderRadius: 6,
                                         }}
                                     >
-                                        Batal
+                                        {language === null ? ind.batal : language.batal}
                                     </button>
                                 </div>
                             </Modal.Body>
@@ -4106,7 +4115,7 @@ function DisbursementPage() {
                                 
                             </Modal.Header>
                             <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                                Daftar Rekening
+                                {language === null ? ind.daftarRekening : language.daftarRekening}
                             </Modal.Title>
                             <Modal.Body>
                                 <div className="div-table bank-list-subakun mt-3">
@@ -4143,7 +4152,7 @@ function DisbursementPage() {
                                             borderRadius: 6,
                                         }}
                                     >
-                                        Batal
+                                        {language === null ? ind.batal : language.batal}
                                     </button>
                                 </div>
                             </Modal.Body>
@@ -4154,7 +4163,7 @@ function DisbursementPage() {
                             <hr className='hr-style' style={{marginTop: -2}}/>
                             <div className='base-content'>
                                 <div className='d-flex justify-content-between align-items-center'>
-                                    <div style={{ fontFamily: 'Nunito', fontSize: 14 }}>Perhatikan panduan pengisian template untuk menghindari kesalahan: <span onClick={() => setShowModalPanduan(true)} style={{ textDecoration: 'underline', fontFamily: 'Exo', fontWeight: 700, fontSize: 14, color: '#077E86', cursor: 'pointer' }}>Lihat Panduan</span></div>
+                                    <div style={{ fontFamily: 'Nunito', fontSize: 14 }}>{language === null ? ind.descSubDisburseBulk : language.descSubDisburseBulk}<span onClick={() => setShowModalPanduan(true)} style={{ textDecoration: 'underline', fontFamily: 'Exo', fontWeight: 700, fontSize: 14, color: '#077E86', cursor: 'pointer' }}> {language === null ? ind.lihatPanduan : language.lihatPanduan}</span></div>
                                     <div>
                                         <button
                                             style={{
@@ -4166,12 +4175,13 @@ function DisbursementPage() {
                                                 backgroundColor: "#ffffff",
                                                 fontFamily:"Exo",
                                                 fontWeight: 700,
-                                                fontSize: 14
+                                                fontSize: 14,
+                                                width: "15rem"
                                             }}
                                         >
                                             <span className='me-2'><img src={saveIcon} alt="save icon"/></span>
                                             <a href={templateBulkXLSX} download style={{ color: '#077E86' }}>
-                                                Download Template
+                                                {language === null ? ind.unduhTemplate : language.unduhTemplate}
                                             </a>
                                         </button>
                                     </div>
@@ -4238,7 +4248,7 @@ function DisbursementPage() {
                                         data={dataFromUploadExcel} //untuk excel
                                         customStyles={customStyles}
                                         conditionalRowStyles={conditionalRowStylesBulk}
-                                        noDataComponent={<div style={{ marginBottom: 10 }}>Belum ada data tujuan Disbursement</div>}
+                                        noDataComponent={<div style={{ marginBottom: 10 }}>{language === null ? ind.belumAdaDataDisburse : language.belumAdaDataDisburse}</div>}
                                         pagination
                                         highlightOnHover
                                         // progressComponent={<CustomLoader />}
@@ -4257,7 +4267,7 @@ function DisbursementPage() {
                                     // onClick={() => createDataDisburseExcel(dataFromUpload, isDisbursementManual)} //untuk csv
                                     onClick={() => createDataDisburseExcel(dataFromUploadExcel, isDisbursementManual, dataOriginFromUpload)} //untuk excel
                                 >
-                                    Lakukan Disbursement
+                                    {language === null ? ind.lakukanDisburse : language.lakukanDisburse}
                                 </button>
                             </div>
                     

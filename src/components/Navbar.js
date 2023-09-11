@@ -62,8 +62,7 @@ import CurrencyInput from "react-currency-input-field";
 import flagIdRoundIcon from '../assets/icon/flag_id_round.svg'
 import flagEnRoundIcon from '../assets/icon/flag_en_round.svg'
 import flagRrtRoundIcon from '../assets/icon/flag_rrt_round.svg'
-import dropDownBlack from '../assets/icon/drop_down_black.svg'
-import $ from 'jquery'
+import { chn, eng, ind } from "./Language";
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
@@ -118,7 +117,7 @@ export default (props) => {
   const [isLoadingTopUpConfirm, setIsLoadingTopUpConfirm] = useState(false)    
   const [showPopoverLang, setShowPopoverLang] = useState(false)
   const [isTabLanguageNavbar, setIsTabLanguageNavbar] = useState("bahasa")
-  const language = sessionStorage.getItem('lang')
+  const language =  JSON.parse(sessionStorage.getItem('lang'))
 
   function handleChange(e) {
     setInputHandle({
@@ -130,10 +129,16 @@ export default (props) => {
   function tabLanguage (isTabs) {
     if (isTabs === "bahasa") {
       setIsTabLanguageNavbar("bahasa")
+      sessionStorage.removeItem('lang');
+      window.location.reload();
     } else if (isTabs === "inggris") {
       setIsTabLanguageNavbar("inggris")
+      sessionStorage.setItem('lang', 'eng');
+      window.location.reload();
     } else if (isTabs === "mandarin") {
       setIsTabLanguageNavbar("mandarin")
+      sessionStorage.setItem('lang', 'chn');
+      window.location.reload();
     }
   }
 
@@ -442,6 +447,35 @@ export default (props) => {
     }
   ]
 
+  function inaLang () {
+    // sessionStorage.removeItem('lang');
+    if (sessionStorage.getItem('lang') === null) {
+        sessionStorage.setItem('lang', JSON.stringify(ind));
+        // history.push(0)
+        // setFlagLangCurrent('ind')
+        window.location.reload();
+    } else if (sessionStorage.getItem('lang') !== JSON.stringify(ind)) {
+        sessionStorage.setItem('lang', JSON.stringify(ind));
+        // history.push(0)
+        // setFlagLangCurrent('ind')
+        window.location.reload();
+    }
+  }
+
+  function engLang () {
+      sessionStorage.setItem('lang', JSON.stringify(eng));
+      // history.push(0)
+      // setFlagLangCurrent('eng')
+      window.location.reload();
+  }
+
+  function chnLang () {
+      sessionStorage.setItem('lang', JSON.stringify(chn));
+      // history.push(0)
+      // setFlagLangCurrent('chn')
+      window.location.reload();
+  } 
+
   const customStyles = {
       headCells: {
           style: {
@@ -549,7 +583,7 @@ export default (props) => {
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                     <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
-                      <span className="mb-0 font-small">{isTabLanguageNavbar === "bahasa" ? "Saldo Tersedia: " : isTabLanguageNavbar === "inggris" ? "Available Balance : " : "可用余额："}</span>
+                      <span className="mb-0 font-small">{language === null ? ind.saldoTersedia : language.saldoTersedia}</span>
                       <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
                       <img
                         src={arrowDown}
@@ -586,7 +620,7 @@ export default (props) => {
                         style={{width: 160}}
                       >
                         <div className="pe-2">
-                          <img alt="" src={topUpSaldoIcon} /> {isTabLanguageNavbar === "bahasa" ? "Top Up Saldo" : isTabLanguageNavbar === "inggris" ? "Balance Top Up" : "余额充值"}
+                          <img alt="" src={topUpSaldoIcon} /> {language === null ? ind.topUpSaldo : language.topUpSaldo}
                         </div>
                       </Dropdown.Item>
                       <Dropdown.Item
@@ -594,7 +628,7 @@ export default (props) => {
                         className="fw-bold"
                       >
                         <div className="pe-2">
-                          <img alt="" src={riwayatSaldoIcon} /> Riwayat Top Up
+                          <img alt="" src={riwayatSaldoIcon} /> {language === null ? ind.riwayatTopUp : language.riwayatTopUp}
                         </div>
                       </Dropdown.Item>
                       {/* <Dropdown.Item
@@ -673,7 +707,7 @@ export default (props) => {
                 {
                   (user_role === "102") &&
                   <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
-                    <img alt="" src={iconDetailAkun}/> Detail Akun
+                    <img alt="" src={iconDetailAkun}/> {language === null ? ind.detailAkun : language.detailAkun}
                   </Dropdown.Item>
                 }
                 <Dropdown.Divider />
@@ -682,74 +716,53 @@ export default (props) => {
                   onClick={() => logoutHandler()}
                   className="fw-bold"
                 >
-                  <img alt="" src={logoutIcon} /> Logout
+                  <img alt="" src={logoutIcon} /> Log Out
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
 
-            <Dropdown as={Nav.Item} >
-              <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 ms-3">
-                <div className="media d-flex align-items-center">
-                  <Image
-                    src={isTabLanguageNavbar === "bahasa" ? flagIdRoundIcon : isTabLanguageNavbar === "inggris" ? flagEnRoundIcon : flagRrtRoundIcon}
-                    className="rounded-circle"
-                    style={{ border: "1px solid #000000" }}
-                  />
-                  <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                    <span className="mb-0 font-small fw-bold">
-                      {isTabLanguageNavbar === "bahasa" ? "ID" : isTabLanguageNavbar === "inggris" ? "EN" : "CN"}
-                    </span>
-                    <img
-                      src={arrowDown}
-                      alt="arrow_down"
-                      style={{ marginLeft: 10 }}
-                    />
-                  </div>
-                </div>
-              </Dropdown.Toggle>
-              <Dropdown.Menu
-                className="user-dropdown dropdown-menu-right mt-2"
-                style={{ minWidth: "max-content" }}
-              >
-                <Dropdown.Item className="fw-bold" onClick={() => tabLanguage("bahasa")}>
-                  <img alt="" src={flagIdRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }} /> <span className="ms-2">ID</span>
-                </Dropdown.Item>
-                <Dropdown.Item className="fw-bold" onClick={() => tabLanguage("inggris")}>
-                  <img alt="" src={flagEnRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }}/> <span className="ms-2">EN</span>
-                </Dropdown.Item>
-                <Dropdown.Item className="fw-bold" onClick={() => tabLanguage("mandarin")}>
-                  <img alt="" src={flagRrtRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }}/> <span className="ms-2">CN</span>
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-
-            {/* <Navbar.Collapse id="basic-navbar-nav" style={{ width: "20%"}}>
-              <div className="text-end" style={{ width: "100%"}} >
-                  <OverlayTrigger
-                      show={showPopoverLang}
-                      trigger={["hover", "focus"]}
-                      key={1}
-                      placement="bottom"
-                      overlay={
-                          <Popover style={{ maxWidth: 138, maxHeight: 212 }} onMouseEnter={() => setShowPopoverLang(true)} onMouseLeave={() => setShowPopoverLang(false)} id='menu'>
-                              <Popover.Body>
-                                  <div className='mt-2 mb-4' onClick={() => tabLanguage("bahasa")}>
-                                      <span className='menu-navbar-lang2' style={{ borderRadius: 4, color: "#383838", cursor: "pointer" }}><img src={flagIdRoundIcon} alt='idFlag' style={{ marginRight: 15 }} /> ID</span>
-                                  </div>
-                                  <div className='mt-4 mb-4' onClick={() => tabLanguage("inggris")}>
-                                      <span className='menu-navbar-lang2' style={{ borderRadius: 4, color: "#383838", cursor: "pointer" }}><img src={flagEnRoundIcon} alt='idFlag' style={{ marginRight: 10 }} /> EN</span>
-                                  </div>
-                                  <div className='mt-4 mb-2' onClick={() => tabLanguage("mandarin")}>
-                                      <span className='menu-navbar-lang2' style={{ borderRadius: 4, color: "#383838", cursor: "pointer" }}><img src={flagRrtRoundIcon} alt='idFlag' style={{ marginRight: 10 }} /> CN</span>
-                                  </div>
-                              </Popover.Body>
-                          </Popover>
-                      }
+            {
+              user_role === "102" && (
+                <Dropdown as={Nav.Item} >
+                  <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 ms-3">
+                    <div className="media d-flex align-items-center">
+                      <Image
+                        // src={language === "eng" ? flagEnRoundIcon : language === "chn" ? flagRrtRoundIcon : flagIdRoundIcon}
+                        src={language === null ? ind.flag : language.flag}
+                        className="rounded-circle"
+                        style={{ border: "1px solid #000000" }}
+                      />
+                      <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
+                        <span className="mb-0 font-small fw-bold">
+                          {language === null ? ind.flagName : language.flagName}
+                        </span>
+                        <img
+                          src={arrowDown}
+                          alt="arrow_down"
+                          style={{ marginLeft: 10 }}
+                        />
+                      </div>
+                    </div>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu
+                    className="user-dropdown dropdown-menu-right mt-2"
+                    style={{ minWidth: "max-content" }}
                   >
-                      <span onMouseEnter={() => setShowPopoverLang(true)} onMouseLeave={() => setShowPopoverLang(false)} className='menu-navbar-home2 py-3 px-3' style={{ borderRadius: 4, color: "#FFFFFF", cursor: "pointer" }}>{isTabLanguageNavbar === 'inggris' ? <><img src={flagEnRoundIcon} alt='enFlag' /> &nbsp; EN</> : isTabLanguageNavbar === 'mandarin' ? <><img src={flagRrtRoundIcon} alt='chnFlag' /> &nbsp; CN</> : <><img src={flagIdRoundIcon} alt='idFlag' /> &nbsp; ID</>}<img src={dropDownBlack} alt='arrowDropDownBlackLanguage' className={(showPopoverLang) ? 'arrow-down-white-language-open' : "arrow-down-white-language"} style={{ marginLeft: 12 }} /></span>
-                  </OverlayTrigger>
-              </div>
-            </Navbar.Collapse> */}
+                    {/* <Dropdown.Item className="fw-bold" onClick={() => tabLanguage("bahasa")}> */}
+                    <Dropdown.Item className="fw-bold" onClick={() => inaLang()}>
+                      <img alt="" src={flagIdRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }} /> <span className="ms-2">ID</span>
+                    </Dropdown.Item>
+                    {/* <Dropdown.Item className="fw-bold" onClick={() => tabLanguage("inggris")}> */}
+                    <Dropdown.Item className="fw-bold" onClick={() => engLang()}>
+                      <img alt="" src={flagEnRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }}/> <span className="ms-2">EN</span>
+                    </Dropdown.Item>
+                    <Dropdown.Item className="fw-bold" onClick={() => chnLang()}>
+                      <img alt="" src={flagRrtRoundIcon} className=" rounded-circle" style={{ border: "1px solid #000000" }}/> <span className="ms-2">CN</span>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )
+            }
           </Nav>
         </div>
 

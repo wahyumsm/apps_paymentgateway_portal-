@@ -12,8 +12,10 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import Pagination from 'react-js-pagination';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import { ind } from '../../components/Language';
 
 const VaDanPaymentLink = () => {
+    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken();
     const user_role = getRole()
@@ -67,71 +69,71 @@ const VaDanPaymentLink = () => {
 
     const columnstransferDana = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.number,
             wrap: true,
             width: "67px"
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? ind.idTransaksi : language.idTransaksi,
             selector: row => row.id,
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
         },
         {
-            name: 'Waktu',
+            name: language === null ? ind.waktu : language.waktu,
             selector: row => row.created_at,
             width: "145px"
         },
         {
-            name: 'Partner Trans ID',
+            name: language === null ? ind.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trx_id,
             wrap: true,
             width: "160px"
         },
         {
-          name: 'Nama Agen',
+          name: language === null ? ind.namaAgen : language.namaAgen,
           selector: row => row.name,
             wrap: true,
           style: { paddingRight: 'unset' },
           // width: "160px"
         },
         {
-          name: 'Nama Bank',
+          name: language === null ? ind.namaBank : language.namaBank,
           selector: row => row.bank_name,
             wrap: true,
           style: { paddingRight: 'unset' },
           // width: "145px"
         },
         {
-          name: 'Jenis Transaksi',
+          name: language === null ? ind.jenisTransaksi : language.jenisTransaksi,
           selector: row => row.fiturID,
           // sortable: true
           style: { display: "flex", flexDirection: "row", justifyContent: "center", paddingRight: 'unset', },
           // width: "145px"
         },
         {
-            name: 'Nominal Transaksi',
+            name: language === null ? ind.nominalTransaksi : language.nominalTransaksi,
             selector: row => row.amount,
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "170px"
         },
         {
-            name: 'Fee',
+            name: language === null ? ind.biaya : language.biaya,
             selector: row => row.total_fee,
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.total_fee) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             // width: "130px"
         },
         {
-            name: 'Total Settlement',
+            name: language === null ? ind.totalSettlement : language.totalSettlement,
             selector: row => row.total_settlement,
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.total_settlement) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "170px"
         },
         {
-            name: 'Status',
+            name: language === null ? ind.status : language.status,
             selector: row => row.status,
             width: "150px",
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
@@ -964,6 +966,7 @@ const VaDanPaymentLink = () => {
         </div>
     );
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         if (!access_token) {
           history.push('/login');
@@ -982,68 +985,68 @@ const VaDanPaymentLink = () => {
             {
                 user_role === "102" ? (
                     <>
-                        <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Laporan</span></span>
+                        <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>{language === null ? ind.laporan : language.laporan}</span></span>
                         <div className="head-title">
-                            <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Laporan</h2>
+                            <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? ind.laporan : language.laporan}</h2>
                         </div>
-                        <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Dana Masuk</h2>
+                        <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>{language === null ? ind.danaMasuk : language.danaMasuk}</h2>
                         <div className='base-content'>
-                            <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Filter</span>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>{language === null ? ind.filter : language.filter}</span>
                             <Row className='mt-4'>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="pe-1">ID Transaksi</span>
-                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="pe-1">{language === null ? ind.idTransaksi : language.idTransaksi}</span>
+                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="pe-3">Nama Agen</span>
-                                    <div className="dropdown dropLaporanPartner ps-3">
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="pe-3">{language === null ? ind.namaAgen : language.namaAgen}</span>
+                                    <div className="dropdown dropVaAndPaylinkPartner">
                                         <ReactSelect
                                             closeMenuOnSelect={true}
                                             hideSelectedOptions={false}
                                             options={listAgen}
                                             value={selectedAgenDanaMasuk}
                                             onChange={(selected) => setSelectedAgenDanaMasuk([selected])}
-                                            placeholder="Pilih Nama Partner"
+                                            placeholder={language === null ? ind.placeholderNamaAgen : language.placeholderNamaAgen}
                                             components={{ Option }}
                                             styles={customStylesSelectedOption}
                                         />
                                     </div>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="pe-4">Status</span>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="pe-4">{language === null ? ind.status : language.status}</span>
                                     <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
-                                    <option defaultChecked disabled value="">Pilih Status</option>
-                                    <option value={2}>Berhasil</option>
-                                    <option value={1}>Dalam Proses</option>
-                                    <option value={7}>Menunggu Pembayaran</option>
-                                    <option value={9}>Kadaluwarsa</option>
+                                        <option defaultChecked disabled value="">{language === null ? ind.placeholderStatus : language.placeholderStatus}</option>
+                                        <option value={2}>{language === null ? ind.berhasil : language.berhasil}</option>
+                                        <option value={1}>{language === null ? ind.dalamProses : language.dalamProses}</option>
+                                        <option value={7}>{language === null  ? ind.menungguPembayaran : language.menungguPembayaran}</option>
+                                        <option value={9}>{language === null ? ind.kadaluwarsa : language.kadaluwarsa}</option>
                                     </Form.Select>
                                 </Col>
                             </Row>
                             <Row className='mt-4'>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
-                                <span className="me-3">Periode<span style={{ color: "red" }}>*</span></span>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
+                                <span className="me-3">{language === null ? ind.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-5" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
-                                    <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                    <option value={2}>Hari Ini</option>
-                                    <option value={3}>Kemarin</option>
-                                    <option value={4}>7 Hari Terakhir</option>
-                                    <option value={5}>Bulan Ini</option>
-                                    <option value={6}>Bulan Kemarin</option>
-                                    <option value={7}>Pilih Range Tanggal</option>
+                                    <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
+                                    <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
+                                    <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
+                                    <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                    <option value={5}>{language === null ? ind.bulanIni : language.bulanIni}</option>
+                                    <option value={6}>{language === null ? ind.bulanKemarin : language.bulanKemarin}</option>
+                                    <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                 </Form.Select>                 
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Jenis Transaksi</span>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span>{language === null ? ind.jenisTransaksi : language.jenisTransaksi}</span>
                                     <Form.Select name='fiturDanaMasuk' onChange={(e) => handleChange(e)} value={inputHandle.fiturDanaMasuk} className='input-text-ez' style={{ display: "inline" }}>
-                                    <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                    <option value={104}>Payment Link</option>
-                                    <option value={100}>Virtual Account</option>
+                                    <option defaultValue value={0}>{language === null ? ind.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
+                                    <option value={104}>{language === null ? ind.paymentLink : language.paymentLink}</option>
+                                    <option value={100}>{language === null ? ind.virtualAccount : language.virtualAccount}</option>
                                     </Form.Select>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="me-2">Nama Bank</span>
-                                    <div className="dropdown dropLaporanPartnerBank">
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="me-2">{language === null ? ind.namaBank : language.namaBank}</span>
+                                    <div className="dropdown dropVaAndPaylinkPartner">
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -1052,7 +1055,7 @@ const VaDanPaymentLink = () => {
                                             // allowSelectAll={true}
                                             value={selectedBankDanaMasuk}
                                             onChange={(selected) => setSelectedBankDanaMasuk([selected])}
-                                            placeholder="Pilih Nama Bank"
+                                            placeholder={language === null ? ind.placeholderNamaBank : language.placeholderNamaBank}
                                             components={{ Option }}
                                             styles={customStylesSelectedOption}
                                         />
@@ -1077,16 +1080,16 @@ const VaDanPaymentLink = () => {
                                         clearIcon={null}
                                     />
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="pe-2">Partner Trans ID</span>
-                                    <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdDanaMasuk} name="partnerTransIdDanaMasuk" type='text' className='input-text-riwayat ms-1' placeholder='Masukkan Partner Trans ID'/>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="pe-2">{language === null ? ind.partnerTransId : language.partnerTransId}</span>
+                                    <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdDanaMasuk} name="partnerTransIdDanaMasuk" type='text' className='input-text-riwayat ms-1' placeholder={language === null ? ind.placeholderPartnerTransId : language.placeholderPartnerTransId} />
                                 </Col>           
                                 
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={5}>
                                     <Row>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                             onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)}
                                             // className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
@@ -1095,16 +1098,16 @@ const VaDanPaymentLink = () => {
                                             className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedBankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedBankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                             >
-                                            Terapkan
+                                                {language === null ? ind.terapkan : language.terapkan}
                                             </button>
                                         </Col>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                             onClick={() => resetButtonHandle("Dana Masuk")}
                                             className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedBankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                             disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedBankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                             >
-                                            Atur Ulang
+                                                {language === null ? ind.aturUlang : language.aturUlang}
                                             </button>
                                         </Col>
                                     </Row>
@@ -1119,12 +1122,12 @@ const VaDanPaymentLink = () => {
                             }
                             <br/>
                             <br/>
-                            <div className="div-table">
+                            <div className="div-table pb-4">
                                 <DataTable
                                     columns={columnstransferDana}
                                     data={listTransferDana}
                                     customStyles={customStyles}
-                                    // pagination
+                                    noDataComponent={language === null ? ind.tidakAdaData : language.tidakAdaData}
                                     highlightOnHover
                                     progressPending={pendingTransfer}
                                     progressComponent={<CustomLoader />}
