@@ -150,7 +150,7 @@ function DisbursementPage() {
         }
         
         if (listBallanceBank.length === 0) {
-            setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Seluruh data Bank Tujuan tidak tersedia pada saat ini</div>
+            setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />${language === null ? ind.seluruhDataBankTidakTersedia : language.seluruhDataBankTidakTersedia}</div>
                 <div class='pb-4 mt-1 style-label-drag-drop'>Silahkan coba upload ulang beberapa saat lagi. SIlahkan hubungi Admin untuk informasi lebih lanjut </div>
                 <div className='pb-4'>
                     <span class="filepond--label-action">
@@ -162,7 +162,7 @@ function DisbursementPage() {
             // console.log(filteredBallanceBank, 'filteredBallanceBank');
             if (filteredBallanceBank.length === 0) {
                 setLabelUpload("")
-                setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Seluruh data Bank Tujuan tidak tersedia pada saat ini</div>
+                setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />${language === null ? ind.seluruhDataBankTidakTersedia : language.seluruhDataBankTidakTersedia}</div>
                     <div class='pb-4 mt-1 style-label-drag-drop'>Silahkan coba upload ulang beberapa saat lagi. SIlahkan hubungi Admin untuk informasi lebih lanjut </div>
                     <div className='pb-4'>
                         <span class="filepond--label-action">
@@ -194,11 +194,11 @@ function DisbursementPage() {
                         //     </span>
                         // </div>`)
                         //untuk file excel
-                        setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />File yang digunakan harus berformat Excel</div>
-                        <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                        setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />${language === null ? ind.formatFileExcel : language.formatFileExcel}</div>
+                        <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
                         <div className='pb-4'>
                             <span class="filepond--label-action">
-                                Ganti File
+                                ${language === null ? ind.gantiFile : language.gantiFile}
                             </span>
                         </div>`)
                     // }, 2500);
@@ -253,10 +253,10 @@ function DisbursementPage() {
                             setTimeout(() => {
                                 setLabelUpload("")
                                 setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Data pada file masih kosong. Harap tinjau kembali data pada file anda.</div></div>
-                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Ganti File
+                                        ${language === null ? ind.gantiFile : language.gantiFile}
                                     </span>
                                 </div>`)
                             }, 2500);

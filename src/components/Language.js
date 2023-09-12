@@ -122,7 +122,9 @@ export var ind = {
     letakkanFile: "Pilih atau letakan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.",
     unggahFile: "Uanggah File",
     kontenTidakSesuai: "Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement",
-    gantiFile: "Ganti File"
+    gantiFile: "Ganti File",
+    formatFileExcel: "File yang digunakan harus berformat Excel",
+    seluruhDataBankTidakTersedia: "Seluruh data Bank Tujuan tidak tersedia pada saat ini"
 }
 
 export var eng = {
@@ -245,7 +247,9 @@ export var eng = {
     letakkanFile: "Select or drop your Excel file here. <br/> Make sure the Excel file is correct, you can't cancel files that have been uploaded and disbursed.",
     unggahFile: "Upload File",
     kontenTidakSesuai: "The content in the table does not match the Ezeelink Bulk <br/> Disbursement template. Please download and use the template provided <br/> to make it easier to check disbursement data",
-    gantiFile: "Change File"
+    gantiFile: "Change File",
+    formatFileExcel: "The file must be in Excel format",
+    seluruhDataBankTidakTersedia: "All Destination Bank is not available right now"
 }
 
 export var chn = {
@@ -368,5 +372,7 @@ export var chn = {
     letakkanFile: "在此处选择或放置您的 Excel 文件。<br/> 确保Excel文件正确，已上传和支付的文件无法取消。",
     unggahFile: "上传文件",
     kontenTidakSesuai: "表中的内容与 Ezeelink 批量付款模板不匹配。 请下载并使用提供的模板，以便查看付款数据",
-    gantiFile: "更改文件"
+    gantiFile: "更改文件",
+    formatFileExcel: "文件必须是 Excel 格式",
+    seluruhDataBankTidakTersedia: "目前无法使用所有目标银行"
 }
