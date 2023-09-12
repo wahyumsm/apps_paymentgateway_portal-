@@ -1081,7 +1081,7 @@ function DisbursementPage() {
                             }
                             if (errData.length !== 0) {
                                 setDataFromUploadExcel([])
-                                setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
                                         Pilih File
@@ -1089,10 +1089,10 @@ function DisbursementPage() {
                                 </div>`)
                                 setTimeout(() => {
                                     setErrorFound(errData)
-                                    setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                    setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
                                     <div className='pb-4'>
                                         <span class="filepond--label-action">
-                                            Ganti File
+                                            ${language === null ? ind.gantiFile : language.gantiFile}
                                         </span>
                                     </div>`)
                                 }, 2500);
@@ -1102,10 +1102,10 @@ function DisbursementPage() {
                                 setTimeout(() => {
                                     setLabelUpload("")
                                     setLabelUpload(`<div class='mt-2 style-label-drag-drop-filename'>${newValue[0].file.name}</div>
-                                    <div class='py-4 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                    <div class='py-4 style-label-drag-drop'>${language === null ? ind.letakkanFile : language.letakkanFile}</div>
                                     <div className='pb-4'>
                                         <span class="filepond--label-action">
-                                            Ganti File
+                                            ${language === null ? ind.gantiFile : language.gantiFile}
                                         </span>
                                     </div>`)
                                 }, 2500);
@@ -1884,41 +1884,41 @@ function DisbursementPage() {
 
     const columnsBulkExcel = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.no,
             width: "67px"
         },
         {
-            name: 'Bank Tujuan*',
+            name: `${language === null ? ind.bankTujuan : language.bankTujuan}*`,
             selector: row => row["Bank Tujuan*"],
             width: "180px"
         },
         {
-            name: 'Cabang*',
+            name: `${language === null ? ind.cabang : language.cabang}*`,
             selector: row => row["Cabang*"],
             width: "250px"
         },
         {
-            name: 'No. Rekening Tujuan*',
+            name: `${language === null ? ind.noRekTujuan : language.noRekTujuan}*`,
             selector: row => row["No. Rekening Tujuan*"],
         },
         {
-            name: 'Nama Pemilik Rekening*',
+            name: `${language === null ? ind.namaPemilikRek : language.namaPemilikRek}*`,
             selector: row => row["Nama Pemilik Rekening*"],
             width: '250px'
         },
         {
-            name: 'Nominal Disbursement*',
+            name: `${language === null ? ind.nominalDisburse : language.nominalDisburse}*`,
             selector: row => convertToRupiah(row["Nominal Disbursement*"], true, 2),
             width: '250px'
         },
         {
-            name: 'Email Penerima',
+            name: `${language === null ? ind.emailPenerima : language.emailPenerima}`,
             selector: row => row["Email Penerima"],
             width: '250px'
         },
         {
-            name: 'Catatan',
+            name: language === null ? ind.catatan : language.catatan,
             selector: row => row.Catatan,
             width: '250px'
         }
