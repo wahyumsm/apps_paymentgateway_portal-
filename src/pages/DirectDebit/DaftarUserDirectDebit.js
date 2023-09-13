@@ -15,6 +15,7 @@ import ReactSelect, { components } from 'react-select';
 import encryptData from '../../function/encryptData'
 import Pagination from 'react-js-pagination'
 import check from "../../assets/icon/checklistpayment_icon.svg";
+import { ind } from '../../components/Language'
 
 function DaftarUserDirectDebit() {
 
@@ -239,14 +240,16 @@ function DaftarUserDirectDebit() {
           history.push(errorCatch(error.response.status))
         }
     }
+    const language = JSON.parse(sessionStorage.getItem('lang'))
 
-    async function getDaftarUserDirectDebit(currentPage) {
+    async function getDaftarUserDirectDebit(currentPage, languages) {
         try {
-            const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"paytype_id": 0, "partner_id":"", "mobile_number": "", "statusID": 0, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
-                const headers = {
+            const auth = "Bearer " + getToken();
+            const dataParams = encryptData(`{"paytype_id": 0, "partner_id":"", "mobile_number": "", "statusID": 0, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+            const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : languages,
             }
             const dataUserDirectDebit = await axios.post(BaseURL + "/Home/GetListDirectDebitUser", { data: dataParams }, { headers: headers })
             // console.log(dataUserDirectDebit, 'ini user detal funct');
@@ -369,11 +372,13 @@ function DaftarUserDirectDebit() {
         </div>
     );
 
+    console.log(language, "language");
+
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
         }
-        getDaftarUserDirectDebit(activePageDaftarDirectDebit)
+        getDaftarUserDirectDebit(activePageDaftarDirectDebit, "EN")
         listUser()
         if (user_role !== "102") {
             listPartner()

@@ -124,7 +124,17 @@ export var ind = {
     kontenTidakSesuai: "Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement",
     gantiFile: "Ganti File",
     formatFileExcel: "File yang digunakan harus berformat Excel",
-    seluruhDataBankTidakTersedia: "Seluruh data Bank Tujuan tidak tersedia pada saat ini"
+    seluruhDataBankTidakTersedia: "Seluruh data Bank Tujuan tidak tersedia pada saat ini",
+    riwayatTransaksi: "Riwayat Transaksi",
+    riwayatSaldo: "Riwayat Saldo",
+    tipeSaldo: "Tipe Saldo",
+    placeholderTipeSaldo: "Pilih Tipe Saldo",
+    export: "Ekspor",
+    totalHalaman: "Total Halaman",
+    saldoSebelum: "Saldo Sebelum",
+    saldoSesudah: "Saldo Sesudah",
+    nominalTopUpSaldo: "Nominal Top Up Saldo",
+    rp: "Rp"
 }
 
 export var eng = {
@@ -249,7 +259,17 @@ export var eng = {
     kontenTidakSesuai: "The content in the table does not match the Ezeelink Bulk <br/> Disbursement template. Please download and use the template provided <br/> to make it easier to check disbursement data",
     gantiFile: "Change File",
     formatFileExcel: "The file must be in Excel format",
-    seluruhDataBankTidakTersedia: "All Destination Bank is not available right now"
+    seluruhDataBankTidakTersedia: "All Destination Bank is not available right now",
+    riwayatTransaksi: "Transaction Report",
+    riwayatSaldo: "Balance Report",
+    tipeSaldo: "Balance Type",
+    placeholderTipeSaldo: "Choose Balance Type",
+    export: "Export",
+    totalHalaman: "Page Total",
+    saldoSebelum: "Balance Before",
+    saldoSesudah: "Balance After",
+    nominalTopUpSaldo: "Top Up Amount",
+    rp: "IDR"
 }
 
 export var chn = {
@@ -374,5 +394,15 @@ export var chn = {
     kontenTidakSesuai: "表中的内容与 Ezeelink 批量付款模板不匹配。 请下载并使用提供的模板，以便查看付款数据",
     gantiFile: "更改文件",
     formatFileExcel: "文件必须是 Excel 格式",
-    seluruhDataBankTidakTersedia: "目前无法使用所有目标银行"
+    seluruhDataBankTidakTersedia: "目前无法使用所有目标银行",
+    riwayatTransaksi: "历史交易",
+    riwayatSaldo: "余额明细",
+    tipeSaldo: "余额类型",
+    placeholderTipeSaldo: "选择余额类型",
+    export: "出口",
+    totalHalaman: "总页数",
+    saldoSebelum: "前期余额",
+    saldoSesudah: "后期余额",
+    nominalTopUpSaldo: "充值金额",
+    rp: "印尼盾"
 }

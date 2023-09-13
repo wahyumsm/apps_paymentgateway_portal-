@@ -888,8 +888,8 @@ function Disbursement() {
                             <>
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-between  align-items-center">
-                                        <span className={language.flagName === "CN" ? 'me-5' : 'me-4'}>{language === null ? ind.idTransaksi : language.idTransaksi}</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className={language.flagName === "CN" ? 'input-text-report ms-5' : 'input-text-report '} placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
+                                        <span className={language !== null ? (language.flagName === "CN" ? 'me-5' : 'me-4') : 'me-4'}>{language === null ? ind.idTransaksi : language.idTransaksi}</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className={language !== null ? (language.flagName === "CN" ? 'input-text-report ms-5' : 'input-text-report ') : 'input-text-report '} placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: "34%" }}>
                                         <span style={{ marginRight: 26 }}>{language === null ? ind.periode : language.periode} <span style={{ color: "red" }}>*</span></span>

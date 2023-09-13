@@ -11,9 +11,10 @@ import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, 
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import * as XLSX from "xlsx"
+import { ind } from '../../components/Language';
 
 function RiwayatBalance() {
-
+    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken()
     const user_role = getRole()
@@ -282,45 +283,45 @@ function RiwayatBalance() {
 
     const columnsPartner = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.number,
             width: "3%",
             wrap: true,
             maxWidth: 'fit-content !important'
         },
         {
-            name: 'Waktu',
+            name: language === null ? ind.waktu : language.waktu,
             selector: row => convertSimpleTimeStamp(row.created_date),
             wrap: true,
         },
         {
-            name: 'Tipe Balance',
+            name: language === null ? ind.tipeSaldo : language.tipeSaldo,
             selector: row => row.type === "DB" ? "Debit" : "Kredit",
             wrap: true,
             width: "170px",
         },
         {
-            name: 'Balance Before',
+            name: language === null ? ind.saldoSebelum : language.saldoSebelum,
             selector: row => convertToRupiah(row.bal_before, true),
             wrap: true,
             width: "150px",
             style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
         {
-            name: 'Nominal',
+            name: language === null ? ind.nominal : language.nominal,
             selector: row => convertToRupiah(row.amount, true),
             wrap: true,
             width: "150px",
             style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
         {
-            name: 'Balance After',
+            name: language === null ? ind.saldoSesudah : language.saldoSesudah,
             selector: row => convertToRupiah(row.bal_after, true),
             width: "150px",
             style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
         {
-            name: 'Deskripsi',
+            name:language === null ? ind.deskripsi : language.deskripsi,
             selector: row => row.description,
             wrap: true,
             width: "175px"
@@ -376,13 +377,13 @@ function RiwayatBalance() {
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-            <span className='breadcrumbs-span'>{user_role !== '102' ? <Link to={"/"}>Beranda</Link> : <Link to={"#"}>Riwayat Transaksi</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;History Balance</span>
+            <span className='breadcrumbs-span'>{user_role !== '102' ? <Link to={"/"}>Beranda</Link> : <Link to={"#"}>{language === null ? ind.riwayatTransaksi : language.riwayatTransaksi}</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.riwayatSaldo : language.riwayatSaldo}</span>
             <div className="head-title">
-                <h2 className="h4 my-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>History Balance</h2>
+                <h2 className="h4 my-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? ind.riwayatSaldo : language.riwayatSaldo}</h2>
             </div>
             {/* <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Riwayat Dana Masuk</h2> */}
             <div className='base-content mt-3'>
-                <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? ind.filter : language.filter}</span>
                 <Row className='mt-4'>
                     {
                         user_role !== '102' ?
@@ -428,23 +429,23 @@ function RiwayatBalance() {
                         </> :
                         <>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span style={{ marginRight: 41 }}>Type Balance</span>
+                                <span style={{ marginRight: 41 }}>{language === null ? ind.tipeSaldo : language.tipeSaldo}</span>
                                 <Form.Select name="typeRiwayatBalance" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.typeRiwayatBalance} onChange={(e) => setInputHandle({ ...inputHandle, [e.target.name]: e.target.value })}>
-                                    <option defaultChecked disabled value="">Pilih Type Balance</option>
+                                    <option defaultChecked disabled value="">{language === null ? ind.placeholderTipeSaldo : language.placeholderTipeSaldo}</option>
                                     <option value={'CR'}>Kredit</option>
                                     <option value={'DB'}>Debit</option>
                                 </Form.Select>
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateRiwayatBalance === "none") ? "33%" : "33%" }}>
-                                <span style={{ marginRight: 40 }}>Periode<span style={{ color: "red" }}>*</span></span>
+                                <span style={{ marginRight: 40 }}>{language === null ? ind.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeRiwayatBalance' className="input-text-riwayat ms-3" value={inputHandle.periodeRiwayatBalance} onChange={(e) => handleChangePeriodeRiwayatBalance(e)}>
-                                    <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                    <option value={2}>Hari Ini</option>
-                                    <option value={3}>Kemarin</option>
-                                    <option value={4}>7 Hari Terakhir</option>
-                                    <option value={5}>Bulan Ini</option>
-                                    <option value={6}>Bulan Kemarin</option>
-                                    <option value={7}>Pilih Range Tanggal</option>
+                                    <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
+                                    <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
+                                    <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
+                                    <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                    <option value={5}>{language === null ? ind.bulanIni : language.bulanIni}</option>
+                                    <option value={6}>{language === null ? ind.bulanKemarin : language.bulanKemarin}</option>
+                                    <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                 </Form.Select>
                             </Col>
                             <Col xs={4} style={{ display: showDateRiwayatBalance }} className='text-start'>
@@ -484,7 +485,7 @@ function RiwayatBalance() {
                 <Row className='mt-4'>
                     <Col xs={5}>
                         <Row>
-                            <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                            <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                 <button
                                     onClick={() => filterRiwayatBalance(1, selectedPartnerRiwayatBalance.length !== 0 ? selectedPartnerRiwayatBalance[0].value : "", selectedAgenRiwayatBalance.length !== 0 ? selectedAgenRiwayatBalance[0].value : "", inputHandle.typeRiwayatBalance, inputHandle.periodeRiwayatBalance, dateRangeRiwayatBalance, false, user_role)}
                                     className={
@@ -498,10 +499,10 @@ function RiwayatBalance() {
                                         (inputHandle.periodeRiwayatBalance === 0 || (Number(inputHandle.periodeRiwayatBalance) === 7 && dateRangeRiwayatBalance.length == 0))
                                     }
                                 >
-                                    Terapkan
+                                    {language === null ? ind.terapkan : language.terapkan}
                                 </button>
                             </Col>
-                            <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                            <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                 <button
                                     onClick={resetButtonRiwayatBalance}
                                     className={
@@ -515,7 +516,7 @@ function RiwayatBalance() {
                                         (inputHandle.periodeRiwayatBalance === 0 || (Number(inputHandle.periodeRiwayatBalance) === 7 && dateRangeRiwayatBalance.length == 0))
                                     }
                                 >
-                                    Atur Ulang
+                                    {language === null ? ind.aturUlang : language.aturUlang}
                                 </button>
                             </Col>
                         </Row>
@@ -524,7 +525,7 @@ function RiwayatBalance() {
                 {
                     dataRiwayatBalance.length !== 0 &&
                     <div style={{ marginBottom: 30 }}>
-                        <Link onClick={() => filterRiwayatBalance(1, selectedPartnerRiwayatBalance.length !== 0 ? selectedPartnerRiwayatBalance[0].value : "", selectedAgenRiwayatBalance.length !== 0 ? selectedAgenRiwayatBalance[0].value : "", inputHandle.typeRiwayatBalance, inputHandle.periodeRiwayatBalance, dateRangeRiwayatBalance, true, user_role)} className="export-span">Export</Link>
+                        <Link onClick={() => filterRiwayatBalance(1, selectedPartnerRiwayatBalance.length !== 0 ? selectedPartnerRiwayatBalance[0].value : "", selectedAgenRiwayatBalance.length !== 0 ? selectedAgenRiwayatBalance[0].value : "", inputHandle.typeRiwayatBalance, inputHandle.periodeRiwayatBalance, dateRangeRiwayatBalance, true, user_role)} className="export-span">{language === null ? ind.export : language.export}</Link>
                     </div>
                 }
                 <div className="div-table mt-4 pb-4">
@@ -533,12 +534,12 @@ function RiwayatBalance() {
                         data={dataRiwayatBalance}
                         customStyles={customStyles}
                         highlightOnHover
-                        progressPending={pendingRiwayatBalance}
+                        progressPending={pendingRiwayatBalance}noDataComponent={language === null ? ind.tidakAdaData : language.tidakAdaData}
                         progressComponent={<CustomLoader />}
                     />
                 </div>
                 <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageRiwayatBalance}</div>
+                <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageRiwayatBalance}</div>
                     <Pagination
                         activePage={activePageRiwayatBalance}
                         itemsCountPerPage={pageNumberRiwayatBalance.row_per_page}

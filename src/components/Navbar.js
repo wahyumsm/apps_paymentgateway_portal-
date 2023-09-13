@@ -792,7 +792,7 @@ export default (props) => {
                   placeholder="Masukkan Nominal To Up Saldo"
                   groupSeparator={"."}
                   decimalSeparator={','}
-                  prefix={"Rp "}
+                  prefix={`${language === null ? ind.rp : language.rp} `}
                   allowDecimals={false}
                 />
                 {/* {nominalTopup ? 
