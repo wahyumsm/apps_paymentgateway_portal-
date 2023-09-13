@@ -1320,7 +1320,7 @@ const VaDanPaymentLink = () => {
                                             <Col style={{ display: "flex", justifyContent: "end" }}>Status</Col>
                                         </Row>
                                         <Row style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>
-                                            <Col>{detailTransferDanaAdmin.mpartnerdtl_partner_id}</Col>
+                                            <Col>{detailTransferDanaAdmin.tvatrans_trx_id}</Col>
                                             <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: 4, maxWidth: 175, width: "100%", height: 32, fontWeight: 400,
                                                 background: (detailTransferDanaAdmin.tvatrans_status_id === 2) ? "rgba(7, 126, 134, 0.08)" : (detailTransferDanaAdmin.tvatrans_status_id === 1 || detailTransferDanaAdmin.tvatrans_status_id === 7) ? "#FEF4E9" : (detailTransferDanaAdmin.tvatrans_status_id === 4) ? "#FDEAEA" : (detailTransferDanaAdmin.tvatrans_status_id === 3 || detailTransferDanaAdmin.tvatrans_status_id === 5 || detailTransferDanaAdmin.tvatrans_status_id === 6 || detailTransferDanaAdmin.tvatrans_status_id === 8 || detailTransferDanaAdmin.tvatrans_status_id === 9 || detailTransferDanaAdmin.tvatrans_status_id === 10 || detailTransferDanaAdmin.tvatrans_status_id === 11 || detailTransferDanaAdmin.tvatrans_status_id === 12 || detailTransferDanaAdmin.tvatrans_status_id === 13 || detailTransferDanaAdmin.tvatrans_status_id === 14 || detailTransferDanaAdmin.tvatrans_status_id === 15) ? "#F0F0F0" : "",
                                                 color: (detailTransferDanaAdmin.tvatrans_status_id === 2) ? "#077E86" : (detailTransferDanaAdmin.tvatrans_status_id === 1 || detailTransferDanaAdmin.tvatrans_status_id === 7) ? "#F79421" : (detailTransferDanaAdmin.tvatrans_status_id === 4) ? "#EE2E2C" : (detailTransferDanaAdmin.tvatrans_status_id === 3 || detailTransferDanaAdmin.tvatrans_status_id === 5 || detailTransferDanaAdmin.tvatrans_status_id === 6 || detailTransferDanaAdmin.tvatrans_status_id === 8 || detailTransferDanaAdmin.tvatrans_status_id === 9 || detailTransferDanaAdmin.tvatrans_status_id === 10 || detailTransferDanaAdmin.tvatrans_status_id === 11 || detailTransferDanaAdmin.tvatrans_status_id === 12 || detailTransferDanaAdmin.tvatrans_status_id === 13 || detailTransferDanaAdmin.tvatrans_status_id === 14 || detailTransferDanaAdmin.tvatrans_status_id === 15) ? "#888888" : "" }}
@@ -1377,7 +1377,7 @@ const VaDanPaymentLink = () => {
                                         </center>
                                         <Row style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 700, marginTop: 12 }}>
                                             <Col>Total</Col>
-                                            <Col style={{ display: "flex", justifyContent: "end" }}>{convertToRupiah((detailTransferDanaAdmin.tvatrans_amount + detailTransferDanaAdmin.tvatrans_bank_fee + detailTransferDanaAdmin.tvatrans_partner_fee))}</Col>
+                                            <Col style={{ display: "flex", justifyContent: "end" }}>{convertToRupiah((detailTransferDanaAdmin.tvatrans_amount - detailTransferDanaAdmin.tvatrans_bank_fee - detailTransferDanaAdmin.tvatrans_partner_fee))}</Col>
                                         </Row>
                                     </Container>
                                 </div>
