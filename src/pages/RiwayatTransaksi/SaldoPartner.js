@@ -52,33 +52,33 @@ function SaldoPartner() {
     })
     const [isFilterTopUp, setIsFilterTopUp] = useState(false)
 
-    const [periodeRiwayatAlokasiSaldo, setPeriodeRiwayatAlokasiSaldo] = useState(0)
-    const [dateRangeRiwayatAlokasiSaldo, setDateRangeRiwayatAlokasiSaldo] = useState([])
-    const [disbursementChannel, setDisbursementChannel] = useState([])
-    const [tujuanAlokasiSaldo, setTujuanAlokasiSaldo] = useState(0)
-    const [listRiwayatAlokasiSaldo, setListRiwayatAlokasiSaldo] = useState([])
-    const [showDateRiwayatAlokasiSaldo, setShowDateRiwayatAlokasiSaldo] = useState("none")
-    const [stateRiwayatAlokasiSaldo, setStateRiwayatAlokasiSaldo] = useState(null)
-    const [pendingAlokasiSaldo, setPendingAlokasiSaldo] = useState(true)
-    const [isDesc, setIsDesc] = useState({
-        orderField: "tpartballchannel_crtdt",
-        orderIdTanggal: true,
-        orderIdStatus: true,
-    })
-    const [totalPageRiwayatAlokasiSaldo, setTotalPageRiwayatAlokasiSaldo] = useState(1)
-    const [activePageRiwayatAlokasiSaldo, setActivePageRiwayatAlokasiSaldo] = useState(1)
-    const [pageNumberRiwayatAlokasiSaldo, setPageNumberRiwayatAlokasiSaldo] = useState({})
-    const [isFilterHistory, setIsFilterHistory] = useState(false)
-    const [isSorting, setIsSorting] = useState(false)
-    const [namaPartnerAlokasiSaldo, setNamaPartnerAlokasiSaldo] = useState("")
-    const [statusRiwayatAlokasiSaldo, setStatusRiwayatAlokasiSaldo] = useState([])
+    // const [periodeRiwayatAlokasiSaldo, setPeriodeRiwayatAlokasiSaldo] = useState(0)
+    // const [dateRangeRiwayatAlokasiSaldo, setDateRangeRiwayatAlokasiSaldo] = useState([])
+    // const [disbursementChannel, setDisbursementChannel] = useState([])
+    // const [tujuanAlokasiSaldo, setTujuanAlokasiSaldo] = useState(0)
+    // const [listRiwayatAlokasiSaldo, setListRiwayatAlokasiSaldo] = useState([])
+    // const [showDateRiwayatAlokasiSaldo, setShowDateRiwayatAlokasiSaldo] = useState("none")
+    // const [stateRiwayatAlokasiSaldo, setStateRiwayatAlokasiSaldo] = useState(null)
+    // const [pendingAlokasiSaldo, setPendingAlokasiSaldo] = useState(true)
+    // const [isDesc, setIsDesc] = useState({
+    //     orderField: "tpartballchannel_crtdt",
+    //     orderIdTanggal: true,
+    //     orderIdStatus: true,
+    // })
+    // const [totalPageRiwayatAlokasiSaldo, setTotalPageRiwayatAlokasiSaldo] = useState(1)
+    // const [activePageRiwayatAlokasiSaldo, setActivePageRiwayatAlokasiSaldo] = useState(1)
+    // const [pageNumberRiwayatAlokasiSaldo, setPageNumberRiwayatAlokasiSaldo] = useState({})
+    // const [isFilterHistory, setIsFilterHistory] = useState(false)
+    // const [isSorting, setIsSorting] = useState(false)
+    // const [namaPartnerAlokasiSaldo, setNamaPartnerAlokasiSaldo] = useState("")
+    // const [statusRiwayatAlokasiSaldo, setStatusRiwayatAlokasiSaldo] = useState([])
 
     const [listHistorySaldo, setListHistorySaldo] = useState([])
     const [pendingHistorySaldo, setPendingHistorySaldo] = useState(true)
     // const [namaPartnerHistorySaldo, setNamaPartnerHistorySaldo] = useState("")
 
     const [selectedPartnerAdminTopUp, setSelectedPartnerAdminTopUp] = useState([])
-    const [selectedPartnerAlokasiSaldo, setSelectedPartnerAlokasiSaldo] = useState([])
+    // const [selectedPartnerAlokasiSaldo, setSelectedPartnerAlokasiSaldo] = useState([])
     const [selectedPartnerSaldoPartner, setSelectedPartnerSaldoPartner] = useState([])
 
     const Option = (props) => {
@@ -200,152 +200,152 @@ function SaldoPartner() {
         }
     }
     
-    async function getDisbursementChannel() {
-        try {
-            const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "fitur_id": "102" }`)
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
-            }
-            const disbursementChannel = await axios.post(BaseURL + "/PaymentLink/GetMetodePembayaran", { data: dataParams }, { headers: headers })
-            // console.log(disbursementChannel, 'disbursement channel');
-            if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length === 0) {
-                setDisbursementChannel(disbursementChannel.data.response_data)
-                let payTypeId = []
-                disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.payment_id)))
-                historyAlokasiSaldo(1, true, isDesc.orderField, payTypeId)
-            } else if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length !== 0) {
-                setUserSession(disbursementChannel.data.response_new_token)
-                setDisbursementChannel(disbursementChannel.data.response_data)
-                let payTypeId = []
-                disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.payment_id)))
-                historyAlokasiSaldo(1, true, isDesc.orderField, payTypeId)
-            }
-        } catch (error) {
-            // console.log(error);
-        }
-    }
+    // async function getDisbursementChannel() {
+    //     try {
+    //         const auth = "Bearer " + getToken()
+    //         const dataParams = encryptData(`{ "fitur_id": "102" }`)
+    //         const headers = {
+    //             'Content-Type':'application/json',
+    //             'Authorization' : auth
+    //         }
+    //         const disbursementChannel = await axios.post(BaseURL + "/PaymentLink/GetMetodePembayaran", { data: dataParams }, { headers: headers })
+    //         // console.log(disbursementChannel, 'disbursement channel');
+    //         if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length === 0) {
+    //             setDisbursementChannel(disbursementChannel.data.response_data)
+    //             let payTypeId = []
+    //             disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.payment_id)))
+    //             // historyAlokasiSaldo(1, true, isDesc.orderField, payTypeId)
+    //         } else if (disbursementChannel.status === 200 && disbursementChannel.data.response_code === 200 && disbursementChannel.data.response_new_token.length !== 0) {
+    //             setUserSession(disbursementChannel.data.response_new_token)
+    //             setDisbursementChannel(disbursementChannel.data.response_data)
+    //             let payTypeId = []
+    //             disbursementChannel.data.response_data = disbursementChannel.data.response_data.forEach(item => payTypeId.push(String(item.payment_id)))
+    //             // historyAlokasiSaldo(1, true, isDesc.orderField, payTypeId)
+    //         }
+    //     } catch (error) {
+    //         // console.log(error);
+    //     }
+    // }
     
-    async function historyAlokasiSaldo(currentPage, isDescending, orderField, payTypeId) {
-        try {
-            if ((isDescending === undefined && orderField === undefined) || (isDescending === true && orderField === "tpartballchannel_crtdt")) {
-                isDescending = 0
-                orderField = "tpartballchannel_crtdt"
-            } else if (isDescending === false && orderField === "tpartballchannel_crtdt") {
-                isDescending = 1
-                orderField = "tpartballchannel_crtdt"
-            } else if (isDescending === true && orderField === "mstatus_name") {
-                isDescending = 0
-                orderField = "mstatus_name"
-            } else if (isDescending === false && orderField === "mstatus_name") {
-                isDescending = 1
-                orderField = "mstatus_name"
-            }
-            const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2", "4" ], "paytypeID": [${payTypeId}] }`)
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
-            }
-            const ballanceAllocation = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
-            if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length === 0) {
-                ballanceAllocation.data.response_data.results = ballanceAllocation.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
-                setPageNumberRiwayatAlokasiSaldo(ballanceAllocation.data.response_data)
-                setActivePageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.page)
-                setTotalPageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.max_page)
-                setListRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.results)
-                setPendingAlokasiSaldo(false)
-            } else if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length !== 0) {
-                setUserSession(ballanceAllocation.data.response_new_token)
-                ballanceAllocation.data.response_data.results = ballanceAllocation.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
-                setPageNumberRiwayatAlokasiSaldo(ballanceAllocation.data.response_data)
-                setActivePageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.page)
-                setTotalPageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.max_page)
-                setListRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.results)
-                setPendingAlokasiSaldo(false)
-            }
-        } catch (error) {
-            // console.log(error);
-        }
-    }
+    // async function historyAlokasiSaldo(currentPage, isDescending, orderField, payTypeId) {
+    //     try {
+    //         if ((isDescending === undefined && orderField === undefined) || (isDescending === true && orderField === "tpartballchannel_crtdt")) {
+    //             isDescending = 0
+    //             orderField = "tpartballchannel_crtdt"
+    //         } else if (isDescending === false && orderField === "tpartballchannel_crtdt") {
+    //             isDescending = 1
+    //             orderField = "tpartballchannel_crtdt"
+    //         } else if (isDescending === true && orderField === "mstatus_name") {
+    //             isDescending = 0
+    //             orderField = "mstatus_name"
+    //         } else if (isDescending === false && orderField === "mstatus_name") {
+    //             isDescending = 1
+    //             orderField = "mstatus_name"
+    //         }
+    //         const auth = "Bearer " + getToken()
+    //         const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${isDescending}, "order_field": "${orderField}", "statusID": [ "1", "2", "4" ], "paytypeID": [${payTypeId}] }`)
+    //         const headers = {
+    //             'Content-Type':'application/json',
+    //             'Authorization' : auth
+    //         }
+    //         const ballanceAllocation = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+    //         if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length === 0) {
+    //             ballanceAllocation.data.response_data.results = ballanceAllocation.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+    //             setPageNumberRiwayatAlokasiSaldo(ballanceAllocation.data.response_data)
+    //             setActivePageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.page)
+    //             setTotalPageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.max_page)
+    //             setListRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.results)
+    //             setPendingAlokasiSaldo(false)
+    //         } else if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length !== 0) {
+    //             setUserSession(ballanceAllocation.data.response_new_token)
+    //             ballanceAllocation.data.response_data.results = ballanceAllocation.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+    //             setPageNumberRiwayatAlokasiSaldo(ballanceAllocation.data.response_data)
+    //             setActivePageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.page)
+    //             setTotalPageRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.max_page)
+    //             setListRiwayatAlokasiSaldo(ballanceAllocation.data.response_data.results)
+    //             setPendingAlokasiSaldo(false)
+    //         }
+    //     } catch (error) {
+    //         // console.log(error);
+    //     }
+    // }
     
-    async function filterHistoryAlokasiSaldo(currentPage, dateId, dateRange, payTypeId, isDescending, orderField, partnerId, statusId) {
-        try {
-            setIsFilterHistory(true)
-            setPendingAlokasiSaldo(true)
-            let newPayTypeId = []
-            if (payTypeId === 0) {
-                disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
-            }
-            const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${(isDescending === undefined || isDescending) ? 0 : 1}, "order_field": "${(orderField === undefined) ? "tpartballchannel_crtdt" : orderField}", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
-            }
-            const filterHistory = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
-            if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length === 0) {
-                filterHistory.data.response_data.results = filterHistory.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
-                setPageNumberRiwayatAlokasiSaldo(filterHistory.data.response_data)
-                setActivePageRiwayatAlokasiSaldo(filterHistory.data.response_data.page)
-                setTotalPageRiwayatAlokasiSaldo(filterHistory.data.response_data.max_page)
-                setListRiwayatAlokasiSaldo(filterHistory.data.response_data.results)
-                setPendingAlokasiSaldo(false)
-            } else if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length !== 0) {
-                setUserSession(filterHistory.data.response_new_token)
-                filterHistory.data.response_data.results = filterHistory.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
-                setPageNumberRiwayatAlokasiSaldo(filterHistory.data.response_data)
-                setActivePageRiwayatAlokasiSaldo(filterHistory.data.response_data.page)
-                setTotalPageRiwayatAlokasiSaldo(filterHistory.data.response_data.max_page)
-                setListRiwayatAlokasiSaldo(filterHistory.data.response_data.results)
-                setPendingAlokasiSaldo(false)
-            }
-        } catch (error) {
-            // console.log(error);
-        }
-    }
+    // async function filterHistoryAlokasiSaldo(currentPage, dateId, dateRange, payTypeId, isDescending, orderField, partnerId, statusId) {
+    //     try {
+    //         setIsFilterHistory(true)
+    //         setPendingAlokasiSaldo(true)
+    //         let newPayTypeId = []
+    //         if (payTypeId === 0) {
+    //             disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
+    //         }
+    //         const auth = "Bearer " + getToken()
+    //         const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": ${(currentPage === 0) ? 1 : currentPage}, "row_per_page": 10, "order_id": ${(isDescending === undefined || isDescending) ? 0 : 1}, "order_field": "${(orderField === undefined) ? "tpartballchannel_crtdt" : orderField}", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
+    //         const headers = {
+    //             'Content-Type':'application/json',
+    //             'Authorization' : auth
+    //         }
+    //         const filterHistory = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+    //         if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length === 0) {
+    //             filterHistory.data.response_data.results = filterHistory.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+    //             setPageNumberRiwayatAlokasiSaldo(filterHistory.data.response_data)
+    //             setActivePageRiwayatAlokasiSaldo(filterHistory.data.response_data.page)
+    //             setTotalPageRiwayatAlokasiSaldo(filterHistory.data.response_data.max_page)
+    //             setListRiwayatAlokasiSaldo(filterHistory.data.response_data.results)
+    //             setPendingAlokasiSaldo(false)
+    //         } else if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length !== 0) {
+    //             setUserSession(filterHistory.data.response_new_token)
+    //             filterHistory.data.response_data.results = filterHistory.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+    //             setPageNumberRiwayatAlokasiSaldo(filterHistory.data.response_data)
+    //             setActivePageRiwayatAlokasiSaldo(filterHistory.data.response_data.page)
+    //             setTotalPageRiwayatAlokasiSaldo(filterHistory.data.response_data.max_page)
+    //             setListRiwayatAlokasiSaldo(filterHistory.data.response_data.results)
+    //             setPendingAlokasiSaldo(false)
+    //         }
+    //     } catch (error) {
+    //         // console.log(error);
+    //     }
+    // }
     
-    function sortingHandle(sortColumn, value, isFilter, dateId, dateRange, payTypeId, channelDisburse, partnerId, statusId) {
-        setIsSorting(true)
-        let newPayTypeId = []
-        if (payTypeId === 0) {
-            channelDisburse.forEach(item => newPayTypeId.push(item.payment_id))
-        }
-        if (sortColumn === "tpartballchannel_crtdt" && !isFilter) {
-            setIsDesc({
-                ...isDesc,
-                orderField: sortColumn,
-                orderIdTanggal: value,
-                orderIdStatus: true
-            })
-            historyAlokasiSaldo(1, value, sortColumn, (payTypeId === 0 ? newPayTypeId : payTypeId))
-        } else if (sortColumn === "tpartballchannel_crtdt" && isFilter) {
-            setIsDesc({
-                ...isDesc,
-                orderField: sortColumn,
-                orderIdTanggal: value,
-                orderIdStatus: true
-            })
-            filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
-        } else if (sortColumn === "mstatus_name" && !isFilter) {
-            setIsDesc({
-                ...isDesc,
-                orderField: sortColumn,
-                orderIdTanggal: true,
-                orderIdStatus: value
-            })
-            historyAlokasiSaldo(1, value, sortColumn, (payTypeId === 0 ? newPayTypeId : payTypeId))
-        } else if (sortColumn === "mstatus_name" && isFilter) {
-            setIsDesc({
-                ...isDesc,
-                orderField: sortColumn,
-                orderIdTanggal: true,
-                orderIdStatus: value
-            })
-            filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
-        }
-    }
+    // function sortingHandle(sortColumn, value, isFilter, dateId, dateRange, payTypeId, channelDisburse, partnerId, statusId) {
+    //     setIsSorting(true)
+    //     let newPayTypeId = []
+    //     if (payTypeId === 0) {
+    //         channelDisburse.forEach(item => newPayTypeId.push(item.payment_id))
+    //     }
+    //     if (sortColumn === "tpartballchannel_crtdt" && !isFilter) {
+    //         setIsDesc({
+    //             ...isDesc,
+    //             orderField: sortColumn,
+    //             orderIdTanggal: value,
+    //             orderIdStatus: true
+    //         })
+    //         historyAlokasiSaldo(1, value, sortColumn, (payTypeId === 0 ? newPayTypeId : payTypeId))
+    //     } else if (sortColumn === "tpartballchannel_crtdt" && isFilter) {
+    //         setIsDesc({
+    //             ...isDesc,
+    //             orderField: sortColumn,
+    //             orderIdTanggal: value,
+    //             orderIdStatus: true
+    //         })
+    //         filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
+    //     } else if (sortColumn === "mstatus_name" && !isFilter) {
+    //         setIsDesc({
+    //             ...isDesc,
+    //             orderField: sortColumn,
+    //             orderIdTanggal: true,
+    //             orderIdStatus: value
+    //         })
+    //         historyAlokasiSaldo(1, value, sortColumn, (payTypeId === 0 ? newPayTypeId : payTypeId))
+    //     } else if (sortColumn === "mstatus_name" && isFilter) {
+    //         setIsDesc({
+    //             ...isDesc,
+    //             orderField: sortColumn,
+    //             orderIdTanggal: true,
+    //             orderIdStatus: value
+    //         })
+    //         filterHistoryAlokasiSaldo(1, dateId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), value, sortColumn, partnerId, statusId)
+    //     }
+    // }
 
     async function historySaldoPartner(partnerId) {
         try {
@@ -356,7 +356,8 @@ function SaldoPartner() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const historySaldo = await axios.post(BaseURL + "/Partner/GetListPartnerBalanceChannel", { data: dataParams }, { headers: headers })
+            // const historySaldo = await axios.post(BaseURL + "/Partner/GetListPartnerBalanceChannel", { data: dataParams }, { headers: headers })
+            const historySaldo = await axios.post(BaseURL + "/Partner/GetListPartnerBalance", { data: dataParams }, { headers: headers })
             // console.log(historySaldo, 'historySaldo');
             if (historySaldo.status === 200 && historySaldo.data.response_code === 200 && historySaldo.data.response_new_token.length === 0) {
                 historySaldo.data.response_data = historySaldo.data.response_data.map((obj, idx) => ({...obj, number: idx + 1}));
@@ -373,97 +374,97 @@ function SaldoPartner() {
         }
     }
 
-    async function ExportReportAlokasiSaldoHandler(isFilter, dateId, dateRange, payTypeId, partnerId, statusId, disbursementChannels) {
-        if (isFilter) {
-            async function dataExportFilter(dateId, dateRange, payTypeId, partnerId, statusId) {
-                try {
-                    let newPayTypeId = []
-                    if (payTypeId === 0) {
-                        disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
-                    }
-                    const auth = "Bearer " + getToken()
-                    const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": 1, "row_per_page": 1000000, "order_id": 0, "order_field": "tpartballchannel_crtdt", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
-                    const headers = {
-                        'Content-Type':'application/json',
-                        'Authorization' : auth
-                    }
-                    const filterHistory = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
-                    // console.log(filterHistory, 'filterHistory export');
-                    if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length === 0) {
-                        const data = filterHistory.data.response_data.results
-                        let dataExcel = []
-                        for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
-                        }
-                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                        let workBook = XLSX.utils.book_new();
-                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
-                    } else if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length !== 0) {
-                        setUserSession(filterHistory.data.response_new_token)
-                        const data = filterHistory.data.response_data.results
-                        let dataExcel = []
-                        for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
-                        }
-                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                        let workBook = XLSX.utils.book_new();
-                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
-                    }
-                } catch (error) {
-                    // console.log(error);
-                }
-            }
-            dataExportFilter(dateId, dateRange, payTypeId, partnerId, statusId)
-        } else {
-            async function dataExportAlokasiSaldo(disbursementChannels) {
-                try {
-                    let payTypeId = []
-                    disbursementChannels.forEach(item => payTypeId.push(String(item.payment_id)))
-                    const auth = "Bearer " + getToken()
-                    const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": 1, "row_per_page": 1000000, "order_id": 0, "order_field": "tpartballchannel_crtdt", "statusID": [ "1", "2", "4" ], "paytypeID": [${payTypeId}] }`)
-                    const headers = {
-                        'Content-Type':'application/json',
-                        'Authorization' : auth
-                    }
-                    const ballanceAllocation = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
-                    // console.log(ballanceAllocation, 'ballanceAllocation export');
-                    if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length === 0) {
-                        const data = ballanceAllocation.data.response_data.results
-                        let dataExcel = []
-                        for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
-                        }
-                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                        let workBook = XLSX.utils.book_new();
-                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
-                    } else if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length !== 0) {
-                        setUserSession(ballanceAllocation.data.response_new_token)
-                        const data = ballanceAllocation.data.response_data.results
-                        let dataExcel = []
-                        for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
-                        }
-                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
-                        let workBook = XLSX.utils.book_new();
-                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
-                    }
-                } catch (error) {
-                    // console.log(error);
-                }
-            }
-            dataExportAlokasiSaldo(disbursementChannels)
-        }
-    }
+    // async function ExportReportAlokasiSaldoHandler(isFilter, dateId, dateRange, payTypeId, partnerId, statusId, disbursementChannels) {
+    //     if (isFilter) {
+    //         async function dataExportFilter(dateId, dateRange, payTypeId, partnerId, statusId) {
+    //             try {
+    //                 let newPayTypeId = []
+    //                 if (payTypeId === 0) {
+    //                     disbursementChannel.forEach(item => newPayTypeId.push(item.payment_id))
+    //                 }
+    //                 const auth = "Bearer " + getToken()
+    //                 const dataParams = encryptData(`{ "partner_id": "${(partnerId !== undefined) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? dateRange[0] : ""}", "date_to": "${(dateRange.length !== 0) ? dateRange[1] : ""}", "dateID": ${(dateId !== undefined) ? dateId : 2}, "page": 1, "row_per_page": 1000000, "order_id": 0, "order_field": "tpartballchannel_crtdt", "statusID": [${(statusId.length === 0) ? [ "1", "2" ] : statusId}], "paytypeID": [ ${(payTypeId === 0) ? newPayTypeId : payTypeId} ] }`)
+    //                 const headers = {
+    //                     'Content-Type':'application/json',
+    //                     'Authorization' : auth
+    //                 }
+    //                 const filterHistory = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+    //                 // console.log(filterHistory, 'filterHistory export');
+    //                 if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length === 0) {
+    //                     const data = filterHistory.data.response_data.results
+    //                     let dataExcel = []
+    //                     for (let i = 0; i < data.length; i++) {
+    //                         dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
+    //                     }
+    //                     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+    //                     let workBook = XLSX.utils.book_new();
+    //                     XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+    //                     XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
+    //                 } else if (filterHistory.status === 200 && filterHistory.data.response_code === 200 && filterHistory.data.response_new_token.length !== 0) {
+    //                     setUserSession(filterHistory.data.response_new_token)
+    //                     const data = filterHistory.data.response_data.results
+    //                     let dataExcel = []
+    //                     for (let i = 0; i < data.length; i++) {
+    //                         dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
+    //                     }
+    //                     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+    //                     let workBook = XLSX.utils.book_new();
+    //                     XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+    //                     XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
+    //                 }
+    //             } catch (error) {
+    //                 // console.log(error);
+    //             }
+    //         }
+    //         dataExportFilter(dateId, dateRange, payTypeId, partnerId, statusId)
+    //     } else {
+    //         async function dataExportAlokasiSaldo(disbursementChannels) {
+    //             try {
+    //                 let payTypeId = []
+    //                 disbursementChannels.forEach(item => payTypeId.push(String(item.payment_id)))
+    //                 const auth = "Bearer " + getToken()
+    //                 const dataParams = encryptData(`{ "partner_id": "", "date_from": "", "date_to": "", "dateID": 2, "page": 1, "row_per_page": 1000000, "order_id": 0, "order_field": "tpartballchannel_crtdt", "statusID": [ "1", "2", "4" ], "paytypeID": [${payTypeId}] }`)
+    //                 const headers = {
+    //                     'Content-Type':'application/json',
+    //                     'Authorization' : auth
+    //                 }
+    //                 const ballanceAllocation = await axios.post(BaseURL + "/Report/HistoryBallanceAllocation", { data: dataParams }, { headers: headers })
+    //                 // console.log(ballanceAllocation, 'ballanceAllocation export');
+    //                 if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length === 0) {
+    //                     const data = ballanceAllocation.data.response_data.results
+    //                     let dataExcel = []
+    //                     for (let i = 0; i < data.length; i++) {
+    //                         dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
+    //                     }
+    //                     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+    //                     let workBook = XLSX.utils.book_new();
+    //                     XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+    //                     XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
+    //                 } else if (ballanceAllocation.status === 200 && ballanceAllocation.data.response_code === 200 && ballanceAllocation.data.response_new_token.length !== 0) {
+    //                     setUserSession(ballanceAllocation.data.response_new_token)
+    //                     const data = ballanceAllocation.data.response_data.results
+    //                     let dataExcel = []
+    //                     for (let i = 0; i < data.length; i++) {
+    //                         dataExcel.push({ No: i + 1, "Nama Partner": data[i].mpartner_name, Tanggal: data[i].tpartballchannel_crtdt_format, "Tujuan Alokasi": data[i].mpaytype_name, "Total Alokasi": data[i].tpartballchannel_amount_rp, "Saldo Awal Tersedia": data[i].tpartballchannel_balance_before_rp, "Sisa Saldo Tersedia": data[i].tpartballchannel_balance_after_rp, Status: data[i].mstatus_name })
+    //                     }
+    //                     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+    //                     let workBook = XLSX.utils.book_new();
+    //                     XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+    //                     XLSX.writeFile(workBook, "Riwayat Alokasi Saldo Report.xlsx");
+    //                 }
+    //             } catch (error) {
+    //                 // console.log(error);
+    //             }
+    //         }
+    //         dataExportAlokasiSaldo(disbursementChannels)
+    //     }
+    // }
 
     function handleChangeNamaPartner(e, jenisTransaksi) {
         if (jenisTransaksi === 'adminTopUp') {
             setSelectedPartnerAdminTopUp([e])
-        }else if (jenisTransaksi === 'alokasiPartner') {
-            setSelectedPartnerAlokasiSaldo([e])
+        // }else if (jenisTransaksi === 'alokasiPartner') {
+        //     setSelectedPartnerAlokasiSaldo([e])
         } else {
             setSelectedPartnerSaldoPartner([e])
         }
@@ -484,13 +485,13 @@ function SaldoPartner() {
         }
     }
     
-    function pickDateRiwayatAlokasiSaldo(item) {
-        setStateRiwayatAlokasiSaldo(item)
-        if (item !== null) {
-            item = item.map(el => el.toLocaleDateString('en-CA'))
-            setDateRangeRiwayatAlokasiSaldo(item)
-        }
-    }
+    // function pickDateRiwayatAlokasiSaldo(item) {
+    //     setStateRiwayatAlokasiSaldo(item)
+    //     if (item !== null) {
+    //         item = item.map(el => el.toLocaleDateString('en-CA'))
+    //         setDateRangeRiwayatAlokasiSaldo(item)
+    //     }
+    // }
 
     function handleChangePeriodeRiwayatTopUp(e) {
         if (e.target.value === "7") {
@@ -508,33 +509,33 @@ function SaldoPartner() {
         }
     }
     
-    function handleChangePeriodeRiwayatAlokasiSaldo(e) {
-        if (e.target.value === "7") {
-            setShowDateRiwayatAlokasiSaldo("")
-            setPeriodeRiwayatAlokasiSaldo(e.target.value)
-        } else {
-            setShowDateRiwayatAlokasiSaldo("none")
-            setPeriodeRiwayatAlokasiSaldo(e.target.value)
-        }
-    }
+    // function handleChangePeriodeRiwayatAlokasiSaldo(e) {
+    //     if (e.target.value === "7") {
+    //         setShowDateRiwayatAlokasiSaldo("")
+    //         setPeriodeRiwayatAlokasiSaldo(e.target.value)
+    //     } else {
+    //         setShowDateRiwayatAlokasiSaldo("none")
+    //         setPeriodeRiwayatAlokasiSaldo(e.target.value)
+    //     }
+    // }
 
     function handlePageChangeTopUp(page) {
         setActivePageRiwayatTopUp(page)
         listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", isFilterTopUp, inputHandle.tipeTopup)
     }
     
-    function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse, partnerId, statusId) {
-        setActivePageRiwayatAlokasiSaldo(page)
-        let newPayTypeId = []
-        if (payTypeId === 0) {
-            channelDisburse.forEach(item => newPayTypeId.push(item.payment_id))
-        }
-        if (isFilter) {
-            filterHistoryAlokasiSaldo(page, detId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField, partnerId, statusId)
-        } else if (!isFilter) {
-            historyAlokasiSaldo(page, (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField, (payTypeId === 0 ? newPayTypeId : payTypeId))
-        }
-    }
+    // function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse, partnerId, statusId) {
+    //     setActivePageRiwayatAlokasiSaldo(page)
+    //     let newPayTypeId = []
+    //     if (payTypeId === 0) {
+    //         channelDisburse.forEach(item => newPayTypeId.push(item.payment_id))
+    //     }
+    //     if (isFilter) {
+    //         filterHistoryAlokasiSaldo(page, detId, dateRange, (payTypeId === 0 ? newPayTypeId : payTypeId), (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField, partnerId, statusId)
+    //     } else if (!isFilter) {
+    //         historyAlokasiSaldo(page, (isDescending.orderField === "tpartballchannel_crtdt") ? isDescending.orderIdTanggal : isDescending.orderIdStatus, isDescending.orderField, (payTypeId === 0 ? newPayTypeId : payTypeId))
+    //     }
+    // }
 
     function resetButtonHandle() {
         setInputHandle({
@@ -551,16 +552,16 @@ function SaldoPartner() {
         setShowDateRiwayatTopUp("none")
     }
     
-    function resetButtonHandleAlokasiSaldo() {
-        setNamaPartnerAlokasiSaldo("")
-        setSelectedPartnerAlokasiSaldo([])
-        setStatusRiwayatAlokasiSaldo([])
-        setPeriodeRiwayatAlokasiSaldo(0)
-        setDateRangeRiwayatAlokasiSaldo([])
-        setTujuanAlokasiSaldo(0)
-        setShowDateRiwayatAlokasiSaldo("none")
-        setStateRiwayatAlokasiSaldo(null)
-    }
+    // function resetButtonHandleAlokasiSaldo() {
+    //     setNamaPartnerAlokasiSaldo("")
+    //     setSelectedPartnerAlokasiSaldo([])
+    //     setStatusRiwayatAlokasiSaldo([])
+    //     setPeriodeRiwayatAlokasiSaldo(0)
+    //     setDateRangeRiwayatAlokasiSaldo([])
+    //     setTujuanAlokasiSaldo(0)
+    //     setShowDateRiwayatAlokasiSaldo("none")
+    //     setStateRiwayatAlokasiSaldo(null)
+    // }
 
     async function detailTopUpHandler(idTransaksi) {
         try {
@@ -624,7 +625,7 @@ function SaldoPartner() {
         }
         listPartner()
         listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false, undefined)
-        getDisbursementChannel()
+        // getDisbursementChannel()
         historySaldoPartner()
     }, [access_token, user_role])
     
@@ -653,6 +654,7 @@ function SaldoPartner() {
             name: 'Nama Partner',
             selector: row => row.mpartnerdtl_sub_name,
             // sortable: true
+            wrap: true,
             width: "150px",
         },
         {
@@ -710,26 +712,26 @@ function SaldoPartner() {
             style: { justifyContent: "center" }
         },
         {
-            name: 'Nama Partner',
-            selector: row => row.mpartner_name,
-            sortable: true,
-            width: "260px",
-            // wrap: true,
-            // style: { wordBreak: 'break-word', whiteSpace: 'normal', paddingLeft: 80 }
-        },
-        {
-            name: 'Channel',
-            selector: row => row.mpartballchannel_name,
+            name: 'Partner ID',
+            selector: row => row.mpartball_partner_id,
             // sortable: true,
-            // width: "260px",
+            width: "260px",
             // wrap: true,
             // style: { wordBreak: 'break-word', whiteSpace: 'normal', justifyContent: "center", paddingRight: 11 }
         },
         {
+            name: 'Nama Partner',
+            selector: row => row.mpartner_name,
+            sortable: true,
+            // width: "260px",
+            // wrap: true,
+            // style: { wordBreak: 'break-word', whiteSpace: 'normal', paddingLeft: 80 }
+        },
+        {
             name: 'Saldo',
-            selector: row => convertToRupiah(row.mpartballchannel_balance),
-            // style: { justifyContent: "flex-end", paddingRight: 100 },
-            width: "150px",
+            selector: row => convertToRupiah(row.mpartball_balance, true, 2),
+            style: { justifyContent: "flex-end", marginRight: 50 },
+            width: "200px",
             // sortable: true,
         },
     ];
@@ -980,7 +982,7 @@ function SaldoPartner() {
                         </div>
                     </div>
                 </div>
-                <div className='mt-5 mb-5'>
+                {/* <div className='mt-5 mb-5'>
                     <span className='mt-4' style={{fontWeight: 600}}>Riwayat Alokasi Partner</span>
                     <div className='base-content mt-2' style={{ padding: "20px 40px" }}>
                         <span style={{fontWeight: 600}}>Filter</span>
@@ -1001,16 +1003,6 @@ function SaldoPartner() {
                                         styles={customStylesSelectedOption}
                                     />
                                 </div>
-                                {/* <Form.Select name='namaPartnerRiwayatTopUp' className="input-text-ez ms-4" value={namaPartnerAlokasiSaldo} onChange={(e) => setNamaPartnerAlokasiSaldo(e.target.value)}>
-                                    <option defaultChecked disabled value="">Pilih Nama Partner</option>
-                                    {
-                                        dataListPartner.map((item, index) => {
-                                            return (
-                                                <option key={index} value={item.partner_id}>{item.nama_perusahaan}</option>
-                                            )
-                                        })
-                                    }
-                                </Form.Select> */}
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "32%" }}>
                                 <span>Tujuan Alokasi</span>
@@ -1181,7 +1173,7 @@ function SaldoPartner() {
                             </div>
                         }
                     </div>
-                </div>
+                </div> */}
                 <div className='mt-5 mb-5'>
                     <div className='mt-4'>
                         <span className='mt-4' style={{fontWeight: 600}}>Saldo Partner</span>
