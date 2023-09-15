@@ -179,19 +179,19 @@ function TransaksiTopUp() {
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
-                    when: row => row.ttopupewalletlog_status_id === "2",
+                    when: row => row.ttopupewalletlog_status_id === 2,
                     style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.ttopupewalletlog_status_id === "1" || row.ttopupewalletlog_status_id === "7",
+                    when: row => row.ttopupewalletlog_status_id === 1 || row.ttopupewalletlog_status_id === 7,
                     style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.ttopupewalletlog_status_id === "4" || row.ttopupewalletlog_status_id === "9",
+                    when: row => row.ttopupewalletlog_status_id === 4 || row.ttopupewalletlog_status_id === 9,
                     style: { background: "#FDEAEA", color: "#EE2E2C", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.ttopupewalletlog_status_id === "3" || row.ttopupewalletlog_status_id === "5" || row.ttopupewalletlog_status_id === "6" || row.ttopupewalletlog_status_id === "8" || row.ttopupewalletlog_status_id === "10" || row.ttopupewalletlog_status_id === "11" || row.ttopupewalletlog_status_id === "12" || row.ttopupewalletlog_status_id === "13" || row.ttopupewalletlog_status_id === "14" || row.ttopupewalletlog_status_id === "15",
+                    when: row => row.ttopupewalletlog_status_id === 3 || row.ttopupewalletlog_status_id === 5 || row.ttopupewalletlog_status_id === 6 || row.ttopupewalletlog_status_id === 8 || row.ttopupewalletlog_status_id === 10 || row.ttopupewalletlog_status_id === 11 || row.ttopupewalletlog_status_id === 12 || row.ttopupewalletlog_status_id === 13 || row.ttopupewalletlog_status_id === 14 || row.ttopupewalletlog_status_id === 15,
                     style: { background: "#F0F0F0", color: "#888888", paddingLeft: "unset" }
                 }
             ],
