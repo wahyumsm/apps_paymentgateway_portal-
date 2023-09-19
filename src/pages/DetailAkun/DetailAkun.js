@@ -19,12 +19,11 @@ function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
     const [subAccount, setSubAccount] = useState([])
+    const [dataListCallBack, setDataListCallBack] = useState([])
     const history = useHistory()
     const myRef = useRef(null)
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
-    const [inputHandle, setInputHandle] = useState({
-        callbackUrl: dataAkun.callback_url,
-    })
+    const [inputHandle, setInputHandle] = useState({})
 
     function handleChange(e) {
         setInputHandle({
@@ -89,6 +88,71 @@ function DetailAkun() {
         }
     }
 
+    async function getListCallback() {
+        try {
+            const dataListCallBacks = {
+                status: 200,
+                data: {
+                    "response_function": "Partner/GetListCallbackForPartner",
+                    "response_code": 200,
+                    "response_message": "Success",
+                    "response_new_token": "",
+                    "response_data": [
+                        {
+                            "mcallbackurl_id": 100,
+                            "mcallbackurl_name": "Virtual Account Dynamic",
+                            "mpartnercallback_url": null
+                        },
+                        {
+                            "mcallbackurl_id": 108,
+                            "mcallbackurl_name": "Virtual Account Static",
+                            "mpartnercallback_url": null
+                        },
+                        {
+                            "mcallbackurl_id": 103,
+                            "mcallbackurl_name": "OVO Snap Callback Account Binding",
+                            "mpartnercallback_url": null
+                        },
+                        {
+                            "mcallbackurl_id": 104,
+                            "mcallbackurl_name": "OVO Snap Callback Direct Debit",
+                            "mpartnercallback_url": null
+                        },
+                        {
+                            "mcallbackurl_id": 105,
+                            "mcallbackurl_name": "OVO Snap Callback Unbinding",
+                            "mpartnercallback_url": null
+                        },
+                        {
+                            "mcallbackurl_id": 101,
+                            "mcallbackurl_name": "Payment Emoney",
+                            "mpartnercallback_url": null
+                        },
+                        {
+                            "mcallbackurl_id": 101,
+                            "mcallbackurl_name": "Payment Emoney",
+                            "mpartnercallback_url": null
+                        },
+                        {
+                            "mcallbackurl_id": 101,
+                            "mcallbackurl_name": "Payment Emoney",
+                            "mpartnercallback_url": null
+                        }
+                    ]
+                }
+            }
+            if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length === 0) {
+                setDataListCallBack(dataListCallBacks.data.response_data)
+            } else if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length !== 0) {
+                setUserSession(dataListCallBacks.data.response_new_token)
+                setDataListCallBack(dataListCallBacks.data.response_data)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
             <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
@@ -112,6 +176,7 @@ function DetailAkun() {
             history.push("/login")
         }
         userDetailPartner('/Account/GetPartnerDetail')
+        getListCallback()
     },[])
 
     async function updateUrlCallback(id, callbackUrl) {
@@ -394,7 +459,26 @@ function DetailAkun() {
                         <p>Ezeelink requires the URL endpoints for for the following scenarios:</p>
                         <br/>
                         <Row>
-                            <Col xs={3}>
+                            {
+                                dataListCallBack.length !== 0 &&
+                                dataListCallBack.map((item, idx) => {
+                                    return(
+                                        <>
+                                            <Col xs={3} key={idx}>
+                                                <span>{item.mcallbackurl_name}</span>
+                                            </Col>
+                                            <Col xs={9}>
+                                                <div>
+                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`callbackUrl${item.mcallbackurl_id}`} style={{width: '100%', marginLeft: 'unset'}}/> 
+                                                    <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p>
+                                                    <br/>
+                                                </div>
+                                            </Col>
+                                        </>
+                                    )
+                                })
+                            }
+                            {/* <Col xs={3}>
                                 <span>Payment Notification URL*</span>
                             </Col>
                             <Col xs={9}>
@@ -403,10 +487,10 @@ function DetailAkun() {
                                     <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p>
                                     <br/>
                                 </div>
-                            </Col>
+                            </Col> */}
                         </Row>
                         <div style={{ display: "flex", justifyContent: "end", marginTop: 16 }}>
-                        <button onClick={() => updateUrlCallback(dataAkun.mpartner_id, inputHandle.callbackUrl)} className='mb-5' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+                        <button onClick={() => updateUrlCallback(dataAkun.mpartner_id, inputHandle, dataListCallBack)} className='mb-5' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                             Update
                         </button>
                     </div>

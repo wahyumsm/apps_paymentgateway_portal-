@@ -87,6 +87,7 @@ function EditPartner() {
     rekeningOwner: detailPartner.mpartnerdtl_account_name,
     paymentType: [],
     fiturs: 0,
+    isChargeFee: detailPartner.mpartner_is_charge_fee,
   });
   const [biayaHandle, setBiayaHandle] = useState({
     fee: 0,
@@ -95,7 +96,6 @@ function EditPartner() {
     minTransaksi: 0,
     maksTransaksi: 0
   })
-  console.log(biayaHandle, 'biayaHandle');
   const [subAccountHandle, setSubAccountHandle] = useState({
     sumberAgen: "",
     sumberAgenName: "",
@@ -143,7 +143,12 @@ function EditPartner() {
     if (e.target.name === "active") {
       setInputHandle({
         ...inputHandle,
-        [e.target.name]: !inputHandle.active,
+        [e.target.name]: inputHandle.active === undefined ? !detailPartner.mpartner_is_active : !inputHandle.active,
+      });
+    } else if (e.target.name === "isChargeFee") {
+      setInputHandle({
+        ...inputHandle,
+        [e.target.name]: inputHandle.isChargeFee === undefined ? !detailPartner.mpartner_is_charge_fee : !inputHandle.isChargeFee,
       });
     } else {
       setInputHandle({
@@ -1195,6 +1200,7 @@ function EditPartner() {
     active,
     akunBank,
     rekeningOwner,
+    isChargeFee,
     paymentData,
     subAccount
   ) {
@@ -1232,6 +1238,9 @@ function EditPartner() {
       if (rekeningOwner === undefined) {
         rekeningOwner = detailPartner.mpartnerdtl_account_name;
       }
+      if (isChargeFee === undefined) {
+        isChargeFee = detailPartner.mpartner_is_charge_fee;
+      }
       paymentData = paymentData.map((item) => ({
         ...item,
         payment_id: item.mpaytype_id,
@@ -1267,7 +1276,7 @@ function EditPartner() {
       );
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
-        `{"mpartner_id":"${id}", "mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "payment_method": ${JSON.stringify(
+        `{"mpartner_id":"${id}", "mpartner_name": "${namaPerusahaan}", "mpartner_email": "${emailPerusahaan}", "mpartner_telp": "${phoneNumber}", "mpartner_address": "${alamat}", "mpartner_npwp": "${noNpwp}", "mpartner_npwp_name": "${namaNpwp}", "mpartner_direktur": "${nama}", "mpartner_direktur_telp": "${noHp}", "mpartner_is_active": ${active}, "bank_account_number": "${akunBank}", "bank_account_name": "${rekeningOwner}", "mpartner_is_charged_fee": ${isChargeFee}, "payment_method": ${JSON.stringify(
           paymentData
         )}, "sub_account": ${JSON.stringify(
           subAccount
@@ -1277,7 +1286,6 @@ function EditPartner() {
         "Content-Type": "application/json",
         Authorization: auth,
       };
-      console.log(dataParams, 'dataParams');
       const editPartner = await axios.post(BaseURL +
         "/Partner/UpdatePartner",
         { data: dataParams },
@@ -1746,11 +1754,43 @@ function EditPartner() {
             >
               <thead></thead>
               <tbody>
+                <tr>
+                  <td style={{ width: 200 }}>Is Charge Fee</td>
+                  <td>
+                    <Form.Check
+                      type="switch"
+                      id="custom-switch"
+                      label={
+                        inputHandle.isChargeFee === undefined && detailPartner.mpartner_is_charge_fee === true || inputHandle.isChargeFee === true
+                          ? "True"
+                          : "False"
+                      }
+                      checked={
+                        inputHandle.isChargeFee === undefined
+                          ? detailPartner.mpartner_is_charge_fee
+                          : inputHandle.isChargeFee
+                      }
+                      name="isChargeFee"
+                      onChange={handleChange}
+                    />
+                  </td>
+                </tr>
+                <br />
+                {/* <tr>
+                  <td style={{width: 200}}>Is Charge Fee</td>
+                  <td><Form.Check
+                    type="switch"
+                    id="custom-switch"
+                    label={(detailPartner.mpartner_is_charge_fee === true) ? "True" : "False"}
+                    checked={(detailPartner.mpartner_is_charge_fee === true) ? true : false}
+                  /></td>
+                </tr>
+                <br/> */}
                 {/* feeType awal */}
                 <tr>
                   <td style={{ width: 200 }}>Tipe Fee <span style={{ color: "red" }}>*</span></td>
                   <td>
-                    <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value) }) }}>
+                    <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: 0 }) }}>
                       <option defaultValue value={0}>Pilih Tipe Fee</option>
                       <option value={100}>Rupiah</option>
                       <option value={101}>Persentase</option>
@@ -2848,6 +2888,7 @@ function EditPartner() {
                   inputHandle.active,
                   inputHandle.akunBank,
                   inputHandle.rekeningOwner,
+                  inputHandle.isChargeFee,
                   payment,
                   subAccount
                 )

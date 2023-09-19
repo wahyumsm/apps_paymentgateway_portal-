@@ -529,6 +529,16 @@ function DetailPartner() {
                             <thead></thead>
                             <tbody>
                                 <tr>
+                                    <td style={{width: 200}}>Is Charge Fee</td>
+                                    <td><Form.Check
+                                        type="switch"
+                                        id="custom-switch"
+                                        label={(detailPartner.mpartner_is_charge_fee === true) ? "True" : "False"}
+                                        checked={(detailPartner.mpartner_is_charge_fee === true) ? true : false}
+                                    /></td>
+                                </tr>
+                                <br/>
+                                <tr>
                                     <td style={{width: 200}}>Tipe Fee <span style={{color: "red"}}>*</span></td>
                                     <td>
                                         <Form.Select name='feeType' disabled className='input-text-user' style={{ display: "inline", cursor: "not-allowed" }} value={payment.feeType}>
