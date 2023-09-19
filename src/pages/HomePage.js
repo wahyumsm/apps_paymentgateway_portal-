@@ -90,6 +90,7 @@ import SettlementManual from './Settlement/SettlementManual';
 import RiwayatBalance from './RiwayatBalance/RiwayatBalance';
 import ExcludeSettlementManual from './Settlement/ExcludeSettlementManual';
 import ProsesSettlementManual from './Settlement/ProsesSettlementManual';
+import CreateVAUSD from './VAUSD/CreateVAUSD';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -203,6 +204,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DisbursementTimeout.path} component={DisbursementTimeout} />
     <RouteWithSidebar exact path={Routes.ExcludeSettlementManual.path} component={ExcludeSettlementManual} />
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
+    <RouteWithSidebar exact path={Routes.VAUSD.path} component={CreateVAUSD} />
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLinkAdmin.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebitAdmin.path} component={RiwayatDirectDebit} />

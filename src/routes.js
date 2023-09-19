@@ -67,6 +67,7 @@ export const Routes = {
     eWalletAdmin: {path: "/Transaksi/ewallet"},
     ExcludeSettlementManual: {path: "/Settlement/exclude-settlement"},
     ProsesSettlementManual: {path: "/Settlement/proses-settlement-manual"},
+    VAUSD: {path: "/VA USD/create-va-usd"},
     
     // partner
     VaDanPaymentLink: {path: "/Riwayat Transaksi/va-dan-paylink"},
