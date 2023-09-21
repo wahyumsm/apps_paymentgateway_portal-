@@ -71,15 +71,18 @@ function DetailAkun() {
                 'Authorization' : auth
             }
             const userDetailPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
+            console.log(userDetailPartner.data.response_data.mpartner_id, 'userDetailPartner.data.response_data.mpartner_id');
             if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length === 0) {
                 userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setDataAkun(userDetailPartner.data.response_data)
                 setSubAccount(userDetailPartner.data.response_data.sub_account)
+                getListCallback(userDetailPartner.data.response_data.mpartner_id)
             } else if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length !== 0) {
                 userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setUserSession(userDetailPartner.data.response_new_token)
                 setDataAkun(userDetailPartner.data.response_data)
                 setSubAccount(userDetailPartner.data.response_data.sub_account)
+                getListCallback(userDetailPartner.data.response_data.mpartner_id)
             }
             
         } catch (error) {
@@ -88,59 +91,17 @@ function DetailAkun() {
         }
     }
 
-    async function getListCallback() {
+    async function getListCallback(id) {
         try {
-            const dataListCallBacks = {
-                status: 200,
-                data: {
-                    "response_function": "Partner/GetListCallbackForPartner",
-                    "response_code": 200,
-                    "response_message": "Success",
-                    "response_new_token": "",
-                    "response_data": [
-                        {
-                            "mcallbackurl_id": 100,
-                            "mcallbackurl_name": "Virtual Account Dynamic",
-                            "mpartnercallback_url": null
-                        },
-                        {
-                            "mcallbackurl_id": 108,
-                            "mcallbackurl_name": "Virtual Account Static",
-                            "mpartnercallback_url": null
-                        },
-                        {
-                            "mcallbackurl_id": 103,
-                            "mcallbackurl_name": "OVO Snap Callback Account Binding",
-                            "mpartnercallback_url": null
-                        },
-                        {
-                            "mcallbackurl_id": 104,
-                            "mcallbackurl_name": "OVO Snap Callback Direct Debit",
-                            "mpartnercallback_url": null
-                        },
-                        {
-                            "mcallbackurl_id": 105,
-                            "mcallbackurl_name": "OVO Snap Callback Unbinding",
-                            "mpartnercallback_url": null
-                        },
-                        {
-                            "mcallbackurl_id": 101,
-                            "mcallbackurl_name": "Payment Emoney",
-                            "mpartnercallback_url": null
-                        },
-                        {
-                            "mcallbackurl_id": 101,
-                            "mcallbackurl_name": "Payment Emoney",
-                            "mpartnercallback_url": null
-                        },
-                        {
-                            "mcallbackurl_id": 101,
-                            "mcallbackurl_name": "Payment Emoney",
-                            "mpartnercallback_url": null
-                        }
-                    ]
-                }
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"partner_id": "${id}"}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
             }
+            console.log(dataParams, 'dataParams');
+            const dataListCallBacks = await axios.post(BaseURL + "/Partner/GetListCallbackForPartner", {data: dataParams}, {headers: headers})
+            console.log(dataListCallBacks, 'dataListCallBacks');
             if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length === 0) {
                 setDataListCallBack(dataListCallBacks.data.response_data)
             } else if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length !== 0) {
@@ -176,26 +137,64 @@ function DetailAkun() {
             history.push("/login")
         }
         userDetailPartner('/Account/GetPartnerDetail')
-        getListCallback()
     },[])
 
-    async function updateUrlCallback(id, callbackUrl) {
+    async function updateUrlCallback(id, newUrl, oldUrl) {
         try {
+            let callbackList = []
+            if (Object.keys(newUrl).length !== 0) {
+                let newestUrl = []
+                for (const key in newUrl) {
+                    newestUrl.push({
+                        callback_id: Number(key),
+                        callbackurl_url: newUrl[key]
+                    })
+                }
+                oldUrl.forEach(el => {
+                    newestUrl.forEach(item => {
+                        if (item.callback_id === el.mpartnercallback_id) {
+                            callbackList.push({
+                                callback_id: item.callback_id,
+                                callbackurl_ID: el.mcallbackurl_id,
+                                callbackurl_url: item.callbackurl_url,
+                            })
+                        }
+                    })
+                    callbackList.push({
+                        callback_id: el.mpartnercallback_id,
+                        callbackurl_ID: el.mcallbackurl_id,
+                        callbackurl_url: el.mpartnercallback_url,
+                    })
+                });
+                callbackList = callbackList.filter((item, idx, arr) => arr.findIndex(item2 => (item2.callback_id === item.callback_id)) === idx)
+                console.log(callbackList, 'callbackList');
+            } else {
+                callbackList = oldUrl.map(item => {
+                    return{
+                        callback_id: item.mpartnercallback_id,
+                        callbackurl_ID: item.mcallbackurl_id,
+                        callbackurl_url: item.mpartnercallback_url,
+                    }
+                })
+                console.log(callbackList, 'callbackList new');
+            }
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"mpartner_id":"${id}", "callback_url":"${callbackUrl}"}`)
+            const dataParams = encryptData(`{"partner_id":"${id}", "callback_url_list":${JSON.stringify(callbackList)}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const editCallback = await axios.post(BaseURL + "/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
+            console.log(dataParams, 'dataParams');
+            const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
+            console.log(editCallback, 'editCallback');
             if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
-                history.push("/detailakun")
+                alert("Edit URL Berhasil")
+                window.location.reload()
             } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
                 setUserSession(editCallback.data.response_new_token)
-                history.push("/detailakun")
-            }
-            
-            alert("Edit URL Berhasil")
+                alert("Edit URL Berhasil")
+                window.location.reload()
+            }            
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
@@ -464,12 +463,12 @@ function DetailAkun() {
                                 dataListCallBack.map((item, idx) => {
                                     return(
                                         <>
-                                            <Col xs={3} key={idx}>
+                                            <Col xs={3} key={item.mpartnercallback_id}>
                                                 <span>{item.mcallbackurl_name}</span>
                                             </Col>
                                             <Col xs={9}>
                                                 <div>
-                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`callbackUrl${item.mcallbackurl_id}`} style={{width: '100%', marginLeft: 'unset'}}/> 
+                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`${item.mpartnercallback_id}`} style={{width: '100%', marginLeft: 'unset'}}/> 
                                                     <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p>
                                                     <br/>
                                                 </div>
