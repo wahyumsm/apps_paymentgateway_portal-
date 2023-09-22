@@ -10,6 +10,7 @@ import './css/global.css'
 
 import { Routes } from "../routes";
 import EzeeLogo from "../assets/icon/Logo_Ezeelink.svg";
+import EzeeLogoChina from "../assets/icon/Logo_Ezeelink_vers_China.svg";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
@@ -21,7 +22,9 @@ import arrowRight from "../assets/img/icons/arrow_right_white.png";
 
 export default (props = {}) => {
 
+  const language = JSON.parse(sessionStorage.getItem('lang'))
   const location = useLocation();
+  console.log(location, "location");
   const dispatch = useDispatch()
   const history = useHistory()
   const access_token = getToken()
@@ -38,7 +41,7 @@ export default (props = {}) => {
     const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
 
     return (
-      <Accordion as={Nav.Item} defaultActiveKey={defaultKey}>
+      <Accordion as={Nav.Item} defaultActiveKey={user_role === "102" ? eventKey : defaultKey}>
         <Accordion.Item eventKey={eventKey}>
           <Accordion.Button as={Nav.Link} className="d-flex justify-content-between align-items-center">
             <span>
@@ -84,7 +87,7 @@ export default (props = {}) => {
     if (!access_token) {
       history.push("/login")
     }
-    dispatch(GetUserAccessMenu("/Account/GetUserAccess"))
+    dispatch(GetUserAccessMenu("/Account/GetUserAccess", language === null ? 'ID' : language.flagName))
   }, [])
   
   if (!userAccessMenu) {
@@ -122,7 +125,7 @@ export default (props = {}) => {
             </div> */}
             <Nav className="flex-column pt-3 pt-md-0">              
               <div style={{backgroundColor: '#DF9C43', height: '67px', textAlign: 'center'}}>
-                <img src={EzeeLogo} style={{width: 66, height: 36, marginTop: 12}} alt=""/>
+                <img src={language === null ? EzeeLogo : language.flagName === "CN" ? EzeeLogoChina : EzeeLogo} style={{width: 66, height: language === null ? 36 : language.flagName === "CN" ? 46 : 36, marginTop: 12}} alt=""/>
               </div>              
               {
                 userAccessMenu.map((item) => {

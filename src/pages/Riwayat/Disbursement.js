@@ -59,7 +59,17 @@ function Disbursement() {
         option: (provided, state) => ({
             ...provided,
             backgroundColor: "none",
-            color: "black"
+            color: "#888888",
+            fontSize: "14px",
+            fontFamily: "Nunito"
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            border: "1px solid #E0E0E0",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontFamily: "Nunito",
+            height: "40px",
         })
     }
 
@@ -97,10 +107,10 @@ function Disbursement() {
     function handlePageChangeDisbursement(page) {
         if (isFilterDisbursement) {
             setActivePageDisbursement(page)
-            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)
+            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0, language === null ? 'ID' : language.flagName)
         } else {
             setActivePageDisbursement(page)
-            disbursementReport(page, user_role)
+            disbursementReport(page, user_role, language === null ? 'ID' : language.flagName)
         }
     }
 
@@ -194,14 +204,15 @@ function Disbursement() {
     // 6 -> bulan lalu
     // 7 -> pilih tanggal
 
-    async function disbursementReport(currentPage, userRole) {
+    async function disbursementReport(currentPage, userRole, lang) {
         try {
             if (userRole !== "102") {
                 const auth = 'Bearer ' + getToken();
                 const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "payment_code":"", "reference_no": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
-                    'Authorization': auth
+                    'Authorization': auth,
+                    'Accept-Language' : lang,
                 }
                 const dataDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                 if (dataDisbursement.status === 200 && dataDisbursement.data.response_code === 200 && dataDisbursement.data.response_new_token === null) {
@@ -225,7 +236,8 @@ function Disbursement() {
                 const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "payment_code":"", "reference_no": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
-                    'Authorization': auth
+                    'Authorization': auth,
+                    'Accept-Language' : lang,
                 }
                 const dataDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                 if (dataDisbursement.status === 200 && dataDisbursement.data.response_code === 200 && dataDisbursement.data.response_new_token === null) {
@@ -259,7 +271,7 @@ function Disbursement() {
         }
     }
 
-    async function filterDisbursement(page, statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId, reffNo, rowPerPage) {
+    async function filterDisbursement(page, statusId, transId, paymentCode, partnerId, dateId, periode, partnerTransId, reffNo, rowPerPage, lang) {
         try {
             setPendingDisbursement(true)
             setIsFilterDisbursement(true)
@@ -268,7 +280,8 @@ function Disbursement() {
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "${reffNo}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang,
             }
             const filterDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
             if (filterDisbursement.status === 200 && filterDisbursement.data.response_code === 200 && filterDisbursement.data.response_new_token === null) {
@@ -319,7 +332,7 @@ function Disbursement() {
             listPartner()
         }
         listDisburseChannelHandler()
-        disbursementReport(activePageDisbursement, user_role)
+        disbursementReport(activePageDisbursement, user_role, language === null ? 'ID' : language.flagName)
     }, [access_token, user_role])
 
     const columnsDisbursement = [
@@ -464,7 +477,6 @@ function Disbursement() {
         {
             name: language === null ? ind.no : language.no,
             selector: row => row.number,
-            width: "3%",
             maxWidth: 'fit-content !important'
         },
         {
@@ -479,7 +491,7 @@ function Disbursement() {
             name: language === null ? ind.waktu : language.waktu,
             selector: row => convertSimpleTimeStamp(row.tdishburse_crtdt),
             wrap: true,
-            width: "150px",
+            width: "165px",
             // sortable: true,
         },
         {
@@ -493,15 +505,15 @@ function Disbursement() {
             name: language === null ? ind.nominalDisburse : language.nominalDisburse,
             selector: row => convertToRupiah(row.tdishburse_amount),
             // sortable: true,
-            width: "224px",
-            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+            width: language === null ? "205px" : language.flagName === "CN" ? "100px" : "205px",
+            style: { display: "flex", justifyContent: "flex-end", }
         },
         {
             name: language === null ? ind.totalDisburse : language.totalDisburse,
             selector: row => convertToRupiah(row.tdishburse_total_amount),
             // sortable: true,
-            width: "224px",
-            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
+            width: language === null ? "180px" : language.flagName === "CN" ? "100px" : "180px",
+            style: { display: "flex", justifyContent: "flex-end", }
         },
         {
             name: language === null ? ind.tujuanDisburse : language.tujuanDisburse,
@@ -513,19 +525,19 @@ function Disbursement() {
             name: language === null ? ind.cabang : language.cabang,
             selector: row => (row.branch_name === null || row.branch_name.length === 0) ? "-" : row.branch_name,
             // sortable: true,
-            width: "224px",
+            width: "170px",
         },
         {
             name: language === null ? ind.nomorRekTujuan : language.nomorRekTujuan,
             selector: row => row.tdishburse_acc_num,
             // sortable: true,
-            width: "224px",
+            width: language === null ? "224px" : language.flagName === "ID" ? "224px" : "250px",
         },
         {
             name: language === null ? ind.namaPemilikRek : language.namaPemilikRek,
             selector: row => row.tdishburse_acc_name,
             // sortable: true,
-            width: "224px",
+            width: language === null ? "224px" : language.flagName === "ID" ? "224px" : "250px",
         },
         {
             name: language === null ? ind.catatan : language.catatan,
@@ -595,7 +607,7 @@ function Disbursement() {
         },
     };
 
-    function ExportReportDisbursementHandler(isFilter, userRole, statusId, paymentCode, transId, partnerId, dateId, periode, partnerTransId, referenceNo) {
+    function ExportReportDisbursementHandler(isFilter, userRole, statusId, paymentCode, transId, partnerId, dateId, periode, partnerTransId, referenceNo, lang) {
         // console.log(partnerTransId, 'partnerTransId');
         // console.log(dateId, 'dateId');
         if (isFilter === true && userRole === "102") {
@@ -607,7 +619,8 @@ function Disbursement() {
                     const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId === undefined ? "" : partnerTransId}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "reference_no":"", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang,
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     // console.log(dataExportFilter, 'dataExportFilter');
@@ -647,7 +660,8 @@ function Disbursement() {
                     const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "${referenceNo}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang,
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
@@ -685,7 +699,8 @@ function Disbursement() {
                     const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "payment_code": "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "reference_no":"", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang,
                     }
                     const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
@@ -723,7 +738,8 @@ function Disbursement() {
                     const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "payment_code": "", "dateID": 2, "date_from": "", "date_to": "", "partner_trans_id":"", "reference_no":"", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang,
                     }
                     const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {
@@ -778,13 +794,13 @@ function Disbursement() {
                             user_role !== "102" ?
                             <>
                                 <Row className='mt-4'>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <Col xs={4} className="d-flex justify-content-between align-items-center">
                                         <span>ID Transaksi</span>
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className='input-text-report' placeholder='Masukkan ID Transaksi'/>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <Col xs={4} className="d-flex justify-content-between align-items-center">
                                         <span className='me-4'>Nama Partner</span>
-                                        <div className="dropdown dropDisbursePartner">
+                                        <div className="dropdown dropDisbursePartner" style={{ width: "12rem" }}>
                                             <ReactSelect
                                                 // isMulti
                                                 closeMenuOnSelect={true}
@@ -809,7 +825,7 @@ function Disbursement() {
                                             }
                                         </Form.Select> */}
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <Col xs={4} className="d-flex justify-content-between align-items-center">
                                         <span className='me-5'>Status</span>
                                         <Form.Select name="statusDisbursement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
                                             <option defaultChecked disabled value="">Pilih Status</option>
@@ -822,7 +838,7 @@ function Disbursement() {
                                     </Col>
                                 </Row>
                                 <Row className='mt-4'>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: (showDateDisbursement === "none") ? "33.2%" : "33.2%" }}>
+                                    <Col xs={4} className="d-flex justify-content-between align-items-center" style={{  width: (showDateDisbursement === "none") ? "33.2%" : "33.2%" }}>
                                         <span style={{ marginRight: 26 }}>Periode <span style={{ color: "red" }}>*</span></span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
                                             <option defaultChecked disabled value={0}>Pilih Periode</option> 
@@ -834,13 +850,13 @@ function Disbursement() {
                                             <option value={7}>Pilih Range Tanggal</option>
                                         </Form.Select>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <Col xs={4} className="d-flex justify-content-between align-items-center">
                                         <span>Partner Trans ID</span>
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report ms-2' placeholder='Masukkan Partner Trans ID'/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: "33%"}}>
                                         <span>Tipe Pembayaran</span>
-                                        <div className="dropdown dropDisbursePartner me-4">
+                                        <div className="dropdown dropDisbursePartner ms-3" style={{ width: "12rem" }}>
                                             <ReactSelect
                                                 // isMulti
                                                 closeMenuOnSelect={true}
@@ -879,7 +895,7 @@ function Disbursement() {
                                     </Col>
                                 </Row>
                                 <Row className='mt-4'>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <Col xs={4} className="d-flex justify-content-between align-items-center">
                                         <span>Reference No</span>
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.referenceNo} name="referenceNo" type='text'className='input-text-report' placeholder='Masukkan Reference No'/>
                                     </Col>
@@ -891,7 +907,7 @@ function Disbursement() {
                                         <span className={language !== null ? (language.flagName === "CN" ? 'me-5' : 'me-4') : 'me-4'}>{language === null ? ind.idTransaksi : language.idTransaksi}</span>
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className={language !== null ? (language.flagName === "CN" ? 'input-text-report ms-5' : 'input-text-report ') : 'input-text-report '} placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: "34%" }}>
+                                    <Col xs={4} className="d-flex justify-content-between align-items-center" style={{  width: "34%" }}>
                                         <span style={{ marginRight: 26 }}>{language === null ? ind.periode : language.periode} <span style={{ color: "red" }}>*</span></span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez me-2" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
                                             <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
@@ -903,7 +919,7 @@ function Disbursement() {
                                             <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                         </Form.Select>
                                     </Col>
-                                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "30%"}}>
+                                    <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: "30%"}}>
                                         <span>{language === null ? ind.status : language.status}</span>
                                         <Form.Select name="statusDisbursement" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
                                             <option defaultChecked disabled value="">{language === null ? ind.placeholderStatus : language.placeholderStatus}</option>
@@ -917,7 +933,7 @@ function Disbursement() {
                                     
                                 </Row>
                                 <Row className='mt-3'>
-                                    <Col xs={4} className='d-flex justify-content-start align-items-center'>
+                                    <Col xs={4} className='d-flex justify-content-between align-items-center'>
                                         <span>{language === null ? ind.partnerTransId : language.partnerTransId}</span>
                                         <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder={language === null ? ind.placeholderPartnerTransId : language.placeholderPartnerTransId}/>
                                     </Col>
@@ -939,7 +955,7 @@ function Disbursement() {
                                 <Row>
                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0)}
+                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0, language === null ? 'ID' : language.flagName)}
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
@@ -973,7 +989,7 @@ function Disbursement() {
                         {
                             dataDisbursement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", inputHandle.idTransaksiDisbursement, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo)} className="export-span">Export</Link>
+                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", inputHandle.idTransaksiDisbursement, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, language === null ? 'ID' : language.flagName)} className="export-span">{language === null ? ind.export : language.export}</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
@@ -989,7 +1005,7 @@ function Disbursement() {
                             />
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDisbursement}</div>
+                        <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageDisbursement}</div>
                             <Pagination
                                 activePage={activePageDisbursement}
                                 itemsCountPerPage={pageNumberDisbursement.row_per_page}

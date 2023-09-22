@@ -1,4 +1,4 @@
-
+const language = JSON.parse(sessionStorage.getItem('lang'))
 export const Routes = {
     // pages
     DashboardOverview: { path: "/" },

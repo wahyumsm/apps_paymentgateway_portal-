@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image, Modal, Container} from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Image} from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 // import { invoiceItems } from '../../data/tables';
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
@@ -13,11 +13,9 @@ import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import ReactSelect, { components } from 'react-select';
 import { ind } from '../../components/Language';
-import { id } from 'date-fns/locale';
 
 function EWallet() {
     const language = JSON.parse(sessionStorage.getItem('lang'))
-    console.log(language, "language");
     const history = useHistory()
     const access_token = getToken();
     const user_role = getRole();
@@ -62,7 +60,17 @@ function EWallet() {
         option: (provided, state) => ({
             ...provided,
             backgroundColor: "none",
-            color: "black"
+            color: "#888888",
+            fontSize: "14px",
+            fontFamily: "Nunito"
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            border: "1px solid #E0E0E0",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontFamily: "Nunito",
+            height: "40px",
         })
     }
 
@@ -101,10 +109,10 @@ function EWallet() {
     function handlePageChangeEWallet(page) {
         if (isFilterEWallet) {
             setActivePageEWallet(page)
-            filterRiwayatEWallet(page, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet)
+            filterRiwayatEWallet(page, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'ID' : language.flagName)
         } else {
             setActivePageEWallet(page)
-            transaksiEwallet(page)
+            transaksiEwallet(page, language === null ? 'ID' : language.flagName)
         }
     }
 
@@ -150,14 +158,15 @@ function EWallet() {
         }
     }
 
-    async function transaksiEwallet(currentPage) {
+    async function transaksiEwallet(currentPage, lang) {
         try {
             const auth = 'Bearer ' + getToken();
             // const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "partner_transid": "", "bank_code": "", "fitur_id": 0}`)
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "reference_no": "", "walletID": 0}`)
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang
             }
             const dataRiwayatEWallet = await axios.post(BaseURL + "/Report/HistoryEmoney", {data: dataParams}, { headers: headers });
             // console.log(dataRiwayatEWallet, "dataRiwayatEWallet");
@@ -180,7 +189,7 @@ function EWallet() {
         }
     }
 
-    async function filterRiwayatEWallet(page, statusId, transId, subPartnerId, dateId, periode, rowPerPage, partnerTransId, eWalletId) {
+    async function filterRiwayatEWallet(page, statusId, transId, subPartnerId, dateId, periode, rowPerPage, partnerTransId, eWalletId, lang) {
         try {
             setPendingTransfer(true)
             setIsFilterEWallet(true)
@@ -191,7 +200,8 @@ function EWallet() {
             // console.log(dataParams, "filter dana masuk");
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang
             }
             const filterRiwayatEWallet = await axios.post(BaseURL + "/Report/HistoryEmoney", {data: dataParams}, { headers: headers });
             // console.log(filterRiwayatEWallet, "filterRiwayatEWallet");
@@ -234,15 +244,16 @@ function EWallet() {
         }
     }
 
-    function ExportReportTransferEWalletHandler(isFilter, statusId, transId, subPartnerId, dateId, periode, partnerTransId, eWalletId) {
+    function ExportReportTransferEWalletHandler(isFilter, statusId, transId, subPartnerId, dateId, periode, partnerTransId, eWalletId, lang) {
         if (isFilter && user_role !== "102") {
-            async function dataExportFilter(statusId, transId, subPartnerId, dateId, periode, eWalletId) {
+            async function dataExportFilter(statusId, transId, subPartnerId, dateId, periode, eWalletId, lang) {
                 try {
                     const auth = 'Bearer ' + getToken();
                     const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "reference_no": "${partnerTransId}", "walletID": ${eWalletId}}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Report/HistoryEmoney", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
@@ -272,16 +283,17 @@ function EWallet() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, subPartnerId, dateId, periode, eWalletId)
+            dataExportFilter(statusId, transId, subPartnerId, dateId, periode, eWalletId, lang)
         } else if (isFilter === false && user_role !== "102") {
-            async function dataExportEWallet() {
+            async function dataExportEWallet(lang) {
                 try {
                     const auth = 'Bearer ' + getToken();
                     // const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "partner_transid":"", "bank_code": "", "fitur_id": 0}`)
                     const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "reference_no": "", "walletID": 0}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang
                     }
                     const dataExportEWallet = await axios.post(BaseURL + "/Report/HistoryEmoney", {data: dataParams}, { headers: headers });
                     if (dataExportEWallet.status === 200 && dataExportEWallet.data.response_code === 200 && dataExportEWallet.data.response_new_token.length === 0) {
@@ -311,7 +323,7 @@ function EWallet() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportEWallet()
+            dataExportEWallet(lang)
         } else if (isFilter && user_role === "102") {
             async function dataExportFilter(statusId, transId, subPartnerId, dateId, periode, eWalletId) {
                 try {
@@ -319,7 +331,8 @@ function EWallet() {
                     const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "sub_partner_id": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "reference_no": "${partnerTransId}", "walletID": ${eWalletId}}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Report/HistoryEmoney", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
@@ -358,7 +371,8 @@ function EWallet() {
                     const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "sub_partner_id":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "reference_no": "", "walletID": 0}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang
                     }
                     const dataExportEWallet = await axios.post(BaseURL + "/Report/HistoryEmoney", {data: dataParams}, { headers: headers });
                     if (dataExportEWallet.status === 200 && dataExportEWallet.data.response_code === 200 && dataExportEWallet.data.response_new_token.length === 0) {
@@ -401,7 +415,7 @@ function EWallet() {
             // history.push('/404');
             listPartner()
         }
-        transaksiEwallet(activePageEWallet)
+        transaksiEwallet(activePageEWallet, language === null ? 'ID' : language.flagName)
     }, [access_token, user_role])
     
     const columns = [
@@ -506,7 +520,6 @@ function EWallet() {
         {
             name: language === null ? ind.no : language.no,
             selector: row => row.number,
-            width: "5%",
             wrap: true,
             maxWidth: 'fit-content !important'
         },
@@ -638,7 +651,7 @@ function EWallet() {
                                 user_role !== "102" ?
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <span className='me-3'>Nama Partner</span>
-                                    <div className="dropdown dropSaldoPartner">
+                                    <div className="dropdown dropSaldoPartner" style={{ width: "11.3rem" }}>
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -719,7 +732,7 @@ function EWallet() {
                                 <Row>
                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterRiwayatEWallet(1, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet)}
+                                            onClick={() => filterRiwayatEWallet(1, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'ID' : language.flagName)}
                                             className={(inputHandle.periodeEWallet !== 0 || dateRangeEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.idTransaksiEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.statusEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedAgenEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.partnerTransIdEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedBankEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.fiturEWallet.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeEWallet === 0 || inputHandle.periodeEWallet === 0 && inputHandle.idTransaksiEWallet.length === 0 || inputHandle.periodeEWallet === 0 && inputHandle.statusEWallet.length === 0 || inputHandle.periodeEWallet === 0 && selectedAgenEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.partnerTransIdEWallet.length === 0 | inputHandle.periodeEWallet === 0 && selectedBankEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.fiturEWallet.length === 0}
                                         >
@@ -741,7 +754,7 @@ function EWallet() {
                         {
                             dataRiwayatEWallet.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link onClick={() => ExportReportTransferEWalletHandler(isFilterEWallet, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet)} className="export-span">Export</Link>
+                                <Link onClick={() => ExportReportTransferEWalletHandler(isFilterEWallet, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'ID' : language.flagName)} className="export-span">{language === null ? ind.export : language.export}</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
@@ -756,7 +769,7 @@ function EWallet() {
                             />
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageEWallet}</div>
+                        <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageEWallet}</div>
                             <Pagination
                                 activePage={activePageEWallet}
                                 itemsCountPerPage={pageNumberEWallet.row_per_page}

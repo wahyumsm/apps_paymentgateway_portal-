@@ -15,6 +15,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { ind } from '../../components/Language';
 
 const VaDanPaymentLink = () => {
+    
     const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken();
@@ -170,10 +171,10 @@ const VaDanPaymentLink = () => {
         // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
         if (isFilterDanaMasuk) {
             setActivePageDanaMasuk(page)
-            filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)
+            filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk, language === null ? 'ID' : language.flagName)
         } else {
             setActivePageDanaMasuk(page)
-            getListTransferDana(partnerId, page)
+            getListTransferDana(partnerId, page, language === null ? 'ID' : language.flagName)
         }
     }
 
@@ -212,12 +213,12 @@ const VaDanPaymentLink = () => {
           // console.log(userDetail, 'ini user detal funct');
           if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
-            getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1)
+            getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1, language === null ? 'ID' : language.flagName)
             getDataAgen(userDetail.data.response_data.muser_partnerdtl_id)
           } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
             setUserSession(userDetail.data.response_new_token)
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
-            getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1)
+            getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1, language === null ? 'ID' : language.flagName)
             getDataAgen(userDetail.data.response_data.muser_partnerdtl_id)
           }
     } catch (error) {
@@ -291,13 +292,14 @@ const VaDanPaymentLink = () => {
         }
     }
 
-    async function getListTransferDana(partnerId, currentPage) {
+    async function getListTransferDana(partnerId, currentPage, lang) {
         try {
           const auth = "Bearer " + getToken()
           const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "partner_trans_id" :"", "bank_code": "", "fitur_id": 0}`)
           const headers = {
             'Content-Type':'application/json',
-            'Authorization' : auth
+            'Authorization' : auth,
+            'Accept-Language' : lang
           }
           const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
         //   console.log(listTransferDana, 'ini list dana masuk');
@@ -321,8 +323,9 @@ const VaDanPaymentLink = () => {
         }
     }
 
-    async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, partnerTransId, bankName, fiturDanaMasuk) {
+    async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, partnerTransId, bankName, fiturDanaMasuk, lang) {
         try {
+            console.log(lang, "lang");
           setPendingTransfer(true)
           setIsFilterDanaMasuk(true)
           setActivePageDanaMasuk(page)
@@ -332,7 +335,8 @@ const VaDanPaymentLink = () => {
         //   console.log(dataParams, "ini data params dana masuk filter");
           const headers = {
             'Content-Type':'application/json',
-            'Authorization' : auth
+            'Authorization' : auth,
+            'Accept-Language' : lang
           }
           const filterTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
           // console.log(filterTransferDana, "ini data filter transfer dana");
@@ -356,9 +360,9 @@ const VaDanPaymentLink = () => {
         }
     }
 
-    function exportReportTransferDanaMasukHandler(isFilter, partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk) {
+    function exportReportTransferDanaMasukHandler(isFilter, partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk, lang) {
         if (isFilter) {
-          async function exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk) {
+          async function exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk, lang) {
             try {
               const auth = "Bearer " + getToken()
               const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": 1, "row_per_page": 1000000, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "partner_trans_id":"${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturDanaMasuk}}`)
@@ -366,7 +370,8 @@ const VaDanPaymentLink = () => {
               // console.log(dataParams, "ini data params dana masuk filter");
               const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
               }
               const dataExportFilter = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
               // console.log(dataExportFilter, "ini data filter transfer dana");
@@ -397,15 +402,16 @@ const VaDanPaymentLink = () => {
               history.push(errorCatch(error.response.status))
             }
           }
-          exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk)
+          exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk, lang)
         } else {
-          async function exportGetListTransferDana(partnerId) {
+          async function exportGetListTransferDana(partnerId, lang) {
             try {
               const auth = "Bearer " + getToken()
               const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "page": 1, "row_per_page": 1000000, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "partner_trans_id":"", "bank_code":"", "fitur_id": 0}`)
               const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
               }
               const dataExportDefault = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
               // console.log(dataExportDefault, 'ini list');
@@ -438,7 +444,7 @@ const VaDanPaymentLink = () => {
               history.push(errorCatch(error.response.status))
             }
           }
-          exportGetListTransferDana(partnerId)
+          exportGetListTransferDana(partnerId, lang)
         }
     }
 
@@ -490,7 +496,17 @@ const VaDanPaymentLink = () => {
         option: (provided, state) => ({
             ...provided,
             backgroundColor: "none",
-            color: "black"
+            color: "#888888",
+            fontSize: "14px",
+            fontFamily: "Nunito"
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            border: "1px solid #E0E0E0",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontFamily: "Nunito",
+            height: "40px",
         })
     }
 
@@ -999,7 +1015,7 @@ const VaDanPaymentLink = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <span className="pe-3">{language === null ? ind.namaAgen : language.namaAgen}</span>
-                                    <div className="dropdown dropVaAndPaylinkPartner">
+                                    <div className="dropdown dropVaAndPaylinkPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             closeMenuOnSelect={true}
                                             hideSelectedOptions={false}
@@ -1046,7 +1062,7 @@ const VaDanPaymentLink = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <span className="me-2">{language === null ? ind.namaBank : language.namaBank}</span>
-                                    <div className="dropdown dropVaAndPaylinkPartner">
+                                    <div className="dropdown dropVaAndPaylinkPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -1091,7 +1107,7 @@ const VaDanPaymentLink = () => {
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                            onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)}
+                                            onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk, language === null ? 'ID' : language.flagName)}
                                             // className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             // disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                             // onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0)}
@@ -1117,7 +1133,7 @@ const VaDanPaymentLink = () => {
                                 // listTransferDana.length !== 0 &&
                                 listTransferDana.length !== 0 &&
                                 <div>
-                                    <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
+                                    <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk, language === null ? 'ID' : language.flagName)} className="export-span">{language === null ? ind.export : language.export}</Link>
                                 </div>
                             }
                             <br/>
@@ -1134,7 +1150,7 @@ const VaDanPaymentLink = () => {
                                 />
                             </div>
                             <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDanaMasuk}</div>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageDanaMasuk}</div>
                                 <Pagination
                                     activePage={activePageDanaMasuk}
                                     itemsCountPerPage={pageNumberDanaMasuk.row_per_page}
@@ -1163,7 +1179,7 @@ const VaDanPaymentLink = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span className='me-3'>Nama Partner</span>
-                                    <div className="dropdown dropSaldoPartner">
+                                    <div className="dropdown dropSaldoPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             closeMenuOnSelect={true}
                                             hideSelectedOptions={false}
@@ -1178,7 +1194,7 @@ const VaDanPaymentLink = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span className="me-4">Nama Agen</span>
-                                    <div className="dropdown dropSaldoPartner">
+                                    <div className="dropdown dropSaldoPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -1229,7 +1245,7 @@ const VaDanPaymentLink = () => {
                             <Row className="mt-4">
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span className="me-4">Nama Bank</span>
-                                    <div className="dropdown dropSaldoPartner">
+                                    <div className="dropdown dropSaldoPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -1260,7 +1276,7 @@ const VaDanPaymentLink = () => {
                             <Row className='mt-4'>
                                 <Col xs={5}>
                                     <Row>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => filterRiwayatDanaMasukAdmin(1, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin)}
                                                 className={(inputHandleAdmin.periodeDanaMasukAdmin !== 0 || dateRangeDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.idTransaksiDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.statusDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && selectedAgenDanaMasuk[0].value !== undefined || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.partnerTransIdDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && selectedBankDanaMasukAdmin[0].value !== undefined || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.fiturDanaMasukAdmin.length !== 0) ? "btn-ez-on" : "btn-ez"}
@@ -1269,7 +1285,7 @@ const VaDanPaymentLink = () => {
                                                 Terapkan
                                             </button>
                                         </Col>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => resetButtonAdminHandle("Dana Masuk")}
                                                 className={(inputHandleAdmin.periodeDanaMasukAdmin || dateRangeDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.idTransaksiDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.statusDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && selectedAgenDanaMasuk[0].value !== undefined || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.partnerTransIdDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && selectedBankDanaMasukAdmin[0].value !== undefined || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.fiturDanaMasukAdmin.length !== 0) ? "btn-reset" : "btn-ez-reset"}

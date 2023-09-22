@@ -1098,7 +1098,7 @@ const InfoSaldoDanMutasi = () => {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{user_role === "102" ? (language === null ? ind.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account"}</span> 
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role === "102" ? (language === null ? ind.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Sub Account bank"} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{user_role === "102" ? (language === null ? ind.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account"}</span> 
             <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{user_role === "102" ? (language === null ? ind.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account Partner"}</div>
             </div>
@@ -1354,7 +1354,7 @@ const InfoSaldoDanMutasi = () => {
                                         }}
                                     >
                                         <div style={{ marginRight: 10, marginTop: 10 }}>
-                                            Total Page: {totalPageMutasi}
+                                            {language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageMutasi}
                                         </div>
                                         <Pagination
                                             activePage={activePageMutasi}
@@ -1563,7 +1563,7 @@ const InfoSaldoDanMutasi = () => {
                                                     </tr>
                                                 </thead>
                                             </table>
-                                            {!pendingRiwayatTransferAdmin ? <div className='text-center pb-3' style={{ color: '#393939' }}> </div> : <div className='text-center'><CustomLoader /></div>}
+                                            {!pendingRiwayatTransferAdmin ? <div className='text-center pb-3' style={{ color: '#393939' }}>Tidak ada data </div> : <div className='text-center'><CustomLoader /></div>}
                                         </>
                                     </div>
                                 )
@@ -1587,13 +1587,13 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="saldo-sub-acc" size="xs" centered show={loginToSaldo} onHide={() => setLoginToSaldo(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    Masukkan Kata Sandi Login Anda 
+                    {language === null ? ind.masukkanKataSandiSub : language.masukkanKataSandiSub} 
                 </Modal.Title>
                 <Modal.Body >
                     <div className=' mt-2' style={{ padding: "0px 24px"}}>
-                        <div style={{ fontSize: 14, fontFamily: "Nunito" }}>Kata Sandi</div>
+                        <div style={{ fontSize: 14, fontFamily: "Nunito" }}>{language === null ? ind.kataSandi : language.kataSandi}</div>
                         <div className='d-flex justify-content-center align-items-center text-center mt-1 position-relative' >
-                            <input value={inputPass.passwordRek} name="passwordRek" type={passwordInputType} onChange={handleChangePass} className='input-text-saldo-sub-acc' placeholder='Masukkan Kata Sandi' style={{width: "100%", borderColor: errMsg.length !== 0 ? "#B9121B" : "#C4C4C4"}} />
+                            <input value={inputPass.passwordRek} name="passwordRek" type={passwordInputType} onChange={handleChangePass} className='input-text-saldo-sub-acc' placeholder={language === null ? ind.placeholderKataSandi : language.placeholderKataSandi} style={{width: "100%", borderColor: errMsg.length !== 0 ? "#B9121B" : "#C4C4C4"}} />
                             <img onClick={() => togglePassword()} src={eyeIcon} alt="eye icon" className='position-absolute right-0 me-2' style={{ cursor: "pointer" }} />
                         </div>
                     </div>
@@ -1602,7 +1602,7 @@ const InfoSaldoDanMutasi = () => {
                             errMsg.length !== 0 ? (
                                 <div className='d-flex justify-content-center align items-center mt-3'>
                                     <img src={noteIconError} alt="icon error" />
-                                    <div style={{ color: "#B9121B", fontFamily: "Nunito", fontSize: 14 }} className='ms-2'>Kata Sandi Salah</div>
+                                    <div style={{ color: "#B9121B", fontFamily: "Nunito", fontSize: 14 }} className='ms-2'>{language === null ? ind.kataSandiSalah : language.kataSandiSalah}</div>
                                 </div>
                             ) : ""
                         }
@@ -1624,7 +1624,7 @@ const InfoSaldoDanMutasi = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            Lihat Saldo
+                            {language === null ? ind.lihatSaldo : language.lihatSaldo}
                         </button>
                     </div>
                 </Modal.Body>
@@ -1641,10 +1641,10 @@ const InfoSaldoDanMutasi = () => {
                 </Modal.Header>
                 <Modal.Title className="mt-3 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
                     <div><img src={transferFailed} alt="success transfer" /></div> 
-                    <div className='mt-3'>Sistem Sedang Bermasalah</div> 
+                    <div className='mt-3'>{language === null ? ind.sistemSedangBermasalah : language.sistemSedangBermasalah}</div> 
                 </Modal.Title>
                 <Modal.Body >
-                    <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>Saat ini sistem kami sedang mengalami gangguan sehingga tidak dapat menampilkan saldo anda. Mohon coba beberapa saat lagi</div>
+                    <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>{language === null ? ind.descSistemBermasalah : language.descSistemBermasalah}</div>
                     <div className='px-4 mt-4'>
                         <button
                             onClick={() => setShowErrSistem(false)}
@@ -1662,7 +1662,7 @@ const InfoSaldoDanMutasi = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            Oke
+                            {language === null ? ind.oke : language.oke}
                         </button>
                     </div>
                 </Modal.Body>
@@ -1670,7 +1670,7 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="history-modal" size="xs" centered show={showSaldoSubAcc} onHide={() => setShowSaldoSubAcc(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    Saldo Rekening Sub Account 
+                    {language === null ? ind.saldoRekSubAccount : language.saldoRekSubAccount}
                 </Modal.Title>
                 <Modal.Body>
                     {
@@ -1679,10 +1679,10 @@ const InfoSaldoDanMutasi = () => {
                             <CustomLoader/>
                         </div> :
                         <>
-                            <div className='text-center' style={{ fontSize: 14, fontWeight: 400, color: "#383838", fontFamily: "Nunito" }}>Nominal Saldo Saat Ini</div>
+                            <div className='text-center' style={{ fontSize: 14, fontWeight: 400, color: "#383838", fontFamily: "Nunito" }}>{language === null ? ind.nominalSaldoSaatIni : language.nominalSaldoSaatIni}</div>
                             <div className='text-center mt-2' style={{ fontSize: 12, fontWeight: 400, color: "#888888", fontFamily: "Nunito" }}>{convertDateAndTimeInfoDanSaldo(dataAkun.timestamp_request)}</div>
                             <div className='text-center mt-2' style={{color: "#077E86", fontSize: 20, fontFamily: "Exo", fontWeight: 700 }}>{convertToRupiah(dataAkun.availablebalance, true, 2)}</div>
-                            <div className='text-center mt-3' style={{color: "#888888", fontSize: 12, fontFamily: "Nunito", fontWeight: 400 }}>No. Rekening: {dataAkun.account_number} a.n {dataAkun.account_name}</div>
+                            <div className='text-center mt-3' style={{color: "#888888", fontSize: 12, fontFamily: "Nunito", fontWeight: 400 }}>{language === null ? ind.noRek : language.noRek}: {dataAkun.account_number} {language === null ? ind.atasNama : language.atasNama} {dataAkun.account_name}</div>
                             <div className='px-5'>
                                 <button
                                     onClick={() => setShowSaldoSubAcc(false)}
@@ -1700,7 +1700,7 @@ const InfoSaldoDanMutasi = () => {
                                         borderRadius: 6,
                                     }}
                                 >
-                                    Oke
+                                    {language === null ? ind.oke : language.oke}
                                 </button>
                             </div>
                         </>

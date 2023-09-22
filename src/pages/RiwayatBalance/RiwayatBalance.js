@@ -430,7 +430,7 @@ function RiwayatBalance() {
                         <>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span style={{ marginRight: 41 }}>{language === null ? ind.tipeSaldo : language.tipeSaldo}</span>
-                                <Form.Select name="typeRiwayatBalance" className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.typeRiwayatBalance} onChange={(e) => setInputHandle({ ...inputHandle, [e.target.name]: e.target.value })}>
+                                <Form.Select name="typeRiwayatBalance" className='input-text-riwayat' style={{ display: "inline" }} value={inputHandle.typeRiwayatBalance} onChange={(e) => setInputHandle({ ...inputHandle, [e.target.name]: e.target.value })}>
                                     <option defaultChecked disabled value="">{language === null ? ind.placeholderTipeSaldo : language.placeholderTipeSaldo}</option>
                                     <option value={'CR'}>Kredit</option>
                                     <option value={'DB'}>Debit</option>
@@ -534,7 +534,8 @@ function RiwayatBalance() {
                         data={dataRiwayatBalance}
                         customStyles={customStyles}
                         highlightOnHover
-                        progressPending={pendingRiwayatBalance}noDataComponent={language === null ? ind.tidakAdaData : language.tidakAdaData}
+                        progressPending={pendingRiwayatBalance}
+                        noDataComponent={language === null ? ind.tidakAdaData : language.tidakAdaData}
                         progressComponent={<CustomLoader />}
                     />
                 </div>

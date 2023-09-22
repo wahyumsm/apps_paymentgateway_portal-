@@ -12,6 +12,7 @@ import encryptData from "../../function/encryptData";
 import { authorization, BaseURL, setRoleSession, setUserSession } from "../../function/helpers";
 import validator from "validator";
 import $ from 'jquery'
+import { chn, eng, ind } from "../../components/Language";
 
 export default () => {
 
@@ -27,16 +28,23 @@ export default () => {
   function tabLanguage (isTabs) {
     if (isTabs === "bahasa") {
       setIsTabLanguage("bahasa")
+      if (sessionStorage.getItem('lang') === null) {
+        sessionStorage.setItem('lang', JSON.stringify(ind));
+      } else if (sessionStorage.getItem('lang') !== JSON.stringify(ind)) {
+          sessionStorage.setItem('lang', JSON.stringify(ind));
+      }
       $('#bahasaTab').addClass('menu-detail-language-hr-active')
       $('#inggrisTab').removeClass('menu-detail-language-hr-active')
       $('#mandarinTab').removeClass('menu-detail-language-hr-active')
     } else if (isTabs === "inggris") {
       setIsTabLanguage("inggris")
+      sessionStorage.setItem('lang', JSON.stringify(eng));
       $('#bahasaTab').removeClass('menu-detail-language-hr-active')
       $('#inggrisTab').addClass('menu-detail-language-hr-active')
       $('#mandarinTab').removeClass('menu-detail-language-hr-active')
     } else if (isTabs === "mandarin") {
       setIsTabLanguage("mandarin")
+      sessionStorage.setItem('lang', JSON.stringify(chn));
       $('#bahasaTab').removeClass('menu-detail-language-hr-active')
       $('#inggrisTab').removeClass('menu-detail-language-hr-active')
       $('#mandarinTab').addClass('menu-detail-language-hr-active')
@@ -46,6 +54,41 @@ export default () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  const language = JSON.parse(sessionStorage.getItem('lang'))
+
+  function inaLang () {
+    // sessionStorage.removeItem('lang');
+    if (sessionStorage.getItem('lang') === null) {
+        sessionStorage.setItem('lang', JSON.stringify(ind));
+        // history.push("/Riwayat Transaksi/va-dan-paylink")  
+        // history.push(0)
+        // setFlagLangCurrent('ind')
+        window.location.reload();
+    } else if (sessionStorage.getItem('lang') !== JSON.stringify(ind)) {
+        sessionStorage.setItem('lang', JSON.stringify(ind));
+        // history.push("/Riwayat Transaksi/va-dan-paylink")  
+        // history.push(0)
+        // setFlagLangCurrent('ind')
+        window.location.reload();
+    }
+  }
+
+  function engLang () {
+      sessionStorage.setItem('lang', JSON.stringify(eng));
+      // history.push("/Transaction Report/va-dan-paylink")  
+      // history.push(0)
+      // setFlagLangCurrent('eng')
+      window.location.reload();
+  }
+
+  function chnLang () {
+      sessionStorage.setItem('lang', JSON.stringify(chn));
+      // history.push("/历史交易/va-dan-paylink")  
+      // history.push(0)
+      // setFlagLangCurrent('chn')
+      window.location.reload();
+  } 
 
   async function userAccessMenu(url, token) {
     try {
@@ -251,7 +294,7 @@ export default () => {
             <Col xs={12} className="d-flex align-items-center justify-content-center">
               <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100" style={{ maxWidth: 440, maxHeight: 495, zIndex: 1, marginTop: 25, marginLeft: 88 }}>
                 <div className="text-center text-md-center mb-4 mt-md-0">
-                  <h3 className="mb-0" style={{ fontFamily: "Exo", fontSize: 24, fontWeight: 700 }}>{isTabLanguage === "bahasa" ? "Login ke Ezeelink Payment Gateway" : isTabLanguage === "inggris" ? "Login to Ezeelink Payment Gateway" : "登录Ezeelink 支付网关" }</h3>
+                  <h3 className="mb-0" style={{ fontFamily: "Exo", fontSize: 24, fontWeight: 700 }}>{language === null ? ind.loginKeEezeelink : language.loginKeEezeelink }</h3>
                   {
                     errorMessage.length !== 0 &&
                     <span style={{ fontSize: 14, fontWeight: 600, color: "#B9121B" }}>{ errorMessage }</span>
@@ -259,16 +302,16 @@ export default () => {
                 </div>
                 <Form className="mt-4">
                   <Form.Group style={{ fontFamily: "Nunito" }} id="email" className="mb-4">
-                    <Form.Label>{isTabLanguage === "mandarin" ? "电子邮件" : "Email"}</Form.Label>
+                    <Form.Label>{language === null ? ind.email : language.email}</Form.Label>
                     <InputGroup>
-                      <Form.Control onChange={e => setUsername(e.target.value)} autoFocus required type="email" placeholder={isTabLanguage === "bahasa" ? "Masukkan Email" : isTabLanguage === "inggris" ? "Enter Your Email" : "请输入您的电子邮箱"} />
+                      <Form.Control onChange={e => setUsername(e.target.value)} autoFocus required type="email" placeholder={language === null ? ind.placeholderMasukkanEmail : language.placeholderMasukkanEmail} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group>
                     <Form.Group style={{ fontFamily: "Nunito" }} id="password" className="mb-4">
-                      <Form.Label>{isTabLanguage === "bahasa" ? "Kata Sandi" : isTabLanguage === "inggris" ? "Password" : "密码"}</Form.Label>
+                      <Form.Label>{language === null ? ind.kataSandi : language.kataSandi}</Form.Label>
                       <InputGroup>
-                        <Form.Control onChange={e => setPassword(e.target.value)} required type={passwordInputType} placeholder={isTabLanguage === "bahasa" ? "Masukkan Kata Sandi" : isTabLanguage === "inggris" ? "Enter Your Password" : "请输入您的密码"} />
+                        <Form.Control onChange={e => setPassword(e.target.value)} required type={passwordInputType} placeholder={language === null ? ind.placeholderKataSandi : language.placeholderKataSandi} />
                         <InputGroup.Text onClick={togglePasswordVisibility} className="pass-log">
                           <FontAwesomeIcon color={passwordIconColor} icon={faEye} />
                         </InputGroup.Text>
@@ -283,27 +326,27 @@ export default () => {
                     </div> */}
                   </Form.Group>
                   <Button onClick={(e) => signingInHandler(e, username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
-                    {isTabLanguage === "mandarin" ? "登录" : "Login"}
+                    {language === null ? ind.login : language.login}
                   </Button>
                 </Form>
                 <div>
                   <div className="d-flex justify-content-center align-items-center mt-4" style={{ fontFamily: "Exo" }}>
                     <Card.Link as={Link} to={Routes.ForgotPassword.path} className="fw-bold" style={{ textDecoration: "underline", color: "#077E86" }}>
-                      {isTabLanguage === "bahasa" ? ` Lupa Kata Sandi? ` : isTabLanguage === "inggris" ? ` Forgot Password? ` : `忘记密码`}
+                      {language === null ? ind.lupaKataSandi : language.lupaKataSandi}?
                     </Card.Link>
                   </div>
                   <div className="d-flex justify-content-center align-items-center mt-3">
-                    <div style={{ fontFamily: "Exo", fontSize: 12 }}>{isTabLanguage === "bahasa" ? "Pilih Bahasa:" : isTabLanguage === "inggris" ? "Choose Language:" : "选择语言:"}</div>
-                    <div className="detail-language-tabs menu-detail-language-hr-active mx-2" id="bahasaTab" onClick={() => tabLanguage("bahasa")}>
-                      {isTabLanguage === "bahasa" ? "Bahasa" : isTabLanguage === "inggris" ? "Indonesia" : "印尼语"}
+                    <div style={{ fontFamily: "Exo", fontSize: 12 }}>{language === null ? ind.pilihBahasa : language.pilihBahasa} :</div>
+                    <div className={language === null ? `menu-detail-language-hr-active mx-2` : language.flagName === "ID" ? `menu-detail-language-hr-active mx-2` : `detail-language-tabs mx-2 `} id="bahasaTab" onClick={() => inaLang()}>
+                      {language === null ? ind.bahasa : language.bahasa}
                     </div>
                     <div style={{ border: "1px solid #EBEBEB", height: 18 }}></div>
-                    <div className="detail-language-tabs mx-2" id="inggrisTab" onClick={() => tabLanguage("inggris")}>
-                      {isTabLanguage === "bahasa" ? "Inggris" : isTabLanguage === "inggris" ? "English" : "英语"}
+                    <div className={language === null ? `detail-language-tabs mx-2` : language.flagName === "EN" ? `menu-detail-language-hr-active mx-2` : `detail-language-tabs mx-2 `} id="inggrisTab" onClick={() => engLang()}>
+                      {language === null ? ind.inggris : language.inggris}
                     </div>
                     <div style={{ border: "1px solid #EBEBEB", height: 18 }}></div>
-                    <div className="detail-language-tabs mx-2" id="mandarinTab" onClick={() => tabLanguage("mandarin")}>
-                      {isTabLanguage === "bahasa" ? "Mandarin" : isTabLanguage === "inggris" ? "Mandarin" : "中文"}
+                    <div className={language === null ? `detail-language-tabs mx-2` : language.flagName === "CN" ? `menu-detail-language-hr-active mx-2` : `detail-language-tabs mx-2 `} id="mandarinTab" onClick={() => chnLang()}>
+                      {language === null ? ind.china : language.china}
                     </div>
                   </div>
                 </div>

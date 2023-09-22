@@ -344,6 +344,8 @@ body {
     border-bottom: 2px solid #077E86;
     color: #077E86 !important;
     font-weight: 600;
+    font-family: 'Exo';
+    font-size: 12px;
 }
 
 .detail-language-tabs {

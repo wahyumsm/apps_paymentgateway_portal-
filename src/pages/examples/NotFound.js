@@ -17,6 +17,7 @@ export default () => {
   const access_token = getToken()
   const user_role = getRole()
   const history = useHistory()
+  const language = JSON.parse(sessionStorage.getItem('lang'))
 
   async function userAccessMenu(url, token) {
     try {

@@ -603,7 +603,16 @@ const DisbursementTimeout = () => {
         option: (provided, state) => ({
             ...provided,
             backgroundColor: "none",
-            color: "black"
+            color: "#888888",
+            width: "57%",
+            height: "40px",
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            border: "1px solid #E0E0E0",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontFamily: "Nunito"
         })
     }
 
@@ -704,7 +713,7 @@ const DisbursementTimeout = () => {
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span className='me-4'>Nama Partner</span>
-                                <div className="dropdown dropDisbursePartner">
+                                <div className="dropdown dropDisbursePartner" style={{ width: "12rem" }}>
                                     <ReactSelect
                                         // isMulti
                                         closeMenuOnSelect={true}
@@ -755,7 +764,7 @@ const DisbursementTimeout = () => {
                         <Row className='mt-4'>
                             <Col xs={5}>
                                 <Row>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                    <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => filterDisbursementTimeout(inputHandleTimeout.transID, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandleTimeout.periodeDisburseTimeout, dateRangeDisbursementTimeout, inputHandleTimeout.partnerTransId, inputHandleTimeout.reffNo, 1, 10)}
                                             className={(inputHandleTimeout.periodeDisburseTimeout || dateRangeDisbursementTimeout.length !== 0 || (dateRangeDisbursementTimeout.length !== 0 && selectedPartnerDisbursement.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.transID.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.partnerTransId.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.reffNo)) ? 'btn-ez-on' : 'btn-ez'}
@@ -764,7 +773,7 @@ const DisbursementTimeout = () => {
                                             Terapkan
                                         </button>
                                     </Col>
-                                    <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                    <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
                                             onClick={() => resetButtonHandle()}
                                             className={(inputHandleTimeout.periodeDisburseTimeout || dateRangeDisbursementTimeout.length !== 0 || (dateRangeDisbursementTimeout.length !== 0 && selectedPartnerDisbursement.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.transID.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.partnerTransId.length !== 0) || (dateRangeDisbursementTimeout.length !== 0 && inputHandleTimeout.reffNo)) ? 'btn-reset' : 'btn-ez-reset'}

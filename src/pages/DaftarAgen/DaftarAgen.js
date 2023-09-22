@@ -11,9 +11,11 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { useMemo } from 'react';
 import FilterComponent from '../../components/FilterComponent';
+import { ind } from '../../components/Language';
 
 function DaftarAgen() {
 
+  const language = JSON.parse(sessionStorage.getItem('lang'))
   const history = useHistory()
   const access_token = getToken()
   const user_role = getRole()
@@ -33,7 +35,7 @@ function DaftarAgen() {
         }
     };
     return (
-        <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Nama Agen :" placeholder="Masukkan Nama Agen" />
+        <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title={language === null ? ind.cariNamaAgen : language.cariNamaAgen} placeholder={language === null ? ind.placeholderCariNamaAgen : language.placeholderCariNamaAgen} />
     );	}, [filterText, resetPaginationToggle]
   );
 
@@ -64,6 +66,8 @@ function DaftarAgen() {
       history.push(errorCatch(error.response.status))
     }
   }
+
+  console.log(listAgen, "listagen");
   
   function detailAgenHandler(agenId) {
     history.push(`/detailagen/${agenId}`)
@@ -71,59 +75,62 @@ function DaftarAgen() {
 
   const columns = [
     {
-      name: 'No',
+      name: language === null ? ind.no : language.no,
       selector: row => row.id,
       ignoreRowClick: true,
       button: true,
+      width: '67px'
     },
     {
-      name: 'ID Agen',
+      name: language === null ? ind.idAgen : language.idAgen,
       selector: row => row.agen_id,
       sortable: true,
       cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailAgenHandler(row.agen_id)}>{row.agen_id}</Link>,
       width: '150px'
     },
     {
-      name: 'Nama Agen',
+      name: language === null ? ind.namaAgen : language.namaAgen,
       selector: row => row.agen_name,
       wrap: true,
       sortable: true,
       width: '140px'
     },
     {
-      name: 'Email',
+      name: language === null ? ind.email : language.email,
       selector: row => row.agen_email,
       wrap: true,
       width: '150px'
     },
     {
-      name: 'No Telepon',
+      name: language === null ? ind.noTelp : language.noTelp,
       selector: row => row.agen_mobile,
+      wrap: true,
       width: '130px'
     },
     {
-      name: 'No Rekening',
+      name: language === null ? ind.noRek : language.noRek,
       selector: row => row.agen_bank_number,
       width: '150px'
     },
     
     {
-      name: 'No Rekening Sub Account',
+      name: language === null ? ind.noRekSubAkun : language.noRekSubAkun,
       selector: row => row.subaccount_acc_number === null ? "-" : row.subaccount_acc_number,
+      wrap: true,
       width: '220px'
     },
     {
-      name: "Default",
+      name: language === null ? ind.default : language.default,
       selector: row => row.is_default === true ? "Default Partner" : "-",
       width: '130px'
     },
     {
-      name: "Kode Unik",
+      name: language === null ? ind.kodeUnik : language.kodeUnik,
       selector: row => row.agen_unique_code,
     },
     {
-      name: 'Status',
-      selector: row => row.status,
+      name: language === null ? ind.status : language.status,
+      selector: row => row.status === "Aktif" ? (language === null ? ind.aktif : language.aktif) : (language === null ? ind.tidakAktif : language.tidakAktif),
       sortable: true,
       width: "130px",
       style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
@@ -175,13 +182,13 @@ function DaftarAgen() {
 
   return (
     <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-      <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar Agen</span>
+      <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.daftarAgen : language.daftarAgen}</span>
       <div className="head-title">
-        <h2 className="h4 mt-4 mb-5" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Daftar Agen</h2>
+        <h2 className="h4 mt-4 mb-5" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? ind.daftarAgen : language.daftarAgen}</h2>
       </div>
       <div style={{ display: "flex", justifyContent: "end", marginTop: -88, paddingBottom: 24 }}>
-        <button onClick={() => tambahAgen()} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 183, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
-          <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah Agen
+        <button onClick={() => tambahAgen()} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: language === null || language.flagName === "ID" || language.flagName === "CN" ? 183 : 200, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+          <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> {language === null ? ind.tambahAgen : language.tambahAgen}
         </button>
       </div>
       <div className='base-content'>   
@@ -209,12 +216,12 @@ function DaftarAgen() {
               columns={columns}
               data={filteredItems}
               customStyles={customStyles}
-              // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
               pagination
               highlightOnHover
               paginationResetDefaultPage={resetPaginationToggle}
               progressPending={pending}
               progressComponent={<CustomLoader />}
+              noDataComponent={language === null ? ind.tidakAdaData : language.tidakAdaData}
               subHeader
               subHeaderComponent={subHeaderComponentMemo}
               persistTableHead
