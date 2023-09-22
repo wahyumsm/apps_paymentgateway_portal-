@@ -71,7 +71,6 @@ function DetailAkun() {
                 'Authorization' : auth
             }
             const userDetailPartner = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
-            console.log(userDetailPartner.data.response_data.mpartner_id, 'userDetailPartner.data.response_data.mpartner_id');
             if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length === 0) {
                 userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setDataAkun(userDetailPartner.data.response_data)
@@ -99,9 +98,7 @@ function DetailAkun() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            console.log(dataParams, 'dataParams');
             const dataListCallBacks = await axios.post(BaseURL + "/Partner/GetListCallbackForPartner", {data: dataParams}, {headers: headers})
-            console.log(dataListCallBacks, 'dataListCallBacks');
             if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length === 0) {
                 setDataListCallBack(dataListCallBacks.data.response_data)
             } else if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length !== 0) {
@@ -167,7 +164,6 @@ function DetailAkun() {
                     })
                 });
                 callbackList = callbackList.filter((item, idx, arr) => arr.findIndex(item2 => (item2.callback_id === item.callback_id)) === idx)
-                console.log(callbackList, 'callbackList');
             } else {
                 callbackList = oldUrl.map(item => {
                     return{
@@ -176,7 +172,6 @@ function DetailAkun() {
                         callbackurl_url: item.mpartnercallback_url,
                     }
                 })
-                console.log(callbackList, 'callbackList new');
             }
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"partner_id":"${id}", "callback_url_list":${JSON.stringify(callbackList)}}`)
@@ -184,16 +179,15 @@ function DetailAkun() {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            console.log(dataParams, 'dataParams');
             const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
             console.log(editCallback, 'editCallback');
             if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
-                alert("Edit URL Berhasil")
-                window.location.reload()
+                // alert("Edit URL Berhasil")
+                // window.location.reload()
             } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
                 setUserSession(editCallback.data.response_new_token)
-                alert("Edit URL Berhasil")
-                window.location.reload()
+                // alert("Edit URL Berhasil")
+                // window.location.reload()
             }            
         } catch (error) {
             // console.log(error)
