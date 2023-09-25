@@ -180,14 +180,13 @@ function DetailAkun() {
                 'Authorization' : auth
             }
             const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
-            console.log(editCallback, 'editCallback');
             if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
-                // alert("Edit URL Berhasil")
-                // window.location.reload()
+                alert(editCallback.data.response_data.response_message)
+                window.location.reload()
             } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
                 setUserSession(editCallback.data.response_new_token)
-                // alert("Edit URL Berhasil")
-                // window.location.reload()
+                alert(editCallback.data.response_data.response_message)
+                window.location.reload()
             }            
         } catch (error) {
             // console.log(error)
