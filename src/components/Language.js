@@ -397,7 +397,11 @@ export var ind = {
     china: "China",
     tabelRiwayatSettlementPartner: "Tabel Riwayat Settlement Partner",
     riwayatSettlement: "Riwayat Settlement",
-    jumlah: "Jumlah"
+    jumlah: "Jumlah",
+    vapartner: "VA Partner",
+    emoney: "E-Money",
+    detailSettlement: "Detail Settlement",
+    noVa: "No VA"
 }
 
 export var eng = {
@@ -795,7 +799,11 @@ export var eng = {
     china: "China",
     tabelRiwayatSettlementPartner: "Partner Settlement Report",
     riwayatSettlement: "Settlement Report",
-    jumlah: "Amount"
+    jumlah: "Amount",
+    vapartner: "VA Partner",
+    emoney: "E-Money",
+    detailSettlement: "Settlement Details",
+    noVa: "VA Number"
 }
 
 export var chn = {
@@ -1193,5 +1201,9 @@ export var chn = {
     china: "中文",
     tabelRiwayatSettlementPartner: "合作伙伴结算记录",
     riwayatSettlement: "结算记录",
-    jumlah: "金额"
+    jumlah: "金额",
+    vapartner: "虚拟账户",
+    emoney: "电子货币",
+    detailSettlement: "结算细",
+    noVa: "虚拟账户"
 }

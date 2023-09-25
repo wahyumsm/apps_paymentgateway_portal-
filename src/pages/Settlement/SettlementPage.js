@@ -1041,9 +1041,9 @@ function SettlementPage() {
                                     <Form.Select name="fiturSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlementPartner} onChange={(e) => handleChange(e)}>
                                         <option defaultValue value={0}>{language === null ? ind.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
                                         <option value={104}>{language === null ? ind.paymentLink : language.paymentLink}</option>
-                                        <option value={100}>VA Partner</option>
+                                        <option value={100}>{language === null ? ind.vapartner : language.vapartner}</option>
                                         <option value={107}>{language === null ? ind.directDebit : language.directDebit}</option>
-                                        <option value={105}>E-Money</option>
+                                        <option value={105}>{language === null ? ind.emoney : language.emoney}</option>
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} style={{ display: showDateSettlementPartner }}>

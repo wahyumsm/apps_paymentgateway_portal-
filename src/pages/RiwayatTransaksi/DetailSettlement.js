@@ -459,7 +459,7 @@ function DetailSettlement() {
             // sortable: true,
         },
         {
-            name: 'No VA',
+            name: language === null ? ind.noVa : language.noVa,
             selector: row => row.tvatrans_va_number,
             width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
@@ -555,16 +555,16 @@ function DetailSettlement() {
         <div className="content-page mt-6">
             {
                 user_role === '102' ?
-                <span className='breadcrumbs-span'><Link to={"/Settlement/riwayat-settlement"}>{language === null ? ind.riwayatSettlement : language.riwayatSettlement}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
+                <span className='breadcrumbs-span'><Link to={"/Settlement/riwayat-settlement"}>{language === null ? ind.riwayatSettlement : language.riwayatSettlement}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.detailSettlement : language.detailSettlement}</span> :
                 <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
-            <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Detail Settlement</h2>
+            <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{user_role === "102" ? (language === null ? ind.detailSettlement : language.detailSettlement) : `Detail Settlement`}</h2>
         </div>
         <div className='main-content'>
             <div className='riwayat-dana-masuk-div mt-4'>
                 <div className='base-content mt-3'>
-                    <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
+                    <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{user_role === "102" ? (language === null ? ind.detailSettlement : language.detailSettlement) : `Detail Settlement`}</span>
                     {
                         dataSettlement.length !== 0 &&  
                         <div style={{ marginBottom: 30 }}>
