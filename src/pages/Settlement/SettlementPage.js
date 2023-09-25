@@ -11,9 +11,11 @@ import encryptData from '../../function/encryptData';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import { ind } from '../../components/Language';
 
 function SettlementPage() {
 
+    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken();
     const user_role = getRole();
@@ -563,32 +565,32 @@ function SettlementPage() {
 
     const columnsSettlementPartner = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? ind.idTransaksi : language.idTransaksi,
             selector: row => row.tvasettl_code,
             cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${'0'}/${row.settlement_type}/${'0'}`}>{row.tvasettl_code}</Link>,
             width: "251px"
         },
         {
-            name: 'Waktu',
+            name: language === null ? ind.waktu : language.waktu,
             selector: row => row.tvasettl_crtdt_format,
         },
         {
-            name: 'Jenis Transaksi',
+            name: language === null ? ind.jenisTransaksi : language.jenisTransaksi,
             selector: row => row.mfitur_desc,
             // sortable: true
         },
         {
-            name: 'Jumlah',
+            name: language === null ? ind.jumlah : language.jumlah,
             selector: row => row.tvasettl_amount,
             cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>
         },
         {
-            name: 'Status',
+            name: language === null ? ind.status : language.status,
             selector: row => row.mstatus_name_ind,
             width: "127px",
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: 6, margin: "6px 16px", width: "50%", borderRadius: 4 },
@@ -832,9 +834,9 @@ function SettlementPage() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Settlement</span>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.settlement : language.settlement}</span>
             <div className='head-title'>
-                <h2 className="h5 mb-1 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Settlement</h2>
+                <h2 className="h5 mb-1 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{language === null ? ind.settlement : language.settlement}</h2>
             </div>
             <div className='main-content'>
                 {
@@ -1003,44 +1005,44 @@ function SettlementPage() {
                         </div>
                     </div> :
                     <div className='riwayat-settlement-div mt-3 mb-4'>
-                        <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Tabel Riwayat Settlement Partner</span>
+                        <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>{language === null ? ind.tabelRiwayatSettlementPartner : language.tabelRiwayatSettlementPartner}</span>
                         <div className='base-content mt-3'>
-                            <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Filter</span>
+                            <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>{language === null ? ind.filter : language.filter}</span>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="me-1">ID Transaksi</span>
-                                    <input name="idTransaksiSettlementPartner" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlementPartner} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                                    <span className="me-1">{language === null ? ind.idTransaksi : language.idTransaksi}</span>
+                                    <input name="idTransaksiSettlementPartner" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlementPartner} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlementPartner === "none") ? "33%" : "33%" }}>
-                                    <span >Periode<span style={{ color: "red" }}>*</span></span>
+                                    <span >{language === null ? ind.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
                                     <Form.Select name='periodeSettlementPartner' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlementPartner} onChange={(e) => handleChangePeriodeSettlement(e, "partner")}>
-                                        <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                        <option value={2}>Hari Ini</option>
-                                        <option value={3}>Kemarin</option>
-                                        <option value={4}>7 Hari Terakhir</option>
-                                        <option value={5}>Bulan Ini</option>
-                                        <option value={6}>Bulan Kemarin</option>
-                                        <option value={7}>Pilih Range Tanggal</option>
+                                        <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
+                                        <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
+                                        <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
+                                        <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                        <option value={5}>{language === null ? ind.bulanIni : language.bulanIni}</option>
+                                        <option value={6}>{language === null ? ind.bulanKemarin : language.bulanKemarin}</option>
+                                        <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                     </Form.Select>                    
                                 </Col>                
                                 <Col xs={4}>
-                                    <span>Status</span>
+                                    <span>{language === null ? ind.status : language.status}</span>
                                     <Form.Select name="statusSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlementPartner} onChange={(e) => handleChange(e)}>
-                                        <option defaultChecked disabled value="">Pilih Status</option>
-                                        <option value={2}>Berhasil</option>
-                                        <option value={1}>Dalam Proses</option>
-                                        <option value={4}>Gagal</option>
+                                        <option defaultChecked disabled value="">{language === null ? ind.placeholderStatus : language.placeholderStatus}</option>
+                                        <option value={2}>{language === null ? ind.berhasil : language.berhasil}</option>
+                                        <option value={1}>{language === null ? ind.dalamProses : language.dalamProses}</option>
+                                        <option value={4}>{language === null ? ind.gagal : language.gagal}</option>
                                     </Form.Select>
                                 </Col>
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Jenis Transaksi</span>
+                                    <span>{language === null ? ind.jenisTransaksi : language.jenisTransaksi}</span>
                                     <Form.Select name="fiturSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlementPartner} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                        <option value={104}>Payment Link</option>
+                                        <option defaultValue value={0}>{language === null ? ind.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
+                                        <option value={104}>{language === null ? ind.paymentLink : language.paymentLink}</option>
                                         <option value={100}>VA Partner</option>
-                                        <option value={107}>Direct Debit</option>
+                                        <option value={107}>{language === null ? ind.directDebit : language.directDebit}</option>
                                         <option value={105}>E-Money</option>
                                     </Form.Select>
                                 </Col>
@@ -1061,7 +1063,7 @@ function SettlementPage() {
                                                 className={(inputHandle.periodeSettlementPartner !== 0 || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
                                             >
-                                                Terapkan
+                                                {language === null ? ind.terapkan : language.terapkan}
                                             </button>
                                         </Col>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
@@ -1070,7 +1072,7 @@ function SettlementPage() {
                                                 className={(inputHandle.periodeSettlementPartner || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                                 disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
                                             >
-                                                Atur Ulang
+                                                {language === null ? ind.aturUlang : language.aturUlang}
                                             </button>
                                         </Col>
                                     </Row>
@@ -1079,7 +1081,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlementPartner.length !== 0 &&
                                     <div>
-                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, oneMonthAgo, currentDate)} className="export-span">Export</Link>
+                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, oneMonthAgo, currentDate)} className="export-span">{language === null ? ind.export : language.export}</Link>
                                     </div>
                             }
                             <br/>
@@ -1091,10 +1093,11 @@ function SettlementPage() {
                                     customStyles={customStylesPartner}
                                     progressPending={pendingSettlementPartner}
                                     progressComponent={<CustomLoader />}
+                                    noDataComponent={language === null ? ind.tidakAdaData : language.tidakAdaData}
                                 />
                             </div>
                             <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlementPartner}</div>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageSettlementPartner}</div>
                                 <Pagination
                                     activePage={activePageSettlementPartner}
                                     itemsCountPerPage={pageNumberSettlementPartner.row_per_page}

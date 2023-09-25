@@ -10,9 +10,11 @@ import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
+import { ind } from '../../components/Language';
 
 function DetailSettlement() {
 
+    const language = JSON.parse(sessionStorage.getItem('lang'))
     const access_token = getToken();
     const user_role = getRole();
     const history = useHistory()
@@ -344,13 +346,13 @@ function DetailSettlement() {
     
     const columnsSettlPartnerEWallet = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.number,
             width: "5%",
             maxWidth: 'fit-content !important'
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? ind.idTransaksi : language.idTransaksi,
             selector: row => row.tvatrans_trx_id,
             width: "120px",
             wrap: true,
@@ -358,7 +360,7 @@ function DetailSettlement() {
             // sortable: true
         },
         {
-            name: 'Waktu',
+            name: language === null ? ind.waktu : language.waktu,
             selector: row => row.tvatrans_crtdt_format,
             // sortable: true,          
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
@@ -366,7 +368,7 @@ function DetailSettlement() {
             wrap: true
         },
         {
-            name: 'Partner Trans ID',
+            name: language === null ? ind.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trans_id,
             // sortable: true,          
             wrap: true,
@@ -374,7 +376,7 @@ function DetailSettlement() {
             // width: "150px",
         },
         {
-            name: 'Channel eWallet',
+            name: language === null ? ind.channelEwallet : language.channelEwallet,
             selector: row => row.mbank_name,
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", },
@@ -382,14 +384,14 @@ function DetailSettlement() {
             width: "160px",
         },
         {
-            name: 'Nominal Transaksi',
+            name: language === null ? ind.nominalTransaksi : language.nominalTransaksi,
             selector: row => convertToRupiah(row.tvatrans_amount),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
         },
         {
-            name: 'Status',
+            name: language === null ? ind.status : language.status,
             selector: row => row.mstatus_name_ind,
             width: "150px",
             // sortable: true,
@@ -417,27 +419,27 @@ function DetailSettlement() {
 
     const columnsSettlPartner = [
         {
-            name: 'No',
+            name: language === null ? ind.no : language.no,
             selector: row => row.number,
             width: "57px",
             // style: { justifyContent: "center", }
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? ind.idTransaksi : language.idTransaksi,
             selector: row => row.tvatrans_trx_id,
             // sortable: true
             width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
         {
-            name: 'Waktu',
+            name: language === null ? ind.waktu : language.waktu,
             selector: row => row.tvatrans_crtdt_format,
             // style: { justifyContent: "center", },
             width: "150px",
             // sortable: true,
         },
         {
-            name: 'Partner Trans ID',
+            name: language === null ? ind.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trans_id,
             wrap: true,
             width: "160px"
@@ -450,7 +452,7 @@ function DetailSettlement() {
         //     // sortable: true,
         // },
         {
-            name: 'Nama Bank',
+            name: language === null ? ind.namaBank : language.namaBank,
             selector: row => row.mbank_name,
             width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
@@ -464,7 +466,7 @@ function DetailSettlement() {
             // sortable: true,
         },
         {
-            name: 'Nominal Transaksi',
+            name: language === null ? ind.nominalTransaksi : language.nominalTransaksi,
             selector: row => convertToRupiah(row.tvatrans_amount),
             // sortable: true,
             width: "224px",
@@ -472,7 +474,7 @@ function DetailSettlement() {
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
-            name: 'Status',
+            name: language === null ? ind.status : language.status,
             selector: row => row.mstatus_name_ind,
             width: "155px",
             // sortable: true,
@@ -553,7 +555,7 @@ function DetailSettlement() {
         <div className="content-page mt-6">
             {
                 user_role === '102' ?
-                <span className='breadcrumbs-span'><Link to={"/Settlement/riwayat-settlement"}>Riwayat Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
+                <span className='breadcrumbs-span'><Link to={"/Settlement/riwayat-settlement"}>{language === null ? ind.riwayatSettlement : language.riwayatSettlement}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
                 <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
@@ -566,7 +568,7 @@ function DetailSettlement() {
                     {
                         dataSettlement.length !== 0 &&  
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode)} className="export-span">Export</Link>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode)} className="export-span">{language === null ? ind.export : language.export}</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
@@ -577,12 +579,12 @@ function DetailSettlement() {
                             progressPending={pendingSettlement}
                             progressComponent={<CustomLoader />}
                             dense
-                            // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                            noDataComponent={language === null ? ind.tidakAdaData : language.tidakAdaData}
                             // pagination
                         />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDetailSettlement}</div>
+                    <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageDetailSettlement}</div>
                         <Pagination
                             activePage={activePageDetailSettlement}
                             itemsCountPerPage={pageNumberDetailSettlement.row_per_page}

@@ -394,7 +394,10 @@ export var ind = {
     pilihBahasa: "Pilih Bahasa",
     bahasa: "Bahasa",
     inggris: "Inggris",
-    china: "China"
+    china: "China",
+    tabelRiwayatSettlementPartner: "Tabel Riwayat Settlement Partner",
+    riwayatSettlement: "Riwayat Settlement",
+    jumlah: "Jumlah"
 }
 
 export var eng = {
@@ -789,7 +792,10 @@ export var eng = {
     pilihBahasa: "Choose Language",
     bahasa: "Indonesia",
     inggris: "English",
-    china: "China"
+    china: "China",
+    tabelRiwayatSettlementPartner: "Partner Settlement Report",
+    riwayatSettlement: "Settlement Report",
+    jumlah: "Amount"
 }
 
 export var chn = {
@@ -1184,5 +1190,8 @@ export var chn = {
     pilihBahasa: "选择语言",
     bahasa: "印尼语",
     inggris: "英语",
-    china: "中文"
+    china: "中文",
+    tabelRiwayatSettlementPartner: "合作伙伴结算记录",
+    riwayatSettlement: "结算记录",
+    jumlah: "金额"
 }

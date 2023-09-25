@@ -564,15 +564,20 @@ export default (props) => {
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/Riwayat%20Transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/Riwayat%20Transaksi/disbursement') ||
 
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
-                (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
+                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/Riwayat%20Transaksi/disbursement')
                 
-                // (window.location.href === 'http://reactdev/dev2/#/dev2/disbursement') ||
-                // (window.location.href === 'http://reactdev/dev2/#/dev2/riwayattopup') ||
-                // (window.location.href === 'http://reactdev/dev2/#/dev2/alokasisaldo') ||
-                // (window.location.href === 'http://reactdev/dev2/#/dev2/Riwayat%20Transaksi/disbursement')
+                (window.location.href === 'http://reactdev/dev3/#/dev3/disbursement') ||
+                (window.location.href === 'http://reactdev/dev3/#/dev3/riwayattopup') ||
+                (window.location.href === 'http://reactdev/dev3/#/dev3/alokasisaldo') ||
+                (window.location.href === 'http://reactdev/dev3/#/dev3/Riwayat%20Transaksi/disbursement')
+
+                // (window.location.href === 'https://localhost:3000/dev3#/dev3/disbursement') ||
+                // (window.location.href === 'https://localhost:3000/dev3#/dev3/riwayattopup') ||
+                // (window.location.href === 'https://localhost:3000/dev3#/dev3/alokasisaldo') ||
+                // (window.location.href === 'https://localhost:3000/dev3#/dev3/Riwayat%20Transaksi/disbursement')
                 )
               ) && 
               <>
@@ -914,7 +919,7 @@ export default (props) => {
               </div>
               <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
                 <img src={noticeIcon} alt="notice" />
-                <div className="mx-2 text-left">{language === null ? ind.lakukanTransfer : language.lakukanTransfer} <span style={{ fontWeight: 600 }}>3 digit terakhir.</span></div>
+                <div className="mx-2 text-left">{language === null ? ind.lakukanTransfer : language.lakukanTransfer} </div>
               </Table>
               <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
                   <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>{language === null ? ind.mohonTunggu : language.mohonTunggu}... <FontAwesomeIcon icon={faSpinner} spin /></>) : language === null ? ind.sayaSudahTransfer : language.sayaSudahTransfer}</Button>
