@@ -1,12 +1,40 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Row } from '@themesberg/react-bootstrap'
 import { useState } from 'react'
 import $ from 'jquery'
+import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers'
+import encryptData from '../../function/encryptData'
+import axios from 'axios'
+import { useEffect } from 'react'
 
 const GetBalance = () => {
+    const history = useHistory()
     const [isGetBalance, setIsGetBalance] = useState(true)
+    const [bankType, setBankType] = useState("")
+
+    async function GetBalanceTransfer(bankType) {
+        try {
+          const auth = "Bearer " + getToken()
+          const dataParams = encryptData(`{"bankType": "${bankType}"}`)
+          const headers = {
+            'Content-Type':'application/json',
+            'Authorization' : auth
+          }
+          const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
+        //   console.log(listTransferDana, 'ini list dana masuk');
+          if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token === null) {
+
+          } else if (listTransferDana.status === 200 && listTransferDana.data.response_code === 200 && listTransferDana.data.response_new_token !== null) {
+            setUserSession(listTransferDana.data.response_new_token)
+
+          }
+        } catch (error) {
+          // console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+    }
 
     function balance(isTabs){
         setIsGetBalance(isTabs)
@@ -22,6 +50,12 @@ const GetBalance = () => {
             $('#detailakunspan').addClass('menu-detail-akun-span-active')
         }
     }
+
+    useEffect(() => {
+        GetBalanceTransfer(bankType)
+    }, [])
+    
+
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Get Balance & Mutasi</span>
