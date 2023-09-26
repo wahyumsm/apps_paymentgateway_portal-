@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import $ from 'jquery'
@@ -10,7 +10,226 @@ import { convertToRupiah } from '../../function/helpers'
 
 function CreateVAUSD() {
 
-    const [isVAUSD, setIsVAUSD] = useState("create")
+    const [isVAUSD, setIsVAUSD] = useState("createTab")
+    const [isTab, setIsTab] = useState(1)
+    const [fileTabs, setFileTabs] = useState([
+        {
+            tab_id: 1,
+            tab_name: "EZVAUSD01",
+        },
+        {
+            tab_id: 2,
+            tab_name: "EZVAUSD02",
+        },
+        {
+            tab_id: 3,
+            tab_name: "EZVAUSD03",
+        },
+    ])
+
+    const dataForTable = [
+        {
+            tab_id: 1,
+            tab_name: "EZVAUSD01",
+            data: [
+                {
+                    member_code: 111,
+                    member_name: "PT. Ezeelink Indonesia",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 222,
+                    member_name: "PT. Ezeelink Indonesia",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 333,
+                    member_name: "PT. Ezeelink Indonesia",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 444,
+                    member_name: "PT. Ezeelink Indonesia",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 555,
+                    member_name: "PT. Ezeelink Indonesia",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+            ]
+        },
+        {
+            tab_id: 2,
+            tab_name: "EZVAUSD02",
+            data: [
+                {
+                    member_code: 666,
+                    member_name: "PT. Ezeelink Indonesia 2",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 777,
+                    member_name: "PT. Ezeelink Indonesia 2",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 888,
+                    member_name: "PT. Ezeelink Indonesia 2",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 999,
+                    member_name: "PT. Ezeelink Indonesia 2",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 101,
+                    member_name: "PT. Ezeelink Indonesia 2",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+            ]
+        },
+        {
+            tab_id: 3,
+            tab_name: "EZVAUSD03",
+            data: [
+                {
+                    member_code: 202,
+                    member_name: "PT. Ezeelink Indonesia 3",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 303,
+                    member_name: "PT. Ezeelink Indonesia 3",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 404,
+                    member_name: "PT. Ezeelink Indonesia 3",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 505,
+                    member_name: "PT. Ezeelink Indonesia 3",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+                {
+                    member_code: 606,
+                    member_name: "PT. Ezeelink Indonesia 3",
+                    amount: 500000,
+                    period: "2023-09-20",
+                    status_name_ind: "Berhasil",
+                    status_id: 2,
+                },
+            ]
+        },
+    ]
+
+    const columns = [
+        {
+            name: 'Member Code',
+            selector: row => row.tvatrans_trx_id,
+            width: "150px",
+        // sortable: true
+        },
+        {
+            name: 'Member Name',
+            selector: row => row.tvatrans_crtdt_format,
+            // sortable: true,          
+            // width: "143px",
+            wrap: true,
+        },
+        {
+            name: 'Amount',
+            selector: row => row.partner_transid,
+            // sortable: true,          
+            wrap: true,
+            width: "170px",
+        },
+        {
+            name: 'Period',
+            selector: row => row.mpartner_name,
+            // sortable: true
+            wrap: true,
+            width: "150px",
+        },
+        {
+            name: 'Status',
+            selector: row => row.mstatus_name_ind,
+            width: "150px",
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.tvatrans_status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 1 || row.tvatrans_status_id === 7,
+                    style: { background: "#FEF4E9", color: "#F79421", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 4,
+                    style: { background: "#FDEAEA", color: "#EE2E2C", }
+                },
+                {
+                    when: row => row.tvatrans_status_id === 3 || row.tvatrans_status_id === 5 || row.tvatrans_status_id === 6 || row.tvatrans_status_id === 8 || row.tvatrans_status_id === 9 || row.tvatrans_status_id === 10 || row.tvatrans_status_id === 11 || row.tvatrans_status_id === 12 || row.tvatrans_status_id === 13 || row.tvatrans_status_id === 14 || row.tvatrans_status_id === 15,
+                    style: { background: "#F0F0F0", color: "#888888", }
+                }
+            ],
+        },
+    ];
+
+    useEffect(() => {
+        
+    }, [])
+    
+    function pindahFileTab(params) {
+        console.log(params, 'params');
+    }
 
     function pindahHalaman(param) {
         if (param === "create") {
@@ -105,17 +324,6 @@ function CreateVAUSD() {
                         <Col>
                             <Row className='d-flex justify-content-start'>
                                 <Col xs={3} className="card-information mt-3" style={{border: '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
-                                    {/* <Row>
-                                        <Col xs={2} style={{ padding: 'unset', marginLeft: 5 }}>
-                                            <img src={noteInfo} width="15" height="15" alt="circle_info" />
-                                        </Col>
-                                        <Col xs={6} style={{ padding: 'unset' }}>
-                                            <p className="p-info" style={{ paddingLeft: 5 }}>Total sisa stok VA Tersedia</p>
-                                        </Col>
-                                        <Col xs={4} style={{ padding: 'unset' }}>
-                                            <p style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700 }}>10</p>
-                                        </Col>
-                                    </Row> */}
                                     <div className='d-flex'>
                                         <img src={noteInfo} width="20" height="20" alt="circle_info" />
                                         <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total sisa stok VA Tersedia: </span>
@@ -148,6 +356,19 @@ function CreateVAUSD() {
                             </Row>
                         </Col>
                     </Row>
+                    <div className='mt-4'>
+                        <div className='detail-akun-menu' style={{fontFamily: "Exo", display: 'flex', height: 33}}>
+                            {
+                                fileTabs.length !== 0 &&
+                                fileTabs.map(item => (
+                                        <div key={item.tab_id} className={`me-2 detail-akun-tabs ${isTab === item.tab_id && "menu-detail-akun-hr-active"}`} onClick={() => pindahFileTab(item.tab_name)} id={item.tab_name}>
+                                            <span className={`menu-detail-akun-span ${isTab === item.tab_id && "menu-detail-akun-span-active"}`} id="createSpan">{item.tab_name}</span>
+                                        </div>
+                                ))
+                            }
+                        </div>
+                        <hr className='hr-style mb-4' style={{marginTop: -2}}/>
+                    </div>
                 </div>
             </div>
         </div>
