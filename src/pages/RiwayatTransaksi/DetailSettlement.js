@@ -31,14 +31,15 @@ function DetailSettlement() {
     //     periodeSettlement: 0,
     // })
 
-    async function getDetailSettlement(settlementId, currentPage, codeBank, typeSettlement, codeEWallet) {
+    async function getDetailSettlement(settlementId, currentPage, codeBank, typeSettlement, codeEWallet, lang) {
         try {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{ "settlement_id": ${settlementId}, "settlement_type": ${typeSettlement}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "ewallet_code": "${codeEWallet.length === 0 ? "" : codeEWallet}", "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page": 10 }`);
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang
             }
             const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             // console.log(detailsettlement, 'detailsettlement');
@@ -64,7 +65,7 @@ function DetailSettlement() {
 
     function handlePageChangeDetailSettlement(page) {
         setActivePageDetailSettlement(page)
-        getDetailSettlement(settlementId, page, bankCode, settlementType, eWalletCode)
+        getDetailSettlement(settlementId, page, bankCode, settlementType, eWalletCode, language === null ? 'ID' : language.flagName)
     }
 
     useEffect(() => {
@@ -74,16 +75,17 @@ function DetailSettlement() {
         // if (user_role === "102") {
         //     history.push('/404');
         // }
-        getDetailSettlement(settlementId, 1, bankCode, settlementType, eWalletCode)
+        getDetailSettlement(settlementId, 1, bankCode, settlementType, eWalletCode, language === null ? 'ID' : language.flagName)
     }, [settlementId])
     
-    async function ExportReportDetailSettlementHandler(settlementId, userRole, codeBank, typeSettlement, codeEWallet) {
+    async function ExportReportDetailSettlementHandler(settlementId, userRole, codeBank, typeSettlement, codeEWallet, lang) {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{ "settlement_id": ${settlementId}, "settlement_type": ${typeSettlement}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "ewallet_code": "${codeEWallet.length === 0 ? "" : codeEWallet}", "page": 1, "row_per_page": 1000000 }`);
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang
             }
             const dataDetailSettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length === 0) {
@@ -568,7 +570,7 @@ function DetailSettlement() {
                     {
                         dataSettlement.length !== 0 &&  
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode)} className="export-span">{language === null ? ind.export : language.export}</Link>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode, language === null ? 'ID' : language.flagName)} className="export-span">{language === null ? ind.export : language.export}</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
