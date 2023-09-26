@@ -133,7 +133,7 @@ function SettlementPage() {
     function handlePageChangeSettlement(page) {
         if (isFilterSettlement) {
             setActivePageSettlement(page)
-            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "")
+            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'ID' : language.flagName)
         } else {
             setActivePageSettlement(page)
             riwayatSettlement(page)
@@ -143,10 +143,10 @@ function SettlementPage() {
     function handlePageChangeSettlementPartner(page) {
         if (isFilterSettlementPartner) {
             setActivePageSettlementPartner(page)
-            filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, page, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner)
+            filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, page, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, language === null ? 'ID' : language.flagName)
         } else {
             setActivePageSettlementPartner(page)
-            riwayatSettlementPartner(page, currentDate)
+            riwayatSettlementPartner(page, currentDate, language === null ? 'ID' : language.flagName)
         }
     }
 
@@ -251,13 +251,14 @@ function SettlementPage() {
         }
     }
 
-    async function riwayatSettlementPartner(currentPage, currentDate) {
+    async function riwayatSettlementPartner(currentPage, currentDate, lang) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0, "bank_code": ""}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const dataSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
             // console.log(dataSettlement, "data settlement");
@@ -332,7 +333,7 @@ function SettlementPage() {
         }
     }
 
-    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement, eWalletSettlement) {
+    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement, eWalletSettlement, lang) {
         try {
             setPendingSettlement(true)
             setIsFilterSettlement(true)
@@ -341,7 +342,8 @@ function SettlementPage() {
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${Number(fiturSettlement) === 105 ? (eWalletSettlement !== undefined ? eWalletSettlement : "") : (bankSettlement !== undefined ? bankSettlement : "")}"}`)
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang
             }
             const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
@@ -366,7 +368,7 @@ function SettlementPage() {
         }
     }
 
-    async function filterSettlementPartner(idTransaksi, periode, dateId, page, rowPerPage, status, fitur) {
+    async function filterSettlementPartner(idTransaksi, periode, dateId, page, rowPerPage, status, fitur, lang) {
         try {
             setPendingSettlementPartner(true)
             setIsFilterSettlementPartner(true)
@@ -375,7 +377,8 @@ function SettlementPage() {
             const dataParams = encryptData(`{"statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "transID" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fitur}, "bank_code": ""}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
@@ -439,7 +442,7 @@ function SettlementPage() {
             setDateRangeSettlement([])
             setShowDateSettlement("none")
         } else {
-            riwayatSettlementPartner(activePageSettlementPartner, currentDate)
+            riwayatSettlementPartner(activePageSettlementPartner, currentDate, language === null ? 'ID' : language.flagName)
             setInputHandle({
                 ...inputHandle,
                 idTransaksiSettlementPartner: "",
@@ -459,7 +462,7 @@ function SettlementPage() {
         }
         if (user_role === "102" || user_role === "104") {
             // history.push('/404');
-            riwayatSettlementPartner(activePageSettlementPartner, currentDate)
+            riwayatSettlementPartner(activePageSettlementPartner, currentDate, language === null ? 'ID' : language.flagName)
         } else {
             listPartner()
             riwayatSettlement(activePageSettlement)
@@ -663,7 +666,7 @@ function SettlementPage() {
         },
     };
 
-    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode, fiturSettlement, bankCode, eWalletSettlement) {
+    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode, fiturSettlement, bankCode, eWalletSettlement, lang) {
         if (isFilter) {
             async function dataExportFilter(statusId, transId, partnerId, dateId, periode, codeBank, fiturSettlement, eWalletSettlement) {
                 try {
@@ -671,7 +674,8 @@ function SettlementPage() {
                     const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "fitur_id": ${fiturSettlement}, "bank_code": "${Number(fiturSettlement) === 105 ? (eWalletSettlement !== undefined ? eWalletSettlement : "") : (codeBank !== undefined ? codeBank : "")}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
@@ -709,7 +713,8 @@ function SettlementPage() {
                     const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "fitur_id": 0, "bank_code": ""}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        'Accept-Language' : lang
                     }
                     const dataExportSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
                     if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length === 0) {
@@ -743,7 +748,7 @@ function SettlementPage() {
         }
     }
 
-    function ExportReportSettlementPartnerHandler(isFilter, idTransaksi, periode, dateId, status, fitur, oneMonthAgo, currentDate) {
+    function ExportReportSettlementPartnerHandler(isFilter, idTransaksi, periode, dateId, status, fitur, oneMonthAgo, currentDate, lang) {
         if (isFilter) {
             async function exportFilterSettlement(idTransaksi, periode, dateId, status, fitur) {
                 try {
@@ -751,7 +756,8 @@ function SettlementPage() {
                     const dataParams = encryptData(`{"statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "transID" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "fitur_id": ${fitur}, "bank_code": ""}`)
                     const headers = {
                         'Content-Type':'application/json',
-                        'Authorization' : auth
+                        'Authorization' : auth,
+                        'Accept-Language' : lang
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
@@ -789,7 +795,8 @@ function SettlementPage() {
                     const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "fitur_id": 0, "bank_code": ""}`)
                     const headers = {
                         'Content-Type':'application/json',
-                        'Authorization' : auth
+                        'Authorization' : auth,
+                        'Accept-Language' : lang
                     }
                     const dataSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
                     // console.log(dataSettlement, "data settlement");
@@ -949,7 +956,7 @@ function SettlementPage() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "")}
+                                                onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'ID' : language.flagName)}
                                                 className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && selectedBankSettlement[0].value !== undefined) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && selectedBankSettlement[0].value === undefined}
                                             >
@@ -977,7 +984,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlement.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "")} className="export-span">Export</Link>
+                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'ID' : language.flagName)} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-4">
@@ -1059,7 +1066,7 @@ function SettlementPage() {
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, 1, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner)}
+                                                onClick={() => filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, 1, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, language === null ? 'ID' : language.flagName)}
                                                 className={(inputHandle.periodeSettlementPartner !== 0 || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
                                             >
@@ -1081,7 +1088,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlementPartner.length !== 0 &&
                                     <div>
-                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, oneMonthAgo, currentDate)} className="export-span">{language === null ? ind.export : language.export}</Link>
+                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, oneMonthAgo, currentDate, language === null ? 'ID' : language.flagName)} className="export-span">{language === null ? ind.export : language.export}</Link>
                                     </div>
                             }
                             <br/>
