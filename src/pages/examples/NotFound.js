@@ -32,19 +32,19 @@ export default () => {
         if (dataUserAccessMenu.data.response_data[0].detail.length !== 0) {
           switch (dataUserAccessMenu.data.response_data[0].detail[0].id) {
             case 1101:
-              history.push("/Riwayat Transaksi/va-dan-paylink")  
+              history.push("/riwayat-transaksi/va-dan-paylink")  
             break;
             case 1102:
-              history.push("/Riwayat Transaksi/disbursement")  
+              history.push("/riwayat-transaksi/disbursement")  
             break;
             case 1103:
-              history.push("/Riwayat Transaksi/ewallet")  
+              history.push("/riwayat-transaksi/ewallet")  
             break;
             case 1104:
-              history.push("/Riwayat Transaksi/direct-debit")  
+              history.push("/riwayat-transaksi/direct-debit")  
             break;
             case 1105:
-              history.push("/Riwayat Transaksi/sub-account")  
+              history.push("/riwayat-transaksi/sub-account")  
             break;
             case 1601:
               history.push("/Transaksi/va-dan-paylink")  
@@ -65,10 +65,10 @@ export default () => {
               history.push("/Transaksi/disbursement-timeout")  
             break;
             case 1701:
-              history.push("/Settlement/riwayat-settlement")  
+              history.push("/settlement/riwayat-settlement")  
             break;
             case 1702:
-              history.push("/Settlement/settlement-manual")  
+              history.push("/settlement/settlement-manual")  
             break;
             case 1901:
               history.push("/HelpDesk/renotifyva")  

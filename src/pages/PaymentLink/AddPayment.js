@@ -305,7 +305,7 @@ function AddPayment() {
   };
 
   function toLaporan() {
-    history.push("/Riwayat Transaksi/va-dan-paylink");
+    history.push("/riwayat-transaksi/va-dan-paylink");
   }
 
   function toDashboard() {

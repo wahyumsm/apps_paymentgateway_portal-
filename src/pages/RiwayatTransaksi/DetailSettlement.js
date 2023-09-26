@@ -555,8 +555,8 @@ function DetailSettlement() {
         <div className="content-page mt-6">
             {
                 user_role === '102' ?
-                <span className='breadcrumbs-span'><Link to={"/Settlement/riwayat-settlement"}>{language === null ? ind.riwayatSettlement : language.riwayatSettlement}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.detailSettlement : language.detailSettlement}</span> :
-                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
+                <span className='breadcrumbs-span'><Link to={"/settlement/riwayat-settlement"}>{language === null ? ind.riwayatSettlement : language.riwayatSettlement}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.detailSettlement : language.detailSettlement}</span> :
+                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
             <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{user_role === "102" ? (language === null ? ind.detailSettlement : language.detailSettlement) : `Detail Settlement`}</h2>

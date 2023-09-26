@@ -39,7 +39,7 @@ export default (props = {}) => {
   const CollapsableNavItem = (props) => {
     const { eventKey, title, url, icon, image, children = null } = props;
     // const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
-    const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
+    const defaultKey = pathname.indexOf(url) !== -1 ? eventKey : "";
 
     console.log(defaultKey, "defaultKey");
     console.log(pathname, "pathname");

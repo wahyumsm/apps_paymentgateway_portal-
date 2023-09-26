@@ -76,7 +76,7 @@ const SettlementAdminManual = () => {
     }
 
     function toProsesSettlement () {
-        history.push("/Settlement/proses-settlement-manual")
+        history.push("/settlement/proses-settlement-manual")
     }
 
     const columnList = [

@@ -3368,7 +3368,7 @@ function DisbursementPage() {
 
     function toReportDisburse () {
         // history.push(language === null ? '/Riwayat Transaksi/disbursement' : language.flagName === "ID" ? '/Riwayat Transaksi/disbursement' : language.flagName === "EN" ? '/Transaction Report/disbursement' : "/历史交易/disbursement")
-        history.push('/Riwayat Transaksi/disbursement')
+        history.push('/riwayat-transaksi/disbursement')
     }
 
     function pindahHalaman (param) {
@@ -3496,7 +3496,7 @@ function DisbursementPage() {
                 </div>
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/Riwayat Transaksi/va-dan-paylink"}> {language === null ? ind.laporan : language.laporan}</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.disbursement : language.disbursement}</span>
+                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/riwayat-transaksi/va-dan-paylink"}> {language === null ? ind.laporan : language.laporan}</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.disbursement : language.disbursement}</span>
                 {/* <Row className='mt-1'>
                     {
                         balanceDetail !== 0 &&
