@@ -56,7 +56,7 @@ export const Routes = {
     SubAccountTransfer: {path: "/transfer-sub-account"},
     Settlement: { path: "/Settlement/riwayat-settlement"},
     RiwayatBalance: { path: "/riwayat-balance" },
-    GetBalance: { path: "/get-balance-and-mutasi"},
+    GetBalance: { path: "/transaksi-bank"},
 
     // admin
     VaDanPaymentLinkAdmin: {path: "/Transaksi/va-dan-paylink"},
