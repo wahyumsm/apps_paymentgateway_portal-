@@ -13,6 +13,7 @@ import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { ind } from '../../components/Language';
+import validator from "validator";
 
 function DetailAkun() {
 
@@ -26,6 +27,8 @@ function DetailAkun() {
     const myRef = useRef(null)
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
     const [inputHandle, setInputHandle] = useState({})
+    const [errorURL, setErrorURL] = useState([])
+    console.log(inputHandle, 'inputHandle');
 
     function handleChange(e) {
         setInputHandle({
@@ -141,32 +144,42 @@ function DetailAkun() {
 
     async function updateUrlCallback(id, newUrl, oldUrl) {
         try {
+            console.log(newUrl, 'newUrl');
+            console.log(oldUrl, 'oldUrl');
             let callbackList = []
+            let errorDataURL = []
             if (Object.keys(newUrl).length !== 0) {
                 let newestUrl = []
                 for (const key in newUrl) {
+                    console.log(newUrl[key], 'newUrl[key]');
+                    console.log(validator.isURL(newUrl[key]), 'validator.isURL(newUrl[key])');
+                    if (!validator.isURL(newUrl[key])) {
+                        errorDataURL.push(key)
+                    }
                     newestUrl.push({
                         callback_id: Number(key),
                         callbackurl_url: newUrl[key]
                     })
                 }
-                oldUrl.forEach(el => {
-                    newestUrl.forEach(item => {
-                        if (item.callback_id === el.mpartnercallback_id) {
-                            callbackList.push({
-                                callback_id: item.callback_id,
-                                callbackurl_ID: el.mcallbackurl_id,
-                                callbackurl_url: item.callbackurl_url,
-                            })
-                        }
-                    })
-                    callbackList.push({
-                        callback_id: el.mpartnercallback_id,
-                        callbackurl_ID: el.mcallbackurl_id,
-                        callbackurl_url: el.mpartnercallback_url,
-                    })
-                });
-                callbackList = callbackList.filter((item, idx, arr) => arr.findIndex(item2 => (item2.callback_id === item.callback_id)) === idx)
+                console.log(errorDataURL, 'errorDataURL');
+                // oldUrl.forEach(el => {
+                //     newestUrl.forEach(item => {
+                //         if (item.callback_id === el.mpartnercallback_id) {
+                //             callbackList.push({
+                //                 callback_id: item.callback_id,
+                //                 callbackurl_ID: el.mcallbackurl_id,
+                //                 callbackurl_url: item.callbackurl_url,
+                //             })
+                //         }
+                //     })
+                //     callbackList.push({
+                //         callback_id: el.mpartnercallback_id,
+                //         callbackurl_ID: el.mcallbackurl_id,
+                //         callbackurl_url: el.mpartnercallback_url,
+                //     })
+                // });
+                // callbackList = callbackList.filter((item, idx, arr) => arr.findIndex(item2 => (item2.callback_id === item.callback_id)) === idx)
+                setErrorURL(errorDataURL)
             } else {
                 callbackList = oldUrl.map(item => {
                     return{
@@ -176,21 +189,21 @@ function DetailAkun() {
                     }
                 })
             }
-            const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"partner_id":"${id}", "callback_url_list":${JSON.stringify(callbackList)}}`)
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
-            }
-            const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
-            if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
-                alert(editCallback.data.response_data.response_message)
-                window.location.reload()
-            } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
-                setUserSession(editCallback.data.response_new_token)
-                alert(editCallback.data.response_data.response_message)
-                window.location.reload()
-            }            
+            // const auth = "Bearer " + getToken()
+            // const dataParams = encryptData(`{"partner_id":"${id}", "callback_url_list":${JSON.stringify(callbackList)}}`)
+            // const headers = {
+            //     'Content-Type':'application/json',
+            //     'Authorization' : auth
+            // }
+            // const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
+            // if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
+            //     alert(editCallback.data.response_data.response_message)
+            //     window.location.reload()
+            // } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
+            //     setUserSession(editCallback.data.response_new_token)
+            //     alert(editCallback.data.response_data.response_message)
+            //     window.location.reload()
+            // }
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
@@ -460,13 +473,17 @@ function DetailAkun() {
                                 dataListCallBack.map((item, idx) => {
                                     return(
                                         <>
-                                            <Col xs={3} key={item.mpartnercallback_id}>
+                                            <Col xs={3} key={item.mcallbackurl_id}>
                                                 <span>{item.mcallbackurl_name}</span>
                                             </Col>
                                             <Col xs={9}>
                                                 <div>
-                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`${item.mpartnercallback_id}`} style={{width: '100%', marginLeft: 'unset'}}/> 
-                                                    <p>{language === null ? ind.addressUrl : language.addressUrl}</p>
+                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`${item.mcallbackurl_id}`} style={{width: '100%', marginLeft: 'unset'}}/> 
+                                                    {
+                                                        errorURL.length !== 0 && (errorURL.find(el => el === String(item.mcallbackurl_id)) !== undefined || String(errorURL.find(el => el === String(item.mcallbackurl_id))).length === 0) ?
+                                                        <p>{"Format URL salah"}</p> :
+                                                        <p>{language === null ? ind.addressUrl : language.addressUrl}</p>
+                                                    }
                                                     {/* <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p> */}
                                                     <br/>
                                                 </div>

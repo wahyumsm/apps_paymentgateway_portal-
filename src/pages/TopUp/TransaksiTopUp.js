@@ -80,6 +80,21 @@ function TransaksiTopUp() {
         }
     }
 
+    async function getEWalletBalance() {
+        try {
+            const auth = "Bearer " + access_token
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const eWalletBalanceData = await axios.post(BaseURL + "/Report/GetMerchantEWalletBalance", {data: ""}, {headers: headers})
+            console.log(eWalletBalanceData, 'eWalletBalanceData');
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     async function getListTransaskiTopup(currentPage) {
         try {
             const auth = "Bearer " + access_token
@@ -236,6 +251,7 @@ function TransaksiTopUp() {
 
     useEffect(() => {
         getListTransaskiTopup(activePageTransaksiTopup)
+        getEWalletBalance()
     }, [])
     
 

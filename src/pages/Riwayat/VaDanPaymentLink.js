@@ -93,11 +93,6 @@ const VaDanPaymentLink = () => {
             width: "180px"
         },
         {
-            name: 'Waktu Pembayaran',
-            selector: row => row.tvatrans_process_date_format !== null ? row.tvatrans_process_date_format : "-",
-            width: "180px"
-        },
-        {
             name: language === null ? ind.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trx_id,
             wrap: true,
@@ -1098,9 +1093,9 @@ const VaDanPaymentLink = () => {
                                 </Col>
                             </Row>
                             <Row className='mt-4'>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Tipe Periode</span>
-                                    <Form.Select name='tipePeriode' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.tipePeriode} onChange={(e) => handleChange(e)}>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="me-2">Tipe Periode</span>
+                                    <Form.Select name='tipePeriode' className='input-text-riwayat ms-1' style={{ display: "inline" }} value={inputHandle.tipePeriode} onChange={(e) => handleChange(e)}>
                                         <option defaultValue value={0}>Pilih Tipe Periode</option>
                                         <option value={1}>Periode Buat</option>
                                         <option value={2}>Periode Proses</option>
