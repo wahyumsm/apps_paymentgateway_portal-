@@ -10,6 +10,7 @@ import './css/global.css'
 
 import { Routes } from "../routes";
 import EzeeLogo from "../assets/icon/Logo_Ezeelink.svg";
+import EzeeLogoChina from "../assets/icon/Logo_Ezeelink_vers_China.svg";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
@@ -21,7 +22,9 @@ import arrowRight from "../assets/img/icons/arrow_right_white.png";
 
 export default (props = {}) => {
 
+  const language = JSON.parse(sessionStorage.getItem('lang'))
   const location = useLocation();
+  console.log(location, "location");
   const dispatch = useDispatch()
   const history = useHistory()
   const access_token = getToken()
@@ -34,8 +37,15 @@ export default (props = {}) => {
   const onCollapse = () => setShow(!show);
 
   const CollapsableNavItem = (props) => {
-    const { eventKey, title, icon, image, children = null } = props;
-    const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
+    const { eventKey, title, url, icon, image, children = null } = props;
+    // const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
+    const defaultKey = pathname.indexOf(url) !== -1 ? eventKey : "";
+
+    console.log(defaultKey, "defaultKey");
+    console.log(pathname, "pathname");
+    console.log(eventKey, "eventKey");
+    console.log(title, "title");
+    console.log(url, "url");
 
     return (
       <Accordion as={Nav.Item} defaultActiveKey={defaultKey}>
@@ -84,7 +94,7 @@ export default (props = {}) => {
     if (!access_token) {
       history.push("/login")
     }
-    dispatch(GetUserAccessMenu("/Account/GetUserAccess"))
+    dispatch(GetUserAccessMenu("/Account/GetUserAccess", language === null ? 'ID' : language.flagName))
   }, [])
   
   if (!userAccessMenu) {
@@ -122,7 +132,7 @@ export default (props = {}) => {
             </div> */}
             <Nav className="flex-column pt-3 pt-md-0">              
               <div style={{backgroundColor: '#DF9C43', height: '67px', textAlign: 'center'}}>
-                <img src={EzeeLogo} style={{width: 66, height: 36, marginTop: 12}} alt=""/>
+                <img src={language === null ? EzeeLogo : language.flagName === "CN" ? EzeeLogoChina : EzeeLogo} style={{width: 66, height: language === null ? 36 : language.flagName === "CN" ? 46 : 36, marginTop: 12}} alt=""/>
               </div>              
               {
                 userAccessMenu.map((item) => {
@@ -135,10 +145,11 @@ export default (props = {}) => {
                       title={item.label}
                       // image={(item.label === "Dashboard") ? BerandaIcon : (item.label === "Report") ? LaporanIcon : (item.label === "Daftar Agen") ? DaftarAgenIcon : ""}
                       image={item.icon}
+                      url={item.maccess_url}
                       // link={Routes.Transactions.path}
                       link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 20) ? Routes.ListPayment.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 24) ? Routes.SubAccountTransfer.path : (item.id === 25) ? Routes.ListRiwayatSubAccountAdmin.path : (item.id === 26) ? Routes.DisbursementPage.path : (item.id === 27) ? Routes.SaldoPartnerMenu.path : (item.id === 28) ? Routes.UserDirectDebit.path : (item.id === 29) ? Routes.SaldoPartnerMenu.path : (item.id === 31) ? Routes.DisbursementPage.path : (item.id === 32) ? Routes.SubAccountTransfer.path : (item.id === 33) ? Routes.SettlementManual.path : (item.id === 34) ? Routes.RiwayatBalance.path : ""}
                     /> :
-                    <CollapsableNavItem eventKey={item.label} key={item.id} title={item.label} image={item.icon}>
+                    <CollapsableNavItem eventKey={item.label} key={item.id} title={item.label} image={item.icon} url={item.maccess_url}>
                       {
                         item.detail.map(item2 => {
                           return (

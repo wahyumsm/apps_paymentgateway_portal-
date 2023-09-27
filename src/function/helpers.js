@@ -37,6 +37,7 @@ export const removeUserSession = () => {
 	localStorage.removeItem("role");
 	sessionStorage.removeItem("token");
 	sessionStorage.removeItem("role");
+	sessionStorage.removeItem("lang")
 };
 
 export function convertToRupiah(money, isRupiah, fractionDigits) {
@@ -86,11 +87,27 @@ export function convertDateAndTimeInfoDanSaldo(time) {
 	return `${tanggal}, ${jam} WIB`
 }
 
+const language = JSON.parse(sessionStorage.getItem('lang'))
+
 export const convertDateTimeStamp = (time) => {
-	return new Intl.DateTimeFormat("id-ID", {
-		dateStyle: "full",
-		timeStyle: "short",
-	}).format(new Date(time * 1000));
+	if (language === null) {
+		return new Intl.DateTimeFormat("id-ID", {
+			dateStyle: "full",
+			timeStyle: "short",
+		}).format(new Date(time * 1000));
+	} else {
+		if (language.flagName === "ID") {
+			return new Intl.DateTimeFormat("id-ID", {
+				dateStyle: "full",
+				timeStyle: "short",
+			}).format(new Date(time * 1000));
+		} else {
+			return new Intl.DateTimeFormat("en-EN", {
+				dateStyle: "full",
+				timeStyle: "short",
+			}).format(new Date(time * 1000));
+		}
+	}
 };
 
 export const convertTimeDigit = (num) => {

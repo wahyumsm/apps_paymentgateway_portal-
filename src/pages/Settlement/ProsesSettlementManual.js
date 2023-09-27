@@ -111,11 +111,11 @@ const ProsesSettlementManual = () => {
             const settlementManual = await axios.post(BaseURL + "/Settlement/InsertManualSettlement", {data: dataParams}, {headers: headers})
             if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
                 setPendingListSettlementManual(false)
-                history.push("/Settlement/exclude-settlement")
+                history.push("/settlement/exclude-settlement")
             } else if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token !== null) {
                 setUserSession(settlementManual.data.response_new_token)
                 setPendingListSettlementManual(false)
-                history.push("/Settlement/exclude-settlement")
+                history.push("/settlement/exclude-settlement")
             }
         } catch (error) {
             // console.log(error);

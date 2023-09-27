@@ -1,4 +1,4 @@
-
+const language = JSON.parse(sessionStorage.getItem('lang'))
 export const Routes = {
     // pages
     DashboardOverview: { path: "/" },
@@ -55,7 +55,7 @@ export const Routes = {
     SaldoPartnerMenu: { path: "/riwayat-saldo-partner"},
     DisbursementPage : { path: "/disbursement" },
     SubAccountTransfer: {path: "/transfer-sub-account"},
-    Settlement: { path: "/Settlement/riwayat-settlement"},
+    Settlement: { path: "/settlement/riwayat-settlement"},
     RiwayatBalance: { path: "/riwayat-balance" },
 
     // admin
@@ -64,17 +64,17 @@ export const Routes = {
     DisbursementAdmin: {path: "/Transaksi/disbursement"},
     SubAccountAdmin: {path: "/Transaksi/sub-account"},
     DisbursementTimeout: {path: "/Transaksi/disbursement-timeout"},
-    SettlementManual: {path: "/Settlement/settlement-manual"},
+    SettlementManual: {path: "/settlement/settlement-manual"},
     eWalletAdmin: {path: "/Transaksi/ewallet"},
-    ExcludeSettlementManual: {path: "/Settlement/exclude-settlement"},
-    ProsesSettlementManual: {path: "/Settlement/proses-settlement-manual"},
+    ExcludeSettlementManual: {path: "/settlement/exclude-settlement"},
+    ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},
     
     // partner
-    VaDanPaymentLink: {path: "/Riwayat Transaksi/va-dan-paylink"},
-    RiwayatDirectDebit: {path: "/Riwayat Transaksi/direct-debit"},
-    Disbursement: {path: "/Riwayat Transaksi/disbursement"},
-    SubAccount: {path: "/Riwayat Transaksi/sub-account"},
-    eWallet: {path: "/Riwayat Transaksi/ewallet"},
+    VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},
+    RiwayatDirectDebit: {path: "/riwayat-transaksi/direct-debit"},
+    Disbursement: {path: "/riwayat-transaksi/disbursement"},
+    SubAccount: {path: "/riwayat-transaksi/sub-account"},
+    eWallet: {path: "/riwayat-transaksi/ewallet"},
 
 
     // docs

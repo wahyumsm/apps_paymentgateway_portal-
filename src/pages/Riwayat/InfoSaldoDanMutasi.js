@@ -22,8 +22,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import transferFailed from "../../assets/icon/gagaltopup_icon.svg"
 import * as XLSX from "xlsx"
+import { ind } from '../../components/Language'
 
 const InfoSaldoDanMutasi = () => {
+    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const user_role = getRole()
     const access_token = getToken()
@@ -642,7 +644,7 @@ const InfoSaldoDanMutasi = () => {
     }
 
     function toLaporan() {
-        history.push("/Riwayat Transaksi/va-dan-paylink");
+        history.push("/riwayat-transaksi/va-dan-paylink");
     }
 
     async function getAkunPartner() {
@@ -1096,9 +1098,9 @@ const InfoSaldoDanMutasi = () => {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{user_role === "102" ? "Info Saldo & Mutasi" : "Riwayat Transaksi Sub Account"}</span> 
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role === "102" ? (language === null ? ind.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Sub Account bank"} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{user_role === "102" ? (language === null ? ind.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account"}</span> 
             <div className="head-title">
-                <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{user_role === "102" ? "Info Saldo & Mutasi" : "Riwayat Transaksi Sub Account Partner"}</div>
+                <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{user_role === "102" ? (language === null ? ind.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account Partner"}</div>
             </div>
             {
                 user_role === "102" ? (
@@ -1107,7 +1109,7 @@ const InfoSaldoDanMutasi = () => {
                             listAkunPartner.length !== 0 ?
                             <>
                                 <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "38%" }}>
-                                    <div className="mb-3">Pilih Akun</div>
+                                    <div className="mb-3">{language === null ? ind.pilihAkun : language.pilihAkun}</div>
                                     <Form.Select name='akunPartner' value={inputHandle.akunPartner} onChange={(e) => handleChange(e, listAkunPartner)}>
                                         {/* <option defaultChecked disabled value="">Pilih Status</option> */}
                                         {listAkunPartner.map((item, idx) => {
@@ -1119,12 +1121,12 @@ const InfoSaldoDanMutasi = () => {
                                         })}
                                     </Form.Select>
                                     <div className='p-3 mt-3' style={{ border: "1px solid #EBEBEB", borderRadius: 8 }}>
-                                        <div style={{ fontSize: 14, fontFamily: "Nunito", color: "#888888" }}>Saldo Rekening Sub Account</div>
+                                        <div style={{ fontSize: 14, fontFamily: "Nunito", color: "#888888" }}>{language === null ? ind.saldoRekSubAkun : language.saldoRekSubAkun}</div>
                                         {
                                             (dataAkun.length === 0 || dataAkun === null) ? (
                                                 <div className='d-flex justify-content-start align-items-center mt-2' style={{ cursor: "pointer" }} onClick={() => formPassword()}>
                                                     <img src={iconMata} alt="mata" />
-                                                    <div className='ms-2' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 16, color: "#077E86", textDecoration: "underline" }}>Klik Untuk Lihat Saldo</div>
+                                                    <div className='ms-2' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 16, color: "#077E86", textDecoration: "underline" }}>{language === null ? ind.klikUntukLihatSaldo : language.klikUntukLihatSaldo}</div>
                                                 </div>
                                             ) : (
                                                 <>
@@ -1134,58 +1136,58 @@ const InfoSaldoDanMutasi = () => {
                                             )
                                         }
                                         <div className='mt-3' style={{ border:"1px solid #C4C4C4", backgroundColor: "#C4C4C4" }} />
-                                        <div className='mt-3' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>No Rekening Sub Account : </div>
-                                        <div className='mt-2' style={{ fontSize: 12, fontFamily: "Nunito", color: "#383838" }}>{`${inputHandle.nomorAkun} a.n. ${inputHandle.namaAkun}`}</div>
+                                        <div className='mt-3' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>{language === null ? ind.noRekSubAkun : language.noRekSubAkun} : </div>
+                                        <div className='mt-2' style={{ fontSize: 12, fontFamily: "Nunito", color: "#383838" }}>{inputHandle.nomorAkun} {language === null ? ind.atasNama : language.atasNama} {inputHandle.namaAkun}</div>
                                     </div>
                                 </div>
                                 <div className="head-title">
-                                    <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Mutasi Rekening Sub Account</div>
+                                    <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? ind.mutasiRekSubAkun : language.mutasiRekSubAkun}</div>
                                 </div>
                                 <div className="base-content mt-3">
                                     <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
-                                        Filter
+                                        {language === null ? ind.filter : language.filter}
                                     </span>
                                     <Row className="mt-4">
                                         <Col
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>ID Referensi Bank</div>
+                                            <div>{language === null ? ind.idRefBank : language.idRefBank}</div>
                                             <input
                                                 name="idReff"
                                                 value={inputMutasi.idReff}
                                                 onChange={(e) => handleChangeMutasi(e)}
                                                 type="text"
                                                 className="input-text-sub"
-                                                placeholder="Masukkan ID Referensi"
+                                                placeholder={language === null ? ind.placeholderIdRefBank : language.placeholderIdRefBank}
                                             />
                                         </Col>
                                         <Col
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>ID Transaksi</div>
+                                            <div>{language === null ? ind.idTransaksi : language.idTransaksi}</div>
                                             <input
                                                 name="idTrans"
                                                 value={inputMutasi.idTrans}
                                                 onChange={(e) => handleChangeMutasi(e)}
                                                 type="text"
                                                 className="input-text-sub"
-                                                placeholder="Masukkan ID Transaksi"
+                                                placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}
                                             />
                                         </Col>
                                         <Col
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>ID Referensi Transaksi</div>
+                                            <div>{language === null ? ind.idRefTrans : language.idRefTrans}</div>
                                             <input
                                                 name="idReffTrans"
                                                 value={inputMutasi.idReffTrans}
                                                 onChange={(e) => handleChangeMutasi(e)}
                                                 type="text"
                                                 className="input-text-sub"
-                                                placeholder="Masukkan ID Referensi Transaksi"
+                                                placeholder={language === null ? ind.placeholderIdRefTrans : language.placeholderIdRefTrans}
                                             />
                                         </Col>
                                     </Row>
@@ -1194,15 +1196,15 @@ const InfoSaldoDanMutasi = () => {
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>Jenis Transaksi</div>
+                                            <div>{language === null ? ind.jenisTransaksi : language.jenisTransaksi}</div>
                                             <Form.Select
                                                 name="paymentType"
                                                 value={inputMutasi.paymentType}
                                                 onChange={(e) => handleChangeMutasi(e)}
                                                 className="input-text-sub"
-                                                placeholder='Pilih Jenis Transaksi'
+                                                placeholder={language === null ? ind.placeholderJenisTransaksi : language.placeholderJenisTransaksi}
                                             >
-                                                <option value={0}>Pilih Jenis Transaksi</option>
+                                                <option value={0}>{language === null ? ind.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
                                                 <option value={1}>Transaksi Masuk ( cr )</option>
                                                 <option value={2}>Transaksi Keluar ( db )</option>
                                                 <option value={3}>Biaya Admin</option>
@@ -1212,18 +1214,18 @@ const InfoSaldoDanMutasi = () => {
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>Periode <span style={{ color: "red" }}>*</span></div>
+                                            <div>{language === null ? ind.periode : language.periode} <span style={{ color: "red" }}>*</span></div>
                                             <Form.Select
                                                 name="periodeInfoMutasi"
                                                 className="input-text-sub"
                                                 value={inputDataMutasi.periodeInfoMutasi}
                                                 onChange={(e) => handleChangePeriodeMutasi(e)}
                                             >
-                                                <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                                <option value={2}>Hari Ini</option>
-                                                <option value={3}>Kemarin</option>
-                                                <option value={4}>7 Hari Terakhir</option>
-                                                <option value={7}>Pilih Range Tanggal</option>
+                                                <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
+                                                <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
+                                                <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
+                                                <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                                <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                             </Form.Select>
                                         </Col>
                                     </Row>
@@ -1252,28 +1254,28 @@ const InfoSaldoDanMutasi = () => {
                                     <Row className='mt-3'>
                                         <Col xs={5}>
                                             <Row>
-                                                <Col xs={6} style={{ width: "unset" }}>
+                                                <Col xs={6} style={{ width: "40%" }}>
                                                     <button 
                                                         className={((inputDataMutasi.periodeInfoMutasi === "2") || (inputDataMutasi.periodeInfoMutasi === "3") || (inputDataMutasi.periodeInfoMutasi === "4") || (inputDataMutasi.periodeInfoMutasi !== 0 && (inputDataMutasi.periodeInfoMutasi === "7" && dateRangeInfoMutasi.length !== 0))) ? 'btn-ez-on' : 'btn-noez-transfer'}
                                                         disabled={inputDataMutasi.periodeInfoMutasi === 0 || (inputDataMutasi.periodeInfoMutasi === "7" && dateRangeInfoMutasi.length === 0)}
                                                         onClick={() => filterListRiwayatMutasi(inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.paymentType, inputMutasi.partnerName, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, 1, 10, orderId, orderField, inputMutasi.idReff, inputMutasi.idReffTrans)}
                                                     >
-                                                        Terapkan
+                                                        {language === null ? ind.terapkan : language.terapkan}
                                                     </button>
                                                 </Col>
-                                                <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                                <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button 
                                                         className={(inputDataMutasi.periodeInfoMutasi !== 0) ? 'btn-reset' : 'btn-ez-reset'}
                                                         disabled={(inputDataMutasi.periodeInfoMutasi === 0 )}
                                                         onClick={() => resetButtonHandle()}
                                                     >
-                                                        Atur Ulang
+                                                        {language === null ? ind.aturUlang : language.aturUlang}
                                                     </button>
                                                 </Col>
                                             </Row>
                                         </Col>
                                     </Row>
-                                    <div className="div-table mt-4 pb-4" style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
+                                    <div className="div-table mt-4 pb-4" style={{ paddingBottom: 20, marginBottom: 20}}>
                                         <div id="tableInvoice" style={{  overflowX: "auto" }} className=" table-bordered mt-3">
                                             {
                                                 dataMutasi.length !== 0 ? (
@@ -1281,16 +1283,16 @@ const InfoSaldoDanMutasi = () => {
                                                         <table className='table mt-3'>
                                                             <thead style={{ borderStyle: "hidden", fontWeight: 600 }}>
                                                                 <tr>
-                                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>No</th>
-                                                                    {!idTrans.isDesc ? <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>ID Transaksi <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>ID Transaksi <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2'/></span></th>}
-                                                                    {!idReffBank.isDesc ? <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Bank <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Bank <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    {!idReffTrans.isDesc ? <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Transaksi <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Transaksi <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    {!dates.isDesc ? <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>Waktu <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>Waktu <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Jenis Transaksi</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Rekening Tujuan</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Nominal</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Deskripsi</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Keterangan</th>
+                                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.no : language.no}</th>
+                                                                    {!idTrans.isDesc ? <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>{language === null ? ind.idTransaksi : language.idTransaksi} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>{language === null ? ind.idTransaksi : language.idTransaksi} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2'/></span></th>}
+                                                                    {!idReffBank.isDesc ? <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.idRefBank : language.idRefBank} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.idRefBank : language.idRefBank} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    {!idReffTrans.isDesc ? <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.idRefTrans : language.idRefTrans} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.idRefTrans : language.idRefTrans} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    {!dates.isDesc ? <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.waktu : language.waktu} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.waktu : language.waktu} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.jenisTransaksi : language.jenisTransaksi}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.rekTujuan : language.rekTujuan}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.nominal : language.nominal}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.deskripsi : language.deskripsi}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.keterangan : language.keterangan}</th>
                                                                 </tr>
                                                             </thead>
                                                             {
@@ -1323,20 +1325,20 @@ const InfoSaldoDanMutasi = () => {
                                                         <table className='table mt-3'>
                                                             <thead style={{ borderStyle: "hidden", fontWeight: 600, }}>
                                                                 <tr>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>No</th>
-                                                                    {!idTrans.isDesc ? <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>ID Transaksi <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>ID Transaksi <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2'/></span></th>}
-                                                                    {!idReffBank.isDesc ? <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Bank <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Bank <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    {!idReffTrans.isDesc ? <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Transaksi <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Transaksi <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    {!dates.isDesc ? <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>Waktu <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>Waktu <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Jenis Transaksi</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Rekening Tujuan</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Nominal</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Deskripsi</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Keterangan</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.no : language.no}</th>
+                                                                    {!idTrans.isDesc ? <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>{language === null ? ind.idTransaksi : language.idTransaksi} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>{language === null ? ind.idTransaksi : language.idTransaksi} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2'/></span></th>}
+                                                                    {!idReffBank.isDesc ? <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.idRefBank : language.idRefBank} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.idRefBank : language.idRefBank} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    {!idReffTrans.isDesc ? <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.idRefTrans : language.idRefTrans} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.idRefTrans : language.idRefTrans} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    {!dates.isDesc ? <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.waktu : language.waktu} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? ind.waktu : language.waktu} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.jenisTransaksi : language.jenisTransaksi}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.rekTujuan : language.rekTujuan}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.nominal : language.nominal}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.deskripsi : language.deskripsi}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? ind.keterangan : language.keterangan}</th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
-                                                        {!pendingMutasi ? <div className='text-center pb-3' style={{ color: '#393939' }}>Tidak ada data</div> : <div className='text-center'><CustomLoader /></div>}
+                                                        {!pendingMutasi ? <div className='text-center pb-3' style={{ color: '#393939' }}>{language === null ? ind.tidakAdaData : language.tidakAdaData}</div> : <div className='text-center'><CustomLoader /></div>}
                                                     </>
                                                 )
                                             }
@@ -1352,7 +1354,7 @@ const InfoSaldoDanMutasi = () => {
                                         }}
                                     >
                                         <div style={{ marginRight: 10, marginTop: 10 }}>
-                                            Total Page: {totalPageMutasi}
+                                            {language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageMutasi}
                                         </div>
                                         <Pagination
                                             activePage={activePageMutasi}
@@ -1545,7 +1547,7 @@ const InfoSaldoDanMutasi = () => {
                                 ) : (
                                     <div id='table-body' style={{ overflowX: 'auto', maxWidth: 'max-content' }} className='scroll-confirm'>
                                         <>
-                                            <table className="table text-center mt-4" id="tableInvoice" hover>
+                                            <table className="table text-start mt-4" id="tableInvoice" hover>
                                                 <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
                                                     <tr>
                                                         <th style={{ fontWeight: "bold", fontSize: 14, textTransform: 'none', fontFamily: 'Exo', width: 60 }}>No</th>
@@ -1561,7 +1563,7 @@ const InfoSaldoDanMutasi = () => {
                                                     </tr>
                                                 </thead>
                                             </table>
-                                            {!pendingRiwayatTransferAdmin ? <div className='text-center pb-3' style={{ color: '#393939' }}>Tidak ada data</div> : <div className='text-center'><CustomLoader /></div>}
+                                            {!pendingRiwayatTransferAdmin ? <div className='text-center pb-3' style={{ color: '#393939' }}>Tidak ada data </div> : <div className='text-center'><CustomLoader /></div>}
                                         </>
                                     </div>
                                 )
@@ -1585,13 +1587,13 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="saldo-sub-acc" size="xs" centered show={loginToSaldo} onHide={() => setLoginToSaldo(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    Masukkan Kata Sandi Login Anda 
+                    {language === null ? ind.masukkanKataSandiSub : language.masukkanKataSandiSub} 
                 </Modal.Title>
                 <Modal.Body >
                     <div className=' mt-2' style={{ padding: "0px 24px"}}>
-                        <div style={{ fontSize: 14, fontFamily: "Nunito" }}>Kata Sandi</div>
+                        <div style={{ fontSize: 14, fontFamily: "Nunito" }}>{language === null ? ind.kataSandi : language.kataSandi}</div>
                         <div className='d-flex justify-content-center align-items-center text-center mt-1 position-relative' >
-                            <input value={inputPass.passwordRek} name="passwordRek" type={passwordInputType} onChange={handleChangePass} className='input-text-saldo-sub-acc' placeholder='Masukkan Kata Sandi' style={{width: "100%", borderColor: errMsg.length !== 0 ? "#B9121B" : "#C4C4C4"}} />
+                            <input value={inputPass.passwordRek} name="passwordRek" type={passwordInputType} onChange={handleChangePass} className='input-text-saldo-sub-acc' placeholder={language === null ? ind.placeholderKataSandi : language.placeholderKataSandi} style={{width: "100%", borderColor: errMsg.length !== 0 ? "#B9121B" : "#C4C4C4"}} />
                             <img onClick={() => togglePassword()} src={eyeIcon} alt="eye icon" className='position-absolute right-0 me-2' style={{ cursor: "pointer" }} />
                         </div>
                     </div>
@@ -1600,7 +1602,7 @@ const InfoSaldoDanMutasi = () => {
                             errMsg.length !== 0 ? (
                                 <div className='d-flex justify-content-center align items-center mt-3'>
                                     <img src={noteIconError} alt="icon error" />
-                                    <div style={{ color: "#B9121B", fontFamily: "Nunito", fontSize: 14 }} className='ms-2'>Kata Sandi Salah</div>
+                                    <div style={{ color: "#B9121B", fontFamily: "Nunito", fontSize: 14 }} className='ms-2'>{language === null ? ind.kataSandiSalah : language.kataSandiSalah}</div>
                                 </div>
                             ) : ""
                         }
@@ -1622,7 +1624,7 @@ const InfoSaldoDanMutasi = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            Lihat Saldo
+                            {language === null ? ind.lihatSaldo : language.lihatSaldo}
                         </button>
                     </div>
                 </Modal.Body>
@@ -1639,10 +1641,10 @@ const InfoSaldoDanMutasi = () => {
                 </Modal.Header>
                 <Modal.Title className="mt-3 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
                     <div><img src={transferFailed} alt="success transfer" /></div> 
-                    <div className='mt-3'>Sistem Sedang Bermasalah</div> 
+                    <div className='mt-3'>{language === null ? ind.sistemSedangBermasalah : language.sistemSedangBermasalah}</div> 
                 </Modal.Title>
                 <Modal.Body >
-                    <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>Saat ini sistem kami sedang mengalami gangguan sehingga tidak dapat menampilkan saldo anda. Mohon coba beberapa saat lagi</div>
+                    <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>{language === null ? ind.descSistemBermasalah : language.descSistemBermasalah}</div>
                     <div className='px-4 mt-4'>
                         <button
                             onClick={() => setShowErrSistem(false)}
@@ -1660,7 +1662,7 @@ const InfoSaldoDanMutasi = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            Oke
+                            {language === null ? ind.oke : language.oke}
                         </button>
                     </div>
                 </Modal.Body>
@@ -1668,7 +1670,7 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="history-modal" size="xs" centered show={showSaldoSubAcc} onHide={() => setShowSaldoSubAcc(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    Saldo Rekening Sub Account 
+                    {language === null ? ind.saldoRekSubAccount : language.saldoRekSubAccount}
                 </Modal.Title>
                 <Modal.Body>
                     {
@@ -1677,10 +1679,10 @@ const InfoSaldoDanMutasi = () => {
                             <CustomLoader/>
                         </div> :
                         <>
-                            <div className='text-center' style={{ fontSize: 14, fontWeight: 400, color: "#383838", fontFamily: "Nunito" }}>Nominal Saldo Saat Ini</div>
+                            <div className='text-center' style={{ fontSize: 14, fontWeight: 400, color: "#383838", fontFamily: "Nunito" }}>{language === null ? ind.nominalSaldoSaatIni : language.nominalSaldoSaatIni}</div>
                             <div className='text-center mt-2' style={{ fontSize: 12, fontWeight: 400, color: "#888888", fontFamily: "Nunito" }}>{convertDateAndTimeInfoDanSaldo(dataAkun.timestamp_request)}</div>
                             <div className='text-center mt-2' style={{color: "#077E86", fontSize: 20, fontFamily: "Exo", fontWeight: 700 }}>{convertToRupiah(dataAkun.availablebalance, true, 2)}</div>
-                            <div className='text-center mt-3' style={{color: "#888888", fontSize: 12, fontFamily: "Nunito", fontWeight: 400 }}>No. Rekening: {dataAkun.account_number} a.n {dataAkun.account_name}</div>
+                            <div className='text-center mt-3' style={{color: "#888888", fontSize: 12, fontFamily: "Nunito", fontWeight: 400 }}>{language === null ? ind.noRek : language.noRek}: {dataAkun.account_number} {language === null ? ind.atasNama : language.atasNama} {dataAkun.account_name}</div>
                             <div className='px-5'>
                                 <button
                                     onClick={() => setShowSaldoSubAcc(false)}
@@ -1698,7 +1700,7 @@ const InfoSaldoDanMutasi = () => {
                                         borderRadius: 6,
                                     }}
                                 >
-                                    Oke
+                                    {language === null ? ind.oke : language.oke}
                                 </button>
                             </div>
                         </>

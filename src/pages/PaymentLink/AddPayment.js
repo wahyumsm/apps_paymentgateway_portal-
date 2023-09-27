@@ -24,8 +24,11 @@ import Buttons from "../../components/Button";
 import { useRef } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import CurrencyInput from "react-currency-input-field";
+import { ind } from "../../components/Language";
 
 function AddPayment() {
+  
+  const language = JSON.parse(sessionStorage.getItem('lang'))
   const [showModal, setShowModal] = useState(false);
   const [showModalBatal, setShowModalBatal] = useState(false);
   const [showModalFeeMethod, setShowModalFeeMethod] = useState(false);
@@ -302,7 +305,7 @@ function AddPayment() {
   };
 
   function toLaporan() {
-    history.push("/Riwayat Transaksi/va-dan-paylink");
+    history.push("/riwayat-transaksi/va-dan-paylink");
   }
 
   function toDashboard() {
@@ -328,7 +331,7 @@ function AddPayment() {
       <span className="breadcrumbs-span">
         {user_role === "102" ?
           <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>
-            Laporan
+            {language === null ? ind.laporan : language.laporan}
           </span> :
           <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>
             Beranda
@@ -337,10 +340,10 @@ function AddPayment() {
         &nbsp;
         <img alt="" src={breadcrumbsIcon} /> &nbsp;
         <span style={{ cursor: "pointer" }} onClick={() => ModalEditHandler()}>
-          Payment Link
+          {language === null ? ind.paymentLink : language.paymentLink}
         </span>{" "}
         &nbsp;
-        <img alt="" src={breadcrumbsIcon} /> &nbsp;Buat Payment Link
+        <img alt="" src={breadcrumbsIcon} /> &nbsp;{language === null ? ind.buatPaymentLink : language.buatPaymentLink}
       </span>
       <div className="head-title">
         <h2
@@ -352,14 +355,14 @@ function AddPayment() {
             color: "#383838",
           }}
         >
-          Buat Payment Link
+          {language === null ? ind.buatPaymentLink : language.buatPaymentLink}
         </h2>
       </div>
       <div className="base-content-beranda">
         <Row>
           <Col xs={12}>
             <div className="my-1">
-              Amount <span style={{ color: "red" }}>*</span>
+              {language === null ? ind.nominal : language.nominal} <span style={{ color: "red" }}>*</span>
             </div>
             <CurrencyInput
               className={
@@ -369,7 +372,7 @@ function AddPayment() {
               }
               value={inputHandle.nominal === undefined ? 0 : inputHandle.nominal}
               onValueChange={(e) => handleChangeNominal(e)}
-              placeholder="Masukkan Nominal Tagihan"
+              placeholder={language === null ? ind.placeholderNominalTagihan : language.placeholderNominalTagihan}
               groupSeparator={"."}
               decimalSeparator={','}
               allowDecimals={false}
@@ -392,17 +395,17 @@ function AddPayment() {
             {
               isNotCompleteData.minNominal &&
               <div className="my-1" style={{ fontSize: "12px", color: "#B9121B" }}>
-                Nominal tagihan Min. 10.000
+                
               </div>
             }
             <div className="my-1" style={{ fontSize: "12px" }}>
-              *Biaya Admin: Rp 0 ( Dibebankan kepada partner )
+              *{language === null ? ind.biayaAdminPaymentLink : language.biayaAdminPaymentLink}
             </div>
           </Col>
         </Row>
         <Row className="mt-2">
           <Col xs={6}>
-            <div className="my-1">Payment ID</div>
+            <div className="my-1">{language === null ? ind.paymentId : language.paymentId}</div>
             <input
               name="paymentId"
               className="input-text-user"
@@ -412,7 +415,7 @@ function AddPayment() {
           </Col>
           <Col xs={6}>
             <div className="my-1">
-              ID Referensi<span style={{ color: "red" }}>*</span>
+              {language === null ? ind.idRef : language.idRef}<span style={{ color: "red" }}>*</span>
             </div>
             <input
               name="refId"
@@ -421,18 +424,18 @@ function AddPayment() {
                   ? "form-control is-invalid"
                   : "input-text-user"
               }
-              placeholder="Masukkan ID Referensi"
+              placeholder={language === null ? ind.placeholderIdRef : language.placeholderIdRef}
               value={inputHandle.refId}
               onChange={handleChange}
             />
             <div className="my-1" style={{ fontSize: "12px" }}>
-              Catatan: ID Referensi bisa berupa kata atau digit angka
+              {language === null ? ind.catatanIdRef : language.catatanIdRef}
             </div>
           </Col>
         </Row>
         <Row className="mt-2">
           <Col xs={6}>
-            <div>Tanggal</div>
+            <div>{language === null ? ind.tanggal : language.tanggal}</div>
             <div className="position-relative d-flex justify-content-between align-items-center ">
               <input
                 className="input-text-user"
@@ -455,7 +458,7 @@ function AddPayment() {
           </Col>
           <Col xs={6} className="position-relative">
             <div>
-              Atur Waktu<span style={{ color: "red" }}>*</span>
+              {language === null ? ind.aturWaktu : language.aturWaktu}<span style={{ color: "red" }}>*</span>
             </div>
             <div className="position-relative d-flex justify-content-between align-items-center" onClick={showCheckboxes}>
               <input
@@ -504,11 +507,11 @@ function AddPayment() {
             inputMinuteHandle < minutes + 5 ? (
               <div style={{ color: "#B9121B", fontSize: 12 }}>
                 <img src={noteIconRed} className="me-2" />
-                Masa kadaluarsa tidak boleh kurang dari 5 menit
+                {language === null ? ind.masaKadaluarsa : language.masaKadaluarsa}
               </div>
             ) : (
               <div className="my-1" style={{ fontSize: "12px" }}>
-                Kadaluarsa : {convertTimeDigit(dateDay.day)} -{" "}
+                {language === null ? ind.kadaluwarsa : language.kadaluwarsa} : {convertTimeDigit(dateDay.day)} -{" "}
                 {convertTimeDigit(dateDay.month)} - {dateDay.year}{" "}
                 {convertTimeDigit(inputHourHandle)}:
                 {convertTimeDigit(inputMinuteHandle)}
@@ -518,7 +521,7 @@ function AddPayment() {
         </Row>
         <Row className="mt-2">
           <Col xs={12}>
-            <div className="my-1">Batas Pemakaian</div>
+            <div className="my-1">{language === null ? ind.batasPemakaian : language.batasPemakaian}</div>
             <input
               onChange={handleChange}
               name="useLimit"
@@ -530,14 +533,13 @@ function AddPayment() {
               value={inputHandle.useLimit}
             />
             <div className="my-1" style={{ fontSize: "12px" }}>
-              Catatan: Batas Pemakaian adalah seberapa banyak link anda dapat di
-              akses
+              {language === null ? ind.catatanBatasPemakaian : language.catatanBatasPemakaian}
             </div>
           </Col>
         </Row>
         <Row className="mt-4">
           <Col xs={12}>
-            <div className="my-1">Metode Pembayaran</div>
+            <div className="my-1">{language === null ? ind.metodePembayaran : language.metodePembayaran}</div>
             {paymentType.length !== 0 ?
               <div className="d-flex justify-content-start align-items-center">
                 <div className="form-check me-2">
@@ -555,7 +557,7 @@ function AddPayment() {
                     htmlFor="typePayment"
                     style={{ fontWeight: 400, fontSize: "14px" }}
                   >
-                    Semua Metode Pembayaran
+                    {language === null ? ind.semuaMetodePembayaran : language.semuaMetodePembayaran}
                   </label>
                 </div>
                 <div className="form-check ms-2">
@@ -573,13 +575,13 @@ function AddPayment() {
                     htmlFor="typePayment"
                     style={{ fontWeight: 400, fontSize: "14px" }}
                   >
-                    Atur Beberapa
+                    {language === null ? ind.aturBeberapa : language.aturBeberapa}
                   </label>
                 </div>
               </div> : 
               <div style={{ color: "#B9121B", fontSize: 12 }}>
                 <img src={noteIconRed} className="me-2" />
-                Silahkan hubungi Customer Service untuk mengatur metode pembayaran
+                {language === null ? ind.silahkanHubCs : language.silahkanHubCs}
               </div>
             }
             {/* <div className="d-flex flex-row justify-content-start align-items-center my-2"> */}
@@ -624,12 +626,12 @@ function AddPayment() {
         </Row>
         <Row className="mt-3 mb-5">
           <Col xs={12}>
-            <div className="my-1">Deskripsi</div>
+            <div className="my-1">{language === null ? ind.deskripsi : language.deskripsi}</div>
             <textarea
               name="desc"
               value={inputHandle.desc}
               onChange={handleChange}
-              placeholder="Masukkan Deskripsi"
+              placeholder={language === null ? ind.placeholderDeskripsi : language.placeholderDeskripsi}
               className="input-text-area"
               style={{ padding: 10, fontSize: "14px" }}
               maxLength={150}
@@ -683,7 +685,7 @@ function AddPayment() {
             borderRadius: 6,
           }}
         >
-          Buat Payment Link
+          {language === null ? ind.buatPaymentLink : language.buatPaymentLink}
         </button>
       </div>
       <Modal
@@ -722,12 +724,12 @@ function AddPayment() {
                 marginBottom: "unset",
               }}
             >
-              Selamat, Payment Link Kamu Berhasil Dibuat
+              {language === null ? ind.selamatPaymentLinkBerhasilDibuat : language.selamatPaymentLinkBerhasilDibuat}
             </p>
           </div>          
           <Row>
             <Col xs={12}>
-              <div className="my-1">Payment Link</div>
+              <div className="my-1">{language === null ? ind.paymentLink : language.paymentLink}</div>
               <input
                 // id="copied"
                 // ref={textAreaRef}
@@ -762,7 +764,7 @@ function AddPayment() {
                 <span>
                   <img src={check} alt="copy" className="me-2" />
                 </span>
-                Link Tersalin
+                {language === null ? ind.linkTersalin : language.linkTersalin}
               </Button>
             </div>
           ) : (
@@ -791,13 +793,13 @@ function AddPayment() {
                   <span>
                     <img src={CopyIcon} alt="copy" className="me-2" />
                   </span>
-                  Salin Link
+                  {language === null ? ind.salinLink : language.salinLink}
                 </Button>
               </CopyToClipboard>
             </div>
           )}
           <div className="my-2" style={{ fontSize: 14, textAlign: "center" }}>
-            Silahkan salin link diatas untuk menerima pembayaran kamu.
+            {language === null ? ind.silahkanSalinLink : language.silahkanSalinLink}
           </div>
           <div
             className="my-3 mt-3"
@@ -821,7 +823,7 @@ function AddPayment() {
                 border: "1px solid #EBEBEB",
               }}
             >
-              Tutup
+              {language === null ? ind.tutup : language.tutup}
             </Button>
           </div>
         </Modal.Body>
@@ -851,7 +853,7 @@ function AddPayment() {
               }}
               className="text-center"
             >
-              Apakah Kamu Yakin Ingin Keluar dari Halaman ini?
+              {language === null ? ind.yakinInginKeluar : language.yakinInginKeluar}
             </p>
           </div>
           <div
@@ -871,7 +873,7 @@ function AddPayment() {
               }}
               className="text-center"
             >
-              Seluruh perubahan yang kamu buat akan terhapus
+              {language === null ? ind.seluruhPerubahan : language.seluruhPerubahan}
             </p>
           </div>
           <div className="d-flex justify-content-center mb-3">
@@ -890,7 +892,7 @@ function AddPayment() {
               }}
               className="mx-2"
             >
-              Tidak
+              {language === null ? ind.tidak : language.tidak}
             </Button>
             <Button
               onClick={() => setShowModalBatal(false)}
@@ -904,7 +906,7 @@ function AddPayment() {
                 height: "100%",
               }}
             >
-              Keluar
+                {language === null ? ind.keluar : language.keluar}
             </Button>
           </div>
         </Modal.Body>
@@ -935,7 +937,7 @@ function AddPayment() {
               }}
               className="text-center"
             >
-              Atur Metode Pembayaran
+              {language === null ? ind.aturMetodePembayaran : language.aturMetodePembayaran}
             </p>
           </div>
           <div
@@ -951,7 +953,7 @@ function AddPayment() {
               }}
               className="text-center"
             >
-              Virtual Account
+              {language === null ? ind.virtualAccount : language.virtualAccount}
             </p>
           </div>
           <div className="form-check ">
@@ -994,7 +996,7 @@ function AddPayment() {
                   className="mb-2"
                 >
                   <img src={noteIconRed} className="me-2" />
-                  Metode pembayaran harus dipilih.
+                  {language === null ? ind.metodePembayaranHarusDipilih : language.metodePembayaranHarusDipilih}
                 </div>
               )
             : ""}
@@ -1014,7 +1016,7 @@ function AddPayment() {
               }}
               className="mx-2"
             >
-              Batal
+              {language === null ? ind.batal : language.batal}
             </Button>
             <Button
               onClick={onSaveChoosenPayment}
@@ -1028,7 +1030,7 @@ function AddPayment() {
                 height: "100%",
               }}
             >
-              Simpan
+              {language === null ? ind.simpan : language.simpan}
             </Button>
           </div>
         </Modal.Body>
@@ -1042,17 +1044,17 @@ function AddPayment() {
       >
           <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
               <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">Apakah Kamu Yakin Ingin Keluar dari Halaman ini?</p>
+                  <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">{language === null ? ind.yakinInginKeluar : language.yakinInginKeluar}</p>
               </div>
               <div style={{ display: "flex", justifyContent: "center", marginTop: 32, marginBottom: 16 }}>
-                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Semua perubahan yang kamu buat akan terhapus</p>
+                  <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? ind.seluruhPerubahan : language.seluruhPerubahan}</p>
               </div>
               <p>
                   
               </p>                
               <div className="d-flex justify-content-center mb-3">
-                  <Button onClick={() => setShowModalExit(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
-                  <Button onClick={() => toListPay()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
+                  <Button onClick={() => setShowModalExit(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? ind.tidak : language.tidak}</Button>
+                  <Button onClick={() => toListPay()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.ya : language.ya}</Button>
               </div>
           </Modal.Body>
       </Modal>
