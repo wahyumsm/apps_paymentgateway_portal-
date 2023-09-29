@@ -391,7 +391,7 @@ function DaftarUserDirectDebit() {
         </div>
     );
 
-    console.log(language, "language");
+    // console.log(language, "language");
 
     useEffect(() => {
         if (!access_token) {

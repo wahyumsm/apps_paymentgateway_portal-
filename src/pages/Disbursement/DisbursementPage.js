@@ -118,8 +118,8 @@ function DisbursementPage() {
     })
     const [totalHoldBalance, setTotalHoldBalance] = useState(0)
 
-    console.log(dataDisburse, "dataDisburse");
-    console.log(minMaxDisbursement.minDisbursement, "minMaxDisbursement.minDisbursement");
+    // console.log(dataDisburse, "dataDisburse");
+    // console.log(minMaxDisbursement.minDisbursement, "minMaxDisbursement.minDisbursement");
 
     function handleShowDetailBalance(codeBank) {
         if (codeBank === "014") {
@@ -145,11 +145,11 @@ function DisbursementPage() {
         }
     }
 
-    console.log(((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee)), "((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee))");
-    console.log(getBalance, "getBalance");
-    console.log(totalHoldBalance, "totalHoldBalance");
-    console.log(sum(allNominal), "sum(allNominal)");
-    console.log(sum(sum(allFee)), "sum(sum(allFee))");
+    // console.log(((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee)), "((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee))");
+    // console.log(getBalance, "getBalance");
+    // console.log(totalHoldBalance, "totalHoldBalance");
+    // console.log(sum(allNominal), "sum(allNominal)");
+    // console.log(sum(sum(allFee)), "sum(sum(allFee))");
 
     async function fileCSV(newValue, bankLists, listBallanceBank, bankFee, allBalance, allHoldBalance) {
         if (errorFound.length !== 0) {
@@ -453,7 +453,7 @@ function DisbursementPage() {
                                     } else {
                                         //pengecekan cabang harus alphabet
                                         if (regExp.test(String(el[(language === null ? ind.cabangStar : language.cabangStar)]))) {
-                                            console.log("masuk sisnii");
+                                            // console.log("masuk sisnii");
                                             objErrData.no = idx + 2
                                             objErrData.keterangan = `Cabang Harus Alphabet`
                                             errData.push(objErrData)

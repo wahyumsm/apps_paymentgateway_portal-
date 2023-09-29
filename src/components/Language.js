@@ -401,7 +401,12 @@ export var ind = {
     vapartner: "VA Partner",
     emoney: "E-Money",
     detailSettlement: "Detail Settlement",
-    noVa: "No VA"
+    noVa: "No VA",
+    tipePeriode: "Tipe Periode",
+    placeholderTipePeriode: "Pilih Tipe Periode",
+    periodeBuat: "Periode Buat",
+    periodeProses: "Periode Proses",
+    waktuPembayaran: "Waktu Pembayaran"
 }
 
 export var eng = {
@@ -803,7 +808,12 @@ export var eng = {
     vapartner: "VA Partner",
     emoney: "E-Money",
     detailSettlement: "Settlement Details",
-    noVa: "VA Number"
+    noVa: "VA Number",
+    tipePeriode: "Date Periode Type",
+    placeholderTipePeriode: "Choose Period Type",
+    periodeBuat: "Create Period",
+    periodeProses: "Processing Period",
+    waktuPembayaran: "Payment Date"
 }
 
 export var chn = {
@@ -1205,5 +1215,10 @@ export var chn = {
     vapartner: "虚拟账户",
     emoney: "电子货币",
     detailSettlement: "结算细",
-    noVa: "虚拟账户"
+    noVa: "虚拟账户",
+    tipePeriode: "日期 周期 类型",
+    placeholderTipePeriode: "选择期间类型",
+    periodeBuat: "创建期间",
+    periodeProses: "处理期限",
+    waktuPembayaran: "付款日期"
 }

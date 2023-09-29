@@ -28,7 +28,7 @@ function DetailAkun() {
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
     const [inputHandle, setInputHandle] = useState({})
     const [errorURL, setErrorURL] = useState([])
-    console.log(inputHandle, 'inputHandle');
+    // console.log(inputHandle, 'inputHandle');
 
     function handleChange(e) {
         setInputHandle({
@@ -144,15 +144,15 @@ function DetailAkun() {
 
     async function updateUrlCallback(id, newUrl, oldUrl) {
         try {
-            console.log(newUrl, 'newUrl');
-            console.log(oldUrl, 'oldUrl');
+            // console.log(newUrl, 'newUrl');
+            // console.log(oldUrl, 'oldUrl');
             let callbackList = []
             let errorDataURL = []
             if (Object.keys(newUrl).length !== 0) {
                 let newestUrl = []
                 for (const key in newUrl) {
-                    console.log(newUrl[key], 'newUrl[key]');
-                    console.log(validator.isURL(newUrl[key]), 'validator.isURL(newUrl[key])');
+                    // console.log(newUrl[key], 'newUrl[key]');
+                    // console.log(validator.isURL(newUrl[key]), 'validator.isURL(newUrl[key])');
                     if (!validator.isURL(newUrl[key])) {
                         errorDataURL.push(key)
                     }
@@ -161,7 +161,7 @@ function DetailAkun() {
                         callbackurl_url: newUrl[key]
                     })
                 }
-                console.log(errorDataURL, 'errorDataURL');
+                // console.log(errorDataURL, 'errorDataURL');
                 // oldUrl.forEach(el => {
                 //     newestUrl.forEach(item => {
                 //         if (item.callback_id === el.mpartnercallback_id) {

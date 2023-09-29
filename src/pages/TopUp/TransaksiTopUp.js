@@ -356,7 +356,7 @@ function TransaksiTopUp() {
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Transaksi Topup</span>
-            <Row className='main-content mt-4'>
+            {/* <Row className='main-content mt-4'>
                 <Col lg={3}>
                     <div className="card-information base-content-beranda">
                         <p className="p-info">Saldo OVO</p>
@@ -369,7 +369,7 @@ function TransaksiTopUp() {
                         <p className="p-amount">{0}</p>
                     </div>
                 </Col>
-            </Row>
+            </Row> */}
             <div className="head-title">
                 <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Riwayat Transaksi Topup</h2>
             </div>

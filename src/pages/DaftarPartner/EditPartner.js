@@ -71,6 +71,7 @@ function EditPartner() {
   const [alertMaxSubAcc, setAlertMaxSubAcc] = useState(false)
   const [alertSamePartner, setAlertSamePartner] = useState(false)
   const [sumberAgenList, setSumberAgenList] = useState([])
+  const [isDisableFeeType, setIsDisableFeeType] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     id: partnerId,
     namaPerusahaan: detailPartner.mpartner_name,
@@ -110,6 +111,8 @@ function EditPartner() {
   const filteredItems = listAgen.filter(
       item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
   );
+  // console.log(fitur, 'fitur');
+  // console.log(isDisableFeeType, 'isDisableFeeType');
 
   const subHeaderComponentMemo = useMemo(() => {
     const handleClear = () => {
@@ -198,19 +201,25 @@ function EditPartner() {
   //   }
   // }
 
-  function handleChangeFee(e) {
+  function handleChangeFee(e, feeType) {
+    // console.log(feeType, 'feeType');
+    // console.log(e, 'e');
     setAlertFee(false)
     setBiayaHandle({
       ...biayaHandle,
       fee: e,
     });
-    if (e === undefined || e === "") {
-      setAlertFee(true)
-    } else if (e.length === 3 && e !== "100") {
-      setBiayaHandle({
-        ...biayaHandle,
-        fee: "100",
-      });
+    if (feeType === 101) {
+      if (e === undefined || e === "") {
+        // console.log('masuk if 1');
+        setAlertFee(true)
+      } else if (e.length === 3 && e !== "100") {
+        // console.log('masuk if 2');
+        setBiayaHandle({
+          ...biayaHandle,
+          fee: "100",
+        });
+      }
     }
   }
 
@@ -341,7 +350,25 @@ function EditPartner() {
     [setPaymentMethod, setPaymentNameMethod]
   );
 
-  const handleChangeFitur = (e) => {
+  const handleChangeFitur = (e, handleBiaya) => {
+    // console.log(e.target.name, 'e.target.name');
+    if (e.target.name === "Payment Collection") {
+      setIsDisableFeeType(false)
+    } else {
+      setIsDisableFeeType(true)
+      if (handleBiaya.feeType !== 100) {
+        setBiayaHandle({
+          ...biayaHandle,
+          feeType: 100,
+          fee: ""
+        })
+      }
+      // setBiayaHandle({
+      //   ...biayaHandle,
+      //   feeType: 100,
+      //   fee: ""
+      // })
+    }
     setLoading(true);
     setRedFlag(false)
     getTypeMethod(e.target.value);
@@ -371,6 +398,12 @@ function EditPartner() {
       setPaymentMethod(result.mpaytype_id);
       setPaymentNameMethod(result.mpaytype_name);
       setNumbering(result.number);
+    }
+    // console.log(result.fitur_id, 'result.fitur_id');
+    if (result.fitur_id === 105) {
+      setIsDisableFeeType(false)
+    } else {
+      setIsDisableFeeType(true)
     }
   }
 
@@ -429,6 +462,7 @@ function EditPartner() {
         setFitur("", "");
         setPaymentMethod([]);
         setPaymentNameMethod([]);
+        setIsDisableFeeType(false)
       } else {
         setRedFlag(true)
       }
@@ -449,6 +483,7 @@ function EditPartner() {
     setEdited(false);
     setRedFlag(false)
     setMustFill(false)
+    setIsDisableFeeType(false)
   }
 
   function deleteDataHandler(numberId) {
@@ -466,6 +501,7 @@ function EditPartner() {
     setPaymentMethod([]);
     setPaymentNameMethod([]);
     setEdited(false);
+    setIsDisableFeeType(false)
   }
 
   function editInSubAcc(numberId) {
@@ -912,7 +948,7 @@ function EditPartner() {
     },
     {
       name: "Tipe Fee",
-      selector: (row) => row.fee_type === 100 ? "Rupiah" : "Persentase",
+      selector: (row) => row.fee_type === 100 ? "Fix Fee" : "Persentase",
       width: "200px",
       wrap: true
     },
@@ -1097,6 +1133,7 @@ function EditPartner() {
                   setFitur("", "");
                   setPaymentMethod([]);
                   setPaymentNameMethod([]);
+                  setIsDisableFeeType(false)
                 }
               }
               // if (feeType === undefined || feeType.length === 0) {
@@ -1755,7 +1792,7 @@ function EditPartner() {
               <thead></thead>
               <tbody>
                 <tr>
-                  <td style={{ width: 200 }}>Is Charge Fee</td>
+                  <td style={{ width: 200 }}>Is Charge Fee VA</td>
                   <td>
                     <Form.Check
                       type="switch"
@@ -1790,9 +1827,9 @@ function EditPartner() {
                 <tr>
                   <td style={{ width: 200 }}>Tipe Fee <span style={{ color: "red" }}>*</span></td>
                   <td>
-                    <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: 0 }) }}>
+                    <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} disabled={isDisableFeeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: 0 }) }}>
                       <option defaultValue value={0}>Pilih Tipe Fee</option>
-                      <option value={100}>Rupiah</option>
+                      <option value={100}>Fix Fee</option>
                       <option value={101}>Persentase</option>
                     </Form.Select>
                     {alertFeeType === true ?
@@ -1811,7 +1848,7 @@ function EditPartner() {
                     <CurrencyInput
                       className="input-text-user"
                       value={biayaHandle.fee}
-                      onValueChange={(e) => handleChangeFee(e)}
+                      onValueChange={(e) => handleChangeFee(e, biayaHandle.feeType)}
                       placeholder="Masukkan Fee"
                       style={{
                         borderColor: alertFee ? "red" : ""
@@ -2028,7 +2065,7 @@ function EditPartner() {
                                     id="inlineCheckbox1"
                                     name={item.fitur_name}
                                     value={item.fitur_id}
-                                    onChange={(e) => handleChangeFitur(e)}
+                                    onChange={(e) => handleChangeFitur(e, biayaHandle)}
                                     checked={
                                       edited === true
                                         ? fitur[0] &&
@@ -2060,7 +2097,7 @@ function EditPartner() {
                                     id="inlineCheckbox1"
                                     name={item.fitur_name}
                                     value={item.fitur_id}
-                                    onChange={(e) => handleChangeFitur(e)}
+                                    onChange={(e) => handleChangeFitur(e, biayaHandle)}
                                     // checked={edited === true ? fitur[0] : inputHandle.fiturs ? inputHandle.fiturs : 0}
                                     checked={
                                       edited === true
@@ -2095,7 +2132,7 @@ function EditPartner() {
                                     id="inlineCheckbox1"
                                     name={item.fitur_name}
                                     value={item.fitur_id}
-                                    onChange={(e) => handleChangeFitur(e)}
+                                    onChange={(e) => handleChangeFitur(e, biayaHandle)}
                                     checked={
                                       edited === true
                                         ? fitur[0] &&
@@ -2126,7 +2163,7 @@ function EditPartner() {
                                     id="inlineCheckbox1"
                                     name={item.fitur_name}
                                     value={item.fitur_id}
-                                    onChange={(e) => handleChangeFitur(e)}
+                                    onChange={(e) => handleChangeFitur(e, biayaHandle)}
                                     checked={
                                       edited === true
                                         ? fitur[0] &&

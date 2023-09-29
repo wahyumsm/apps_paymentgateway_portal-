@@ -24,7 +24,7 @@ export default (props = {}) => {
 
   const language = JSON.parse(sessionStorage.getItem('lang'))
   const location = useLocation();
-  console.log(location, "location");
+  // console.log(location, "location");
   const dispatch = useDispatch()
   const history = useHistory()
   const access_token = getToken()
@@ -41,11 +41,11 @@ export default (props = {}) => {
     // const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
     const defaultKey = pathname.indexOf(url) !== -1 ? eventKey : "";
 
-    console.log(defaultKey, "defaultKey");
-    console.log(pathname, "pathname");
-    console.log(eventKey, "eventKey");
-    console.log(title, "title");
-    console.log(url, "url");
+    // console.log(defaultKey, "defaultKey");
+    // console.log(pathname, "pathname");
+    // console.log(eventKey, "eventKey");
+    // console.log(title, "title");
+    // console.log(url, "url");
 
     return (
       <Accordion as={Nav.Item} defaultActiveKey={defaultKey}>

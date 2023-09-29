@@ -88,7 +88,7 @@ const VaDanPaymentLink = () => {
             width: "145px"
         },
         {
-            name: 'Waktu Pembayaran',
+            name: language === null ? ind.waktuPembayaran : language.waktuPembayaran,
             selector: row => row.tvatrans_process_date_format !== null ? row.tvatrans_process_date_format : "-",
             width: "180px"
         },
@@ -339,7 +339,7 @@ const VaDanPaymentLink = () => {
 
     async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, partnerTransId, bankName, fiturDanaMasuk, lang, tipePeriode) {
         try {
-            console.log(lang, "lang");
+            // console.log(lang, "lang");
           setPendingTransfer(true)
           setIsFilterDanaMasuk(true)
           setActivePageDanaMasuk(page)
@@ -1094,11 +1094,11 @@ const VaDanPaymentLink = () => {
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <span className="me-2">Tipe Periode</span>
+                                    <span className="me-2">{language === null ? ind.tipePeriode : language.tipePeriode}</span>
                                     <Form.Select name='tipePeriode' className='input-text-riwayat ms-1' style={{ display: "inline" }} value={inputHandle.tipePeriode} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={0}>Pilih Tipe Periode</option>
-                                        <option value={1}>Periode Buat</option>
-                                        <option value={2}>Periode Proses</option>
+                                        <option defaultValue value={0}>{language === null ? ind.placeholderTipePeriode : language.placeholderTipePeriode}</option>
+                                        <option value={1}>{language === null ? ind.periodeBuat : language.periodeBuat}</option>
+                                        <option value={2}>{language === null ? ind.periodeProses : language.periodeProses}</option>
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>

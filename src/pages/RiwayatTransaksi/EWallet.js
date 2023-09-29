@@ -563,6 +563,27 @@ function EWallet() {
             width: "173px"
         },
         {
+            name: 'Biaya eWallet',
+            selector: row => convertToRupiah(row.ewalletFee, true, 2),
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "140px"
+        },
+        {
+            name: 'Biaya Pajak',
+            selector: row => convertToRupiah(row.feeTax, true, 2),
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "140px"
+        },
+        {
+            name: 'Total Biaya',
+            selector: row => convertToRupiah(row.totalAmount, true, 2),
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
+            width: "173px"
+        },
+        {
             name: language === null ? ind.status : language.status,
             selector: row => row.status,
             width: "150px",
