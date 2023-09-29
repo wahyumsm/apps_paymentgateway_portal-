@@ -16,7 +16,7 @@ const GetBalance = () => {
     const user_role = getRole()
     const history = useHistory()
     const access_token = getToken()
-    const [isGetBalance, setIsGetBalance] = useState("transferOnline")
+    const [isGetBalance, setIsGetBalance] = useState("getBalance")
 
     function balance(isTabs){
         if(isTabs === "getBalance"){
@@ -307,8 +307,8 @@ const GetBalance = () => {
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Transaksi Bank</span>
 
             <div className='detail-akun-menu mt-3' style={{display: 'flex', height: 33}}>
-                <div className='detail-akun-tabs' onClick={() => balance("getBalance")} id="getbalancetab">
-                    <span className='menu-detail-akun-span' id="getbalancespan">Get Balance</span>
+                <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => balance("getBalance")} id="getbalancetab">
+                    <span className='menu-detail-akun-span menu-detail-akun-span-active' id="getbalancespan">Get Balance</span>
                 </div>
                 <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => balance("mutasi")} id="mutasitab">
                     <span className='menu-detail-akun-span' id="mutasispan">Mutasi</span>
@@ -316,8 +316,8 @@ const GetBalance = () => {
                 <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => balance("transferBif")} id="transferbiftab">
                     <span className='menu-detail-akun-span' id="transferbifspan">Transfer BIF</span>
                 </div>
-                <div className='detail-akun-tabs menu-detail-akun-hr-active' style={{marginLeft: 15}} onClick={() => balance("transferOnline")} id="transferonlinetab">
-                    <span className='menu-detail-akun-span menu-detail-akun-span-active' id="transferonlinespan">Transfer Online</span>
+                <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => balance("transferOnline")} id="transferonlinetab">
+                    <span className='menu-detail-akun-span' id="transferonlinespan">Transfer Online</span>
                 </div>
             </div>
             <hr className='hr-style' style={{marginTop: -2}}/>{}
@@ -410,7 +410,7 @@ const GetBalance = () => {
                                     </Row>
                                 )
                             }
-                            <div className='p-3 mt-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6 }}><JSONPretty id="json-pretty" data={Object.keys(dataMutasi).length === 0 ? "-" : dataMutasi.jsonResponse}></JSONPretty></div>
+                            <div className='p-3 mt-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6, height: 240, overflowY: "auto" }}><JSONPretty id="json-pretty" data={Object.keys(dataMutasi).length === 0 ? "-" : dataMutasi.jsonResponse}></JSONPretty></div>
                         </>
                     ) : isGetBalance === "transferBif" ? (
                         <>
