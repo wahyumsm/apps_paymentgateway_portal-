@@ -43,7 +43,7 @@ export var ind = {
     terapkan: "Terapkan",
     aturUlang: "Atur Ulang",
     no: "No",
-    waktu: "Waktu",
+    waktuTransaksi: "Waktu Transaksi",
     nominalTransaksi: "Nominal Transaksi",
     biaya: "Biaya",
     nominalDisburse: "Nominal Disbursement",
