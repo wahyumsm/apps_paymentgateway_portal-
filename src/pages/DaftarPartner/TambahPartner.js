@@ -297,7 +297,7 @@ function TambahPartner() {
     },
     {
       name: "Tipe Fee",
-      selector: (row) => row.fee_type === 100 ? "Rupiah" : "Persentase",
+      selector: (row) => row.fee_type === 100 ? "Fix Fee" : "Persentase",
       width: "200px",
       wrap: true
     },
@@ -1144,7 +1144,7 @@ function toDashboard() {
             <Col xs={10}>
               <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: 0 }) }}>
                 <option defaultValue value={0}>Pilih Tipe Fee</option>
-                <option value={100}>Rupiah</option>
+                <option value={100}>Fix Fee</option>
                 <option value={101}>Persentase</option>
               </Form.Select>
               {alertFeeType === true ?
