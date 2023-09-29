@@ -529,7 +529,7 @@ function DetailPartner() {
                             <thead></thead>
                             <tbody>
                                 <tr>
-                                    <td style={{width: 200}}>Is Charge Fee VA</td>
+                                    <td style={{width: 200}}>Partner Charge Fee Bank</td>
                                     <td><Form.Check
                                         type="switch"
                                         id="custom-switch"

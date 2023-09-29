@@ -1115,7 +1115,7 @@ function toDashboard() {
               <span
                 style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}
               >
-                Is Charge Fee VA
+                Partner Charge Fee Bank
               </span>
             </Col>
             <Col xs={10}>
