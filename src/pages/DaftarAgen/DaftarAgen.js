@@ -67,7 +67,7 @@ function DaftarAgen() {
     }
   }
 
-  console.log(listAgen, "listagen");
+  // console.log(listAgen, "listagen");
   
   function detailAgenHandler(agenId) {
     history.push(`/detailagen/${agenId}`)

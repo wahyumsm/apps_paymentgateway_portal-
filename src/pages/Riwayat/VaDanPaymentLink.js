@@ -85,7 +85,7 @@ const VaDanPaymentLink = () => {
         {
             name: language === null ? ind.waktu : language.waktu,
             selector: row => row.created_at,
-            width: "145px"
+            width: "180px"
         },
         {
             name: language === null ? ind.waktuPembayaran : language.waktuPembayaran,
@@ -339,7 +339,7 @@ const VaDanPaymentLink = () => {
 
     async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, partnerTransId, bankName, fiturDanaMasuk, lang, tipePeriode) {
         try {
-            console.log(lang, "lang");
+            // console.log(lang, "lang");
           setPendingTransfer(true)
           setIsFilterDanaMasuk(true)
           setActivePageDanaMasuk(page)

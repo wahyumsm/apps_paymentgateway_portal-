@@ -307,7 +307,7 @@ function DetailPartner() {
         },
         {
             name: "Tipe Fee",
-            selector: (row) => row.fee_type === 100 ? "Rupiah" : "Persentase",
+            selector: (row) => row.fee_type === 100 ? "Fix Fee" : "Persentase",
             width: "200px",
             wrap: true
         },
@@ -529,7 +529,7 @@ function DetailPartner() {
                             <thead></thead>
                             <tbody>
                                 <tr>
-                                    <td style={{width: 200}}>Is Charge Fee</td>
+                                    <td style={{width: 200}}>Partner Charge Fee Bank</td>
                                     <td><Form.Check
                                         type="switch"
                                         id="custom-switch"
@@ -543,7 +543,7 @@ function DetailPartner() {
                                     <td>
                                         <Form.Select name='feeType' disabled className='input-text-user' style={{ display: "inline", cursor: "not-allowed" }} value={payment.feeType}>
                                             <option defaultValue value={0}>Pilih Tipe Fee</option>
-                                            <option value={100}>Rupiah</option>
+                                            <option value={100}>Fix Fee</option>
                                             <option value={101}>Persentase</option>
                                         </Form.Select>
                                     </td>
