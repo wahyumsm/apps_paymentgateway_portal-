@@ -13,6 +13,7 @@ import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { ind } from '../../components/Language';
+import validator from "validator";
 
 function DetailAkun() {
 
@@ -21,12 +22,13 @@ function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
     const [subAccount, setSubAccount] = useState([])
+    const [dataListCallBack, setDataListCallBack] = useState([])
     const history = useHistory()
     const myRef = useRef(null)
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
-    const [inputHandle, setInputHandle] = useState({
-        callbackUrl: dataAkun.callback_url,
-    })
+    const [inputHandle, setInputHandle] = useState({})
+    const [errorURL, setErrorURL] = useState([])
+    console.log(inputHandle, 'inputHandle');
 
     function handleChange(e) {
         setInputHandle({
@@ -79,15 +81,38 @@ function DetailAkun() {
                 userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setDataAkun(userDetailPartner.data.response_data)
                 setSubAccount(userDetailPartner.data.response_data.sub_account)
+                getListCallback(userDetailPartner.data.response_data.mpartner_id)
             } else if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length !== 0) {
                 userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setUserSession(userDetailPartner.data.response_new_token)
                 setDataAkun(userDetailPartner.data.response_data)
                 setSubAccount(userDetailPartner.data.response_data.sub_account)
+                getListCallback(userDetailPartner.data.response_data.mpartner_id)
             }
             
         } catch (error) {
             // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function getListCallback(id) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"partner_id": "${id}"}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataListCallBacks = await axios.post(BaseURL + "/Partner/GetListCallbackForPartner", {data: dataParams}, {headers: headers})
+            if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length === 0) {
+                setDataListCallBack(dataListCallBacks.data.response_data)
+            } else if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length !== 0) {
+                setUserSession(dataListCallBacks.data.response_new_token)
+                setDataListCallBack(dataListCallBacks.data.response_data)
+            }
+        } catch (error) {
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -117,23 +142,68 @@ function DetailAkun() {
         userDetailPartner('/Account/GetPartnerDetail')
     },[])
 
-    async function updateUrlCallback(id, callbackUrl) {
+    async function updateUrlCallback(id, newUrl, oldUrl) {
         try {
-            const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"mpartner_id":"${id}", "callback_url":"${callbackUrl}"}`)
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
+            console.log(newUrl, 'newUrl');
+            console.log(oldUrl, 'oldUrl');
+            let callbackList = []
+            let errorDataURL = []
+            if (Object.keys(newUrl).length !== 0) {
+                let newestUrl = []
+                for (const key in newUrl) {
+                    console.log(newUrl[key], 'newUrl[key]');
+                    console.log(validator.isURL(newUrl[key]), 'validator.isURL(newUrl[key])');
+                    if (!validator.isURL(newUrl[key])) {
+                        errorDataURL.push(key)
+                    }
+                    newestUrl.push({
+                        callback_id: Number(key),
+                        callbackurl_url: newUrl[key]
+                    })
+                }
+                console.log(errorDataURL, 'errorDataURL');
+                // oldUrl.forEach(el => {
+                //     newestUrl.forEach(item => {
+                //         if (item.callback_id === el.mpartnercallback_id) {
+                //             callbackList.push({
+                //                 callback_id: item.callback_id,
+                //                 callbackurl_ID: el.mcallbackurl_id,
+                //                 callbackurl_url: item.callbackurl_url,
+                //             })
+                //         }
+                //     })
+                //     callbackList.push({
+                //         callback_id: el.mpartnercallback_id,
+                //         callbackurl_ID: el.mcallbackurl_id,
+                //         callbackurl_url: el.mpartnercallback_url,
+                //     })
+                // });
+                // callbackList = callbackList.filter((item, idx, arr) => arr.findIndex(item2 => (item2.callback_id === item.callback_id)) === idx)
+                setErrorURL(errorDataURL)
+            } else {
+                callbackList = oldUrl.map(item => {
+                    return{
+                        callback_id: item.mpartnercallback_id,
+                        callbackurl_ID: item.mcallbackurl_id,
+                        callbackurl_url: item.mpartnercallback_url,
+                    }
+                })
             }
-            const editCallback = await axios.post(BaseURL + "/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
-            if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
-                history.push("/detailakun")
-            } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
-                setUserSession(editCallback.data.response_new_token)
-                history.push("/detailakun")
-            }
-            
-            alert("Edit URL Berhasil")
+            // const auth = "Bearer " + getToken()
+            // const dataParams = encryptData(`{"partner_id":"${id}", "callback_url_list":${JSON.stringify(callbackList)}}`)
+            // const headers = {
+            //     'Content-Type':'application/json',
+            //     'Authorization' : auth
+            // }
+            // const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
+            // if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
+            //     alert(editCallback.data.response_data.response_message)
+            //     window.location.reload()
+            // } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
+            //     setUserSession(editCallback.data.response_new_token)
+            //     alert(editCallback.data.response_data.response_message)
+            //     window.location.reload()
+            // }
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
@@ -398,7 +468,31 @@ function DetailAkun() {
                         <p>{language === null ? ind.ezeelinkMemerlukanUrl : language.ezeelinkMemerlukanUrl}</p>
                         <br/>
                         <Row>
-                            <Col xs={3}>
+                            {
+                                dataListCallBack.length !== 0 &&
+                                dataListCallBack.map((item, idx) => {
+                                    return(
+                                        <>
+                                            <Col xs={3} key={item.mcallbackurl_id}>
+                                                <span>{item.mcallbackurl_name}</span>
+                                            </Col>
+                                            <Col xs={9}>
+                                                <div>
+                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`${item.mcallbackurl_id}`} style={{width: '100%', marginLeft: 'unset'}}/> 
+                                                    {
+                                                        errorURL.length !== 0 && (errorURL.find(el => el === String(item.mcallbackurl_id)) !== undefined || String(errorURL.find(el => el === String(item.mcallbackurl_id))).length === 0) ?
+                                                        <p>{"Format URL salah"}</p> :
+                                                        <p>{language === null ? ind.addressUrl : language.addressUrl}</p>
+                                                    }
+                                                    {/* <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p> */}
+                                                    <br/>
+                                                </div>
+                                            </Col>
+                                        </>
+                                    )
+                                })
+                            }
+                            {/* <Col xs={3}>
                                 <span>{language === null ? ind.paymentNotifUrl : language.paymentNotifUrl}*</span>
                             </Col>
                             <Col xs={9}>
@@ -407,10 +501,10 @@ function DetailAkun() {
                                     <p>{language === null ? ind.addressUrl : language.addressUrl}</p>
                                     <br/>
                                 </div>
-                            </Col>
+                            </Col> */}
                         </Row>
                         <div style={{ display: "flex", justifyContent: "end", marginTop: 16 }}>
-                        <button onClick={() => updateUrlCallback(dataAkun.mpartner_id, inputHandle.callbackUrl)} className='mb-5' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+                        <button onClick={() => updateUrlCallback(dataAkun.mpartner_id, inputHandle, dataListCallBack)} className='mb-5' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                             {language === null ? ind.update : language.update}
                         </button>
                     </div>

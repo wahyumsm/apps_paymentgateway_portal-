@@ -19,12 +19,13 @@ export default () => {
   const history = useHistory()
   const language = JSON.parse(sessionStorage.getItem('lang'))
 
-  async function userAccessMenu(url, token) {
+  async function userAccessMenu(url, token, lang) {
     try {
       const auth = "Bearer " + token
         const headers = {
             'Content-Type':'application/json',
-            'Authorization' : auth
+            'Authorization' : auth,
+            'Accept-Language' : lang
       }
       const dataUserAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
       // console.log(dataUserAccessMenu, 'data access');
@@ -207,7 +208,7 @@ export default () => {
     if (token === null || role === null) {
       history.push("/login")
     } else if (token !== null) {
-      userAccessMenu("/Account/GetUserAccess", token)
+      userAccessMenu("/Account/GetUserAccess", token, language === null ? 'ID' : language.flagName)
     }
   }
 

@@ -306,20 +306,26 @@ function DetailPartner() {
             wrap: true
         },
         {
+            name: "Tipe Fee",
+            selector: (row) => row.fee_type === 100 ? "Rupiah" : "Persentase",
+            width: "200px",
+            wrap: true
+        },
+        {
             name: 'Fee',
-            selector: row => convertToRupiah(row.fee, true, 2),
+            selector: row => row.fee_type === 100 ? convertToRupiah(row.fee, true, 2) : `${row.fee}%`,
         },
         {
             name: 'Settlement Fee',
             selector: row => convertToRupiah(row.fee_settle, true, 2),
             width: "150px"
         },
-        {
-            name: "Minimal Topup Alokasi",
-            selector: (row) => convertToRupiah(row.mpartfitur_min_topup_allocation, true, 2),
-            width: "200px",
-            wrap: true
-        },
+        // {
+        //     name: "Minimal Topup Alokasi",
+        //     selector: (row) => convertToRupiah(row.mpartfitur_min_topup_allocation, true, 2),
+        //     width: "200px",
+        //     wrap: true
+        // },
         {
             name: "Minimal Transaksi",
             selector: (row) => convertToRupiah(row.mpartfitur_min_amount_trx, true, 2),
@@ -334,7 +340,7 @@ function DetailPartner() {
         },
         {
             name: 'Aksi',
-            selector: row => row.icon,
+            selector: row => null,
             width: "130px"
         }
     ]
@@ -523,6 +529,27 @@ function DetailPartner() {
                             <thead></thead>
                             <tbody>
                                 <tr>
+                                    <td style={{width: 200}}>Is Charge Fee</td>
+                                    <td><Form.Check
+                                        type="switch"
+                                        id="custom-switch"
+                                        label={(detailPartner.mpartner_is_charge_fee === true) ? "True" : "False"}
+                                        checked={(detailPartner.mpartner_is_charge_fee === true) ? true : false}
+                                    /></td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{width: 200}}>Tipe Fee <span style={{color: "red"}}>*</span></td>
+                                    <td>
+                                        <Form.Select name='feeType' disabled className='input-text-user' style={{ display: "inline", cursor: "not-allowed" }} value={payment.feeType}>
+                                            <option defaultValue value={0}>Pilih Tipe Fee</option>
+                                            <option value={100}>Rupiah</option>
+                                            <option value={101}>Persentase</option>
+                                        </Form.Select>
+                                    </td>
+                                </tr>
+                                <br/>
+                                <tr>
                                     <td style={{width: 200}}>Fee <span style={{color: "red"}}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
@@ -532,11 +559,11 @@ function DetailPartner() {
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
-                                <tr>
+                                {/* <tr>
                                     <td style={{width: 200}}>Minimal Topup Alokasi <span style={{color: "red"}}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
-                                <br/>
+                                <br/> */}
                                 <tr>
                                     <td style={{width: 200}}>Minimal Transaksi <span style={{color: "red"}}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>

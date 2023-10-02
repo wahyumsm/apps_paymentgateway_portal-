@@ -90,12 +90,13 @@ export default () => {
       window.location.reload();
   } 
 
-  async function userAccessMenu(url, token) {
+  async function userAccessMenu(url, token, lang) {
     try {
       const auth = "Bearer " + token
         const headers = {
             'Content-Type':'application/json',
-            'Authorization' : auth
+            'Authorization' : auth,
+            'Accept-Language' : lang
       }
       const dataUserAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
       // console.log(dataUserAccessMenu, 'data access');
@@ -240,7 +241,7 @@ export default () => {
       const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         setRoleSession(userDetail.data.response_data.muser_role_id)
-        userAccessMenu("/Account/GetUserAccess", token)
+        userAccessMenu("/Account/GetUserAccess", token, language === null ? 'ID' : language.flagName)
       }
     } catch (error) {
       // console.log(error)

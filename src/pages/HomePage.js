@@ -90,6 +90,7 @@ import SettlementManual from './Settlement/SettlementManual';
 import RiwayatBalance from './RiwayatBalance/RiwayatBalance';
 import ExcludeSettlementManual from './Settlement/ExcludeSettlementManual';
 import ProsesSettlementManual from './Settlement/ProsesSettlementManual';
+import TransaksiTopUp from './TopUp/TransaksiTopUp';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -213,6 +214,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.SettlementManual.path} component={SettlementManual} />
     <RouteWithSidebar exact path={Routes.RiwayatBalance.path} component={RiwayatBalance} />
+    <RouteWithSidebar exact path={Routes.TransaksiTopup.path} component={TransaksiTopUp} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}
