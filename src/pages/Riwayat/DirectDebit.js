@@ -313,11 +313,11 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tdirectdebit_id, [language === null ? ind.waktu : language.waktu]: data[i].tdirectdebit_crtdt_format, [language === null ? ind.namaUser : language.namaUser]: data[i].mdirdebituser_fullname, [language === null ? ind.noHandphone : language.noHandphone]: data[i].mdirdebituser_mobile, [language === null ? ind.channelDirectDebit : language.channelDirectDebit]: data[i].mpaytype_name, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].tdirectdebit_partner_fee, [language === null ? ind.status : language.status]: data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_amount, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Biaya": data[i].tdirectdebit_total_fee, "Total Akhir": data[i].tdirectdebit_total_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -330,11 +330,11 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tdirectdebit_id, [language === null ? ind.waktu : language.waktu]: data[i].tdirectdebit_crtdt_format, [language === null ? ind.namaUser : language.namaUser]: data[i].mdirdebituser_fullname, [language === null ? ind.noHandphone : language.noHandphone]: data[i].mdirdebituser_mobile, [language === null ? ind.channelDirectDebit : language.channelDirectDebit]: data[i].mpaytype_name, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].tdirectdebit_partner_fee, [language === null ? ind.status : language.status]: data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_amount, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Biaya": data[i].tdirectdebit_total_fee, "Total Akhir": data[i].tdirectdebit_total_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -364,11 +364,11 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tdirectdebit_id, [language === null ? ind.waktu : language.waktu]: data[i].tdirectdebit_crtdt_format, [language === null ? ind.namaUser : language.namaUser]: data[i].mdirdebituser_fullname, [language === null ? ind.noHandphone : language.noHandphone]: data[i].mdirdebituser_mobile, [language === null ? ind.channelDirectDebit : language.channelDirectDebit]: data[i].mpaytype_name, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].tdirectdebit_partner_fee, [language === null ? ind.status : language.status]: data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_amount, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Biaya": data[i].tdirectdebit_total_fee, "Total Akhir": data[i].tdirectdebit_total_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -381,11 +381,11 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tdirectdebit_id, [language === null ? ind.waktu : language.waktu]: data[i].tdirectdebit_crtdt_format, [language === null ? ind.namaUser : language.namaUser]: data[i].mdirdebituser_fullname, [language === null ? ind.noHandphone : language.noHandphone]: data[i].mdirdebituser_mobile, [language === null ? ind.channelDirectDebit : language.channelDirectDebit]: data[i].mpaytype_name, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].tdirectdebit_partner_fee, [language === null ? ind.status : language.status]: data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_amount, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Biaya": data[i].tdirectdebit_total_fee, "Total Akhir": data[i].tdirectdebit_total_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -524,7 +524,7 @@ const RiwayatDirectDebit = () => {
         },
         {
             name: 'Total Akhir',
-            selector: row => convertToRupiah(row.tdirectdebit_amount, false, 0),
+            selector: row => convertToRupiah(row.tdirectdebit_total_amount, false, 0),
             width: "170px"
         },
         {

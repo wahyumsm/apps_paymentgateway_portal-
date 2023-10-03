@@ -764,7 +764,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt_format, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? ind.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? ind.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? ind.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -775,7 +775,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt_format, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? ind.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? ind.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? ind.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -804,7 +804,7 @@ function SettlementPage() {
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt_format, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? ind.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? ind.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? ind.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -815,7 +815,7 @@ function SettlementPage() {
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, "Waktu": data[i].tvasettl_crtdt_format, "Jenis Transaksi": data[i].mfitur_desc, "Jumlah": data[i].tvasettl_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? ind.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? ind.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? ind.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();

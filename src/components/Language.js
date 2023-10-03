@@ -406,7 +406,10 @@ export var ind = {
     placeholderTipePeriode: "Pilih Tipe Periode",
     periodeBuat: "Periode Buat",
     periodeProses: "Periode Proses",
-    waktuPembayaran: "Waktu Pembayaran"
+    waktuPembayaran: "Waktu Pembayaran",
+    biayaEwallet: "Biaya eWallet",
+    biayaPajak: "Biaya Pajak",
+    totalBiaya: "Total Biaya"
 }
 
 export var eng = {
@@ -813,7 +816,10 @@ export var eng = {
     placeholderTipePeriode: "Choose Period Type",
     periodeBuat: "Create Period",
     periodeProses: "Processing Period",
-    waktuPembayaran: "Payment Date"
+    waktuPembayaran: "Payment Date",
+    biayaEwallet: "eWallet Fee",
+    biayaPajak: "Tax",
+    totalBiaya: "Total Fee"
 }
 
 export var chn = {
@@ -1220,5 +1226,8 @@ export var chn = {
     placeholderTipePeriode: "选择期间类型",
     periodeBuat: "创建期间",
     periodeProses: "处理期限",
-    waktuPembayaran: "付款日期"
+    waktuPembayaran: "付款日期",
+    biayaEwallet: "电子钱包费用",
+    biayaPajak: "税",
+    totalBiaya: "总成本"
 }

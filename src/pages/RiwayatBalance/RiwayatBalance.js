@@ -173,7 +173,7 @@ function RiwayatBalance() {
                         if (userRole !== '102') {
                             dataExcel.push({ No: i + 1, "ID Partner": data[i].partner_id, "Nama Partner": data[i].subpartner_name, Waktu: convertSimpleTimeStamp(data[i].created_date), "Tipe Balance": data[i].type, "Balance Before": data[i].bal_before, Nominal: data[i].amount, "Balance After": data[i].bal_after, Deskripsi: data[i].description})
                         } else {
-                            dataExcel.push({ No: i + 1, Waktu: convertSimpleTimeStamp(data[i].created_date), "Tipe Balance": data[i].type, "Balance Before": data[i].bal_before, Nominal: data[i].amount, "Balance After": data[i].bal_after, Deskripsi: data[i].description})
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.waktu : language.waktu]: convertSimpleTimeStamp(data[i].created_date), [language === null ? ind.tipeSaldo : language.tipeSaldo]: data[i].type, [language === null ? ind.saldoSebelum : language.saldoSebelum]: data[i].bal_before, [language === null ? ind.nominal : language.nominal]: data[i].amount, [language === null ? ind.saldoSesudah : language.saldoSesudah]: data[i].bal_after, [language === null ? ind.deskripsi : language.deskripsi]: data[i].description})
                         }
                     }
                     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -196,7 +196,7 @@ function RiwayatBalance() {
                         if (userRole !== '102') {
                             dataExcel.push({ No: i + 1, "ID Partner": data[i].partner_id, "Nama Partner": data[i].subpartner_name, Waktu: convertSimpleTimeStamp(data[i].created_date), "Tipe Balance": data[i].type, "Balance Before": data[i].bal_before, Nominal: data[i].amount, "Balance After": data[i].bal_after, Deskripsi: data[i].description})
                         } else {
-                            dataExcel.push({ No: i + 1, Waktu: convertSimpleTimeStamp(data[i].created_date), "Tipe Balance": data[i].type, "Balance Before": data[i].bal_before, Nominal: data[i].amount, "Balance After": data[i].bal_after, Deskripsi: data[i].description})
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.waktu : language.waktu]: convertSimpleTimeStamp(data[i].created_date), [language === null ? ind.tipeSaldo : language.tipeSaldo]: data[i].type, [language === null ? ind.saldoSebelum : language.saldoSebelum]: data[i].bal_before, [language === null ? ind.nominal : language.nominal]: data[i].amount, [language === null ? ind.saldoSesudah : language.saldoSesudah]: data[i].bal_after, [language === null ? ind.deskripsi : language.deskripsi]: data[i].description})
                         }
                     }
                     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -321,7 +321,7 @@ function RiwayatBalance() {
             style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
         {
-            name:language === null ? ind.deskripsi : language.deskripsi,
+            name: language === null ? ind.deskripsi : language.deskripsi,
             selector: row => row.description,
             wrap: true,
             width: "175px"

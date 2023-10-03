@@ -94,9 +94,9 @@ function DetailSettlement() {
                 for (let i = 0; i < data.length; i++) {
                     if (userRole === '102') {
                         if (Number(settlementType) === 105) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvatrans_trx_id, [language === null ? ind.waktu : language.waktu]: data[i].tvatrans_crtdt_format, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].mbank_name, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].tvatrans_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
                         } else {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvatrans_trx_id, [language === null ? ind.waktu : language.waktu]: data[i].tvatrans_crtdt_format, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? ind.namaBank : language.namaBank]: data[i].mbank_name, [language === null ? ind.noVa : language.noVa]: data[i].tvatrans_va_number, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].tvatrans_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
                         }
                     } else {
                         if (Number(settlementType) === 105) {
@@ -117,9 +117,9 @@ function DetailSettlement() {
                 for (let i = 0; i < data.length; i++) {
                     if (userRole === '102') {
                         if (Number(settlementType) === 105) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvatrans_trx_id, [language === null ? ind.waktu : language.waktu]: data[i].tvatrans_crtdt_format, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].mbank_name, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].tvatrans_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
                         } else {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvatrans_trx_id, [language === null ? ind.waktu : language.waktu]: data[i].tvatrans_crtdt_format, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? ind.namaBank : language.namaBank]: data[i].mbank_name, [language === null ? ind.noVa : language.noVa]: data[i].tvatrans_va_number, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].tvatrans_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
                         }
                     } else {
                         if (Number(settlementType) === 105) {

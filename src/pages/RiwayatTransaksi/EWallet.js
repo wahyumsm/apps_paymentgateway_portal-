@@ -339,7 +339,7 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, Status: data[i].status })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? ind.waktu : language.waktu]: data[i].processDate, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? ind.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? ind.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? ind.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? ind.status : language.status]: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -350,7 +350,7 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, Status: data[i].status })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? ind.waktu : language.waktu]: data[i].processDate, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? ind.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? ind.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? ind.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? ind.status : language.status]: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -379,7 +379,7 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, Status: data[i].status })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? ind.waktu : language.waktu]: data[i].processDate, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? ind.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? ind.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? ind.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? ind.status : language.status]: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -390,7 +390,7 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, Status: data[i].status })
+                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? ind.waktu : language.waktu]: data[i].processDate, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? ind.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? ind.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? ind.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? ind.status : language.status]: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -563,21 +563,21 @@ function EWallet() {
             width: "173px"
         },
         {
-            name: 'Biaya eWallet',
+            name: language === null ? ind.biayaEwallet : language.biayaEwallet,
             selector: row => convertToRupiah(row.ewalletFee, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "140px"
         },
         {
-            name: 'Biaya Pajak',
+            name: language === null ? ind.biayaPajak : language.biayaPajak,
             selector: row => convertToRupiah(row.feeTax, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "140px"
         },
         {
-            name: 'Total Biaya',
+            name: language === null ? ind.totalBiaya : language.totalBiaya,
             selector: row => convertToRupiah(row.totalAmount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
