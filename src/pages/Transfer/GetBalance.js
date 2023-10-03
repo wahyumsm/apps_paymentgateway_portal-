@@ -51,7 +51,10 @@ const GetBalance = () => {
             $('#transferonlinespan').removeClass('menu-detail-akun-span-active')
         } else if(isTabs === "mutasi"){
             setIsGetBalance(isTabs)
-            setBankType("")
+            setInputGetBalance({
+                bankType: "",
+                pinNumber: ""
+            })
             setDataGetBalance({})
             setDataBankBalance({})
             setInputDataBif({
@@ -80,7 +83,10 @@ const GetBalance = () => {
             $('#transferonlinespan').removeClass('menu-detail-akun-span-active')
         } else if(isTabs === "transferBif"){
             setIsGetBalance(isTabs)
-            setBankType("")
+            setInputGetBalance({
+                bankType: "",
+                pinNumber: ""
+            })
             setDataGetBalance({})
             setDataBankBalance({})
             setBankTypeMutasi("")
@@ -105,7 +111,10 @@ const GetBalance = () => {
             $('#transferonlinespan').removeClass('menu-detail-akun-span-active')
         } else {
             setIsGetBalance(isTabs)
-            setBankType("")
+            setInputGetBalance({
+                bankType: "",
+                pinNumber: ""
+            })
             setDataGetBalance({})
             setDataBankBalance({})
             setBankTypeMutasi("")
@@ -133,20 +142,31 @@ const GetBalance = () => {
 
     /* FUNCTION TAB GET BALANCE */
 
-    const [bankType, setBankType] = useState("")
+    // const [bankType, setBankType] = useState("")
+    // const [pinNumber, setPinNumber] = useState("")
+    const [inputGetBalance, setInputGetBalance] = useState({
+        bankType: "",
+        pinNumber: ""
+    })
     const [dataGetBalance, setDataGetBalance] = useState({})
     const [dataBankBalance, setDataBankBalance] = useState({})
     console.log(dataGetBalance, "dataGetBalance");
     console.log(dataBankBalance, "dataBankBalance");
 
     function handleChange(e) {
-        setBankType(e.target.value)
+        setInputGetBalance({
+            ...inputGetBalance,
+            [e.target.name] : e.target.value
+        })
     }
 
-    async function GetBalanceTransfer(bankType) {
+    console.log(inputGetBalance.pinNumber, "inputGetBalance.pinNumber");
+    console.log(inputGetBalance.bankType, "inputGetBalance.bankType");
+
+    async function GetBalanceTransfer(bankType, pinNumber) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"bankType": "${bankType}"}`)
+            const dataParams = encryptData(`{"bankType": "${bankType}", "PinNumber": "${pinNumber}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -165,6 +185,16 @@ const GetBalance = () => {
           // console.log(error)
           history.push(errorCatch(error.response.status))
         }
+    }
+
+    function resetButtonHandle() {
+        setInputGetBalance({
+            ...inputGetBalance,
+            bankType: "",
+            pinNumber: ""
+        })
+        setDataGetBalance({})
+        setDataBankBalance({})
     }
 
     /* FUNCTION TAB MUTASI */
@@ -325,10 +355,10 @@ const GetBalance = () => {
                 {
                     isGetBalance === "getBalance" ? (
                         <>
-                            <Row className='pb-4'>
-                                <Col xs={6} className="d-flex justify-content-between align-items-center">
+                            <Row className=''>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <div style={{ width: "30%" }}>Nama Bank <span style={{ color: "red" }}>*</span></div>
-                                    <Form.Select name="statusDanaMasuk" className='input-text-ez me-3' style={{ display: "inline" }} value={bankType} onChange={(e) => handleChange(e)}>
+                                    <Form.Select name="bankType" className='input-text-ez me-3' style={{ display: "inline" }} value={inputGetBalance.bankType} onChange={(e) => handleChange(e)}>
                                         <option defaultChecked disabled value="">Pilih Bank</option>
                                         <option value={"014"}>Bank BCA</option>
                                         <option value={"022"}>Bank CIMB Niaga</option>
@@ -338,16 +368,37 @@ const GetBalance = () => {
                                         <option value={"002"}>Bank BRI</option>
                                         <option value={"009"}>Bank BNI</option>
                                     </Form.Select>
-                                    <button
-                                        className='btn-ez-on'
-                                        style={{ width: "40%", padding: "0px 15px" }}
-                                        onClick={() => GetBalanceTransfer(bankType)}
-                                    >
-                                        Terapkan
-                                    </button>
+                                </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <div style={{ width: "30%" }}>PIN <span style={{ color: "red" }}>*</span></div>
+                                    <Form.Control name="pinNumber" className='input-text-user' type="text" placeholder="Masukkan PIN" value={inputGetBalance.pinNumber} onChange={(e) => handleChange(e)}  />
                                 </Col>
                             </Row>
-                            <div className='d-flex justify-content-start align-items-center'>
+                            <Row className='mt-4'>
+                                <Col xs={5}>
+                                    <Row>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => GetBalanceTransfer(inputGetBalance.bankType, inputGetBalance.pinNumber)}
+                                                className={(inputGetBalance.bankType.length !== 0 && inputGetBalance.pinNumber.length !== 0) ? 'btn-ez-on' : "btn-ez"}
+                                                disabled={inputGetBalance.bankType.length === 0 || inputGetBalance.pinNumber.length === 0}
+                                            >
+                                                Terapkan
+                                            </button>
+                                        </Col>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => resetButtonHandle()}
+                                                className={(inputGetBalance.bankType.length !== 0 && inputGetBalance.pinNumber.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={inputGetBalance.bankType.length === 0 || inputGetBalance.pinNumber.length === 0}
+                                            >
+                                                Atur Ulang
+                                            </button>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <div className='d-flex justify-content-start align-items-center mt-4'>
                                 <div style={{ width: "8rem" }}>Saldo :</div>
                                 <strong>{Object.keys(dataGetBalance).length === 0 ? "-" : convertToRupiah(dataGetBalance.balanceAmount)}</strong>
                             </div>
