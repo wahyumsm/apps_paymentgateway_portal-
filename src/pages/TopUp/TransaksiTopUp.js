@@ -33,6 +33,7 @@ function TransaksiTopUp() {
     const [dateRangeTransaksiTopup, setDateRangeTransaksiTopup] = useState([])
     const [showResponseLog, setShowResponseLog] = useState(false)
     const [responseLogData, setResponseLogData] = useState("")
+    const [eWalletBalance, setEWalletBalance] = useState([])
 
     function responseLogHandler(responseLogData) {
         setResponseLogData(responseLogData)
@@ -88,7 +89,13 @@ function TransaksiTopUp() {
                 'Authorization' : auth
             }
             const eWalletBalanceData = await axios.post(BaseURL + "/Report/GetMerchantEWalletBalance", {data: ""}, {headers: headers})
-            console.log(eWalletBalanceData, 'eWalletBalanceData');
+            // console.log(eWalletBalanceData, 'eWalletBalanceData');
+            if (eWalletBalanceData.status === 200 && eWalletBalanceData.data.response_code === 200 && eWalletBalanceData.data.response_new_token.length === 0) {
+                setEWalletBalance(eWalletBalanceData.data.response_data)
+            } else if (eWalletBalanceData.status === 200 && eWalletBalanceData.data.response_code === 200 && eWalletBalanceData.data.response_new_token.length !== 0) {
+                setUserSession(eWalletBalanceData.data.response_new_token)
+                setEWalletBalance(eWalletBalanceData.data.response_data)
+            }
         } catch (error) {
             // console.log(error);
             history.push(errorCatch(error.response.status))
@@ -356,24 +363,24 @@ function TransaksiTopUp() {
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Transaksi Topup</span>
-            {/* <Row className='main-content mt-4'>
-                <Col lg={3}>
-                    <div className="card-information base-content-beranda">
-                        <p className="p-info">Saldo OVO</p>
-                        <p className="p-amount">{0}</p>
-                    </div>
-                </Col>
-                <Col lg={3}>
-                    <div className="card-information base-content-beranda">
-                        <p className="p-info">Saldo DANA</p>
-                        <p className="p-amount">{0}</p>
-                    </div>
-                </Col>
-            </Row> */}
+            <Row className='main-content mt-4 mb-4'>
+                {
+                    eWalletBalance.length !== 0 ?
+                    eWalletBalance.map(item => {
+                        return(
+                            <Col lg={3}>
+                                <div className="card-information base-content-beranda">
+                                    <p className="p-info">Saldo {item.mpaytype_name}</p>
+                                    <p className="p-amount">{convertToRupiah(item.mpaytypebal_balance, true, 2)}</p>
+                                </div>
+                            </Col>
+                        )
+                    }) : null
+                }
+            </Row>
             <div className="head-title">
                 <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Riwayat Transaksi Topup</h2>
             </div>
-            {/* <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Riwayat Dana Masuk</h2> */}
             <div className='base-content mt-3'>
                 <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Row className='mt-4'>
