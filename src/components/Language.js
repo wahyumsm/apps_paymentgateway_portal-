@@ -121,7 +121,7 @@ export var ind = {
     lihatPanduan: "Lihat Panduan",
     unduhTemplate: "Unduh Template",
     letakkanFile: "Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.",
-    unggahFile: "Uanggah File",
+    unggahFile: "Unggah File",
     kontenTidakSesuai: "Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement",
     gantiFile: "Ganti File",
     formatFileExcel: "File yang digunakan harus berformat Excel",

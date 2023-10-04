@@ -1069,7 +1069,7 @@ const VaDanPaymentLink = () => {
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <span>{language === null ? eng.jenisTransaksi : language.jenisTransaksi}</span>
                                     <Form.Select name='fiturDanaMasuk' onChange={(e) => handleChange(e)} value={inputHandle.fiturDanaMasuk} className='input-text-ez' style={{ display: "inline" }}>
-                                    <option defaultValue value={0}>{language === null ? eng.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
+                                    <option defaultValue disabled value={0}>{language === null ? eng.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
                                     <option value={104}>{language === null ? eng.paymentLink : language.paymentLink}</option>
                                     <option value={100}>{language === null ? eng.virtualAccount : language.virtualAccount}</option>
                                     </Form.Select>
@@ -1096,7 +1096,7 @@ const VaDanPaymentLink = () => {
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <span className="me-2">{language === null ? eng.tipePeriode : language.tipePeriode}</span>
                                     <Form.Select name='tipePeriode' className='input-text-riwayat ms-1' style={{ display: "inline" }} value={inputHandle.tipePeriode} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={0}>{language === null ? eng.placeholderTipePeriode : language.placeholderTipePeriode}</option>
+                                        <option defaultValue disabled value={0}>{language === null ? eng.placeholderTipePeriode : language.placeholderTipePeriode}</option>
                                         <option value={1}>{language === null ? eng.periodeBuat : language.periodeBuat}</option>
                                         <option value={2}>{language === null ? eng.periodeProses : language.periodeProses}</option>
                                     </Form.Select>
@@ -1245,7 +1245,7 @@ const VaDanPaymentLink = () => {
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Tipe Periode</span>
                                     <Form.Select name='tipePeriodeAdmin' className='input-text-riwayat ms-4' style={{ display: "inline" }} value={inputHandleAdmin.tipePeriodeAdmin} onChange={(e) => handleChangeAdmin(e)}>
-                                        <option defaultValue value={0}>Pilih Tipe Periode</option>
+                                        <option defaultValue disabled value={0}>Pilih Tipe Periode</option>
                                         <option value={1}>Periode Buat</option>
                                         <option value={2}>Periode Proses</option>
                                     </Form.Select>
@@ -1284,7 +1284,7 @@ const VaDanPaymentLink = () => {
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Jenis Transaksi</span>
                                     <Form.Select name='fiturDanaMasukAdmin' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandleAdmin.fiturDanaMasukAdmin} onChange={(e) => handleChangeAdmin(e)}>
-                                        <option defaultValue value={0}>Pilih Jenis Transaksi</option>
+                                        <option defaultValue disabled value={0}>Pilih Jenis Transaksi</option>
                                         <option value={104}>Payment Link</option>
                                         <option value={100}>Virtual Account</option>
                                     </Form.Select>
