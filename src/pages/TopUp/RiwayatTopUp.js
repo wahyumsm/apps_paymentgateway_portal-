@@ -3,7 +3,7 @@ import { Col, Form, Image, Row, Container,
     InputGroup,
     Modal,
     Button, Table, Toast } from '@themesberg/react-bootstrap'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
 import Pagination from 'react-js-pagination'
 import { Link, useHistory } from 'react-router-dom'
@@ -23,6 +23,7 @@ import ReactSelect, { components } from 'react-select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { eng } from '../../components/Language'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 function RiwayatTopUp() {
 
@@ -45,6 +46,7 @@ function RiwayatTopUp() {
     const [dataListPartner, setDataListPartner] = useState([])
     const [ topUpResult, setTopUpResult ] = useState({})
     const [showStatusTopup, setShowStatusTopup] = useState(false)
+    const [copied, setCopied] = useState(false);
     const [inputHandle, setInputHandle] = useState({
         idTransaksiRiwayatTopUp: "",
         // namaPartnerRiwayatTopUp: "",
@@ -109,6 +111,25 @@ function RiwayatTopUp() {
             // console.log(error);
         }
     };
+
+    
+    const onCopyRek = React.useCallback(() => {
+        setCopied(true);
+    }, [])
+
+    const onClickRek = useCallback(({target: {innerText}}) => {
+        // console.log(`Clicked on "${innerText}"!`);
+        alert('Text copied');
+    }, [])
+
+    const onCopyPrice = React.useCallback(() => {
+        setCopied(true);
+      }, [])
+    
+    const onClickPrice = useCallback(({target: {innerText}}) => {
+        // console.log(`Clicked on "${innerText}"!`);
+        alert('Text copied');
+    }, [])
 
     async function listPartner() {
         try {
@@ -866,7 +887,8 @@ function RiwayatTopUp() {
                                 <div onChange={copyHandler} id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{detailTopUp.no_rek}</div>
                                 </div>
                                 <div className="d-flex flex-column mt-3">
-                                <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div>
+                                {/* <div onClick={copyRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div> */}
+                                    <CopyToClipboard onCopy={onCopyRek} text={detailTopUp.no_rek}><div onClick={onClickRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div></CopyToClipboard>
                                 </div>
                             </div>
                             <div className="d-flex justify-content-between align-items-center mt-3">
@@ -875,7 +897,8 @@ function RiwayatTopUp() {
                                 <div onChange={copyHandler} id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(detailTopUp.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(detailTopUp.amount_transfer)}</span></div>
                                 </div>
                                 <div className="d-flex flex-column mt-3">
-                                <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div>
+                                    {/* <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div> */}
+                                    <CopyToClipboard onCopy={onCopyPrice} text={detailTopUp.amount_transfer}><div onClick={onClickPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div></CopyToClipboard>
                                 </div>
                             </div>
                             </Table>                

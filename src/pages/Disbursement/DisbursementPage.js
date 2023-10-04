@@ -982,7 +982,7 @@ function DisbursementPage() {
                                                     // console.log(el["Nominal Disbursement*"], 'el["Nominal Disbursement*"]');
                                                     // console.log(resultBankFee.mpartfitur_max_amount_trx, 'resultBankFee.mpartfitur_max_amount_trx');
                                                     objErrData.no = idx + 2
-                                                    objErrData.keterangan = `${language === null ? eng.kolomNominalDisburseMinNominal : language.kolomNominalDisburseMinNominal} ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
+                                                    objErrData.keterangan = `${language === null ? eng.kolomNominalDisburseMaksNominal : language.kolomNominalDisburseMaksNominal} ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
                                                     errData.push(objErrData)
                                                     objErrData = {}
                                                 } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] <= allBalance) {
