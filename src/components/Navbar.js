@@ -448,32 +448,29 @@ export default (props) => {
     }
   ]
 
-  // let routing = "https://localhost:3000/ezeepg#/ezeepg/"
-  let routing = "http://reactdev/dev3/#/dev3/"
-
   function inaLang () {
     // sessionStorage.removeItem('lang');
-    if (sessionStorage.getItem('lang') === null) {
-        sessionStorage.setItem('lang', JSON.stringify(ind));
-        // history.push("/Riwayat Transaksi/va-dan-paylink")  
-        // history.push(0)
-        // setFlagLangCurrent('ind')
-        window.location.reload();
-    } else if (sessionStorage.getItem('lang') !== JSON.stringify(ind)) {
-        sessionStorage.setItem('lang', JSON.stringify(ind));
-        // history.push("/Riwayat Transaksi/va-dan-paylink")  
-        // history.push(0)
-        // setFlagLangCurrent('ind')
-        window.location.reload();
-    }
+    sessionStorage.setItem('lang', JSON.stringify(ind));
+    // history.push("/Riwayat Transaksi/va-dan-paylink")  
+    // history.push(0)
+    // setFlagLangCurrent('ind')
+    window.location.reload();
   }
 
   function engLang () {
+    if (sessionStorage.getItem('lang') === null) {
       sessionStorage.setItem('lang', JSON.stringify(eng));
-      // history.push("/Transaction Report/va-dan-paylink")  
+      // history.push("/Riwayat Transaksi/va-dan-paylink")  
       // history.push(0)
       // setFlagLangCurrent('eng')
       window.location.reload();
+    } else if (sessionStorage.getItem('lang') !== JSON.stringify(eng)) {
+        sessionStorage.setItem('lang', JSON.stringify(eng));
+        // history.push("/Transaction Report/va-dan-paylink")  
+        // history.push(0)
+        // setFlagLangCurrent('eng')
+        window.location.reload();
+    }
   }
 
   function chnLang () {
@@ -597,7 +594,7 @@ export default (props) => {
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                     <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
-                      <span className="mb-0 font-small">{language === null ? ind.saldoTersedia : language.saldoTersedia}</span>
+                      <span className="mb-0 font-small">{language === null ? eng.saldoTersedia : language.saldoTersedia}</span>
                       <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
                       <img
                         src={arrowDown}
@@ -634,7 +631,7 @@ export default (props) => {
                         style={{width: 160}}
                       >
                         <div className="pe-2">
-                          <img alt="" src={topUpSaldoIcon} /> {language === null ? ind.topUpSaldo : language.topUpSaldo}
+                          <img alt="" src={topUpSaldoIcon} /> {language === null ? eng.topUpSaldo : language.topUpSaldo}
                         </div>
                       </Dropdown.Item>
                       <Dropdown.Item
@@ -642,7 +639,7 @@ export default (props) => {
                         className="fw-bold"
                       >
                         <div className="pe-2">
-                          <img alt="" src={riwayatSaldoIcon} /> {language === null ? ind.riwayatTopUp : language.riwayatTopUp}
+                          <img alt="" src={riwayatSaldoIcon} /> {language === null ? eng.riwayatTopUp : language.riwayatTopUp}
                         </div>
                       </Dropdown.Item>
                       {/* <Dropdown.Item
@@ -721,7 +718,7 @@ export default (props) => {
                 {
                   (user_role === "102") &&
                   <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
-                    <img alt="" src={iconDetailAkun}/> {language === null ? ind.detailAkun : language.detailAkun}
+                    <img alt="" src={iconDetailAkun}/> {language === null ? eng.detailAkun : language.detailAkun}
                   </Dropdown.Item>
                 }
                 <Dropdown.Divider />
@@ -730,7 +727,7 @@ export default (props) => {
                   onClick={() => logoutHandler()}
                   className="fw-bold"
                 >
-                  <img alt="" src={logoutIcon} /> {language === null ? ind.logout : language.logout}
+                  <img alt="" src={logoutIcon} /> {language === null ? eng.logout : language.logout}
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -742,13 +739,13 @@ export default (props) => {
                     <div className="media d-flex align-items-center">
                       <Image
                         // src={language === "eng" ? flagEnRoundIcon : language === "chn" ? flagRrtRoundIcon : flagIdRoundIcon}
-                        src={language === null ? ind.flag : language.flag}
+                        src={language === null ? eng.flag : language.flag}
                         className="rounded-circle"
                         style={{ border: "1px solid #000000" }}
                       />
                       <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
                         <span className="mb-0 font-small fw-bold">
-                          {language === null ? ind.flagName : language.flagName}
+                          {language === null ? eng.flagName : language.flagName}
                         </span>
                         <img
                           src={arrowDown}
@@ -791,14 +788,14 @@ export default (props) => {
                 onClick={handleCloseModalTopUp}
               />
               <Modal.Title className="text-center fw-bold mt-3">
-                {language === null ? ind.topUpSaldo : language.topUpSaldo}
+                {language === null ? eng.topUpSaldo : language.topUpSaldo}
               </Modal.Title>
             </Col>
           </Modal.Header>
           <Modal.Body>
             <Form action="#">
               <Form.Group className="mb-3">
-                <Form.Label>{language === null ? ind.nominalTopUpSaldo : language.nominalTopUpSaldo}</Form.Label>
+                <Form.Label>{language === null ? eng.nominalTopUpSaldo : language.nominalTopUpSaldo}</Form.Label>
                 <CurrencyInput
                   className="input-text-user"
                   value={inputHandle.amounts === undefined ? 0 : inputHandle.amounts}
@@ -806,7 +803,7 @@ export default (props) => {
                   placeholder="Masukkan Nominal To Up Saldo"
                   groupSeparator={"."}
                   decimalSeparator={','}
-                  prefix={`${language === null ? ind.rp : language.rp} `}
+                  prefix={`${language === null ? eng.rp : language.rp} `}
                   allowDecimals={false}
                 />
                 {/* {nominalTopup ? 
@@ -851,7 +848,7 @@ export default (props) => {
                 }}
                 onClick={() => topUpConfirmation(inputHandle.amounts)}
               >
-                <FontAwesomeIcon style={{ marginRight: 10 }} /> {language === null ? ind.topUp : language.topUp}
+                <FontAwesomeIcon style={{ marginRight: 10 }} /> {language === null ? eng.topUp : language.topUp}
               </button>
             </div>
           </Modal.Body>
@@ -868,29 +865,29 @@ export default (props) => {
                 onClick={() => setShowModalKonfirmasiTopUp(false)}
               />
               <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
-                {language === null ? ind.selesaikanProsesTopUp : language.selesaikanProsesTopUp}
+                {language === null ? eng.selesaikanProsesTopUp : language.selesaikanProsesTopUp}
               </Modal.Title>
             </Col>            
           </Modal.Header>
           <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
-              <div className="text-center" style={{fontSize: "14px"}}>{language === null ? ind.selesaikanPembayaran : language.selesaikanPembayaran}</div> 
+              <div className="text-center" style={{fontSize: "14px"}}>{language === null ? eng.selesaikanPembayaran : language.selesaikanPembayaran}</div> 
               <div className="text-center mt-2">
                 <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={dateNow + countDown} daysInHours={true} /></span>
               </div>
               <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-start mt-2">
-                <div style={{ width: 90 }}>{language === null ? ind.batasAkhir : language.batasAkhir} :</div>
+                <div style={{ width: 90 }}>{language === null ? eng.batasAkhir : language.batasAkhir} :</div>
                 <div className="mx-2 fw-bold">{(topUpBalance.exp_date !== undefined) ? convertDateTimeStamp(topUpBalance.exp_date) + " WIB" : null}</div>
               </div>
               <div className="mt-4" style={{border: "1px solid #EBEBEB", borderRadius: "8px", padding: "10px"}}>
                 <Table className='detailSave'>
                   <div className="d-flex justify-content-between align-items-center">
-                    <div>{language === null ? ind.idTransaksi : language.idTransaksi}</div>
+                    <div>{language === null ? eng.idTransaksi : language.idTransaksi}</div>
                     <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{topUpBalance.id_transaksi}</div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
-                      <div style={{padding:"unset"}}>{language === null ? ind.metodePembayaran : language.metodePembayaran}</div>
-                      <div style={{padding:"unset"}} className="fw-bold mt-1">{language === null ? ind.transferBank : language.transferBank}</div>
+                      <div style={{padding:"unset"}}>{language === null ? eng.metodePembayaran : language.metodePembayaran}</div>
+                      <div style={{padding:"unset"}} className="fw-bold mt-1">{language === null ? eng.transferBank : language.transferBank}</div>
                     </div>
                     <div className="d-flex flex-column">
                       <div style={{padding:"unset"}} className="text-end"><img src={topUpBalance.metode_pembayaran} alt="bca" style={{width: "87px", height: "37px"}} /></div>
@@ -899,30 +896,30 @@ export default (props) => {
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
-                      <div style={{padding:"unset"}}>{language === null ? ind.noRek : language.noRek}</div>
+                      <div style={{padding:"unset"}}>{language === null ? eng.noRek : language.noRek}</div>
                       <div id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{topUpBalance.no_rek}</div>
                     </div>
                     <div className="d-flex flex-column mt-3">
-                      <CopyToClipboard onCopy={onCopyRek} text={topUpBalance.no_rek}><div onClick={onClickRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? ind.salin : language.salin}</span></div></CopyToClipboard>
+                      <CopyToClipboard onCopy={onCopyRek} text={topUpBalance.no_rek}><div onClick={onClickRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div></CopyToClipboard>
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
-                      <div style={{padding:"unset"}}>{language === null ? ind.nominalTransfer : language.nominalTransfer}</div>
+                      <div style={{padding:"unset"}}>{language === null ? eng.nominalTransfer : language.nominalTransfer}</div>
                       <div id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(topUpBalance.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(topUpBalance.amount_transfer)}</span></div>
                     </div>
                     <div className="d-flex flex-column mt-3">
-                      <CopyToClipboard onCopy={onCopyPrice} text={topUpBalance.amount_transfer}><div onClick={onClickPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? ind.salin : language.salin}</span></div></CopyToClipboard>
+                      <CopyToClipboard onCopy={onCopyPrice} text={topUpBalance.amount_transfer}><div onClick={onClickPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div></CopyToClipboard>
                     </div>
                   </div>
                 </Table>                
               </div>
               <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
                 <img src={noticeIcon} alt="notice" />
-                <div className="mx-2 text-left">{language === null ? ind.lakukanTransfer : language.lakukanTransfer} </div>
+                <div className="mx-2 text-left">{language === null ? eng.lakukanTransfer : language.lakukanTransfer} </div>
               </Table>
               <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>{language === null ? ind.mohonTunggu : language.mohonTunggu}... <FontAwesomeIcon icon={faSpinner} spin /></>) : language === null ? ind.sayaSudahTransfer : language.sayaSudahTransfer}</Button>
+                  <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>{language === null ? eng.mohonTunggu : language.mohonTunggu}... <FontAwesomeIcon icon={faSpinner} spin /></>) : language === null ? eng.sayaSudahTransfer : language.sayaSudahTransfer}</Button>
               </div>
           </Modal.Body>
         </Modal>
@@ -1033,7 +1030,7 @@ export default (props) => {
     {topUpResult.is_update === false ?
       <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
         <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
-          <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>{language === null ? ind.topUpSaldo : language.topUpSaldo} {convertToRupiah(inputHandle.amounts)} {language === null ? ind.berhasil : language.berhasil}</Toast.Body>
+          <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>{language === null ? eng.topUpSaldo : language.topUpSaldo} {convertToRupiah(inputHandle.amounts)} {language === null ? eng.berhasil : language.berhasil}</Toast.Body>
         </Toast>
       </div> :
       ""

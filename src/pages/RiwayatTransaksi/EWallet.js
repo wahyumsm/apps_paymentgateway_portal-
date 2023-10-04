@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Image} from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-// import { invoiceItems } from '../../data/tables';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
@@ -12,7 +11,7 @@ import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import ReactSelect, { components } from 'react-select';
-import { ind } from '../../components/Language';
+import { eng } from '../../components/Language';
 
 function EWallet() {
     const language = JSON.parse(sessionStorage.getItem('lang'))
@@ -109,10 +108,10 @@ function EWallet() {
     function handlePageChangeEWallet(page) {
         if (isFilterEWallet) {
             setActivePageEWallet(page)
-            filterRiwayatEWallet(page, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'ID' : language.flagName)
+            filterRiwayatEWallet(page, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'EN' : language.flagName)
         } else {
             setActivePageEWallet(page)
-            transaksiEwallet(page, language === null ? 'ID' : language.flagName)
+            transaksiEwallet(page, language === null ? 'EN' : language.flagName)
         }
     }
 
@@ -339,23 +338,23 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? ind.waktu : language.waktu]: data[i].processDate, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? ind.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? ind.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? ind.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? ind.status : language.status]: data[i].status })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? eng.waktu : language.waktu]: data[i].processDate, [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? eng.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? eng.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? eng.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? eng.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? eng.status : language.status]: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi eWallet.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiEwalletExcel : language.riwayatTransaksiEwalletExcel}.xlsx`);
                     } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {
                         setUserSession(dataExportFilter.data.response_new_token)
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? ind.waktu : language.waktu]: data[i].processDate, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? ind.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? ind.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? ind.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? ind.status : language.status]: data[i].status })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? eng.waktu : language.waktu]: data[i].processDate, [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? eng.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? eng.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? eng.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? eng.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? eng.status : language.status]: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi eWallet.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiEwalletExcel : language.riwayatTransaksiEwalletExcel}.xlsx`);
                     }
                 } catch (error) {
                     // console.log(error);
@@ -379,23 +378,23 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? ind.waktu : language.waktu]: data[i].processDate, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? ind.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? ind.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? ind.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? ind.status : language.status]: data[i].status })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? eng.waktu : language.waktu]: data[i].processDate, [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? eng.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? eng.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? eng.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? eng.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? eng.status : language.status]: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi eWallet.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiEwalletExcel : language.riwayatTransaksiEwalletExcel}.xlsx`);
                     } else if (dataExportEWallet.status === 200 && dataExportEWallet.data.response_code === 200 && dataExportEWallet.data.response_new_token.length !== 0) {
                         setUserSession(dataExportEWallet.data.response_new_token)
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? ind.waktu : language.waktu]: data[i].processDate, [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? ind.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? ind.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? ind.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? ind.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? ind.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? ind.status : language.status]: data[i].status })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].transID, [language === null ? eng.waktu : language.waktu]: data[i].processDate, [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].referenceNumber, [language === null ? eng.channelEwallet : language.channelEwallet]: data[i].ewalletName, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? eng.biayaEwallet : language.biayaEwallet]: convertToRupiah(data[i].ewalletFee, true, 2), [language === null ? eng.biayaPajak : language.biayaPajak]: convertToRupiah(data[i].feeTax, true, 2), [language === null ? eng.totalBiaya : language.totalBiaya]: convertToRupiah(data[i].totalAmount, true, 2), [language === null ? eng.status : language.status]: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi eWallet.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiEwalletExcel : language.riwayatTransaksiEwalletExcel}.xlsx`);
                     }
                 } catch (error) {
                     // console.log(error);
@@ -415,7 +414,7 @@ function EWallet() {
             // history.push('/404');
             listPartner()
         }
-        transaksiEwallet(activePageEWallet, language === null ? 'ID' : language.flagName)
+        transaksiEwallet(activePageEWallet, language === null ? 'EN' : language.flagName)
     }, [access_token, user_role])
     
     const columns = [
@@ -518,13 +517,13 @@ function EWallet() {
     ];
     const columnsPartner = [
         {
-            name: language === null ? ind.no : language.no,
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             wrap: true,
             maxWidth: 'fit-content !important'
         },
         {
-            name: language === null ? ind.idTransaksi : language.idTransaksi,
+            name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.transID,
             width: "180px",
             wrap: true,
@@ -532,7 +531,7 @@ function EWallet() {
             // sortable: true
         },
         {
-            name: language === null ? ind.waktu : language.waktu,
+            name: language === null ? eng.waktu : language.waktu,
             selector: row => row.processDate,
             // sortable: true,          
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
@@ -540,7 +539,7 @@ function EWallet() {
             wrap: true
         },
         {
-            name: language === null ? ind.partnerTransId : language.partnerTransId,
+            name: language === null ? eng.partnerTransId : language.partnerTransId,
             selector: row => row.referenceNumber,
             // sortable: true,          
             wrap: true,
@@ -548,7 +547,7 @@ function EWallet() {
             // width: "150px",
         },
         {
-            name: language === null ? ind.channelEwallet : language.channelEwallet,
+            name: language === null ? eng.channelEwallet : language.channelEwallet,
             selector: row => row.ewalletName,
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", },
@@ -556,35 +555,35 @@ function EWallet() {
             width: "160px",
         },
         {
-            name: language === null ? ind.nominalTransaksi : language.nominalTransaksi,
+            name: language === null ? eng.nominalTransaksi : language.nominalTransaksi,
             selector: row => convertToRupiah(row.amount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
         },
         {
-            name: language === null ? ind.biayaEwallet : language.biayaEwallet,
+            name: language === null ? eng.biayaEwallet : language.biayaEwallet,
             selector: row => convertToRupiah(row.ewalletFee, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "140px"
         },
         {
-            name: language === null ? ind.biayaPajak : language.biayaPajak,
+            name: language === null ? eng.biayaPajak : language.biayaPajak,
             selector: row => convertToRupiah(row.feeTax, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
-            width: "140px"
+            width: language === null || language.flagName === "EN" || language.flagName === "CN" ? "110px" : "140px"
         },
         {
-            name: language === null ? ind.totalBiaya : language.totalBiaya,
+            name: language === null ? eng.totalBiaya : language.totalBiaya,
             selector: row => convertToRupiah(row.totalAmount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
         },
         {
-            name: language === null ? ind.status : language.status,
+            name: language === null ? eng.status : language.status,
             selector: row => row.status,
             width: "150px",
             // sortable: true,
@@ -654,19 +653,19 @@ function EWallet() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'><Link to={"/"}>{user_role !== "102" ? "Beranda" : (language === null ? ind.laporan : language.laporan)}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.riwayat : language.riwayat}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.collectionEwallet : language.collectionEwallet}</span>
+            <span className='breadcrumbs-span'><Link to={"/"}>{user_role !== "102" ? "Beranda" : (language === null ? eng.laporan : language.laporan)}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.riwayat : language.riwayat}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.collectionEwallet : language.collectionEwallet}</span>
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? ind.riwayat : language.riwayat}</h2>
+                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? eng.riwayat : language.riwayat}</h2>
             </div>
             <div className='main-content'>
                 <div className='riwayat-dana-masuk-div mt-4'>
-                    <span className='mt-4' style={{fontWeight: 600}}>{language === null ? ind.collectionEwallet : language.collectionEwallet}</span>
+                    <span className='mt-4' style={{fontWeight: 600}}>{language === null ? eng.collectionEwallet : language.collectionEwallet}</span>
                     <div className='base-content my-3'>
-                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? ind.filter : language.filter}</span>
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? eng.filter : language.filter}</span>
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                <span>{language === null ? ind.idTransaksi : language.idTransaksi}</span>
-                                <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiEWallet} name="idTransaksiEWallet" type='text'className='input-text-riwayat' placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
+                                <span>{language === null ? eng.idTransaksi : language.idTransaksi}</span>
+                                <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiEWallet} name="idTransaksiEWallet" type='text'className='input-text-riwayat' placeholder={language === null ? eng.placeholderIdTrans : language.placeholderIdTrans}/>
                             </Col>
                             {
                                 user_role !== "102" ?
@@ -688,9 +687,9 @@ function EWallet() {
                                     </div>
                                 </Col> :
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <span>{language === null ? ind.channel : language.channel}</span>
+                                    <span>{language === null ? eng.channel : language.channel}</span>
                                     <Form.Select name='channelEWallet' className='input-text-riwayat' style={{ display: "inline" }} value={inputHandle.channelEWallet} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={0}>{language === null ? ind.channelEwallet : language.channelEwallet}</option>
+                                        <option defaultValue value={0}>{language === null ? eng.channelEwallet : language.channelEwallet}</option>
                                         <option value={1}>DANA</option>
                                         <option value={2}>OVO</option>
                                         <option value={3}>GOPAY</option>
@@ -698,31 +697,31 @@ function EWallet() {
                                 </Col>
                             }
                             <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                <span>{language === null ? ind.partnerTransId : language.partnerTransId}</span>
-                                <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdEWallet} name="partnerTransIdEWallet" type='text'className='input-text-riwayat ms-2' placeholder={language === null ? ind.placeholderPartnerTransId : language.placeholderPartnerTransId}/>
+                                <span>{language === null ? eng.partnerTransId : language.partnerTransId}</span>
+                                <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdEWallet} name="partnerTransIdEWallet" type='text'className='input-text-riwayat ms-2' placeholder={language === null ? eng.placeholderPartnerTransId : language.placeholderPartnerTransId}/>
                             </Col>
                         </Row>
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: (showDateEWallet === "none") ? "33%" : "33%" }}>
-                                <span style={{ marginRight: 40 }}>{language === null ? ind.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
+                                <span style={{ marginRight: 40 }}>{language === null ? eng.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeEWallet' className="input-text-riwayat ms-3" value={inputHandle.periodeEWallet} onChange={(e) => handleChangePeriodeTransfer(e)}>
-                                    <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
-                                    <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
-                                    <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
-                                    <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
-                                    <option value={5}>{language === null ? ind.bulanIni : language.bulanIni}</option>
-                                    <option value={6}>{language === null ? ind.bulanKemarin : language.bulanKemarin}</option>
-                                    <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
+                                    <option defaultChecked disabled value={0}>{language === null ? eng.pilihPeriode : language.pilihPeriode}</option>
+                                    <option value={2}>{language === null ? eng.hariIni : language.hariIni}</option>
+                                    <option value={3}>{language === null ? eng.kemarin : language.kemarin}</option>
+                                    <option value={4}>{language === null ? eng.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                    <option value={5}>{language === null ? eng.bulanIni : language.bulanIni}</option>
+                                    <option value={6}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
+                                    <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                 </Form.Select>                            
                             </Col>
                             <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                <span style={{ marginRight: 41 }}>{language === null ? ind.status : language.status}</span>
+                                <span style={{ marginRight: 41 }}>{language === null ? eng.status : language.status}</span>
                                 <Form.Select name="statusEWallet" className='input-text-riwayat' style={{ display: "inline" }} value={inputHandle.statusEWallet} onChange={(e) => handleChange(e)}>
-                                    <option defaultChecked disabled value="">{language === null ? ind.placeholderStatus : language.placeholderStatus}</option>
-                                    <option value={2}>{language === null ? ind.berhasil : language.berhasil}</option>
-                                    <option value={1}>{language === null ? ind.dalamProses : language.dalamProses}</option>
-                                    <option value={7}>{language === null  ? ind.menungguPembayaran : language.menungguPembayaran}</option>
-                                    <option value={9}>{language === null ? ind.kadaluwarsa : language.kadaluwarsa}</option>
+                                    <option defaultChecked disabled value="">{language === null ? eng.placeholderStatus : language.placeholderStatus}</option>
+                                    <option value={2}>{language === null ? eng.berhasil : language.berhasil}</option>
+                                    <option value={1}>{language === null ? eng.dalamProses : language.dalamProses}</option>
+                                    <option value={7}>{language === null  ? eng.menungguPembayaran : language.menungguPembayaran}</option>
+                                    <option value={9}>{language === null ? eng.kadaluwarsa : language.kadaluwarsa}</option>
                                 </Form.Select>
                             </Col>
                             {
@@ -753,11 +752,11 @@ function EWallet() {
                                 <Row>
                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterRiwayatEWallet(1, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'ID' : language.flagName)}
+                                            onClick={() => filterRiwayatEWallet(1, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, 0, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'EN' : language.flagName)}
                                             className={(inputHandle.periodeEWallet !== 0 || dateRangeEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.idTransaksiEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.statusEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedAgenEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.partnerTransIdEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedBankEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.fiturEWallet.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeEWallet === 0 || inputHandle.periodeEWallet === 0 && inputHandle.idTransaksiEWallet.length === 0 || inputHandle.periodeEWallet === 0 && inputHandle.statusEWallet.length === 0 || inputHandle.periodeEWallet === 0 && selectedAgenEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.partnerTransIdEWallet.length === 0 | inputHandle.periodeEWallet === 0 && selectedBankEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.fiturEWallet.length === 0}
                                         >
-                                            {language === null ? ind.terapkan : language.terapkan}
+                                            {language === null ? eng.terapkan : language.terapkan}
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
@@ -766,7 +765,7 @@ function EWallet() {
                                             className={(inputHandle.periodeEWallet || dateRangeEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.idTransaksiEWallet.length !== 0 || dateRangeEWallet.length !== 0 && inputHandle.statusEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedAgenEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.partnerTransIdEWallet.length !== 0 || dateRangeEWallet.length !== 0 && selectedBankEWallet[0].value !== undefined || dateRangeEWallet.length !== 0 && inputHandle.fiturEWallet.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                             disabled={inputHandle.periodeEWallet === 0 || inputHandle.periodeEWallet === 0 && inputHandle.idTransaksiEWallet.length === 0 || inputHandle.periodeEWallet === 0 && inputHandle.statusEWallet.length === 0 || inputHandle.periodeEWallet === 0 && selectedAgenEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.partnerTransIdEWallet.length === 0 || inputHandle.periodeEWallet === 0 && selectedBankEWallet[0].value === undefined || inputHandle.periodeEWallet === 0 && inputHandle.fiturEWallet.length === 0}
                                         >
-                                            {language === null ? ind.aturUlang : language.aturUlang}
+                                            {language === null ? eng.aturUlang : language.aturUlang}
                                         </button>
                                     </Col>
                                 </Row>
@@ -775,7 +774,7 @@ function EWallet() {
                         {
                             dataRiwayatEWallet.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link onClick={() => ExportReportTransferEWalletHandler(isFilterEWallet, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'ID' : language.flagName)} className="export-span">{language === null ? ind.export : language.export}</Link>
+                                <Link onClick={() => ExportReportTransferEWalletHandler(isFilterEWallet, inputHandle.statusEWallet, inputHandle.idTransaksiEWallet, selectedPartnerEWallet.length !== 0 ? selectedPartnerEWallet[0].value : "", inputHandle.periodeEWallet, dateRangeEWallet, inputHandle.partnerTransIdEWallet, inputHandle.channelEWallet, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
@@ -786,11 +785,11 @@ function EWallet() {
                                 highlightOnHover
                                 progressPending={pendingTransfer}
                                 progressComponent={<CustomLoader />}
-                                noDataComponent={user_role === "102" && (language === null ? ind.tidakAdaData : language.tidakAdaData)}
+                                noDataComponent={user_role === "102" && (language === null ? eng.tidakAdaData : language.tidakAdaData)}
                             />
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                        <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageEWallet}</div>
+                        <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageEWallet}</div>
                             <Pagination
                                 activePage={activePageEWallet}
                                 itemsCountPerPage={pageNumberEWallet.row_per_page}

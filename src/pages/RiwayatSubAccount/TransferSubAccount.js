@@ -20,7 +20,7 @@ import FilterSubAccount from '../../components/FilterSubAccount'
 import Countdown from 'react-countdown'
 import encryptData from '../../function/encryptData'
 import CurrencyInput from 'react-currency-input-field'
-import { ind } from '../../components/Language'
+import { eng } from '../../components/Language'
 
 const TransferSubAccount = () => {
 
@@ -89,13 +89,13 @@ const TransferSubAccount = () => {
 
     const subHeaderComponentMemoBank = useMemo(() => {
         return (
-            <FilterSubAccount filterText={filterTextBank} onFilter={e => setFilterTextBank(e.target.value)} title={language === null ? ind.cariDaftarBank : language.cariDaftarBank} placeholder={language === null ? ind.placeholderNamaKodeBank : language.placeholderNamaKodeBank} />
+            <FilterSubAccount filterText={filterTextBank} onFilter={e => setFilterTextBank(e.target.value)} title={language === null ? eng.cariDaftarBank : language.cariDaftarBank} placeholder={language === null ? eng.placeholderNamaKodeBank : language.placeholderNamaKodeBank} />
         );	}, [filterTextBank]
     );
 
     const subHeaderComponentMemoRekening = useMemo(() => {
         return (
-            <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title={language === null ? ind.cariDaftarBank : language.cariDaftarBank} placeholder={language === null ? ind.placeholderNamaKodeBank : language.placeholderNamaKodeBank} />
+            <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title={language === null ? eng.cariDaftarBank : language.cariDaftarBank} placeholder={language === null ? eng.placeholderNamaKodeBank : language.placeholderNamaKodeBank} />
         );	}, [filterTextRekening]
     );
 
@@ -197,16 +197,16 @@ const TransferSubAccount = () => {
 
     const columnsBank = [
         {
-            name: language === null ? ind.no : language.no,
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: language === null ? ind.namaBank : language.namaBank,
+            name: language === null ? eng.namaBank : language.namaBank,
             selector: row => row.mbank_name,
         },
         {
-            name: language === null ? ind.kodeBank : language.kodeBank,
+            name: language === null ? eng.kodeBank : language.kodeBank,
             selector: row => row.mbank_code,
             width: "150px"
         },
@@ -214,20 +214,20 @@ const TransferSubAccount = () => {
 
     const columns = [
         {
-            name: language === null ? ind.no : language.no,
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: language === null ? ind.namaPemilikRek : language.namaPemilikRek,
+            name: language === null ? eng.namaPemilikRek : language.namaPemilikRek,
             selector: row => row.moffshorebankacclist_name,
         },
         {
-            name: language === null ? ind.noRek : language.noRek,
+            name: language === null ? eng.noRek : language.noRek,
             selector: row => row.moffshorebankacclist_number,
         },
         {
-            name: language === null ? ind.namaBank : language.namaBank,
+            name: language === null ? eng.namaBank : language.namaBank,
             selector: row => row.mbank_name,
         },
     ]
@@ -546,15 +546,15 @@ const TransferSubAccount = () => {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.subAccountBank : language.subAccountBank} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{language === null ? ind.transfer : language.transfer}</span> 
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.subAccountBank : language.subAccountBank} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{language === null ? eng.transfer : language.transfer}</span> 
             <div className="head-title mt-3 mb-3">
-                <div classN ame="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? ind.transfer : language.transfer}</div>
+                <div classN ame="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? eng.transfer : language.transfer}</div>
             </div>
             {
                 listAkunPartner.length !== 0 ?
                 <>
                     <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "50%" }}>
-                        <div className="mb-3">{language === null ? ind.pilihAkun : language.pilihAkun}</div>
+                        <div className="mb-3">{language === null ? eng.pilihAkun : language.pilihAkun}</div>
                         <Form.Select name="akunPartner" value={inputHandle.akunPartner} onChange={(e) => handleChangeTransfer(e, listAkunPartner)}>
                             {listAkunPartner.map((item, idx) => {
                                 return (
@@ -566,24 +566,24 @@ const TransferSubAccount = () => {
                         </Form.Select>
                     </div>
                     <div className="head-title">
-                        <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? ind.rekTujuan : language.rekTujuan}</div>
+                        <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? eng.rekTujuan : language.rekTujuan}</div>
                     </div>
                     <div className='base-content-custom px-3 pt-4 pb-4' >
                         <Row className='mt-1 align-items-center'>
                             <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                                {language === null ? ind.pilihBank : language.pilihBank} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.pilihBank : language.pilihBank} <span style={{ color: "red" }}>*</span>
                             </Col>
                             <Col xs={10} className="position-relative d-flex justify-content-between align-items-center" style={{ cursor: "pointer" }} onClick={() => setShowBank(true)}>
-                                <input style={{ cursor: "pointer", backgroundColor: "#FFFFFF" }} disabled name="bankName" value={inputData.bankName} className="input-text-user" placeholder={language === null ? ind.pilihBankTujuan : language.pilihBankTujuan}/>
+                                <input style={{ cursor: "pointer", backgroundColor: "#FFFFFF" }} disabled name="bankName" value={inputData.bankName} className="input-text-user" placeholder={language === null ? eng.pilihBankTujuan : language.pilihBankTujuan}/>
                                 <div className="position-absolute right-4" ><img src={chevron} alt="time" /></div>
                             </Col>
                         </Row>
                         <Row className='mt-3 align-items-center'>
                             <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                                {language === null ? ind.nomorRekTujuan : language.nomorRekTujuan} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.nomorRekTujuan : language.nomorRekTujuan} <span style={{ color: "red" }}>*</span>
                             </Col>
                             <Col xs={8}>
-                                <input type='number' name='noRek' value={inputDataRekening.noRek} onChange={(e) => handleChangeRek(e)} className="input-text-user" placeholder={language === null ? ind.placeholderNoRekTujuan : language.placeholderNoRekTujuan} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}/>
+                                <input type='number' name='noRek' value={inputDataRekening.noRek} onChange={(e) => handleChangeRek(e)} className="input-text-user" placeholder={language === null ? eng.placeholderNoRekTujuan : language.placeholderNoRekTujuan} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}/>
                             </Col>
                             <Col xs={2} >
                                 <button 
@@ -591,7 +591,7 @@ const TransferSubAccount = () => {
                                     className={(inputDataRekening.noRek.length !== 0 && inputData.bankCode.length !== 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
                                     disabled={inputDataRekening.noRek.length === 0 || inputData.bankCode.length === 0}
                                 >
-                                    {language === null ? ind.periksa : language.periksa}
+                                    {language === null ? eng.periksa : language.periksa}
                                 </button>
                             </Col>
                         </Row>
@@ -605,11 +605,11 @@ const TransferSubAccount = () => {
                                                 msg === "Success" ?
                                                 <div style={{ color: "#3DB54A", fontSize: 12 }} className="mt-2">
                                                     <img src={noteIconGreen} className="me-2" alt="icon notice" />
-                                                    {language === null ? ind.rekeningTerkonfirmasi : language.rekeningTerkonfirmasi} - {checking.account_name}
+                                                    {language === null ? eng.rekeningTerkonfirmasi : language.rekeningTerkonfirmasi} - {checking.account_name}
                                                 </div> :
                                                 <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-2">
                                                     <img src={noteIconRed} className="me-2" alt="icon notice" />
-                                                    {inputData.bankCode === "" ? (language === null ? ind.silahkanPilihBankDahulu : language.silahkanPilihBankDahulu) : msg}
+                                                    {inputData.bankCode === "" ? (language === null ? eng.silahkanPilihBankDahulu : language.silahkanPilihBankDahulu) : msg}
                                                 </div>
                                             }
                                         </> : <></>
@@ -618,7 +618,7 @@ const TransferSubAccount = () => {
                                 <div className='d-flex align-items-center justify-content-between'>
                                     <div className='mt-2'>
                                         <Form.Check
-                                            label={language === null ? ind.simpanKeDaftarRek : language.simpanKeDaftarRek}
+                                            label={language === null ? eng.simpanKeDaftarRek : language.simpanKeDaftarRek}
                                             id="statusId"
                                             onChange={handleOnChangeCheckBox}
                                             checked={isChecked}
@@ -639,7 +639,7 @@ const TransferSubAccount = () => {
                                             }}
                                             onClick={() => setShowDaftarRekening(true)}
                                         >
-                                            {language === null ? ind.lihatDaftarRek : language.lihatDaftarRek}
+                                            {language === null ? eng.lihatDaftarRek : language.lihatDaftarRek}
                                         </button>
                                     </div>
                                 </div>
@@ -647,14 +647,14 @@ const TransferSubAccount = () => {
                         </Row>
                         <Row className='mt-3 align-items-center'>
                             <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                                {language === null ? ind.nominalTransfer : language.nominalTransfer} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.nominalTransfer : language.nominalTransfer} <span style={{ color: "red" }}>*</span>
                             </Col>
                             <Col xs={10}>
                                 <CurrencyInput
                                     className='input-text-user'
                                     value={inputTransfer.nominal === undefined ? 0 : inputTransfer.nominal}
                                     onValueChange={(e) => handleChangeNominal(e)}
-                                    placeholder={language === null ? ind.placeholderNominalTransfer : language.placeholderNominalTransfer}
+                                    placeholder={language === null ? eng.placeholderNominalTransfer : language.placeholderNominalTransfer}
                                     groupSeparator={"."}
                                     decimalSeparator={','}
                                     allowDecimals={false}
@@ -687,18 +687,18 @@ const TransferSubAccount = () => {
                         </Row>
                         <Row className='mt-3 align-items-center'>
                             <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                                {language === null ? ind.deskripsi : language.deskripsi}
+                                {language === null ? eng.deskripsi : language.deskripsi}
                             </Col>
                             <Col xs={10}>
-                                <input name="desc" value={inputTransfer.desc} type='text' className="input-text-user" placeholder={language === null ? ind.placeholderDeskripsi : language.placeholderDeskripsi} onChange={handleChange}/>
+                                <input name="desc" value={inputTransfer.desc} type='text' className="input-text-user" placeholder={language === null ? eng.placeholderDeskripsi : language.placeholderDeskripsi} onChange={handleChange}/>
                             </Col>
                         </Row>
                         <Row className='mt-3 align-items-center'>
                             <Col xs={2} style={{ fontSize: 14, fontFamily: 'Nunito' }}>
-                                {language === null ? ind.biayaTransfer : language.biayaTransfer} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.biayaTransfer : language.biayaTransfer} <span style={{ color: "red" }}>*</span>
                             </Col>
                             <Col xs={10}>
-                                <input value={(transferFee.fee_transfer === undefined) ? convertToRupiah(0, true, 0) : convertToRupiah(transferFee.fee_transfer, true, 0)} type='text' disabled className="input-text-user" placeholder={`${language === null ? ind.rp : language.rp} 0`}/>
+                                <input value={(transferFee.fee_transfer === undefined) ? convertToRupiah(0, true, 0) : convertToRupiah(transferFee.fee_transfer, true, 0)} type='text' disabled className="input-text-user" placeholder={`${language === null ? eng.rp : language.rp} 0`}/>
                             </Col>
                         </Row>
                     </div>
@@ -709,7 +709,7 @@ const TransferSubAccount = () => {
                             style={{ width: '25%' }} 
                             onClick={() => toShowDataTransfer(isCheckedAccBankButton)}
                         >
-                            {language === null ? ind.transferSekarang : language.transferSekarang}
+                            {language === null ? eng.transferSekarang : language.transferSekarang}
                         </button>
                     </div>
                 </> :
@@ -728,7 +728,7 @@ const TransferSubAccount = () => {
                     
                 </Modal.Header>
                 <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    {language === null ? ind.daftarBank : language.daftarBank}
+                    {language === null ? eng.daftarBank : language.daftarBank}
                 </Modal.Title>
                 <Modal.Body>
                     <div className="div-table mt-3">
@@ -764,7 +764,7 @@ const TransferSubAccount = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            {language === null ? ind.batal : language.batal}
+                            {language === null ? eng.batal : language.batal}
                         </button>
                     </div>
                 </Modal.Body>
@@ -782,7 +782,7 @@ const TransferSubAccount = () => {
                     
                 </Modal.Header>
                 <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    {language === null ? ind.daftarRekening : language.daftarRekening}
+                    {language === null ? eng.daftarRekening : language.daftarRekening}
                 </Modal.Title>
                 <Modal.Body>
                     <div className="div-table bank-list-subakun mt-3">
@@ -818,7 +818,7 @@ const TransferSubAccount = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            {language === null ? ind.batal : language.batal}
+                            {language === null ? eng.batal : language.batal}
                         </button>
                     </div>
                 </Modal.Body>
@@ -836,38 +836,38 @@ const TransferSubAccount = () => {
                     
                 </Modal.Header>
                 <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    {language === null ? ind.konfirmasiTransfer : language.konfirmasiTransfer}
+                    {language === null ? eng.konfirmasiTransfer : language.konfirmasiTransfer}
                 </Modal.Title>
                 <Modal.Body>
                     <div className='px-2 py-3' style={{ backgroundColor: "rgba(240, 240, 240, 0.38)" }}>
-                        <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.dariRek : language.dariRek}</div>
+                        <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.dariRek : language.dariRek}</div>
                         <div className='mt-1' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{inputHandle.nomorAkun}</div>
-                        <div className='mt-3' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{language === null ? ind.rekTujuan : language.rekTujuan}</div>
+                        <div className='mt-3' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{language === null ? eng.rekTujuan : language.rekTujuan}</div>
                         <div className='d-flex justify-content-between align-items-center mt-3'>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.namaBank : language.namaBank}</div>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.noRek : language.noRek}</div>
+                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.namaBank : language.namaBank}</div>
+                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.noRek : language.noRek}</div>
                         </div>
                         <div className='d-flex justify-content-between align-items-center mt-1'>
-                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{language === null ? ind.bank : language.bank} {inputData.bankName}</div>
+                            <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{language === null ? eng.bank : language.bank} {inputData.bankName}</div>
                             <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{inputDataRekening.noRek}</div>
                         </div>
                         <div className='d-flex justify-content-between align-items-center mt-3'>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.namaPemilikRek : language.namaPemilikRek}</div>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.nominalTransfer : language.nominalTransfer}</div>
+                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</div>
+                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.nominalTransfer : language.nominalTransfer}</div>
                         </div>
                         <div className='d-flex justify-content-between align-items-center mt-1'>
                             <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{checking.account_name}</div>
                             <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(inputTransfer.nominal, true, 0)}</div>
                         </div>
                         <div className='d-flex justify-content-between align-items-center mt-3'>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.deskripsi : language.deskripsi}</div>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.biayaAdmin : language.biayaAdmin}</div>
+                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.deskripsi : language.deskripsi}</div>
+                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.biayaAdmin : language.biayaAdmin}</div>
                         </div>
                         <div className='d-flex justify-content-between align-items-center mt-1'>
                             <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{inputTransfer.desc !== "" ? inputTransfer.desc : "-"}</div>
                             <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(transferFee.fee_transfer, true, 0)}</div>
                         </div>
-                        <div className='mt-3' style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.total : language.total}</div>
+                        <div className='mt-3' style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.total : language.total}</div>
                         <div className='mt-1' style={{ fontSize: 24, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah((Number(inputTransfer.nominal) + Number(transferFee.fee_transfer)), true, 0)}</div>
                     </div>
                     <div className='d-flex justify-content-center align-items-center'>
@@ -889,7 +889,7 @@ const TransferSubAccount = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            {language === null ? ind.batal : language.batal}
+                            {language === null ? eng.batal : language.batal}
                         </button>
                         <button
                             onClick={() => toInputCode()}
@@ -908,7 +908,7 @@ const TransferSubAccount = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            {language === null ? ind.transfer : language.transfer}
+                            {language === null ? eng.transfer : language.transfer}
                         </button>
                     </div>
                 </Modal.Body>
@@ -925,10 +925,10 @@ const TransferSubAccount = () => {
                     />
                 </Modal.Header>
                 <Modal.Title className="mt-2 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    {language === null ? ind.konfirmasiOtp : language.konfirmasiOtp}
+                    {language === null ? eng.konfirmasiOtp : language.konfirmasiOtp}
                 </Modal.Title>
                 <Modal.Body>
-                    <div className='text-center' style={{ fontSize: 16, fontWeight: 400, color: "#888888", fontFamily: "Source Sans Pro" }}>{language === null ? ind.kodeVerifikasi : language.kodeVerifikasi} <b>{sendOtp.mobile_phone}</b> </div>
+                    <div className='text-center' style={{ fontSize: 16, fontWeight: 400, color: "#888888", fontFamily: "Source Sans Pro" }}>{language === null ? eng.kodeVerifikasi : language.kodeVerifikasi} <b>{sendOtp.mobile_phone}</b> </div>
                     <div className='d-flex flex-column justify-content-center align-items-center mt-3'>
                         <OtpInput
                             isInputNum={true}
@@ -948,13 +948,13 @@ const TransferSubAccount = () => {
                     </div>
                     {
                         toCountdown === true ? 
-                            <div className='text-center mt-3' style={{color: "#393939", fontSize: 16, fontFamily: "Source Sans Pro" }}>{language === null ? ind.mohonTungguDalam : language.mohonTungguDalam} <b><Countdown date={new Date(sendOtp.retry)} renderer={renderer} onComplete={completeTime} /></b> {language === null ? ind.untukKirimUlang : language.untukKirimUlang}</div> :
+                            <div className='text-center mt-3' style={{color: "#393939", fontSize: 16, fontFamily: "Source Sans Pro" }}>{language === null ? eng.mohonTungguDalam : language.mohonTungguDalam} <b><Countdown date={new Date(sendOtp.retry)} renderer={renderer} onComplete={completeTime} /></b> {language === null ? eng.untukKirimUlang : language.untukKirimUlang}</div> :
                             <div className='d-flex justify-content-center align-items-center mt-3'>
-                                <div className="me-1" style={{ color: "#393939", fontFamily: "Nunito", fontSize: 16 }}>{language === null ? ind.tidakMenerimaOtp : language.tidakMenerimaOtp} </div>
-                                <div onClick={sendAgain} className='ms-1' style={{ color: "#077E86", fontFamily: "Exo", fontWeight: 700, fontSize: 16, cursor: "pointer" }}>{language === null ? ind.kirimUlang : language.kirimUlang}</div>
+                                <div className="me-1" style={{ color: "#393939", fontFamily: "Nunito", fontSize: 16 }}>{language === null ? eng.tidakMenerimaOtp : language.tidakMenerimaOtp} </div>
+                                <div onClick={sendAgain} className='ms-1' style={{ color: "#077E86", fontFamily: "Exo", fontWeight: 700, fontSize: 16, cursor: "pointer" }}>{language === null ? eng.kirimUlang : language.kirimUlang}</div>
                             </div>
                     }
-                    <div className='text-center mt-3'>{language === null ? ind.maksimumPermintaanOtp : language.maksimumPermintaanOtp} : {sendOtp.hit_count}/3</div>
+                    <div className='text-center mt-3'>{language === null ? eng.maksimumPermintaanOtp : language.maksimumPermintaanOtp} : {sendOtp.hit_count}/3</div>
                     <div className='px-5'>
                         <button
                             onClick={() => toTransfer()}
@@ -972,7 +972,7 @@ const TransferSubAccount = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            {language === null ? ind.konfirmasi : language.konfirmasi}
+                            {language === null ? eng.konfirmasi : language.konfirmasi}
                         </button>
                     </div>
                 </Modal.Body>
@@ -990,10 +990,10 @@ const TransferSubAccount = () => {
                 </Modal.Header>
                 <Modal.Title className="mt-2 px-4 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
                     <div><img src={transferFailed}  alt="failed" /></div>
-                    <div className='mt-3'>{language === null ? ind.andaMencapaiMaksPermintaanOtp : language.andaMencapaiMaksPermintaanOtp}</div>
+                    <div className='mt-3'>{language === null ? eng.andaMencapaiMaksPermintaanOtp : language.andaMencapaiMaksPermintaanOtp}</div>
                 </Modal.Title>
                 <Modal.Body>
-                    <div className='text-center px-5' style={{ fontSize: 16, fontWeight: 400, color: "#888888", fontFamily: "Source Sans Pro" }}>{language === null ? ind.batasMaksimumOtp : language.batasMaksimumOtp} </div>
+                    <div className='text-center px-5' style={{ fontSize: 16, fontWeight: 400, color: "#888888", fontFamily: "Source Sans Pro" }}>{language === null ? eng.batasMaksimumOtp : language.batasMaksimumOtp} </div>
                     <div className='px-5 mx-4'>
                         <button
                             onClick={() => window.location.reload()}
@@ -1012,7 +1012,7 @@ const TransferSubAccount = () => {
                                 cursor: "pointer"
                             }}
                         >
-                            {language === null ? ind.mengerti : language.mengerti}
+                            {language === null ? eng.mengerti : language.mengerti}
                         </button>
                     </div>
                 </Modal.Body>
@@ -1036,38 +1036,38 @@ const TransferSubAccount = () => {
                             <div className='mt-3 mb-3'>{dataConfirm.status_message}</div>
                             {
                                 dataConfirm.status_id === 1 ?
-                                    <div style={{ fontSize: 14, fontFamily: 'Nunito', color: '#848484' }} className='mt-2'>{language === null ? ind.cekMutasi : language.cekMutasi}</div> : <></>
+                                    <div style={{ fontSize: 14, fontFamily: 'Nunito', color: '#848484' }} className='mt-2'>{language === null ? eng.cekMutasi : language.cekMutasi}</div> : <></>
                             }
                         </div>
                         <div className='px-2 py-3' style={{ backgroundColor: "rgba(240, 240, 240, 0.38)" }}>
-                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.dariRek : language.dariRek}</div>
+                            <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.dariRek : language.dariRek}</div>
                             <div className='mt-1' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.source_account_number}</div>
-                            <div className='mt-3' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{language === null ? ind.rekTujuan : language.rekTujuan}</div>
+                            <div className='mt-3' style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{language === null ? eng.rekTujuan : language.rekTujuan}</div>
                             <div className='d-flex justify-content-between align-items-center mt-3'>
-                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.namaBank : language.namaBank}</div>
-                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.noRek : language.noRek}</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.namaBank : language.namaBank}</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.noRek : language.noRek}</div>
                             </div>
                             <div className='d-flex justify-content-between align-items-center mt-1'>
                                 <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{inputData.bankName}</div>
                                 <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.beneficiary_account_number}</div>
                             </div>
                             <div className='d-flex justify-content-between align-items-center mt-3'>
-                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.namaPemilikRek : language.namaPemilikRek}</div>
-                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.nominalTransfer : language.nominalTransfer}</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.nominalTransfer : language.nominalTransfer}</div>
                             </div>
                             <div className='d-flex justify-content-between align-items-center mt-1'>
                                 <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.beneficiary_account_name}</div>
                                 <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(dataConfirm.transfer_amount, true, 0)}</div>
                             </div>
                             <div className='d-flex justify-content-between align-items-center mt-3'>
-                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.deskripsi : language.deskripsi}</div>
-                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.biayaAdmin : language.biayaAdmin}</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.deskripsi : language.deskripsi}</div>
+                                <div style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.biayaAdmin : language.biayaAdmin}</div>
                             </div>
                             <div className='d-flex justify-content-between align-items-center mt-1'>
                                 <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{dataConfirm.description !== "" ? dataConfirm.description : "-"}</div>
                                 <div style={{ fontSize: 16, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah(dataConfirm.admin_fee, true, 0)}</div>
                             </div>
-                            <div className='mt-3' style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? ind.total : language.total}</div>
+                            <div className='mt-3' style={{ fontSize: 14, color: "#888888", fontFamily: 'Source Sans Pro' }}>{language === null ? eng.total : language.total}</div>
                             <div style={{ fontSize: 24, color: "#383838", fontWeight: 600, fontFamily: 'Source Sans Pro' }}>{convertToRupiah((Number(dataConfirm.transfer_amount)) + (Number(dataConfirm.admin_fee)))}</div>
                         </div>
                     </div>
@@ -1093,7 +1093,7 @@ const TransferSubAccount = () => {
                                         borderRadius: 6,
                                     }}
                                 >
-                                    {language === null ? ind.unduhBuktiTf : language.unduhBuktiTf}
+                                    {language === null ? eng.unduhBuktiTf : language.unduhBuktiTf}
                                 </button>
                                 <button
                                     onClick={() => toMutasi()}
@@ -1112,7 +1112,7 @@ const TransferSubAccount = () => {
                                         borderRadius: 6,
                                     }}
                                 >
-                                    {language === null ? ind.lihatMutasi : language.lihatMutasi}
+                                    {language === null ? eng.lihatMutasi : language.lihatMutasi}
                                 </button>
                             </> :
                             <>
@@ -1133,7 +1133,7 @@ const TransferSubAccount = () => {
                                         borderRadius: 6,
                                     }}
                                 >
-                                    {language === null ? ind.lihatMutasi : language.lihatMutasi}
+                                    {language === null ? eng.lihatMutasi : language.lihatMutasi}
                                 </button>  
                             </>
                         }

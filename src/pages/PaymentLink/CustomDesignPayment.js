@@ -8,7 +8,7 @@ import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../fu
 import { useHistory } from "react-router-dom";
 import axios from "axios"
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
-import { ind } from "../../components/Language";
+import { eng, ind } from "../../components/Language";
 
 function CustomDesignPayment () {
 
@@ -149,17 +149,17 @@ function CustomDesignPayment () {
     
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-            <span className="breadcrumbs-span">{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>{language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>} &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toListPay()}>{language === null ? ind.paymentLink : language.paymentLink}</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toCustomDesign()}>{language === null ? ind.customDesignPaymentLink : language.customDesignPaymentLink}</span> </span>
+            <span className="breadcrumbs-span">{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>{language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>} &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toListPay()}>{language === null ? eng.paymentLink : language.paymentLink}</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toCustomDesign()}>{language === null ? eng.customDesignPaymentLink : language.customDesignPaymentLink}</span> </span>
             <div className="head-title">
-                <h2 className="h4 mt-4 mb-4" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 18, color: "#383838"}}>{language === null ? ind.customDesignPaymentLink : language.customDesignPaymentLink}</h2>
+                <h2 className="h4 mt-4 mb-4" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 18, color: "#383838"}}>{language === null ? eng.customDesignPaymentLink : language.customDesignPaymentLink}</h2>
             </div>
             <Row>
                 <Col xs={6} className="content-main">
-                    <h2 className="h5" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 16, color: "#383838"}}>{language === null ? ind.previewTampilan : language.previewTampilan}</h2>
+                    <h2 className="h5" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 16, color: "#383838"}}>{language === null ? eng.previewTampilan : language.previewTampilan}</h2>
                     <div className="base-content-custom">
                         <div className="base-content-custom d-flex justify-content-center align-items-center py-2 px-2" >
                             {!imageFile ?
-                                    <div style={{background: "#F0F0F0", border: "1px solid #C4C4C4", width: 100, height:48}} className="py-2 px-2">{language === null ? ind.logoAnda : language.logoAnda}</div> :
+                                    <div style={{background: "#F0F0F0", border: "1px solid #C4C4C4", width: 100, height:48}} className="py-2 px-2">{language === null ? eng.logoAnda : language.logoAnda}</div> :
                                 <>                                        
                                     <img src={imageFile} alt="alt" width="auto" height="44px" />
                                     <input
@@ -176,47 +176,47 @@ function CustomDesignPayment () {
                             }                            
                             {inputHandle.namaPerusahaan !== "" ? 
                                 <div className="mx-2" style={{fontFamily: "Nunito", fontSize: 16}}>{inputHandle.namaPerusahaan}</div> :
-                                <div className="mx-2" style={{fontFamily: "Nunito", fontSize: 16}}>{language === null ? ind.namaPerusahaanAnda : language.namaPerusahaanAnda}</div>
+                                <div className="mx-2" style={{fontFamily: "Nunito", fontSize: 16}}>{language === null ? eng.namaPerusahaanAnda : language.namaPerusahaanAnda}</div>
                             }
                         </div>
                         <div className="px-4 py-4">
-                            <div className="mb-2" style={{fontSize: 14}}>{language === null ? ind.totalPembayaran : language.totalPembayaran}</div>
-                            <h3 style={{margin: "unset", fontFamily: "Exo", fontWeight: 700, fontSize: 24}}>{language === null ? ind.rp : language.rp} 100.000</h3>
+                            <div className="mb-2" style={{fontSize: 14}}>{language === null ? eng.totalPembayaran : language.totalPembayaran}</div>
+                            <h3 style={{margin: "unset", fontFamily: "Exo", fontWeight: 700, fontSize: 24}}>{language === null ? eng.rp : language.rp} 100.000</h3>
                             <div className="d-flex justify-content-between align-items-center">
-                                <div style={{color: "#888888", fontSize: 14}}>{language === null ? ind.paymentId : language.paymentId}: 1082619</div>
+                                <div style={{color: "#888888", fontSize: 14}}>{language === null ? eng.paymentId : language.paymentId}: 1082619</div>
                                 <div style={{display: "flex", justifyContent: "end", alignItems: "end", padding: "unset"}}>
                                     <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, height: 48, color: "#077E86", background: "unset", border: "unset", cursor: "unset"}} >
-                                        {language === null ? ind.detail : language.detail} <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
+                                        {language === null ? eng.detail : language.detail} <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
                                     </button>
                                 </div>
                             </div>
                             <div style={{border: "3px solid #F0F0F0", backgroundColor: '#F0F0F0'}}></div>
                             <Row className="mt-2">
                                 <Col xs={12}>
-                                    <div className="my-1">{language === null ? ind.nama : language.nama}</div>
+                                    <div className="my-1">{language === null ? eng.nama : language.nama}</div>
                                     <input 
                                         className="input-text-user" 
-                                        placeholder={language === null ? ind.placeholderNama : language.placeholderNama}
+                                        placeholder={language === null ? eng.placeholderNama : language.placeholderNama}
                                         disabled = {true}
                                         style={{background: "#FFFFFF"}}
                                     />
                                 </Col>
                                 <Col xs={12} className="mt-1">
-                                    <div className="my-1">{language === null ? ind.email : language.email}</div>
+                                    <div className="my-1">{language === null ? eng.email : language.email}</div>
                                     <input 
                                         className="input-text-user" 
-                                        placeholder={language === null ? ind.placeholderEmail : language.placeholderEmail}
+                                        placeholder={language === null ? eng.placeholderEmail : language.placeholderEmail}
                                         disabled = {true}
                                         style={{background: "#FFFFFF"}}
                                     />
                                 </Col>
                                 <Col xs={12} className="my-3">
-                                    <div style={{fontSize: "14px", background: "rgba(255, 214, 0, 0.16)", borderRadius: "4px", fontStyle: "italic", padding: "12px", gap: 10}}>{language === null ? ind.descPreviewTampilan : language.descPreviewTampilan}</div>
+                                    <div style={{fontSize: "14px", background: "rgba(255, 214, 0, 0.16)", borderRadius: "4px", fontStyle: "italic", padding: "12px", gap: 10}}>{language === null ? eng.descPreviewTampilan : language.descPreviewTampilan}</div>
                                 </Col>
                                 <Col xs={12}>
                                 <div className='mb-5 mt-3' style={{ display: "flex", justifyContent: "center"}}>
                                     <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: "100%", height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6, cursor: "unset" }}>
-                                        {language === null ? ind.lanjutkan : language.lanjutkan}
+                                        {language === null ? eng.lanjutkan : language.lanjutkan}
                                     </button>
                                 </div>
                                 </Col>
@@ -225,10 +225,10 @@ function CustomDesignPayment () {
                     </div>
                 </Col>
                 <Col xs={6}>
-                    <h2 className="h5" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 16, color: "#383838"}}>{language === null ? ind.aturTampilan : language.aturTampilan}</h2>
+                    <h2 className="h5" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 16, color: "#383838"}}>{language === null ? eng.aturTampilan : language.aturTampilan}</h2>
                     <div className="base-content-custom">
                         <div className="px-4 py-4">
-                            <div>{language === null ? ind.logoPerusahaan : language.logoPerusahaan}</div>
+                            <div>{language === null ? eng.logoPerusahaan : language.logoPerusahaan}</div>
                             <div className="d-flex justify-content-start align-items-center mt-2">
                                 {!imageFile ?
                                     <div style={{background: "#F0F0F0", border: "1px solid #C4C4C4", width: 100, height:48}} className="text-center py-2">
@@ -258,9 +258,9 @@ function CustomDesignPayment () {
                                 <div className="mx-2">
                                     <div onClick={handleClick} className="d-flex justify-content-start align-items-center" style={{cursor: "pointer"}}>
                                         <img src={Upload} alt="Upload"/>
-                                        <div style={{fontStyle: "underline", color: "#077E86", fontSize: 14}}>{language === null ? ind.uploadFile : language.uploadFile}</div>
+                                        <div style={{fontStyle: "underline", color: "#077E86", fontSize: 14}}>{language === null ? eng.uploadFile : language.uploadFile}</div>
                                     </div>
-                                    <div style={{color: "#C4C4C4", fontSize: 12}} className="my-1">{language === null ? ind.ukuranFileCustom : language.ukuranFileCustom}</div>
+                                    <div style={{color: "#C4C4C4", fontSize: 12}} className="my-1">{language === null ? eng.ukuranFileCustom : language.ukuranFileCustom}</div>
                                 </div>
                             </div>
                             {upload === true ?
@@ -273,10 +273,10 @@ function CustomDesignPayment () {
                             }
                             <Row>
                                 <Col xs={12}>
-                                    <div className="my-2">{language === null ? ind.namaPerusahaan : language.namaPerusahaan}</div>
+                                    <div className="my-2">{language === null ? eng.namaPerusahaan : language.namaPerusahaan}</div>
                                     <input 
                                         className="input-text-user" 
-                                        placeholder={language === null ? ind.placeholderNamaPerusahaan : language.placeholderNamaPerusahaan}
+                                        placeholder={language === null ? eng.placeholderNamaPerusahaan : language.placeholderNamaPerusahaan}
                                         name="namaPerusahaan"
                                         onChange={handleChange}
                                         value={inputHandle.namaPerusahaan}
@@ -287,10 +287,10 @@ function CustomDesignPayment () {
                     </div>
                     <div className='mb-5 mt-3' style={{ display: "flex", justifyContent: "center"}}>
                         <button onClick={() => setShowModalBatal(true)} className="me-1" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: "100%", height: 45, background: "#FFFFFF", color:"#888888", border: "0.6px solid #EBEBEB", borderRadius: 6 }}>
-                            {language === null ? ind.batal : language.batal}
+                            {language === null ? eng.batal : language.batal}
                         </button>
                         <button onClick={() => setShowModalSave(true)} className="ms-1" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: "100%", height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
-                            {language === null ? ind.simpan : language.simpan}
+                            {language === null ? eng.simpan : language.simpan}
                         </button>
                     </div>
                 </Col>
@@ -304,14 +304,14 @@ function CustomDesignPayment () {
             >
                 <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 16 }}>
-                        <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">{language === null ? ind.simpanPerubahan : language.simpanPerubahan}</p>
+                        <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">{language === null ? eng.simpanPerubahan : language.simpanPerubahan}</p>
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 12, marginBottom: 16 }}>
-                        <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? ind.seluruhPerubahanTersimpan : language.seluruhPerubahanTersimpan}</p>
+                        <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? eng.seluruhPerubahanTersimpan : language.seluruhPerubahanTersimpan}</p>
                     </div>              
                     <div className="d-flex justify-content-center mb-3">
-                        <Button onClick={() => setShowModalSave(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? ind.batal : language.batal}</Button>
-                        <Button onClick={() => saveCustomDesignHandler(inputHandle.namaPerusahaan, image)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.simpan : language.simpan}</Button>
+                        <Button onClick={() => setShowModalSave(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? eng.batal : language.batal}</Button>
+                        <Button onClick={() => saveCustomDesignHandler(inputHandle.namaPerusahaan, image)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? eng.simpan : language.simpan}</Button>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -324,14 +324,14 @@ function CustomDesignPayment () {
             >
                 <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 24, marginBottom: 16 }}>
-                        <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">{language === null ? ind.batalkanPerubahan : language.batalkanPerubahan}</p>
+                        <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }} className="text-center">{language === null ? eng.batalkanPerubahan : language.batalkanPerubahan}</p>
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 12, marginBottom: 16 }}>
-                        <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? ind.seluruhPerubahanTerhapus : language.seluruhPerubahanTerhapus}</p>
+                        <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? eng.seluruhPerubahanTerhapus : language.seluruhPerubahanTerhapus}</p>
                     </div>              
                     <div className="d-flex justify-content-center mb-3">
-                        <Button onClick={() => setShowModalBatal(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? ind.kembali : language.kembali}</Button>
-                        <Button onClick={cancelChange} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.batalkan : language.batalkan}</Button>
+                        <Button onClick={() => setShowModalBatal(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? eng.kembali : language.kembali}</Button>
+                        <Button onClick={cancelChange} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? eng.batalkan : language.batalkan}</Button>
                     </div>
                 </Modal.Body>
             </Modal>

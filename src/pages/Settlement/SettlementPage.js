@@ -11,7 +11,7 @@ import encryptData from '../../function/encryptData';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { ind } from '../../components/Language';
+import { eng, ind } from '../../components/Language';
 
 function SettlementPage() {
 
@@ -133,7 +133,7 @@ function SettlementPage() {
     function handlePageChangeSettlement(page) {
         if (isFilterSettlement) {
             setActivePageSettlement(page)
-            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'ID' : language.flagName)
+            filterSettlement(page, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'EN' : language.flagName)
         } else {
             setActivePageSettlement(page)
             riwayatSettlement(page)
@@ -143,10 +143,10 @@ function SettlementPage() {
     function handlePageChangeSettlementPartner(page) {
         if (isFilterSettlementPartner) {
             setActivePageSettlementPartner(page)
-            filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, page, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, language === null ? 'ID' : language.flagName)
+            filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, page, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, language === null ? 'EN' : language.flagName)
         } else {
             setActivePageSettlementPartner(page)
-            riwayatSettlementPartner(page, currentDate, language === null ? 'ID' : language.flagName)
+            riwayatSettlementPartner(page, currentDate, language === null ? 'EN' : language.flagName)
         }
     }
 
@@ -442,7 +442,7 @@ function SettlementPage() {
             setDateRangeSettlement([])
             setShowDateSettlement("none")
         } else {
-            riwayatSettlementPartner(activePageSettlementPartner, currentDate, language === null ? 'ID' : language.flagName)
+            riwayatSettlementPartner(activePageSettlementPartner, currentDate, language === null ? 'EN' : language.flagName)
             setInputHandle({
                 ...inputHandle,
                 idTransaksiSettlementPartner: "",
@@ -462,7 +462,7 @@ function SettlementPage() {
         }
         if (user_role === "102" || user_role === "104") {
             // history.push('/404');
-            riwayatSettlementPartner(activePageSettlementPartner, currentDate, language === null ? 'ID' : language.flagName)
+            riwayatSettlementPartner(activePageSettlementPartner, currentDate, language === null ? 'EN' : language.flagName)
         } else {
             listPartner()
             riwayatSettlement(activePageSettlement)
@@ -568,32 +568,32 @@ function SettlementPage() {
 
     const columnsSettlementPartner = [
         {
-            name: language === null ? ind.no : language.no,
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: language === null ? ind.idTransaksi : language.idTransaksi,
+            name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.tvasettl_code,
             cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${'0'}/${row.settlement_type}/${'0'}`}>{row.tvasettl_code}</Link>,
             width: "251px"
         },
         {
-            name: language === null ? ind.waktu : language.waktu,
+            name: language === null ? eng.waktu : language.waktu,
             selector: row => row.tvasettl_crtdt_format,
         },
         {
-            name: language === null ? ind.jenisTransaksi : language.jenisTransaksi,
+            name: language === null ? eng.jenisTransaksi : language.jenisTransaksi,
             selector: row => row.mfitur_desc,
             // sortable: true
         },
         {
-            name: language === null ? ind.jumlah : language.jumlah,
+            name: language === null ? eng.jumlah : language.jumlah,
             selector: row => row.tvasettl_amount,
             cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>
         },
         {
-            name: language === null ? ind.status : language.status,
+            name: language === null ? eng.status : language.status,
             selector: row => row.mstatus_name_ind,
             width: "127px",
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: 6, margin: "6px 16px", width: "50%", borderRadius: 4 },
@@ -764,23 +764,23 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? ind.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? ind.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? ind.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? eng.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? eng.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
                     } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {            
                         setUserSession(dataExportFilter.data.response_new_token)
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? ind.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? ind.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? ind.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? eng.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? eng.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
                     }
                 } catch (error) {
                     // console.log(error)
@@ -804,23 +804,23 @@ function SettlementPage() {
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? ind.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? ind.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? ind.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? eng.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? eng.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
                     } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
                         setUserSession(dataSettlement.data.response_new_token)
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? ind.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? ind.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? ind.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tvasettl_code, [language === null ? eng.waktu : language.waktu]: data[i].tvasettl_crtdt_format, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].mfitur_desc, [language === null ? eng.jumlah : language.jumlah]: data[i].tvasettl_amount, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
                     }
                 } catch (error) {
                     // console.log(error)
@@ -841,9 +841,9 @@ function SettlementPage() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.settlement : language.settlement}</span>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.settlement : language.settlement}</span>
             <div className='head-title'>
-                <h2 className="h5 mb-1 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{language === null ? ind.settlement : language.settlement}</h2>
+                <h2 className="h5 mb-1 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{language === null ? eng.settlement : language.settlement}</h2>
             </div>
             <div className='main-content'>
                 {
@@ -956,7 +956,7 @@ function SettlementPage() {
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'ID' : language.flagName)}
+                                                onClick={() => filterSettlement(1, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, 0, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'EN' : language.flagName)}
                                                 className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && selectedBankSettlement[0].value !== undefined) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && selectedBankSettlement[0].value === undefined}
                                             >
@@ -984,7 +984,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlement.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'ID' : language.flagName)} className="export-span">Export</Link>
+                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "", language === null ? 'EN' : language.flagName)} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-4">
@@ -1012,45 +1012,45 @@ function SettlementPage() {
                         </div>
                     </div> :
                     <div className='riwayat-settlement-div mt-3 mb-4'>
-                        <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>{language === null ? ind.tabelRiwayatSettlementPartner : language.tabelRiwayatSettlementPartner}</span>
+                        <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>{language === null ? eng.tabelRiwayatSettlementPartner : language.tabelRiwayatSettlementPartner}</span>
                         <div className='base-content mt-3'>
-                            <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>{language === null ? ind.filter : language.filter}</span>
+                            <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>{language === null ? eng.filter : language.filter}</span>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="me-1">{language === null ? ind.idTransaksi : language.idTransaksi}</span>
-                                    <input name="idTransaksiSettlementPartner" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlementPartner} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
+                                    <span className="me-1">{language === null ? eng.idTransaksi : language.idTransaksi}</span>
+                                    <input name="idTransaksiSettlementPartner" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlementPartner} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder={language === null ? eng.placeholderIdTrans : language.placeholderIdTrans}/>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlementPartner === "none") ? "33%" : "33%" }}>
-                                    <span >{language === null ? ind.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
+                                    <span >{language === null ? eng.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
                                     <Form.Select name='periodeSettlementPartner' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlementPartner} onChange={(e) => handleChangePeriodeSettlement(e, "partner")}>
-                                        <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
-                                        <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
-                                        <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
-                                        <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
-                                        <option value={5}>{language === null ? ind.bulanIni : language.bulanIni}</option>
-                                        <option value={6}>{language === null ? ind.bulanKemarin : language.bulanKemarin}</option>
-                                        <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
+                                        <option defaultChecked disabled value={0}>{language === null ? eng.pilihPeriode : language.pilihPeriode}</option>
+                                        <option value={2}>{language === null ? eng.hariIni : language.hariIni}</option>
+                                        <option value={3}>{language === null ? eng.kemarin : language.kemarin}</option>
+                                        <option value={4}>{language === null ? eng.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                        <option value={5}>{language === null ? eng.bulanIni : language.bulanIni}</option>
+                                        <option value={6}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
+                                        <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                     </Form.Select>                    
                                 </Col>                
                                 <Col xs={4}>
-                                    <span>{language === null ? ind.status : language.status}</span>
+                                    <span>{language === null ? eng.status : language.status}</span>
                                     <Form.Select name="statusSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlementPartner} onChange={(e) => handleChange(e)}>
-                                        <option defaultChecked disabled value="">{language === null ? ind.placeholderStatus : language.placeholderStatus}</option>
-                                        <option value={2}>{language === null ? ind.berhasil : language.berhasil}</option>
-                                        <option value={1}>{language === null ? ind.dalamProses : language.dalamProses}</option>
-                                        <option value={4}>{language === null ? ind.gagal : language.gagal}</option>
+                                        <option defaultChecked disabled value="">{language === null ? eng.placeholderStatus : language.placeholderStatus}</option>
+                                        <option value={2}>{language === null ? eng.berhasil : language.berhasil}</option>
+                                        <option value={1}>{language === null ? eng.dalamProses : language.dalamProses}</option>
+                                        <option value={4}>{language === null ? eng.gagal : language.gagal}</option>
                                     </Form.Select>
                                 </Col>
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>{language === null ? ind.jenisTransaksi : language.jenisTransaksi}</span>
+                                    <span>{language === null ? eng.jenisTransaksi : language.jenisTransaksi}</span>
                                     <Form.Select name="fiturSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlementPartner} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={0}>{language === null ? ind.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
-                                        <option value={104}>{language === null ? ind.paymentLink : language.paymentLink}</option>
-                                        <option value={100}>{language === null ? ind.vapartner : language.vapartner}</option>
-                                        <option value={107}>{language === null ? ind.directDebit : language.directDebit}</option>
-                                        <option value={105}>{language === null ? ind.emoney : language.emoney}</option>
+                                        <option defaultValue value={0}>{language === null ? eng.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
+                                        <option value={104}>{language === null ? eng.paymentLink : language.paymentLink}</option>
+                                        <option value={100}>{language === null ? eng.vapartner : language.vapartner}</option>
+                                        <option value={107}>{language === null ? eng.directDebit : language.directDebit}</option>
+                                        <option value={105}>{language === null ? eng.emoney : language.emoney}</option>
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} style={{ display: showDateSettlementPartner }}>
@@ -1066,11 +1066,11 @@ function SettlementPage() {
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, 1, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, language === null ? 'ID' : language.flagName)}
+                                                onClick={() => filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, 1, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, language === null ? 'EN' : language.flagName)}
                                                 className={(inputHandle.periodeSettlementPartner !== 0 || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
                                             >
-                                                {language === null ? ind.terapkan : language.terapkan}
+                                                {language === null ? eng.terapkan : language.terapkan}
                                             </button>
                                         </Col>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
@@ -1079,7 +1079,7 @@ function SettlementPage() {
                                                 className={(inputHandle.periodeSettlementPartner || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                                 disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
                                             >
-                                                {language === null ? ind.aturUlang : language.aturUlang}
+                                                {language === null ? eng.aturUlang : language.aturUlang}
                                             </button>
                                         </Col>
                                     </Row>
@@ -1088,7 +1088,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlementPartner.length !== 0 &&
                                     <div>
-                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, oneMonthAgo, currentDate, language === null ? 'ID' : language.flagName)} className="export-span">{language === null ? ind.export : language.export}</Link>
+                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner, oneMonthAgo, currentDate, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
                                     </div>
                             }
                             <br/>
@@ -1100,11 +1100,11 @@ function SettlementPage() {
                                     customStyles={customStylesPartner}
                                     progressPending={pendingSettlementPartner}
                                     progressComponent={<CustomLoader />}
-                                    noDataComponent={language === null ? ind.tidakAdaData : language.tidakAdaData}
+                                    noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
                                 />
                             </div>
                             <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                                <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageSettlementPartner}</div>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageSettlementPartner}</div>
                                 <Pagination
                                     activePage={activePageSettlementPartner}
                                     itemsCountPerPage={pageNumberSettlementPartner.row_per_page}

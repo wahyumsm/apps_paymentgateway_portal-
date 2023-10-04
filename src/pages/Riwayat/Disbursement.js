@@ -12,7 +12,7 @@ import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteInfo from "../../assets/icon/note_icon.svg"
 import ReactSelect, { components } from 'react-select';
-import { ind } from '../../components/Language';
+import { eng } from '../../components/Language';
 
 function Disbursement() {
 
@@ -107,10 +107,10 @@ function Disbursement() {
     function handlePageChangeDisbursement(page) {
         if (isFilterDisbursement) {
             setActivePageDisbursement(page)
-            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0, language === null ? 'ID' : language.flagName)
+            filterDisbursement(page, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0, language === null ? 'EN' : language.flagName)
         } else {
             setActivePageDisbursement(page)
-            disbursementReport(page, user_role, language === null ? 'ID' : language.flagName)
+            disbursementReport(page, user_role, language === null ? 'EN' : language.flagName)
         }
     }
 
@@ -332,7 +332,7 @@ function Disbursement() {
             listPartner()
         }
         listDisburseChannelHandler()
-        disbursementReport(activePageDisbursement, user_role, language === null ? 'ID' : language.flagName)
+        disbursementReport(activePageDisbursement, user_role, language === null ? 'EN' : language.flagName)
     }, [access_token, user_role])
 
     const columnsDisbursement = [
@@ -475,12 +475,12 @@ function Disbursement() {
 
     const columnsDisbursementPartner = [
         {
-            name: language === null ? ind.no : language.no,
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             maxWidth: 'fit-content !important'
         },
         {
-            name: language === null ? ind.idTransaksi : language.idTransaksi,
+            name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.tdishburse_code,
             // sortable: true
             wrap: true,
@@ -488,65 +488,65 @@ function Disbursement() {
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
         },
         {
-            name: language === null ? ind.waktu : language.waktu,
+            name: language === null ? eng.waktu : language.waktu,
             selector: row => convertSimpleTimeStamp(row.tdishburse_crtdt),
             wrap: true,
             width: "165px",
             // sortable: true,
         },
         {
-            name: language === null ? ind.partnerTransId : language.partnerTransId,
+            name: language === null ? eng.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trans_id,
             wrap: true,
             width: "170px",
             // sortable: true,
         },
         {
-            name: language === null ? ind.nominalDisburse : language.nominalDisburse,
+            name: language === null ? eng.nominalDisburse : language.nominalDisburse,
             selector: row => convertToRupiah(row.tdishburse_amount),
             // sortable: true,
             width: language === null ? "205px" : language.flagName === "CN" ? "100px" : "205px",
             style: { display: "flex", justifyContent: "flex-end", }
         },
         {
-            name: language === null ? ind.totalDisburse : language.totalDisburse,
+            name: language === null ? eng.totalDisburse : language.totalDisburse,
             selector: row => convertToRupiah(row.tdishburse_total_amount),
             // sortable: true,
             width: language === null ? "180px" : language.flagName === "CN" ? "100px" : "180px",
             style: { display: "flex", justifyContent: "flex-end", }
         },
         {
-            name: language === null ? ind.tujuanDisburse : language.tujuanDisburse,
+            name: language === null ? eng.tujuanDisburse : language.tujuanDisburse,
             selector: row => row.payment_type,
             // sortable: true,
             width: "224px",
         },
         {
-            name: language === null ? ind.cabang : language.cabang,
+            name: language === null ? eng.cabang : language.cabang,
             selector: row => (row.branch_name === null || row.branch_name.length === 0) ? "-" : row.branch_name,
             // sortable: true,
             width: "170px",
         },
         {
-            name: language === null ? ind.nomorRekTujuan : language.nomorRekTujuan,
+            name: language === null ? eng.nomorRekTujuan : language.nomorRekTujuan,
             selector: row => row.tdishburse_acc_num,
             // sortable: true,
             width: language === null ? "224px" : language.flagName === "ID" ? "224px" : "250px",
         },
         {
-            name: language === null ? ind.namaPemilikRek : language.namaPemilikRek,
+            name: language === null ? eng.namaPemilikRek : language.namaPemilikRek,
             selector: row => row.tdishburse_acc_name,
             // sortable: true,
             width: language === null ? "224px" : language.flagName === "ID" ? "224px" : "250px",
         },
         {
-            name: language === null ? ind.catatan : language.catatan,
+            name: language === null ? eng.catatan : language.catatan,
             selector: row => (row.notes === null || row.notes.length === 0) ? "-" : row.notes,
             // sortable: true,
             width: "224px",
         },
         {
-            name: language === null ? ind.status : language.status,
+            name: language === null ? eng.status : language.status,
             selector: row => row.mstatus_name_ind,
             minWidth: "140px",
             maxWidth: "195px",
@@ -628,23 +628,23 @@ function Disbursement() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tdishburse_code, [language === null ? ind.waktu : language.waktu]: convertSimpleTimeStamp(data[i].tdishburse_crtdt), [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? ind.nominalDisburse : language.nominalDisburse]: data[i].tdishburse_amount, [language === null ? ind.totalDisburse : language.totalDisburse]: data[i].tdishburse_total_amount, [language === null ? ind.tujuanDisburse : language.tujuanDisburse]: data[i].payment_type, [language === null ? ind.cabang : language.cabang]: data[i].branch_name === null ? "-" : data[i].branch_name, [language === null ? ind.nomorRekTujuan : language.nomorRekTujuan]: data[i].tdishburse_acc_num, [language === null ? ind.namaPemilikRek : language.namaPemilikRek]: data[i].tdishburse_acc_name, [language === null ? ind.catatan : language.catatan]: data[i].notes === null ? "-" : data[i].notes, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tdishburse_code, [language === null ? eng.waktu : language.waktu]: convertSimpleTimeStamp(data[i].tdishburse_crtdt), [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? eng.nominalDisburse : language.nominalDisburse]: data[i].tdishburse_amount, [language === null ? eng.totalDisburse : language.totalDisburse]: data[i].tdishburse_total_amount, [language === null ? eng.tujuanDisburse : language.tujuanDisburse]: data[i].payment_type, [language === null ? eng.cabang : language.cabang]: data[i].branch_name === null ? "-" : data[i].branch_name, [language === null ? eng.nomorRekTujuan : language.nomorRekTujuan]: data[i].tdishburse_acc_num, [language === null ? eng.namaPemilikRek : language.namaPemilikRek]: data[i].tdishburse_acc_name, [language === null ? eng.catatan : language.catatan]: data[i].notes === null ? "-" : data[i].notes, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanDisbursementExcel : language.laporanDisbursementExcel}.xlsx`);
                     } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token !== null) {
                         setUserSession(dataExportFilter.data.response_new_token)
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tdishburse_code, [language === null ? ind.waktu : language.waktu]: convertSimpleTimeStamp(data[i].tdishburse_crtdt), [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? ind.nominalDisburse : language.nominalDisburse]: data[i].tdishburse_amount, [language === null ? ind.totalDisburse : language.totalDisburse]: data[i].tdishburse_total_amount, [language === null ? ind.tujuanDisburse : language.tujuanDisburse]: data[i].payment_type, [language === null ? ind.cabang : language.cabang]: data[i].branch_name === null ? "-" : data[i].branch_name, [language === null ? ind.nomorRekTujuan : language.nomorRekTujuan]: data[i].tdishburse_acc_num, [language === null ? ind.namaPemilikRek : language.namaPemilikRek]: data[i].tdishburse_acc_name, [language === null ? ind.catatan : language.catatan]: data[i].notes === null ? "-" : data[i].notes, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tdishburse_code, [language === null ? eng.waktu : language.waktu]: convertSimpleTimeStamp(data[i].tdishburse_crtdt), [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? eng.nominalDisburse : language.nominalDisburse]: data[i].tdishburse_amount, [language === null ? eng.totalDisburse : language.totalDisburse]: data[i].tdishburse_total_amount, [language === null ? eng.tujuanDisburse : language.tujuanDisburse]: data[i].payment_type, [language === null ? eng.cabang : language.cabang]: data[i].branch_name === null ? "-" : data[i].branch_name, [language === null ? eng.nomorRekTujuan : language.nomorRekTujuan]: data[i].tdishburse_acc_num, [language === null ? eng.namaPemilikRek : language.namaPemilikRek]: data[i].tdishburse_acc_name, [language === null ? eng.catatan : language.catatan]: data[i].notes === null ? "-" : data[i].notes, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanDisbursementExcel : language.laporanDisbursementExcel}.xlsx`);
                     }
                 } catch (error) {
                     // console.log(error)
@@ -707,23 +707,23 @@ function Disbursement() {
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ [language === null ? ind.no : language.no]: i + 1, [language === null ? ind.idTransaksi : language.idTransaksi]: data[i].tdishburse_code, [language === null ? ind.waktu : language.waktu]: convertSimpleTimeStamp(data[i].tdishburse_crtdt), [language === null ? ind.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? ind.nominalDisburse : language.nominalDisburse]: data[i].tdishburse_amount, [language === null ? ind.totalDisburse : language.totalDisburse]: data[i].tdishburse_total_amount, [language === null ? ind.tujuanDisburse : language.tujuanDisburse]: data[i].payment_type, [language === null ? ind.cabang : language.cabang]: data[i].branch_name === null ? "-" : data[i].branch_name, [language === null ? ind.nomorRekTujuan : language.nomorRekTujuan]: data[i].tdishburse_acc_num, [language === null ? ind.namaPemilikRek : language.namaPemilikRek]: data[i].tdishburse_acc_name, [language === null ? ind.catatan : language.catatan]: data[i].notes === null ? "-" : data[i].notes, [language === null ? ind.status : language.status]: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tdishburse_code, [language === null ? eng.waktu : language.waktu]: convertSimpleTimeStamp(data[i].tdishburse_crtdt), [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? eng.nominalDisburse : language.nominalDisburse]: data[i].tdishburse_amount, [language === null ? eng.totalDisburse : language.totalDisburse]: data[i].tdishburse_total_amount, [language === null ? eng.tujuanDisburse : language.tujuanDisburse]: data[i].payment_type, [language === null ? eng.cabang : language.cabang]: data[i].branch_name === null ? "-" : data[i].branch_name, [language === null ? eng.nomorRekTujuan : language.nomorRekTujuan]: data[i].tdishburse_acc_num, [language === null ? eng.namaPemilikRek : language.namaPemilikRek]: data[i].tdishburse_acc_name, [language === null ? eng.catatan : language.catatan]: data[i].notes === null ? "-" : data[i].notes, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanDisbursementExcel : language.laporanDisbursementExcel}.xlsx`);
                     } else if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token !== null) {
                         setUserSession(dataExportDisbursement.data.response_new_token)
                         const data = dataExportDisbursement.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdishburse_code, Waktu: convertSimpleTimeStamp(data[i].tdishburse_crtdt), "Partner Trans ID": data[i].partner_trans_id, "Nominal Disbursement": data[i].tdishburse_amount, "Total Disbursement": data[i].tdishburse_total_amount, "Tujuan Disbursement": data[i].payment_type, Cabang: data[i].branch_name === null ? "-" : data[i].branch_name, "Nomor Rekening Tujuan": data[i].tdishburse_acc_num, "Nama Pemilik Rekening": data[i].tdishburse_acc_name, Catatan: data[i].notes === null ? "-" : data[i].notes, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tdishburse_code, [language === null ? eng.waktu : language.waktu]: convertSimpleTimeStamp(data[i].tdishburse_crtdt), [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? eng.nominalDisburse : language.nominalDisburse]: data[i].tdishburse_amount, [language === null ? eng.totalDisburse : language.totalDisburse]: data[i].tdishburse_total_amount, [language === null ? eng.tujuanDisburse : language.tujuanDisburse]: data[i].payment_type, [language === null ? eng.cabang : language.cabang]: data[i].branch_name === null ? "-" : data[i].branch_name, [language === null ? eng.nomorRekTujuan : language.nomorRekTujuan]: data[i].tdishburse_acc_num, [language === null ? eng.namaPemilikRek : language.namaPemilikRek]: data[i].tdishburse_acc_name, [language === null ? eng.catatan : language.catatan]: data[i].notes === null ? "-" : data[i].notes, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanDisbursementExcel : language.laporanDisbursementExcel}.xlsx`);
                     }
                 } catch (error) {
                     // console.log(error);
@@ -781,15 +781,15 @@ function Disbursement() {
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>{(user_role === "102") ? <><span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? ind.laporan : language.laporan}</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.riwayatDisburse : language.riwayatDisburse}</> : <><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</>}</span> 
+            <span className='breadcrumbs-span'>{(user_role === "102") ? <><span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.riwayatDisburse : language.riwayatDisburse}</> : <><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</>}</span> 
             <div className='head-title'>
-                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{(user_role === "102") ? (language === null ? ind.riwayatDisburse : language.riwayatDisburse) : "Disbursement Report"}</h2>
+                <h2 className="h5 mb-3 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{(user_role === "102") ? (language === null ? eng.riwayatDisburse : language.riwayatDisburse) : "Disbursement Report"}</h2>
             </div>
             <div className='main-content'>
                 <div className='mt-2'>
-                    <span className='mt-4' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600}}>{(user_role === "102") ? (language === null ? ind.riwayatDisburse : language.riwayatDisburse) : "Disbursement Report"}</span>
+                    <span className='mt-4' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600}}>{(user_role === "102") ? (language === null ? eng.riwayatDisburse : language.riwayatDisburse) : "Disbursement Report"}</span>
                     <div className='base-content mt-3'>
-                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? ind.filter : language.filter}</span>
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? eng.filter : language.filter}</span>
                         {
                             user_role !== "102" ?
                             <>
@@ -904,28 +904,28 @@ function Disbursement() {
                             <>
                                 <Row className='mt-4'>
                                     <Col xs={4} className="d-flex justify-content-between  align-items-center">
-                                        <span className={language !== null ? (language.flagName === "CN" ? 'me-5' : 'me-4') : 'me-4'}>{language === null ? ind.idTransaksi : language.idTransaksi}</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className={language !== null ? (language.flagName === "CN" ? 'input-text-report ms-5' : 'input-text-report ') : 'input-text-report '} placeholder={language === null ? ind.placeholderIdTrans : language.placeholderIdTrans}/>
+                                        <span className={language !== null ? (language.flagName === "CN" ? 'me-5' : 'me-4') : 'me-4'}>{language === null ? eng.idTransaksi : language.idTransaksi}</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className={language !== null ? (language.flagName === "CN" ? 'input-text-report ms-5' : 'input-text-report ') : 'input-text-report '} placeholder={language === null ? eng.placeholderIdTrans : language.placeholderIdTrans}/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-between align-items-center" style={{  width: "34%" }}>
-                                        <span style={{ marginRight: 26 }}>{language === null ? ind.periode : language.periode} <span style={{ color: "red" }}>*</span></span>
+                                        <span style={{ marginRight: 26 }}>{language === null ? eng.periode : language.periode} <span style={{ color: "red" }}>*</span></span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez me-2" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
-                                            <option defaultChecked disabled value={0}>{language === null ? ind.pilihPeriode : language.pilihPeriode}</option>
-                                            <option value={2}>{language === null ? ind.hariIni : language.hariIni}</option>
-                                            <option value={3}>{language === null ? ind.kemarin : language.kemarin}</option>
-                                            <option value={4}>{language === null ? ind.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
-                                            <option value={5}>{language === null ? ind.bulanIni : language.bulanIni}</option>
-                                            <option value={6}>{language === null ? ind.bulanKemarin : language.bulanKemarin}</option>
-                                            <option value={7}>{language === null ? ind.pilihRangeTanggal : language.pilihRangeTanggal}</option>
+                                            <option defaultChecked disabled value={0}>{language === null ? eng.pilihPeriode : language.pilihPeriode}</option>
+                                            <option value={2}>{language === null ? eng.hariIni : language.hariIni}</option>
+                                            <option value={3}>{language === null ? eng.kemarin : language.kemarin}</option>
+                                            <option value={4}>{language === null ? eng.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                            <option value={5}>{language === null ? eng.bulanIni : language.bulanIni}</option>
+                                            <option value={6}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
+                                            <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                         </Form.Select>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: "30%"}}>
-                                        <span>{language === null ? ind.status : language.status}</span>
+                                        <span>{language === null ? eng.status : language.status}</span>
                                         <Form.Select name="statusDisbursement" className='input-text-ez me-4' style={{ display: "inline" }} value={inputHandle.statusDisbursement} onChange={(e) => handleChange(e)}>
-                                            <option defaultChecked disabled value="">{language === null ? ind.placeholderStatus : language.placeholderStatus}</option>
-                                            <option value={2}>{language === null ? ind.berhasil : language.berhasil}</option>
-                                            <option value={1}>{language === null ? ind.dalamProses : language.dalamProses}</option>
-                                            <option value={4}>{language === null ? ind.gagal : language.gagal}</option>
+                                            <option defaultChecked disabled value="">{language === null ? eng.placeholderStatus : language.placeholderStatus}</option>
+                                            <option value={2}>{language === null ? eng.berhasil : language.berhasil}</option>
+                                            <option value={1}>{language === null ? eng.dalamProses : language.dalamProses}</option>
+                                            <option value={4}>{language === null ? eng.gagal : language.gagal}</option>
                                             {/* <option value={7}>Menunggu Pembayaran</option> */}
                                             {/* <option value={9}>Kadaluwarsa</option> */}
                                         </Form.Select>
@@ -934,8 +934,8 @@ function Disbursement() {
                                 </Row>
                                 <Row className='mt-3'>
                                     <Col xs={4} className='d-flex justify-content-between align-items-center'>
-                                        <span>{language === null ? ind.partnerTransId : language.partnerTransId}</span>
-                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder={language === null ? ind.placeholderPartnerTransId : language.placeholderPartnerTransId}/>
+                                        <span>{language === null ? eng.partnerTransId : language.partnerTransId}</span>
+                                        <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder={language === null ? eng.placeholderPartnerTransId : language.placeholderPartnerTransId}/>
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-end align-items-center" >
                                         <div style={{ display: showDateDisbursement}} className='me-4'>
@@ -955,11 +955,11 @@ function Disbursement() {
                                 <Row>
                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                         <button
-                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0, language === null ? 'ID' : language.flagName)}
+                                            onClick={() => filterDisbursement(1, inputHandle.statusDisbursement, inputHandle.idTransaksiDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, 0, language === null ? 'EN' : language.flagName)}
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
-                                            {language === null ? ind.terapkan : language.terapkan}
+                                            {language === null ? eng.terapkan : language.terapkan}
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
@@ -968,7 +968,7 @@ function Disbursement() {
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
-                                            {language === null ? ind.aturUlang : language.aturUlang}
+                                            {language === null ? eng.aturUlang : language.aturUlang}
                                         </button>
                                     </Col>
                                 </Row>
@@ -979,8 +979,8 @@ function Disbursement() {
                                 <div className='d-flex justify-content-start align-items-center mt-3 mb-2' style={{ color: '#383838', padding: '12px 12px 12px 12px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" />
                                     <div className='ms-2'>{
-                                        (language === null || language.flagName === "ID") ? <>Status transaksi Disbursement Anda akan diperbaharui setiap <b>20 menit</b> sekali. Harap periksa laman ini secara berkala untuk pembaharuan status transaksi.</> :
-                                        language.flagName === "EN" ? <>Your Disbursement transaction status will be updated every <b>20 minutes</b>. Please check this page periodically for transaction status updates.</> :
+                                        (language === null || language.flagName === "EN") ? <>Your Disbursement transaction status will be updated every <b>20 minutes</b>. Please check this page periodically for transaction status updates.</> :
+                                        language.flagName === "ID" ? <>Status transaksi Disbursement Anda akan diperbaharui setiap <b>20 menit</b> sekali. Harap periksa laman ini secara berkala untuk pembaharuan status transaksi.</> :
                                         <>您的付款交易状态将每 <b>20</b> 分钟更新一次。 请定期查看此页面以获取交易状态更新。</>
                                     }</div>
                                 </div>
@@ -989,7 +989,7 @@ function Disbursement() {
                         {
                             dataDisbursement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", inputHandle.idTransaksiDisbursement, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, language === null ? 'ID' : language.flagName)} className="export-span">{language === null ? ind.export : language.export}</Link>
+                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", inputHandle.idTransaksiDisbursement, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
@@ -1000,12 +1000,12 @@ function Disbursement() {
                                 progressPending={pendingDisbursement}
                                 progressComponent={<CustomLoader />}
                                 dense
-                                noDataComponent={<div style={{ marginBottom: 10 }}>{language === null ? ind.tidakAdaData : language.tidakAdaData}</div>}
+                                noDataComponent={<div style={{ marginBottom: 10 }}>{language === null ? eng.tidakAdaData : language.tidakAdaData}</div>}
                                 // pagination
                             />
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                        <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? ind.totalHalaman : language.totalHalaman} : {totalPageDisbursement}</div>
+                        <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageDisbursement}</div>
                             <Pagination
                                 activePage={activePageDisbursement}
                                 itemsCountPerPage={pageNumberDisbursement.row_per_page}

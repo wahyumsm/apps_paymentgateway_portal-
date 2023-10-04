@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { ind } from '../../components/Language';
+import { eng } from '../../components/Language';
 import validator from "validator";
 
 function DetailAkun() {
@@ -47,24 +47,24 @@ function DetailAkun() {
 
     const columns = [
         {
-            name: language === null ? ind.no : language.no,
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: language === null ? ind.sumberAgen : language.sumberAgen,
+            name: language === null ? eng.sumberAgen : language.sumberAgen,
             selector: row => row.agen_source,
         },
         {
-            name: language === null ? ind.namaBank : language.namaBank,
+            name: language === null ? eng.namaBank : language.namaBank,
             selector: row => row.bank_name,
         },
         {
-            name: language === null ? ind.noRek : language.noRek,
+            name: language === null ? eng.noRek : language.noRek,
             selector: row => row.bank_number,
         },
         {
-            name: language === null ? ind.namaPemilikRek : language.namaPemilikRek,
+            name: language === null ? eng.namaPemilikRek : language.namaPemilikRek,
             selector: row => row.bank_account_name,
         }
     ]
@@ -228,13 +228,13 @@ function DetailAkun() {
 
   return (
     <div className='container-content mt-5'>
-        <span className='breadcrumbs-span'>{language === null ? ind.laporan : language.laporan}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? ind.detailAkun : language.detailAkun}</span>
+        <span className='breadcrumbs-span'>{language === null ? eng.laporan : language.laporan}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.detailAkun : language.detailAkun}</span>
         <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
             <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => detailAkunTabs(true)} id="detailakuntab">
-                <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">{language === null ? ind.detailAkun : language.detailAkun}</span>
+                <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">{language === null ? eng.detailAkun : language.detailAkun}</span>
             </div>
             <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => detailAkunTabs(false)} id="konfigurasitab">
-                <span className='menu-detail-akun-span' id="konfigurasispan">{language === null ? ind.konfigurasi : language.konfigurasi}</span>
+                <span className='menu-detail-akun-span' id="konfigurasispan">{language === null ? eng.konfigurasi : language.konfigurasi}</span>
             </div>
         </div>
         {
@@ -243,7 +243,7 @@ function DetailAkun() {
             <div className='detail-akun-section'>        
                 <hr className='hr-style' style={{marginTop: -2}}/>
                 <br/>
-                <span className='head-title'>Profil Perusahaan</span>
+                <span className='head-title'>{language === null ? eng.profilPerusahaan : language.profilPerusahaan}</span>
                 <br/>
                 <br/>
                 <div className='base-content'>
@@ -251,35 +251,35 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.status : language.status}</td>
+                                <td style={{width: 200}}>{language === null ? eng.status : language.status}</td>
                                 {dataAkun.mpartner_is_active === true ? 
-                                    <td><div className='active-box'><span className='active-box-span'>{language === null ? ind.aktif : language.aktif}</span></div></td>
+                                    <td><div className='active-box'><span className='active-box-span'>{language === null ? eng.aktif : language.aktif}</span></div></td>
                                     :
-                                    <td><div className='inactive-box'><span className='inactive-box-span'>{language === null ? ind.tidakAktif : language.tidakAktif}</span></div></td>}
+                                    <td><div className='inactive-box'><span className='inactive-box-span'>{language === null ? eng.tidakAktif : language.tidakAktif}</span></div></td>}
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.idPartner : language.idPartner}</td>
+                                <td style={{width: 200}}>{language === null ? eng.idPartner : language.idPartner}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_id} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.namaPerusahaan : language.namaPerusahaan}</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaPerusahaan : language.namaPerusahaan}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.emailPerusahaan : language.emailPerusahaan}</td>
+                                <td style={{width: 200}}>{language === null ? eng.emailPerusahaan : language.emailPerusahaan}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_email} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.noTelp : language.noTelp}</td>
+                                <td style={{width: 200}}>{language === null ? eng.noTelp : language.noTelp}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_telp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.alamat : language.alamat}</td>
+                                <td style={{width: 200}}>{language === null ? eng.alamat : language.alamat}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_address} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -287,7 +287,7 @@ function DetailAkun() {
                     </table>
                 </div>
                 <br/>
-                <span className='head-title'>Detail NPWP</span>
+                <span className='head-title'>{language === null ? eng.detailNpwp : language.detailNpwp}</span>
                 <br/>
                 <br/>
                 <div className='base-content'>
@@ -295,12 +295,12 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.noNpwp : language.noNpwp}</td>
+                                <td style={{width: 200}}>{language === null ? eng.noNpwp : language.noNpwp}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_npwp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.namaNpwp : language.namaNpwp}</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaNpwp : language.namaNpwp}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_npwp_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -308,7 +308,7 @@ function DetailAkun() {
                     </table>
                 </div>
                 <br/>
-                <span className='head-title'>Profil Direktur Perusahaan</span>
+                <span className='head-title'>{language === null ? eng.profilDirekturPerusahaan : language.profilDirekturPerusahaan}</span>
                 <br/>
                 <br/>
                 <div className='base-content'>
@@ -316,12 +316,12 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.namaDirektur : language.namaDirektur}</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaDirektur : language.namaDirektur}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_direktur} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.noHpDirektur : language.noHpDirektur}</td>
+                                <td style={{width: 200}}>{language === null ? eng.noHpDirektur : language.noHpDirektur}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_direktur_telp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -329,7 +329,7 @@ function DetailAkun() {
                     </table>
                 </div>
                 <br/>
-                <span className='head-title'>Rekening</span>
+                <span className='head-title'>{language === null ? eng.rekening : language.rekening}</span>
                 <br/>
                 <br/>
                 <div className='base-content'>
@@ -337,17 +337,17 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.namaBank : language.namaBank}</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaBank : language.namaBank}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mbank_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.noRek : language.noRek}</td>
+                                <td style={{width: 200}}>{language === null ? eng.noRek : language.noRek}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_number} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.namaPemilikRek : language.namaPemilikRek}</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -355,7 +355,7 @@ function DetailAkun() {
                     </table>
                 </div>
                 <br/>
-                <span className='head-title'>Rekening Sub Account</span>
+                <span className='head-title'>{language === null ? eng.rekeningSubAkun : language.rekeningSubAkun}</span>
                 <br/>
                 <br/>
                 <div className='base-content mb-5'>
@@ -363,22 +363,22 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.sumberAgen : language.sumberAgen}</td>
+                                <td style={{width: 200}}>{language === null ? eng.sumberAgen : language.sumberAgen}</td>
                                 <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].agen_source : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.namaBank : language.namaBank}</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaBank : language.namaBank}</td>
                                 <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_name : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.noRek : language.noRek}</td>
+                                <td style={{width: 200}}>{language === null ? eng.noRek : language.noRek}</td>
                                 <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_number : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>{language === null ? ind.namaPemilikRek : language.namaPemilikRek}</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</td>
                                 <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_account_name : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -390,12 +390,12 @@ function DetailAkun() {
                             expandedSubAcc ?
                                 <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
                                     <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
-                                        Sembunyikan daftar sub account <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
+                                        {language === null ? eng.sembunyikanDaftarSubAkun : language.sembunyikanDaftarSubAkun} <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
                                     </button>
                                 </div> :
                                 <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
                                     <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
-                                        Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="ms-2" />
+                                        {language === null ? eng.lihatDaftarSubAkun : language.lihatDaftarSubAkun} <FontAwesomeIcon icon={faChevronDown} className="ms-2" />
                                     </button>
                                 </div>
                         ) : ""
@@ -426,7 +426,7 @@ function DetailAkun() {
                     <hr className='hr-style' style={{marginTop: -25}}/>
                     <div className='base-content'>
                         {/* <span>You will need to know your <b>Partner ID</b> and <b>Secret Key</b> to communicate with Ezeelink. Please use the Development server while you are still in development.</span> */}
-                        <span>{language === null ? ind.descSectionOneSub : language.descSectionOneSub} <b>{language === null ? ind.partnerId : language.partnerId}</b> {language === null ? ind.dan : language.dan} <b>Secret Key</b> {language === null ? ind.descSectionTwoSub : language.descSectionTwoSub}</span>
+                        <span>{language === null ? eng.descSectionOneSub : language.descSectionOneSub} <b>{language === null ? eng.partnerId : language.partnerId}</b> {language === null ? eng.dan : language.dan} <b>Secret Key</b> {language === null ? eng.descSectionTwoSub : language.descSectionTwoSub}</span>
                         <br/>
                         <br/>
                         <p className='head-title'>API Keys</p>
@@ -435,7 +435,7 @@ function DetailAkun() {
                                 <thead></thead>
                                 <tbody>
                                     <tr>
-                                        <td>{language === null ? ind.partnerId : language.partnerId}</td>
+                                        <td>{language === null ? eng.partnerId : language.partnerId}</td>
                                         <td>:</td>
                                         <td><span><b>{dataAkun.mpartner_id}</b></span></td>
                                     </tr>
@@ -457,7 +457,7 @@ function DetailAkun() {
                         <div className='base-content' style={{background: 'rgba(255, 214, 0, 0.16)', borderRadius: 4, padding: 12}}>
                             <span>
                                 <i>
-                                    {language === null ? ind.thisKeyInKonfigurasi : language.thisKeyInKonfigurasi} <b><u>{language === null ? ind.hubungiKami : language.hubungiKami}</u></b>
+                                    {language === null ? eng.thisKeyInKonfigurasi : language.thisKeyInKonfigurasi} <b><u>{language === null ? eng.hubungiKami : language.hubungiKami}</u></b>
                                 </i>
                             </span>
                         </div>
@@ -465,7 +465,7 @@ function DetailAkun() {
                     </div>
                     <br/>
                     <div className="base-content mb-5">
-                        <p>{language === null ? ind.ezeelinkMemerlukanUrl : language.ezeelinkMemerlukanUrl}</p>
+                        <p>{language === null ? eng.ezeelinkMemerlukanUrl : language.ezeelinkMemerlukanUrl}</p>
                         <br/>
                         <Row>
                             {
@@ -482,7 +482,7 @@ function DetailAkun() {
                                                     {
                                                         errorURL.length !== 0 && (errorURL.find(el => el === String(item.mcallbackurl_id)) !== undefined || String(errorURL.find(el => el === String(item.mcallbackurl_id))).length === 0) ?
                                                         <p>{"Format URL salah"}</p> :
-                                                        <p>{language === null ? ind.addressUrl : language.addressUrl}</p>
+                                                        <p>{language === null ? eng.addressUrl : language.addressUrl}</p>
                                                     }
                                                     {/* <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p> */}
                                                     <br/>
@@ -493,19 +493,19 @@ function DetailAkun() {
                                 })
                             }
                             {/* <Col xs={3}>
-                                <span>{language === null ? ind.paymentNotifUrl : language.paymentNotifUrl}*</span>
+                                <span>{language === null ? eng.paymentNotifUrl : language.paymentNotifUrl}*</span>
                             </Col>
                             <Col xs={9}>
                                 <div>
                                     <input type='text'className='input-text-ez' onChange={handleChange} defaultValue={dataAkun.callback_url} name="callbackUrl" style={{width: '100%', marginLeft: 'unset'}}/> 
-                                    <p>{language === null ? ind.addressUrl : language.addressUrl}</p>
+                                    <p>{language === null ? eng.addressUrl : language.addressUrl}</p>
                                     <br/>
                                 </div>
                             </Col> */}
                         </Row>
                         <div style={{ display: "flex", justifyContent: "end", marginTop: 16 }}>
                         <button onClick={() => updateUrlCallback(dataAkun.mpartner_id, inputHandle, dataListCallBack)} className='mb-5' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
-                            {language === null ? ind.update : language.update}
+                            {language === null ? eng.update : language.update}
                         </button>
                     </div>
                     </div>
