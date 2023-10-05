@@ -21,7 +21,11 @@ const GetBalance = () => {
     function balance(isTabs){
         if(isTabs === "getBalance"){
             setIsGetBalance(isTabs)
-            setBankTypeMutasi("")
+            setInputMutasi({
+                ...inputMutasi,
+                bankTypeMutasi: "",
+                pinNumberMutasi: ""
+            })
             setDataMutasi({})
             setDateRangeGetMutasi([])
             setStateGetMutasi(null)
@@ -30,7 +34,8 @@ const GetBalance = () => {
                 accNumber: "",
                 accName: "",
                 amount: "",
-                desc: ""
+                desc: "",
+                pinNumber: ""
             })
             setDataTransferBif({}) 
             setInputDataOnline({
@@ -38,7 +43,8 @@ const GetBalance = () => {
                 accNumber: "",
                 accName: "",
                 amount: "",
-                desc: ""
+                desc: "",
+                pinNumber: ""
             })
             setDataTransferOnline({})
             $('#getbalancetab').addClass('menu-detail-akun-hr-active')
@@ -62,7 +68,8 @@ const GetBalance = () => {
                 accNumber: "",
                 accName: "",
                 amount: "",
-                desc: ""
+                desc: "",
+                pinNumber: ""
             })
             setDataTransferBif({})
             setInputDataOnline({
@@ -70,7 +77,8 @@ const GetBalance = () => {
                 accNumber: "",
                 accName: "",
                 amount: "",
-                desc: ""
+                desc: "",
+                pinNumber: ""
             })
             setDataTransferOnline({})
             $('#getbalancetab').removeClass('menu-detail-akun-hr-active')
@@ -89,7 +97,11 @@ const GetBalance = () => {
             })
             setDataGetBalance({})
             setDataBankBalance({})
-            setBankTypeMutasi("")
+            setInputMutasi({
+                ...inputMutasi,
+                bankTypeMutasi: "",
+                pinNumberMutasi: ""
+            })
             setDataMutasi({})
             setDateRangeGetMutasi([])
             setStateGetMutasi(null)
@@ -98,7 +110,8 @@ const GetBalance = () => {
                 accNumber: "",
                 accName: "",
                 amount: "",
-                desc: ""
+                desc: "",
+                pinNumber: ""
             })
             setDataTransferOnline({})
             $('#getbalancetab').removeClass('menu-detail-akun-hr-active')
@@ -117,7 +130,11 @@ const GetBalance = () => {
             })
             setDataGetBalance({})
             setDataBankBalance({})
-            setBankTypeMutasi("")
+            setInputMutasi({
+                ...inputMutasi,
+                bankTypeMutasi: "",
+                pinNumberMutasi: ""
+            })
             setDataMutasi({})
             setDateRangeGetMutasi([])
             setStateGetMutasi(null)
@@ -126,7 +143,8 @@ const GetBalance = () => {
                 accNumber: "",
                 accName: "",
                 amount: "",
-                desc: ""
+                desc: "",
+                pinNumber: ""
             })
             setDataTransferBif({}) 
             $('#getbalancetab').removeClass('menu-detail-akun-hr-active')
@@ -182,8 +200,11 @@ const GetBalance = () => {
                 setDataBankBalance(dataGetBalance.data.response_data.results.additionalMessage)
             }
         } catch (error) {
-          // console.log(error)
-          history.push(errorCatch(error.response.status))
+            console.log(error)
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+            }
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -199,17 +220,23 @@ const GetBalance = () => {
 
     /* FUNCTION TAB MUTASI */
 
-    const [bankTypeMutasi, setBankTypeMutasi] = useState("")
+    const [inputMutasi, setInputMutasi] = useState({
+        bankTypeMutasi: "",
+        pinNumberMutasi: ""
+    })
     const [dataMutasi, setDataMutasi] = useState({})
     const [dateRangeGetMutasi, setDateRangeGetMutasi] = useState([])
     const [stateGetMutasi, setStateGetMutasi] = useState(null)
     console.log(dateRangeGetMutasi, "dateRangeGetMutasi");
 
     function handleChangeMutasi(e) {
-        setBankTypeMutasi(e.target.value)
+        setInputMutasi({
+            ...inputMutasi,
+            [e.target.name] : e.target.value
+        })
     }
 
-    function pickDateDanaMasuk(item) {
+    function pickDateMutasi(item) {
         setStateGetMutasi(item)
         if (item !== null) {
           item = item.map(el => el.toLocaleDateString('en-CA'))
@@ -217,10 +244,10 @@ const GetBalance = () => {
         }
     }
 
-    async function GetMutasiBank(bankType, periode, next) {
+    async function GetMutasiBank(bankType, pinNumber, periode, next) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"bankType": "${bankType}", "endDate": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "NextRecord": "${next}"}`)
+            const dataParams = encryptData(`{"bankType": "${bankType}", "PinNumber": "${pinNumber}", "endDate": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "NextRecord": "${next}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -234,11 +261,25 @@ const GetBalance = () => {
                 setDataMutasi(dataGetMutasi.data.response_data.results)
             }
         } catch (error) {
-          // console.log(error)
-          history.push(errorCatch(error.response.status))
+            // console.log(error)
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+            }
+            history.push(errorCatch(error.response.status))
         }
     }
     console.log(dataMutasi, "dataMutasi");
+
+    function resetButtonHandleMutasi() {
+        setInputMutasi({
+            ...inputMutasi,
+            bankTypeMutasi: "",
+            pinNumberMutasi: ""
+        })
+        setDataMutasi({})
+        setDateRangeGetMutasi([])
+        setStateGetMutasi(null)
+    }
 
     /* FUNCTION TAB TRANSFER BIF */
 
@@ -247,7 +288,8 @@ const GetBalance = () => {
         accNumber: "",
         accName: "",
         amount: "",
-        desc: ""
+        desc: "",
+        pinNumber: ""
     })
     const [dataTransferBif, setDataTransferBif] = useState({})
     console.log(dataTransferBif, "dataTransferBif");
@@ -259,10 +301,10 @@ const GetBalance = () => {
         })
     }
 
-    async function TransferBIFHandler(bankCode, accNumber, accName, amount, note) {
+    async function TransferBIFHandler(bankCode, accNumber, accName, amount, note, pinNumber) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"BankCode": "${bankCode}", "BeneficiaryAccountNumber": "${accNumber}", "BeneficiaryAccountName": "${accName}", "SettlementAmount": "${amount}", "Description": "${note}"}`)
+            const dataParams = encryptData(`{"BankCode": "${bankCode}", "BeneficiaryAccountNumber": "${accNumber}", "BeneficiaryAccountName": "${accName}", "SettlementAmount": "${amount}", "Description": "${note}", "PinNumber": "${pinNumber}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -276,8 +318,11 @@ const GetBalance = () => {
                 setDataTransferBif(dataTransferBif.data.response_data.results)
             }
         } catch (error) {
-          // console.log(error)
-          history.push(errorCatch(error.response.status))
+            // console.log(error)
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+            }
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -288,7 +333,8 @@ const GetBalance = () => {
         accNumber: "",
         accName: "",
         amount: "",
-        desc: ""
+        desc: "",
+        pinNumber: ""
     })
     const [dataTransferOnline, setDataTransferOnline] = useState({})
     console.log(dataTransferOnline, "dataTransferOnline");
@@ -300,10 +346,10 @@ const GetBalance = () => {
         })
     }
 
-    async function TransferOnlineHandler(bankCode, accNumber, accName, amount, note) {
+    async function TransferOnlineHandler(bankCode, accNumber, accName, amount, note, pinNumber) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"BankCode": "${bankCode}", "BeneficiaryAccountNumber": "${accNumber}", "BeneficiaryAccountName": "${accName}", "Amount": "${amount}", "Description": "${note}"}`)
+            const dataParams = encryptData(`{"BankCode": "${bankCode}", "BeneficiaryAccountNumber": "${accNumber}", "BeneficiaryAccountName": "${accName}", "Amount": "${amount}", "Description": "${note}", "PinNumber": "${pinNumber}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -317,8 +363,11 @@ const GetBalance = () => {
                 setDataTransferOnline(dataTransferOnline.data.response_data.results)
             }
         } catch (error) {
-          // console.log(error)
-          history.push(errorCatch(error.response.status))
+            // console.log(error)
+            if (error.response.status === 400 && error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+            }
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -389,8 +438,8 @@ const GetBalance = () => {
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => resetButtonHandle()}
-                                                className={(inputGetBalance.bankType.length !== 0 && inputGetBalance.pinNumber.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                                disabled={inputGetBalance.bankType.length === 0 || inputGetBalance.pinNumber.length === 0}
+                                                className={(inputGetBalance.bankType.length !== 0 || inputGetBalance.pinNumber.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={inputGetBalance.bankType.length === 0 && inputGetBalance.pinNumber.length === 0}
                                             >
                                                 Atur Ulang
                                             </button>
@@ -414,10 +463,10 @@ const GetBalance = () => {
                         </>
                     ) : isGetBalance === "mutasi" ? (
                         <>
-                            <Row className='pb-4'>
+                            <Row className=''>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <div style={{ width: "" }}>Nama Bank <span style={{ color: "red" }}>*</span></div>
-                                    <Form.Select name="statusDanaMasuk" className='input-text-ez me-3' style={{ display: "inline" }} value={bankTypeMutasi} onChange={(e) => handleChangeMutasi(e)}>
+                                    <Form.Select name="bankTypeMutasi" className='input-text-ez me-3' style={{ display: "inline" }} value={inputMutasi.bankTypeMutasi} onChange={(e) => handleChangeMutasi(e)}>
                                         <option defaultChecked disabled value="">Pilih Bank</option>
                                         <option value={"014"}>Bank BCA</option>
                                         <option value={"022"}>Bank CIMB Niaga</option>
@@ -428,32 +477,52 @@ const GetBalance = () => {
                                         <option value={"009"}>Bank BNI</option>
                                     </Form.Select>
                                 </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <div style={{ width: "30%" }}>PIN <span style={{ color: "red" }}>*</span></div>
+                                    <Form.Control name="pinNumberMutasi" className='input-text-user' type="text" placeholder="Masukkan PIN" value={inputMutasi.pinNumberMutasi} onChange={(e) => handleChangeMutasi(e)}  />
+                                </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <div className='me-3' style={{ width: "" }}>Periode <span style={{ color: "red" }}>*</span></div>
                                     <DateRangePicker
-                                        onChange={pickDateDanaMasuk}
+                                        onChange={pickDateMutasi}
                                         value={stateGetMutasi}
                                         clearIcon={null}
                                     />
                                 </Col>
-                                <Col xs={2} className="d-flex justify-content-start align-items-center">
-                                    <button
-                                        className='btn-ez-on'
-                                        style={{ width: "", padding: "0px 15px" }}
-                                        onClick={() => GetMutasiBank(bankTypeMutasi, dateRangeGetMutasi, "N")}
-                                    >
-                                        Terapkan
-                                    </button>
+                            </Row>
+                            <Row className='mt-4 pb-4'>
+                                <Col xs={5}>
+                                    <Row>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                            <button
+                                                className={(inputMutasi.bankTypeMutasi.length !== 0 && inputMutasi.pinNumberMutasi.length !== 0 && dateRangeGetMutasi.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                                disabled={inputMutasi.bankTypeMutasi.length === 0 || inputMutasi.pinNumberMutasi.length === 0 || dateRangeGetMutasi.length === 0}
+                                                onClick={() => GetMutasiBank(inputMutasi.bankTypeMutasi, inputMutasi.pinNumberMutasi, dateRangeGetMutasi, "N")}
+                                            >
+                                                Terapkan
+                                            </button>
+                                        </Col>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                            <button
+                                                className={(inputMutasi.bankTypeMutasi.length !== 0 || inputMutasi.pinNumberMutasi.length !== 0 || dateRangeGetMutasi.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={inputMutasi.bankTypeMutasi.length === 0 && inputMutasi.pinNumberMutasi.length === 0 && dateRangeGetMutasi.length === 0}
+                                                onClick={() => resetButtonHandleMutasi()}
+                                            >
+                                                Atur Ulang
+                                            </button>
+                                        </Col>
+                                    </Row>
                                 </Col>
                             </Row>
                             {
-                                (bankTypeMutasi === "011" || bankTypeMutasi === "013") && (
+                                (inputMutasi.bankTypeMutasi === "011" || inputMutasi.bankTypeMutasi === "013") && (
                                     <Row className="d-flex justify-content-end align-items-center">
                                         <Col xs={2} >
                                             <button
-                                                className='btn-ez-on'
+                                                className={(Object.keys(dataMutasi).length !== 0 && dataMutasi.nextRecord === "Y") ? 'btn-ez-on' : 'btn-ez'}
+                                                disabled={Object.keys(dataMutasi).length === 0 || (Object.keys(dataMutasi).length !== 0 && dataMutasi.nextRecord === "N")}
                                                 style={{ width: "", padding: "0px 15px" }}
-                                                onClick={() => GetMutasiBank(bankTypeMutasi, dateRangeGetMutasi, dataMutasi.nextRecord)}
+                                                onClick={() => GetMutasiBank(inputMutasi.bankTypeMutasi, inputMutasi.pinNumberMutasi, dateRangeGetMutasi, dataMutasi.nextRecord)}
                                             >
                                                 Next
                                             </button>
@@ -521,12 +590,21 @@ const GetBalance = () => {
                                     <Form.Control name="desc" className='input-text-user' type="text" placeholder="Masukkan Catatan" value={inputDataBif.desc} onChange={(e) => handleChangeTransferBIF(e)} />
                                 </Col>
                             </Row>
+                            <Row className=' align-items-center pb-4'>
+                                <Col xs={2}>
+                                    <div style={{ width: "" }}>PIN <span style={{ color: "red" }}>*</span></div>
+                                </Col>
+                                <Col xs={10}>
+                                    <Form.Control name="pinNumber" className='input-text-user' type="text" placeholder="Masukkan PIN" value={inputDataBif.pinNumber} onChange={(e) => handleChangeTransferBIF(e)}  />
+                                </Col>
+                            </Row>
                             <Row className="d-flex justify-content-end align-items-center pb-4">
                                 <Col xs={2} >
                                     <button
-                                        className='btn-ez-on'
+                                        className={(inputDataBif.bankCode.length !== 0 && inputDataBif.accNumber.length !== 0 && inputDataBif.accName.length !== 0 && inputDataBif.amount.length !== 0 && inputDataBif.desc.length !== 0 && inputDataBif.pinNumber.length !== 0) ? 'btn-ez-on' :'btn-ez'}
+                                        disabled={inputDataBif.bankCode.length === 0 || inputDataBif.accNumber.length === 0 || inputDataBif.accName.length === 0 || inputDataBif.amount.length === 0 || inputDataBif.desc.length === 0 || inputDataBif.pinNumber.length === 0}
                                         style={{ width: "", padding: "0px 15px" }}
-                                        onClick={() => TransferBIFHandler(inputDataBif.bankCode, inputDataBif.accNumber, inputDataBif.accName, inputDataBif.amount, inputDataBif.desc)}
+                                        onClick={() => TransferBIFHandler(inputDataBif.bankCode, inputDataBif.accNumber, inputDataBif.accName, inputDataBif.amount, inputDataBif.desc, inputDataBif.pinNumber)}
                                     >
                                         Transfer BIF
                                     </button>
@@ -589,12 +667,21 @@ const GetBalance = () => {
                                     <Form.Control name="desc" className='input-text-user' type="text" placeholder="Masukkan Catatan" value={inputDataOnline.desc} onChange={(e) => handleChangeTransferOnline(e)} />
                                 </Col>
                             </Row>
+                            <Row className=' align-items-center pb-4'>
+                                <Col xs={2}>
+                                    <div style={{ width: "" }}>PIN <span style={{ color: "red" }}>*</span></div>
+                                </Col>
+                                <Col xs={10}>
+                                    <Form.Control name="pinNumber" className='input-text-user' type="text" placeholder="Masukkan PIN" value={inputDataOnline.pinNumber} onChange={(e) => handleChangeTransferOnline(e)}  />
+                                </Col>
+                            </Row>
                             <Row className="d-flex justify-content-end align-items-center pb-4">
                                 <Col xs={2} >
                                     <button
-                                        className='btn-ez-on'
+                                        className={(inputDataOnline.bankCode.length !== 0 && inputDataOnline.accNumber.length !== 0 && inputDataOnline.accNumber.length !== 0 && inputDataOnline.amount.length !== 0 && inputDataOnline.desc.length !== 0 && inputDataOnline.pinNumber.length !== 0) ? 'btn-ez-on' : 'btn-ez'}
+                                        disabled={inputDataOnline.bankCode.length === 0 || inputDataOnline.accNumber.length === 0 || inputDataOnline.accNumber.length === 0 || inputDataOnline.amount.length === 0 || inputDataOnline.desc.length === 0 || inputDataOnline.pinNumber.length === 0}
                                         style={{ width: "", padding: "0px 15px" }}
-                                        onClick={() => TransferOnlineHandler(inputDataOnline.bankCode, inputDataOnline.accNumber, inputDataOnline.accNumber, inputDataOnline.amount, inputDataOnline.desc)}
+                                        onClick={() => TransferOnlineHandler(inputDataOnline.bankCode, inputDataOnline.accNumber, inputDataOnline.accNumber, inputDataOnline.amount, inputDataOnline.desc, inputDataOnline.pinNumber)}
                                     >
                                         Transfer Online
                                     </button>
