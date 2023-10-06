@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Col, Image, Row, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap'
+import { Col, Image, Row } from '@themesberg/react-bootstrap'
 import DataTable from 'react-data-table-component'
 import { DateRangePicker } from 'rsuite'
 import { isAfter } from 'date-fns'
@@ -13,7 +13,6 @@ import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../fu
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
-import deleted from "../../assets/icon/delete_icon.svg";
 
 const { afterToday } = DateRangePicker;
 
@@ -79,23 +78,7 @@ const SettlementAdminManual = () => {
     }
 
     function toProsesSettlement () {
-        history.push("/settlement/proses-settlement-manual")
-    }
-
-    async function deleteDataHandler(settlementId) {
-        try {
-            const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"msettlmanual_id": "${settlementId}"}`)
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': auth
-            }
-            const deletedData = await axios.post(BaseURL + "/Settlement/DeleteManualSettlement", {data: dataParams}, {headers: headers})
-            console.log(deletedData, 'deletedData');
-        } catch (error) {
-            // console.log(error);
-            history.push(errorCatch(error.response.status))
-        }
+        history.push("/Settlement/proses-settlement-manual")
     }
 
     const columnList = [
@@ -118,23 +101,6 @@ const SettlementAdminManual = () => {
         {
             name: 'Date User',
             selector: row => row.settle_date,
-        },
-        {
-            name: 'Action',
-            width: "130px",
-            cell: (row) => (
-                <div className="d-flex justify-content-center align-items-center">
-                    <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Delete</div></Tooltip>}>
-                        <img
-                            onClick={() => deleteDataHandler(row.msettlmanual_id)}
-                            src={deleted}
-                            style={{ cursor: "pointer" }}
-                            className="ms-2"
-                            alt="icon delete"
-                        />
-                    </OverlayTrigger>
-                </div>
-            ),
         },
     ];
 
