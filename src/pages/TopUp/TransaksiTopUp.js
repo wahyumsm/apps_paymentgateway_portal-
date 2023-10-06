@@ -105,7 +105,7 @@ function TransaksiTopUp() {
     async function getListTransaskiTopup(currentPage) {
         try {
             const auth = "Bearer " + access_token
-            const dataParams = encryptData(`{"mewallet_code" : "", "partner_transid": "", "period": 2, "date_from": "", "date_to": "", "page": ${currentPage}, "row_per_page": 10, "ttopupewalletlog_status_id": [1,2,7,9]}`)
+            const dataParams = encryptData(`{"mewallet_code" : "", "period": 2, "date_from": "", "date_to": "", "page": ${currentPage}, "row_per_page": 10, "ttopupewalletlog_status_id": [1,2,7,9]}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -137,7 +137,7 @@ function TransaksiTopUp() {
             setIsFilterTransaksiTopup(true)
             setPendingTransaksiTopup(true)
             const auth = "Bearer " + access_token
-            const dataParams = encryptData(`{"mewallet_code" : "${eWalletCode}", "partner_transid": "${transId}", "period": ${period}, "date_from": "${dateRange.length !== 0 ? dateRange[0] : ""}", "date_to": "${dateRange.length !== 0 ? dateRange[1] : ""}", "page": ${page}, "row_per_page": 10, "ttopupewalletlog_status_id": [${status !== 0 ? status : [1,2,7,9]}]}`)
+            const dataParams = encryptData(`{"mewallet_code" : "${eWalletCode}", "period": ${period}, "date_from": "${dateRange.length !== 0 ? dateRange[0] : ""}", "date_to": "${dateRange.length !== 0 ? dateRange[1] : ""}", "page": ${page}, "row_per_page": 10, "ttopupewalletlog_status_id": [${status !== 0 ? status : [1,2,7,9]}]}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -260,7 +260,7 @@ function TransaksiTopUp() {
         getListTransaskiTopup(activePageTransaksiTopup)
         getEWalletBalance()
     }, [])
-    
+
 
     const columns = [
         {
@@ -274,13 +274,13 @@ function TransaksiTopUp() {
             width: "180px",
             cell: (row) => <button className='btn-riwayat-settlement' onClick={() => responseLogHandler(row.ttopupewalletlog_response)} >Lihat Detail</button>
         },
-        {
-            name: 'ID Transaksi',
-            selector: row => row.ttopupewalletlog_partner_trans_id,
-            // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
-            wrap: true,
-            width: "145px"
-        },
+        // {
+        //     name: 'ID Transaksi',
+        //     selector: row => row.ttopupewalletlog_partner_trans_id,
+        //     // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
+        //     wrap: true,
+        //     width: "145px"
+        // },
         {
             name: 'Waktu',
             selector: row => row.ttopupewalletlog_crtdt_format,
@@ -289,13 +289,13 @@ function TransaksiTopUp() {
         // {
         //     name: 'Partner Trans ID',
         //     selector: row => row.ttopupewalletlog_partner_trans_id,
-        //     // sortable: true,          
+        //     // sortable: true,
         //     wrap: true,
         //     width: "170px",
         // },
         {
             name: 'eWallet Code',
-            selector: row => row.mewallet_code,
+            selector: row => row.ttopupewalletlog_mewallet_code,
             wrap: true,
             width: "160px"
         },
@@ -308,8 +308,8 @@ function TransaksiTopUp() {
         // },
         {
             name: 'Nominal Transaksi',
-            selector: row => row.ttopupewalletlog_trx_amount,
-            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.ttopupewalletlog_trx_amount) }</div>,
+            selector: row => row.ttopupewalletlog_amount,
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.ttopupewalletlog_amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "170px"
         },
@@ -384,9 +384,21 @@ function TransaksiTopUp() {
             <div className='base-content mt-3'>
                 <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                 <Row className='mt-4'>
-                    <Col xs={4} className="d-flex justify-content-start align-items-center">
+                    {/* <Col xs={4} className="d-flex justify-content-start align-items-center">
                         <span>ID Transaksi</span>
                         <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiTransaksiTopup} name="idTransaksiTransaksiTopup" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                    </Col> */}
+                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateTransaksiTopup === "none") ? "33%" : "33%" }}>
+                        <span style={{ marginRight: 40 }}>Periode<span style={{ color: "red" }}>*</span></span>
+                        <Form.Select name='periodeTransaksiTopup' className="input-text-riwayat ms-1" value={inputHandle.periodeTransaksiTopup} onChange={(e) => handleChangePeriodeTransaksiTopup(e)}>
+                            <option defaultChecked disabled value={0}>Pilih Periode</option>
+                            <option value={2}>Hari Ini</option>
+                            <option value={3}>Kemarin</option>
+                            <option value={4}>7 Hari Terakhir</option>
+                            <option value={5}>Bulan Ini</option>
+                            <option value={6}>Bulan Kemarin</option>
+                            <option value={7}>Pilih Range Tanggal</option>
+                        </Form.Select>
                     </Col>
                     <Col xs={4} className="d-flex justify-content-start align-items-center">
                         <span style={{ marginRight: 41 }}>Wallet</span>
@@ -407,23 +419,9 @@ function TransaksiTopUp() {
                         </Form.Select>
                     </Col>
                 </Row>
-                <Row className='mt-4'>
-                    <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateTransaksiTopup === "none") ? "33%" : "33%" }}>
-                        <span style={{ marginRight: 40 }}>Periode<span style={{ color: "red" }}>*</span></span>
-                        <Form.Select name='periodeTransaksiTopup' className="input-text-riwayat ms-1" value={inputHandle.periodeTransaksiTopup} onChange={(e) => handleChangePeriodeTransaksiTopup(e)}>
-                            <option defaultChecked disabled value={0}>Pilih Periode</option>
-                            <option value={2}>Hari Ini</option>
-                            <option value={3}>Kemarin</option>
-                            <option value={4}>7 Hari Terakhir</option>
-                            <option value={5}>Bulan Ini</option>
-                            <option value={6}>Bulan Kemarin</option>
-                            <option value={7}>Pilih Range Tanggal</option>
-                        </Form.Select>                            
-                    </Col>
-                </Row>
                 <Row className="mt-4">
                     <Col xs={4} style={{ display: showDateTransaksiTopup, marginLeft: 106 }} className='text-start'>
-                        <DateRangePicker 
+                        <DateRangePicker
                             onChange={pickDateTransaksiTopup}
                             value={stateTransaksiTopup}
                             clearIcon={null}
@@ -496,8 +494,8 @@ function TransaksiTopUp() {
                     <div style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>
                         <div className='pb-3'>Response Data</div>
                         <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6 }}><JSONPretty id="json-pretty" data={responseLogData}></JSONPretty></div>
-                    </div>   
-                    <hr />           
+                    </div>
+                    <hr />
                     <div className="d-flex justify-content-center my-3">
                         <Button onClick={() => setShowResponseLog(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">OKE</Button>
                     </div>
