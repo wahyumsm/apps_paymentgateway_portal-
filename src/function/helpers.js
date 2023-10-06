@@ -328,7 +328,7 @@ function terb_belakang(t){
 }
 
 export function terbilangDisbursement(nAngka) {
-	var 
+	var
 		v = 0,
 		sisa = 0,
 		tanda = '',
@@ -341,7 +341,7 @@ export function terbilangDisbursement(nAngka) {
 	if (nAngka>999999999999999999){
 		return 'Unidentified';
 	}
-	v = nAngka;	
+	v = nAngka;
 	if (v<0){
 		tanda = 'Minus ';
 	}
@@ -349,7 +349,7 @@ export function terbilangDisbursement(nAngka) {
 	tmp = v.toString().split('.');
 	p1 = tmp[0];
 	p2 = '';
-	if (tmp.length > 1) {		
+	if (tmp.length > 1) {
 		p2 = tmp[1];
 	}
 	v = parseFloat(p1);
