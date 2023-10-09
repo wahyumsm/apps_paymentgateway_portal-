@@ -57,7 +57,7 @@ export default () => {
 
   function inaLang () {
     // sessionStorage.removeItem('lang');
-    sessionStorage.setItem('lang', JSON.stringify(ind));
+    localStorage.setItem('lang', JSON.stringify(ind));
     // history.push("/Riwayat Transaksi/va-dan-paylink")
     // history.push(0)
     // setFlagLangCurrent('ind')
@@ -65,14 +65,14 @@ export default () => {
   }
 
   function engLang () {
-    if (sessionStorage.getItem('lang') === null) {
-      sessionStorage.setItem('lang', JSON.stringify(eng));
+    if (localStorage.getItem('lang') === null) {
+      localStorage.setItem('lang', JSON.stringify(eng));
       // history.push("/Riwayat Transaksi/va-dan-paylink")
       // history.push(0)
       // setFlagLangCurrent('eng')
       window.location.reload();
-    } else if (sessionStorage.getItem('lang') !== JSON.stringify(eng)) {
-        sessionStorage.setItem('lang', JSON.stringify(eng));
+    } else if (localStorage.getItem('lang') !== JSON.stringify(eng)) {
+        localStorage.setItem('lang', JSON.stringify(eng));
         // history.push("/Transaction Report/va-dan-paylink")
         // history.push(0)
         // setFlagLangCurrent('eng')
@@ -81,7 +81,7 @@ export default () => {
   }
 
   function chnLang () {
-      sessionStorage.setItem('lang', JSON.stringify(chn));
+      localStorage.setItem('lang', JSON.stringify(chn));
       // history.push("/历史交易/va-dan-paylink")
       // history.push(0)
       // setFlagLangCurrent('chn')
