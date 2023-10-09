@@ -274,38 +274,17 @@ function TransaksiTopUp() {
             width: "180px",
             cell: (row) => <button className='btn-riwayat-settlement' onClick={() => responseLogHandler(row.ttopupewalletlog_response)} >Lihat Detail</button>
         },
-        // {
-        //     name: 'ID Transaksi',
-        //     selector: row => row.ttopupewalletlog_partner_trans_id,
-        //     // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
-        //     wrap: true,
-        //     width: "145px"
-        // },
         {
             name: 'Waktu',
             selector: row => row.ttopupewalletlog_crtdt_format,
             width: "145px"
         },
-        // {
-        //     name: 'Partner Trans ID',
-        //     selector: row => row.ttopupewalletlog_partner_trans_id,
-        //     // sortable: true,
-        //     wrap: true,
-        //     width: "170px",
-        // },
         {
             name: 'eWallet Code',
             selector: row => row.ttopupewalletlog_mewallet_code,
             wrap: true,
             width: "160px"
         },
-        // {
-        //     name: 'No Handphone',
-        //     selector: row => row.ttopupewalletlog_phone_number,
-        //     wrap: true,
-        //     style: { paddingRight: 'unset' },
-        //   // width: "160px"
-        // },
         {
             name: 'Nominal Transaksi',
             selector: row => row.ttopupewalletlog_amount,

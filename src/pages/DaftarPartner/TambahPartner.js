@@ -59,6 +59,7 @@ function TambahPartner() {
   const [editMinTopup, setEditMinTopup] = useState(false)
   const [editMinTransaksi, setEditMinTransaksi] = useState(false)
   const [editMaxTransaksi, setEditMaxTransaksi] = useState(false)
+  const [isDisableFeeType, setIsDisableFeeType] = useState(false)
   const [inputHandle, setInputHandle] = useState({
     namaPerusahaan: "",
     emailPerusahaan: "",
@@ -118,19 +119,21 @@ function TambahPartner() {
     }
   }
 
-  function handleChangeFee(e) {
+  function handleChangeFee(e, feeType) {
     setAlertFee(false)
     setBiayaHandle({
       ...biayaHandle,
       fee: e,
     });
-    if (e === undefined || e === "") {
-      setAlertFee(true)
-    } else if (e.length === 3 && e !== "100") {
-      setBiayaHandle({
-        ...biayaHandle,
-        fee: "100",
-      });
+    if (feeType === 101) {
+      if (e === undefined || e === "") {
+        setAlertFee(true)
+      } else if (e.length === 3 && e !== "100") {
+        setBiayaHandle({
+          ...biayaHandle,
+          fee: "100",
+        });
+      }
     }
   }
 
@@ -240,7 +243,7 @@ function TambahPartner() {
     (e, payTypeId, payTypeName, listMethod) => {
       if (e.target.checked) {
         if (payTypeId === 0) {
-          const allId = Object.values(listMethod).map(val => val.payment_id)          
+          const allId = Object.values(listMethod).map(val => val.payment_id)
           const allName = Object.values(listMethod).map(val => val.payment_name )
           setPaymentMethod(allId)
           setPaymentNameMethod(allName)
@@ -267,7 +270,19 @@ function TambahPartner() {
     [setPaymentMethod, setPaymentNameMethod]
   );
 
-  const handleChangeFitur = (e) => {
+  const handleChangeFitur = (e, handleBiaya) => {
+    if (e.target.name === "Payment Collection") {
+      setIsDisableFeeType(false)
+    } else {
+      setIsDisableFeeType(true)
+      if (handleBiaya.feeType !== 100) {
+        setBiayaHandle({
+          ...biayaHandle,
+          feeType: 100,
+          fee: ""
+        })
+      }
+    }
     setLoading(true);
     setRedFlag(false)
     getTypeMethod(e.target.value);
@@ -367,6 +382,11 @@ function TambahPartner() {
       setPaymentNameMethod(result.mpaytype_name);
       setNumbering(result.number);
     }
+    if (result.fitur_id === 105) {
+      setIsDisableFeeType(false)
+    } else {
+      setIsDisableFeeType(true)
+    }
   }
 
   function saveEditInTableHandler(
@@ -395,7 +415,7 @@ function TambahPartner() {
               }
             })
           })
-        }      
+        }
       })
       if (sameFlag === 0) {
         const source = {
@@ -424,11 +444,12 @@ function TambahPartner() {
         setFitur("", "");
         setPaymentMethod([]);
         setPaymentNameMethod([]);
+        setIsDisableFeeType(false)
       } else {
         setRedFlag(true)
       }
-    }   
-    
+    }
+
   }
 
   function deleteDataHandler(numberId) {
@@ -446,6 +467,7 @@ function TambahPartner() {
     setPaymentMethod([]);
     setPaymentNameMethod([]);
     setEdited(false);
+    setIsDisableFeeType(false)
   }
 
   function batalEdit() {
@@ -460,6 +482,9 @@ function TambahPartner() {
     setPaymentMethod([]);
     setPaymentNameMethod([]);
     setEdited(false);
+    setRedFlag(false)
+    setMustFill(false)
+    setIsDisableFeeType(false)
 }
 
   function saveNewSchemaHandle(
@@ -484,7 +509,7 @@ function TambahPartner() {
             }
           })
         })
-      }      
+      }
     })
     if (sameFlag === 0) {
       if (feeType === undefined || feeType === "0") {
@@ -1142,8 +1167,8 @@ function toDashboard() {
               </span>
             </Col>
             <Col xs={10}>
-              <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: 0 }) }}>
-                <option defaultValue value={0}>Pilih Tipe Fee</option>
+              <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} disabled={isDisableFeeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: 0 }) }}>
+                <option defaultValue disabled value={0}>Pilih Tipe Fee</option>
                 <option value={100}>Fix Fee</option>
                 <option value={101}>Persentase</option>
               </Form.Select>
@@ -1167,7 +1192,7 @@ function toDashboard() {
               <CurrencyInput
                 className="input-text-user"
                 value={biayaHandle.fee}
-                onValueChange={(e) => handleChangeFee(e)}
+                onValueChange={(e) => handleChangeFee(e, biayaHandle.feeType)}
                 placeholder="Masukkan Fee"
                 style={{
                   borderColor: alertFee ? "red" : ""
@@ -1195,7 +1220,7 @@ function toDashboard() {
                   }}
                   onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                   min={0}
-                  onBlur={() => setEditFee(!editFee)}                  
+                  onBlur={() => setEditFee(!editFee)}
                 /> :
                 <Form.Control
                   name="fee"
@@ -1504,7 +1529,7 @@ function toDashboard() {
                               id="inlineCheckbox1"
                               name={item.fitur_name}
                               value={item.fitur_id}
-                              onChange={(e) => handleChangeFitur(e)}
+                              onChange={(e) => handleChangeFitur(e, biayaHandle)}
                               checked={
                                 edited === true
                                   ? fitur[0] && fitur.includes(item.fitur_name)
@@ -1534,7 +1559,7 @@ function toDashboard() {
                               id="inlineCheckbox1"
                               name={item.fitur_name}
                               value={item.fitur_id}
-                              onChange={(e) => handleChangeFitur(e)}
+                              onChange={(e) => handleChangeFitur(e, biayaHandle)}
                               checked={
                                 edited === true
                                   ? fitur[0] && fitur.includes(item.fitur_name)
@@ -1567,7 +1592,7 @@ function toDashboard() {
                               id="inlineCheckbox1"
                               name={item.fitur_name}
                               value={item.fitur_id}
-                              onChange={(e) => handleChangeFitur(e)}
+                              onChange={(e) => handleChangeFitur(e, biayaHandle)}
                               checked={
                                 edited === true
                                   ? fitur[0] && fitur.includes(item.fitur_name)
@@ -1597,7 +1622,7 @@ function toDashboard() {
                               id="inlineCheckbox1"
                               name={item.fitur_name}
                               value={item.fitur_id}
-                              onChange={(e) => handleChangeFitur(e)}
+                              onChange={(e) => handleChangeFitur(e, biayaHandle)}
                               checked={
                                 edited === true
                                   ? fitur[0] && fitur.includes(item.fitur_name)
@@ -2111,7 +2136,7 @@ function toDashboard() {
               />
             </Col>
           </Row>
-        
+
         </div>
       </div> */}
 

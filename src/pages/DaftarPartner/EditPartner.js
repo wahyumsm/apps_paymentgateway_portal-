@@ -169,7 +169,7 @@ function EditPartner() {
         ...subAccountHandle,
         [e.target.name]: e.target.value,
       });
-      const resultAgen = sumberAgenList.find((item) => 
+      const resultAgen = sumberAgenList.find((item) =>
         item.mpartnerdtl_sub_id === e.target.value
       )
       setAgenName(resultAgen.mpartnerdtl_sub_name);
@@ -363,11 +363,6 @@ function EditPartner() {
           fee: ""
         })
       }
-      // setBiayaHandle({
-      //   ...biayaHandle,
-      //   feeType: 100,
-      //   fee: ""
-      // })
     }
     setLoading(true);
     setRedFlag(false)
@@ -466,7 +461,7 @@ function EditPartner() {
       } else {
         setRedFlag(true)
       }
-    }    
+    }
   }
 
   function batalEdit() {
@@ -507,7 +502,7 @@ function EditPartner() {
   function editInSubAcc(numberId) {
     setEditedSubAcc(true);
     const result = subAccount.find((item) => item.number === numberId);
-    const resultAgen = sumberAgenList.find((item) => 
+    const resultAgen = sumberAgenList.find((item) =>
       item.mpartnerdtl_sub_id === result.subpartner_id
     )
     // console.log(result, "ini result sub account edit");
@@ -1082,7 +1077,7 @@ function EditPartner() {
             }
           })
         })
-      }      
+      }
     })
     if (sameFlag === 0) {
       if (feeType === undefined || feeType === "0") {
@@ -1145,7 +1140,7 @@ function EditPartner() {
           }
         }
       }
-    } else {      
+    } else {
       setRedFlag(true)
     }
   }
@@ -1168,7 +1163,7 @@ function EditPartner() {
     //   setAgenCode("")
     // } else {
     //   setAlertMaxSubAcc(false)
-      
+
     // }
     if (sumberAgenCode !== "" && sumberAgen !== "" && akunBankSubAcc !== "" && rekeningOwnerSubAcc !== "") {
       setAlertFillAgen(false)
@@ -1828,7 +1823,7 @@ function EditPartner() {
                   <td style={{ width: 200 }}>Tipe Fee <span style={{ color: "red" }}>*</span></td>
                   <td>
                     <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} disabled={isDisableFeeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: 0 }) }}>
-                      <option defaultValue value={0}>Pilih Tipe Fee</option>
+                      <option defaultValue disabled value={0}>Pilih Tipe Fee</option>
                       <option value={100}>Fix Fee</option>
                       <option value={101}>Persentase</option>
                     </Form.Select>
@@ -2188,7 +2183,7 @@ function EditPartner() {
                   </td>
                 </tr>
                 <br/>
-                <tr 
+                <tr
                   className="mt-4"
                   style={{
                     display:
@@ -2395,7 +2390,7 @@ function EditPartner() {
                   </td>
                 </tr>
               </tbody>
-            </table>                        
+            </table>
             {mustFill === true ?
               <div style={{ color: "#B9121B", fontSize: 12, marginLeft: 210 }} className="mt-3">
                 <img src={noteIconRed} className="me-2" alt="icon notice"/>
@@ -2571,7 +2566,7 @@ function EditPartner() {
                 )}
               </Col>
             </Row>
-            
+
             {expanded && (
               <div className="div-table pb-4" ref={myRef}>
                 <DataTable
@@ -2872,7 +2867,7 @@ function EditPartner() {
               </Col>
             </Row> */}
 
-            
+
             {expandedSubAcc && (
               <div className="div-table pb-4" ref={myRef}>
                 <DataTable
@@ -2949,9 +2944,9 @@ function EditPartner() {
           </div>
         </>
       ) : (
-        <> 
+        <>
           <hr className='hr-style' style={{marginTop: -2}}/>
-          <div className='base-content mt-5 mb-5'>  
+          <div className='base-content mt-5 mb-5'>
               {
               listAgen.length === 0 ?
               <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
