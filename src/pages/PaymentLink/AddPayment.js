@@ -15,7 +15,8 @@ import {
   getRole,
   getToken,
   setUserSession,
-  isNotEnableButton
+  isNotEnableButton,
+  language
 } from "../../function/helpers";
 import axios from "axios";
 import encryptData from "../../function/encryptData";
@@ -27,8 +28,7 @@ import CurrencyInput from "react-currency-input-field";
 import { eng, ind } from "../../components/Language";
 
 function AddPayment() {
-  
-  const language = JSON.parse(sessionStorage.getItem('lang'))
+
   const [showModal, setShowModal] = useState(false);
   const [showModalBatal, setShowModalBatal] = useState(false);
   const [showModalFeeMethod, setShowModalFeeMethod] = useState(false);
@@ -42,7 +42,7 @@ function AddPayment() {
   const [addPaylink, setAddPaylink] = useState({});
   const [choosenPaymentCode, setChoosenPaymentCode] = useState([]);
   const [choosenPaymentIcon, setChoosenPaymentIcon] = useState([])
-  const [checked, setChecked] = useState("1");  
+  const [checked, setChecked] = useState("1");
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -105,7 +105,7 @@ function AddPayment() {
   const handleOnChangeCheckBox = (e) => {
     setChecked(e.target.value);
     if (e.target.value === "2") {
-      setShowModalFeeMethod(true) 
+      setShowModalFeeMethod(true)
       setChoosenPaymentCode([])
     } else {
       setChoosenPaymentIcon([])
@@ -320,7 +320,7 @@ function AddPayment() {
     history.push("/listpayment");
   }
 
-  // const dateNow = 
+  // const dateNow =
   // console.log();
 
   return (
@@ -395,7 +395,7 @@ function AddPayment() {
             {
               isNotCompleteData.minNominal &&
               <div className="my-1" style={{ fontSize: "12px", color: "#B9121B" }}>
-                
+
               </div>
             }
             <div className="my-1" style={{ fontSize: "12px" }}>
@@ -476,7 +476,7 @@ function AddPayment() {
                 >
                   <img src={time} alt="time" />
                 </div>
-                
+
               }
             </div>
             {expanded ? (
@@ -493,7 +493,7 @@ function AddPayment() {
                 />
               </div>
             ) : ""}
-            {/* <TimePicker 
+            {/* <TimePicker
                 hour={hour}
                 minute={minute}
                 period={period}
@@ -578,7 +578,7 @@ function AddPayment() {
                     {language === null ? eng.aturBeberapa : language.aturBeberapa}
                   </label>
                 </div>
-              </div> : 
+              </div> :
               <div style={{ color: "#B9121B", fontSize: 12 }}>
                 <img src={noteIconRed} className="me-2" />
                 {language === null ? eng.silahkanHubCs : language.silahkanHubCs}
@@ -655,7 +655,7 @@ function AddPayment() {
                   inputHandle.paymentId,
                   inputHandle.refId,
                   parseInt(inputHandle.nominal),
-                  ( 
+                  (
                     dateDay.year +
                     "-" +
                     convertTimeDigit(dateDay.month) +
@@ -726,7 +726,7 @@ function AddPayment() {
             >
               {language === null ? eng.selamatPaymentLinkBerhasilDibuat : language.selamatPaymentLinkBerhasilDibuat}
             </p>
-          </div>          
+          </div>
           <Row>
             <Col xs={12}>
               <div className="my-1">{language === null ? eng.paymentLink : language.paymentLink}</div>
@@ -1050,8 +1050,8 @@ function AddPayment() {
                   <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? eng.seluruhPerubahan : language.seluruhPerubahan}</p>
               </div>
               <p>
-                  
-              </p>                
+
+              </p>
               <div className="d-flex justify-content-center mb-3">
                   <Button onClick={() => setShowModalExit(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? eng.tidak : language.tidak}</Button>
                   <Button onClick={() => toListPay()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? eng.ya : language.ya}</Button>

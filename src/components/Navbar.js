@@ -40,7 +40,7 @@ import arrowDown from "../assets/img/icons/arrow_down.svg";
 import arrowUp from "../assets/img/icons/arrow_up.svg";
 import circleInfo from "../assets/icon/circle-info.svg"
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero, language } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -115,10 +115,9 @@ export default (props) => {
   const [ topUpResult, setTopUpResult ] = useState({})
   const [iconGagal, setIconGagal] = useState(false)
   const [uploadGagal, setUploadGagal] = useState(false)
-  const [isLoadingTopUpConfirm, setIsLoadingTopUpConfirm] = useState(false)    
+  const [isLoadingTopUpConfirm, setIsLoadingTopUpConfirm] = useState(false)
   const [showPopoverLang, setShowPopoverLang] = useState(false)
   const [isTabLanguageNavbar, setIsTabLanguageNavbar] = useState("bahasa")
-  const language =  JSON.parse(sessionStorage.getItem('lang'))
 
   function handleChange(e) {
     setInputHandle({
@@ -143,7 +142,7 @@ export default (props) => {
     }
   }
 
-  
+
   // function handleChangeTopUp(e) {
   //   setIconGagal(false)
   //   setInputHandle({
@@ -160,7 +159,7 @@ export default (props) => {
     })
   }
 
-  const startColorNumber = (money) => {  
+  const startColorNumber = (money) => {
     if (money !== 0) {
       var diSliceAwal = String(money).slice(0, -3)
     }
@@ -175,7 +174,7 @@ export default (props) => {
   const handleClick = () => {
     hiddenFileInput.current.click();
   };
-  
+
   const handleFileChange = (event) => {
     let dataImage = {
       SlipPaymentFile: event.target.files[0],
@@ -244,7 +243,7 @@ export default (props) => {
           setIconGagal(true)
         } else {
           setIconGagal(false)
-          const auth = "Bearer " + getToken()   
+          const auth = "Bearer " + getToken()
           const dataParams = encryptData(`{"tparttopup_amount":${Number(amountTopUp.replaceAll(',', '.'))}}`)
           const headers = {
             "Content-Type": "application/json",
@@ -285,7 +284,7 @@ export default (props) => {
     async function topUpHandleConfirm() {
       try {
           setIsLoadingTopUpConfirm(true)
-          const auth = "Bearer " + getToken()        
+          const auth = "Bearer " + getToken()
           const headers = {
               'Content-Type':'application/json',
               'Authorization' : auth
@@ -331,7 +330,7 @@ export default (props) => {
             setGetBalance(getBalance.data.response_data)
             setBalanceDetail(getBalance.data.response_data.balance_detail)
           }
-          
+
       } catch (error) {
           // console.log(error)
           history.push(errorCatch(error.response.status))
@@ -354,7 +353,7 @@ export default (props) => {
             listRiwayat.data.response_data = listRiwayat.data.response_data.map((obj, id) => ({ ...obj, number: id +1}));
             setListRiwayat(listRiwayat.data.response_data)
           }
-          
+
       } catch (error) {
           // console.log(error)
           history.push(errorCatch(error.response.status))
@@ -450,23 +449,23 @@ export default (props) => {
 
   function inaLang () {
     // sessionStorage.removeItem('lang');
-    sessionStorage.setItem('lang', JSON.stringify(ind));
-    // history.push("/Riwayat Transaksi/va-dan-paylink")  
+    localStorage.setItem('lang', JSON.stringify(ind));
+    // history.push("/Riwayat Transaksi/va-dan-paylink")
     // history.push(0)
     // setFlagLangCurrent('ind')
     window.location.reload();
   }
 
   function engLang () {
-    if (sessionStorage.getItem('lang') === null) {
-      sessionStorage.setItem('lang', JSON.stringify(eng));
-      // history.push("/Riwayat Transaksi/va-dan-paylink")  
+    if (localStorage.getItem('lang') === null) {
+      localStorage.setItem('lang', JSON.stringify(eng));
+      // history.push("/Riwayat Transaksi/va-dan-paylink")
       // history.push(0)
       // setFlagLangCurrent('eng')
       window.location.reload();
-    } else if (sessionStorage.getItem('lang') !== JSON.stringify(eng)) {
-        sessionStorage.setItem('lang', JSON.stringify(eng));
-        // history.push("/Transaction Report/va-dan-paylink")  
+    } else if (localStorage.getItem('lang') !== JSON.stringify(eng)) {
+        localStorage.setItem('lang', JSON.stringify(eng));
+        // history.push("/Transaction Report/va-dan-paylink")
         // history.push(0)
         // setFlagLangCurrent('eng')
         window.location.reload();
@@ -474,12 +473,12 @@ export default (props) => {
   }
 
   function chnLang () {
-      sessionStorage.setItem('lang', JSON.stringify(chn));
-      // history.push("/历史交易/va-dan-paylink")  
+      localStorage.setItem('lang', JSON.stringify(chn));
+      // history.push("/历史交易/va-dan-paylink")
       // history.push(0)
       // setFlagLangCurrent('chn')
       window.location.reload();
-  } 
+  }
 
   const customStyles = {
       headCells: {
@@ -498,7 +497,7 @@ export default (props) => {
       <div>Loading...</div>
     </div>
   );
-  
+
 
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;
@@ -549,12 +548,12 @@ export default (props) => {
                 // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement-report' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement-report'|| window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/disbursement-report') ||
                 // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
                 // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo')
-                
+
                 // live
                 // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
                 // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
-                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement') 
-                
+                // (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement')
+
                 // Test Web
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
@@ -565,7 +564,7 @@ export default (props) => {
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayat-transaksi/disbursement')
-                
+
                 (window.location.href === 'http://reactdev/dev3/#/dev3/disbursement') ||
                 (window.location.href === 'http://reactdev/dev3/#/dev3/riwayattopup') ||
                 (window.location.href === 'http://reactdev/dev3/#/dev3/alokasisaldo') ||
@@ -576,7 +575,7 @@ export default (props) => {
                 // (window.location.href === 'https://localhost:3000/dev3#/dev3/alokasisaldo') ||
                 // (window.location.href === 'https://localhost:3000/dev3#/dev3/riwayat-transaksi/disbursement')
                 )
-              ) && 
+              ) &&
               <>
                 {/* <OverlayTrigger
                   placement="bottom"
@@ -806,7 +805,7 @@ export default (props) => {
                   prefix={`${language === null ? eng.rp : language.rp} `}
                   allowDecimals={false}
                 />
-                {/* {nominalTopup ? 
+                {/* {nominalTopup ?
                   <Form.Control onBlur={() => setNominalTopup(!nominalTopup)} onChange={handleChangeTopUp} placeholder="Rp" name="amounts" type='number' min={0} value={inputHandle.amounts === 0 ? "Rp" : inputHandle.amounts} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} /> :
                   <Form.Control onFocus={() => setNominalTopup(!nominalTopup)} onChange={handleChange} placeholder="Rp" name="amounts" type="text" value={inputHandle.amounts === 0 ? "Rp" : convertFormatNumber(inputHandle.amounts)} />
                 } */}
@@ -819,7 +818,7 @@ export default (props) => {
                   </> :
                   " "
                 } */}
-                {iconGagal === true && 
+                {iconGagal === true &&
                   <>
                     <div className="mt-2" style={{ color: "#B9121B", fontSize: 12 }}>
                       <img src={noteIconRed} className="me-2" alt="notice" />
@@ -827,8 +826,8 @@ export default (props) => {
                     </div>
                   </>
                 }
-              </Form.Group>              
-            </Form>     
+              </Form.Group>
+            </Form>
             <div className="d-flex justify-content-center mt-2">
               <button
                 style={{
@@ -853,7 +852,7 @@ export default (props) => {
             </div>
           </Modal.Body>
         </Modal>
-        
+
         {/* Modal Konfirmasi Top Up */}
         <Modal centered show={showModalKonfirmasiTopUp} onHide={() => setShowModalKonfirmasiTopUp(false)} style={{ borderRadius: 8 }} className="confirm-modal">
           <Modal.Header className="border-0">
@@ -867,10 +866,10 @@ export default (props) => {
               <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
                 {language === null ? eng.selesaikanProsesTopUp : language.selesaikanProsesTopUp}
               </Modal.Title>
-            </Col>            
+            </Col>
           </Modal.Header>
           <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
-              <div className="text-center" style={{fontSize: "14px"}}>{language === null ? eng.selesaikanPembayaran : language.selesaikanPembayaran}</div> 
+              <div className="text-center" style={{fontSize: "14px"}}>{language === null ? eng.selesaikanPembayaran : language.selesaikanPembayaran}</div>
               <div className="text-center mt-2">
                 <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={dateNow + countDown} daysInHours={true} /></span>
               </div>
@@ -912,7 +911,7 @@ export default (props) => {
                       <CopyToClipboard onCopy={onCopyPrice} text={topUpBalance.amount_transfer}><div onClick={onClickPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div></CopyToClipboard>
                     </div>
                   </div>
-                </Table>                
+                </Table>
               </div>
               <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
                 <img src={noticeIcon} alt="notice" />
@@ -998,7 +997,7 @@ export default (props) => {
                     Please contact your admin.
                   </p>
                 </div>
-                <div 
+                <div
                   style={{
                     display: "flex",
                     justifyContent: "center",

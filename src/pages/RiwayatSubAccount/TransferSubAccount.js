@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import SubAccountComponent from '../../components/SubAccountComponent'
 import { useHistory } from 'react-router-dom'
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
@@ -24,7 +24,6 @@ import { eng } from '../../components/Language'
 
 const TransferSubAccount = () => {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const user_role = getRole()
     const access_token = getToken()
@@ -57,7 +56,7 @@ const TransferSubAccount = () => {
     const filterItemsRekening = listRekening.filter(
         item => (item.moffshorebankacclist_name && item.moffshorebankacclist_name.toLowerCase().includes(filterTextRekening.toLowerCase())) || (item.moffshorebankacclist_number && item.moffshorebankacclist_number.toLowerCase().includes(filterTextRekening.toLowerCase()))
     )
-    
+
     const [inputHandle, setInputHandle] = useState({
         akunPartner: "",
         nomorAkun: "",
@@ -166,7 +165,7 @@ const TransferSubAccount = () => {
             nominal: e
         })
     }
-    
+
     function completeTime() {
         setToCountdown(false)
     }
@@ -235,7 +234,7 @@ const TransferSubAccount = () => {
     function toDashboard() {
         history.push("/");
     }
-    
+
     function toLaporan() {
         history.push("/riwayat-transaksi/va-dan-paylink");
     }
@@ -526,7 +525,7 @@ const TransferSubAccount = () => {
     };
 
     // console.log(listAkunPartner, "LIST AKUN PARTNER");
-  
+
     const CustomLoader = () => (
       <div style={{ padding: '24px' }}>
         <img className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} alt="loading" />
@@ -542,11 +541,11 @@ const TransferSubAccount = () => {
         getBankList()
         getRekeningList()
     }, [])
-    
+
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.subAccountBank : language.subAccountBank} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{language === null ? eng.transfer : language.transfer}</span> 
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.subAccountBank : language.subAccountBank} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{language === null ? eng.transfer : language.transfer}</span>
             <div className="head-title mt-3 mb-3">
                 <div classN ame="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? eng.transfer : language.transfer}</div>
             </div>
@@ -586,8 +585,8 @@ const TransferSubAccount = () => {
                                 <input type='number' name='noRek' value={inputDataRekening.noRek} onChange={(e) => handleChangeRek(e)} className="input-text-user" placeholder={language === null ? eng.placeholderNoRekTujuan : language.placeholderNoRekTujuan} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}/>
                             </Col>
                             <Col xs={2} >
-                                <button 
-                                    onClick={() => checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, true)} 
+                                <button
+                                    onClick={() => checkAccountHandler(inputDataRekening.noRek, inputData.bankCode, true)}
                                     className={(inputDataRekening.noRek.length !== 0 && inputData.bankCode.length !== 0) ? 'btn-ez-transfer' : 'btn-noez-transfer'}
                                     disabled={inputDataRekening.noRek.length === 0 || inputData.bankCode.length === 0}
                                 >
@@ -614,7 +613,7 @@ const TransferSubAccount = () => {
                                             }
                                         </> : <></>
                                 }
-                                
+
                                 <div className='d-flex align-items-center justify-content-between'>
                                     <div className='mt-2'>
                                         <Form.Check
@@ -662,23 +661,23 @@ const TransferSubAccount = () => {
 
                                 {/* {
                                     editNominal ?
-                                        <input 
-                                            name="nominal" 
-                                            value={inputTransfer.nominal === undefined ? 0 : inputTransfer.nominal} 
-                                            type='number' 
-                                            className="input-text-user" 
+                                        <input
+                                            name="nominal"
+                                            value={inputTransfer.nominal === undefined ? 0 : inputTransfer.nominal}
+                                            type='number'
+                                            className="input-text-user"
                                             // placeholder='Rp 0'
                                             onChange={handleChange}
                                             min={0}
                                             onBlur={() => setEditNominal(!editNominal)}
                                             onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
                                         /> :
-                                        <input 
-                                            name="nominal" 
-                                            value={inputTransfer.nominal === undefined ? convertToRupiah(0, true, 0) : convertToRupiah(inputTransfer.nominal, true, 0)} 
-                                            type='text' 
-                                            className="input-text-user" 
-                                            // placeholder='Rp 0' 
+                                        <input
+                                            name="nominal"
+                                            value={inputTransfer.nominal === undefined ? convertToRupiah(0, true, 0) : convertToRupiah(inputTransfer.nominal, true, 0)}
+                                            type='text'
+                                            className="input-text-user"
+                                            // placeholder='Rp 0'
                                             onChange={handleChange}
                                             onFocus={() => setEditNominal(!editNominal)}
                                         />
@@ -703,10 +702,10 @@ const TransferSubAccount = () => {
                         </Row>
                     </div>
                     <div className="d-flex justify-content-end align-items-center mt-3" >
-                        <button 
-                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && Number(inputTransfer.nominal) >= 10000 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'} 
+                        <button
+                            className={(inputHandle.akunPartner.length !== 0 && inputData.bankName.length !== 0 && inputDataRekening.noRek.length !== 0 && Number(inputTransfer.nominal) >= 10000 && transferFee.fee_transfer !== undefined) ? 'btn-ez-transfer' : 'btn-ez'}
                             disabled={inputHandle.akunPartner.length === 0 || inputData.bankName.length === 0 || inputDataRekening.noRek.length === 0 || Number(inputTransfer.nominal) < 10000 || transferFee.fee_transfer === undefined}
-                            style={{ width: '25%' }} 
+                            style={{ width: '25%' }}
                             onClick={() => toShowDataTransfer(isCheckedAccBankButton)}
                         >
                             {language === null ? eng.transferSekarang : language.transferSekarang}
@@ -725,14 +724,14 @@ const TransferSubAccount = () => {
                         aria-label="Close"
                         onClick={() => batalIn('bank')}
                     />
-                    
+
                 </Modal.Header>
                 <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
                     {language === null ? eng.daftarBank : language.daftarBank}
                 </Modal.Title>
                 <Modal.Body>
                     <div className="div-table mt-3">
-                        <DataTable 
+                        <DataTable
                             columns={columnsBank}
                             data={filterItemsBank}
                             customStyles={customStyles}
@@ -779,14 +778,14 @@ const TransferSubAccount = () => {
                         aria-label="Close"
                         onClick={() => batalIn('rekening')}
                     />
-                    
+
                 </Modal.Header>
                 <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
                     {language === null ? eng.daftarRekening : language.daftarRekening}
                 </Modal.Title>
                 <Modal.Body>
                     <div className="div-table bank-list-subakun mt-3">
-                        <DataTable 
+                        <DataTable
                             columns={columns}
                             data={filterItemsRekening}
                             customStyles={customStyles}
@@ -833,7 +832,7 @@ const TransferSubAccount = () => {
                         aria-label="Close"
                         onClick={() => setShowTransfer(false)}
                     />
-                    
+
                 </Modal.Header>
                 <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
                     {language === null ? eng.konfirmasiTransfer : language.konfirmasiTransfer}
@@ -947,7 +946,7 @@ const TransferSubAccount = () => {
                         </div>
                     </div>
                     {
-                        toCountdown === true ? 
+                        toCountdown === true ?
                             <div className='text-center mt-3' style={{color: "#393939", fontSize: 16, fontFamily: "Source Sans Pro" }}>{language === null ? eng.mohonTungguDalam : language.mohonTungguDalam} <b><Countdown date={new Date(sendOtp.retry)} renderer={renderer} onComplete={completeTime} /></b> {language === null ? eng.untukKirimUlang : language.untukKirimUlang}</div> :
                             <div className='d-flex justify-content-center align-items-center mt-3'>
                                 <div className="me-1" style={{ color: "#393939", fontFamily: "Nunito", fontSize: 16 }}>{language === null ? eng.tidakMenerimaOtp : language.tidakMenerimaOtp} </div>
@@ -1027,7 +1026,7 @@ const TransferSubAccount = () => {
                         aria-label="Close"
                         onClick={() => setShowTransferBerhasil(false)}
                     />
-                    
+
                 </Modal.Header>
                 <Modal.Body style={{ padding: 'unset'}}>
                     <div id='bukti' className='px-3 my-3' style={{ backgroundColor: "#FFFFFF" }}>
@@ -1134,7 +1133,7 @@ const TransferSubAccount = () => {
                                     }}
                                 >
                                     {language === null ? eng.lihatMutasi : language.lihatMutasi}
-                                </button>  
+                                </button>
                             </>
                         }
                     </div>

@@ -3,7 +3,7 @@ import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 // import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
@@ -14,7 +14,6 @@ import { eng, ind } from '../../components/Language';
 
 function DetailSettlement() {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const access_token = getToken();
     const user_role = getRole();
     const history = useHistory()
@@ -77,7 +76,7 @@ function DetailSettlement() {
         // }
         getDetailSettlement(settlementId, 1, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)
     }, [settlementId])
-    
+
     async function ExportReportDetailSettlementHandler(settlementId, userRole, codeBank, typeSettlement, codeEWallet, lang) {
         try {
             const auth = 'Bearer ' + getToken();
@@ -139,7 +138,7 @@ function DetailSettlement() {
             history.push(errorCatch(error.response.status))
         }
     }
-    
+
     const columnsSettlEWallet = [
         {
             name: 'No',
@@ -158,14 +157,14 @@ function DetailSettlement() {
         {
             name: 'Waktu',
             selector: row => row.tvatrans_crtdt_format,
-            // sortable: true,          
+            // sortable: true,
             width: "120px",
             wrap: true
         },
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_trans_id,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             width: "150px",
         },
@@ -238,7 +237,7 @@ function DetailSettlement() {
             ],
         },
     ];
-    
+
     const columnsSettl = [
         {
             name: 'No',
@@ -345,7 +344,7 @@ function DetailSettlement() {
             ],
         },
     ];
-    
+
     const columnsSettlPartnerEWallet = [
         {
             name: language === null ? eng.no : language.no,
@@ -364,7 +363,7 @@ function DetailSettlement() {
         {
             name: language === null ? eng.waktu : language.waktu,
             selector: row => row.tvatrans_crtdt_format,
-            // sortable: true,          
+            // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
             width: "120px",
             wrap: true
@@ -372,7 +371,7 @@ function DetailSettlement() {
         {
             name: language === null ? eng.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trans_id,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start"},
             // width: "150px",
@@ -546,7 +545,7 @@ function DetailSettlement() {
             },
         },
     };
-    
+
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
             <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
@@ -568,7 +567,7 @@ function DetailSettlement() {
                 <div className='base-content mt-3'>
                     <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : `Detail Settlement`}</span>
                     {
-                        dataSettlement.length !== 0 &&  
+                        dataSettlement.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
                             <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
                         </div>

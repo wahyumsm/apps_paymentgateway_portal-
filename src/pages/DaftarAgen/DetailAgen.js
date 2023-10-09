@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, language, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import alertIcon from "../../assets/icon/alert_icon.svg";
@@ -10,7 +10,6 @@ import { ind } from '../../components/Language';
 
 function DetailAgen() {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken()
     const user_role = getRole()
@@ -46,7 +45,7 @@ function DetailAgen() {
     function toDashboard() {
         history.push("/");
     }
-    
+
     function toLaporan() {
         history.push("/laporan");
     }
@@ -61,7 +60,7 @@ function DetailAgen() {
     function editAgen(agenId) {
         history.push(`/editagen/${agenId}`)
     }
-    
+
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
             <span className='breadcrumbs-span'>{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>{language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>{language === null ? ind.daftarAgen : language.daftarAgen}</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{language === null ? ind.detailAgen : language.detailAgen}</span>

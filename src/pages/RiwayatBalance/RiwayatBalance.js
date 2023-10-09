@@ -7,14 +7,13 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import Pagination from 'react-js-pagination';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import * as XLSX from "xlsx"
 import { eng, ind } from '../../components/Language';
 
 function RiwayatBalance() {
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken()
     const user_role = getRole()
@@ -355,7 +354,7 @@ function RiwayatBalance() {
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                
+
             },
         },
         headRow: {

@@ -9,7 +9,7 @@ import axios from "axios";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
-import { authorization, BaseURL, setRoleSession, setUserSession } from "../../function/helpers";
+import { authorization, BaseURL, language, setRoleSession, setUserSession } from "../../function/helpers";
 import validator from "validator";
 import $ from 'jquery'
 import { chn, eng, ind } from "../../components/Language";
@@ -49,18 +49,16 @@ export default () => {
       $('#inggrisTab').removeClass('menu-detail-language-hr-active')
       $('#mandarinTab').addClass('menu-detail-language-hr-active')
     }
-  } 
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const language = JSON.parse(sessionStorage.getItem('lang'))
-
   function inaLang () {
     // sessionStorage.removeItem('lang');
     sessionStorage.setItem('lang', JSON.stringify(ind));
-    // history.push("/Riwayat Transaksi/va-dan-paylink")  
+    // history.push("/Riwayat Transaksi/va-dan-paylink")
     // history.push(0)
     // setFlagLangCurrent('ind')
     window.location.reload();
@@ -69,13 +67,13 @@ export default () => {
   function engLang () {
     if (sessionStorage.getItem('lang') === null) {
       sessionStorage.setItem('lang', JSON.stringify(eng));
-      // history.push("/Riwayat Transaksi/va-dan-paylink")  
+      // history.push("/Riwayat Transaksi/va-dan-paylink")
       // history.push(0)
       // setFlagLangCurrent('eng')
       window.location.reload();
     } else if (sessionStorage.getItem('lang') !== JSON.stringify(eng)) {
         sessionStorage.setItem('lang', JSON.stringify(eng));
-        // history.push("/Transaction Report/va-dan-paylink")  
+        // history.push("/Transaction Report/va-dan-paylink")
         // history.push(0)
         // setFlagLangCurrent('eng')
         window.location.reload();
@@ -84,11 +82,11 @@ export default () => {
 
   function chnLang () {
       sessionStorage.setItem('lang', JSON.stringify(chn));
-      // history.push("/历史交易/va-dan-paylink")  
+      // history.push("/历史交易/va-dan-paylink")
       // history.push(0)
       // setFlagLangCurrent('chn')
       window.location.reload();
-  } 
+  }
 
   async function userAccessMenu(url, token, lang) {
     try {
@@ -104,67 +102,67 @@ export default () => {
         if (dataUserAccessMenu.data.response_data[0].detail.length !== 0) {
           switch (dataUserAccessMenu.data.response_data[0].detail[0].id) {
             case 1101:
-              history.push("/riwayat-transaksi/va-dan-paylink")  
+              history.push("/riwayat-transaksi/va-dan-paylink")
             break;
             case 1102:
-              history.push("/riwayat-transaksi/disbursement")  
+              history.push("/riwayat-transaksi/disbursement")
             break;
             case 1103:
-              history.push("/riwayat-transaksi/ewallet")  
+              history.push("/riwayat-transaksi/ewallet")
             break;
             case 1104:
-              history.push("/riwayat-transaksi/direct-debit")  
+              history.push("/riwayat-transaksi/direct-debit")
             break;
             case 1105:
-              history.push("/riwayat-transaksi/sub-account")  
+              history.push("/riwayat-transaksi/sub-account")
             break;
             case 1601:
-              history.push("/Transaksi/va-dan-paylink")  
+              history.push("/Transaksi/va-dan-paylink")
             break;
             case 1602:
-              history.push("/Transaksi/disbursement")  
+              history.push("/Transaksi/disbursement")
             break;
             case 1603:
-              history.push("/Transaksi/ewallet")  
+              history.push("/Transaksi/ewallet")
             break;
             case 1604:
-              history.push("/Transaksi/direct-debit")  
+              history.push("/Transaksi/direct-debit")
             break;
             case 1605:
-              history.push("/Transaksi/sub-account")  
+              history.push("/Transaksi/sub-account")
             break;
             case 1606:
-              history.push("/Transaksi/disbursement-timeout")  
+              history.push("/Transaksi/disbursement-timeout")
             break;
             case 1701:
-              history.push("/settlement/riwayat-settlement")  
+              history.push("/settlement/riwayat-settlement")
             break;
             case 1702:
-              history.push("/settlement/settlement-manual")  
+              history.push("/settlement/settlement-manual")
             break;
             case 1901:
-              history.push("/HelpDesk/renotifyva")  
+              history.push("/HelpDesk/renotifyva")
             break;
             case 2301:
-              history.push("/Buat Invoice/disbursement")  
+              history.push("/Buat Invoice/disbursement")
             break;
             case 2302:
-              history.push("/Buat Invoice/settlement")  
+              history.push("/Buat Invoice/settlement")
             break;
             case 2401:
-              history.push("/Sub Account Bank/info-saldo-dan-mutasi")  
+              history.push("/Sub Account Bank/info-saldo-dan-mutasi")
             break;
             case 2402:
-              history.push("/Sub Account Bank/transfer")  
+              history.push("/Sub Account Bank/transfer")
             break;
             case 2403:
-              history.push("/Sub Account Bank/riwayat-sub-account")  
+              history.push("/Sub Account Bank/riwayat-sub-account")
             break;
             case 2601:
-              history.push("/Disbursement/disbursementpage")  
+              history.push("/Disbursement/disbursementpage")
             break;
             case 2602:
-              history.push("/Disbursement/report")  
+              history.push("/Disbursement/report")
             break;
           }
         } else {

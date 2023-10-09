@@ -1,4 +1,3 @@
-const language = JSON.parse(sessionStorage.getItem('lang'))
 export const Routes = {
     // pages
     DashboardOverview: { path: "/" },
@@ -68,7 +67,7 @@ export const Routes = {
     eWalletAdmin: {path: "/transaksi/ewallet"},
     ExcludeSettlementManual: {path: "/settlement/exclude-settlement"},
     ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},
-    
+
     // partner
     VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},
     RiwayatDirectDebit: {path: "/riwayat-transaksi/direct-debit"},

@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
 import Pagination from 'react-js-pagination'
 import { Link, useHistory } from 'react-router-dom'
-import { BaseURL, convertSimpleTimeStamp, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertSimpleTimeStamp, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession, language } from '../../function/helpers'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import axios from 'axios'
@@ -27,7 +27,6 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 
 function RiwayatTopUp() {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken()
     const user_role = getRole()
@@ -76,13 +75,13 @@ function RiwayatTopUp() {
         })
     }
 
-    const startColorNumber = (money) => {  
+    const startColorNumber = (money) => {
         if (money !== 0) {
           var diSliceAwal = String(money).slice(0, -3)
         }
         return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".") + "."
     }
-    
+
     const endColorNumber = (money) => {
         var diSliceAkhir = String(money).slice(-3)
         return diSliceAkhir
@@ -91,7 +90,7 @@ function RiwayatTopUp() {
     const copyHandler = (event) => {
         setText(event.target.value);
       };
-    
+
     const copyPrice = async () => {
         try {
             var copyText = document.getElementById('pricing').innerHTML.split("<")
@@ -101,7 +100,7 @@ function RiwayatTopUp() {
             // console.log(error);
         }
     };
-    
+
     const copyRek = async () => {
         try {
             var copyText = document.getElementById('noRek').innerHTML;
@@ -112,7 +111,7 @@ function RiwayatTopUp() {
         }
     };
 
-    
+
     const onCopyRek = React.useCallback(() => {
         setCopied(true);
     }, [])
@@ -125,7 +124,7 @@ function RiwayatTopUp() {
     const onCopyPrice = React.useCallback(() => {
         setCopied(true);
       }, [])
-    
+
     const onClickPrice = useCallback(({target: {innerText}}) => {
         // console.log(`Clicked on "${innerText}"!`);
         alert('Text copied');
@@ -215,13 +214,13 @@ function RiwayatTopUp() {
                     setPendingTopup(false)
                 }
             }
-            
+
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
-    
+
     function handleChange(e) {
         setInputHandle({
             ...inputHandle,
@@ -274,7 +273,7 @@ function RiwayatTopUp() {
 
     async function detailTopUpHandler(idTransaksi) {
         try {
-            const auth = "Bearer " + getToken()   
+            const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"tparttopup_code":"${idTransaksi}"}`)
             const headers = {
               "Content-Type": "application/json",
@@ -314,7 +313,7 @@ function RiwayatTopUp() {
     async function topUpHandleConfirm() {
         try {
             setIsLoadingTopUpConfirm(true)
-            const auth = "Bearer " + getToken()        
+            const auth = "Bearer " + getToken()
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -350,7 +349,7 @@ function RiwayatTopUp() {
         }
         listRiwayatTopUp(undefined, undefined, undefined, [], undefined, undefined, false, language === null ? 'EN' : language.flagName)
     }, [access_token, user_role])
-    
+
 
     const columnsRiwayatTopUp = [
         {
@@ -383,7 +382,7 @@ function RiwayatTopUp() {
         {
             name: language === null ? eng.status : language.status,
             selector: row => row.mstatus_name_ind,
-            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
+            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>,
             // width: "150px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -393,7 +392,7 @@ function RiwayatTopUp() {
                     style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7, 
+                    when: row => row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7,
                     className: ['detailStatus'],
                     style: { cursor:"pointer", textDecoration: "underline", background: "rgba(247, 148, 33, 0.08)", paddingLeft: "unset", '&:hover': {cursor: 'pointer', backgroundColor: '#FFFFFF'},},
                     option: {'&:hover': {backgroundColor: "#FFFFFF"} }
@@ -448,7 +447,7 @@ function RiwayatTopUp() {
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
-            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
+            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>,
             // width: "150px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -458,7 +457,7 @@ function RiwayatTopUp() {
                     style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7, 
+                    when: row => row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7,
                     className: ['detailStatus'],
                     style: { cursor:"pointer", textDecoration: "underline", background: "rgba(247, 148, 33, 0.08)", paddingLeft: "unset", '&:hover': {cursor: 'pointer', backgroundColor: '#FFFFFF'},},
                     option: {'&:hover': {backgroundColor: "#FFFFFF"} }
@@ -696,7 +695,7 @@ function RiwayatTopUp() {
                                     </Col>
                                     <Col xs={12} className="d-flex justify-content-center align-items-center mt-3" style={{ marginLeft: 33 }}>
                                         <div style={{ display: showDateRiwayatTopUp }}>
-                                            <DateRangePicker 
+                                            <DateRangePicker
                                                 onChange={pickDateRiwayatTopUp}
                                                 value={stateRiwayatTopup}
                                                 clearIcon={null}
@@ -766,7 +765,7 @@ function RiwayatTopUp() {
                                     <Row className='mt-4' style={{ display: showDateRiwayatTopUp }} >
                                         <Col xs={4} className="d-flex justify-content-end align-items-center">
                                             <div className='me-4'>
-                                                <DateRangePicker 
+                                                <DateRangePicker
                                                     onChange={pickDateRiwayatTopUp}
                                                     value={stateRiwayatTopup}
                                                     clearIcon={null}
@@ -854,10 +853,10 @@ function RiwayatTopUp() {
                         <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
                             {language === null ? eng.selesaikanProsesTopUp : language.selesaikanProsesTopUp}
                         </Modal.Title>
-                        </Col>            
+                        </Col>
                     </Modal.Header>
                     <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
-                        <div className="text-center" style={{fontSize: "14px"}}>{language === null ? eng.selesaikanPembayaran : language.selesaikanPembayaran}</div> 
+                        <div className="text-center" style={{fontSize: "14px"}}>{language === null ? eng.selesaikanPembayaran : language.selesaikanPembayaran}</div>
                         <div className="text-center mt-2">
                             <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={Date.now() + countDown} daysInHours={true} /></span>
                         </div>
@@ -901,7 +900,7 @@ function RiwayatTopUp() {
                                     <CopyToClipboard onCopy={onCopyPrice} text={detailTopUp.amount_transfer}><div onClick={onClickPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div></CopyToClipboard>
                                 </div>
                             </div>
-                            </Table>                
+                            </Table>
                         </div>
                         <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-start align-items-center mt-2">
                             <img src={noticeIcon} alt="notice" />

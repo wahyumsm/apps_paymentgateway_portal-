@@ -7,14 +7,13 @@ import { Link, useHistory } from 'react-router-dom';
 import validator from "validator";
 import sendEmailIcon from "../../assets/img/illustrations/sendEmail.svg";
 import { Routes } from "../../routes";
-import { authorization, BaseURL, setUserSession } from "../../function/helpers";
+import { authorization, BaseURL, language, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import { ind } from "../../components/Language";
 
 export default () => {
 
-  const language = JSON.parse(sessionStorage.getItem('lang'))
   const history = useHistory()
   const [email, setEmail] = useState('')
   const [showModal, setShowModal] = useState(false)

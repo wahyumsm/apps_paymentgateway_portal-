@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faCog} from "@fortawesome/free-solid-svg-icons";
 import CopyIcon from '../../assets/icon/carbon_copy.svg'
 import { useHistory, useParams } from "react-router-dom";
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -13,7 +13,6 @@ import { eng, ind } from "../../components/Language";
 
 function DetailPayment() {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken()
     const { paymentId } = useParams()
@@ -101,7 +100,7 @@ function DetailPayment() {
     function toDashboard() {
         history.push("/");
     }
-    
+
     function toListPay() {
         history.push("/listpayment");
     }

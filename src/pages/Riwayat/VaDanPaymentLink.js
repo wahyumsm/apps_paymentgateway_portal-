@@ -7,7 +7,7 @@ import ReactSelect, { components } from 'react-select';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import encryptData from '../../function/encryptData';
 import * as XLSX from "xlsx"
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import Pagination from 'react-js-pagination';
@@ -15,8 +15,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { eng, ind } from '../../components/Language';
 
 const VaDanPaymentLink = () => {
-    
-    const language = JSON.parse(sessionStorage.getItem('lang'))
+
     const history = useHistory()
     const access_token = getToken();
     const user_role = getRole()
@@ -34,7 +33,7 @@ const VaDanPaymentLink = () => {
     const [isFilterDanaMasuk, setIsFilterDanaMasuk] = useState(false)
     const [selectedAgenDanaMasuk, setSelectedAgenDanaMasuk] = useState([])
     const [selectedBankDanaMasuk, setSelectedBankDanaMasuk] = useState([])
-    
+
     const [dataListPartner, setDataListPartner] = useState([])
     const [dataListAgenFromPartner, setDataListAgenFromPartner] = useState([])
     const [dataRiwayatDanaMasukAdmin, setDataRiwayatDanaMasukAdmin] = useState([])
@@ -51,7 +50,7 @@ const VaDanPaymentLink = () => {
     const [selectedBankDanaMasukAdmin, setSelectedBankDanaMasukAdmin] = useState([])
     const [detailTransferDanaAdmin, setDetailTransferDanaAdmin] = useState({})
     const [showModalDetailTransferDanaAdmin, setShowModalDetailTransferDanaAdmin] = useState(false)
-    
+
     const [inputHandle, setInputHandle] = useState({
         idTransaksiDanaMasuk: "",
         partnerTransIdDanaMasuk: "",
@@ -409,7 +408,7 @@ const VaDanPaymentLink = () => {
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);            
+                XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);
               }
             } catch (error) {
               // console.log(error)
@@ -438,8 +437,8 @@ const VaDanPaymentLink = () => {
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);            
-                
+                XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);
+
               } else if (dataExportDefault.status === 200 && dataExportDefault.data.response_code === 200 && dataExportDefault.data.response_new_token !== null) {
                 setUserSession(dataExportDefault.data.response_new_token)
                 const data = dataExportDefault.data.response_data.results.list
@@ -451,7 +450,7 @@ const VaDanPaymentLink = () => {
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
                 XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);
-                
+
               }
             } catch (error) {
               // console.log(error)
@@ -471,7 +470,7 @@ const VaDanPaymentLink = () => {
               statusDanaMasuk: [],
               periodeDanaMasuk: 0,
               partnerTransIdDanaMasuk: "",
-              // bankDanaMasuk: "",        
+              // bankDanaMasuk: "",
               fiturDanaMasuk: 0,
               tipePeriode: 0,
           })
@@ -543,7 +542,7 @@ const VaDanPaymentLink = () => {
         {
             name: 'Waktu Transaksi',
             selector: row => row.tvatrans_crtdt_format,
-            // sortable: true,          
+            // sortable: true,
             width: "180px",
             wrap: true,
         },
@@ -556,7 +555,7 @@ const VaDanPaymentLink = () => {
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_transid,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             width: "170px",
         },
@@ -972,7 +971,7 @@ const VaDanPaymentLink = () => {
             setStateDanaMasukAdmin(null)
             setDateRangeDanaMasukAdmin([])
             setShowDateDanaMasukAdmin("none")
-        } 
+        }
     }
 
     const customStylesDanaMasuk = {
@@ -985,7 +984,7 @@ const VaDanPaymentLink = () => {
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                
+
             },
         },
         headRow: {
@@ -1119,8 +1118,8 @@ const VaDanPaymentLink = () => {
                                         value={stateDanaMasuk}
                                         clearIcon={null}
                                     />
-                                </Col>        
-                                
+                                </Col>
+
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={5}>
@@ -1262,7 +1261,7 @@ const VaDanPaymentLink = () => {
                                         <option value={5}>Bulan Ini</option>
                                         <option value={6}>Bulan Kemarin</option>
                                         <option value={7}>Pilih Range Tanggal</option>
-                                    </Form.Select>                            
+                                    </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span className="me-4">Nama Bank</span>
@@ -1292,7 +1291,7 @@ const VaDanPaymentLink = () => {
                             </Row>
                             <Row className="mt-4">
                                 <Col xs={4} style={{ display: showDateDanaMasukAdmin, marginLeft: 65 }} className='text-start ps-5'>
-                                    <DateRangePicker 
+                                    <DateRangePicker
                                         onChange={pickDateDanaMasukAdmin}
                                         value={stateDanaMasukAdmin}
                                         clearIcon={null}

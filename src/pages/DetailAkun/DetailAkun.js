@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Image, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, language, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import { useHistory } from 'react-router-dom';
 import edit from '../../assets/icon/edit_icon.svg';
@@ -17,7 +17,6 @@ import validator from "validator";
 
 function DetailAkun() {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const access_token = getRole()
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
@@ -89,7 +88,7 @@ function DetailAkun() {
                 setSubAccount(userDetailPartner.data.response_data.sub_account)
                 getListCallback(userDetailPartner.data.response_data.mpartner_id)
             }
-            
+
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
@@ -238,9 +237,9 @@ function DetailAkun() {
             </div>
         </div>
         {
-            isDetailAkun ? 
+            isDetailAkun ?
             <>
-            <div className='detail-akun-section'>        
+            <div className='detail-akun-section'>
                 <hr className='hr-style' style={{marginTop: -2}}/>
                 <br/>
                 <span className='head-title'>{language === null ? eng.profilPerusahaan : language.profilPerusahaan}</span>
@@ -252,7 +251,7 @@ function DetailAkun() {
                         <tbody>
                             <tr>
                                 <td style={{width: 200}}>{language === null ? eng.status : language.status}</td>
-                                {dataAkun.mpartner_is_active === true ? 
+                                {dataAkun.mpartner_is_active === true ?
                                     <td><div className='active-box'><span className='active-box-span'>{language === null ? eng.aktif : language.aktif}</span></div></td>
                                     :
                                     <td><div className='inactive-box'><span className='inactive-box-span'>{language === null ? eng.tidakAktif : language.tidakAktif}</span></div></td>}
@@ -420,7 +419,7 @@ function DetailAkun() {
                     }
                 </div>
             </div>
-            </> : 
+            </> :
             <>
                 <div className='konfigurasi-section' style={{marginTop: 24}}>
                     <hr className='hr-style' style={{marginTop: -25}}/>
@@ -478,7 +477,7 @@ function DetailAkun() {
                                             </Col>
                                             <Col xs={9}>
                                                 <div>
-                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`${item.mcallbackurl_id}`} style={{width: '100%', marginLeft: 'unset'}}/> 
+                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`${item.mcallbackurl_id}`} style={{width: '100%', marginLeft: 'unset'}}/>
                                                     {
                                                         errorURL.length !== 0 && (errorURL.find(el => el === String(item.mcallbackurl_id)) !== undefined || String(errorURL.find(el => el === String(item.mcallbackurl_id))).length === 0) ?
                                                         <p>{"Format URL salah"}</p> :
@@ -497,7 +496,7 @@ function DetailAkun() {
                             </Col>
                             <Col xs={9}>
                                 <div>
-                                    <input type='text'className='input-text-ez' onChange={handleChange} defaultValue={dataAkun.callback_url} name="callbackUrl" style={{width: '100%', marginLeft: 'unset'}}/> 
+                                    <input type='text'className='input-text-ez' onChange={handleChange} defaultValue={dataAkun.callback_url} name="callbackUrl" style={{width: '100%', marginLeft: 'unset'}}/>
                                     <p>{language === null ? eng.addressUrl : language.addressUrl}</p>
                                     <br/>
                                 </div>
@@ -511,7 +510,7 @@ function DetailAkun() {
                     </div>
                 </div>
             </>
-        } 
+        }
     </div>
   )
 }

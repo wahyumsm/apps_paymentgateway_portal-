@@ -14,7 +14,7 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DataTable from "react-data-table-component";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, getToken, setUserSession, styleStatusPaylink } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, language, setUserSession, styleStatusPaylink } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import Pagination from "react-js-pagination";
@@ -25,7 +25,6 @@ import { eng, ind } from "../../components/Language";
 
 function ListPayment() {
 
-  const language = JSON.parse(sessionStorage.getItem('lang'))
   const history = useHistory();
   const access_token = getToken();
   const user_role = getRole()
@@ -446,7 +445,7 @@ function ListPayment() {
   // const handleMouseEnter = () => {
   //   setIsHover(true);
   // };
- 
+
   // const handleMouseLeave = () => {
   //   setIsHover(false);
   // };

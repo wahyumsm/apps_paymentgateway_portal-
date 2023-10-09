@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom'
 import $ from 'jquery'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteInfo from "../../assets/icon/note_icon.svg"
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers'
 import { Button, Col, Form, FormControl, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -44,7 +44,6 @@ import { eng, ind } from '../../components/Language'
 registerPlugin(FilePondPluginFileEncode)
 
 function DisbursementPage() {
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const user_role = getRole()
     const access_token = getToken()
     const [isDisbursementManual, setisDisbursementManual] = useState(true)

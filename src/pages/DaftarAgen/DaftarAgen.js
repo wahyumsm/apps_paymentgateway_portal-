@@ -5,7 +5,7 @@ import { Col, Row, Button, Form, Image} from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, Link } from 'react-router-dom';
-import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, language, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -15,7 +15,6 @@ import { eng, ind } from '../../components/Language';
 
 function DaftarAgen() {
 
-  const language = JSON.parse(sessionStorage.getItem('lang'))
   const history = useHistory()
   const access_token = getToken()
   const user_role = getRole()
@@ -26,7 +25,7 @@ function DaftarAgen() {
   const filteredItems = listAgen.filter(
     item => item.agen_name && item.agen_name.toLowerCase().includes(filterText.toLowerCase()),
   );
-  
+
   const subHeaderComponentMemo = useMemo(() => {
     const handleClear = () => {
         if (filterText) {
@@ -68,7 +67,7 @@ function DaftarAgen() {
   }
 
   // console.log(listAgen, "listagen");
-  
+
   function detailAgenHandler(agenId) {
     history.push(`/detailagen/${agenId}`)
   }
@@ -112,7 +111,7 @@ function DaftarAgen() {
       selector: row => row.agen_bank_number,
       width: '150px'
     },
-    
+
     {
       name: language === null ? eng.noRekSubAkun : language.noRekSubAkun,
       selector: row => row.subaccount_acc_number === null ? "-" : row.subaccount_acc_number,
@@ -178,7 +177,7 @@ function DaftarAgen() {
       <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
       <div>Loading...</div>
     </div>
-  );  
+  );
 
   return (
     <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
@@ -191,7 +190,7 @@ function DaftarAgen() {
           <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> {language === null ? eng.tambahAgen : language.tambahAgen}
         </button>
       </div>
-      <div className='base-content'>   
+      <div className='base-content'>
         {/* <div className='search-bar mb-5' >
           <Row>
             <Col xs={2} style={{  paddingRight: "unset" }}>

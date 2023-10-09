@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { BaseURL, convertDateAndTimeInfoDanSaldo, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertDateAndTimeInfoDanSaldo, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import SubAccountComponent from '../../components/SubAccountComponent'
 import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
@@ -25,7 +25,6 @@ import * as XLSX from "xlsx"
 import { eng } from '../../components/Language'
 
 const InfoSaldoDanMutasi = () => {
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const user_role = getRole()
     const access_token = getToken()
@@ -108,7 +107,7 @@ const InfoSaldoDanMutasi = () => {
     };
 
     /*SORT PARTNER */
-      
+
     const [idTrans, setIdTrans] = useState({
           isDesc: false,
         id: 1
@@ -539,7 +538,7 @@ const InfoSaldoDanMutasi = () => {
           setDateRangeInfoMutasi(item)
         }
     }
-    
+
     async function fetchMoreData() {
         try {
             const auth = "Bearer " + getToken()
@@ -578,14 +577,14 @@ const InfoSaldoDanMutasi = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-    
+
     const style = {
         height: 30,
         border: "1px solid green",
         margin: 6,
         padding: 8
     };
-    
+
     const [inputHandle, setInputHandle] = useState({
         akunPartner: "",
         nomorAkun: "",
@@ -595,7 +594,7 @@ const InfoSaldoDanMutasi = () => {
     const [inputDataMutasi, setInputDataMutasi] = useState({
         periodeInfoMutasi: 0
     })
-    
+
     const { allowedMaxDays, allowedRange, combine } = DateRangePicker;
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate() + 1).toISOString().split('T')[0]
@@ -615,7 +614,7 @@ const InfoSaldoDanMutasi = () => {
                 opacity: 'unset'
             },
             placement: 'bottom',
-            
+
         },
     ]
     const Locale = {
@@ -779,7 +778,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingMutasi(false)
             }
             history.push(errorCatch(error.response.status))
-            
+
         }
     }
 
@@ -846,10 +845,10 @@ const InfoSaldoDanMutasi = () => {
         setShowDateInfoMutasi("none")
     }
     // console.log(inputDataMutasi.periodeInfoMutasi, 'inputDataMutasi.periodeInfoMutasi');
-    
+
     function viewSaldo () {
         getInfoSaldo(inputHandle.akunPartner, inputPass.passwordRek)
-        
+
     }
 
     function formPassword () {
@@ -869,7 +868,7 @@ const InfoSaldoDanMutasi = () => {
                 fontWeight: 'bold',
                 fontSize: '16px',
                 paddingRight: 'none'
-                
+
             },
         },
     };
@@ -1115,7 +1114,7 @@ const InfoSaldoDanMutasi = () => {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role === "102" ? (language === null ? eng.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Sub Account bank"} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{user_role === "102" ? (language === null ? eng.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account"}</span> 
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role === "102" ? (language === null ? eng.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Sub Account bank"} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{user_role === "102" ? (language === null ? eng.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account"}</span>
             <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{user_role === "102" ? (language === null ? eng.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account Partner"}</div>
             </div>
@@ -1226,7 +1225,7 @@ const InfoSaldoDanMutasi = () => {
                                                 <option value={2}>{language === null ? eng.transaksiKeluar : language.transaksiKeluar} ( db )</option>
                                                 <option value={3}>{language === null ? eng.biayaAdmin : language.biayaAdmin}</option>
                                             </Form.Select>
-                                        </Col> 
+                                        </Col>
                                         <Col
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
@@ -1258,7 +1257,7 @@ const InfoSaldoDanMutasi = () => {
                                                     cleanable={true}
                                                     placement='bottomEnd'
                                                     size='lg'
-                                                    placeholder="Select Date Range" 
+                                                    placeholder="Select Date Range"
                                                     disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
                                                     className='datePicker'
                                                     locale={Locale}
@@ -1272,7 +1271,7 @@ const InfoSaldoDanMutasi = () => {
                                         <Col xs={5}>
                                             <Row>
                                                 <Col xs={6} style={{ width: "40%" }}>
-                                                    <button 
+                                                    <button
                                                         className={((inputDataMutasi.periodeInfoMutasi === "2") || (inputDataMutasi.periodeInfoMutasi === "3") || (inputDataMutasi.periodeInfoMutasi === "4") || (inputDataMutasi.periodeInfoMutasi !== 0 && (inputDataMutasi.periodeInfoMutasi === "7" && dateRangeInfoMutasi.length !== 0))) ? 'btn-ez-on' : 'btn-noez-transfer'}
                                                         disabled={inputDataMutasi.periodeInfoMutasi === 0 || (inputDataMutasi.periodeInfoMutasi === "7" && dateRangeInfoMutasi.length === 0)}
                                                         onClick={() => filterListRiwayatMutasi(inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.paymentType, inputMutasi.partnerName, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, 1, 10, orderId, orderField, inputMutasi.idReff, inputMutasi.idReffTrans, language === null ? 'EN' : language.flagName)}
@@ -1281,7 +1280,7 @@ const InfoSaldoDanMutasi = () => {
                                                     </button>
                                                 </Col>
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
-                                                    <button 
+                                                    <button
                                                         className={(inputDataMutasi.periodeInfoMutasi !== 0) ? 'btn-reset' : 'btn-ez-reset'}
                                                         disabled={(inputDataMutasi.periodeInfoMutasi === 0 )}
                                                         onClick={() => resetButtonHandle()}
@@ -1293,7 +1292,7 @@ const InfoSaldoDanMutasi = () => {
                                         </Col>
                                     </Row>
                                     {
-                                        dataMutasi.length !== 0 && 
+                                        dataMutasi.length !== 0 &&
                                         <div className='mt-3 mb-5'>
                                             <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterMutasi, inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.idReffTrans, inputMutasi.idReff, inputMutasi.paymentType, inputMutasi.partnerName, orderId, orderField, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
                                         </div>
@@ -1338,7 +1337,7 @@ const InfoSaldoDanMutasi = () => {
                                                                             ))
                                                                         }
                                                                     </tbody>
-                                                                ) 
+                                                                )
                                                             }
                                                         </table>
                                                         {pendingMutasi && (<div className='text-center'><CustomLoader /></div>)}
@@ -1472,17 +1471,17 @@ const InfoSaldoDanMutasi = () => {
                             <Col xs={4}></Col>
                             <Col xs={4} className='d-flex justify-content-end align-items-center' >
                                 <div style={{ display: showDateRiwayatTranferAdmin }}>
-                                    <DateRangePicker 
-                                        value={stateRiwayatTransferAdmin} 
-                                        ranges={column} 
-                                        onChange={(e) => pickDateRiwayatTransferAdmin(e)} 
-                                        character=' - ' 
-                                        cleanable={true} 
-                                        placement={'bottomEnd'} 
-                                        size='lg' 
-                                        appearance="default" 
-                                        placeholder="Select Date Range" 
-                                        disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}  
+                                    <DateRangePicker
+                                        value={stateRiwayatTransferAdmin}
+                                        ranges={column}
+                                        onChange={(e) => pickDateRiwayatTransferAdmin(e)}
+                                        character=' - '
+                                        cleanable={true}
+                                        placement={'bottomEnd'}
+                                        size='lg'
+                                        appearance="default"
+                                        placeholder="Select Date Range"
+                                        disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
                                         className='datePicker'
                                         locale={Locale}
                                         format="yyyy-MM-dd"
@@ -1495,17 +1494,17 @@ const InfoSaldoDanMutasi = () => {
                             <Col xs={5}>
                                 <Row>
                                     <Col xs={6} style={{ width: "unset" }}>
-                                        <button 
-                                            className={((inputHandleAdmin.periodeRiwayatTransfer === "2") || (inputHandleAdmin.periodeRiwayatTransfer === "3") || (inputHandleAdmin.periodeRiwayatTransfer === "4") || (inputHandleAdmin.periodeRiwayatTransfer !== 0 && dateRangeRiwayatTranferAdmin.length !== 0) ) ? "btn-ez-on" : "btn-ez"} 
-                                            disabled={inputHandleAdmin.periodeRiwayatTransfer === 0 || ( inputHandleAdmin.periodeRiwayatTransfer === "7" && dateRangeRiwayatTranferAdmin.length === 0) } 
+                                        <button
+                                            className={((inputHandleAdmin.periodeRiwayatTransfer === "2") || (inputHandleAdmin.periodeRiwayatTransfer === "3") || (inputHandleAdmin.periodeRiwayatTransfer === "4") || (inputHandleAdmin.periodeRiwayatTransfer !== 0 && dateRangeRiwayatTranferAdmin.length !== 0) ) ? "btn-ez-on" : "btn-ez"}
+                                            disabled={inputHandleAdmin.periodeRiwayatTransfer === 0 || ( inputHandleAdmin.periodeRiwayatTransfer === "7" && dateRangeRiwayatTranferAdmin.length === 0) }
                                             onClick={() => filterListRiwayatTransaksiAdmin(inputHandleAdmin.idTrans, inputHandleAdmin.idReffTrans, inputHandleAdmin.idReff, orderIdAdmin, orderFieldAdmin, inputHandleAdmin.fiturTransaksi, inputHandleAdmin.namaPartner, dateRangeRiwayatTranferAdmin, inputHandleAdmin.periodeRiwayatTransfer, 1, inputHandleAdmin.rowPerPage, language === null ? 'EN' : language.flagName)}
                                         >
                                             Terapkan
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                        <button className={(inputHandleAdmin.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranferAdmin.length !== 0 || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.idReff.length !== 0) || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.namaPartner.length !== 0) || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.fiturTransaksi !== 0)) ? "btn-reset" : "btn-ez"} 
-                                        disabled={inputHandleAdmin.periodeRiwayatTransfer === 0 || (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.idReff.length === 0) || (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.namaPartner.length === 0)|| (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.fiturTransaksi === 0)} 
+                                        <button className={(inputHandleAdmin.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranferAdmin.length !== 0 || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.idReff.length !== 0) || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.namaPartner.length !== 0) || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.fiturTransaksi !== 0)) ? "btn-reset" : "btn-ez"}
+                                        disabled={inputHandleAdmin.periodeRiwayatTransfer === 0 || (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.idReff.length === 0) || (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.namaPartner.length === 0)|| (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.fiturTransaksi === 0)}
                                         onClick={() => resetButtonHandle()}
                                     >
                                             Atur Ulang
@@ -1515,7 +1514,7 @@ const InfoSaldoDanMutasi = () => {
                             </Col>
                         </Row>
                         {
-                            dataRiwayatTransferAdmin.length !== 0 && 
+                            dataRiwayatTransferAdmin.length !== 0 &&
                             <div className='mt-3 mb-5'>
                                 <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransferAdmin, inputHandleAdmin.idTrans, inputHandleAdmin.idReffTrans, inputHandleAdmin.idReff, inputHandleAdmin.fiturTransaksi, inputHandleAdmin.namaPartner, orderIdAdmin, orderFieldAdmin, dateRangeRiwayatTranferAdmin, inputHandleAdmin.periodeRiwayatTransfer, language === null ? 'EN' : language.flagName)} className="export-span">Export</Link>
                             </div>
@@ -1563,10 +1562,10 @@ const InfoSaldoDanMutasi = () => {
                                                     </tbody>
                                                 )
                                             }
-                                        </table> 
+                                        </table>
                                         {pendingRiwayatTransferAdmin && (<div className='text-center'><CustomLoader /></div>)}
                                     </>
-                                    
+
                                 ) : (
                                     <div id='table-body' style={{ overflowX: 'auto', maxWidth: 'max-content' }} className='scroll-confirm'>
                                         <>
@@ -1610,7 +1609,7 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="saldo-sub-acc" size="xs" centered show={loginToSaldo} onHide={() => setLoginToSaldo(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    {language === null ? eng.masukkanKataSandiSub : language.masukkanKataSandiSub} 
+                    {language === null ? eng.masukkanKataSandiSub : language.masukkanKataSandiSub}
                 </Modal.Title>
                 <Modal.Body >
                     <div className=' mt-2' style={{ padding: "0px 24px"}}>
@@ -1663,8 +1662,8 @@ const InfoSaldoDanMutasi = () => {
                     />
                 </Modal.Header>
                 <Modal.Title className="mt-3 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    <div><img src={transferFailed} alt="success transfer" /></div> 
-                    <div className='mt-3'>{language === null ? eng.sistemSedangBermasalah : language.sistemSedangBermasalah}</div> 
+                    <div><img src={transferFailed} alt="success transfer" /></div>
+                    <div className='mt-3'>{language === null ? eng.sistemSedangBermasalah : language.sistemSedangBermasalah}</div>
                 </Modal.Title>
                 <Modal.Body >
                     <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>{language === null ? eng.descSistemBermasalah : language.descSistemBermasalah}</div>

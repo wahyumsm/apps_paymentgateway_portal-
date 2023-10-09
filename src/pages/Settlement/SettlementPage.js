@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Pagination from 'react-js-pagination';
 import { Link, useHistory } from 'react-router-dom';
 import ReactSelect, { components } from 'react-select'
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
 import * as XLSX from "xlsx"
 import axios from 'axios';
 import encryptData from '../../function/encryptData';
@@ -15,7 +15,6 @@ import { eng, ind } from '../../components/Language';
 
 function SettlementPage() {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken();
     const user_role = getRole();
@@ -179,7 +178,7 @@ function SettlementPage() {
                 })
                 setListEWallet(newArr)
             }
-            
+
         } catch (error) {
             // console.log(error);
             history.push(errorCatch(error.response.status))
@@ -266,14 +265,14 @@ function SettlementPage() {
                 dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberSettlementPartner(dataSettlement.data.response_data)
                 setTotalPageSettlementPartner(dataSettlement.data.response_data.max_page)
-                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)        
+                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)
                 setPendingSettlementPartner(false)
             } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
                 setUserSession(dataSettlement.data.response_new_token)
                 dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberSettlementPartner(dataSettlement.data.response_data)
                 setTotalPageSettlementPartner(dataSettlement.data.response_data.max_page)
-                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)        
+                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)
                 setPendingSettlementPartner(false)
             }
         } catch (error) {
@@ -631,7 +630,7 @@ function SettlementPage() {
             },
         },
     };
-    
+
     const customStylesSettlement = {
         headCells: {
             style: {
@@ -770,7 +769,7 @@ function SettlementPage() {
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
                         XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
-                    } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {            
+                    } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {
                         setUserSession(dataExportFilter.data.response_new_token)
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
@@ -894,7 +893,7 @@ function SettlementPage() {
                                         <option value={5}>Bulan Ini</option>
                                         <option value={6}>Bulan Kemarin</option>
                                         <option value={7}>Pilih Range Tanggal</option>
-                                    </Form.Select>                            
+                                    </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Jenis Transaksi</span>
@@ -1030,8 +1029,8 @@ function SettlementPage() {
                                         <option value={5}>{language === null ? eng.bulanIni : language.bulanIni}</option>
                                         <option value={6}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
                                         <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
-                                    </Form.Select>                    
-                                </Col>                
+                                    </Form.Select>
+                                </Col>
                                 <Col xs={4}>
                                     <span>{language === null ? eng.status : language.status}</span>
                                     <Form.Select name="statusSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlementPartner} onChange={(e) => handleChange(e)}>

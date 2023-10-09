@@ -4,7 +4,7 @@ import {Row, Col, Modal, Button} from '@themesberg/react-bootstrap'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons"
 import Upload from "../../assets/icon/upload_icon.svg"
-import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, language, setUserSession } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 import axios from "axios"
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
@@ -12,7 +12,6 @@ import { eng, ind } from "../../components/Language";
 
 function CustomDesignPayment () {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const access_token = getToken()
     const [showModalSave, setShowModalSave] = useState(false)
     const [showModalBatal, setShowModalBatal] = useState(false)
@@ -43,7 +42,7 @@ function CustomDesignPayment () {
             if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
                 setUpload(true)
                 setImageFile(imageFile)
-            } 
+            }
             else {
                 setUpload(false)
                 const reader = new FileReader()
@@ -131,7 +130,7 @@ function CustomDesignPayment () {
     function toDashboard() {
         history.push("/");
       }
-    
+
     function toListPay() {
         history.push("/listpayment");
     }
@@ -146,7 +145,7 @@ function CustomDesignPayment () {
         }
         getDetailCustomHandler()
     }, [access_token])
-    
+
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className="breadcrumbs-span">{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>{language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>} &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toListPay()}>{language === null ? eng.paymentLink : language.paymentLink}</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toCustomDesign()}>{language === null ? eng.customDesignPaymentLink : language.customDesignPaymentLink}</span> </span>
@@ -160,7 +159,7 @@ function CustomDesignPayment () {
                         <div className="base-content-custom d-flex justify-content-center align-items-center py-2 px-2" >
                             {!imageFile ?
                                     <div style={{background: "#F0F0F0", border: "1px solid #C4C4C4", width: 100, height:48}} className="py-2 px-2">{language === null ? eng.logoAnda : language.logoAnda}</div> :
-                                <>                                        
+                                <>
                                     <img src={imageFile} alt="alt" width="auto" height="44px" />
                                     <input
                                         type="file"
@@ -170,11 +169,11 @@ function CustomDesignPayment () {
                                         ref={hiddenFileInput}
                                         id="image"
                                         name="image"
-                                        
+
                                     />
                                 </>
-                            }                            
-                            {inputHandle.namaPerusahaan !== "" ? 
+                            }
+                            {inputHandle.namaPerusahaan !== "" ?
                                 <div className="mx-2" style={{fontFamily: "Nunito", fontSize: 16}}>{inputHandle.namaPerusahaan}</div> :
                                 <div className="mx-2" style={{fontFamily: "Nunito", fontSize: 16}}>{language === null ? eng.namaPerusahaanAnda : language.namaPerusahaanAnda}</div>
                             }
@@ -194,8 +193,8 @@ function CustomDesignPayment () {
                             <Row className="mt-2">
                                 <Col xs={12}>
                                     <div className="my-1">{language === null ? eng.nama : language.nama}</div>
-                                    <input 
-                                        className="input-text-user" 
+                                    <input
+                                        className="input-text-user"
                                         placeholder={language === null ? eng.placeholderNama : language.placeholderNama}
                                         disabled = {true}
                                         style={{background: "#FFFFFF"}}
@@ -203,8 +202,8 @@ function CustomDesignPayment () {
                                 </Col>
                                 <Col xs={12} className="mt-1">
                                     <div className="my-1">{language === null ? eng.email : language.email}</div>
-                                    <input 
-                                        className="input-text-user" 
+                                    <input
+                                        className="input-text-user"
                                         placeholder={language === null ? eng.placeholderEmail : language.placeholderEmail}
                                         disabled = {true}
                                         style={{background: "#FFFFFF"}}
@@ -221,7 +220,7 @@ function CustomDesignPayment () {
                                 </div>
                                 </Col>
                             </Row>
-                        </div>                        
+                        </div>
                     </div>
                 </Col>
                 <Col xs={6}>
@@ -242,7 +241,7 @@ function CustomDesignPayment () {
                                             name="image"
                                         />
                                     </div> :
-                                    <>                                        
+                                    <>
                                         <img src={imageFile} alt="alt" width="auto" height="44px" />
                                         <input
                                             type="file"
@@ -254,7 +253,7 @@ function CustomDesignPayment () {
                                             name="image"
                                         />
                                     </>
-                                } 
+                                }
                                 <div className="mx-2">
                                     <div onClick={handleClick} className="d-flex justify-content-start align-items-center" style={{cursor: "pointer"}}>
                                         <img src={Upload} alt="Upload"/>
@@ -274,8 +273,8 @@ function CustomDesignPayment () {
                             <Row>
                                 <Col xs={12}>
                                     <div className="my-2">{language === null ? eng.namaPerusahaan : language.namaPerusahaan}</div>
-                                    <input 
-                                        className="input-text-user" 
+                                    <input
+                                        className="input-text-user"
                                         placeholder={language === null ? eng.placeholderNamaPerusahaan : language.placeholderNamaPerusahaan}
                                         name="namaPerusahaan"
                                         onChange={handleChange}
@@ -308,7 +307,7 @@ function CustomDesignPayment () {
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 12, marginBottom: 16 }}>
                         <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? eng.seluruhPerubahanTersimpan : language.seluruhPerubahanTersimpan}</p>
-                    </div>              
+                    </div>
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSave(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? eng.batal : language.batal}</Button>
                         <Button onClick={() => saveCustomDesignHandler(inputHandle.namaPerusahaan, image)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? eng.simpan : language.simpan}</Button>
@@ -328,7 +327,7 @@ function CustomDesignPayment () {
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 12, marginBottom: 16 }}>
                         <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? eng.seluruhPerubahanTerhapus : language.seluruhPerubahanTerhapus}</p>
-                    </div>              
+                    </div>
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalBatal(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? eng.kembali : language.kembali}</Button>
                         <Button onClick={cancelChange} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? eng.batalkan : language.batalkan}</Button>

@@ -9,7 +9,7 @@ import noteIconGrey from "../../assets/icon/note_icon_grey.svg"
 import copy from "../../assets/icon/iconcopy_icon.svg"
 import DataTable from 'react-data-table-component'
 import CopyToClipboard from "react-copy-to-clipboard";
-import { BaseURL, errorCatch, getRole, getToken, replaceText, setUserSession } from '../../function/helpers'
+import { BaseURL, errorCatch, getRole, getToken, language, replaceText, setUserSession } from '../../function/helpers'
 import axios from 'axios'
 import ReactSelect, { components } from 'react-select';
 import encryptData from '../../function/encryptData'
@@ -18,8 +18,7 @@ import check from "../../assets/icon/checklistpayment_icon.svg";
 import { eng, ind } from '../../components/Language'
 
 function DaftarUserDirectDebit() {
-    
-    const language = JSON.parse(sessionStorage.getItem('lang'))
+
     const user_role = getRole()
     const access_token = getToken()
     const [daftarUserDirectDebit, setDaftarUserDirectDebit] = useState([])
@@ -405,7 +404,7 @@ function DaftarUserDirectDebit() {
             userDetails()
         }
     }, [])
-    
+
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>

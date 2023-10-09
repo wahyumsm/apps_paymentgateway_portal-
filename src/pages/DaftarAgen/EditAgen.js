@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Modal, Button, InputGroup } from '@themesberg/react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertFormatNumber, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, errorCatch, getRole, getToken, language, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import alertIcon from "../../assets/icon/alert_icon.svg";
@@ -10,7 +10,6 @@ import { ind } from '../../components/Language';
 
 function EditAgen() {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken()
     const user_role = getRole()
@@ -127,10 +126,10 @@ function EditAgen() {
     }
 
     const goDetail = () => {
-        updateDetailAgen(agenId, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active, inputHandle.nominal)  
+        updateDetailAgen(agenId, inputHandle.namaAgen, inputHandle.emailAgen, inputHandle.phoneNumber, inputHandle.bankName, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.active, inputHandle.nominal)
         // RouteTo("/daftaragen")
-        history.push("/daftaragen")        
-        setShowModalEdit(false)       
+        history.push("/daftaragen")
+        setShowModalEdit(false)
     }
 
     const batalEdit = () => {
@@ -150,7 +149,7 @@ function EditAgen() {
     function toDashboard() {
         history.push("/");
     }
-    
+
     function toLaporan() {
         history.push("/laporan");
     }
@@ -161,7 +160,7 @@ function EditAgen() {
         }
         getDetailAgen(agenId)
     }, [access_token, agenId])
-    
+
     return (
         <>
             <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
@@ -181,7 +180,7 @@ function EditAgen() {
                             <Col xs={2}>
                                 <Form.Check
                                     type="switch"
-                                    id="custom-switch"                                    
+                                    id="custom-switch"
                                     label={(inputHandle.active === true) ? (language === null ? ind.aktif : language.aktif) : (language === null ? ind.tidakAktif : language.tidakAktif)}
                                     checked={(inputHandle.active)}
                                     name="active"
@@ -250,7 +249,7 @@ function EditAgen() {
                                     type='number'
                                     onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                    onChange={handleChange}    
+                                    onChange={handleChange}
                                 />
                             </Col>
                         </Row>
@@ -283,7 +282,7 @@ function EditAgen() {
                                     type='number'
                                     onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                    onChange={handleChange}    
+                                    onChange={handleChange}
                                 />
                             </Col>
                         </Row>
@@ -299,7 +298,7 @@ function EditAgen() {
                                     value={inputHandle.rekeningOwner}
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
-                                    onChange={handleChange}    
+                                    onChange={handleChange}
                                 />
                             </Col>
                         </Row>
@@ -369,7 +368,7 @@ function EditAgen() {
                                             value={inputDataSubAcc.akunBankSubAcc}
                                             type='text'
                                             disabled
-                                            style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }} 
+                                            style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                         />
                                     </Col>
                                 </Row>
@@ -385,7 +384,7 @@ function EditAgen() {
                                             value={inputDataSubAcc.rekeningOwnerSubAcc}
                                             type='text'
                                             disabled
-                                            style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}   
+                                            style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                         />
                                     </Col>
                                 </Row>
@@ -434,8 +433,8 @@ function EditAgen() {
                             <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? ind.perubahanDataBaru : language.perubahanDataBaru}</p>
                         </div>
                         <p>
-                            
-                        </p>                
+
+                        </p>
                         <div className="d-flex justify-content-center mb-3">
                             <Button onClick={goBack} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? ind.tidak : language.tidak}</Button>
                             <Button onClick={goDetail} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.ya : language.ya}</Button>
@@ -457,8 +456,8 @@ function EditAgen() {
                             <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? ind.dataKembaliKondisiSemula : language.dataKembaliKondisiSemula}</p>
                         </div>
                         <p>
-                            
-                        </p>                
+
+                        </p>
                         <div className="d-flex justify-content-center mb-3">
                             <Button onClick={stayEdit} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">{language === null ? ind.tidak : language.tidak}</Button>
                             <Button onClick={batalEdit} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.ya : language.ya}</Button>
@@ -480,8 +479,8 @@ function EditAgen() {
                             <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? ind.transaksiAgenTidakTersimpan : language.transaksiAgenTidakTersimpan}</p>
                         </div>
                         <p>
-                            
-                        </p>                
+
+                        </p>
                         <div className="d-flex justify-content-center mb-3">
                             <Button style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;" }} className="mx-2">{language === null ? ind.tidak : language.tidak}</Button>
                             <Button style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.ya : language.ya}</Button>
@@ -503,8 +502,8 @@ function EditAgen() {
                             <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">{language === null ? ind.transaksiAgenTersimpan : language.transaksiAgenTersimpan}</p>
                         </div>
                         <p>
-                            
-                        </p>                
+
+                        </p>
                         <div className="d-flex justify-content-center mb-3">
                             <Button style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;" }} className="mx-2">{language === null ? ind.tidak : language.tidak}</Button>
                             <Button style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.ya : language.ya}</Button>
@@ -512,7 +511,7 @@ function EditAgen() {
                     </Modal.Body>
                 </Modal>
             </div>
-            
+
         </>
     )
 }

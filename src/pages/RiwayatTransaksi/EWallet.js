@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Image} from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
@@ -14,7 +14,6 @@ import ReactSelect, { components } from 'react-select';
 import { eng } from '../../components/Language';
 
 function EWallet() {
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken();
     const user_role = getRole();
@@ -416,7 +415,7 @@ function EWallet() {
         }
         transaksiEwallet(activePageEWallet, language === null ? 'EN' : language.flagName)
     }, [access_token, user_role])
-    
+
     const columns = [
         {
             name: 'No',
@@ -436,14 +435,14 @@ function EWallet() {
         {
             name: 'Waktu',
             selector: row => row.processDate,
-            // sortable: true,          
+            // sortable: true,
             width: "120px",
             wrap: true
         },
         {
             name: 'Partner Trans ID',
             selector: row => row.referenceNumber,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             width: "190px",
         },
@@ -533,7 +532,7 @@ function EWallet() {
         {
             name: language === null ? eng.waktu : language.waktu,
             selector: row => row.processDate,
-            // sortable: true,          
+            // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
             width: "120px",
             wrap: true
@@ -541,7 +540,7 @@ function EWallet() {
         {
             name: language === null ? eng.partnerTransId : language.partnerTransId,
             selector: row => row.referenceNumber,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start"},
             // width: "150px",
@@ -712,7 +711,7 @@ function EWallet() {
                                     <option value={5}>{language === null ? eng.bulanIni : language.bulanIni}</option>
                                     <option value={6}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
                                     <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
-                                </Form.Select>                            
+                                </Form.Select>
                             </Col>
                             <Col xs={4} className="d-flex justify-content-between align-items-center">
                                 <span style={{ marginRight: 41 }}>{language === null ? eng.status : language.status}</span>
@@ -739,7 +738,7 @@ function EWallet() {
                         </Row>
                         <Row className="mt-4">
                             <Col xs={4} style={{ display: showDateEWallet }} className='text-end'>
-                                <DateRangePicker 
+                                <DateRangePicker
                                     onChange={pickDateEWallet}
                                     value={stateEWallet}
                                     clearIcon={null}

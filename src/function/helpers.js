@@ -87,7 +87,7 @@ export function convertDateAndTimeInfoDanSaldo(time) {
 	return `${tanggal}, ${jam} WIB`
 }
 
-const language = JSON.parse(sessionStorage.getItem('lang'))
+export const language = JSON.parse(localStorage.getItem('lang'))
 
 export const convertDateTimeStamp = (time) => {
 	if (language === null) {

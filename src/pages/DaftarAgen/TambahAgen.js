@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertFormatNumber, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertFormatNumber, convertToRupiah, errorCatch, getRole, getToken, language, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import checklistCircle from '../../assets/img/icons/checklist_circle.svg';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -15,7 +15,6 @@ import { ind } from '../../components/Language';
 
 function TambahAgen() {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const history = useHistory()
     const access_token = getToken()
     const user_role = getRole()
@@ -51,7 +50,7 @@ function TambahAgen() {
     const [add, setAdd] = useState(false)
 
     async function tambahAgen(status, nama, email, mobileNumber, bankName, akunBank, rekeningOwner, settlementFee) {
-        try {         
+        try {
             const auth = "Bearer " + getToken()
             // const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${settlementFee}, "nominal": ${nominal}}`)
             const dataParams = encryptData(`{"agen_name": "${nama}", "agen_email": "${email}", "agen_mobile": "${mobileNumber}", "agen_bank_id": ${bankName}, "agen_bank_number": "${akunBank}", "agen_bank_name": "${rekeningOwner}", "status": ${status}, "settlement_fee": ${(settlementFee.length === 0 || settlementFee === undefined) ? 0 : Number(settlementFee.replaceAll(',', '.'))}}`)
@@ -82,7 +81,7 @@ function TambahAgen() {
     function toDashboard() {
         history.push("/");
     }
-    
+
     function toLaporan() {
         history.push("/laporan");
     }
@@ -96,7 +95,7 @@ function TambahAgen() {
         history.push('/login');
         }
     }, [])
-    
+
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
@@ -158,7 +157,7 @@ function TambahAgen() {
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px', borderColor: errorCode === 101 ? "#B9121B" : "" }}
-                            />                            
+                            />
                             {errorCode === 101 &&
                                 <span style={{ color: "#B9121B", fontSize: 12 }}>
                                     <img src={noteIconRed} className="me-2" />
@@ -185,8 +184,8 @@ function TambahAgen() {
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
                                 style={{ width: "100%", height: 40, marginTop: '-7px', borderColor: errorCode === 102 ? "#B9121B" : "" }}
-                            />                            
-                            {errorCode === 102 && 
+                            />
+                            {errorCode === 102 &&
                                 <span style={{ color: "#B9121B", fontSize: 12 }}>
                                     <img src={noteIconRed} className="me-2" />
                                     {language === null ? ind.noHpSudahTerdaftar : language.noHpSudahTerdaftar}

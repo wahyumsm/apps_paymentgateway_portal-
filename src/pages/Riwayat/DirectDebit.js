@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, replaceText, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, replaceText, setUserSession } from '../../function/helpers';
 import { Link, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -17,7 +17,6 @@ import { eng } from '../../components/Language';
 
 const RiwayatDirectDebit = () => {
 
-    const language = JSON.parse(sessionStorage.getItem('lang'))
     const user_role = getRole()
     const access_token = getToken();
     const history = useHistory();
@@ -270,7 +269,7 @@ const RiwayatDirectDebit = () => {
     }
 
     function getDetailDataDirectDebit (number) {
-        const findData = dataDirectDebit.find((item) => item.number === number) 
+        const findData = dataDirectDebit.find((item) => item.number === number)
         // console.log(findData);
         setDataDetail(findData)
         setShowModalDetailDirectDebit(true)
@@ -293,7 +292,7 @@ const RiwayatDirectDebit = () => {
             setStateDirectDebit(null)
             setDateRangeDirectDebit([])
             setShowDateDirectDebit("none")
-        } 
+        }
     }
 
     function ExportDataDirectDebit (isFilter, idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId) {
@@ -710,7 +709,7 @@ const RiwayatDirectDebit = () => {
                                             cleanable={true}
                                             placement='bottomStart'
                                             size='lg'
-                                            placeholder={language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal} 
+                                            placeholder={language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}
                                             disabledDate={combine(allowedMaxDays(90), afterToday())}
                                             className='datePicker'
                                             locale={Locale}
@@ -724,18 +723,18 @@ const RiwayatDirectDebit = () => {
                                 <Col xs={5}>
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "8px 16px" }}>
-                                            <button 
+                                            <button
                                                 onClick={() => filterListDirectDebit(Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, partnerId, selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10, language === null ? 'EN' : language.flagName)}
-                                                className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || ((dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0))) ? 'btn-ez-on' : 'btn-ez'} 
+                                                className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || ((dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0))) ? 'btn-ez-on' : 'btn-ez'}
                                                 disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
                                             >
                                                 {language === null ? eng.terapkan : language.terapkan}
                                             </button>
                                         </Col>
                                         <Col xs={6} style={{ width: "40%", padding: "8px 16px" }}>
-                                            <button 
+                                            <button
                                                 onClick={() => resetButtonDirectDebit("Direct Debit")}
-                                                className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-reset'  : 'btn-ez-reset'} 
+                                                className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-reset'  : 'btn-ez-reset'}
                                                 disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
                                             >
                                                 {language === null ? eng.aturUlang : language.aturUlang}
@@ -893,7 +892,7 @@ const RiwayatDirectDebit = () => {
                                             cleanable={true}
                                             placement='bottomEnd'
                                             size='lg'
-                                            placeholder="Select Date Range" 
+                                            placeholder="Select Date Range"
                                             disabledDate={combine(allowedMaxDays(90), afterToday())}
                                             className='datePicker'
                                             locale={Locale}
@@ -906,18 +905,18 @@ const RiwayatDirectDebit = () => {
                             </Row>
                             <Row className='mt-2'>
                                 <Col xs={6} style={{ width: "unset", padding: "8px 16px" }}>
-                                    <button 
+                                    <button
                                         onClick={() => filterListDirectDebit(Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10, language === null ? 'EN' : language.flagName)}
-                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-ez-on' : 'btn-ez'} 
+                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-ez-on' : 'btn-ez'}
                                         disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && selectedPartnerDirectDebit.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
                                     >
                                         Terapkan
                                     </button>
                                 </Col>
                                 <Col xs={6} style={{ width: "unset", padding: "8px 16px" }}>
-                                    <button 
+                                    <button
                                         onClick={() => resetButtonDirectDebit("Direct Debit")}
-                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-reset'  : 'btn-ez-reset'} 
+                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-reset'  : 'btn-ez-reset'}
                                         disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && selectedPartnerDirectDebit.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
                                     >
                                         Atur Ulang
