@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Form, Row } from '@themesberg/react-bootstrap'
+import { Col, Form, InputGroup, Row } from '@themesberg/react-bootstrap'
 import { useState } from 'react'
 import $ from 'jquery'
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
@@ -10,6 +10,8 @@ import axios from 'axios'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker/dist/DateRangePicker'
 import JSONPretty from 'react-json-pretty'
 import { useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
 
 const GetBalance = () => {
 
@@ -168,6 +170,13 @@ const GetBalance = () => {
     })
     const [dataGetBalance, setDataGetBalance] = useState({})
     const [dataBankBalance, setDataBankBalance] = useState({})
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+    const passwordInputType = showPassword ? "text" : "password";
+    const passwordIconColor = showPassword ? "#262B40" : "";
     console.log(dataGetBalance, "dataGetBalance");
     console.log(dataBankBalance, "dataBankBalance");
 
@@ -184,7 +193,7 @@ const GetBalance = () => {
     async function GetBalanceTransfer(bankType, pinNumber) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"bankType": "${bankType}", "PinNumber": "${pinNumber}"}`)
+            const dataParams = encryptData(`{"bankCode": "${bankType}", "PinNumber": "${pinNumber}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -228,6 +237,13 @@ const GetBalance = () => {
     const [dateRangeGetMutasi, setDateRangeGetMutasi] = useState([])
     const [stateGetMutasi, setStateGetMutasi] = useState(null)
     console.log(dateRangeGetMutasi, "dateRangeGetMutasi");
+    const [showPasswordMutasi, setShowPasswordMutasi] = useState(false);
+
+    const togglePasswordVisibilityMutasi = () => {
+        setShowPasswordMutasi(!showPasswordMutasi);
+    };
+    const passwordInputTypeMutasi = showPasswordMutasi ? "text" : "password";
+    const passwordIconColorMutasi = showPasswordMutasi ? "#262B40" : "";
 
     function handleChangeMutasi(e) {
         setInputMutasi({
@@ -247,7 +263,7 @@ const GetBalance = () => {
     async function GetMutasiBank(bankType, pinNumber, periode, next) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"bankType": "${bankType}", "PinNumber": "${pinNumber}", "endDate": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "NextRecord": "${next}"}`)
+            const dataParams = encryptData(`{"bankCode": "${bankType}", "PinNumber": "${pinNumber}", "endDate": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "NextRecord": "${next}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -293,6 +309,14 @@ const GetBalance = () => {
     })
     const [dataTransferBif, setDataTransferBif] = useState({})
     console.log(dataTransferBif, "dataTransferBif");
+    
+    const [showPasswordTransferBIF, setShowPasswordTransferBIF] = useState(false);
+
+    const togglePasswordVisibilityTransferBIF = () => {
+        setShowPasswordTransferBIF(!showPasswordTransferBIF);
+    };
+    const passwordInputTypeTransferBIF = showPasswordTransferBIF ? "text" : "password";
+    const passwordIconColorTransferBIF = showPasswordTransferBIF ? "#262B40" : "";
 
     function handleChangeTransferBIF(e) {
         setInputDataBif({
@@ -338,6 +362,14 @@ const GetBalance = () => {
     })
     const [dataTransferOnline, setDataTransferOnline] = useState({})
     console.log(dataTransferOnline, "dataTransferOnline");
+
+    const [showPasswordTransferOnline, setShowPasswordTransferOnline] = useState(false);
+
+    const togglePasswordVisibilityTransferOnline = () => {
+        setShowPasswordTransferOnline(!showPasswordTransferOnline);
+    };
+    const passwordInputTypeTransferOnline = showPasswordTransferOnline ? "text" : "password";
+    const passwordIconColorTransferOnline = showPasswordTransferOnline ? "#262B40" : "";
 
     function handleChangeTransferOnline(e) {
         setInputDataOnline({
@@ -418,9 +450,14 @@ const GetBalance = () => {
                                         <option value={"009"}>Bank BNI</option>
                                     </Form.Select>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <div style={{ width: "30%" }}>PIN <span style={{ color: "red" }}>*</span></div>
-                                    <Form.Control name="pinNumber" className='input-text-user' type="text" placeholder="Masukkan PIN" value={inputGetBalance.pinNumber} onChange={(e) => handleChange(e)}  />
+                                    <InputGroup style={{ width: "65%" }}>
+                                        <Form.Control required name="pinNumber" className='input-text-user' type={passwordInputType} placeholder="Masukkan PIN" value={inputGetBalance.pinNumber} onChange={(e) => handleChange(e)}  />
+                                        <InputGroup.Text onClick={togglePasswordVisibility} className="pass-log">
+                                            <FontAwesomeIcon color={passwordIconColor} icon={faEye} />
+                                        </InputGroup.Text>
+                                    </InputGroup>
                                 </Col>
                             </Row>
                             <Row className='mt-4'>
@@ -477,9 +514,14 @@ const GetBalance = () => {
                                         <option value={"009"}>Bank BNI</option>
                                     </Form.Select>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div style={{ width: "30%" }}>PIN <span style={{ color: "red" }}>*</span></div>
-                                    <Form.Control name="pinNumberMutasi" className='input-text-user' type="text" placeholder="Masukkan PIN" value={inputMutasi.pinNumberMutasi} onChange={(e) => handleChangeMutasi(e)}  />
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <div style={{ width: "20%" }}>PIN <span style={{ color: "red" }}>*</span></div>
+                                    <InputGroup style={{ width: "65%" }}>
+                                        <Form.Control required name="pinNumberMutasi" className='input-text-user' type={passwordInputTypeMutasi} placeholder="Masukkan PIN" value={inputMutasi.pinNumberMutasi} onChange={(e) => handleChangeMutasi(e)}  />
+                                        <InputGroup.Text onClick={togglePasswordVisibilityMutasi} className="pass-log">
+                                            <FontAwesomeIcon color={passwordIconColorMutasi} icon={faEye} />
+                                        </InputGroup.Text>
+                                    </InputGroup>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <div className='me-3' style={{ width: "" }}>Periode <span style={{ color: "red" }}>*</span></div>
@@ -595,7 +637,12 @@ const GetBalance = () => {
                                     <div style={{ width: "" }}>PIN <span style={{ color: "red" }}>*</span></div>
                                 </Col>
                                 <Col xs={10}>
-                                    <Form.Control name="pinNumber" className='input-text-user' type="text" placeholder="Masukkan PIN" value={inputDataBif.pinNumber} onChange={(e) => handleChangeTransferBIF(e)}  />
+                                    <InputGroup>
+                                        <Form.Control required name="pinNumber" className='input-text-user' type={passwordInputTypeTransferBIF} placeholder="Masukkan PIN" value={inputDataBif.pinNumber} onChange={(e) => handleChangeTransferBIF(e)}  />
+                                        <InputGroup.Text onClick={togglePasswordVisibilityTransferBIF} className="pass-log">
+                                            <FontAwesomeIcon color={passwordIconColorTransferBIF} icon={faEye} />
+                                        </InputGroup.Text>
+                                    </InputGroup>
                                 </Col>
                             </Row>
                             <Row className="d-flex justify-content-end align-items-center pb-4">
@@ -672,7 +719,12 @@ const GetBalance = () => {
                                     <div style={{ width: "" }}>PIN <span style={{ color: "red" }}>*</span></div>
                                 </Col>
                                 <Col xs={10}>
-                                    <Form.Control name="pinNumber" className='input-text-user' type="text" placeholder="Masukkan PIN" value={inputDataOnline.pinNumber} onChange={(e) => handleChangeTransferOnline(e)}  />
+                                    <InputGroup>
+                                        <Form.Control required name="pinNumber" className='input-text-user' type={passwordInputTypeTransferOnline} placeholder="Masukkan PIN" value={inputDataOnline.pinNumber} onChange={(e) => handleChangeTransferOnline(e)}  />
+                                        <InputGroup.Text onClick={togglePasswordVisibilityTransferOnline} className="pass-log">
+                                            <FontAwesomeIcon color={passwordIconColorTransferOnline} icon={faEye} />
+                                        </InputGroup.Text>
+                                    </InputGroup>
                                 </Col>
                             </Row>
                             <Row className="d-flex justify-content-end align-items-center pb-4">
