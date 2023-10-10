@@ -828,22 +828,22 @@ function SettlementPage() {
         },
     };
 
-    function ExportReportSettlementHandler(isFilter, statusId, transId, partnerId, dateId, periode, fiturSettlement, bankCode, eWalletSettlement) {
+    function ExportReportSettlementHandler(isFilter, namaPartner, fitur, idTransaksi, periode, dateRange) {
         if (isFilter) {
-            async function dataExportFilter(statusId, transId, partnerId, dateId, periode, codeBank, fiturSettlement, eWalletSettlement) {
+            async function dataExportFilter(namaPartner, fitur, idTransaksi, periode, dateRange) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "fitur_id": ${fiturSettlement}, "bank_code": "${Number(fiturSettlement) === 105 ? (eWalletSettlement !== undefined ? eWalletSettlement : "") : (codeBank !== undefined ? codeBank : "")}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"partner_name": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetSettlementLogList", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_desc, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -854,7 +854,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_desc, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -866,22 +866,22 @@ function SettlementPage() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, dateId, periode, bankCode, fiturSettlement, eWalletSettlement)
+            dataExportFilter(namaPartner, fitur, idTransaksi, periode, dateRange)
         } else {
             async function dataExportSettlement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "fitur_id": 0, "bank_code": ""}`)
+                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
+                    const dataExportSettlement = await axios.post(BaseURL + "/Home/GetSettlementLogList", {data: dataParams}, { headers: headers });
                     if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length === 0) {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_desc, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -892,7 +892,7 @@ function SettlementPage() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvasettl_code, Waktu: data[i].tvasettl_crtdt_format, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_desc, "Nominal Settlement": data[i].tvasettl_amount, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].total_partner_fee, "PPN atas Jasa Layanan": data[i].total_fee_tax, "Reimbursement by VA": data[i].total_fee_bank, "Jasa Settlement": data[i].tvasettl_fee, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
