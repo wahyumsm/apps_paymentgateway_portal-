@@ -628,13 +628,13 @@ function SettlementPage() {
         {
             name: 'Send Email',
             width: "180px",
-            cell: (row) => <button className='btn-riwayat-settlement' onClick={() => resendEmailHandler(row.tvasettl_id, row.settlement_type)} >Send Email</button>
+            cell: (row) => <button className='btn-riwayat-settlement' onClick={() => resendEmailHandler(row.tsettlelog_settlement_id, row.tsettlelog_paytype_id)} >Send Email</button>
         },
         {
             name: 'ID Transaksi',
             selector: row => row.tsettlelog_settlement_code,
             width: "224px",
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${selectedBankSettlement.length === 0 ? '0' : selectedBankSettlement[0].value}/${row.settlement_type}/${selectedEWalletSettlement.length === 0 ? "0" : selectedEWalletSettlement[0].value}`} >{row.tsettlelog_settlement_code}</Link>
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${row.tvatrans_bank_code}/${row.tsettlelog_paytype_id}/${row.mewallet_code}`} >{row.tsettlelog_settlement_code}</Link>
         },
         {
             name: 'Waktu',
@@ -833,12 +833,12 @@ function SettlementPage() {
             async function dataExportFilter(namaPartner, fitur, idTransaksi, periode, dateRange) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"partner_name": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"partner_name": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetSettlementLogList", {data: dataParams}, { headers: headers });
+                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetExportList", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
@@ -871,12 +871,12 @@ function SettlementPage() {
             async function dataExportSettlement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
                     }
-                    const dataExportSettlement = await axios.post(BaseURL + "/Home/GetSettlementLogList", {data: dataParams}, { headers: headers });
+                    const dataExportSettlement = await axios.post(BaseURL + "/Home/GetExportList", {data: dataParams}, { headers: headers });
                     if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length === 0) {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
@@ -914,12 +914,12 @@ function SettlementPage() {
                 try {
                     const auth = "Bearer " + getToken()
                     // const dataParams = encryptData(`{"statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "transID" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "fitur_id": ${fitur}, "bank_code": ""}`)
-                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth
                     }
-                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetSettlementLogList", { data: dataParams }, { headers: headers })
+                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetExportList", { data: dataParams }, { headers: headers })
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
@@ -952,13 +952,13 @@ function SettlementPage() {
             async function exportGetSettlement(currentDate) {
                 try {
                     const auth = "Bearer " + getToken()
-                    // const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "fitur_id": 0, "bank_code": ""}`)
-                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": 1, "row_per_page": 1000000}`)
+                    // const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "fitur_id": 0, "bank_code": ""}`)
+                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth
                     }
-                    const dataSettlement = await axios.post(BaseURL + "/Home/GetSettlementLogList", { data: dataParams }, { headers: headers })
+                    const dataSettlement = await axios.post(BaseURL + "/Home/GetExportList", { data: dataParams }, { headers: headers })
                     // console.log(dataSettlement, "data settlement");
                     if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
