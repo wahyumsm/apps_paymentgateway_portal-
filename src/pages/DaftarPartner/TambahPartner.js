@@ -560,6 +560,7 @@ function TambahPartner() {
                   setFitur("", "");
                   setPaymentMethod([]);
                   setPaymentNameMethod([]);
+                  setIsDisableFeeType(false)
                 }
               }
             }
