@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Col, Image, Row } from '@themesberg/react-bootstrap'
+import { Col, Image, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
 import DataTable from 'react-data-table-component'
 import { DateRangePicker } from 'rsuite'
 import { isAfter } from 'date-fns'
@@ -13,6 +13,7 @@ import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../fu
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
+import deleted from "../../assets/icon/delete_icon.svg";
 
 const { afterToday } = DateRangePicker;
 
@@ -81,6 +82,30 @@ const SettlementAdminManual = () => {
         history.push("/Settlement/proses-settlement-manual")
     }
 
+    async function deleteDataHandler(settlementId) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"msettlmanual_id": "${settlementId}"}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const deletedData = await axios.post(BaseURL + "/Settlement/DeleteManualSettlement", {data: dataParams}, {headers: headers})
+            // console.log(deletedData, 'deletedData');
+            if (deletedData.data.response_code === 200 && deletedData.status === 200 && deletedData.data.response_new_token === null) {
+                alert(deletedData.data.response_data.results.Message)
+                window.location.reload()
+            } else if (deletedData.data.response_code === 200 && deletedData.status === 200 && deletedData.data.response_new_token !== null) {
+                setUserSession(deletedData.data.response_new_token)
+                alert(deletedData.data.response_data.results.Message)
+                window.location.reload()
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     const columnList = [
         {
             name: 'Partner',
@@ -102,12 +127,29 @@ const SettlementAdminManual = () => {
             name: 'Date User',
             selector: row => row.settle_date,
         },
+        {
+            name: 'Action',
+            width: "130px",
+            cell: (row) => (
+                <div className="d-flex justify-content-center align-items-center">
+                    <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Delete</div></Tooltip>}>
+                        <img
+                            onClick={() => deleteDataHandler(row.msettlmanual_id)}
+                            src={deleted}
+                            style={{ cursor: "pointer" }}
+                            className="ms-2"
+                            alt="icon delete"
+                        />
+                    </OverlayTrigger>
+                </div>
+            ),
+        },
     ];
 
     async function listHistorySettleManualHandler(date, page) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"partner_id": "", "date_from": "", "date_to": "${date}", "page": ${page}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"partner_id": "", "date_from": "${date}", "date_to": "${date}", "page": ${page}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
