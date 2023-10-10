@@ -109,17 +109,22 @@ const ProsesSettlementManual = () => {
                 'Authorization': auth
             }
             console.log(dataParams, 'dataParams');
-            // const settlementManual = await axios.post(BaseURL + "/Settlement/InsertManualSettlement", {data: dataParams}, {headers: headers})
-            // if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
-            //     setPendingListSettlementManual(false)
-            //     history.push("/settlement/exclude-settlement")
-            // } else if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token !== null) {
-            //     setUserSession(settlementManual.data.response_new_token)
-            //     setPendingListSettlementManual(false)
-            //     history.push("/settlement/exclude-settlement")
-            // }
+            const settlementManual = await axios.post(BaseURL + "/Settlement/InsertManualSettlement", {data: dataParams}, {headers: headers})
+            if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
+                setPendingListSettlementManual(false)
+                history.push("/settlement/exclude-settlement")
+            } else if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token !== null) {
+                setUserSession(settlementManual.data.response_new_token)
+                setPendingListSettlementManual(false)
+                history.push("/settlement/exclude-settlement")
+            }
         } catch (error) {
             // console.log(error);
+            if (error.response.status === 500 && error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+                setPendingListSettlementManual(false)
+                history.push("/settlement/exclude-settlement")
+            }
             history.push(errorCatch(error.response.status))
         }
     }
