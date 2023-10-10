@@ -401,7 +401,9 @@ function TambahPartner() {
     typeId,
     typeName
   ) {
-    if (typeId.length === 0) {
+    if (fee.length === 0) {
+      setAlertFee(true)
+    } else if (typeId.length === 0) {
       setMustFill(true)
     } else {
       let sameFlag = 0
