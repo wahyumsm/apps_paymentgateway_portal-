@@ -932,13 +932,13 @@ function SettlementPage() {
         }
     }
 
-    function ExportReportSettlementPartnerHandler(isFilter, fitur, idTransaksi, periode, dateRange, currentDate) {
+    function ExportReportSettlementPartnerHandler(isFilter, fitur, idTransaksi, periode, dateRange, currentDate, partnerId) {
         if (isFilter) {
-            async function exportFilterSettlement(idTransaksi, periode, dateRange) {
+            async function exportFilterSettlement(idTransaksi, periode, dateRange, partnerId) {
                 try {
                     const auth = "Bearer " + getToken()
                     // const dataParams = encryptData(`{"statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "transID" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "fitur_id": ${fitur}, "bank_code": ""}`)
-                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
+                    const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth
@@ -971,13 +971,13 @@ function SettlementPage() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            exportFilterSettlement(idTransaksi, periode, dateRange)
+            exportFilterSettlement(idTransaksi, periode, dateRange, partnerId)
         } else {
-            async function exportGetSettlement(currentDate) {
+            async function exportGetSettlement(currentDate, partnerId) {
                 try {
                     const auth = "Bearer " + getToken()
                     // const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "fitur_id": 0, "bank_code": ""}`)
-                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
+                    const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth
@@ -1011,7 +1011,7 @@ function SettlementPage() {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            exportGetSettlement(currentDate)
+            exportGetSettlement(currentDate, partnerId)
         }
     }
 
@@ -1274,7 +1274,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlementPartner.length !== 0 &&
                                     <div>
-                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.fiturSettlementPartner, inputHandle.idTransaksiSettlementPartner, inputHandle.periodeSettlementPartner, dateRangeSettlementPartner, currentDate)} className="export-span">Export</Link>
+                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.fiturSettlementPartner, inputHandle.idTransaksiSettlementPartner, inputHandle.periodeSettlementPartner, dateRangeSettlementPartner, currentDate, partnerId)} className="export-span">Export</Link>
                                     </div>
                             }
                             <br/>
