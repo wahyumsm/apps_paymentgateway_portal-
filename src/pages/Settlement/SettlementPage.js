@@ -1056,7 +1056,7 @@ function SettlementPage() {
                                         />
                                     </div>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                {/* <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Status</span>
                                     <Form.Select name="statusSettlement" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>
                                         <option defaultChecked disabled value="">Pilih Status</option>
@@ -1064,6 +1064,16 @@ function SettlementPage() {
                                         <option value={1}>Dalam Proses</option>
                                         <option value={7}>Menunggu Pembayaran</option>
                                         <option value={9}>Kadaluwarsa</option>
+                                    </Form.Select>
+                                </Col> */}
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <span>Jenis Transaksi</span>
+                                    <Form.Select name='fiturSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
+                                        <option defaultValue disabled value={0}>Pilih Jenis Transaksi</option>
+                                        <option value={104}>Payment Link</option>
+                                        <option value={100}>Virtual Account</option>
+                                        <option value={107}>Direct Debit</option>
+                                        <option value={105}>E-Money</option>
                                     </Form.Select>
                                 </Col>
                             </Row>
@@ -1079,16 +1089,6 @@ function SettlementPage() {
                                         <option value={([`${firstDayLastMonth}`, `${lastDayLastMonth}`])}>Bulan Kemarin</option>
                                         <option value={7}>Pilih Range Tanggal</option>
                                     </Form.Select>                            
-                                </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Jenis Transaksi</span>
-                                    <Form.Select name='fiturSettlement' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.fiturSettlement} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue disabled value={0}>Pilih Jenis Transaksi</option>
-                                        <option value={104}>Payment Link</option>
-                                        <option value={100}>Virtual Account</option>
-                                        <option value={107}>Direct Debit</option>
-                                        <option value={105}>E-Money</option>
-                                    </Form.Select>
                                 </Col>
                                 {/* {
                                     Number(inputHandle.fiturSettlement) === 105 ?
@@ -1135,7 +1135,7 @@ function SettlementPage() {
                                     </div>
                                 </Col>
                             </Row>
-                            <Row className='mt-4'>
+                            <Row className='mt-3'>
                                 <Col xs={5}>
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
@@ -1169,7 +1169,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlement.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, inputHandle.statusSettlement, inputHandle.idTransaksiSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.periodeSettlement, dateRangeSettlement, inputHandle.fiturSettlement, selectedBankSettlement.length !== 0 ? selectedBankSettlement[0].value : "", selectedEWalletSettlement.length !== 0 ? selectedEWalletSettlement[0].value : "")} className="export-span">Export</Link>
+                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.fiturSettlement, inputHandle.idTransaksiSettlement, inputHandle.periodeSettlement, dateRangeSettlement)} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-4">
@@ -1216,18 +1216,7 @@ function SettlementPage() {
                                         <option value={([`${firstDayLastMonth}`, `${lastDayLastMonth}`])}>Bulan Kemarin</option>
                                         <option value={7}>Pilih Range Tanggal</option>
                                     </Form.Select>                    
-                                </Col>                
-                                <Col xs={4}>
-                                    <span>Status</span>
-                                    <Form.Select name="statusSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlementPartner} onChange={(e) => handleChange(e)}>
-                                        <option defaultChecked disabled value="">Pilih Status</option>
-                                        <option value={2}>Berhasil</option>
-                                        <option value={1}>Dalam Proses</option>
-                                        <option value={4}>Gagal</option>
-                                    </Form.Select>
                                 </Col>
-                            </Row>
-                            <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>Jenis Transaksi</span>
                                     <Form.Select name="fiturSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlementPartner} onChange={(e) => handleChange(e)}>
@@ -1237,7 +1226,18 @@ function SettlementPage() {
                                         <option value={107}>Direct Debit</option>
                                         <option value={105}>E-Money</option>
                                     </Form.Select>
-                                </Col>
+                                </Col>          
+                                {/* <Col xs={4}>
+                                    <span>Status</span>
+                                    <Form.Select name="statusSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlementPartner} onChange={(e) => handleChange(e)}>
+                                        <option defaultChecked disabled value="">Pilih Status</option>
+                                        <option value={2}>Berhasil</option>
+                                        <option value={1}>Dalam Proses</option>
+                                        <option value={4}>Gagal</option>
+                                    </Form.Select>
+                                </Col> */}
+                            </Row>
+                            <Row className='mt-4'>       
                                 <Col xs={4} style={{ display: showDateSettlementPartner }}>
                                     <DateRangePicker
                                         onChange={pickDateSettlementPartner}
@@ -1246,7 +1246,7 @@ function SettlementPage() {
                                     />
                                 </Col>
                             </Row>
-                            <Row className='mt-4'>
+                            <Row className='mt-3'>
                                 <Col xs={5}>
                                     <Row>
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
