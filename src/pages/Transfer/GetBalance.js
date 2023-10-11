@@ -442,12 +442,12 @@ const GetBalance = () => {
                                     <Form.Select name="bankType" className='input-text-ez me-3' style={{ display: "inline" }} value={inputGetBalance.bankType} onChange={(e) => handleChange(e)}>
                                         <option defaultChecked disabled value="">Pilih Bank</option>
                                         <option value={"014"}>Bank BCA</option>
-                                        <option value={"022"}>Bank CIMB Niaga</option>
                                         <option value={"011"}>Bank Danamon</option>
-                                        <option value={"008"}>Bank Mandiri</option>
                                         <option value={"013"}>Bank Permata</option>
-                                        <option value={"002"}>Bank BRI</option>
-                                        <option value={"009"}>Bank BNI</option>
+                                        {/* <option value={"022"}>Bank CIMB Niaga</option> */}
+                                        {/* <option value={"008"}>Bank Mandiri</option> */}
+                                        {/* <option value={"002"}>Bank BRI</option>
+                                        <option value={"009"}>Bank BNI</option> */}
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
@@ -506,12 +506,12 @@ const GetBalance = () => {
                                     <Form.Select name="bankTypeMutasi" className='input-text-ez me-3' style={{ display: "inline" }} value={inputMutasi.bankTypeMutasi} onChange={(e) => handleChangeMutasi(e)}>
                                         <option defaultChecked disabled value="">Pilih Bank</option>
                                         <option value={"014"}>Bank BCA</option>
-                                        <option value={"022"}>Bank CIMB Niaga</option>
                                         <option value={"011"}>Bank Danamon</option>
-                                        <option value={"008"}>Bank Mandiri</option>
                                         <option value={"013"}>Bank Permata</option>
-                                        <option value={"002"}>Bank BRI</option>
-                                        <option value={"009"}>Bank BNI</option>
+                                        {/* <option value={"022"}>Bank CIMB Niaga</option> */}
+                                        {/* <option value={"008"}>Bank Mandiri</option> */}
+                                        {/* <option value={"002"}>Bank BRI</option>
+                                        <option value={"009"}>Bank BNI</option> */}
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
@@ -583,12 +583,13 @@ const GetBalance = () => {
                                 <Col xs={10}>
                                     <Form.Select name="bankCode" className='input-text-user' style={{ display: "" }} value={inputDataBif.bankCode} onChange={(e) => handleChangeTransferBIF(e)}>
                                         <option defaultChecked disabled value="">Pilih Bank</option>
-                                        <option value={"022"}>Bank CIMB Niaga</option>
+                                        <option value={"014"}>Bank BCA</option>
                                         <option value={"011"}>Bank Danamon</option>
-                                        <option value={"008"}>Bank Mandiri</option>
                                         <option value={"013"}>Bank Permata</option>
-                                        <option value={"002"}>Bank BRI</option>
-                                        <option value={"009"}>Bank BNI</option>
+                                        {/* <option value={"022"}>Bank CIMB Niaga</option> */}
+                                        {/* <option value={"008"}>Bank Mandiri</option> */}
+                                        {/* <option value={"002"}>Bank BRI</option>
+                                        <option value={"009"}>Bank BNI</option> */}
                                     </Form.Select>
                                 </Col>
                             </Row>

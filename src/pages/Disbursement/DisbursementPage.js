@@ -2088,6 +2088,7 @@ function DisbursementPage() {
 
     const handleRowClicked = (row, enable) => {
         setAlertSaldo(false)
+        setFilterTextBank('')
         filterItemsBank.forEach(item => {
             if (enable === true) {
                 if (row === item.mbank_code) {

@@ -82,7 +82,7 @@ const VaDanPaymentLink = () => {
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
         },
         {
-            name: language === null ? eng.waktu : language.waktu,
+            name: language === null ? eng.waktuTransaksi : language.waktuTransaksi,
             selector: row => row.created_at,
             width: "180px"
         },
