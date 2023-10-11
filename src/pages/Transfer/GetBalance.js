@@ -260,10 +260,10 @@ const GetBalance = () => {
         }
     }
 
-    async function GetMutasiBank(bankType, pinNumber, periode, next) {
+    async function GetMutasiBank(bankType, pinNumber, periode, next, matchedRec) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"bankCode": "${bankType}", "PinNumber": "${pinNumber}", "endDate": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "NextRecord": "${next}"}`)
+            const dataParams = encryptData(`{"bankCode": "${bankType}", "PinNumber": "${pinNumber}", "endDate": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "NextRecord": "${next}", "MatchedRecord": "${matchedRec}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -539,7 +539,7 @@ const GetBalance = () => {
                                             <button
                                                 className={(inputMutasi.bankTypeMutasi.length !== 0 && inputMutasi.pinNumberMutasi.length !== 0 && dateRangeGetMutasi.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputMutasi.bankTypeMutasi.length === 0 || inputMutasi.pinNumberMutasi.length === 0 || dateRangeGetMutasi.length === 0}
-                                                onClick={() => GetMutasiBank(inputMutasi.bankTypeMutasi, inputMutasi.pinNumberMutasi, dateRangeGetMutasi, "N")}
+                                                onClick={() => GetMutasiBank(inputMutasi.bankTypeMutasi, inputMutasi.pinNumberMutasi, dateRangeGetMutasi, "N", "")}
                                             >
                                                 Terapkan
                                             </button>
@@ -564,7 +564,7 @@ const GetBalance = () => {
                                                 className={(Object.keys(dataMutasi).length !== 0 && dataMutasi.nextRecord === "Y") ? 'btn-ez-on' : 'btn-ez'}
                                                 disabled={Object.keys(dataMutasi).length === 0 || (Object.keys(dataMutasi).length !== 0 && dataMutasi.nextRecord === "N")}
                                                 style={{ width: "", padding: "0px 15px" }}
-                                                onClick={() => GetMutasiBank(inputMutasi.bankTypeMutasi, inputMutasi.pinNumberMutasi, dateRangeGetMutasi, dataMutasi.nextRecord)}
+                                                onClick={() => GetMutasiBank(inputMutasi.bankTypeMutasi, inputMutasi.pinNumberMutasi, dateRangeGetMutasi, dataMutasi.nextRecord, dataMutasi.matchedRecord)}
                                             >
                                                 Next
                                             </button>
