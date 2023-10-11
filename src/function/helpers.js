@@ -1,4 +1,4 @@
-// export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
+export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile1"
 export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile11/"
@@ -37,6 +37,7 @@ export const removeUserSession = () => {
 	localStorage.removeItem("role");
 	sessionStorage.removeItem("token");
 	sessionStorage.removeItem("role");
+	sessionStorage.removeItem("lang")
 };
 
 export function convertToRupiah(money, isRupiah, fractionDigits) {
@@ -86,11 +87,27 @@ export function convertDateAndTimeInfoDanSaldo(time) {
 	return `${tanggal}, ${jam} WIB`
 }
 
+export const language = JSON.parse(localStorage.getItem('lang'))
+
 export const convertDateTimeStamp = (time) => {
-	return new Intl.DateTimeFormat("id-ID", {
-		dateStyle: "full",
-		timeStyle: "short",
-	}).format(new Date(time * 1000));
+	if (language === null) {
+		return new Intl.DateTimeFormat("id-ID", {
+			dateStyle: "full",
+			timeStyle: "short",
+		}).format(new Date(time * 1000));
+	} else {
+		if (language.flagName === "ID") {
+			return new Intl.DateTimeFormat("id-ID", {
+				dateStyle: "full",
+				timeStyle: "short",
+			}).format(new Date(time * 1000));
+		} else {
+			return new Intl.DateTimeFormat("en-EN", {
+				dateStyle: "full",
+				timeStyle: "short",
+			}).format(new Date(time * 1000));
+		}
+	}
 };
 
 export const convertTimeDigit = (num) => {
@@ -311,7 +328,7 @@ function terb_belakang(t){
 }
 
 export function terbilangDisbursement(nAngka) {
-	var 
+	var
 		v = 0,
 		sisa = 0,
 		tanda = '',
@@ -324,7 +341,7 @@ export function terbilangDisbursement(nAngka) {
 	if (nAngka>999999999999999999){
 		return 'Unidentified';
 	}
-	v = nAngka;	
+	v = nAngka;
 	if (v<0){
 		tanda = 'Minus ';
 	}
@@ -332,7 +349,7 @@ export function terbilangDisbursement(nAngka) {
 	tmp = v.toString().split('.');
 	p1 = tmp[0];
 	p2 = '';
-	if (tmp.length > 1) {		
+	if (tmp.length > 1) {
 		p2 = tmp[1];
 	}
 	v = parseFloat(p1);

@@ -7,13 +7,15 @@ import ReactSelect, { components } from 'react-select';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import encryptData from '../../function/encryptData';
 import * as XLSX from "xlsx"
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import Pagination from 'react-js-pagination';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import { eng, ind } from '../../components/Language';
 
 const VaDanPaymentLink = () => {
+
     const history = useHistory()
     const access_token = getToken();
     const user_role = getRole()
@@ -31,7 +33,7 @@ const VaDanPaymentLink = () => {
     const [isFilterDanaMasuk, setIsFilterDanaMasuk] = useState(false)
     const [selectedAgenDanaMasuk, setSelectedAgenDanaMasuk] = useState([])
     const [selectedBankDanaMasuk, setSelectedBankDanaMasuk] = useState([])
-    
+
     const [dataListPartner, setDataListPartner] = useState([])
     const [dataListAgenFromPartner, setDataListAgenFromPartner] = useState([])
     const [dataRiwayatDanaMasukAdmin, setDataRiwayatDanaMasukAdmin] = useState([])
@@ -48,13 +50,14 @@ const VaDanPaymentLink = () => {
     const [selectedBankDanaMasukAdmin, setSelectedBankDanaMasukAdmin] = useState([])
     const [detailTransferDanaAdmin, setDetailTransferDanaAdmin] = useState({})
     const [showModalDetailTransferDanaAdmin, setShowModalDetailTransferDanaAdmin] = useState(false)
-    
+
     const [inputHandle, setInputHandle] = useState({
         idTransaksiDanaMasuk: "",
         partnerTransIdDanaMasuk: "",
         statusDanaMasuk: [],
         fiturDanaMasuk: 0,
         periodeDanaMasuk: 0,
+        tipePeriode: 0,
     })
 
     const [inputHandleAdmin, setInputHandleAdmin] = useState({
@@ -63,75 +66,81 @@ const VaDanPaymentLink = () => {
         statusDanaMasukAdmin: [],
         fiturDanaMasukAdmin: 0,
         periodeDanaMasukAdmin: 0,
+        tipePeriodeAdmin: 0,
     })
 
     const columnstransferDana = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             wrap: true,
             width: "67px"
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.id,
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.id)}>{row.id}</Link>
         },
         {
-            name: 'Waktu',
+            name: language === null ? eng.waktu : language.waktu,
             selector: row => row.created_at,
-            width: "145px"
+            width: "180px"
         },
         {
-            name: 'Partner Trans ID',
+            name: language === null ? eng.waktuPembayaran : language.waktuPembayaran,
+            selector: row => row.tvatrans_process_date_format !== null ? row.tvatrans_process_date_format : "-",
+            width: "180px"
+        },
+        {
+            name: language === null ? eng.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trx_id,
             wrap: true,
             width: "160px"
         },
         {
-          name: 'Nama Agen',
+          name: language === null ? eng.namaAgen : language.namaAgen,
           selector: row => row.name,
             wrap: true,
           style: { paddingRight: 'unset' },
           // width: "160px"
         },
         {
-          name: 'Nama Bank',
+          name: language === null ? eng.namaBank : language.namaBank,
           selector: row => row.bank_name,
             wrap: true,
           style: { paddingRight: 'unset' },
           // width: "145px"
         },
         {
-          name: 'Jenis Transaksi',
+          name: language === null ? eng.jenisTransaksi : language.jenisTransaksi,
           selector: row => row.fiturID,
           // sortable: true
           style: { display: "flex", flexDirection: "row", justifyContent: "center", paddingRight: 'unset', },
           // width: "145px"
         },
         {
-            name: 'Nominal Transaksi',
+            name: language === null ? eng.nominalTransaksi : language.nominalTransaksi,
             selector: row => row.amount,
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.amount) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "170px"
         },
         {
-            name: 'Fee',
+            name: language === null ? eng.biaya : language.biaya,
             selector: row => row.total_fee,
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.total_fee) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             // width: "130px"
         },
         {
-            name: 'Total Settlement',
+            name: language === null ? eng.totalSettlement : language.totalSettlement,
             selector: row => row.total_settlement,
             cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center" }}>{ convertToRupiah(row.total_settlement) }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "170px"
         },
         {
-            name: 'Status',
+            name: language === null ? eng.status : language.status,
             selector: row => row.status,
             width: "150px",
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px 20px", width: "100%", borderRadius: 4 },
@@ -168,10 +177,10 @@ const VaDanPaymentLink = () => {
         // console.log(isFilterDanaMasuk, 'ini isFilterDanaMasuk');
         if (isFilterDanaMasuk) {
             setActivePageDanaMasuk(page)
-            filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)
+            filterTransferButtonHandle(page, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk, language === null ? 'EN' : language.flagName, inputHandle.tipePeriode)
         } else {
             setActivePageDanaMasuk(page)
-            getListTransferDana(partnerId, page)
+            getListTransferDana(partnerId, page, language === null ? 'EN' : language.flagName)
         }
     }
 
@@ -210,12 +219,12 @@ const VaDanPaymentLink = () => {
           // console.log(userDetail, 'ini user detal funct');
           if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
-            getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1)
+            getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1, language === null ? 'EN' : language.flagName)
             getDataAgen(userDetail.data.response_data.muser_partnerdtl_id)
           } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
             setUserSession(userDetail.data.response_new_token)
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
-            getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1)
+            getListTransferDana(userDetail.data.response_data.muser_partnerdtl_id, 1, language === null ? 'EN' : language.flagName)
             getDataAgen(userDetail.data.response_data.muser_partnerdtl_id)
           }
     } catch (error) {
@@ -281,7 +290,14 @@ const VaDanPaymentLink = () => {
             // setListAgen(listAgen.data.response_data)
           } else if (listAgen.status === 200 && listAgen.data.response_code == 200 && listAgen.data.response_new_token.length !== 0) {
             setUserSession(listAgen.data.response_new_token)
-            setListAgen(listAgen.data.response_data)
+            let newArr = []
+            listAgen.data.response_data.forEach(e => {
+                let obj = {}
+                obj.value = e.agen_id
+                obj.label = e.agen_name
+                newArr.push(obj)
+            })
+            setListAgen(newArr)
           }
         } catch (error) {
           // console.log(error);
@@ -289,13 +305,14 @@ const VaDanPaymentLink = () => {
         }
     }
 
-    async function getListTransferDana(partnerId, currentPage) {
+    async function getListTransferDana(partnerId, currentPage, lang) {
         try {
           const auth = "Bearer " + getToken()
-          const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "partner_trans_id" :"", "bank_code": "", "fitur_id": 0}`)
+          const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "type_date_filter": 1, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "partner_trans_id" :"", "bank_code": "", "fitur_id": 0}`)
           const headers = {
             'Content-Type':'application/json',
-            'Authorization' : auth
+            'Authorization' : auth,
+            'Accept-Language' : lang
           }
           const listTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
         //   console.log(listTransferDana, 'ini list dana masuk');
@@ -319,18 +336,20 @@ const VaDanPaymentLink = () => {
         }
     }
 
-    async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, partnerTransId, bankName, fiturDanaMasuk) {
+    async function filterTransferButtonHandle(page, partnerId, idTransaksi, namaAgen, dateId, periode, status, rowPerPage, partnerTransId, bankName, fiturDanaMasuk, lang, tipePeriode) {
         try {
+            // console.log(lang, "lang");
           setPendingTransfer(true)
           setIsFilterDanaMasuk(true)
           setActivePageDanaMasuk(page)
           const auth = "Bearer " + getToken()
-          const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "partner_trans_id": "${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturDanaMasuk}}`)
+          const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "type_date_filter": ${tipePeriode !== 0 ? tipePeriode : 1}, "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "partner_trans_id": "${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturDanaMasuk}}`)
           // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
         //   console.log(dataParams, "ini data params dana masuk filter");
           const headers = {
             'Content-Type':'application/json',
-            'Authorization' : auth
+            'Authorization' : auth,
+            'Accept-Language' : lang
           }
           const filterTransferDana = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
           // console.log(filterTransferDana, "ini data filter transfer dana");
@@ -354,17 +373,18 @@ const VaDanPaymentLink = () => {
         }
     }
 
-    function exportReportTransferDanaMasukHandler(isFilter, partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk) {
+    function exportReportTransferDanaMasukHandler(isFilter, partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk, lang, tipePeriode) {
         if (isFilter) {
-          async function exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk) {
+          async function exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk, lang, tipePeriode) {
             try {
               const auth = "Bearer " + getToken()
-              const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "page": 1, "row_per_page": 1000000, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "partner_trans_id":"${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturDanaMasuk}}`)
+              const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateId}, "type_date_filter": ${tipePeriode !== 0 ? tipePeriode : 1}, "page": 1, "row_per_page": 1000000, "transactionID": ${(idTransaksi.length !== 0) ? idTransaksi : 0}, "sub_partner_id": "${(namaAgen.length !== 0) ? namaAgen : ""}", "statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "partner_trans_id":"${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturDanaMasuk}}`)
               // const dataParam = encryptData(`{"start_time": "${(periode.length !== 0) ? periode[0] : ""}", "end_time": "${(periode.length !== 0) ? periode[1] : ""}", "sub_name": "${(namaAgen.length !== 0) ? namaAgen : ""}", "id": "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "status": "${(status.length !== 0) ? status : ""}"}`)
               // console.log(dataParams, "ini data params dana masuk filter");
               const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
               }
               const dataExportFilter = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
               // console.log(dataExportFilter, "ini data filter transfer dana");
@@ -372,38 +392,39 @@ const VaDanPaymentLink = () => {
                 const data = dataExportFilter.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
+                    dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].id, [language === null ? eng.waktuTransaksi : language.waktuTransaksi]: data[i].created_at, [language === null ? eng.waktuPembayaran : language.waktuPembayaran]: data[i].tvatrans_process_date_format !== null ? data[i].tvatrans_process_date_format : "-", [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trx_id, [language === null ? eng.namaAgen : language.namaAgen]: data[i].name, [language === null ? eng.namaBank : language.namaBank]: data[i].bank_name, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].fiturID, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? eng.biaya : language.biaya]: data[i].total_fee, [language === null ? eng.totalSettlement : language.totalSettlement]: data[i].total_settlement, [language === null ? eng.status : language.status]: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");
+                XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);
               } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token !== null) {
                 setUserSession(dataExportFilter.data.response_new_token)
                 const data = dataExportFilter.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
+                    dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].id, [language === null ? eng.waktuTransaksi : language.waktuTransaksi]: data[i].created_at, [language === null ? eng.waktuPembayaran : language.waktuPembayaran]: data[i].tvatrans_process_date_format !== null ? data[i].tvatrans_process_date_format : "-", [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trx_id, [language === null ? eng.namaAgen : language.namaAgen]: data[i].name, [language === null ? eng.namaBank : language.namaBank]: data[i].bank_name, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].fiturID, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? eng.biaya : language.biaya]: data[i].total_fee, [language === null ? eng.totalSettlement : language.totalSettlement]: data[i].total_settlement, [language === null ? eng.status : language.status]: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");            
+                XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);
               }
             } catch (error) {
               // console.log(error)
               history.push(errorCatch(error.response.status))
             }
           }
-          exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk)
+          exportFilterDanaMasuk(partnerId, idTransaksi, namaAgen, dateId, periode, status, partnerTransId, bankName, fiturDanaMasuk, lang, tipePeriode)
         } else {
-          async function exportGetListTransferDana(partnerId) {
+          async function exportGetListTransferDana(partnerId, lang) {
             try {
               const auth = "Bearer " + getToken()
-              const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "page": 1, "row_per_page": 1000000, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "partner_trans_id":"", "bank_code":"", "fitur_id": 0}`)
+              const dataParams = encryptData(`{"partner_id": "${partnerId}", "date_from": "", "date_to": "", "period": 2, "type_date_filter": 1, "page": 1, "row_per_page": 1000000, "transactionID": 0, "sub_partner_id": "", "statusID": [1,2,7,9], "partner_trans_id":"", "bank_code":"", "fitur_id": 0}`)
               const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
               }
               const dataExportDefault = await axios.post(BaseURL + "/report/transferreport", { data: dataParams }, { headers: headers })
               // console.log(dataExportDefault, 'ini list');
@@ -411,32 +432,32 @@ const VaDanPaymentLink = () => {
                 const data = dataExportDefault.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
+                    dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].id, [language === null ? eng.waktuTransaksi : language.waktuTransaksi]: data[i].created_at, [language === null ? eng.waktuPembayaran : language.waktuPembayaran]: data[i].tvatrans_process_date_format !== null ? data[i].tvatrans_process_date_format : "-", [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trx_id, [language === null ? eng.namaAgen : language.namaAgen]: data[i].name, [language === null ? eng.namaBank : language.namaBank]: data[i].bank_name, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].fiturID, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? eng.biaya : language.biaya]: data[i].total_fee, [language === null ? eng.totalSettlement : language.totalSettlement]: data[i].total_settlement, [language === null ? eng.status : language.status]: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");            
-                
+                XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);
+
               } else if (dataExportDefault.status === 200 && dataExportDefault.data.response_code === 200 && dataExportDefault.data.response_new_token !== null) {
                 setUserSession(dataExportDefault.data.response_new_token)
                 const data = dataExportDefault.data.response_data.results.list
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id, "Waktu": data[i].created_at, "Partner Trans ID": data[i].partner_trx_id, "Nama Agen": data[i].name, "Nama Bank": data[i].bank_name, "Jenis Transaksi": data[i].fiturID, "Nominal Transaksi": data[i].amount, "Fee": data[i].total_fee, "Total Settlement": data[i].total_settlement, Status: data[i].status })
+                    dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].id, [language === null ? eng.waktuTransaksi : language.waktuTransaksi]: data[i].created_at, [language === null ? eng.waktuPembayaran : language.waktuPembayaran]: data[i].tvatrans_process_date_format !== null ? data[i].tvatrans_process_date_format : "-", [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trx_id, [language === null ? eng.namaAgen : language.namaAgen]: data[i].name, [language === null ? eng.namaBank : language.namaBank]: data[i].bank_name, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].fiturID, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].amount, [language === null ? eng.biaya : language.biaya]: data[i].total_fee, [language === null ? eng.totalSettlement : language.totalSettlement]: data[i].total_settlement, [language === null ? eng.status : language.status]: data[i].status })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");
-                
+                XLSX.writeFile(workBook, `${language === null ? eng.laporanDanaMasukExcel : language.laporanDanaMasukExcel}.xlsx`);
+
               }
             } catch (error) {
               // console.log(error)
               history.push(errorCatch(error.response.status))
             }
           }
-          exportGetListTransferDana(partnerId)
+          exportGetListTransferDana(partnerId, lang)
         }
     }
 
@@ -449,8 +470,9 @@ const VaDanPaymentLink = () => {
               statusDanaMasuk: [],
               periodeDanaMasuk: 0,
               partnerTransIdDanaMasuk: "",
-              // bankDanaMasuk: "",        
-              fiturDanaMasuk: 0
+              // bankDanaMasuk: "",
+              fiturDanaMasuk: 0,
+              tipePeriode: 0,
           })
           setSelectedAgenDanaMasuk([])
           setSelectedBankDanaMasuk([])
@@ -488,7 +510,17 @@ const VaDanPaymentLink = () => {
         option: (provided, state) => ({
             ...provided,
             backgroundColor: "none",
-            color: "black"
+            color: "#888888",
+            fontSize: "14px",
+            fontFamily: "Nunito"
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            border: "1px solid #E0E0E0",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontFamily: "Nunito",
+            height: "40px",
         })
     }
 
@@ -508,16 +540,22 @@ const VaDanPaymentLink = () => {
         // sortable: true
         },
         {
-            name: 'Waktu',
+            name: 'Waktu Transaksi',
             selector: row => row.tvatrans_crtdt_format,
-            // sortable: true,          
-            // width: "143px",
+            // sortable: true,
+            width: "180px",
             wrap: true,
+        },
+        {
+            name: 'Waktu Pembayaran',
+            selector: row => row.tvatrans_process_date_format !== null ? row.tvatrans_process_date_format : "-",
+            wrap: true,
+            width: "180px"
         },
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_transid,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             width: "170px",
         },
@@ -634,7 +672,7 @@ const VaDanPaymentLink = () => {
         // console.log(isFilterDanaMasukAdmin, 'masuk');
         if (isFilterDanaMasukAdmin) {
             setActivePageDanaMasukAdmin(page)
-            filterRiwayatDanaMasukAdmin(page, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin)
+            filterRiwayatDanaMasukAdmin(page, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin, inputHandleAdmin.tipePeriodeAdmin)
         } else {
             setActivePageDanaMasukAdmin(page)
             riwayatDanaMasukAdmin(page)
@@ -776,7 +814,7 @@ const VaDanPaymentLink = () => {
         // 7 -> pilih tanggal
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "partner_transid": "", "bank_code": "", "fitur_id": 0}`)
+            const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "type_date_filter": 1, "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "partner_transid": "", "bank_code": "", "fitur_id": 0}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -802,13 +840,13 @@ const VaDanPaymentLink = () => {
         }
     }
 
-    async function filterRiwayatDanaMasukAdmin(page, statusId, transId, partnerId, subPartnerId, dateId, periode, rowPerPage, partnerTransId, bankDanaMasuk, fiturDanaMasuk) {
+    async function filterRiwayatDanaMasukAdmin(page, statusId, transId, partnerId, subPartnerId, dateId, periode, rowPerPage, partnerTransId, bankDanaMasuk, fiturDanaMasuk, tipePeriode) {
         try {
             setPendingTransferAdmin(true)
             setIsFilterDanaMasukAdmin(true)
             setActivePageDanaMasukAdmin(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "subPartnerID": "${(subPartnerId !== undefined) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10},  "partner_transid": "${partnerTransId}", "bank_code":"${bankDanaMasuk !== undefined ? bankDanaMasuk : ""}", "fitur_id": ${fiturDanaMasuk}}`)
+            const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "subPartnerID": "${(subPartnerId !== undefined) ? subPartnerId : ""}", "type_date_filter": ${tipePeriode != 0 ? tipePeriode : 1}, "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10},  "partner_transid": "${partnerTransId}", "bank_code":"${bankDanaMasuk !== undefined ? bankDanaMasuk : ""}", "fitur_id": ${fiturDanaMasuk}}`)
             // console.log(dataParams, "filter dana masuk");
             const headers = {
                 'Content-Type': 'application/json',
@@ -835,12 +873,12 @@ const VaDanPaymentLink = () => {
         }
     }
 
-    function ExportReportTransferDanaMasukAdminHandler(isFilter, statusId, transId, partnerId, subPartnerId, dateId, periode, partnerTransId, bankName, fiturId) {
+    function ExportReportTransferDanaMasukAdminHandler(isFilter, statusId, transId, partnerId, subPartnerId, dateId, periode, partnerTransId, bankName, fiturId, tipePeriode) {
         if (isFilter) {
-            async function dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId) {
+            async function dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId, tipePeriode) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "partner_transid": "${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturId}}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : ${(transId.length !== 0) ? transId : 0}, "partnerID":"${(partnerId.length !== 0) ? partnerId : ""}", "subPartnerID": "${(subPartnerId.length !== 0) ? subPartnerId : ""}", "type_date_filter": ${tipePeriode != 0 ? tipePeriode : 1}, "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "partner_transid": "${partnerTransId}", "bank_code":"${bankName}", "fitur_id": ${fiturId}}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -850,7 +888,7 @@ const VaDanPaymentLink = () => {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, "Waktu Transaksi": data[i].tvatrans_crtdt_format, "Waktu Pembayaran": data[i].tvatrans_process_date_format !== null ? data[i].tvatrans_process_date_format : "-", "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -861,7 +899,7 @@ const VaDanPaymentLink = () => {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, "Waktu Transaksi": data[i].tvatrans_crtdt_format, "Waktu Pembayaran": data[i].tvatrans_process_date_format !== null ? data[i].tvatrans_process_date_format : "-", "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -873,12 +911,12 @@ const VaDanPaymentLink = () => {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId)
+            dataExportFilter(statusId, transId, partnerId, subPartnerId, dateId, periode, bankName, fiturId, tipePeriode)
         } else {
             async function dataExportDanaMasuk() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "partner_transid":"", "bank_code": "", "fitur_id": 0}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : 0, "partnerID":"", "subPartnerID":"", "type_date_filter": 1, "dateID": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000, "partner_transid":"", "bank_code": "", "fitur_id": 0}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -888,7 +926,7 @@ const VaDanPaymentLink = () => {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, "Waktu Transaksi": data[i].tvatrans_crtdt_format, "Waktu Pembayaran": data[i].tvatrans_process_date_format !== null ? data[i].tvatrans_process_date_format : "-", "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -899,7 +937,7 @@ const VaDanPaymentLink = () => {
                         const data = dataExportDanaMasuk.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, "Waktu Transaksi": data[i].tvatrans_crtdt_format, "Waktu Pembayaran": data[i].tvatrans_process_date_format !== null ? data[i].tvatrans_process_date_format : "-", "Partner Trans ID": data[i].partner_transid, "Nama Partner": data[i].mpartner_name, "Nama Agen": data[i].mpartnerdtl_sub_name, "Jenis Transaksi": data[i].mfitur_desc, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, "Jasa Layanan": data[i].tvatrans_partner_fee, "PPN atas Jasa Layanan": data[i].tvatrans_fee_tax, "Reibursement by VA": data[i].tvatrans_bank_fee, "Total Settlement": (data[i].tvatrans_amount - data[i].tvatrans_partner_fee - data[i].tvatrans_fee_tax - data[i].tvatrans_bank_fee), Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -924,7 +962,8 @@ const VaDanPaymentLink = () => {
                 statusDanaMasukAdmin: [],
                 periodeDanaMasukAdmin: 0,
                 partnerTransIdDanaMasukAdmin: "",
-                fiturDanaMasukAdmin: 0
+                fiturDanaMasukAdmin: 0,
+                tipePeriodeAdmin: 0
             })
             setSelectedPartnerDanaMasukAdmin([])
             setSelectedAgenDanaMasukAdmin([])
@@ -932,7 +971,7 @@ const VaDanPaymentLink = () => {
             setStateDanaMasukAdmin(null)
             setDateRangeDanaMasukAdmin([])
             setShowDateDanaMasukAdmin("none")
-        } 
+        }
     }
 
     const customStylesDanaMasuk = {
@@ -945,7 +984,7 @@ const VaDanPaymentLink = () => {
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                
+
             },
         },
         headRow: {
@@ -964,6 +1003,7 @@ const VaDanPaymentLink = () => {
         </div>
     );
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         if (!access_token) {
           history.push('/login');
@@ -982,68 +1022,60 @@ const VaDanPaymentLink = () => {
             {
                 user_role === "102" ? (
                     <>
-                        <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Laporan</span></span>
+                        <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>{language === null ? eng.laporan : language.laporan}</span></span>
                         <div className="head-title">
-                            <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Laporan</h2>
+                            <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? eng.laporan : language.laporan}</h2>
                         </div>
-                        <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Dana Masuk</h2>
+                        <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>{language === null ? eng.danaMasuk : language.danaMasuk}</h2>
                         <div className='base-content'>
-                            <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Filter</span>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>{language === null ? eng.filter : language.filter}</span>
                             <Row className='mt-4'>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="pe-1">ID Transaksi</span>
-                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="pe-1">{language === null ? eng.idTransaksi : language.idTransaksi}</span>
+                                    <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDanaMasuk} name="idTransaksiDanaMasuk" type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder={language === null ? eng.placeholderIdTrans : language.placeholderIdTrans}/>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="pe-3">Nama Agen</span>
-                                    <div className="dropdown dropLaporanPartner ps-3">
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="pe-3">{language === null ? eng.namaAgen : language.namaAgen}</span>
+                                    <div className="dropdown dropVaAndPaylinkPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             closeMenuOnSelect={true}
                                             hideSelectedOptions={false}
                                             options={listAgen}
                                             value={selectedAgenDanaMasuk}
                                             onChange={(selected) => setSelectedAgenDanaMasuk([selected])}
-                                            placeholder="Pilih Nama Partner"
+                                            placeholder={language === null ? eng.placeholderNamaAgen : language.placeholderNamaAgen}
                                             components={{ Option }}
                                             styles={customStylesSelectedOption}
                                         />
                                     </div>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="pe-4">Status</span>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="pe-4">{language === null ? eng.status : language.status}</span>
                                     <Form.Select name="statusDanaMasuk" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusDanaMasuk} onChange={(e) => handleChange(e)}>
-                                    <option defaultChecked disabled value="">Pilih Status</option>
-                                    <option value={2}>Berhasil</option>
-                                    <option value={1}>Dalam Proses</option>
-                                    <option value={7}>Menunggu Pembayaran</option>
-                                    <option value={9}>Kadaluwarsa</option>
+                                        <option defaultChecked disabled value="">{language === null ? eng.placeholderStatus : language.placeholderStatus}</option>
+                                        <option value={2}>{language === null ? eng.berhasil : language.berhasil}</option>
+                                        <option value={1}>{language === null ? eng.dalamProses : language.dalamProses}</option>
+                                        <option value={7}>{language === null  ? eng.menungguPembayaran : language.menungguPembayaran}</option>
+                                        <option value={9}>{language === null ? eng.kadaluwarsa : language.kadaluwarsa}</option>
                                     </Form.Select>
                                 </Col>
                             </Row>
                             <Row className='mt-4'>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
-                                <span className="me-3">Periode<span style={{ color: "red" }}>*</span></span>
-                                <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-5" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
-                                    <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                    <option value={2}>Hari Ini</option>
-                                    <option value={3}>Kemarin</option>
-                                    <option value={4}>7 Hari Terakhir</option>
-                                    <option value={5}>Bulan Ini</option>
-                                    <option value={6}>Bulan Kemarin</option>
-                                    <option value={7}>Pilih Range Tanggal</option>
-                                </Form.Select>                 
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="pe-2">{language === null ? eng.partnerTransId : language.partnerTransId}</span>
+                                    <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdDanaMasuk} name="partnerTransIdDanaMasuk" type='text' className='input-text-riwayat ms-1' placeholder={language === null ? eng.placeholderPartnerTransId : language.placeholderPartnerTransId} />
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Jenis Transaksi</span>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span>{language === null ? eng.jenisTransaksi : language.jenisTransaksi}</span>
                                     <Form.Select name='fiturDanaMasuk' onChange={(e) => handleChange(e)} value={inputHandle.fiturDanaMasuk} className='input-text-ez' style={{ display: "inline" }}>
-                                    <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                    <option value={104}>Payment Link</option>
-                                    <option value={100}>Virtual Account</option>
+                                    <option defaultValue disabled value={0}>{language === null ? eng.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
+                                    <option value={104}>{language === null ? eng.paymentLink : language.paymentLink}</option>
+                                    <option value={100}>{language === null ? eng.virtualAccount : language.virtualAccount}</option>
                                     </Form.Select>
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="me-2">Nama Bank</span>
-                                    <div className="dropdown dropLaporanPartnerBank">
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="me-2">{language === null ? eng.namaBank : language.namaBank}</span>
+                                    <div className="dropdown dropVaAndPaylinkPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -1052,24 +1084,34 @@ const VaDanPaymentLink = () => {
                                             // allowSelectAll={true}
                                             value={selectedBankDanaMasuk}
                                             onChange={(selected) => setSelectedBankDanaMasuk([selected])}
-                                            placeholder="Pilih Nama Bank"
+                                            placeholder={language === null ? eng.placeholderNamaBank : language.placeholderNamaBank}
                                             components={{ Option }}
                                             styles={customStylesSelectedOption}
                                         />
                                     </div>
-                                    {/* <Form.Select name='bankDanaMasuk' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandle.bankDanaMasuk} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={""}>Pilih Nama Bank</option>
-                                        {
-                                            listBank.map((item, idx) => {
-                                                return (
-                                                    <option key={idx} value={item.mbank_code}>{item.mbank_name}</option>
-                                                )
-                                            })
-                                        }
-                                    </Form.Select> */}
                                 </Col>
                             </Row>
                             <Row className='mt-4'>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <span className="me-2">{language === null ? eng.tipePeriode : language.tipePeriode}</span>
+                                    <Form.Select name='tipePeriode' className='input-text-riwayat ms-1' style={{ display: "inline" }} value={inputHandle.tipePeriode} onChange={(e) => handleChange(e)}>
+                                        <option defaultValue disabled value={0}>{language === null ? eng.placeholderTipePeriode : language.placeholderTipePeriode}</option>
+                                        <option value={1}>{language === null ? eng.periodeBuat : language.periodeBuat}</option>
+                                        <option value={2}>{language === null ? eng.periodeProses : language.periodeProses}</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: (showDateDanaMasuk === "none") ? "33%" : "33%" }}>
+                                    <span className="me-3">{language === null ? eng.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
+                                    <Form.Select name='periodeDanaMasuk' className="input-text-riwayat ms-5" value={inputHandle.periodeDanaMasuk} onChange={(e) => handleChangePeriodeTransfer(e)}>
+                                        <option defaultChecked disabled value={0}>{language === null ? eng.pilihPeriode : language.pilihPeriode}</option>
+                                        <option value={2}>{language === null ? eng.hariIni : language.hariIni}</option>
+                                        <option value={3}>{language === null ? eng.kemarin : language.kemarin}</option>
+                                        <option value={4}>{language === null ? eng.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                        <option value={5}>{language === null ? eng.bulanIni : language.bulanIni}</option>
+                                        <option value={6}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
+                                        <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
+                                    </Form.Select>
+                                </Col>
                                 <Col xs={4} style={{ display: showDateDanaMasuk }}>
                                     <DateRangePicker
                                         onChange={pickDateDanaMasuk}
@@ -1077,34 +1119,27 @@ const VaDanPaymentLink = () => {
                                         clearIcon={null}
                                     />
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="pe-2">Partner Trans ID</span>
-                                    <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdDanaMasuk} name="partnerTransIdDanaMasuk" type='text' className='input-text-riwayat ms-1' placeholder='Masukkan Partner Trans ID'/>
-                                </Col>           
-                                
+
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={5}>
                                     <Row>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                            onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)}
-                                            // className={(dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.namaAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                            // disabled={dateRangeDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.statusDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.namaAgenDanaMasuk.length === 0 || dateRangeDanaMasuk.length === 0 && inputHandle.fiturDanaMasuk.length === 0}
-                                            // onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, inputHandle.namaAgenDanaMasuk, inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0)}
-                                            className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedBankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
-                                            disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedBankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                                                onClick={() => filterTransferButtonHandle(1, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, 0, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk, language === null ? 'EN' : language.flagName, inputHandle.tipePeriode)}
+                                                className={(inputHandle.periodeDanaMasuk !== 0 || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedBankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-ez-on" : "btn-ez"}
+                                                disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedBankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                             >
-                                            Terapkan
+                                                {language === null ? eng.terapkan : language.terapkan}
                                             </button>
                                         </Col>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                            onClick={() => resetButtonHandle("Dana Masuk")}
-                                            className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedBankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                            disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedBankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
+                                                onClick={() => resetButtonHandle("Dana Masuk")}
+                                                className={(inputHandle.periodeDanaMasuk || dateRangeDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.idTransaksiDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.statusDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedAgenDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && selectedBankDanaMasuk.length !== 0 || dateRangeDanaMasuk.length !== 0 && inputHandle.fiturDanaMasuk.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={inputHandle.periodeDanaMasuk === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.idTransaksiDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.statusDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedAgenDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && selectedBankDanaMasuk.length === 0 || inputHandle.periodeDanaMasuk === 0 && inputHandle.fiturDanaMasuk.length === 0}
                                             >
-                                            Atur Ulang
+                                                {language === null ? eng.aturUlang : language.aturUlang}
                                             </button>
                                         </Col>
                                     </Row>
@@ -1114,24 +1149,24 @@ const VaDanPaymentLink = () => {
                                 // listTransferDana.length !== 0 &&
                                 listTransferDana.length !== 0 &&
                                 <div>
-                                    <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk)} className="export-span">Export</Link>
+                                    <Link onClick={() => exportReportTransferDanaMasukHandler(isFilterDanaMasuk, partnerId, inputHandle.idTransaksiDanaMasuk, selectedAgenDanaMasuk.length !== 0 ? selectedAgenDanaMasuk[0].value : "", inputHandle.periodeDanaMasuk, dateRangeDanaMasuk, inputHandle.statusDanaMasuk, inputHandle.partnerTransIdDanaMasuk, selectedBankDanaMasuk.length !== 0 ? selectedBankDanaMasuk[0].value : "", inputHandle.fiturDanaMasuk, language === null ? 'EN' : language.flagName, inputHandle.tipePeriode)} className="export-span">{language === null ? eng.export : language.export}</Link>
                                 </div>
                             }
                             <br/>
                             <br/>
-                            <div className="div-table">
+                            <div className="div-table pb-4">
                                 <DataTable
                                     columns={columnstransferDana}
                                     data={listTransferDana}
                                     customStyles={customStyles}
-                                    // pagination
+                                    noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
                                     highlightOnHover
                                     progressPending={pendingTransfer}
                                     progressComponent={<CustomLoader />}
                                 />
                             </div>
                             <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDanaMasuk}</div>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageDanaMasuk}</div>
                                 <Pagination
                                     activePage={activePageDanaMasuk}
                                     itemsCountPerPage={pageNumberDanaMasuk.row_per_page}
@@ -1160,7 +1195,7 @@ const VaDanPaymentLink = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span className='me-3'>Nama Partner</span>
-                                    <div className="dropdown dropSaldoPartner">
+                                    <div className="dropdown dropSaldoPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             closeMenuOnSelect={true}
                                             hideSelectedOptions={false}
@@ -1175,7 +1210,7 @@ const VaDanPaymentLink = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span className="me-4">Nama Agen</span>
-                                    <div className="dropdown dropSaldoPartner">
+                                    <div className="dropdown dropSaldoPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -1202,8 +1237,22 @@ const VaDanPaymentLink = () => {
                                         <option value={9}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <span>Partner Trans ID</span>
+                                    <input onChange={(e) => handleChangeAdmin(e)} value={inputHandleAdmin.partnerTransIdDanaMasukAdmin} name="partnerTransIdDanaMasukAdmin" type='text'className='input-text-riwayat ms-2' placeholder='Masukkan Partner Trans ID'/>
+                                </Col>
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <span>Tipe Periode</span>
+                                    <Form.Select name='tipePeriodeAdmin' className='input-text-riwayat ms-4' style={{ display: "inline" }} value={inputHandleAdmin.tipePeriodeAdmin} onChange={(e) => handleChangeAdmin(e)}>
+                                        <option defaultValue disabled value={0}>Pilih Tipe Periode</option>
+                                        <option value={1}>Periode Buat</option>
+                                        <option value={2}>Periode Proses</option>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <Row className="mt-4">
                                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateDanaMasukAdmin === "none") ? "33%" : "33%" }}>
-                                    <span style={{ marginRight: 40 }}>Periode<span style={{ color: "red" }}>*</span></span>
+                                    <span style={{ marginRight: 25 }}>Periode<span style={{ color: "red" }}>*</span></span>
                                     <Form.Select name='periodeDanaMasukAdmin' className="input-text-riwayat ms-3" value={inputHandleAdmin.periodeDanaMasukAdmin} onChange={(e) => handleChangePeriodeTransferAdmin(e)}>
                                         <option defaultChecked disabled value={0}>Pilih Periode</option>
                                         <option value={2}>Hari Ini</option>
@@ -1212,21 +1261,11 @@ const VaDanPaymentLink = () => {
                                         <option value={5}>Bulan Ini</option>
                                         <option value={6}>Bulan Kemarin</option>
                                         <option value={7}>Pilih Range Tanggal</option>
-                                    </Form.Select>                            
-                                </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Jenis Transaksi</span>
-                                    <Form.Select name='fiturDanaMasukAdmin' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandleAdmin.fiturDanaMasukAdmin} onChange={(e) => handleChangeAdmin(e)}>
-                                        <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                        <option value={104}>Payment Link</option>
-                                        <option value={100}>Virtual Account</option>
                                     </Form.Select>
                                 </Col>
-                            </Row>
-                            <Row className="mt-4">
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span className="me-4">Nama Bank</span>
-                                    <div className="dropdown dropSaldoPartner">
+                                    <div className="dropdown dropSaldoPartner" style={{ width: "12rem" }}>
                                         <ReactSelect
                                             // isMulti
                                             closeMenuOnSelect={true}
@@ -1241,32 +1280,38 @@ const VaDanPaymentLink = () => {
                                         />
                                     </div>
                                 </Col>
-                                <Col xs={4} style={{ display: showDateDanaMasukAdmin }} className='text-end pe-4'>
-                                    <DateRangePicker 
+                                <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                    <span>Jenis Transaksi</span>
+                                    <Form.Select name='fiturDanaMasukAdmin' className='input-text-riwayat ms-3' style={{ display: "inline" }} value={inputHandleAdmin.fiturDanaMasukAdmin} onChange={(e) => handleChangeAdmin(e)}>
+                                        <option defaultValue disabled value={0}>Pilih Jenis Transaksi</option>
+                                        <option value={104}>Payment Link</option>
+                                        <option value={100}>Virtual Account</option>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <Row className="mt-4">
+                                <Col xs={4} style={{ display: showDateDanaMasukAdmin, marginLeft: 65 }} className='text-start ps-5'>
+                                    <DateRangePicker
                                         onChange={pickDateDanaMasukAdmin}
                                         value={stateDanaMasukAdmin}
                                         clearIcon={null}
                                         // calendarIcon={null}
                                     />
                                 </Col>
-                                <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Partner Trans ID</span>
-                                    <input onChange={(e) => handleChangeAdmin(e)} value={inputHandleAdmin.partnerTransIdDanaMasukAdmin} name="partnerTransIdDanaMasukAdmin" type='text'className='input-text-riwayat ms-2' placeholder='Masukkan Partner Trans ID'/>
-                                </Col>
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={5}>
                                     <Row>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterRiwayatDanaMasukAdmin(1, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin)}
+                                                onClick={() => filterRiwayatDanaMasukAdmin(1, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin, inputHandleAdmin.tipePeriodeAdmin)}
                                                 className={(inputHandleAdmin.periodeDanaMasukAdmin !== 0 || dateRangeDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.idTransaksiDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.statusDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && selectedAgenDanaMasuk[0].value !== undefined || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.partnerTransIdDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && selectedBankDanaMasukAdmin[0].value !== undefined || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.fiturDanaMasukAdmin.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandleAdmin.periodeDanaMasukAdmin === 0 || inputHandleAdmin.periodeDanaMasukAdmin === 0 && inputHandleAdmin.idTransaksiDanaMasukAdmin.length === 0 || inputHandleAdmin.periodeDanaMasukAdmin === 0 && inputHandleAdmin.statusDanaMasukAdmin.length === 0 || inputHandleAdmin.periodeDanaMasukAdmin === 0 && selectedAgenDanaMasuk[0].value === undefined || inputHandleAdmin.periodeDanaMasukAdmin === 0 && inputHandleAdmin.partnerTransIdDanaMasukAdmin.length === 0 | inputHandleAdmin.periodeDanaMasukAdmin === 0 && selectedBankDanaMasukAdmin[0].value === undefined || inputHandleAdmin.periodeDanaMasukAdmin === 0 && inputHandleAdmin.fiturDanaMasukAdmin.length === 0}
                                             >
                                                 Terapkan
                                             </button>
                                         </Col>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => resetButtonAdminHandle("Dana Masuk")}
                                                 className={(inputHandleAdmin.periodeDanaMasukAdmin || dateRangeDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.idTransaksiDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.statusDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && selectedAgenDanaMasuk[0].value !== undefined || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.partnerTransIdDanaMasukAdmin.length !== 0 || dateRangeDanaMasukAdmin.length !== 0 && selectedBankDanaMasukAdmin[0].value !== undefined || dateRangeDanaMasukAdmin.length !== 0 && inputHandleAdmin.fiturDanaMasukAdmin.length !== 0) ? "btn-reset" : "btn-ez-reset"}
@@ -1281,7 +1326,7 @@ const VaDanPaymentLink = () => {
                             {
                                 dataRiwayatDanaMasukAdmin.length !== 0 &&
                                 <div style={{ marginBottom: 30 }}>
-                                    <Link onClick={() => ExportReportTransferDanaMasukAdminHandler(isFilterDanaMasukAdmin, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin)} className="export-span">Export</Link>
+                                    <Link onClick={() => ExportReportTransferDanaMasukAdminHandler(isFilterDanaMasukAdmin, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin, inputHandleAdmin.tipePeriodeAdmin)} className="export-span">Export</Link>
                                 </div>
                             }
                             <div className="div-table mt-4 pb-4">

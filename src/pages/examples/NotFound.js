@@ -8,7 +8,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { Routes } from "../../routes";
 import NotFoundImage from "../../assets/img/illustrations/404.svg";
-import { BaseURL, getRole, getToken } from "../../function/helpers";
+import { BaseURL, getRole, getToken, language } from "../../function/helpers";
 import axios from "axios";
 
 
@@ -18,12 +18,13 @@ export default () => {
   const user_role = getRole()
   const history = useHistory()
 
-  async function userAccessMenu(url, token) {
+  async function userAccessMenu(url, token, lang) {
     try {
       const auth = "Bearer " + token
         const headers = {
             'Content-Type':'application/json',
-            'Authorization' : auth
+            'Authorization' : auth,
+            'Accept-Language' : lang
       }
       const dataUserAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
       // console.log(dataUserAccessMenu, 'data access');
@@ -31,67 +32,67 @@ export default () => {
         if (dataUserAccessMenu.data.response_data[0].detail.length !== 0) {
           switch (dataUserAccessMenu.data.response_data[0].detail[0].id) {
             case 1101:
-              history.push("/Riwayat Transaksi/va-dan-paylink")  
+              history.push("/riwayat-transaksi/va-dan-paylink")
             break;
             case 1102:
-              history.push("/Riwayat Transaksi/disbursement")  
+              history.push("/riwayat-transaksi/disbursement")
             break;
             case 1103:
-              history.push("/Riwayat Transaksi/ewallet")  
+              history.push("/riwayat-transaksi/ewallet")
             break;
             case 1104:
-              history.push("/Riwayat Transaksi/direct-debit")  
+              history.push("/riwayat-transaksi/direct-debit")
             break;
             case 1105:
-              history.push("/Riwayat Transaksi/sub-account")  
+              history.push("/riwayat-transaksi/sub-account")
             break;
             case 1601:
-              history.push("/Transaksi/va-dan-paylink")  
+              history.push("/Transaksi/va-dan-paylink")
             break;
             case 1602:
-              history.push("/Transaksi/disbursement")  
+              history.push("/Transaksi/disbursement")
             break;
             case 1603:
-              history.push("/Transaksi/ewallet")  
+              history.push("/Transaksi/ewallet")
             break;
             case 1604:
-              history.push("/Transaksi/direct-debit")  
+              history.push("/Transaksi/direct-debit")
             break;
             case 1605:
-              history.push("/Transaksi/sub-account")  
+              history.push("/Transaksi/sub-account")
             break;
             case 1606:
-              history.push("/Transaksi/disbursement-timeout")  
+              history.push("/Transaksi/disbursement-timeout")
             break;
             case 1701:
-              history.push("/Settlement/riwayat-settlement")  
+              history.push("/settlement/riwayat-settlement")
             break;
             case 1702:
-              history.push("/Settlement/settlement-manual")  
+              history.push("/settlement/settlement-manual")
             break;
             case 1901:
-              history.push("/HelpDesk/renotifyva")  
+              history.push("/HelpDesk/renotifyva")
             break;
             case 2301:
-              history.push("/Buat Invoice/disbursement")  
+              history.push("/Buat Invoice/disbursement")
             break;
             case 2302:
-              history.push("/Buat Invoice/settlement")  
+              history.push("/Buat Invoice/settlement")
             break;
             case 2401:
-              history.push("/Sub Account Bank/info-saldo-dan-mutasi")  
+              history.push("/Sub Account Bank/info-saldo-dan-mutasi")
             break;
             case 2402:
-              history.push("/Sub Account Bank/transfer")  
+              history.push("/Sub Account Bank/transfer")
             break;
             case 2403:
-              history.push("/Sub Account Bank/riwayat-sub-account")  
+              history.push("/Sub Account Bank/riwayat-sub-account")
             break;
             case 2601:
-              history.push("/Disbursement/disbursementpage")  
+              history.push("/Disbursement/disbursementpage")
             break;
             case 2602:
-              history.push("/Disbursement/report")  
+              history.push("/Disbursement/report")
             break;
           }
         } else {
@@ -206,7 +207,7 @@ export default () => {
     if (token === null || role === null) {
       history.push("/login")
     } else if (token !== null) {
-      userAccessMenu("/Account/GetUserAccess", token)
+      userAccessMenu("/Account/GetUserAccess", token, language === null ? 'EN' : language.flagName)
     }
   }
 

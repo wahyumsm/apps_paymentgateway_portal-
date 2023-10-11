@@ -9,12 +9,13 @@ import noteIconGrey from "../../assets/icon/note_icon_grey.svg"
 import copy from "../../assets/icon/iconcopy_icon.svg"
 import DataTable from 'react-data-table-component'
 import CopyToClipboard from "react-copy-to-clipboard";
-import { BaseURL, errorCatch, getRole, getToken, replaceText, setUserSession } from '../../function/helpers'
+import { BaseURL, errorCatch, getRole, getToken, language, replaceText, setUserSession } from '../../function/helpers'
 import axios from 'axios'
 import ReactSelect, { components } from 'react-select';
 import encryptData from '../../function/encryptData'
 import Pagination from 'react-js-pagination'
 import check from "../../assets/icon/checklistpayment_icon.svg";
+import { eng, ind } from '../../components/Language'
 
 function DaftarUserDirectDebit() {
 
@@ -50,7 +51,7 @@ function DaftarUserDirectDebit() {
     }
 
     function toLaporan() {
-        history.push("/Riwayat Transaksi/va-dan-paylink");
+        history.push("/riwayat-transaksi/va-dan-paylink");
     }
 
     const columnsAdmin = [
@@ -105,34 +106,34 @@ function DaftarUserDirectDebit() {
 
     const columnsPartner = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "57px",
         },
         {
-            name: 'ID User',
+            name: language === null ? eng.idUser : language.idUser,
             selector: row => row.mdirdebituser_partner_id,
             width: "160px",
             cell: (row) => <Link style={{ textDecoration: "unset", color: "#077E86" }} onClick={() => getDetailIdUserDirectDebit(row.number)}>{row.mdirdebituser_partner_id}</Link>
         },
         {
-            name: 'Nama User',
+            name: language === null ? eng.namaUser : language.namaUser,
             selector: row => row.mdirdebituser_fullname,
             width: "170px",
         },
         {
-            name: 'No Handphone',
+            name: language === null ? eng.noHandphone : language.noHandphone,
             selector: row => row.mdirdebituser_mobile,
             width: "170px",
         },
         {
-            name: 'Channel Direct Debit',
+            name: language === null ? eng.channelDirectDebit : language.channelDirectDebit,
             selector: row => replaceText(row.mpaytype_name),
             width: "220px",
         },
         {
-            name: 'Status',
-            selector: row => row.mdirdebituser_is_active,
+            name: language === null ? eng.status : language.status,
+            selector: row => row.mdirdebituser_is_active === "Aktif" ? (language === null ? eng.aktif : language.aktif) : (language === null ? eng.tidakAktif : language.tidakAktif),
             style: { display: "flex", flexDirection: "row", justifyContent: "center", fontSize: 14, fontFamily: "Nunito Sans", fontWeight: 600, alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
             conditionalCellStyles: [
                 {
@@ -158,11 +159,11 @@ function DaftarUserDirectDebit() {
           // console.log(userDetail, 'ini user detal funct');
           if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
-            getDaftarUserDirectDebit(activePageDaftarDirectDebit, userDetail.data.response_data.muser_partnerdtl_id)
+            getDaftarUserDirectDebit(activePageDaftarDirectDebit, language === null ? 'EN' : language.flagName)
           } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
             setUserSession(userDetail.data.response_new_token)
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
-            getDaftarUserDirectDebit(activePageDaftarDirectDebit, userDetail.data.response_data.muser_partnerdtl_id)
+            getDaftarUserDirectDebit(activePageDaftarDirectDebit, language === null ? 'EN' : language.flagName)
           }
     } catch (error) {
           // console.log(error);
@@ -240,13 +241,14 @@ function DaftarUserDirectDebit() {
         }
     }
 
-    async function getDaftarUserDirectDebit(currentPage) {
+    async function getDaftarUserDirectDebit(currentPage, lang) {
         try {
-            const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"paytype_id": 0, "partner_id":"", "mobile_number": "", "statusID": 0, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
-                const headers = {
+            const auth = "Bearer " + getToken();
+            const dataParams = encryptData(`{"paytype_id": 0, "partner_id":"", "mobile_number": "", "statusID": 0, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+            const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang,
             }
             const dataUserDirectDebit = await axios.post(BaseURL + "/Home/GetListDirectDebitUser", { data: dataParams }, { headers: headers })
             // console.log(dataUserDirectDebit, 'ini user detal funct');
@@ -268,7 +270,7 @@ function DaftarUserDirectDebit() {
         }
     }
 
-    async function filterDaftarUserDirectDebit(typeId, partnerId, userNumber, statusId, page, rowPerPage) {
+    async function filterDaftarUserDirectDebit(typeId, partnerId, userNumber, statusId, page, rowPerPage, lang) {
         try {
             setIsFilterDaftarDirectDebit(true)
             setActivePageDaftarDirectDebit(page)
@@ -276,7 +278,8 @@ function DaftarUserDirectDebit() {
                 const dataParams = encryptData(`{"paytype_id": ${typeId}, "partner_id": "${partnerId.length !== 0 ? partnerId : ""}", "mobile_number": "${userNumber}", "statusID": ${statusId}, "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage !== 0 ? rowPerPage : 10}}`)
                 const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang,
             }
             const dataUserDirectDebit = await axios.post(BaseURL + "/Home/GetListDirectDebitUser", { data: dataParams }, { headers: headers })
             // console.log(dataUserDirectDebit, 'ini user detal funct');
@@ -299,7 +302,7 @@ function DaftarUserDirectDebit() {
     }
 
     function resetButtonUserDirectDebit () {
-        getDaftarUserDirectDebit(activePageDaftarDirectDebit)
+        getDaftarUserDirectDebit(activePageDaftarDirectDebit, language === null ? 'EN' : language.flagName)
         setChannelDirectDebit(0)
         setStatusDirectDebit(0)
         setSelectedNamaPartnerDirectDebit([])
@@ -309,10 +312,10 @@ function DaftarUserDirectDebit() {
     function handlePageChangeDaftarUserDirectDebit(page) {
         if (isFilterDaftarDirectDebit) {
             setActivePageDaftarDirectDebit(page);
-            filterDaftarUserDirectDebit(channelDirectDebit, user_role === "102" ? partnerId : (selectedNamaPartnerDirectDebit.length !== 0 ? selectedNamaPartnerDirectDebit[0].value : ""), selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", statusDirectDebit, 1, 10)
+            filterDaftarUserDirectDebit(channelDirectDebit, user_role === "102" ? partnerId : (selectedNamaPartnerDirectDebit.length !== 0 ? selectedNamaPartnerDirectDebit[0].value : ""), selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", statusDirectDebit, 1, 10, language === null ? 'EN' : language.flagName)
         } else {
             setActivePageDaftarDirectDebit(page);
-            getDaftarUserDirectDebit(page);
+            getDaftarUserDirectDebit(page, language === null ? 'EN' : language.flagName);
         }
     }
 
@@ -335,6 +338,24 @@ function DaftarUserDirectDebit() {
             ...provided,
             backgroundColor: "none",
             color: "black"
+        })
+    }
+
+    const customStylesSelectedOptionPartner = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "#888888",
+            fontSize: "14px",
+            fontFamily: "Nunito"
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            border: "1px solid #E0E0E0",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontFamily: "Nunito",
+            height: "40px",
         })
     }
 
@@ -369,11 +390,13 @@ function DaftarUserDirectDebit() {
         </div>
     );
 
+    // console.log(language, "language");
+
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
         }
-        getDaftarUserDirectDebit(activePageDaftarDirectDebit)
+        getDaftarUserDirectDebit(activePageDaftarDirectDebit, language === null ? 'EN' : language.flagName)
         listUser()
         if (user_role !== "102") {
             listPartner()
@@ -381,17 +404,17 @@ function DaftarUserDirectDebit() {
             userDetails()
         }
     }, [])
-    
+
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Daftar User Direct Debit</span>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.daftarUserDirectDebit : language.daftarUserDirectDebit}</span>
             <div className='head-title'>
-                <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Daftar User Direct Debit</h2>
+                <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? eng.daftarUserDirectDebit : language.daftarUserDirectDebit}</h2>
             </div>
             <div className='main-content'>
                 <div className='base-content mt-3 mb-4'>
-                    <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                    <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? eng.filter : language.filter}</span>
                     <Row className='mt-4'>
                         {
                             user_role !== "102" ? (
@@ -413,56 +436,56 @@ function DaftarUserDirectDebit() {
                             ) : ""
                         }
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className='me-5'>Nama User</span>
-                            <div className="dropdown dropSaldoPartner">
+                            <span className='me-5'>{language === null ? eng.namaUser : language.namaUser}</span>
+                            <div className="dropdown dropSaldoPartner" style={{ width: "12rem" }}>
                                 <ReactSelect
                                     closeMenuOnSelect={true}
                                     hideSelectedOptions={false}
                                     options={dataListUser}
                                     value={selectedNamaUserDirectDebit}
                                     onChange={(selected) => setSelectedNamaUserDirectDebit([selected])}
-                                    placeholder="Pilih Nama User"
+                                    placeholder={language === null ? eng.placeholderNamaUser : language.placeholderNamaUser}
                                     components={{ Option }}
-                                    styles={customStylesSelectedOption}
+                                    styles={customStylesSelectedOptionPartner}
                                 />
                             </div>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                            <span className='me-3'>Channel</span>
+                            <span className='me-3'>{language === null ? eng.channel : language.channel}</span>
                             <Form.Select name="channelDirectDebit" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={channelDirectDebit} onChange={(e) => setChannelDirectDebit(e.target.value)}>
-                                <option defaultChecked disabled value={0}>Channel Direct Debit</option>
+                                <option defaultChecked disabled value={0}>{language === null ? eng.channelDirectDebit : language.channelDirectDebit}</option>
                                 <option value={36}>OneKlik</option>
                                 <option value={37}>Mandiri</option>
                             </Form.Select>
                         </Col>
                         <Col xs={4} className={user_role === "102" ? "d-flex justify-content-start align-items-center" : "d-flex justify-content-start align-items-center mt-4"}>
-                            <span className='me-4'>Status</span>
+                            <span className='me-4'>{language === null ? eng.status : language.status}</span>
                             <Form.Select name="statusDirectDebit" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={statusDirectDebit} onChange={(e) => setStatusDirectDebit(e.target.value)}>
-                                <option defaultChecked disabled value={0}>Pilih Status</option>
-                                <option value={1}>Aktif</option>
-                                <option value={2}>Tidak Aktif</option>
+                                <option defaultChecked disabled value={0}>{language === null ? eng.placeholderStatus : language.placeholderStatus}</option>
+                                <option value={1}>{language === null ? eng.aktif : language.aktif}</option>
+                                <option value={2}>{language === null ? eng.tidakAktif : language.tidakAktif}</option>
                             </Form.Select>
                         </Col>
                     </Row>
                     <Row className='mt-4'>
                         <Col xs={5}>
                             <Row>
-                                <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                     <button
-                                        onClick={() => filterDaftarUserDirectDebit(channelDirectDebit, user_role === "102" ? partnerId : (selectedNamaPartnerDirectDebit.length !== 0 ? selectedNamaPartnerDirectDebit[0].value : ""), selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", statusDirectDebit, 1, 10)}
+                                        onClick={() => filterDaftarUserDirectDebit(channelDirectDebit, user_role === "102" ? partnerId : (selectedNamaPartnerDirectDebit.length !== 0 ? selectedNamaPartnerDirectDebit[0].value : ""), selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", statusDirectDebit, 1, 10, language === null ? 'EN' : language.flagName)}
                                         className={(channelDirectDebit !== 0 || selectedNamaPartnerDirectDebit.length !== 0 || selectedNamaUserDirectDebit.length !== 0 || statusDirectDebit !== 0) ? 'btn-ez-on' : 'btn-ez'}
                                         disabled={channelDirectDebit === 0 && selectedNamaPartnerDirectDebit.length === 0 && selectedNamaUserDirectDebit.length === 0 && statusDirectDebit === 0}
                                     >
-                                        Terapkan
+                                        {language === null ? eng.terapkan : language.terapkan}
                                     </button>
                                 </Col>
-                                <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                     <button
                                         onClick={() => resetButtonUserDirectDebit()}
                                         className={(channelDirectDebit !== 0 || selectedNamaPartnerDirectDebit.length !== 0 || selectedNamaUserDirectDebit.length !== 0 || statusDirectDebit !== 0) ? 'btn-reset' : "btn-ez-reset"}
                                         disabled={channelDirectDebit === 0 && selectedNamaPartnerDirectDebit.length === 0 && selectedNamaUserDirectDebit.length === 0 && statusDirectDebit === 0}
                                     >
-                                        Atur Ulang
+                                        {language === null ? eng.aturUlang : language.aturUlang}
                                     </button>
                                 </Col>
                             </Row>
@@ -476,6 +499,7 @@ function DaftarUserDirectDebit() {
                             customStyles={customStyles}
                             highlightOnHover
                             progressComponent={<CustomLoader />}
+                            noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
                         />
                     </div>
                     <div
@@ -489,7 +513,7 @@ function DaftarUserDirectDebit() {
                         }}
                     >
                         <div style={{ marginRight: 10, marginTop: 10 }}>
-                            Total Page: {totalPageDaftarDirectDebit}
+                            {language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageDaftarDirectDebit}
                         </div>
                         <Pagination
                             activePage={activePageDaftarDirectDebit}
@@ -515,7 +539,7 @@ function DaftarUserDirectDebit() {
                     />
                 </Modal.Header>
                 <Modal.Title className="mt-1 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    Detail ID User
+                    {language === null ? eng.detailIdUser : language.detailIdUser}
                 </Modal.Title>
                 <center>
                     <div style={{ display: "flex", justifyContent: "center", margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
@@ -524,7 +548,7 @@ function DaftarUserDirectDebit() {
                     <div className='d-flex justify-content-center align-items-center py-2 px-3' style={{ background: "rgba(255, 214, 0, 0.16)", borderRadius: 4, color: "#383838", fontFamily: "Nunito", fontSize: 14 }}>
                         <img src={noteIconGrey} alt="icon grey" />
                         <div className='ms-2' style={{ fontStyle: "italic" }}>
-                            ID User adalah kode unik yang didapat dari Bank berupa kombinasi angka dan alphanumerik serta tidak dapat diubah oleh admin
+                            {language === null ? eng.descIdUser : language.descIdUser}
                         </div>
                     </div>
                     <div className='text-justify p-3 mt-4' style={{ background: "#F0F0F0", borderRadius: 8, border: "1.4px solid #C4C4C4", color: "#383838", fontFamily: "Nunito", fontSize: 14, wordWrap: "break-word" }}>
@@ -535,7 +559,7 @@ function DaftarUserDirectDebit() {
                             <div className='mt-4 pb-2' style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
                                 <Button className='d-flex justify-content-center align-items-center' variant="primary" style={{ cursor: "unset", fontFamily: "Exo", color: "#FFFFFF", background: "#492E20", maxHeight: 45, width: "100%", height: "100%" }}>
                                     <img src={check} alt="copy" />
-                                    <div className='ms-2'>ID Tersalin</div>
+                                    <div className='ms-2'>{language === null ? eng.idUserTersalin : language.idUserTersalin}</div>
                                 </Button>
                             </div>
                         ) : (
@@ -543,7 +567,7 @@ function DaftarUserDirectDebit() {
                                 <CopyToClipboard onCopy={onCopy} text={dataDetailUser.mdirdebituser_ref_id}>
                                     <Button className='d-flex justify-content-center align-items-center' variant="primary" onClick={onClick} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxHeight: 45, width: "100%", height: "100%" }}>
                                         <img src={copy} alt="copy" />
-                                        <div className='ms-2'>Salin ID</div>
+                                        <div className='ms-2'>{language === null ? eng.salinId : language.salinId}</div>
                                     </Button>
                                 </CopyToClipboard>
                             </div>

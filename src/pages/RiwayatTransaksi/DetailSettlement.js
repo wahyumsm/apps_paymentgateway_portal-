@@ -3,13 +3,14 @@ import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 // import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
+import { eng, ind } from '../../components/Language';
 
 function DetailSettlement() {
 
@@ -29,14 +30,15 @@ function DetailSettlement() {
     //     periodeSettlement: 0,
     // })
 
-    async function getDetailSettlement(settlementId, currentPage, codeBank, typeSettlement, codeEWallet) {
+    async function getDetailSettlement(settlementId, currentPage, codeBank, typeSettlement, codeEWallet, lang) {
         try {
             setPendingSettlement(true)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{ "settlement_id": ${settlementId}, "settlement_type": ${typeSettlement}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "ewallet_code": "${codeEWallet.length === 0 ? "" : codeEWallet}", "page": ${(currentPage === undefined || currentPage < 1) ? 1 : currentPage}, "row_per_page": 10 }`);
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang
             }
             const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             // console.log(detailsettlement, 'detailsettlement');
@@ -62,7 +64,7 @@ function DetailSettlement() {
 
     function handlePageChangeDetailSettlement(page) {
         setActivePageDetailSettlement(page)
-        getDetailSettlement(settlementId, page, bankCode, settlementType, eWalletCode)
+        getDetailSettlement(settlementId, page, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)
     }
 
     useEffect(() => {
@@ -72,16 +74,17 @@ function DetailSettlement() {
         // if (user_role === "102") {
         //     history.push('/404');
         // }
-        getDetailSettlement(settlementId, 1, bankCode, settlementType, eWalletCode)
+        getDetailSettlement(settlementId, 1, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)
     }, [settlementId])
-    
-    async function ExportReportDetailSettlementHandler(settlementId, userRole, codeBank, typeSettlement, codeEWallet) {
+
+    async function ExportReportDetailSettlementHandler(settlementId, userRole, codeBank, typeSettlement, codeEWallet, lang) {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{ "settlement_id": ${settlementId}, "settlement_type": ${typeSettlement}, "bank_code": "${codeBank === '0' ? "" : codeBank}", "ewallet_code": "${codeEWallet.length === 0 ? "" : codeEWallet}", "page": 1, "row_per_page": 1000000 }`);
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang
             }
             const dataDetailSettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length === 0) {
@@ -90,9 +93,9 @@ function DetailSettlement() {
                 for (let i = 0; i < data.length; i++) {
                     if (userRole === '102') {
                         if (Number(settlementType) === 105) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tvatrans_trx_id, [language === null ? eng.waktu : language.waktu]: data[i].tvatrans_crtdt_format, [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? eng.channelEwallet : language.channelEwallet]: data[i].mbank_name, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].tvatrans_amount, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         } else {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tvatrans_trx_id, [language === null ? eng.waktu : language.waktu]: data[i].tvatrans_crtdt_format, [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? eng.namaBank : language.namaBank]: data[i].mbank_name, [language === null ? eng.noVa : language.noVa]: data[i].tvatrans_va_number, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].tvatrans_amount, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                     } else {
                         if (Number(settlementType) === 105) {
@@ -113,9 +116,9 @@ function DetailSettlement() {
                 for (let i = 0; i < data.length; i++) {
                     if (userRole === '102') {
                         if (Number(settlementType) === 105) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Channel eWallet": data[i].mbank_name, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tvatrans_trx_id, [language === null ? eng.waktu : language.waktu]: data[i].tvatrans_crtdt_format, [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? eng.channelEwallet : language.channelEwallet]: data[i].mbank_name, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].tvatrans_amount, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         } else {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tvatrans_trx_id, Waktu: data[i].tvatrans_crtdt_format, "Partner Trans ID": data[i].partner_trans_id, "Nama Bank": data[i].mbank_name, "No VA": data[i].tvatrans_va_number, "Nominal Transaksi": data[i].tvatrans_amount, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tvatrans_trx_id, [language === null ? eng.waktu : language.waktu]: data[i].tvatrans_crtdt_format, [language === null ? eng.partnerTransId : language.partnerTransId]: data[i].partner_trans_id, [language === null ? eng.namaBank : language.namaBank]: data[i].mbank_name, [language === null ? eng.noVa : language.noVa]: data[i].tvatrans_va_number, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].tvatrans_amount, [language === null ? eng.status : language.status]: data[i].mstatus_name_ind })
                         }
                     } else {
                         if (Number(settlementType) === 105) {
@@ -135,7 +138,7 @@ function DetailSettlement() {
             history.push(errorCatch(error.response.status))
         }
     }
-    
+
     const columnsSettlEWallet = [
         {
             name: 'No',
@@ -154,14 +157,14 @@ function DetailSettlement() {
         {
             name: 'Waktu',
             selector: row => row.tvatrans_crtdt_format,
-            // sortable: true,          
+            // sortable: true,
             width: "120px",
             wrap: true
         },
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_trans_id,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             width: "150px",
         },
@@ -234,7 +237,7 @@ function DetailSettlement() {
             ],
         },
     ];
-    
+
     const columnsSettl = [
         {
             name: 'No',
@@ -341,16 +344,16 @@ function DetailSettlement() {
             ],
         },
     ];
-    
+
     const columnsSettlPartnerEWallet = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "5%",
             maxWidth: 'fit-content !important'
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.tvatrans_trx_id,
             width: "120px",
             wrap: true,
@@ -358,23 +361,23 @@ function DetailSettlement() {
             // sortable: true
         },
         {
-            name: 'Waktu',
+            name: language === null ? eng.waktu : language.waktu,
             selector: row => row.tvatrans_crtdt_format,
-            // sortable: true,          
+            // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
             width: "120px",
             wrap: true
         },
         {
-            name: 'Partner Trans ID',
+            name: language === null ? eng.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trans_id,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-start"},
             // width: "150px",
         },
         {
-            name: 'Channel eWallet',
+            name: language === null ? eng.channelEwallet : language.channelEwallet,
             selector: row => row.mbank_name,
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", },
@@ -382,14 +385,14 @@ function DetailSettlement() {
             width: "160px",
         },
         {
-            name: 'Nominal Transaksi',
+            name: language === null ? eng.nominalTransaksi : language.nominalTransaksi,
             selector: row => convertToRupiah(row.tvatrans_amount),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
         },
         {
-            name: 'Status',
+            name: language === null ? eng.status : language.status,
             selector: row => row.mstatus_name_ind,
             width: "150px",
             // sortable: true,
@@ -417,27 +420,27 @@ function DetailSettlement() {
 
     const columnsSettlPartner = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "57px",
             // style: { justifyContent: "center", }
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.tvatrans_trx_id,
             // sortable: true
             width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
         {
-            name: 'Waktu',
+            name: language === null ? eng.waktu : language.waktu,
             selector: row => row.tvatrans_crtdt_format,
             // style: { justifyContent: "center", },
             width: "150px",
             // sortable: true,
         },
         {
-            name: 'Partner Trans ID',
+            name: language === null ? eng.partnerTransId : language.partnerTransId,
             selector: row => row.partner_trans_id,
             wrap: true,
             width: "160px"
@@ -450,21 +453,21 @@ function DetailSettlement() {
         //     // sortable: true,
         // },
         {
-            name: 'Nama Bank',
+            name: language === null ? eng.namaBank : language.namaBank,
             selector: row => row.mbank_name,
             width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
             // sortable: true,
         },
         {
-            name: 'No VA',
+            name: language === null ? eng.noVa : language.noVa,
             selector: row => row.tvatrans_va_number,
             width: "224px",
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
             // sortable: true,
         },
         {
-            name: 'Nominal Transaksi',
+            name: language === null ? eng.nominalTransaksi : language.nominalTransaksi,
             selector: row => convertToRupiah(row.tvatrans_amount),
             // sortable: true,
             width: "224px",
@@ -472,7 +475,7 @@ function DetailSettlement() {
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
         {
-            name: 'Status',
+            name: language === null ? eng.status : language.status,
             selector: row => row.mstatus_name_ind,
             width: "155px",
             // sortable: true,
@@ -542,7 +545,7 @@ function DetailSettlement() {
             },
         },
     };
-    
+
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
             <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
@@ -553,20 +556,20 @@ function DetailSettlement() {
         <div className="content-page mt-6">
             {
                 user_role === '102' ?
-                <span className='breadcrumbs-span'><Link to={"/Settlement/riwayat-settlement"}>Riwayat Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span> :
-                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/Settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
+                <span className='breadcrumbs-span'><Link to={"/settlement/riwayat-settlement"}>{language === null ? eng.riwayatSettlement : language.riwayatSettlement}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.detailSettlement : language.detailSettlement}</span> :
+                <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
         <div className='head-title'>
-            <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Detail Settlement</h2>
+            <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : `Detail Settlement`}</h2>
         </div>
         <div className='main-content'>
             <div className='riwayat-dana-masuk-div mt-4'>
                 <div className='base-content mt-3'>
-                    <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Detail Settlement</span>
+                    <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : `Detail Settlement`}</span>
                     {
-                        dataSettlement.length !== 0 &&  
+                        dataSettlement.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode)} className="export-span">Export</Link>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
@@ -577,12 +580,12 @@ function DetailSettlement() {
                             progressPending={pendingSettlement}
                             progressComponent={<CustomLoader />}
                             dense
-                            // noDataComponent={<div style={{ marginBottom: 10 }}>No Data</div>}
+                            noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
                             // pagination
                         />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDetailSettlement}</div>
+                    <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageDetailSettlement}</div>
                         <Pagination
                             activePage={activePageDetailSettlement}
                             itemsCountPerPage={pageNumberDetailSettlement.row_per_page}

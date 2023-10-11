@@ -4,14 +4,16 @@ import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from "../../fu
 import { useHistory } from "react-router-dom";
 
 
-export const GetUserAccessMenu = (url) => {
+export const GetUserAccessMenu = (url, lang) => {
+
     // const history = useHistory()
     return async (dispatch) => {
         try {
             const auth = "Bearer " + getToken()
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const userAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
             if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length === 0) {

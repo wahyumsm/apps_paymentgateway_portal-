@@ -21,7 +21,7 @@ const ProsesSettlementManual = () => {
     const currentDate = new Date().toISOString().split('T')[0]
 
     const [dataExclude, setDataExclude] = useState([])
-    
+
     const selectItemPartner = useCallback ((e, id, typeId, number, listDataSettleManual, dataExc) => {
         let allData = []
         let obj = {}
@@ -56,7 +56,7 @@ const ProsesSettlementManual = () => {
         }
         // console.log(allData, 'allData');
 
-        
+
     }, [])
 
     function handlePageChangeGetListProsesSettleManual(page) {
@@ -67,7 +67,7 @@ const ProsesSettlementManual = () => {
     async function getListSettleManualHandler(date, page) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"partner_id": "", "date_from": "", "date_to": "${date}", "page": ${page}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"partner_id": "", "date_from": "${date}", "date_to": "${date}", "page": ${page}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -108,17 +108,35 @@ const ProsesSettlementManual = () => {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
+            console.log(dataParams, 'dataParams');
             const settlementManual = await axios.post(BaseURL + "/Settlement/InsertManualSettlement", {data: dataParams}, {headers: headers})
             if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
-                setPendingListSettlementManual(false)
-                history.push("/Settlement/exclude-settlement")
+                if (settlementManual.data.response_data[0].error_id === "0001") {
+                    alert(settlementManual.data.response_data[0].error_text)
+                    setPendingListSettlementManual(false)
+                    history.push("/settlement/exclude-settlement")
+                } else {
+                    setPendingListSettlementManual(false)
+                    history.push("/settlement/exclude-settlement")
+                }
             } else if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token !== null) {
                 setUserSession(settlementManual.data.response_new_token)
-                setPendingListSettlementManual(false)
-                history.push("/Settlement/exclude-settlement")
+                if (settlementManual.data.response_data[0].error_id === "0001") {
+                    alert(settlementManual.data.response_data[0].error_text)
+                    setPendingListSettlementManual(false)
+                    history.push("/settlement/exclude-settlement")
+                } else {
+                    setPendingListSettlementManual(false)
+                    history.push("/settlement/exclude-settlement")
+                }
             }
         } catch (error) {
             // console.log(error);
+            if (error.response.status === 500 && error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+                setPendingListSettlementManual(false)
+                history.push("/settlement/exclude-settlement")
+            }
             history.push(errorCatch(error.response.status))
         }
     }
@@ -139,7 +157,7 @@ const ProsesSettlementManual = () => {
         }
         getListSettleManualHandler(currentDate, activePageProsesSettlementManual)
     }, [access_token, user_role])
-    
+
 
     return (
         <div className="content-page mt-6">
@@ -155,8 +173,8 @@ const ProsesSettlementManual = () => {
                         hover
                     >
                         <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                            <tr 
-                                className='ms-3'  
+                            <tr
+                                className='ms-3'
                             >
                                 <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>
                                     <Form.Check
