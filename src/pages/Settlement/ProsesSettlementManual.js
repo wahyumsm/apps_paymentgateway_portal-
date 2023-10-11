@@ -111,12 +111,24 @@ const ProsesSettlementManual = () => {
             console.log(dataParams, 'dataParams');
             const settlementManual = await axios.post(BaseURL + "/Settlement/InsertManualSettlement", {data: dataParams}, {headers: headers})
             if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
-                setPendingListSettlementManual(false)
-                history.push("/settlement/exclude-settlement")
+                if (settlementManual.data.response_data[0].error_id === "0001") {
+                    alert(settlementManual.data.response_data[0].error_text)
+                    setPendingListSettlementManual(false)
+                    history.push("/settlement/exclude-settlement")
+                } else {
+                    setPendingListSettlementManual(false)
+                    history.push("/settlement/exclude-settlement")
+                }
             } else if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token !== null) {
                 setUserSession(settlementManual.data.response_new_token)
-                setPendingListSettlementManual(false)
-                history.push("/settlement/exclude-settlement")
+                if (settlementManual.data.response_data[0].error_id === "0001") {
+                    alert(settlementManual.data.response_data[0].error_text)
+                    setPendingListSettlementManual(false)
+                    history.push("/settlement/exclude-settlement")
+                } else {
+                    setPendingListSettlementManual(false)
+                    history.push("/settlement/exclude-settlement")
+                }
             }
         } catch (error) {
             // console.log(error);

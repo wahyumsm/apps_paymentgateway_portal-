@@ -1,5 +1,5 @@
-// export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
-export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
+export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
+// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile1"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile11/"
 // export const BaseURL = "https://apid.ezeelink.co.id/snap/api2"
