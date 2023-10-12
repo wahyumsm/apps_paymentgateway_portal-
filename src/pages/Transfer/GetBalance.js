@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Form, InputGroup, Row } from '@themesberg/react-bootstrap'
+import { Col, Form, InputGroup, Row, Spinner } from '@themesberg/react-bootstrap'
 import { useState } from 'react'
 import $ from 'jquery'
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
@@ -164,6 +164,7 @@ const GetBalance = () => {
 
     // const [bankType, setBankType] = useState("")
     // const [pinNumber, setPinNumber] = useState("")
+    const [loadingBalance, setLoadingBalance] = useState(false)
     const [inputGetBalance, setInputGetBalance] = useState({
         bankType: "",
         pinNumber: ""
@@ -192,6 +193,7 @@ const GetBalance = () => {
 
     async function GetBalanceTransfer(bankType, pinNumber) {
         try {
+            setLoadingBalance(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"bankCode": "${bankType}", "PinNumber": "${pinNumber}"}`)
             const headers = {
@@ -203,10 +205,12 @@ const GetBalance = () => {
             if (dataGetBalance.status === 200 && dataGetBalance.data.response_code === 200 && dataGetBalance.data.response_new_token.length === 0) {
                 setDataGetBalance(dataGetBalance.data.response_data.results)
                 setDataBankBalance(dataGetBalance.data.response_data.results.additionalMessage)
+                setLoadingBalance(false)
             } else if (dataGetBalance.status === 200 && dataGetBalance.data.response_code === 200 && dataGetBalance.data.response_new_token.length !== 0) {
                 setUserSession(dataGetBalance.data.response_new_token)
                 setDataGetBalance(dataGetBalance.data.response_data.results)
                 setDataBankBalance(dataGetBalance.data.response_data.results.additionalMessage)
+                setLoadingBalance(false)
             }
         } catch (error) {
             console.log(error)
@@ -233,6 +237,7 @@ const GetBalance = () => {
         bankTypeMutasi: "",
         pinNumberMutasi: ""
     })
+    const [loadingMutasi, setLoadingMutasi] = useState(false)
     const [dataMutasi, setDataMutasi] = useState({})
     const [dateRangeGetMutasi, setDateRangeGetMutasi] = useState([])
     const [stateGetMutasi, setStateGetMutasi] = useState(null)
@@ -262,6 +267,7 @@ const GetBalance = () => {
 
     async function GetMutasiBank(bankType, pinNumber, periode, next, matchedRec) {
         try {
+            setLoadingMutasi(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"bankCode": "${bankType}", "PinNumber": "${pinNumber}", "endDate": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "NextRecord": "${next}", "MatchedRecord": "${matchedRec}"}`)
             const headers = {
@@ -272,9 +278,11 @@ const GetBalance = () => {
             console.log(dataGetMutasi, 'ini list dana masuk');
             if (dataGetMutasi.status === 200 && dataGetMutasi.data.response_code === 200 && dataGetMutasi.data.response_new_token.length === 0) {
                 setDataMutasi(dataGetMutasi.data.response_data.results)
+                setLoadingMutasi(false)
             } else if (dataGetMutasi.status === 200 && dataGetMutasi.data.response_code === 200 && dataGetMutasi.data.response_new_token.length !== 0) {
                 setUserSession(dataGetMutasi.data.response_new_token)
                 setDataMutasi(dataGetMutasi.data.response_data.results)
+                setLoadingMutasi(false)
             }
         } catch (error) {
             // console.log(error)
@@ -308,6 +316,7 @@ const GetBalance = () => {
         pinNumber: ""
     })
     const [dataTransferBif, setDataTransferBif] = useState({})
+    const [loadingBIF, setLoadingBIF] = useState(false)
     console.log(dataTransferBif, "dataTransferBif");
     
     const [showPasswordTransferBIF, setShowPasswordTransferBIF] = useState(false);
@@ -327,6 +336,7 @@ const GetBalance = () => {
 
     async function TransferBIFHandler(bankCode, accNumber, accName, amount, note, pinNumber) {
         try {
+            setLoadingBIF(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"BankCode": "${bankCode}", "BeneficiaryAccountNumber": "${accNumber}", "BeneficiaryAccountName": "${accName}", "SettlementAmount": "${amount}", "Description": "${note}", "PinNumber": "${pinNumber}"}`)
             const headers = {
@@ -337,9 +347,11 @@ const GetBalance = () => {
             console.log(dataTransferBif, 'ini list dana masuk');
             if (dataTransferBif.status === 200 && dataTransferBif.data.response_code === 200 && dataTransferBif.data.response_new_token.length === 0) {
                 setDataTransferBif(dataTransferBif.data.response_data.results)
+                setLoadingBIF(false)
             } else if (dataTransferBif.status === 200 && dataTransferBif.data.response_code === 200 && dataTransferBif.data.response_new_token.length !== 0) {
                 setUserSession(dataTransferBif.data.response_new_token)
                 setDataTransferBif(dataTransferBif.data.response_data.results)
+                setLoadingBIF(false)
             }
         } catch (error) {
             // console.log(error)
@@ -361,6 +373,7 @@ const GetBalance = () => {
         pinNumber: ""
     })
     const [dataTransferOnline, setDataTransferOnline] = useState({})
+    const [loadingOnline, setLoadingOnline] = useState(false)
     console.log(dataTransferOnline, "dataTransferOnline");
 
     const [showPasswordTransferOnline, setShowPasswordTransferOnline] = useState(false);
@@ -380,6 +393,7 @@ const GetBalance = () => {
 
     async function TransferOnlineHandler(bankCode, accNumber, accName, amount, note, pinNumber) {
         try {
+            setLoadingOnline(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"BankCode": "${bankCode}", "BeneficiaryAccountNumber": "${accNumber}", "BeneficiaryAccountName": "${accName}", "Amount": "${amount}", "Description": "${note}", "PinNumber": "${pinNumber}"}`)
             const headers = {
@@ -390,9 +404,11 @@ const GetBalance = () => {
             console.log(dataTransferOnline, 'ini list dana masuk');
             if (dataTransferOnline.status === 200 && dataTransferOnline.data.response_code === 200 && dataTransferOnline.data.response_new_token.length === 0) {
                 setDataTransferOnline(dataTransferOnline.data.response_data.results)
+                setLoadingOnline(false)
             } else if (dataTransferOnline.status === 200 && dataTransferOnline.data.response_code === 200 && dataTransferOnline.data.response_new_token.length !== 0) {
                 setUserSession(dataTransferOnline.data.response_new_token)
                 setDataTransferOnline(dataTransferOnline.data.response_data.results)
+                setLoadingOnline(false)
             }
         } catch (error) {
             // console.log(error)
@@ -469,7 +485,12 @@ const GetBalance = () => {
                                                 className={(inputGetBalance.bankType.length !== 0 && inputGetBalance.pinNumber.length !== 0) ? 'btn-ez-on' : "btn-ez"}
                                                 disabled={inputGetBalance.bankType.length === 0 || inputGetBalance.pinNumber.length === 0}
                                             >
-                                                Terapkan
+                                                {
+                                                    loadingBalance === true ? (
+                                                        <Spinner animation="border" variant="dark" />
+                                                    ) : "Terapkan"
+                                                }
+                                                
                                             </button>
                                         </Col>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
@@ -541,7 +562,11 @@ const GetBalance = () => {
                                                 disabled={inputMutasi.bankTypeMutasi.length === 0 || inputMutasi.pinNumberMutasi.length === 0 || dateRangeGetMutasi.length === 0}
                                                 onClick={() => GetMutasiBank(inputMutasi.bankTypeMutasi, inputMutasi.pinNumberMutasi, dateRangeGetMutasi, "N", "")}
                                             >
-                                                Terapkan
+                                                {
+                                                    loadingMutasi === true ? (
+                                                        <Spinner animation="border" variant="dark" />
+                                                    ) : "Terapkan"
+                                                }
                                             </button>
                                         </Col>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
@@ -654,7 +679,11 @@ const GetBalance = () => {
                                         style={{ width: "", padding: "0px 15px" }}
                                         onClick={() => TransferBIFHandler(inputDataBif.bankCode, inputDataBif.accNumber, inputDataBif.accName, inputDataBif.amount, inputDataBif.desc, inputDataBif.pinNumber)}
                                     >
-                                        Transfer BIF
+                                        {
+                                            loadingBIF === true ? (
+                                                <Spinner animation="border" variant="dark" />
+                                            ) : "Transfer BIF"
+                                        }
                                     </button>
                                 </Col>
                             </Row>
@@ -736,7 +765,11 @@ const GetBalance = () => {
                                         style={{ width: "", padding: "0px 15px" }}
                                         onClick={() => TransferOnlineHandler(inputDataOnline.bankCode, inputDataOnline.accNumber, inputDataOnline.accNumber, inputDataOnline.amount, inputDataOnline.desc, inputDataOnline.pinNumber)}
                                     >
-                                        Transfer Online
+                                        {
+                                            loadingOnline === true ? (
+                                                <Spinner animation="border" variant="dark" />
+                                            ) : "Transfer Online"
+                                        }
                                     </button>
                                 </Col>
                             </Row>
