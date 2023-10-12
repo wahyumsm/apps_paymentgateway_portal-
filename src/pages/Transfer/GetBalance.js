@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Form, InputGroup, Row, Spinner } from '@themesberg/react-bootstrap'
+import { Col, Form, Image, InputGroup, Row, Spinner } from '@themesberg/react-bootstrap'
 import { useState } from 'react'
 import $ from 'jquery'
 import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
@@ -39,7 +39,7 @@ const GetBalance = () => {
                 desc: "",
                 pinNumber: ""
             })
-            setDataTransferBif({}) 
+            setDataTransferBif({})
             setInputDataOnline({
                 bankCode: "",
                 accNumber: "",
@@ -148,7 +148,7 @@ const GetBalance = () => {
                 desc: "",
                 pinNumber: ""
             })
-            setDataTransferBif({}) 
+            setDataTransferBif({})
             $('#getbalancetab').removeClass('menu-detail-akun-hr-active')
             $('#getbalancespan').removeClass('menu-detail-akun-span-active')
             $('#mutasitab').removeClass('menu-detail-akun-hr-active')
@@ -216,6 +216,7 @@ const GetBalance = () => {
             console.log(error)
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 alert(error.response.data.response_message)
+                setLoadingBalance(false)
             }
             history.push(errorCatch(error.response.status))
         }
@@ -288,6 +289,7 @@ const GetBalance = () => {
             // console.log(error)
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 alert(error.response.data.response_message)
+                setLoadingMutasi(false)
             }
             history.push(errorCatch(error.response.status))
         }
@@ -318,7 +320,7 @@ const GetBalance = () => {
     const [dataTransferBif, setDataTransferBif] = useState({})
     const [loadingBIF, setLoadingBIF] = useState(false)
     console.log(dataTransferBif, "dataTransferBif");
-    
+
     const [showPasswordTransferBIF, setShowPasswordTransferBIF] = useState(false);
 
     const togglePasswordVisibilityTransferBIF = () => {
@@ -357,6 +359,7 @@ const GetBalance = () => {
             // console.log(error)
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 alert(error.response.data.response_message)
+                setLoadingBIF(false)
             }
             history.push(errorCatch(error.response.status))
         }
@@ -414,6 +417,7 @@ const GetBalance = () => {
             // console.log(error)
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 alert(error.response.data.response_message)
+                setLoadingOnline(false)
             }
             history.push(errorCatch(error.response.status))
         }
@@ -425,9 +429,9 @@ const GetBalance = () => {
         }
         if (user_role === "102") {
             history.push("/404")
-        } 
+        }
       }, [access_token])
-    
+
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
@@ -490,7 +494,7 @@ const GetBalance = () => {
                                                         <Spinner animation="border" variant="dark" />
                                                     ) : "Terapkan"
                                                 }
-                                                
+
                                             </button>
                                         </Col>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
@@ -517,7 +521,7 @@ const GetBalance = () => {
                                         <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6 }}>-</div>
                                     )
                                 }
-                            </div>  
+                            </div>
                         </>
                     ) : isGetBalance === "mutasi" ? (
                         <>
