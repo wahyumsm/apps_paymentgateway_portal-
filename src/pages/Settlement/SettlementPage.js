@@ -658,7 +658,7 @@ function SettlementPage() {
             name: 'ID Transaksi',
             selector: row => row.tsettlelog_settlement_code,
             width: "224px",
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${row.tvatrans_bank_code}/${row.tsettlelog_paytype_id}/${row.mewallet_code}`} >{row.tsettlelog_settlement_code}</Link>
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${row.tvatrans_bank_code === null ? "0" : row.tvatrans_bank_code}/${row.tsettlelog_paytype_id}/${row.mewallet_code === null ? "0" : row.mewallet_code}`} >{row.tsettlelog_settlement_code}</Link>
         },
         {
             name: 'Waktu',
@@ -678,7 +678,7 @@ function SettlementPage() {
         },
         {
             name: 'Nominal Settlement',
-            selector: row => convertToRupiah(row.tsettlelog_amount_fee),
+            selector: row => convertToRupiah(row.tsettlelog_amount_trx - row.tsettlelog_amount_fee),
             width: "224px",
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", }
         },
@@ -747,7 +747,7 @@ function SettlementPage() {
         {
             name: 'ID Transaksi',
             selector: row => row.tsettlelog_settlement_code,
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_id}/${'0'}/${row.tsettlelog_settle_type}/${'0'}`}>{row.tsettlelog_settlement_code}</Link>,
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${'0'}/${row.tsettlelog_paytype_id}/${'0'}`}>{row.tsettlelog_settlement_code}</Link>,
             // selector: row => row.tvasettl_code,
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${'0'}/${row.settlement_type}/${'0'}`}>{row.tvasettl_code}</Link>,
             // width: "251px"
@@ -765,8 +765,8 @@ function SettlementPage() {
         },
         {
             name: 'Jumlah',
-            selector: row => row.tsettlelog_amount_fee,
-            cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tsettlelog_amount_fee) }</div>
+            selector: row => convertToRupiah(row.tsettlelog_amount_trx - row.tsettlelog_amount_fee),
+            cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tsettlelog_amount_trx - row.tsettlelog_amount_fee) }</div>
             // selector: row => row.tvasettl_amount,
             // cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>
         },
@@ -867,7 +867,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -878,7 +878,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -905,7 +905,7 @@ function SettlementPage() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -916,7 +916,7 @@ function SettlementPage() {
                         const data = dataExportSettlement.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, Waktu: data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_amount_settle, "Jasa Settlement": data[i].tsettlelog_fee_payment, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -948,7 +948,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_fee, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -959,7 +959,7 @@ function SettlementPage() {
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_fee, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -988,7 +988,7 @@ function SettlementPage() {
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_fee, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -999,7 +999,7 @@ function SettlementPage() {
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_fee, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Nominal Transaksi": data[i].trx_amount, "Nominal Transaksi Settlement": data[i].trx_amount_settle, "Waktu Transaksi": data[i].trx_date_format, "Biaya Transaksi": data[i].trx_fee, "Biaya Pajak Transaksi": data[i].trx_fee_tax, "Partner Trans Id": data[i].trx_partner_trans_id, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
