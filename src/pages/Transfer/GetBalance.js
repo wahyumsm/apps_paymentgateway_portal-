@@ -319,7 +319,7 @@ const GetBalance = () => {
     })
     const [dataTransferBif, setDataTransferBif] = useState({})
     const [loadingBIF, setLoadingBIF] = useState(false)
-    console.log(dataTransferBif, "dataTransferBif");
+    // console.log(dataTransferBif, "dataTransferBif");
 
     const [showPasswordTransferBIF, setShowPasswordTransferBIF] = useState(false);
 
@@ -377,7 +377,7 @@ const GetBalance = () => {
     })
     const [dataTransferOnline, setDataTransferOnline] = useState({})
     const [loadingOnline, setLoadingOnline] = useState(false)
-    console.log(dataTransferOnline, "dataTransferOnline");
+    // console.log(dataTransferOnline, "dataTransferOnline");
 
     const [showPasswordTransferOnline, setShowPasswordTransferOnline] = useState(false);
 
