@@ -14,6 +14,7 @@ import DataTable from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { eng } from '../../components/Language';
 import validator from "validator";
+import noteIconRed from "../../assets/icon/note_icon_red.svg";
 
 function DetailAkun() {
 
@@ -27,9 +28,9 @@ function DetailAkun() {
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
     const [inputHandle, setInputHandle] = useState({})
     const [errorURL, setErrorURL] = useState([])
-    // console.log(inputHandle, 'inputHandle');
 
     function handleChange(e) {
+        setErrorURL([])
         setInputHandle({
             ...inputHandle,
             [e.target.name] : e.target.value
@@ -143,42 +144,35 @@ function DetailAkun() {
 
     async function updateUrlCallback(id, newUrl, oldUrl) {
         try {
-            // console.log(newUrl, 'newUrl');
-            // console.log(oldUrl, 'oldUrl');
             let callbackList = []
             let errorDataURL = []
             if (Object.keys(newUrl).length !== 0) {
                 let newestUrl = []
                 for (const key in newUrl) {
-                    // console.log(newUrl[key], 'newUrl[key]');
-                    // console.log(validator.isURL(newUrl[key]), 'validator.isURL(newUrl[key])');
-                    if (!validator.isURL(newUrl[key])) {
+                    if (newUrl[key].length !== 0 && !validator.isURL(newUrl[key])) {
                         errorDataURL.push(key)
                     }
                     newestUrl.push({
-                        callback_id: Number(key),
+                        callbackurl_id: Number(key),
                         callbackurl_url: newUrl[key]
                     })
                 }
-                // console.log(errorDataURL, 'errorDataURL');
-                // oldUrl.forEach(el => {
-                //     newestUrl.forEach(item => {
-                //         if (item.callback_id === el.mpartnercallback_id) {
-                //             callbackList.push({
-                //                 callback_id: item.callback_id,
-                //                 callbackurl_ID: el.mcallbackurl_id,
-                //                 callbackurl_url: item.callbackurl_url,
-                //             })
-                //         }
-                //     })
-                //     callbackList.push({
-                //         callback_id: el.mpartnercallback_id,
-                //         callbackurl_ID: el.mcallbackurl_id,
-                //         callbackurl_url: el.mpartnercallback_url,
-                //     })
-                // });
-                // callbackList = callbackList.filter((item, idx, arr) => arr.findIndex(item2 => (item2.callback_id === item.callback_id)) === idx)
-                setErrorURL(errorDataURL)
+                let newUrlMap = new Map(newestUrl.map(item => [item.callbackurl_id, item.callbackurl_url]));
+                let combinedData = oldUrl.map(oldItem => {
+                    const newUrls = newUrlMap.get(oldItem.mcallbackurl_id);
+                    if (newUrls) {
+                        return {
+                            "mcallbackurl_id": oldItem.mcallbackurl_id,
+                            "mcallbackurl_name": oldItem.mcallbackurl_name,
+                            "mpartnercallback_url": newUrls,
+                            "mpartnercallback_id": oldItem.mpartnercallback_id !== null ? oldItem.mpartnercallback_id : 0
+                        };
+                    }
+                    return oldItem;
+                });
+                callbackList = combinedData.filter(item => {
+                    return item.mpartnercallback_url.length !== 0
+                })
             } else {
                 callbackList = oldUrl.map(item => {
                     return{
@@ -188,21 +182,28 @@ function DetailAkun() {
                     }
                 })
             }
-            // const auth = "Bearer " + getToken()
-            // const dataParams = encryptData(`{"partner_id":"${id}", "callback_url_list":${JSON.stringify(callbackList)}}`)
-            // const headers = {
-            //     'Content-Type':'application/json',
-            //     'Authorization' : auth
-            // }
-            // const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
-            // if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
-            //     alert(editCallback.data.response_data.response_message)
-            //     window.location.reload()
-            // } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
-            //     setUserSession(editCallback.data.response_new_token)
-            //     alert(editCallback.data.response_data.response_message)
-            //     window.location.reload()
-            // }
+            if (errorDataURL.length !== 0) {
+                setErrorURL(errorDataURL)
+                errorDataURL = []
+                return
+            } else {
+                setErrorURL([])
+                const auth = "Bearer " + getToken()
+                const dataParams = encryptData(`{"partner_id":"${id}", "callback_url_list":${JSON.stringify(callbackList)}}`)
+                const headers = {
+                    'Content-Type':'application/json',
+                    'Authorization' : auth
+                }
+                const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
+                if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
+                    alert(editCallback.data.response_data.response_message)
+                    window.location.reload()
+                } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
+                    setUserSession(editCallback.data.response_new_token)
+                    alert(editCallback.data.response_data.response_message)
+                    window.location.reload()
+                }
+            }
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
@@ -480,7 +481,10 @@ function DetailAkun() {
                                                     <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`${item.mcallbackurl_id}`} style={{width: '100%', marginLeft: 'unset'}}/>
                                                     {
                                                         errorURL.length !== 0 && (errorURL.find(el => el === String(item.mcallbackurl_id)) !== undefined || String(errorURL.find(el => el === String(item.mcallbackurl_id))).length === 0) ?
-                                                        <p>{"Format URL salah"}</p> :
+                                                        <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                                                            <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                                            Format URL salah
+                                                        </div> :
                                                         <p>{language === null ? eng.addressUrl : language.addressUrl}</p>
                                                     }
                                                     {/* <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p> */}

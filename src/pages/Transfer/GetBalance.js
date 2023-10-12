@@ -39,7 +39,7 @@ const GetBalance = () => {
                 desc: "",
                 pinNumber: ""
             })
-            setDataTransferBif({}) 
+            setDataTransferBif({})
             setInputDataOnline({
                 bankCode: "",
                 accNumber: "",
@@ -148,7 +148,7 @@ const GetBalance = () => {
                 desc: "",
                 pinNumber: ""
             })
-            setDataTransferBif({}) 
+            setDataTransferBif({})
             $('#getbalancetab').removeClass('menu-detail-akun-hr-active')
             $('#getbalancespan').removeClass('menu-detail-akun-span-active')
             $('#mutasitab').removeClass('menu-detail-akun-hr-active')
@@ -177,8 +177,8 @@ const GetBalance = () => {
     };
     const passwordInputType = showPassword ? "text" : "password";
     const passwordIconColor = showPassword ? "#262B40" : "";
-    console.log(dataGetBalance, "dataGetBalance");
-    console.log(dataBankBalance, "dataBankBalance");
+    // console.log(dataGetBalance, "dataGetBalance");
+    // console.log(dataBankBalance, "dataBankBalance");
 
     function handleChange(e) {
         setInputGetBalance({
@@ -187,8 +187,8 @@ const GetBalance = () => {
         })
     }
 
-    console.log(inputGetBalance.pinNumber, "inputGetBalance.pinNumber");
-    console.log(inputGetBalance.bankType, "inputGetBalance.bankType");
+    // console.log(inputGetBalance.pinNumber, "inputGetBalance.pinNumber");
+    // console.log(inputGetBalance.bankType, "inputGetBalance.bankType");
 
     async function GetBalanceTransfer(bankType, pinNumber) {
         try {
@@ -199,7 +199,7 @@ const GetBalance = () => {
                 'Authorization' : auth
             }
             const dataGetBalance = await axios.post(BaseURL + "/BankTransaction/GetBankBalance", { data: dataParams }, { headers: headers })
-            console.log(dataGetBalance, 'ini list dana masuk');
+            // console.log(dataGetBalance, 'ini list dana masuk');
             if (dataGetBalance.status === 200 && dataGetBalance.data.response_code === 200 && dataGetBalance.data.response_new_token.length === 0) {
                 setDataGetBalance(dataGetBalance.data.response_data.results)
                 setDataBankBalance(dataGetBalance.data.response_data.results.additionalMessage)
@@ -209,7 +209,7 @@ const GetBalance = () => {
                 setDataBankBalance(dataGetBalance.data.response_data.results.additionalMessage)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             if (error.response.status === 400 && error.response.data.response_code === 400) {
                 alert(error.response.data.response_message)
             }
@@ -236,7 +236,7 @@ const GetBalance = () => {
     const [dataMutasi, setDataMutasi] = useState({})
     const [dateRangeGetMutasi, setDateRangeGetMutasi] = useState([])
     const [stateGetMutasi, setStateGetMutasi] = useState(null)
-    console.log(dateRangeGetMutasi, "dateRangeGetMutasi");
+    // console.log(dateRangeGetMutasi, "dateRangeGetMutasi");
     const [showPasswordMutasi, setShowPasswordMutasi] = useState(false);
 
     const togglePasswordVisibilityMutasi = () => {
@@ -269,7 +269,7 @@ const GetBalance = () => {
                 'Authorization' : auth
             }
             const dataGetMutasi = await axios.post(BaseURL + "/BankTransaction/GetBankStatement", { data: dataParams }, { headers: headers })
-            console.log(dataGetMutasi, 'ini list dana masuk');
+            // console.log(dataGetMutasi, 'ini list dana masuk');
             if (dataGetMutasi.status === 200 && dataGetMutasi.data.response_code === 200 && dataGetMutasi.data.response_new_token.length === 0) {
                 setDataMutasi(dataGetMutasi.data.response_data.results)
             } else if (dataGetMutasi.status === 200 && dataGetMutasi.data.response_code === 200 && dataGetMutasi.data.response_new_token.length !== 0) {
@@ -284,7 +284,7 @@ const GetBalance = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-    console.log(dataMutasi, "dataMutasi");
+    // console.log(dataMutasi, "dataMutasi");
 
     function resetButtonHandleMutasi() {
         setInputMutasi({
@@ -308,8 +308,8 @@ const GetBalance = () => {
         pinNumber: ""
     })
     const [dataTransferBif, setDataTransferBif] = useState({})
-    console.log(dataTransferBif, "dataTransferBif");
-    
+    // console.log(dataTransferBif, "dataTransferBif");
+
     const [showPasswordTransferBIF, setShowPasswordTransferBIF] = useState(false);
 
     const togglePasswordVisibilityTransferBIF = () => {
@@ -334,7 +334,7 @@ const GetBalance = () => {
                 'Authorization' : auth
             }
             const dataTransferBif = await axios.post(BaseURL + "/BankTransaction/TransferBiFast", { data: dataParams }, { headers: headers })
-            console.log(dataTransferBif, 'ini list dana masuk');
+            // console.log(dataTransferBif, 'ini list dana masuk');
             if (dataTransferBif.status === 200 && dataTransferBif.data.response_code === 200 && dataTransferBif.data.response_new_token.length === 0) {
                 setDataTransferBif(dataTransferBif.data.response_data.results)
             } else if (dataTransferBif.status === 200 && dataTransferBif.data.response_code === 200 && dataTransferBif.data.response_new_token.length !== 0) {
@@ -361,7 +361,7 @@ const GetBalance = () => {
         pinNumber: ""
     })
     const [dataTransferOnline, setDataTransferOnline] = useState({})
-    console.log(dataTransferOnline, "dataTransferOnline");
+    // console.log(dataTransferOnline, "dataTransferOnline");
 
     const [showPasswordTransferOnline, setShowPasswordTransferOnline] = useState(false);
 
@@ -387,7 +387,7 @@ const GetBalance = () => {
                 'Authorization' : auth
             }
             const dataTransferOnline = await axios.post(BaseURL + "/BankTransaction/TransferOnline", { data: dataParams }, { headers: headers })
-            console.log(dataTransferOnline, 'ini list dana masuk');
+            // console.log(dataTransferOnline, 'ini list dana masuk');
             if (dataTransferOnline.status === 200 && dataTransferOnline.data.response_code === 200 && dataTransferOnline.data.response_new_token.length === 0) {
                 setDataTransferOnline(dataTransferOnline.data.response_data.results)
             } else if (dataTransferOnline.status === 200 && dataTransferOnline.data.response_code === 200 && dataTransferOnline.data.response_new_token.length !== 0) {
@@ -409,9 +409,9 @@ const GetBalance = () => {
         }
         if (user_role === "102") {
             history.push("/404")
-        } 
+        }
       }, [access_token])
-    
+
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
@@ -496,7 +496,7 @@ const GetBalance = () => {
                                         <div className='p-3' style={{ fontFamily: "Nunito", fontSize: 16, border: "1px solid #EBEBEB", borderRadius: 6 }}>-</div>
                                     )
                                 }
-                            </div>  
+                            </div>
                         </>
                     ) : isGetBalance === "mutasi" ? (
                         <>

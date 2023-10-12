@@ -108,7 +108,6 @@ const ProsesSettlementManual = () => {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            console.log(dataParams, 'dataParams');
             const settlementManual = await axios.post(BaseURL + "/Settlement/InsertManualSettlement", {data: dataParams}, {headers: headers})
             if (settlementManual.data.response_code === 200 && settlementManual.status === 200 && settlementManual.data.response_new_token === null) {
                 if (settlementManual.data.response_data[0].error_id === "0001") {

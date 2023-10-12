@@ -185,28 +185,28 @@ function DetailSettlement() {
         },
         {
             name: 'Nominal Transaksi',
-            selector: row => convertToRupiah(row.tvatrans_amount),
+            selector: row => convertToRupiah(row.tvatrans_amount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
         },
         {
             name: 'Biaya eWallet',
-            selector: row => convertToRupiah(row.tvatrans_partner_fee),
+            selector: row => convertToRupiah(row.tvatrans_partner_fee, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "140px"
         },
         {
             name: 'Biaya Pajak',
-            selector: row => convertToRupiah(row.tvatrans_fee_tax),
+            selector: row => convertToRupiah(row.tvatrans_fee_tax, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             // width: "173px"
         },
         {
             name: 'Nominal Settlement',
-            selector: row => convertToRupiah(row.tvatrans_amount - (row.tvatrans_partner_fee + row.tvatrans_fee_tax)),
+            selector: row => convertToRupiah((row.tvatrans_amount - (row.tvatrans_partner_fee + row.tvatrans_fee_tax)), true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
@@ -288,7 +288,7 @@ function DetailSettlement() {
         },
         {
             name: 'Nominal Transaksi',
-            selector: row => convertToRupiah(row.tvatrans_amount),
+            selector: row => convertToRupiah(row.tvatrans_amount, true, 2),
             // sortable: true,
             width: "224px",
             // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
@@ -296,7 +296,7 @@ function DetailSettlement() {
         },
         {
             name: 'Jasa Layanan',
-            selector: row => convertToRupiah(row.tvatrans_partner_fee),
+            selector: row => convertToRupiah(row.tvatrans_partner_fee, true, 2),
             // sortable: true,
             width: "224px",
             // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
@@ -304,7 +304,7 @@ function DetailSettlement() {
         },
         {
             name: 'PPN atas Jasa Layanan',
-            selector: row => convertToRupiah(row.tvatrans_fee_tax),
+            selector: row => convertToRupiah(row.tvatrans_fee_tax, true, 2),
             // sortable: true,
             width: "224px",
             // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
@@ -312,7 +312,7 @@ function DetailSettlement() {
         },
         {
             name: 'Reimbursement by VA',
-            selector: row => convertToRupiah(row.tvatrans_bank_fee),
+            selector: row => convertToRupiah(row.tvatrans_bank_fee, true, 2),
             // sortable: true,
             width: "224px",
             // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,
@@ -386,7 +386,7 @@ function DetailSettlement() {
         },
         {
             name: language === null ? eng.nominalTransaksi : language.nominalTransaksi,
-            selector: row => convertToRupiah(row.tvatrans_amount),
+            selector: row => convertToRupiah(row.tvatrans_amount, true, 2),
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "flex-end", },
             width: "173px"
@@ -468,7 +468,7 @@ function DetailSettlement() {
         },
         {
             name: language === null ? eng.nominalTransaksi : language.nominalTransaksi,
-            selector: row => convertToRupiah(row.tvatrans_amount),
+            selector: row => convertToRupiah(row.tvatrans_amount, true, 2),
             // sortable: true,
             width: "224px",
             // cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>,

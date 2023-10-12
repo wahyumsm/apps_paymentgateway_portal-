@@ -1095,8 +1095,8 @@ const InfoSaldoDanMutasi = () => {
         </div>
     );
 
-    console.log(listAkunPartner, "listAkunPartner");
-    console.log(inputHandle.akunPartner, "inputHandle.akunPartner");
+    // console.log(listAkunPartner, "listAkunPartner");
+    // console.log(inputHandle.akunPartner, "inputHandle.akunPartner");
 
     useEffect(() => {
         if (!access_token) {

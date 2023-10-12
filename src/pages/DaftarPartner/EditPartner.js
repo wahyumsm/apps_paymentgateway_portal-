@@ -1824,7 +1824,7 @@ function EditPartner() {
                 <tr>
                   <td style={{ width: 200 }}>Tipe Fee <span style={{ color: "red" }}>*</span></td>
                   <td>
-                    <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} disabled={isDisableFeeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: 0 }) }}>
+                    <Form.Select name='feeType' className='input-text-user' style={{ display: "inline" }} value={biayaHandle.feeType} disabled={isDisableFeeType} onChange={(e) => { setAlertFeeType(false); setBiayaHandle({ ...biayaHandle, feeType: Number(e.target.value), fee: "" }) }}>
                       <option defaultValue disabled value={0}>Pilih Tipe Fee</option>
                       <option value={100}>Fix Fee</option>
                       <option value={101}>Persentase</option>
