@@ -11,25 +11,24 @@ export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms=";
 // export const authBearer = "Basic ZXplZWxpbms6ZXplZWxpbms="
 
 export const setUserSession = (token) => {
-//   localStorage.setItem("token", token);
+	localStorage.setItem("token", token);
 	sessionStorage.setItem("token", token);
 };
 
 export const setRoleSession = (role) => {
-//   localStorage.setItem("role", role);
+	localStorage.setItem("role", role);
 	sessionStorage.setItem("role", role);
 };
 
 export const getToken = () => {
 	return (
-		// localStorage.getItem("token") ||
+		localStorage.getItem("token") ||
 		sessionStorage.getItem("token") || null
 	);
 };
 
 export const getRole = () => {
-//   return localStorage.getItem("role") ||
-	return sessionStorage.getItem("role") || null;
+	return localStorage.getItem("role") || sessionStorage.getItem("role") || null;
 };
 
 export const removeUserSession = () => {
