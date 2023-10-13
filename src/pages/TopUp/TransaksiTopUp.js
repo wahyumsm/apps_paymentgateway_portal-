@@ -179,7 +179,7 @@ function TransaksiTopUp() {
                         const data = exportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].ttopupewalletlog_partner_trans_id, "Waktu": data[i].ttopupewalletlog_crtdt_format, "eWallet Code": data[i].mewallet_code, "Nominal Transaksi": data[i].ttopupewalletlog_trx_amount, "Refferensi No": data[i].ttopupewalletlog_reff_no, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "Waktu": data[i].ttopupewalletlog_crtdt_format, "eWallet Code": data[i].ttopupewalletlog_mewallet_code, "Nominal Transaksi": data[i].ttopupewalletlog_amount, "Refferensi No": data[i].ttopupewalletlog_reff_no, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -190,7 +190,7 @@ function TransaksiTopUp() {
                         const data = exportFilter.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].ttopupewalletlog_partner_trans_id, "Waktu": data[i].ttopupewalletlog_crtdt_format, "eWallet Code": data[i].mewallet_code, "Nominal Transaksi": data[i].ttopupewalletlog_trx_amount, "Refferensi No": data[i].ttopupewalletlog_reff_no, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "Waktu": data[i].ttopupewalletlog_crtdt_format, "eWallet Code": data[i].ttopupewalletlog_mewallet_code, "Nominal Transaksi": data[i].ttopupewalletlog_amount, "Refferensi No": data[i].ttopupewalletlog_reff_no, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -217,7 +217,7 @@ function TransaksiTopUp() {
                         const data = exportData.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].ttopupewalletlog_partner_trans_id, "Waktu": data[i].ttopupewalletlog_crtdt_format, "eWallet Code": data[i].mewallet_code, "Nominal Transaksi": data[i].ttopupewalletlog_trx_amount, "Refferensi No": data[i].ttopupewalletlog_reff_no, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "Waktu": data[i].ttopupewalletlog_crtdt_format, "eWallet Code": data[i].ttopupewalletlog_mewallet_code, "Nominal Transaksi": data[i].ttopupewalletlog_amount, "Refferensi No": data[i].ttopupewalletlog_reff_no, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -228,7 +228,7 @@ function TransaksiTopUp() {
                         const data = exportData.data.response_data.results.list_data
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].ttopupewalletlog_partner_trans_id, "Waktu": data[i].ttopupewalletlog_crtdt_format, "eWallet Code": data[i].mewallet_code, "Nominal Transaksi": data[i].ttopupewalletlog_trx_amount, "Refferensi No": data[i].ttopupewalletlog_reff_no, Status: data[i].mstatus_name_ind })
+                            dataExcel.push({ No: i + 1, "Waktu": data[i].ttopupewalletlog_crtdt_format, "eWallet Code": data[i].ttopupewalletlog_mewallet_code, "Nominal Transaksi": data[i].ttopupewalletlog_amount, "Refferensi No": data[i].ttopupewalletlog_reff_no, Status: data[i].mstatus_name_ind })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();

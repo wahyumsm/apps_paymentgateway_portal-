@@ -210,7 +210,7 @@ function Disbursement() {
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth,
-                    'Accept-Language' : lang,
+                    'Accept-Language' : "ID",
                 }
                 const dataDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                 if (dataDisbursement.status === 200 && dataDisbursement.data.response_code === 200 && dataDisbursement.data.response_new_token === null) {
@@ -279,7 +279,7 @@ function Disbursement() {
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
-                'Accept-Language' : lang,
+                'Accept-Language' : user_role === "102" ? lang : "ID",
             }
             const filterDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
             if (filterDisbursement.status === 200 && filterDisbursement.data.response_code === 200 && filterDisbursement.data.response_new_token === null) {
@@ -659,7 +659,7 @@ function Disbursement() {
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
-                        'Accept-Language' : lang,
+                        'Accept-Language' : "ID",
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
@@ -737,7 +737,7 @@ function Disbursement() {
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
-                        'Accept-Language' : lang,
+                        'Accept-Language' : "ID",
                     }
                     const dataExportDisbursement = await axios.post(BaseURL + "/Report/GetDisbursementList", {data: dataParams}, { headers: headers });
                     if (dataExportDisbursement.status === 200 && dataExportDisbursement.data.response_code === 200 && dataExportDisbursement.data.response_new_token === null) {

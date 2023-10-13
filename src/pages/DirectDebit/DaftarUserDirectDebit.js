@@ -248,7 +248,7 @@ function DaftarUserDirectDebit() {
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang,
+                'Accept-Language' : user_role === "102" ? lang : "ID",
             }
             const dataUserDirectDebit = await axios.post(BaseURL + "/Home/GetListDirectDebitUser", { data: dataParams }, { headers: headers })
             // console.log(dataUserDirectDebit, 'ini user detal funct');
@@ -279,7 +279,7 @@ function DaftarUserDirectDebit() {
                 const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang,
+                'Accept-Language' : user_role === "102" ? lang : "ID",
             }
             const dataUserDirectDebit = await axios.post(BaseURL + "/Home/GetListDirectDebitUser", { data: dataParams }, { headers: headers })
             // console.log(dataUserDirectDebit, 'ini user detal funct');
