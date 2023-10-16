@@ -431,7 +431,8 @@ export var ind = {
     lihatDaftarSubAkun: "Lihat daftar Sub Account",
     silahkanMasukkanPassword: "Silahkan masukkan password",
     silahkanMasukkanEmailAndPass: "Silahkan masukkan alamat email & password",
-    silahkanMasukkanEmail: "Silahkan masukkan alamat email"
+    silahkanMasukkanEmail: "Silahkan masukkan alamat email",
+    formatEmailSalah: "Format email yang dimasukan salah"
 }
 
 export var eng = {
@@ -863,7 +864,8 @@ export var eng = {
     lihatDaftarSubAkun: "View Sub Account List",
     silahkanMasukkanPassword: "Please enter your password",
     silahkanMasukkanEmailAndPass: "Please enter your Email & password",
-    silahkanMasukkanEmail: "Please enter your Email"
+    silahkanMasukkanEmail: "Please enter your Email",
+    formatEmailSalah: "The email format you entered is incorrect"
 }
 
 export var chn = {
@@ -1295,5 +1297,6 @@ export var chn = {
     lihatDaftarSubAkun: "查看支行账号",
     silahkanMasukkanPassword: "请输入您的密码",
     silahkanMasukkanEmailAndPass: "请输入您的电子邮件和密码",
-    silahkanMasukkanEmail: "请输入您的电子邮箱"
+    silahkanMasukkanEmail: "请输入您的电子邮箱",
+    formatEmailSalah: "您输入的电子邮件格式错误"
 }

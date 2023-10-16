@@ -66,13 +66,6 @@ function SettlementPage() {
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toISOString().split('T')[0]
     const [alertSendEmail, setAlertSendEmail] = useState("")
 
-    console.log(firstDayThisMonth, "firstDayThisMonth");
-    console.log(lastDayThisMonth, "lastDayThisMonth");
-    console.log(firstDayLastMonth, "firstDayLastMonth");
-    console.log(lastDayLastMonth, "lastDayLastMonth");
-    console.log(inputHandle.periodeSettlementPartner, "inputHandle.periodeSettlementPartner");
-    console.log(dateRangeSettlementPartner, "dateRangeSettlementPartner");
-
     const Option = (props) => {
         return (
             <div>
@@ -1282,7 +1275,7 @@ function SettlementPage() {
                             {
                                 dataRiwayatSettlementPartner.length !== 0 &&
                                     <div>
-                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.fiturSettlementPartner, inputHandle.idTransaksiSettlementPartner, inputHandle.periodeSettlementPartner, dateRangeSettlementPartner, currentDate, partnerId)} className="export-span">Export</Link>
+                                        <Link onClick={() => ExportReportSettlementPartnerHandler(isFilterSettlementPartner, inputHandle.fiturSettlementPartner, inputHandle.idTransaksiSettlementPartner, inputHandle.periodeSettlementPartner, dateRangeSettlementPartner, currentDate, partnerId)} className="export-span">{language === null ? eng.export : language.export}</Link>
                                     </div>
                             }
                             <br/>

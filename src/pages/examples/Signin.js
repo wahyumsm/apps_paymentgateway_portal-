@@ -257,7 +257,7 @@ export default () => {
         setErrorMessage(language === null ? eng.silahkanMasukkanPassword : language.silahkanMasukkanPassword)
         return
       } else if (username.length !== 0 && validator.isEmail(username) === false && password.length === 0) {
-        setErrorMessage("Format email yang dimasukkan salah")
+        setErrorMessage(language === null ? eng.formatEmailSalah : language.formatEmailSalah)
         return
       } else if (username.length === 0 && password.length !== 0) {
         setErrorMessage(language === null ? eng.silahkanMasukkanEmail : language.silahkanMasukkanEmail)
