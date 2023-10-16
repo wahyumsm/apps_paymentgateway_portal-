@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import $ from 'jquery'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteInfo from "../../assets/icon/note_icon.svg"
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers'
 import { Button, Col, Form, FormControl, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -30,15 +31,19 @@ import Checklist from '../../assets/icon/checklist_icon.svg'
 import NoteIconWhite from "../../assets/icon/note_icon_white.svg"
 import encryptData from '../../function/encryptData'
 import daftarBank from '../../assets/files/Daftar Bank Tujuan Disbursement-PT. Ezeelink Indonesia.xlsx'
+import daftarBankInggris from '../../assets/files/List of Disbursement Destination Banks - PT. Ezeelink Indonesia.xlsx'
+import daftarBankChina from '../../assets/files/支付银行清单- PT Ezeelink Indonesia.xlsx'
 import templateBulkXLSX from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.xlsx'
+import templateBulkXLSXInggris from '../../assets/files/Bulk Disbursement Template PT. Ezeelink Indonesia.xlsx'
+import templateBulkXLSXChina from '../../assets/files/Bulk Disbursement Template PT. Ezeelink Indonesia - Mandarin.xlsx'
 import templateBulkCSV from '../../assets/files/Template Bulk Disbursement PT. Ezeelink Indonesia.csv'
 import arrowDown from "../../assets/img/icons/arrow_down.svg";
 import CurrencyInput from 'react-currency-input-field'
+import { eng, ind } from '../../components/Language'
 
 registerPlugin(FilePondPluginFileEncode)
 
 function DisbursementPage() {
-
     const user_role = getRole()
     const access_token = getToken()
     const [isDisbursementManual, setisDisbursementManual] = useState(true)
@@ -73,10 +78,10 @@ function DisbursementPage() {
     const [showModalStatusDisburse, setShowModalStatusDisburse] = useState(false)
     const [filterTextBank, setFilterTextBank] = useState('')
     const [filterTextRekening, setFilterTextRekening] = useState('')
-    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+    const [labelUpload, setLabelUpload] = useState(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
     <div className='pb-4'>
         <span class="filepond--label-action">
-            Upload File
+            ${language === null ? eng.unggahFile : language.unggahFile}
         </span>
     </div>`)
     const [files, setFiles] = useState([])
@@ -112,6 +117,9 @@ function DisbursementPage() {
     })
     const [totalHoldBalance, setTotalHoldBalance] = useState(0)
 
+    // console.log(dataDisburse, "dataDisburse");
+    // console.log(minMaxDisbursement.minDisbursement, "minMaxDisbursement.minDisbursement");
+
     function handleShowDetailBalance(codeBank) {
         if (codeBank === "014") {
             setShowDetailBalance({
@@ -135,18 +143,24 @@ function DisbursementPage() {
             })
         }
     }
-    
+
+    // console.log(((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee)), "((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee))");
+    // console.log(getBalance, "getBalance");
+    // console.log(totalHoldBalance, "totalHoldBalance");
+    // console.log(sum(allNominal), "sum(allNominal)");
+    // console.log(sum(sum(allFee)), "sum(sum(allFee))");
+
     async function fileCSV(newValue, bankLists, listBallanceBank, bankFee, allBalance, allHoldBalance) {
         if (errorFound.length !== 0) {
             setErrorFound([])
         }
-        
+
         if (listBallanceBank.length === 0) {
-            setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Seluruh data Bank Tujuan tidak tersedia pada saat ini</div>
-                <div class='pb-4 mt-1 style-label-drag-drop'>Silahkan coba upload ulang beberapa saat lagi. SIlahkan hubungi Admin untuk informasi lebih lanjut </div>
+            setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />${language === null ? eng.seluruhDataBankTidakTersedia : language.seluruhDataBankTidakTersedia}</div>
+                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? eng.silahkanCobaUploadUlang : language.silahkanCobaUploadUlang} </div>
                 <div className='pb-4'>
                     <span class="filepond--label-action">
-                        oke
+                        ${language === null ? eng.oke : language.oke}
                     </span>
                 </div>`)
         } else if (listBallanceBank.length !== 0) {
@@ -154,11 +168,11 @@ function DisbursementPage() {
             // console.log(filteredBallanceBank, 'filteredBallanceBank');
             if (filteredBallanceBank.length === 0) {
                 setLabelUpload("")
-                setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Seluruh data Bank Tujuan tidak tersedia pada saat ini</div>
-                    <div class='pb-4 mt-1 style-label-drag-drop'>Silahkan coba upload ulang beberapa saat lagi. SIlahkan hubungi Admin untuk informasi lebih lanjut </div>
+                setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />${language === null ? eng.seluruhDataBankTidakTersedia : language.seluruhDataBankTidakTersedia}</div>
+                    <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? eng.silahkanCobaUploadUlang : language.silahkanCobaUploadUlang} </div>
                     <div className='pb-4'>
                         <span class="filepond--label-action">
-                            oke
+                            ${language === null ? eng.oke : language.oke}
                         </span>
                     </div>`)
             } else {
@@ -186,11 +200,11 @@ function DisbursementPage() {
                         //     </span>
                         // </div>`)
                         //untuk file excel
-                        setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />File yang digunakan harus berformat Excel</div>
-                        <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                        setLabelUpload(`<div class='pt-1 pb-2 style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />${language === null ? eng.formatFileExcel : language.formatFileExcel}</div>
+                        <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
                         <div className='pb-4'>
                             <span class="filepond--label-action">
-                                Ganti File
+                                ${language === null ? eng.gantiFile : language.gantiFile}
                             </span>
                         </div>`)
                     // }, 2500);
@@ -200,16 +214,17 @@ function DisbursementPage() {
                         const wb = XLSX.read(pond, {type: "base64"})
                         const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
                         let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
+                        // console.log(ws, "ws");
                         if (wb.SheetNames.length !== 1) {
                             setDataFromUploadExcel([])
                             setErrorFound([])
                             setTimeout(() => {
                                 setLabelUpload("")
-                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Jumlah Sheet pada file Excel lebih dari 1. Harap tinjau kembali file anda agar sesuai dengan template.</div></div>
-                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>${language === null ? eng.jumlahSheetPadaFileExcel : language.jumlahSheetPadaFileExcel}</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Ganti File
+                                        ${language === null ? eng.gantiFile : language.gantiFile}
                                     </span>
                                 </div>`)
                             }, 2500);
@@ -218,24 +233,24 @@ function DisbursementPage() {
                             setErrorFound([])
                             setTimeout(() => {
                                 setLabelUpload("")
-                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
-                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>${language === null ? eng.kontenTidakSesuai : language.kontenTidakSesuai}</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Ganti File
+                                        ${language === null ? eng.gantiFile : language.gantiFile}
                                     </span>
                                 </div>`)
                             }, 2500);
-                        } else if (ws.A1.h.trim() !== "Bank Tujuan*" || ws.B1.h.trim() !== "Cabang*" || ws.C1.h.trim() !== "No. Rekening Tujuan*" || ws.D1.h.trim() !== "Nama Pemilik Rekening*" || ws.E1.h.trim() !== "Nominal Disbursement*" || ws.F1.h.trim() !== "Email Penerima" || ws.G1.h.trim() !== "Catatan") {
+                        } else if (ws.A1.h.trim() !== (language === null ? eng.bankTujuanStar : language.bankTujuanStar) || ws.B1.h.trim() !== (language === null ? eng.cabangStar : language.cabangStar) || ws.C1.h.trim() !== (language === null ? eng.noRekTujuanStar : language.noRekTujuanStar) || ws.D1.h.trim() !== (language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar) || ws.E1.h.trim() !== (language === null ? eng.nominalDisburseStar : language.nominalDisburseStar) || ws.F1.h.trim() !== (language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet) || ws.G1.h.trim() !== (language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet)) {
                             setDataFromUploadExcel([])
                             setErrorFound([])
                             setTimeout(() => {
                                 setLabelUpload("")
-                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Konten pada tabel tidak sesuai dengan template Disbursement Bulk <br/> Ezeelink. Harap download dan menggunakan template yang disediakan <br/> untuk mempermudah pengecekkan data disbursement.</div></div>
-                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>${language === null ? eng.kontenTidakSesuai : language.kontenTidakSesuai}</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Ganti File
+                                        ${language === null ? eng.gantiFile : language.gantiFile}
                                     </span>
                                 </div>`)
                             }, 2500);
@@ -244,11 +259,11 @@ function DisbursementPage() {
                             setErrorFound([])
                             setTimeout(() => {
                                 setLabelUpload("")
-                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>Data pada file masih kosong. Harap tinjau kembali data pada file anda.</div></div>
-                                <div class='pb-4 mt-1 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br /> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                setLabelUpload(`<div class='py-1 d-flex justify-content-center align-items-center style-label-drag-drop-error'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" /><div>${language === null ? eng.dataPadaFileMasihKosong : language.dataPadaFileMasihKosong}</div></div>
+                                <div class='pb-4 mt-1 style-label-drag-drop'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Ganti File
+                                        ${language === null ? eng.gantiFile : language.gantiFile}
                                     </span>
                                 </div>`)
                             }, 2500);
@@ -282,7 +297,7 @@ function DisbursementPage() {
                             data.map(el => {
                                 //check duplicate data
                                 if(resultArray.find((object, idx) => {
-                                    if(object["No. Rekening Tujuan*"] === el["No. Rekening Tujuan*"] && object["Nominal Disbursement*"] === el["Nominal Disbursement*"]) {
+                                    if(object[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)] === el[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)] && object[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] === el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]) {
                                         //if the object exists iterate times
                                         object.times++;
                                         sameNumberData.push(object.no)
@@ -299,11 +314,12 @@ function DisbursementPage() {
                                     resultArray.push(el);
                                 }
                             })
+                            let regExp = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/g;
                             // console.log(data, 'data2');
                             data = data.map((el, idx) => {
                                 let objErrData = {}
                                 // console.log(el["Bank Tujuan*"], `el["Bank Tujuan*"]`);
-                                const codeBank = el !== undefined && el["Bank Tujuan*"] !== undefined ? String(el["Bank Tujuan*"]).slice(0, 3) : undefined
+                                const codeBank = el !== undefined && el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)] !== undefined ? String(el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)]).slice(0, 3) : undefined
                                 const filteredListBank = bankLists.filter(item => item.is_enabled === true) //bank yg aktif
                                 const sameBankName = filteredListBank.find(list => list.mbank_code === codeBank) //bank yg sama
                                 // console.log(sameBankName, 'sameBankName');
@@ -311,149 +327,186 @@ function DisbursementPage() {
                                 // console.log(balanceBank, 'balanceBank');
                                 // console.log(sameBankName, 'sameBankName');
                                 //pengecekan code bank
-                                if (el["Bank Tujuan*"] === undefined) {
+                                if (el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)] === undefined) {
                                     objErrData.no = idx + 2
-                                    objErrData.keterangan = 'kolom Bank Tujuan : Wajib Diisi.'
+                                    objErrData.keterangan = (language === null ? eng.kolomBankTujuanWajibDiisi : language.kolomBankTujuanWajibDiisi)
                                     errData.push(objErrData)
                                     objErrData = {}
                                 } else if (codeBank.length !== 3) { //kode bank tidak valid
                                     objErrData.no = idx + 2
-                                    objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia pada saat ini.'
+                                    objErrData.keterangan = (language === null ? eng.kolomBankTujuanSalah : language.kolomBankTujuanSalah)
                                     errData.push(objErrData)
                                     objErrData = {}
                                 } else if (codeBank.toLowerCase() !== codeBank.toUpperCase()) { //kode bank tidak valid
                                     objErrData.no = idx + 2
-                                    objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia pada saat ini.'
+                                    objErrData.keterangan = (language === null ? eng.kolomBankTujuanSalah : language.kolomBankTujuanSalah)
                                     errData.push(objErrData)
                                     objErrData = {}
                                 } else if (sameBankName === undefined) { //kode bank tidak valid
                                     objErrData.no = idx + 2
-                                    objErrData.keterangan = 'kolom Bank Tujuan : Bank Tujuan salah / tidak tersedia pada saat ini.'
+                                    objErrData.keterangan = (language === null ? eng.kolomBankTujuanSalah : language.kolomBankTujuanSalah)
                                     errData.push(objErrData)
                                     objErrData = {}
                                 } else { // kode bank valid
                                     // console.log(el["No. Rekening Tujuan*"], 'String(el["No. Rekening Tujuan*"])');
                                     //pengecekan nomer rekening bank
-                                    if (el["No. Rekening Tujuan*"] === undefined) { //kolom nomor rekening kosong
+                                    if (el[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)] === undefined) { //kolom nomor rekening kosong
                                         objErrData.no = idx + 2
-                                        objErrData.keterangan = 'kolom Nomor Rekening : Wajib Diisi.'
+                                        objErrData.keterangan = (language === null ? eng.kolomNoRekWajibDiisi : language.kolomNoRekWajibDiisi)
                                         errData.push(objErrData)
                                         objErrData = {}
                                     } else { //nomor rekening tidak valid
-                                        if (String(el["No. Rekening Tujuan*"]).toLowerCase() !== String(el["No. Rekening Tujuan*"]).toUpperCase()) {
+                                        if (String(el[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]).toLowerCase() !== String(el[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]).toUpperCase()) {
                                             objErrData.no = idx + 2
-                                            objErrData.keterangan = 'kolom Nomor Rekening : Tipe data salah.'
+                                            objErrData.keterangan = (language === null ? eng.kolomNomorRekTipeDataSalah : language.kolomNomorRekTipeDataSalah)
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        } else if (sameBankName.mbank_digit_acc !== 0 && (String(el["No. Rekening Tujuan*"]).replaceAll(' ', '').replaceAll('-', '').replaceAll('‘', '')).length !== sameBankName.mbank_digit_acc) { //jumlah nomer rekening tidak sesuai
+                                        } else if (sameBankName.mbank_digit_acc !== 0 && (String(el[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]).replaceAll(' ', '').replaceAll('-', '').replaceAll('‘', '')).length !== sameBankName.mbank_digit_acc) { //jumlah nomer rekening tidak sesuai
                                             objErrData.no = idx + 2
-                                            objErrData.keterangan = 'kolom Nomor Rekening : Digit nomor rekening tidak sesuai dengan bank tujuan.'
+                                            objErrData.keterangan = (language === null ? eng.kolomNomorRekDigitNomorRek : language.kolomNomorRekDigitNomorRek)
                                             errData.push(objErrData)
                                             objErrData = {}
                                         }
                                     }
                                     // console.log(el["Nama Pemilik Rekening*"], 'el["Nama Pemilik Rekening*"]');
                                     //pengecekan nama pemilik rekening
-                                    if (el["Nama Pemilik Rekening*"] === undefined) { // kolom nama kosong
+                                    if (el[(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)] === undefined) { // kolom nama kosong
                                         objErrData.no = idx + 2
-                                        objErrData.keterangan = 'kolom Nama Pemilik Rekening : Wajib Diisi.'
+                                        objErrData.keterangan = (language === null ? eng.kolomNamaPemilikRekWajibDiisi : language.kolomNamaPemilikRekWajibDiisi)
+                                        errData.push(objErrData)
+                                        objErrData = {}
+                                    }
+                                    // console.log(el["Nama Pemilik Rekening*"], 'el["Nama Pemilik Rekening*"]');
+                                    //pengecekan nama tidak boleh selain alphabet
+                                    if (el[(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)] !== undefined) { // nama nya mandarin
+                                        if (regExp.test(el[(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)])) {
+                                            objErrData.no = idx + 2
+                                            objErrData.keterangan = `Nama Harus Alphabet`
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        }
+                                    }
+                                    // console.log(el["Email Penerima"], 'el["Email Penerima"]');
+                                    //pengecekan email
+                                    if (el[language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet] !== undefined && validator.isEmail(el[language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet]) === false) { //format email salah
+                                        objErrData.no = idx + 2
+                                        objErrData.keterangan = (language === null ? eng.kolomEmailPenerimaTipeDataSalah : language.kolomEmailPenerimaTipeDataSalah)
                                         errData.push(objErrData)
                                         objErrData = {}
                                     }
                                     // console.log(el["Email Penerima"], 'el["Email Penerima"]');
-                                    //pengecekan email
-                                    if (el["Email Penerima"] !== undefined && validator.isEmail(el["Email Penerima"]) === false) { //format email salah
+                                    //pengecekan email tidak boleh selain alphabet
+                                    if (el[(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)] !== undefined) { // emailnya nya mandarin
+                                        if (regExp.test(el[(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)])) {
+                                            objErrData.no = idx + 2
+                                            objErrData.keterangan = `Email Harus Alphabet`
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        }
+                                    }
+                                    //pengecekan catatan
+                                    if (el[language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet] !== undefined && el[language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet].length > 25) { //catatan lebih dari 25 karakter
                                         objErrData.no = idx + 2
-                                        objErrData.keterangan = 'kolom Email Penerima : Tipe data salah.'
+                                        objErrData.keterangan = (language === null ? eng.kolomCatatanMaksKarakter : language.kolomCatatanMaksKarakter)
                                         errData.push(objErrData)
                                         objErrData = {}
                                     }
-                                    //pengecekan catatan
-                                    if (el.Catatan !== undefined && el.Catatan.length > 25) { //catatan lebih dari 25 karakter
-                                        objErrData.no = idx + 2
-                                        objErrData.keterangan = 'kolom Catatan : Maks 25 karakter.'
-                                        errData.push(objErrData)
-                                        objErrData = {}
+                                    //pengecekan catatan harus alphabet
+                                    if (el[language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet] !== undefined && el[language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet].length <= 25) { //catatan lebih dari 25 karakter
+                                        if (regExp.test(el[language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet])) {
+                                            objErrData.no = idx + 2
+                                            objErrData.keterangan = `Catatan Harus Alphabet`
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        }
                                     }
                                     if (sameBankName !== undefined) {
                                         return {
                                             ...el,
-                                            "Bank Tujuan*": `${sameBankName.mbank_code} - ${sameBankName.mbank_name}`,
-                                            "No. Rekening Tujuan*": String(el["No. Rekening Tujuan*"]).replaceAll(' ', '').replaceAll('-', '').replaceAll('‘', ''), //"Digit rekening tidak sesuai dengan bank tujuan."
-                                            "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"] !== undefined ? el["Nama Pemilik Rekening*"].slice(0, 20) : undefined,
+                                            [(language === null ? eng.bankTujuanStar : language.bankTujuanStar)]: `${sameBankName.mbank_code} - ${sameBankName.mbank_name}`,
+                                            [(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]: String(el[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]).replaceAll(' ', '').replaceAll('-', '').replaceAll('‘', ''), //"Digit rekening tidak sesuai dengan bank tujuan."
+                                            [(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)]: el[(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)] !== undefined ? el[(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)].slice(0, 20) : undefined,
                                         }
                                     } else {
                                         return {
                                             ...el,
-                                            "Bank Tujuan*": undefined,
+                                            [(language === null ? eng.bankTujuanStar : language.bankTujuanStar)]: undefined,
                                         }
                                     }
                                 }
                             })
-    
+
                             // console.log(data, 'data3');
                             data = data.map((el, idx) => {
                                 let objErrData = {}
-                                const codeBank = el !== undefined && el["Bank Tujuan*"] !== undefined ? el["Bank Tujuan*"].slice(0, 3) : undefined
+                                const codeBank = el !== undefined && el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)] !== undefined ? el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)].slice(0, 3) : undefined
                                 // console.log(el["Cabang*"], 'el["Cabang*"]');
                                 //pengecekan cabang bank
                                 if (codeBank !== undefined) { //selain bank BCA
                                     // console.log('masuk non bca');
-                                    if (el["Cabang*"] === undefined) {
+                                    if (el[(language === null ? eng.cabangStar : language.cabangStar)] === undefined) {
                                         objErrData.no = idx + 2
-                                        objErrData.keterangan = 'kolom Cabang : Wajib Diisi.'
+                                        objErrData.keterangan = (language === null ? eng.kolomCabangWajibDiisi : language.kolomCabangWajibDiisi)
                                         errData.push(objErrData)
                                         objErrData = {}
                                     } else {
-                                        if (String(el["Cabang*"]).trim().length === 0) { //kolom cabang bank diisi spasi kosong
+                                        //pengecekan cabang harus alphabet
+                                        if (regExp.test(String(el[(language === null ? eng.cabangStar : language.cabangStar)]))) {
+                                            // console.log("masuk sisnii");
                                             objErrData.no = idx + 2
-                                            objErrData.keterangan = 'kolom Cabang : Cabang tidak tersedia.'
+                                            objErrData.keterangan = `Cabang Harus Alphabet`
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        } else if (String(el["Cabang*"]).split('x').join(' ').trim().length === 0 || String(el["Cabang*"]).split('X').join(' ').trim().length === 0) {
+                                        }
+                                        if (String(el[(language === null ? eng.cabangStar : language.cabangStar)]).trim().length === 0) { //kolom cabang bank diisi spasi kosong
                                             objErrData.no = idx + 2
-                                            objErrData.keterangan = 'kolom Cabang : Cabang tidak tersedia.'
+                                            objErrData.keterangan = (language === null ? eng.kolomCabangTidakTersedia : language.kolomCabangTidakTersedia)
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        // } else if (/[$-/:-?{-~!"^_`\[\]]/.test(String(el["Cabang*"]))) {
-                                        } else if (String(el["Cabang*"]).split('.').join('').trim().length === 0 || String(el["Cabang*"]).split(',').join('').trim().length === 0) {
+                                        } else if (String(el[(language === null ? eng.cabangStar : language.cabangStar)]).split('x').join(' ').trim().length === 0 || String(el[(language === null ? eng.cabangStar : language.cabangStar)]).split('X').join(' ').trim().length === 0) {
                                             objErrData.no = idx + 2
-                                            objErrData.keterangan = 'kolom Cabang : Cabang tidak tersedia.'
+                                            objErrData.keterangan = (language === null ? eng.kolomCabangTidakTersedia : language.kolomCabangTidakTersedia)
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        } else if (String(el["Cabang*"]).toLowerCase() === String(el["Cabang*"]).toUpperCase()) {
+                                        // } else if (/[$-/:-?{-~!"^_`\[\]]/.test(String(el[(language === null ? eng.cabangStar : language.cabangStar)]))) {
+                                        } else if (String(el[(language === null ? eng.cabangStar : language.cabangStar)]).split('.').join('').trim().length === 0 || String(el[(language === null ? eng.cabangStar : language.cabangStar)]).split(',').join('').trim().length === 0) {
                                             objErrData.no = idx + 2
-                                            objErrData.keterangan = 'kolom Cabang : Cabang tidak tersedia.'
+                                            objErrData.keterangan = (language === null ? eng.kolomCabangTidakTersedia : language.kolomCabangTidakTersedia)
                                             errData.push(objErrData)
                                             objErrData = {}
-                                        } else if (String(el["Cabang*"]).length < 4 && String(el["Cabang*"]).toLowerCase() !== String(el["Cabang*"]).toUpperCase()) {
+                                        } else if (String(el[(language === null ? eng.cabangStar : language.cabangStar)]).toLowerCase() === String(el[(language === null ? eng.cabangStar : language.cabangStar)]).toUpperCase()) {
                                             objErrData.no = idx + 2
-                                            objErrData.keterangan = 'kolom Cabang : Cabang tidak tersedia.'
+                                            objErrData.keterangan = (language === null ? eng.kolomCabangTidakTersedia : language.kolomCabangTidakTersedia)
+                                            errData.push(objErrData)
+                                            objErrData = {}
+                                        } else if (String(el[(language === null ? eng.cabangStar : language.cabangStar)]).length < 4 && String(el[(language === null ? eng.cabangStar : language.cabangStar)]).toLowerCase() !== String(el[(language === null ? eng.cabangStar : language.cabangStar)]).toUpperCase()) {
+                                            objErrData.no = idx + 2
+                                            objErrData.keterangan = (language === null ? eng.kolomCabangTidakTersedia : language.kolomCabangTidakTersedia)
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else {
                                             return {
                                                 ...el,
                                                 // "No*": idx + 2,
-                                                "Bank Tujuan*": el["Bank Tujuan*"],
-                                                "Cabang*": el["Cabang*"],
-                                                "No. Rekening Tujuan*": el["No. Rekening Tujuan*"],
-                                                "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"],
-                                                "Nominal Disbursement*": el["Nominal Disbursement*"],
-                                                "Email Penerima": el["Email Penerima"] === undefined ? "-" : el["Email Penerima"],
-                                                "Catatan": el["Catatan"] === undefined ? "-" : el["Catatan"],
+                                                [(language === null ? eng.bankTujuanStar : language.bankTujuanStar)]: el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)],
+                                                [(language === null ? eng.cabangStar : language.cabangStar)]: el[(language === null ? eng.cabangStar : language.cabangStar)],
+                                                [(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]: el[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)],
+                                                [(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)]: el[(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)],
+                                                [(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]: el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)],
+                                                [(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)]: el[(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)] === undefined ? "-" : el[(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)],
+                                                [(language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet)]: el[(language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet)] === undefined ? "-" : el[(language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet)],
                                             }
                                         }
                                         return {
                                             ...el,
                                             // "No*": idx + 2,
-                                            "Bank Tujuan*": el["Bank Tujuan*"],
-                                            "Cabang*": String(el["Cabang*"]).trim(),
-                                            "No. Rekening Tujuan*": el["No. Rekening Tujuan*"],
-                                            "Nama Pemilik Rekening*": el["Nama Pemilik Rekening*"],
-                                            "Nominal Disbursement*": el["Nominal Disbursement*"],
-                                            "Email Penerima": el["Email Penerima"] === undefined ? "-" : el["Email Penerima"],
-                                            "Catatan": el["Catatan"] === undefined ? "-" : el["Catatan"],
+                                            [(language === null ? eng.bankTujuanStar : language.bankTujuanStar)]: el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)],
+                                            [(language === null ? eng.cabangStar : language.cabangStar)]: String(el[(language === null ? eng.cabangStar : language.cabangStar)]).trim(),
+                                            [(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]: el[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)],
+                                            [(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)]: el[(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)],
+                                            [(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]: el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)],
+                                            [(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)]: el[(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)] === undefined ? "-" : el[(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)],
+                                            [(language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet)]: el[(language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet)] === undefined ? "-" : el[(language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet)],
                                         }
                                     }
                                 // } else if (codeBank === "014" && codeBank !== undefined) {
@@ -479,12 +532,12 @@ function DisbursementPage() {
                                 //     }
                                 }
                             })
-    
+
                             // console.log(data, 'data4');
                             data = data.map((el, idx) => {
                                 let objErrData = {}
                                 if (el !== undefined) {
-                                    const codeBank = el !== undefined && el["Bank Tujuan*"] !== undefined ? el["Bank Tujuan*"].slice(0, 3) : undefined
+                                    const codeBank = el !== undefined && el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)] !== undefined ? el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)].slice(0, 3) : undefined
                                     const filteredListBank = bankLists.filter(item => item.is_enabled === true) //bank yg aktif
                                     const sameBankName = filteredListBank.find(list => list.mbank_code === codeBank) //bank yg sama
                                     // console.log(sameBankName, 'sameBankName');
@@ -515,39 +568,39 @@ function DisbursementPage() {
                                         // }
                                         // console.log(el["Nominal Disbursement*"], 'el["Nominal Disbursement*"]');
                                         //pengecekan nominal disbursement
-                                        if (el["Nominal Disbursement*"] === undefined || el["Nominal Disbursement*"] === '0') { //nominal kosong/nol
+                                        if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] === undefined || el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] === '0') { //nominal kosong/nol
                                             objErrData.no = idx + 2
-                                            objErrData.keterangan = 'kolom Nominal Disbursement : Wajib Diisi.'
+                                            objErrData.keterangan = (language === null ? eng.kolomNominalDisburseWajibDiisi : language.kolomNominalDisburseWajibDiisi)
                                             errData.push(objErrData)
                                             objErrData = {}
                                         } else {
-                                            if (typeof el["Nominal Disbursement*"] === 'string') {
+                                            if (typeof el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] === 'string') {
                                                 // console.log('masuk string');
-                                                if (el["Nominal Disbursement*"].toLowerCase() !== el["Nominal Disbursement*"].toUpperCase()) {
+                                                if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].toLowerCase() !== el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].toUpperCase()) {
                                                     // console.log('ada huruf');
                                                     objErrData.no = idx + 2
-                                                    objErrData.keterangan = 'kolom Nominal Disbursement : Tipe data salah.'
+                                                    objErrData.keterangan = (language === null ? eng.kolomNominalDisburseTipeDataSalah : language.kolomNominalDisburseTipeDataSalah)
                                                     errData.push(objErrData)
                                                     objErrData = {}
-                                                } else if (el["Nominal Disbursement*"].toLowerCase() === el["Nominal Disbursement*"].toUpperCase()) {
+                                                } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].toLowerCase() === el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].toUpperCase()) {
                                                     // console.log('tidak ada huruf');
-                                                    if (el["Nominal Disbursement*"].indexOf(',') !== -1 && (el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 4] === ',' || el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 1] === ',')) {
+                                                    if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].indexOf(',') !== -1 && (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)][el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length - 4] === ',' || el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)][el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length - 1] === ',')) {
                                                         // console.log('masuk koma bener');
-                                                        if (Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "")) < resultBankFee.mpartfitur_min_amount_trx) {
+                                                        if (Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", "")) < resultBankFee.mpartfitur_min_amount_trx) {
                                                             objErrData.no = idx + 2
-                                                            objErrData.keterangan = `kolom Nominal Disbursement : Minimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_min_amount_trx)}`
+                                                            objErrData.keterangan = `${language === null ? eng.kolomNominalDisburseMinNominal : language.kolomNominalDisburseMinNominal} ${convertToRupiah(resultBankFee.mpartfitur_min_amount_trx)}`
                                                             errData.push(objErrData)
                                                             objErrData = {}
-                                                        } else if (Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "")) > resultBankFee.mpartfitur_max_amount_trx) {
-                                                            // console.log(Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "")), 'Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", ""))');
+                                                        } else if (Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", "")) > resultBankFee.mpartfitur_max_amount_trx) {
+                                                            // console.log(Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", "")), 'Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", ""))');
                                                             // console.log(resultBankFee.mpartfitur_max_amount_trx, 'resultBankFee.mpartfitur_max_amount_trx');
                                                             objErrData.no = idx + 2
-                                                            objErrData.keterangan = `kolom Nominal Disbursement : Maksimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
+                                                            objErrData.keterangan = `${language === null ? eng.kolomNominalDisburseMaksNominal : language.kolomNominalDisburseMaksNominal} ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
                                                             errData.push(objErrData)
                                                             objErrData = {}
                                                         } else {
                                                             // console.log('masuk plus nominal 1');
-                                                            const nominalDisbursementNumber = Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", ""))
+                                                            const nominalDisbursementNumber = Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", ""))
                                                             totalNominalDisburse += nominalDisbursementNumber
                                                             if (nominalDisbursementNumber <= allBalance) {
                                                                 // if (codeBank === '014') {
@@ -571,7 +624,7 @@ function DisbursementPage() {
                                                                 // } else
                                                                 if ((sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
                                                                     objErrData.no = idx + 2
-                                                                    objErrData.keterangan = 'Saldo anda tidak cukup.'
+                                                                    objErrData.keterangan = (language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup)
                                                                     errData.push(objErrData)
                                                                     objErrData = {}
                                                                     // sisaSaldoAlokasiPerBankTemp = {
@@ -637,7 +690,7 @@ function DisbursementPage() {
                                                                 //     }
                                                                 // } else
                                                                 objErrData.no = idx + 2
-                                                                objErrData.keterangan = 'Saldo anda tidak cukup.'
+                                                                objErrData.keterangan = (language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup)
                                                                 errData.push(objErrData)
                                                                 objErrData = {}
                                                                 sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
@@ -663,19 +716,19 @@ function DisbursementPage() {
                                                             }
                                                             return {
                                                                 ...el,
-                                                                "Nominal Disbursement*": nominalDisbursementNumber
+                                                                [(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]: nominalDisbursementNumber
                                                             }
                                                         }
-                                                    } else if (el["Nominal Disbursement*"].indexOf('.') !== -1 && (el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 4] === '.' || el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 1] === '.')) {
+                                                    } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].indexOf('.') !== -1 && (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)][el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length - 4] === '.' || el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)][el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length - 1] === '.')) {
                                                         // console.log('masuk titik bener');
-                                                        if (el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", "").length < 5) {
+                                                        if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", "").length < 5) {
                                                             objErrData.no = idx + 2
-                                                            objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                                                            objErrData.keterangan = (language === null ? eng.kolomNominalDisburseMinNominal : language.kolomNominalDisburseMinNominal)
                                                             errData.push(objErrData)
                                                             objErrData = {}
                                                         } else {
                                                             // console.log('masuk plus nominal 2');
-                                                            const nominalDisbursementNumber = Number(el["Nominal Disbursement*"].replaceAll(",", "").replaceAll(".", ""))
+                                                            const nominalDisbursementNumber = Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", ""))
                                                             totalNominalDisburse += nominalDisbursementNumber
                                                             if (nominalDisbursementNumber <= allBalance) {
                                                                 // if (codeBank === '014') {
@@ -699,7 +752,7 @@ function DisbursementPage() {
                                                                 // } else
                                                                 if ((sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
                                                                     objErrData.no = idx + 2
-                                                                    objErrData.keterangan = 'Saldo anda tidak cukup.'
+                                                                    objErrData.keterangan = (language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup)
                                                                     errData.push(objErrData)
                                                                     objErrData = {}
                                                                     sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
@@ -757,7 +810,7 @@ function DisbursementPage() {
                                                                 //     }
                                                                 // } else
                                                                 objErrData.no = idx + 2
-                                                                objErrData.keterangan = 'Saldo anda tidak cukup.'
+                                                                objErrData.keterangan = (language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup)
                                                                 errData.push(objErrData)
                                                                 objErrData = {}
                                                                 sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
@@ -783,23 +836,23 @@ function DisbursementPage() {
                                                             }
                                                             return {
                                                                 ...el,
-                                                                "Nominal Disbursement*": nominalDisbursementNumber
+                                                                [(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]: nominalDisbursementNumber
                                                             }
                                                         }
-                                                    } else if ((el["Nominal Disbursement*"].indexOf(',') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 3] === ',') || (el["Nominal Disbursement*"].indexOf(',') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 2] === ',')) {
-                                                        // console.log('masuk koma salah', el["Nominal Disbursement*"].split(",")[0]);
-                                                        // console.log(el["Nominal Disbursement*"].split(","), 'nominal disbursement');
+                                                    } else if ((el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].indexOf(',') !== -1 && el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)][el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length - 3] === ',') || (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].indexOf(',') !== -1 && el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)][el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length - 2] === ',')) {
+                                                        // console.log('masuk koma salah', el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].split(",")[0]);
+                                                        // console.log(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].split(","), 'nominal disbursement');
                                                         objErrData.no = idx + 2
-                                                        objErrData.keterangan = 'kolom Nominal Disbursement : Tidak boleh mengandung decimal'
+                                                        objErrData.keterangan = (language === null ? eng.kolomNominalDisburseTidakBolehDesimal : language.kolomNominalDisburseTidakBolehDesimal)
                                                         errData.push(objErrData)
                                                         objErrData = {}
-                                                    } else if ((el["Nominal Disbursement*"].indexOf('.') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 3] === '.') || (el["Nominal Disbursement*"].indexOf('.') !== -1 && el["Nominal Disbursement*"][el["Nominal Disbursement*"].length - 2] === '.')) {
+                                                    } else if ((el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].indexOf('.') !== -1 && el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)][el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length - 3] === '.') || (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].indexOf('.') !== -1 && el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)][el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length - 2] === '.')) {
                                                         objErrData.no = idx + 2
-                                                        objErrData.keterangan = 'kolom Nominal Disbursement : Tidak boleh mengandung decimal'
+                                                        objErrData.keterangan = (language === null ? eng.kolomNominalDisburseTidakBolehDesimal : language.kolomNominalDisburseTidakBolehDesimal)
                                                         errData.push(objErrData)
                                                         objErrData = {}
-                                                    } else if (el["Nominal Disbursement*"].indexOf(',') === -1 || el["Nominal Disbursement*"].indexOf('.') === -1) {
-                                                        const nominalDisbursementNumber = Number(el["Nominal Disbursement*"])
+                                                    } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].indexOf(',') === -1 || el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].indexOf('.') === -1) {
+                                                        const nominalDisbursementNumber = Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])
                                                         if (nominalDisbursementNumber <= allBalance) {
                                                             // if (codeBank === '014') {
                                                             //     if ((sisaSaldoAlokasiPerBankTemp.bca !== 0 ? sisaSaldoAlokasiPerBankTemp.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
@@ -822,7 +875,7 @@ function DisbursementPage() {
                                                             // } else
                                                             if ((sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total) < 0) {
                                                                 objErrData.no = idx + 2
-                                                                objErrData.keterangan = 'Saldo anda tidak cukup.'
+                                                                objErrData.keterangan = (language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup)
                                                                 errData.push(objErrData)
                                                                 objErrData = {}
                                                                 sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
@@ -880,7 +933,7 @@ function DisbursementPage() {
                                                             //     }
                                                             // } else
                                                             objErrData.no = idx + 2
-                                                            objErrData.keterangan = 'Saldo anda tidak cukup.'
+                                                            objErrData.keterangan = (language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup)
                                                             errData.push(objErrData)
                                                             objErrData = {}
                                                             sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
@@ -904,34 +957,39 @@ function DisbursementPage() {
                                                             //     }
                                                             // }
                                                         }
-                                                        totalNominalDisburse += Number(el["Nominal Disbursement*"])
+                                                        totalNominalDisburse += Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])
                                                         return {
                                                             ...el,
-                                                            "Nominal Disbursement*": Number(el["Nominal Disbursement*"])
+                                                            [(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]: Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])
                                                         }
                                                     }
-                                                } else if (el["Nominal Disbursement*"].length < 5) {
+                                                } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].length < 5) {
                                                     objErrData.no = idx + 2
-                                                    objErrData.keterangan = 'kolom Nominal Disbursement : Minimal Nominal Disbursement 10.000'
+                                                    objErrData.keterangan = (language === null ? eng.kolomNominalDisburseMinNominal : language.kolomNominalDisburseMinNominal)
                                                     errData.push(objErrData)
                                                     objErrData = {}
                                                 }
-                                            } else if (typeof el["Nominal Disbursement*"] === 'number') {
+                                            } else if (typeof el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] === 'number') {
                                                 // console.log('masuk number');
-                                                const nominalDisbursementNumber = Number(el["Nominal Disbursement*"])
-                                                if (el["Nominal Disbursement*"] < resultBankFee.mpartfitur_min_amount_trx) {
+                                                const nominalDisbursementNumber = Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])
+                                                if ((String(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]).indexOf('.') !== -1 && String(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])[String(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]).length - 3] === '.') || (String(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]).indexOf('.') !== -1 && String(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])[String(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]).length - 2] === '.')) {
                                                     objErrData.no = idx + 2
-                                                    objErrData.keterangan = `kolom Nominal Disbursement : Minimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_min_amount_trx)}`
+                                                    objErrData.keterangan = (language === null ? eng.kolomNominalDisburseTidakBolehDesimal : language.kolomNominalDisburseTidakBolehDesimal)
                                                     errData.push(objErrData)
                                                     objErrData = {}
-                                                } else if (el["Nominal Disbursement*"] > resultBankFee.mpartfitur_max_amount_trx) {
+                                                } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] < resultBankFee.mpartfitur_min_amount_trx) {
+                                                    objErrData.no = idx + 2
+                                                    objErrData.keterangan = `${language === null ? eng.kolomNominalDisburseMinNominal : language.kolomNominalDisburseMinNominal} ${convertToRupiah(resultBankFee.mpartfitur_min_amount_trx)}`
+                                                    errData.push(objErrData)
+                                                    objErrData = {}
+                                                } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] > resultBankFee.mpartfitur_max_amount_trx) {
                                                     // console.log(el["Nominal Disbursement*"], 'el["Nominal Disbursement*"]');
                                                     // console.log(resultBankFee.mpartfitur_max_amount_trx, 'resultBankFee.mpartfitur_max_amount_trx');
                                                     objErrData.no = idx + 2
-                                                    objErrData.keterangan = `kolom Nominal Disbursement : Maksimal Nominal Disbursement ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
+                                                    objErrData.keterangan = `${language === null ? eng.kolomNominalDisburseMaksNominal : language.kolomNominalDisburseMaksNominal} ${convertToRupiah(resultBankFee.mpartfitur_max_amount_trx)}`
                                                     errData.push(objErrData)
                                                     objErrData = {}
-                                                } else if (el["Nominal Disbursement*"] <= allBalance) {
+                                                } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] <= allBalance) {
                                                     // console.log('masuk number1');
                                                     // if (codeBank === '014') {
                                                     //     // console.log('masuk number1');
@@ -957,20 +1015,20 @@ function DisbursementPage() {
                                                     //         }
                                                     //     }
                                                     // } else
-                                                    if ((sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
+                                                    if ((sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] + resultBankFee.fee_total) < 0) {
                                                         objErrData.no = idx + 2
-                                                        objErrData.keterangan = 'Saldo anda tidak cukup.'
+                                                        objErrData.keterangan = (language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup)
                                                         errData.push(objErrData)
                                                         objErrData = {}
                                                         sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
                                                     } else {
                                                         // console.log('masuk plus nominal 4');
-                                                        totalNominalDisburse += el["Nominal Disbursement*"]
+                                                        totalNominalDisburse += el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]
                                                         sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
                                                     }
                                                     return {
                                                         ...el,
-                                                        "Nominal Disbursement*": el["Nominal Disbursement*"]
+                                                        [(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]: el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]
                                                     }
                                                     // if (codeBank === '011') {
                                                     //     if ((sisaSaldoAlokasiPerBankTemp.danamon !== 0 ? sisaSaldoAlokasiPerBankTemp.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (el["Nominal Disbursement*"] + resultBankFee.fee_total) < 0) {
@@ -1017,7 +1075,7 @@ function DisbursementPage() {
                                                     //         "Nominal Disbursement*": el["Nominal Disbursement*"]
                                                     //     }
                                                     // }
-                                                } else if (el["Nominal Disbursement*"] > (allBalance - allHoldBalance)) {
+                                                } else if (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] > (allBalance - allHoldBalance)) {
                                                     // if (codeBank === '014') {
                                                     //     objErrData.no = idx + 2
                                                     //     objErrData.keterangan = 'Saldo pada rekening BCA anda tidak cukup.'
@@ -1029,7 +1087,7 @@ function DisbursementPage() {
                                                     //     }
                                                     // } else
                                                     objErrData.no = idx + 2
-                                                    objErrData.keterangan = 'Saldo anda tidak cukup.'
+                                                    objErrData.keterangan = (language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup)
                                                     errData.push(objErrData)
                                                     objErrData = {}
                                                     sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
@@ -1073,18 +1131,18 @@ function DisbursementPage() {
                             }
                             if (errData.length !== 0) {
                                 setDataFromUploadExcel([])
-                                setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
                                 <div className='pb-4'>
                                     <span class="filepond--label-action">
-                                        Pilih File
+                                        ${language === null ? eng.pilihFile : language.pilihFile}
                                     </span>
                                 </div>`)
                                 setTimeout(() => {
                                     setErrorFound(errData)
-                                    setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                    setLabelUpload(`<div class='pb-4 style-label-drag-drop-error-list'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
                                     <div className='pb-4'>
                                         <span class="filepond--label-action">
-                                            Ganti File
+                                            ${language === null ? eng.gantiFile : language.gantiFile}
                                         </span>
                                     </div>`)
                                 }, 2500);
@@ -1094,10 +1152,10 @@ function DisbursementPage() {
                                 setTimeout(() => {
                                     setLabelUpload("")
                                     setLabelUpload(`<div class='mt-2 style-label-drag-drop-filename'>${newValue[0].file.name}</div>
-                                    <div class='py-4 style-label-drag-drop'>Pilih atau letakkan file Excel kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+                                    <div class='py-4 style-label-drag-drop'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
                                     <div className='pb-4'>
                                         <span class="filepond--label-action">
-                                            Ganti File
+                                            ${language === null ? eng.gantiFile : language.gantiFile}
                                         </span>
                                     </div>`)
                                 }, 2500);
@@ -1209,7 +1267,7 @@ function DisbursementPage() {
                 //                     } else if (idx === 6 || idx % 7 === 6) {
                 //                         obj.note = el.split('"\r')[0]
                 //                     }
-            
+
                 //                     if (idx % 7 === 6) {
                 //                         newArr.push(obj)
                 //                         obj = {}
@@ -1300,7 +1358,7 @@ function DisbursementPage() {
                 //                             objErrData = {}
                 //                         }
                 //                     }
-            
+
                 //                     if (data.noRekening.length === 0) {
                 //                         objErrData.no = data.no
                 //                         // objErrData.data = data.noRekening
@@ -1308,7 +1366,7 @@ function DisbursementPage() {
                 //                         errData.push(objErrData)
                 //                         objErrData = {}
                 //                     }
-            
+
                 //                     if (data.noRekening.toLowerCase() !== data.noRekening.toUpperCase()) {
                 //                         objErrData.no = data.no
                 //                         // objErrData.data = data.noRekening
@@ -1316,7 +1374,7 @@ function DisbursementPage() {
                 //                         errData.push(objErrData)
                 //                         objErrData = {}
                 //                     }
-            
+
                 //                     if (data.ownerName.length === 0) {
                 //                         objErrData.no = data.no
                 //                         // objErrData.data = data.ownerName
@@ -1324,7 +1382,7 @@ function DisbursementPage() {
                 //                         errData.push(objErrData)
                 //                         objErrData = {}
                 //                     }
-            
+
                 //                     // console.log(data.nominalDisbursement, 'nominal disbursement tipe data');
                 //                     if (data.nominalDisbursement.length === 0 || data.nominalDisbursement === '0') {
                 //                         // console.log('masuk nominal error1');
@@ -1464,7 +1522,7 @@ function DisbursementPage() {
                 //                         }
                 //                     }
                 //                     // console.log(filteredBallanceBank.find(found => found.channel_id === data.bankCode), 'filteredBallanceBank.find(found => found.mpartballchannel_balance)');
-            
+
                 //                     if (data.email.length !== 0 && validator.isEmail(data.email) === false) {
                 //                         objErrData.no = data.no
                 //                         // objErrData.data = data.email
@@ -1472,7 +1530,7 @@ function DisbursementPage() {
                 //                         errData.push(objErrData)
                 //                         objErrData = {}
                 //                     }
-                                    
+
                 //                     if (data.bankCode !== '014') {
                 //                         if (data.cabangBank.length === 0) {
                 //                             // console.log('masuk length 0', data.cabangBank, data.bankCode);
@@ -1527,7 +1585,7 @@ function DisbursementPage() {
                 //                     } else {
                 //                         if (data.cabangBank.length === 0 || data.cabangBank.trim().length === 0 ||  (data.cabangBank.indexOf('x') >= 0 || data.cabangBank.indexOf('X') >= 0) || /[$-/:-?{-~!"^_`\[\]]/.test(data.cabangBank) || data.cabangBank.toLowerCase() === data.cabangBank.toUpperCase()) {
                 //                             return {
-                //                                 ...data, 
+                //                                 ...data,
                 //                                 cabangBank : '-'
                 //                             }
                 //                         } else {
@@ -1670,7 +1728,7 @@ function DisbursementPage() {
 
     const subHeaderComponentMemoRekening = useMemo(() => {
         return (
-            <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title="Cari Data Bank :" placeholder="Masukkan Nama / Kode Bank" />
+            <FilterSubAccount filterText={filterTextRekening} onFilter={e => setFilterTextRekening(e.target.value)} title={`${language === null ? eng.cariDaftarBank : language.cariDaftarBank} `} placeholder={`${language === null ? eng.placeholderNamaKodeBank : language.placeholderNamaKodeBank}`}/>
         );	}, [filterTextRekening]
     );
 
@@ -1807,27 +1865,27 @@ function DisbursementPage() {
 
     const columnsRekening = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: 'Bank Tujuan',
+            name: language === null ? eng.bankTujuan : language.bankTujuan,
             selector: row => row.mbank_name,
             width: "130px"
         },
         {
-            name: 'Cabang',
+            name: language === null ? eng.cabang : language.cabang,
             selector: row => (row.mbankaccountlist_bank_code === '014' && (row.mbankaccountlist_branch_name.length === 0 || row.mbankaccountlist_branch_name === "")) ? "-" : row.mbankaccountlist_branch_name,
             width: "280px"
         },
         {
-            name: 'No Rekening',
+            name: language === null ? eng.noRek : language.noRek,
             selector: row => row.mbankaccountlist_number,
             width: "150px"
         },
         {
-            name: 'Nama Pemilik Rekening',
+            name: language === null ? eng.namaPemilikRek : language.namaPemilikRek,
             selector: row => row.mbankaccountlist_name,
         },
     ]
@@ -1876,42 +1934,42 @@ function DisbursementPage() {
 
     const columnsBulkExcel = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.no,
             width: "67px"
         },
         {
-            name: 'Bank Tujuan*',
-            selector: row => row["Bank Tujuan*"],
+            name: `${language === null ? eng.bankTujuan : language.bankTujuan}*`,
+            selector: row => row[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)],
             width: "180px"
         },
         {
-            name: 'Cabang*',
-            selector: row => row["Cabang*"],
+            name: `${language === null ? eng.cabang : language.cabang}*`,
+            selector: row => row[(language === null ? eng.cabangStar : language.cabangStar)],
             width: "250px"
         },
         {
-            name: 'No. Rekening Tujuan*',
-            selector: row => row["No. Rekening Tujuan*"],
+            name: `${language === null ? eng.noRekTujuan : language.noRekTujuan}*`,
+            selector: row => row[(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)],
         },
         {
-            name: 'Nama Pemilik Rekening*',
-            selector: row => row["Nama Pemilik Rekening*"],
+            name: `${language === null ? eng.namaPemilikRek : language.namaPemilikRek}*`,
+            selector: row => row[(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)],
             width: '250px'
         },
         {
-            name: 'Nominal Disbursement*',
-            selector: row => convertToRupiah(row["Nominal Disbursement*"], true, 2),
+            name: `${language === null ? eng.nominalDisburse : language.nominalDisburse}*`,
+            selector: row => convertToRupiah(row[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)], true, 2),
             width: '250px'
         },
         {
-            name: 'Email Penerima',
-            selector: row => row["Email Penerima"],
+            name: `${language === null ? eng.emailPenerima : language.emailPenerima}`,
+            selector: row => row[(language === null ? eng.emailPenerimaStarAlpabet : language.emailPenerimaStarAlpabet)],
             width: '250px'
         },
         {
-            name: 'Catatan',
-            selector: row => row.Catatan,
+            name: language === null ? eng.catatan : language.catatan,
+            selector: row => row[(language === null ? eng.catatanStarAlpabet : language.catatanStarAlpabet)],
             width: '250px'
         }
     ]
@@ -2030,6 +2088,7 @@ function DisbursementPage() {
 
     const handleRowClicked = (row, enable) => {
         setAlertSaldo(false)
+        setFilterTextBank('')
         filterItemsBank.forEach(item => {
             if (enable === true) {
                 if (row === item.mbank_code) {
@@ -2169,7 +2228,7 @@ function DisbursementPage() {
             nominal: e
         })
     }
-    
+
     // console.log(inputData.bankName,"bankName");
     // console.log(inputData.bankCode,"bankCode");
     // console.log(inputRekening.bankNameRek,"bankNameRek");
@@ -2181,7 +2240,7 @@ function DisbursementPage() {
     // console.log(isChecked,"saveAcc");
     // console.log(dataDisburse,"dataDisburse");
     // console.log(allFee, "all fee");
-    
+
     function handleChangeRek(e) {
         // if (e.target.name === 'bankNameRek' && e.target.value.length <= 20) {
         //     setAlertSaldo(false)
@@ -2204,7 +2263,7 @@ function DisbursementPage() {
     }
 
 //    var sisa = ((getBalance) - (sum(allNominal) + sum(allFee)))
-   
+
 //    console.log(sisa, "sisa");
 
     function saveNewDisburse (
@@ -2219,20 +2278,107 @@ function DisbursementPage() {
         catatan,
         saveAcc,
         allBalance,
-        allHoldBalance
+        allHoldBalance,
+        bankFee
     ) {
-        // console.log('onclick tambah');
+        let alertCount = 0
+        if (bankNameTujuan.length === 0 && bankCodeTujuan.length === 0) {
+            setAlertSaldo(false)
+            setAlertMinSaldo(false)
+            setAlertMaxSaldo(false)
+            setAlertBankTujuan(true)
+            alertCount++
+        } else {
+            bankFee.forEach(item => {
+                if (bankCodeTujuan === "014" && item.mpaytype_bank_code === "014") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                } else if (bankCodeTujuan === "011" && item.mpaytype_bank_code === "011") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                } else if ((bankCodeTujuan !== "014" && bankCodeTujuan !== "011") && (item.mpaytype_bank_code !== "014" && item.mpaytype_bank_code !== "011")) {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                }
+            })
+        }
         if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
             setErrMsgEmail(true)
+            alertCount++
             return
         }
-
         if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
             setAlertNotValid(true)
+            alertCount++
             return
         } else {
             setAlertNotValid(false)
-            
         }
         // if (bankCodeTujuan !== "014") {
         // } else {
@@ -2248,18 +2394,339 @@ function DisbursementPage() {
         })
         // let sisaAllSaldoTemp = 0
         // console.log(nominal <= balanceBank.mpartballchannel_balance, 'masuk0');
-        if (nominal <= allBalance) {
-            // console.log('masuk1');
+        if (alertCount === 0) {
+            if (nominal <= allBalance) {
+                // console.log('masuk1');
+                setAlertSaldo(false)
+                let sameFlag = 0
+                dataDisburse.forEach((val) => {
+                    if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
+                        sameFlag++
+                    }
+                })
+                if (sameFlag === 0) {
+                    // console.log('masuk2');
+                    setShowModalDuplikasi(false)
+                    const result = feeBank.find((item) => {
+                        if (bankCodeTujuan === "011") {
+                            return item.mpaytype_bank_code === bankCodeTujuan
+                        } else {
+                            bankCodeTujuan = "BIF"
+                            return item.mpaytype_bank_code === bankCodeTujuan
+                        }
+                    })
+                    if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                        setAlertSaldo(true)
+                    } else {
+                        const newData = {
+                            number: number,
+                            bankNameTujuan: bankNameTujuan,
+                            bankCodeTujuan: inputData.bankCode,
+                            cabang: cabang,
+                            noRek : noRek,
+                            nameRek: nameRek,
+                            nominal: Number(nominal),
+                            emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                            catatan: catatan.length !== 0 ? catatan : "",
+                            saveAcc: saveAcc,
+                            feeTotal: result.fee_total
+                        }
+                        setSisaAllSaldoTempManual((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total))
+                        // setSisaSaldoAlokasiPerBank({
+                        //     ...sisaSaldoAlokasiPerBank,
+                        //     danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
+                        // })
+                        setAllFee([...allFee, result.fee_total])
+                        setDataDisburse([...dataDisburse, newData])
+                        setAllNominal([...allNominal, Number(nominal)])
+                        setInputData({
+                            bankName: "",
+                            bankCode: "",
+                        })
+                        setInputRekening({
+                            bankNameRek: "",
+                            bankNumberRek: ""
+                        })
+                        setInputHandle({
+                            bankCabang: "",
+                            nominal: "",
+                            emailPenerima: "",
+                            catatan: ""
+                        })
+                        setAlertSaldo(false)
+                        setIsChecked(false)
+                    }
+                    // if (bankCodeTujuan === '014') {
+                    //     // console.log('masuk3');
+                    //     if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                    //         // console.log(sisaSaldoAlokasiPerBank.bca, 'sisaSaldoAlokasiPerBank.bca');
+                    //         // console.log(balanceBank.mpartballchannel_balance, 'balanceBank.mpartballchannel_balance');
+                    //         // console.log(balanceBank.hold_balance, 'balanceBank.hold_balance');
+                    //         // console.log(Number(nominal) + result.fee_total, 'Number(nominal) + result.fee_total');
+                    //         // console.log(Number(nominal), 'Number(nominal)');
+                    //         // console.log(result.fee_total, 'result.fee_total');
+                    //         setAlertSaldo(true)
+                    //     } else {
+                    //         const newData = {
+                    //             number: number,
+                    //             bankNameTujuan: bankNameTujuan,
+                    //             bankCodeTujuan: inputData.bankCode,
+                    //             cabang: (cabang.length === 0 || cabang === "") ? "-" : cabang,
+                    //             noRek : noRek,
+                    //             nameRek: nameRek,
+                    //             nominal: Number(nominal),
+                    //             emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                    //             catatan: catatan.length !== 0 ? catatan : "",
+                    //             saveAcc: saveAcc,
+                    //             feeTotal: result.fee_total
+                    //         }
+                    //         setSisaSaldoAlokasiPerBank({
+                    //             ...sisaSaldoAlokasiPerBank,
+                    //             bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
+                    //         })
+                    //         setAllFee([...allFee, result.fee_total])
+                    //         setDataDisburse([...dataDisburse, newData])
+                    //         setAllNominal([...allNominal, Number(nominal)])
+                    //         setInputData({
+                    //             bankName: "",
+                    //             bankCode: "",
+                    //         })
+                    //         setInputRekening({
+                    //             bankNameRek: "",
+                    //             bankNumberRek: ""
+                    //         })
+                    //         setInputHandle({
+                    //             bankCabang: "",
+                    //             nominal: "",
+                    //             emailPenerima: "",
+                    //             catatan: ""
+                    //         })
+                    //         setAlertSaldo(false)
+                    //         setIsChecked(false)
+                    //     }
+                    // } else if (bankCodeTujuan === '011') {
+                    //     if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                    //         setAlertSaldo(true)
+                    //     } else {
+                    //         const newData = {
+                    //             number: number,
+                    //             bankNameTujuan: bankNameTujuan,
+                    //             bankCodeTujuan: inputData.bankCode,
+                    //             cabang: cabang,
+                    //             noRek : noRek,
+                    //             nameRek: nameRek,
+                    //             nominal: Number(nominal),
+                    //             emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                    //             catatan: catatan.length !== 0 ? catatan : "",
+                    //             saveAcc: saveAcc,
+                    //             feeTotal: result.fee_total
+                    //         }
+                    //         setSisaSaldoAlokasiPerBank({
+                    //             ...sisaSaldoAlokasiPerBank,
+                    //             danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
+                    //         })
+                    //         setAllFee([...allFee, result.fee_total])
+                    //         setDataDisburse([...dataDisburse, newData])
+                    //         setAllNominal([...allNominal, Number(nominal)])
+                    //         setInputData({
+                    //             bankName: "",
+                    //             bankCode: "",
+                    //         })
+                    //         setInputRekening({
+                    //             bankNameRek: "",
+                    //             bankNumberRek: ""
+                    //         })
+                    //         setInputHandle({
+                    //             bankCabang: "",
+                    //             nominal: "",
+                    //             emailPenerima: "",
+                    //             catatan: ""
+                    //         })
+                    //         setAlertSaldo(false)
+                    //         setIsChecked(false)
+                    //     }
+                    // } else {
+                    //     if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                    //         setAlertSaldo(true)
+                    //     } else {
+                    //         const newData = {
+                    //             number: number,
+                    //             bankNameTujuan: bankNameTujuan,
+                    //             bankCodeTujuan: inputData.bankCode,
+                    //             cabang: cabang,
+                    //             noRek : noRek,
+                    //             nameRek: nameRek,
+                    //             nominal: Number(nominal),
+                    //             emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
+                    //             catatan: catatan.length !== 0 ? catatan : "",
+                    //             saveAcc: saveAcc,
+                    //             feeTotal: result.fee_total
+                    //         }
+                    //         setSisaSaldoAlokasiPerBank({
+                    //             ...sisaSaldoAlokasiPerBank,
+                    //             bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
+                    //         })
+                    //         setAllFee([...allFee, result.fee_total])
+                    //         setDataDisburse([...dataDisburse, newData])
+                    //         setAllNominal([...allNominal, Number(nominal)])
+                    //         setInputData({
+                    //             bankName: "",
+                    //             bankCode: "",
+                    //         })
+                    //         setInputRekening({
+                    //             bankNameRek: "",
+                    //             bankNumberRek: ""
+                    //         })
+                    //         setInputHandle({
+                    //             bankCabang: "",
+                    //             nominal: "",
+                    //             emailPenerima: "",
+                    //             catatan: ""
+                    //         })
+                    //         setAlertSaldo(false)
+                    //         setIsChecked(false)
+                    //     }
+                    // }
+                } else {
+                    setShowModalDuplikasi(true)
+                }
+            } else {
+                setAlertSaldo(true)
+            }
+        }
+    }
+
+    function lanjutSaveNew (
+        number,
+        bankNameTujuan,
+        bankCodeTujuan,
+        cabang,
+        noRek,
+        nameRek,
+        nominal,
+        emailPenerima,
+        catatan,
+        saveAcc,
+        allBalance,
+        allHoldBalance,
+        bankFee
+    ) {
+        let alertCount = 0
+        if (bankNameTujuan.length === 0 && bankCodeTujuan.length === 0) {
             setAlertSaldo(false)
-            let sameFlag = 0
-            dataDisburse.forEach((val) => {
-                if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
-                    sameFlag++
+            setAlertMinSaldo(false)
+            setAlertMaxSaldo(false)
+            setAlertBankTujuan(true)
+            alertCount++
+        } else {
+            bankFee.forEach(item => {
+                if (bankCodeTujuan === "014" && item.mpaytype_bank_code === "014") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                } else if (bankCodeTujuan === "011" && item.mpaytype_bank_code === "011") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                } else if ((bankCodeTujuan !== "014" && bankCodeTujuan !== "011") && (item.mpaytype_bank_code !== "014" && item.mpaytype_bank_code !== "011")) {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
                 }
             })
-            if (sameFlag === 0) {
-                // console.log('masuk2');
-                setShowModalDuplikasi(false)
+        }
+        if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
+            setErrMsgEmail(true)
+            alertCount++
+            return
+        }
+        if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
+            setAlertNotValid(true)
+            alertCount++
+            return
+        } else {
+            setAlertNotValid(false)
+        }
+        // if (bankCodeTujuan !== "014") {
+        // } else {
+        //     setAlertNotValid(false)
+        // }
+        const balanceBank = balanceDetail.find((item) => {
+            if (bankCodeTujuan === "011") {
+                return item.channel_id === bankCodeTujuan
+            } else {
+                bankCodeTujuan = "BIF"
+                return item.channel_id === bankCodeTujuan
+
+            }
+        })
+        // let sisaAllSaldoTemp = 0
+        if (alertCount === 0) {
+            if (nominal <= allBalance) {
+                setAlertSaldo(false)
                 const result = feeBank.find((item) => {
                     if (bankCodeTujuan === "011") {
                         return item.mpaytype_bank_code === bankCodeTujuan
@@ -2306,18 +2773,11 @@ function DisbursementPage() {
                         emailPenerima: "",
                         catatan: ""
                     })
-                    setAlertSaldo(false)
                     setIsChecked(false)
+                    setShowModalDuplikasi(false)
                 }
                 // if (bankCodeTujuan === '014') {
-                //     // console.log('masuk3');
                 //     if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                //         // console.log(sisaSaldoAlokasiPerBank.bca, 'sisaSaldoAlokasiPerBank.bca');
-                //         // console.log(balanceBank.mpartballchannel_balance, 'balanceBank.mpartballchannel_balance');
-                //         // console.log(balanceBank.hold_balance, 'balanceBank.hold_balance');
-                //         // console.log(Number(nominal) + result.fee_total, 'Number(nominal) + result.fee_total');
-                //         // console.log(Number(nominal), 'Number(nominal)');
-                //         // console.log(result.fee_total, 'result.fee_total');
                 //         setAlertSaldo(true)
                 //     } else {
                 //         const newData = {
@@ -2354,8 +2814,8 @@ function DisbursementPage() {
                 //             emailPenerima: "",
                 //             catatan: ""
                 //         })
-                //         setAlertSaldo(false)
                 //         setIsChecked(false)
+                //         setShowModalDuplikasi(false)
                 //     }
                 // } else if (bankCodeTujuan === '011') {
                 //     if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
@@ -2395,8 +2855,8 @@ function DisbursementPage() {
                 //             emailPenerima: "",
                 //             catatan: ""
                 //         })
-                //         setAlertSaldo(false)
                 //         setIsChecked(false)
+                //         setShowModalDuplikasi(false)
                 //     }
                 // } else {
                 //     if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
@@ -2436,231 +2896,14 @@ function DisbursementPage() {
                 //             emailPenerima: "",
                 //             catatan: ""
                 //         })
-                //         setAlertSaldo(false)
                 //         setIsChecked(false)
+                //         setShowModalDuplikasi(false)
                 //     }
                 // }
-            } else {
-                setShowModalDuplikasi(true)
-            }
-        } else {
-            setAlertSaldo(true)
-        }
-    }
 
-    function lanjutSaveNew (
-        number,
-        bankNameTujuan,
-        bankCodeTujuan,
-        cabang,
-        noRek,
-        nameRek,
-        nominal,
-        emailPenerima,
-        catatan,
-        saveAcc,
-        allBalance,
-        allHoldBalance
-    ) {
-        if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
-            setAlertNotValid(true)
-            return
-        } else {
-            setAlertNotValid(false)
-            
-        }
-        // if (bankCodeTujuan !== "014") {
-        // } else {
-        //     setAlertNotValid(false)
-        // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
             } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
-
-            }
-        })
-        // let sisaAllSaldoTemp = 0
-        if (nominal <= allBalance) {
-            setAlertSaldo(false)
-            const result = feeBank.find((item) => {
-                if (bankCodeTujuan === "011") {
-                    return item.mpaytype_bank_code === bankCodeTujuan
-                } else {
-                    bankCodeTujuan = "BIF"
-                    return item.mpaytype_bank_code === bankCodeTujuan
-                }
-            })
-            if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
                 setAlertSaldo(true)
-            } else {
-                const newData = {
-                    number: number,
-                    bankNameTujuan: bankNameTujuan,
-                    bankCodeTujuan: inputData.bankCode,
-                    cabang: cabang,
-                    noRek : noRek,
-                    nameRek: nameRek,
-                    nominal: Number(nominal),
-                    emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
-                    catatan: catatan.length !== 0 ? catatan : "",
-                    saveAcc: saveAcc,
-                    feeTotal: result.fee_total
-                }
-                setSisaAllSaldoTempManual((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total))
-                // setSisaSaldoAlokasiPerBank({
-                //     ...sisaSaldoAlokasiPerBank,
-                //     danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
-                // })
-                setAllFee([...allFee, result.fee_total])
-                setDataDisburse([...dataDisburse, newData])
-                setAllNominal([...allNominal, Number(nominal)])
-                setInputData({
-                    bankName: "",
-                    bankCode: "",
-                })
-                setInputRekening({
-                    bankNameRek: "",
-                    bankNumberRek: ""
-                })
-                setInputHandle({
-                    bankCabang: "",
-                    nominal: "",
-                    emailPenerima: "",
-                    catatan: ""
-                })
-                setIsChecked(false)
-                setShowModalDuplikasi(false)
             }
-            // if (bankCodeTujuan === '014') {
-            //     if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-            //         setAlertSaldo(true)
-            //     } else {
-            //         const newData = {
-            //             number: number,
-            //             bankNameTujuan: bankNameTujuan,
-            //             bankCodeTujuan: inputData.bankCode,
-            //             cabang: (cabang.length === 0 || cabang === "") ? "-" : cabang,
-            //             noRek : noRek,
-            //             nameRek: nameRek,
-            //             nominal: Number(nominal),
-            //             emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
-            //             catatan: catatan.length !== 0 ? catatan : "",
-            //             saveAcc: saveAcc,
-            //             feeTotal: result.fee_total
-            //         }
-            //         setSisaSaldoAlokasiPerBank({
-            //             ...sisaSaldoAlokasiPerBank,
-            //             bca: (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
-            //         })
-            //         setAllFee([...allFee, result.fee_total])
-            //         setDataDisburse([...dataDisburse, newData])
-            //         setAllNominal([...allNominal, Number(nominal)])
-            //         setInputData({
-            //             bankName: "",
-            //             bankCode: "",
-            //         })
-            //         setInputRekening({
-            //             bankNameRek: "",
-            //             bankNumberRek: ""
-            //         })
-            //         setInputHandle({
-            //             bankCabang: "",
-            //             nominal: "",
-            //             emailPenerima: "",
-            //             catatan: ""
-            //         })
-            //         setIsChecked(false)
-            //         setShowModalDuplikasi(false)
-            //     }
-            // } else if (bankCodeTujuan === '011') {
-            //     if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-            //         setAlertSaldo(true)
-            //     } else {
-            //         const newData = {
-            //             number: number,
-            //             bankNameTujuan: bankNameTujuan,
-            //             bankCodeTujuan: inputData.bankCode,
-            //             cabang: cabang,
-            //             noRek : noRek,
-            //             nameRek: nameRek,
-            //             nominal: Number(nominal),
-            //             emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
-            //             catatan: catatan.length !== 0 ? catatan : "",
-            //             saveAcc: saveAcc,
-            //             feeTotal: result.fee_total
-            //         }
-            //         setSisaSaldoAlokasiPerBank({
-            //             ...sisaSaldoAlokasiPerBank,
-            //             danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
-            //         })
-            //         setAllFee([...allFee, result.fee_total])
-            //         setDataDisburse([...dataDisburse, newData])
-            //         setAllNominal([...allNominal, Number(nominal)])
-            //         setInputData({
-            //             bankName: "",
-            //             bankCode: "",
-            //         })
-            //         setInputRekening({
-            //             bankNameRek: "",
-            //             bankNumberRek: ""
-            //         })
-            //         setInputHandle({
-            //             bankCabang: "",
-            //             nominal: "",
-            //             emailPenerima: "",
-            //             catatan: ""
-            //         })
-            //         setIsChecked(false)
-            //         setShowModalDuplikasi(false)
-            //     }
-            // } else {
-            //     if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-            //         setAlertSaldo(true)
-            //     } else {
-            //         const newData = {
-            //             number: number,
-            //             bankNameTujuan: bankNameTujuan,
-            //             bankCodeTujuan: inputData.bankCode,
-            //             cabang: cabang,
-            //             noRek : noRek,
-            //             nameRek: nameRek,
-            //             nominal: Number(nominal),
-            //             emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
-            //             catatan: catatan.length !== 0 ? catatan : "",
-            //             saveAcc: saveAcc,
-            //             feeTotal: result.fee_total
-            //         }
-            //         setSisaSaldoAlokasiPerBank({
-            //             ...sisaSaldoAlokasiPerBank,
-            //             bifast: (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
-            //         })
-            //         setAllFee([...allFee, result.fee_total])
-            //         setDataDisburse([...dataDisburse, newData])
-            //         setAllNominal([...allNominal, Number(nominal)])
-            //         setInputData({
-            //             bankName: "",
-            //             bankCode: "",
-            //         })
-            //         setInputRekening({
-            //             bankNameRek: "",
-            //             bankNumberRek: ""
-            //         })
-            //         setInputHandle({
-            //             bankCabang: "",
-            //             nominal: "",
-            //             emailPenerima: "",
-            //             catatan: ""
-            //         })
-            //         setIsChecked(false)
-            //         setShowModalDuplikasi(false)
-            //     }
-            // }
-            
-        } else {
-            setAlertSaldo(true)
         }
     }
 
@@ -2698,19 +2941,108 @@ function DisbursementPage() {
         saveAcc,
         dataDisburse,
         allBalance,
-        allHoldBalance
+        allHoldBalance,
+        bankFee
     ) {
-        
+        let alertCount = 0
+        if (bankNameTujuan.length === 0 && bankCodeTujuan.length === 0) {
+            setAlertSaldo(false)
+            setAlertMinSaldo(false)
+            setAlertMaxSaldo(false)
+            setAlertBankTujuan(true)
+            alertCount++
+            // return
+        } else {
+            bankFee.forEach(item => {
+                if (bankCodeTujuan === "014" && item.mpaytype_bank_code === "014") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                } else if (bankCodeTujuan === "011" && item.mpaytype_bank_code === "011") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                } else if ((bankCodeTujuan !== "014" && bankCodeTujuan !== "011") && (item.mpaytype_bank_code !== "014" && item.mpaytype_bank_code !== "011")) {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                }
+            })
+        }
         if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
             setErrMsgEmail(true)
+            alertCount++
             return
         }
         if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
             setAlertNotValid(true)
+            alertCount++
             return
         } else {
             setAlertNotValid(false)
-            
         }
         // if (bankCodeTujuan !== "014") {
         // } else {
@@ -2725,17 +3057,351 @@ function DisbursementPage() {
             }
         })
         // let sisaAllSaldoTemp = 0
-        if (nominal <= allBalance) {
+        if (alertCount === 0) {
+            if (nominal <= allBalance) {
+                setAlertSaldo(false)
+                let sameFlag = 0
+                const results = dataDisburse.filter(res => res.number !== number)
+                results.forEach((val) => {
+                    if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
+                        sameFlag++
+                    }
+                })
+                if (sameFlag === 0) {
+                    setShowModalDuplikasi(false)
+                    const finding = dataDisburse.findIndex((object) => {
+                        return object.number === number
+                    })
+                    const result = feeBank.find((item) => {
+                        if (bankCodeTujuan === "011") {
+                            return item.mpaytype_bank_code === bankCodeTujuan
+                        } else {
+                            bankCodeTujuan = "BIF"
+                            return item.mpaytype_bank_code === bankCodeTujuan
+                        }
+                    })
+                    const dataLama = dataDisburse.find((item) => item.number === number);
+
+                    if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
+                        if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            setAlertSaldo(false)
+                            setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
+                            // setSisaSaldoAlokasiPerBank({
+                            //     ...sisaSaldoAlokasiPerBank,
+                            //     [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                            // })
+                        }
+                        // if (bankCodeTujuan === '014') {
+                        //     if (Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                        //         setAlertSaldo(true)
+                        //         return
+                        //     } else {
+                        //         setAlertSaldo(false)
+                        //         setSisaSaldoAlokasiPerBank({
+                        //             ...sisaSaldoAlokasiPerBank,
+                        //             [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                        //         })
+                        //     }
+                        // } else if (bankCodeTujuan === "011") {
+                        //     if (Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                        //         setAlertSaldo(true)
+                        //         return
+                        //     } else {
+                        //         setAlertSaldo(false)
+                        //         setSisaSaldoAlokasiPerBank({
+                        //             ...sisaSaldoAlokasiPerBank,
+                        //             [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                        //         })
+                        //     }
+                        // } else {
+                        //     if (Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                        //         setAlertSaldo(true)
+                        //         return
+                        //     } else {
+                        //         setAlertSaldo(false)
+                        //         setSisaSaldoAlokasiPerBank({
+                        //             ...sisaSaldoAlokasiPerBank,
+                        //             [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
+                        //         })
+                        //     }
+                        // }
+                    } else {
+                        if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                            setAlertSaldo(true)
+                            return
+                        } else {
+                            setAlertSaldo(false)
+                            setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
+                            // setSisaSaldoAlokasiPerBank({
+                            //     ...sisaSaldoAlokasiPerBank,
+                            //     bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
+                            //     [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
+                            // })
+                        }
+                        // if (dataLama.bankCodeTujuan === '014') {
+                        //     if (bankCodeTujuan === "011") {
+                        //         if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        //             setAlertSaldo(true)
+                        //             return
+                        //         } else {
+                        //             setAlertSaldo(false)
+                        //             setSisaSaldoAlokasiPerBank({
+                        //                 ...sisaSaldoAlokasiPerBank,
+                        //                 bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
+                        //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
+                        //             })
+                        //         }
+                        //     } else {
+                        //         if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        //             setAlertSaldo(true)
+                        //             return
+                        //         } else {
+                        //             setAlertSaldo(false)
+                        //             setSisaSaldoAlokasiPerBank({
+                        //                 ...sisaSaldoAlokasiPerBank,
+                        //                 bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
+                        //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total)
+                        //             })
+                        //         }
+                        //     }
+                        // } else if (dataLama.bankCodeTujuan === '011') {
+                        //     if (bankCodeTujuan === "014") {
+                        //         if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        //             setAlertSaldo(true)
+                        //             return
+                        //         } else {
+                        //             setAlertSaldo(false)
+                        //             setSisaSaldoAlokasiPerBank({
+                        //                 ...sisaSaldoAlokasiPerBank,
+                        //                 danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
+                        //                 [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
+                        //             })
+                        //         }
+                        //     } else {
+                        //         if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        //             setAlertSaldo(true)
+                        //             return
+                        //         } else {
+                        //             setAlertSaldo(false)
+                        //             setSisaSaldoAlokasiPerBank({
+                        //                 ...sisaSaldoAlokasiPerBank,
+                        //                 danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
+                        //                 [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
+                        //             })
+                        //         }
+                        //     }
+                        // } else {
+                        //     if (bankCodeTujuan === "014") {
+                        //         if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        //             setAlertSaldo(true)
+                        //             return
+                        //         } else {
+                        //             setAlertSaldo(false)
+                        //             setSisaSaldoAlokasiPerBank({
+                        //                 ...sisaSaldoAlokasiPerBank,
+                        //                 bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
+                        //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
+                        //             })
+                        //         }
+                        //     } else {
+                        //         if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
+                        //             setAlertSaldo(true)
+                        //             return
+                        //         } else {
+                        //             setAlertSaldo(false)
+                        //             setSisaSaldoAlokasiPerBank({
+                        //                 ...sisaSaldoAlokasiPerBank,
+                        //                 bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
+                        //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
+                        //             })
+                        //         }
+                        //     }
+                        // }
+                    }
+
+                    if (finding >= 0) {
+                        allNominal[finding] = Number(nominal)
+                        allFee[finding] = result.fee_total
+                    }
+                    setAllFee([...allFee])
+                    const target = dataDisburse.find((item) => item.number === number)
+                    const source = {
+                        number: number,
+                        bankNameTujuan: bankNameTujuan,
+                        bankCodeTujuan: inputData.bankCode,
+                        cabang: (cabang.length === 0 || cabang === "") ? "-" : cabang,
+                        noRek : noRek,
+                        nameRek: nameRek,
+                        nominal: Number(nominal),
+                        emailPenerima: emailPenerima,
+                        catatan: catatan,
+                        saveAcc: saveAcc,
+                        feeTotal: result.fee_total
+                    };
+                    Object.assign(target, source)
+                    setDataDisburse([...dataDisburse])
+                    setAllNominal([...allNominal])
+                    setEditTabelDisburse(false)
+                    setInputData({
+                        bankName: "",
+                        bankCode: "",
+                    })
+                    setInputRekening({
+                        bankNameRek: "",
+                        bankNumberRek: ""
+                    })
+                    setInputHandle({
+                        bankCabang: "",
+                        nominal: "",
+                        emailPenerima: "",
+                        catatan: ""
+                    })
+                    setNumbering(0)
+                    setIsChecked(false)
+
+                } else {
+                    setShowModalDuplikasi(true)
+                }
+            } else {
+                setAlertSaldo(true)
+            }
+        }
+    }
+
+    function lanjutSaveEdit (
+        number,
+        bankNameTujuan,
+        bankCodeTujuan,
+        cabang,
+        noRek,
+        nameRek,
+        nominal,
+        emailPenerima,
+        catatan,
+        saveAcc,
+        allBalance,
+        allHoldBalance,
+        bankFee
+    ) {
+        let alertCount = 0
+        if (bankNameTujuan.length === 0 && bankCodeTujuan.length === 0) {
             setAlertSaldo(false)
-            let sameFlag = 0
-            const results = dataDisburse.filter(res => res.number !== number)
-            results.forEach((val) => {
-                if (val.noRek === noRek && Number(val.nominal) === Number(nominal)) {
-                    sameFlag++
+            setAlertMinSaldo(false)
+            setAlertMaxSaldo(false)
+            setAlertBankTujuan(true)
+            alertCount++
+        } else {
+            bankFee.forEach(item => {
+                if (bankCodeTujuan === "014" && item.mpaytype_bank_code === "014") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                } else if (bankCodeTujuan === "011" && item.mpaytype_bank_code === "011") {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
+                } else if ((bankCodeTujuan !== "014" && bankCodeTujuan !== "011") && (item.mpaytype_bank_code !== "014" && item.mpaytype_bank_code !== "011")) {
+                    setMinMaxDisbursement({
+                        ...minMaxDisbursement,
+                        minDisbursement: item.mpartfitur_min_amount_trx,
+                        maxDisbursement: item.mpartfitur_max_amount_trx
+                    })
+                    if (Number(nominal) < item.mpartfitur_min_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(true) // kena minimal nominal transaksi
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else if (Number(nominal) > item.mpartfitur_max_amount_trx) {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(true) // kena maksimal nominal transaksi
+                        setAlertBankTujuan(false)
+                        alertCount++
+                    } else {
+                        setAlertSaldo(false)
+                        setAlertMinSaldo(false)
+                        setAlertMaxSaldo(false)
+                        setAlertBankTujuan(false)
+                        alertCount = 0
+                    }
                 }
             })
-            if (sameFlag === 0) {
-                setShowModalDuplikasi(false)
+        }
+        if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
+            setErrMsgEmail(true)
+            alertCount++
+            return
+        }
+        if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
+            setAlertNotValid(true)
+            alertCount++
+            return
+        } else {
+            setAlertNotValid(false)
+        }
+        // if (bankCodeTujuan !== "014") {
+        // } else {
+        //     setAlertNotValid(false)
+        // }
+        const balanceBank = balanceDetail.find((item) => {
+            if (bankCodeTujuan === "011") {
+                return item.channel_id === bankCodeTujuan
+            } else {
+                bankCodeTujuan = "BIF"
+                return item.channel_id === bankCodeTujuan
+            }
+        })
+        // let sisaAllSaldoTemp = 0
+        if (alertCount === 0) {
+            if (nominal <= allBalance) {
+                setAlertSaldo(false)
+
                 const finding = dataDisburse.findIndex((object) => {
                     return object.number === number
                 })
@@ -2748,7 +3414,8 @@ function DisbursementPage() {
                     }
                 })
                 const dataLama = dataDisburse.find((item) => item.number === number);
-                
+
+
                 if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
                     if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
                         setAlertSaldo(true)
@@ -2805,7 +3472,7 @@ function DisbursementPage() {
                         // setSisaSaldoAlokasiPerBank({
                         //     ...sisaSaldoAlokasiPerBank,
                         //     bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
-                        //     [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
+                        //     [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
                         // })
                     }
                     // if (dataLama.bankCodeTujuan === '014') {
@@ -2818,7 +3485,7 @@ function DisbursementPage() {
                     //             setSisaSaldoAlokasiPerBank({
                     //                 ...sisaSaldoAlokasiPerBank,
                     //                 bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
-                    //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
+                    //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total)
                     //             })
                     //         }
                     //     } else {
@@ -2830,7 +3497,7 @@ function DisbursementPage() {
                     //             setSisaSaldoAlokasiPerBank({
                     //                 ...sisaSaldoAlokasiPerBank,
                     //                 bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
-                    //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
+                    //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
                     //             })
                     //         }
                     //     }
@@ -2844,7 +3511,7 @@ function DisbursementPage() {
                     //             setSisaSaldoAlokasiPerBank({
                     //                 ...sisaSaldoAlokasiPerBank,
                     //                 danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
-                    //                 [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
+                    //                 [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
                     //             })
                     //         }
                     //     } else {
@@ -2856,7 +3523,7 @@ function DisbursementPage() {
                     //             setSisaSaldoAlokasiPerBank({
                     //                 ...sisaSaldoAlokasiPerBank,
                     //                 danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
-                    //                 [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
+                    //                 [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
                     //             })
                     //         }
                     //     }
@@ -2870,7 +3537,7 @@ function DisbursementPage() {
                     //             setSisaSaldoAlokasiPerBank({
                     //                 ...sisaSaldoAlokasiPerBank,
                     //                 bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
-                    //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
+                    //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
                     //             })
                     //         }
                     //     } else {
@@ -2882,14 +3549,14 @@ function DisbursementPage() {
                     //             setSisaSaldoAlokasiPerBank({
                     //                 ...sisaSaldoAlokasiPerBank,
                     //                 bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
-                    //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
+                    //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total)
                     //             })
                     //         }
                     //     }
                     // }
                 }
 
-                if (finding >= 0) {
+                if (finding) {
                     allNominal[finding] = Number(nominal)
                     allFee[finding] = result.fee_total
                 }
@@ -2908,8 +3575,10 @@ function DisbursementPage() {
                     saveAcc: saveAcc,
                     feeTotal: result.fee_total
                 };
+
                 Object.assign(target, source)
                 setDataDisburse([...dataDisburse])
+
                 setAllNominal([...allNominal])
                 setEditTabelDisburse(false)
                 setInputData({
@@ -2928,256 +3597,10 @@ function DisbursementPage() {
                 })
                 setNumbering(0)
                 setIsChecked(false)
-                
+                setShowModalDuplikasi(false)
             } else {
-                setShowModalDuplikasi(true)
+                setAlertSaldo(true)
             }
-        } else {
-            setAlertSaldo(true)
-        }
-        
-        
-    }
-
-    function lanjutSaveEdit (
-        number,
-        bankNameTujuan,
-        bankCodeTujuan,
-        cabang,
-        noRek,
-        nameRek,
-        nominal,
-        emailPenerima,
-        catatan,
-        saveAcc,
-        allBalance,
-        allHoldBalance
-    ) {
-        if (emailPenerima.length !== 0 && validator.isEmail(emailPenerima) === false) {
-            setErrMsgEmail(true)
-            return
-        }
-        if ((cabang.length !== 0 && (cabang.trim().length === 0)) || (cabang.length !== 0 && (cabang.toLowerCase() === cabang.toUpperCase()))) {
-            setAlertNotValid(true)
-            return
-        } else {
-            setAlertNotValid(false)
-            
-        }
-        // if (bankCodeTujuan !== "014") {
-        // } else {
-        //     setAlertNotValid(false)
-        // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
-            }
-        })
-        // let sisaAllSaldoTemp = 0
-        if (nominal <= allBalance) {
-            setAlertSaldo(false)
-
-            const finding = dataDisburse.findIndex((object) => {
-                return object.number === number
-            })
-            const result = feeBank.find((item) => {
-                if (bankCodeTujuan === "011") {
-                    return item.mpaytype_bank_code === bankCodeTujuan
-                } else {
-                    bankCodeTujuan = "BIF"
-                    return item.mpaytype_bank_code === bankCodeTujuan
-                }
-            })
-            const dataLama = dataDisburse.find((item) => item.number === number);
-
-
-            if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
-                if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                    setAlertSaldo(true)
-                    return
-                } else {
-                    setAlertSaldo(false)
-                    setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
-                    // setSisaSaldoAlokasiPerBank({
-                    //     ...sisaSaldoAlokasiPerBank,
-                    //     [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
-                    // })
-                }
-                // if (bankCodeTujuan === '014') {
-                //     if (Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                //         setAlertSaldo(true)
-                //         return
-                //     } else {
-                //         setAlertSaldo(false)
-                //         setSisaSaldoAlokasiPerBank({
-                //             ...sisaSaldoAlokasiPerBank,
-                //             [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
-                //         })
-                //     }
-                // } else if (bankCodeTujuan === "011") {
-                //     if (Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                //         setAlertSaldo(true)
-                //         return
-                //     } else {
-                //         setAlertSaldo(false)
-                //         setSisaSaldoAlokasiPerBank({
-                //             ...sisaSaldoAlokasiPerBank,
-                //             [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
-                //         })
-                //     }
-                // } else {
-                //     if (Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
-                //         setAlertSaldo(true)
-                //         return
-                //     } else {
-                //         setAlertSaldo(false)
-                //         setSisaSaldoAlokasiPerBank({
-                //             ...sisaSaldoAlokasiPerBank,
-                //             [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
-                //         })
-                //     }
-                // }
-            } else {
-                if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
-                    setAlertSaldo(true)
-                    return
-                } else {
-                    setAlertSaldo(false)
-                    setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
-                    // setSisaSaldoAlokasiPerBank({
-                    //     ...sisaSaldoAlokasiPerBank,
-                    //     bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
-                    //     [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
-                    // })
-                }
-                // if (dataLama.bankCodeTujuan === '014') {
-                //     if (bankCodeTujuan === "011") {
-                //         if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                //             setAlertSaldo(true)
-                //             return
-                //         } else {
-                //             setAlertSaldo(false)
-                //             setSisaSaldoAlokasiPerBank({
-                //                 ...sisaSaldoAlokasiPerBank,
-                //                 bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
-                //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance)) - (Number(nominal) + result.fee_total) 
-                //             })
-                //         }
-                //     } else {
-                //         if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                //             setAlertSaldo(true)
-                //             return
-                //         } else {
-                //             setAlertSaldo(false)
-                //             setSisaSaldoAlokasiPerBank({
-                //                 ...sisaSaldoAlokasiPerBank,
-                //                 bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
-                //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bifast']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
-                //             })
-                //         }
-                //     }
-                // } else if (dataLama.bankCodeTujuan === '011') {
-                //     if (bankCodeTujuan === "014") {
-                //         if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                //             setAlertSaldo(true)
-                //             return
-                //         } else {
-                //             setAlertSaldo(false)
-                //             setSisaSaldoAlokasiPerBank({
-                //                 ...sisaSaldoAlokasiPerBank,
-                //                 danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
-                //                 [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
-                //             })
-                //         }
-                //     } else {
-                //         if ((sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                //             setAlertSaldo(true)
-                //             return
-                //         } else {
-                //             setAlertSaldo(false)
-                //             setSisaSaldoAlokasiPerBank({
-                //                 ...sisaSaldoAlokasiPerBank,
-                //                 danamon: sisaSaldoAlokasiPerBank.danamon + (dataLama.nominal + dataLama.feeTotal),
-                //                 [(bankCodeTujuan === '014') ? 'bca' : 'bifast']: ((bankCodeTujuan === '014') ? (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bifast !== 0 ? sisaSaldoAlokasiPerBank.bifast : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
-                //             })
-                //         }
-                //     }
-                // } else {
-                //     if (bankCodeTujuan === "014") {
-                //         if ((sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                //             setAlertSaldo(true)
-                //             return
-                //         } else {
-                //             setAlertSaldo(false)
-                //             setSisaSaldoAlokasiPerBank({
-                //                 ...sisaSaldoAlokasiPerBank,
-                //                 bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
-                //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
-                //             })
-                //         }
-                //     } else {
-                //         if ((sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total) < 0) {
-                //             setAlertSaldo(true)
-                //             return
-                //         } else {
-                //             setAlertSaldo(false)
-                //             setSisaSaldoAlokasiPerBank({
-                //                 ...sisaSaldoAlokasiPerBank,
-                //                 bifast: sisaSaldoAlokasiPerBank.bifast + (dataLama.nominal + dataLama.feeTotal),
-                //                 [(bankCodeTujuan === '011') ? 'danamon' : 'bca']: ((bankCodeTujuan === '011') ? (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) : (sisaSaldoAlokasiPerBank.bca !== 0 ? sisaSaldoAlokasiPerBank.bca : balanceBank.mpartballchannel_balance - balanceBank.hold_balance)) - (Number(nominal) + result.fee_total) 
-                //             })
-                //         }
-                //     }
-                // }
-            }
-
-            if (finding) {
-                allNominal[finding] = Number(nominal)
-                allFee[finding] = result.fee_total
-            }
-            setAllFee([...allFee])
-            const target = dataDisburse.find((item) => item.number === number)
-            const source = {
-                number: number,
-                bankNameTujuan: bankNameTujuan,
-                bankCodeTujuan: inputData.bankCode,
-                cabang: (cabang.length === 0 || cabang === "") ? "-" : cabang,
-                noRek : noRek,
-                nameRek: nameRek,
-                nominal: Number(nominal),
-                emailPenerima: emailPenerima,
-                catatan: catatan,
-                saveAcc: saveAcc,
-                feeTotal: result.fee_total
-            };
-            
-            Object.assign(target, source)
-            setDataDisburse([...dataDisburse])
-            
-            setAllNominal([...allNominal])
-            setEditTabelDisburse(false)
-            setInputData({
-                bankName: "",
-                bankCode: "",
-            })
-            setInputRekening({
-                bankNameRek: "",
-                bankNumberRek: ""
-            })
-            setInputHandle({
-                bankCabang: "",
-                nominal: "",
-                emailPenerima: "",
-                catatan: ""
-            })
-            setNumbering(0)
-            setIsChecked(false)
-            setShowModalDuplikasi(false)
-        } else {
-            setAlertSaldo(true)
         }
     }
 
@@ -3237,7 +3660,7 @@ function DisbursementPage() {
         let dataExcel = []
         for (let i = 0; i < dataDisburse.length; i++) {
             // dataExcel.push({"bank_code": (isDisburseManual === true ? dataDisburse[i].bankCodeTujuan : dataDisburse[i].bankCode), "branch_name": (isDisburseManual === true ? dataDisburse[i].cabang : dataDisburse[i].cabangBank), "account_number": (isDisburseManual === true ? dataDisburse[i].noRek : dataDisburse[i].noRekening), "account_name": (isDisburseManual === true ? dataDisburse[i].nameRek : dataDisburse[i].ownerName), "amount": (isDisburseManual === true ? dataDisburse[i].nominal : dataDisburse[i].nominalDisbursement), "email": (isDisburseManual === true ? dataDisburse[i].emailPenerima : dataDisburse[i].email), "description": (isDisburseManual === true ? dataDisburse[i].catatan : dataDisburse[i].note), "save_account_number": (isDisburseManual === true ? dataDisburse[i].saveAcc : false)}) //untuk csv
-            dataExcel.push({"bank_code": (isDisburseManual === true ? dataDisburse[i].bankCodeTujuan : dataDisburse[i]["Bank Tujuan*"].slice(0, 3)), "branch_name": (isDisburseManual === true ? dataDisburse[i].cabang : dataDisburse[i]["Cabang*"]), "account_number": (isDisburseManual === true ? dataDisburse[i].noRek : dataDisburse[i]["No. Rekening Tujuan*"]), "account_name": (isDisburseManual === true ? dataDisburse[i].nameRek : dataDisburse[i]["Nama Pemilik Rekening*"]), "amount": (isDisburseManual === true ? dataDisburse[i].nominal : dataDisburse[i]["Nominal Disbursement*"]), "email": (isDisburseManual === true ? dataDisburse[i].emailPenerima : dataDisburse[i]["Email Penerima"]), "description": (isDisburseManual === true ? dataDisburse[i].catatan : dataDisburse[i].Catatan), "save_account_number": (isDisburseManual === true ? dataDisburse[i].saveAcc : false)})
+            dataExcel.push({"bank_code": (isDisburseManual === true ? dataDisburse[i].bankCodeTujuan : dataDisburse[i][(language === null ? eng.bankTujuanStar : language.bankTujuanStar)].slice(0, 3)), "branch_name": (isDisburseManual === true ? dataDisburse[i].cabang : dataDisburse[i][(language === null ? eng.cabangStar : language.cabangStar)]), "account_number": (isDisburseManual === true ? dataDisburse[i].noRek : dataDisburse[i][(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]), "account_name": (isDisburseManual === true ? dataDisburse[i].nameRek : dataDisburse[i][(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)]), "amount": (isDisburseManual === true ? dataDisburse[i].nominal : dataDisburse[i][(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]), "email": (isDisburseManual === true ? dataDisburse[i].emailPenerima : dataDisburse[i][(language === null ? eng.emailPenerima : language.emailPenerima)]), "description": (isDisburseManual === true ? dataDisburse[i].catatan : dataDisburse[i][(language === null ? eng.catatan : language.catatan)]), "save_account_number": (isDisburseManual === true ? dataDisburse[i].saveAcc : false)})
         }
         let workSheet = XLSX.utils.json_to_sheet(dataExcel)
         let workBook = XLSX.utils.book_new();
@@ -3267,7 +3690,7 @@ function DisbursementPage() {
             const auth = "Bearer " + getToken()
             var formData = new FormData()
             formData.append('file_excel', data, 'file_data_karyawan.xlsx')
-            
+
             // var formDataOrigin = new FormData()
             formData.append('file_excel', (isDisburseManual ? data : dataOrigin), 'file_data_karyawan_original_upload.xlsx')
             const headers = {
@@ -3313,7 +3736,8 @@ function DisbursementPage() {
     }
 
     function toReportDisburse () {
-        history.push('/Riwayat Transaksi/disbursement')
+        // history.push(language === null ? '/Riwayat Transaksi/disbursement' : language.flagName === "ID" ? '/Riwayat Transaksi/disbursement' : language.flagName === "EN" ? '/Transaction Report/disbursement' : "/历史交易/disbursement")
+        history.push('/riwayat-transaksi/disbursement')
     }
 
     function pindahHalaman (param) {
@@ -3321,7 +3745,7 @@ function DisbursementPage() {
             if ((dataFromUpload.length !== 0 || dataFromUploadExcel.length !== 0) || errorFound.length !== 0 || labelUpload === `<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
             <div className='pb-4'>
                 <span class="filepond--label-action">
-                    Ganti File
+                    ${language === null ? eng.gantiFile : language.gantiFile}
                 </span>
             </div>`) {
                 setShowModalPindahHalaman(true)
@@ -3371,10 +3795,10 @@ function DisbursementPage() {
             setDataFromUpload([]) // untuk csv
             setDataFromUploadExcel([]) //untuk excel
             setErrorFound([])
-            setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop'>Pilih atau letakkan file Excel (*.csv) kamu di sini. <br/> Pastikan file Excel sudah benar, file yang sudah di-upload dan di-disburse tidak bisa kamu batalkan.</div>
+            setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop'>${language === null ? eng.letakkanFileWithCsv : language.letakkanFileWithCsv}</div>
             <div className='pb-4'>
                 <span class="filepond--label-action">
-                    Upload File
+                    ${language === null ? eng.uploadFile : language.uploadFile}
                 </span>
             </div>`)
         }
@@ -3431,17 +3855,17 @@ function DisbursementPage() {
     }, [])
 
     return (
-        <>  
+        <>
             {
                 showModalStatusDisburse && (responMsg !== 0 && responMsg === 2) &&
                 <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
                     <Toast style={{ width: "900px", backgroundColor: "#383838" }} position="bottom-center" className="text-center">
-                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Disbursement Sedang Diproses. <span style={{ textDecoration: 'underline', cursor: "pointer" }} onClick={() => toReportDisburse()}>Lihat Riwayat Disbursement</span></Toast.Body>
+                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>{language === null ? eng.disburseSedangDiproses : language.disburseSedangDiproses} <span style={{ textDecoration: 'underline', cursor: "pointer" }} onClick={() => toReportDisburse()}>{language === null ? eng.lihatRiwayatDisburse : language.lihatRiwayatDisburse}</span></Toast.Body>
                     </Toast>
                 </div>
             }
             <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/Riwayat Transaksi/va-dan-paylink"}> Laporan</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement</span>
+                <span className='breadcrumbs-span'>{ user_role === "102" ? <Link style={{ cursor: "pointer" }} to={"/riwayat-transaksi/va-dan-paylink"}> {language === null ? eng.laporan : language.laporan}</Link> : <Link style={{ cursor: "pointer" }} to={"/"}>Beranda</Link> }  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.disbursement : language.disbursement}</span>
                 {/* <Row className='mt-1'>
                     {
                         balanceDetail !== 0 &&
@@ -3493,10 +3917,10 @@ function DisbursementPage() {
                 </Row> */}
                 <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
                     <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("manual")} id="detailakuntab">
-                        <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Disbursement Manual</span>
+                        <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">{language === null ? eng.disbursementManual : language.disbursementManual}</span>
                     </div>
                     <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => pindahHalaman("bulk")} id="konfigurasitab">
-                        <span className='menu-detail-akun-span' id="konfigurasispan">Disbursement Bulk</span>
+                        <span className='menu-detail-akun-span' id="konfigurasispan">{language === null ? eng.disbursementBulk : language.disbursementBulk}</span>
                     </div>
                 </div>
                 {
@@ -3507,23 +3931,24 @@ function DisbursementPage() {
                             <div className='base-content mb-4 pb-4'>
                                 <div className='d-flex justify-content-start align-items-center' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
                                     <img src={noteInfo} width="25" height="25" alt="circle_info" />
-                                    <div className='ms-2'>Pastikan data tujuan Disbursement sudah benar, Ezeelink tidak bertanggung jawab atas kesalahan data yang dilakukan.</div>
+                                    <div className='ms-2'>{language === null ? eng.descManualDisburse : language.descManualDisburse}</div>
                                 </div>
                                 <div className='pt-4'>
                                     <Row className='align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            Pilih Bank Tujuan <span style={{ color: "red" }}>*</span>
+                                            {language === null ? eng.pilihBankTujuan : language.pilihBankTujuan} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10} style={{ cursor: "pointer" }} className="position-relative d-flex justify-content-between align-items-center" onClick={() => setShowBank(true)}>
-                                            <Form.Control
-                                                placeholder="Pilih Bank"
+                                            <input
+                                                placeholder={language === null ? eng.pilihBank : language.pilihBank}
                                                 className='input-text-user'
                                                 type='text'
                                                 disabled
-                                                name="bankName" 
+                                                name="bankName"
                                                 value={inputData.bankName}
-                                                style={{ cursor: "pointer",  backgroundColor: "#FFFFFF" }}
+                                                style={{ cursor: "pointer",  backgroundColor: "#FFFFFF", display: "inline-block" }}
                                             />
+                                            <div className="position-absolute right-0 left-0 top-0 bottom-0" ></div>
                                             <div className="position-absolute right-4" ><img src={chevron} alt="time" /></div>
                                         </Col>
                                     </Row>
@@ -3532,17 +3957,17 @@ function DisbursementPage() {
                                         <Col xs={10}>
                                             <div style={{ fontFamily:'Nunito', fontSize: 12, color: "#888888"}} className='d-flex justify-content-start align-items-center'>
                                                 <span className='me-1'><img src={noteIconGrey} alt='icon error' /></span>
-                                                Transfer setelah jam 12 siang untuk bank tujuan selain BCA berpotensi diterima di hari berikutnya
+                                                 {language === null ? eng.descBankTujuan : language.descBankTujuan}
                                             </div>
                                         </Col>
                                     </Row>
                                     <Row className={alertNotValid === true ? `mb-1 align-items-center` : `mb-4 align-items-center`} style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            Cabang <span style={{ color: "red" }}>*</span>
+                                            {language === null ? eng.cabangKhususNonBca : language.cabangKhususNonBca} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
                                             <Form.Control
-                                                placeholder="Masukkan Cabang Bank "
+                                                placeholder={language === null ? eng.placeholderCabangBank : language.placeholderCabangBank}
                                                 type='text'
                                                 className='input-text-user'
                                                 name="bankCabang"
@@ -3559,7 +3984,7 @@ function DisbursementPage() {
                                                 <Col xs={10}>
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Data tidak valid
+                                                        {language === null ? eng.dataTidakValid : language.dataTidakValid}
                                                     </div>
                                                 </Col>
                                             </Row>
@@ -3567,11 +3992,11 @@ function DisbursementPage() {
                                     }
                                     <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            No. Rekening Tujuan <span style={{ color: "red" }}>*</span>
+                                            {language === null ? eng.noRekTujuan : language.noRekTujuan} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
                                             <Form.Control
-                                                placeholder="Masukan No. Rekening Tujuan"
+                                                placeholder={language === null ? eng.placeholderNoRekTujuan : language.placeholderNoRekTujuan}
                                                 type='number'
                                                 className='input-text-user'
                                                 name="bankNumberRek"
@@ -3583,11 +4008,11 @@ function DisbursementPage() {
                                     </Row>
                                     <Row className='align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
-                                            Nama Pemilik Rekening <span style={{ color: "red" }}>*</span>
+                                            {language === null ? eng.namaPemilikRek : language.namaPemilikRek} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
                                             <Form.Control
-                                                placeholder="Masukan Nama Pemilik Rekening"
+                                                placeholder={language === null ? eng.placeholderNamaPemilikRek : language.placeholderNamaPemilikRek}
                                                 type='text'
                                                 className='input-text-user'
                                                 name="bankNameRek"
@@ -3602,7 +4027,7 @@ function DisbursementPage() {
                                             <div className='d-flex align-items-center justify-content-between'>
                                                 <div className='mb-3'>
                                                     <Form.Check
-                                                        label="Simpan ke Daftar Rekening"
+                                                        label={language === null ? eng.simpanKeDaftarRek : language.simpanKeDaftarRek}
                                                         id="statusId"
                                                         onChange={handleChangeCheckBox}
                                                         checked={isChecked}
@@ -3623,15 +4048,15 @@ function DisbursementPage() {
                                                         }}
                                                         onClick={() => setShowDaftarRekening(true)}
                                                     >
-                                                        Lihat Daftar Rekening
+                                                        {language === null ? eng.lihatDaftarRek : language.lihatDaftarRek}
                                                     </button>
                                                 </div>
                                             </div>
                                         </Col>
                                     </Row>
                                     <Row className='align-items-center' style={{ fontSize: 14 }}>
-                                        <Col xs={2} style={{ fontFamily: 'Nunito' }}>    
-                                            Nominal Disbursement <span style={{ color: "red" }}>*</span>
+                                        <Col xs={2} style={{ fontFamily: 'Nunito' }}>
+                                            {language === null ? eng.nominalDisburse : language.nominalDisburse} <span style={{ color: "red" }}>*</span>
                                         </Col>
                                         <Col xs={10}>
                                             <CurrencyInput
@@ -3678,30 +4103,30 @@ function DisbursementPage() {
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
                                                         {/* Saldo Alokasi di {(inputData.bankCode === '014') ? inputData.bankName : (inputData.bankCode === '011') ? inputData.bankName :  `"Other Bank"`} tidak cukup */}
-                                                        Saldo anda tidak cukup
+                                                        {language === null ? eng.saldoAndaTidakCukup : language.saldoAndaTidakCukup}
                                                     </div>
-                                                ) : 
+                                                ) :
                                                 alertMinSaldo === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Minimal disbursement {convertToRupiah(minMaxDisbursement.minDisbursement)}
+                                                        {language === null ? eng.descMinimalDisburse : language.descMinimalDisburse} {convertToRupiah(minMaxDisbursement.minDisbursement)}
                                                     </div>
-                                                ) : 
+                                                ) :
                                                 alertMaxSaldo === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Maksimal disbursement {convertToRupiah(minMaxDisbursement.maxDisbursement)}
+                                                        {language === null ? eng.maksimalDisburse : language.maksimalDisburse} {convertToRupiah(minMaxDisbursement.maxDisbursement)}
                                                     </div>
                                                 ) :
                                                 alertBankTujuan === true ? (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                        Silahkan pilih tujuan bank terlebih dahulu
+                                                        {language === null ? eng.descPilihTujuanBank : language.descPilihTujuanBank}
                                                     </div>
                                                 ) : (
                                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#888888"}} className='text-start'>
                                                         <span className='me-1'><img src={noteInfo} alt='icon info' /></span>
-                                                        Nominal Disbursement tidak boleh mengandung Decimal
+                                                        {language === null ? eng.descNominalDisburse : language.descNominalDisburse}
                                                     </div>
                                                 )
                                             }
@@ -3710,12 +4135,12 @@ function DisbursementPage() {
                                     <Row className='mb-3 align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
                                             <span style={{ fontFamily: "Nunito" }}>
-                                                Email Penerima
+                                                {language === null ? eng.emailPenerima : language.emailPenerima}
                                             </span>
                                         </Col>
                                         <Col xs={10}>
                                             <Form.Control
-                                                placeholder="Masukkan Alamat Email Penerima"
+                                                placeholder={language === null ? eng.placeholderEmailPenerima : language.placeholderEmailPenerima}
                                                 type='text'
                                                 className='input-text-user'
                                                 name="emailPenerima"
@@ -3731,7 +4156,7 @@ function DisbursementPage() {
                                                 !errMsgEmail ? "" :
                                                 <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B"}} className='text-start'>
                                                     <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                                    Format email wajib memakai tanda ‘@’. Contoh: nama@mail.com
+                                                    {language === null ? eng.formatEmail : language.formatEmail}
                                                 </div>
                                             }
                                         </Col>
@@ -3739,13 +4164,13 @@ function DisbursementPage() {
                                     <Row className='mb-4 align-items-center' style={{ fontSize: 14 }}>
                                         <Col xs={2} style={{ fontFamily: 'Nunito' }}>
                                             <span style={{ fontFamily: "Nunito" }}>
-                                                Catatan
+                                                {language === null ? eng.catatan : language.catatan}
                                             </span>
                                         </Col>
                                         <Col xs={10}>
                                             <textarea
                                                 className='input-text-disburs'
-                                                placeholder="Masukkan catatan bila perlu ( Maksimal 25 karakter )"
+                                                placeholder={language === null ? eng.placeholderCatatan : language.placeholderCatatan}
                                                 style={{ width: "100%", padding: 10, borderColor: "#E0E0E0"}}
                                                 name="catatan"
                                                 value={inputHandle.catatan}
@@ -3772,20 +4197,22 @@ function DisbursementPage() {
                                                         inputHandle.catatan,
                                                         isChecked,
                                                         getBalance,
-                                                        totalHoldBalance
+                                                        totalHoldBalance,
+                                                        feeBank
                                                     )}
                                                     className={
-                                                        (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length !== 0) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= minMaxDisbursement.minDisbursement && Number(inputHandle.nominal) <= minMaxDisbursement.maxDisbursement && dataDisburse.length < 10) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
+                                                        (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && inputHandle.bankCabang.length !== 0 && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) !== 0 && Number(inputHandle.nominal) >= minMaxDisbursement.minDisbursement && Number(inputHandle.nominal) <= minMaxDisbursement.maxDisbursement && dataDisburse.length < 10) ? 'btn-ez-disbursement' : 'btn-disbursement-reset'
                                                     }
                                                     disabled={
-                                                        (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length === 0 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < minMaxDisbursement.minDisbursement || Number(inputHandle.nominal) > minMaxDisbursement.maxDisbursement || dataDisburse.length >= 10)
+                                                        (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || inputHandle.bankCabang.length === 0 || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) === 0 || Number(inputHandle.nominal) < minMaxDisbursement.minDisbursement || Number(inputHandle.nominal) > minMaxDisbursement.maxDisbursement || dataDisburse.length >= 10)
                                                     }
+                                                    style={{ width: "40%" }}
                                                 >
                                                     <FontAwesomeIcon
                                                         icon={faPlus}
                                                         style={{ marginRight: 10 }}
                                                     />{" "}
-                                                    Tambah Tujuan Disbursement
+                                                    {language === null ? eng.tambahTujuanDisburse : language.tambahTujuanDisburse}
                                                 </button>  :
                                                 <div className='d-flex justify-content-start align-items-center'>
                                                     <div className='me-1'>
@@ -3806,7 +4233,7 @@ function DisbursementPage() {
                                                                 borderRadius: 6,
                                                             }}
                                                         >
-                                                            Batal
+                                                            {language === null ? eng.batal : language.batal}
                                                         </button>
                                                     </div>
                                                     <div className='ms-1'>
@@ -3838,43 +4265,44 @@ function DisbursementPage() {
                                                                 isChecked,
                                                                 dataDisburse,
                                                                 getBalance,
-                                                                totalHoldBalance
+                                                                totalHoldBalance,
+                                                                feeBank
                                                             )}
                                                             className={
-                                                                (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && (inputData.bankCode === "014" ? (inputHandle.bankCabang.length === 0 || inputHandle.bankCabang.length !== 0) : inputHandle.bankCabang.length >= 4) && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) >= 10000 && dataDisburse.length <= 10) ? 'btn-edit-disbursement' : 'btn-editno-disbursement'
+                                                                (inputData.bankName.length !== 0 && inputData.bankCode.length !== 0 && inputHandle.bankCabang.length !== 0 && inputRekening.bankNameRek.length !== 0 && inputRekening.bankNumberRek.length !== 0 && Number(inputHandle.nominal) !== 0 && Number(inputHandle.nominal) >= minMaxDisbursement.minDisbursement && Number(inputHandle.nominal) <= minMaxDisbursement.maxDisbursement && dataDisburse.length <= 10) ? 'btn-edit-disbursement' : 'btn-editno-disbursement'
                                                             }
                                                             disabled={
-                                                                (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || (inputData.bankCode !== "014" ? inputHandle.bankCabang.length < 4 : null) || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) < 10000 || dataDisburse.length > 10)
+                                                                (inputData.bankName.length === 0 || inputData.bankCode.length === 0 || inputHandle.bankCabang.length === 0 || inputRekening.bankNameRek.length === 0 || inputRekening.bankNumberRek.length === 0 || Number(inputHandle.nominal) === 0 || Number(inputHandle.nominal) < minMaxDisbursement.minDisbursement || Number(inputHandle.nominal) > minMaxDisbursement.maxDisbursement || dataDisburse.length > 10)
                                                             }
                                                         >
-                                                            Simpan
+                                                            {language === null ? eng.simpan : language.simpan}
                                                         </button>
-                                                    </div>  
+                                                    </div>
                                                 </div>
-                                            }      
+                                            }
                                         </Col>
                                     </Row>
                                     {
                                         dataDisburse.length !== 0 ?
-                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'inherit' }}>
                                             <table
                                                 className="table mt-5"
                                                 id="tableInvoice"
                                                 hover
                                             >
                                                 <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                                    <tr 
-                                                        className='ms-3'  
+                                                    <tr
+                                                        className='ms-3'
                                                     >
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Bank Tujuan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Cabang</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No. Rekening Tujuan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nama Pemilik Rekening</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nominal Disbursement</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Email Penerima</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Catatan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Aksi</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.no : language.no}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.bankTujuan : language.bankTujuan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.cabang : language.cabang}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.noRekTujuan : language.noRekTujuan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.nominalDisburse : language.nominalDisburse}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.emailPenerima : language.emailPenerima}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.catatan : language.catatan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.aksi : language.aksi}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -3934,52 +4362,52 @@ function DisbursementPage() {
                                                 </tbody>
                                             </table>
                                         </div> :
-                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'max-content' }}>
+                                        <div className='scroll-confirm' style={{ overflowX: 'auto', maxWidth: 'inherit' }}>
                                             <table
                                                 className="table text-center mt-5"
                                                 id="tableInvoice"
                                                 hover
                                             >
                                                 <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                                    <tr 
-                                                        
+                                                    <tr
+
                                                     >
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Bank Tujuan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Cabang</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No. Rekening Tujuan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nama Pemilik Rekening</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nominal Disbursement</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Email Penerima</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Catatan</th>
-                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Aksi</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.no : language.no}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.bankTujuan : language.bankTujuan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.cabang : language.cabang}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.noRekTujuan : language.noRekTujuan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.nominalDisburse : language.nominalDisburse}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.emailPenerima : language.emailPenerima}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.catatan : language.catatan}</th>
+                                                        <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.aksi : language.aksi}</th>
                                                     </tr>
                                                 </thead>
                                             </table>
-                                            <div className='text-center pb-3'>Belum ada data tujuan Disbursement</div>
+                                            <div className='text-center pb-3'>{language === null ? eng.belumAdaDataDisburse : language.belumAdaDataDisburse}</div>
                                         </div>
                                     }
-                                    
+
                                     <div className='sub-base-content-disburse mt-5'>
-                                        <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>Ringkasan</div>
+                                        <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{language === null ? eng.ringkasan : language.ringkasan}</div>
                                         <div className='d-flex justify-content-between align-items-center mt-3'>
-                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Disbursement</div>
+                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>{language === null ? eng.totalDisburse : language.totalDisburse}</div>
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 2)}</div>
                                         </div>
                                         <div className='d-flex justify-content-between align-items-center mt-2'>
-                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement + Total Tax</div>
+                                            <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>{language === null ? eng.totalFeeDisbursePlusTax : language.totalFeeDisbursePlusTax}</div>
                                             <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 2)}</div>
                                         </div>
                                         <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
                                         <div className='d-flex justify-content-between align-items-center mt-3' style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>
-                                            <div>Total Disbursement + Total Fee</div>
+                                            <div>{language === null ? eng.totalDisbursePlusFee : language.totalDisbursePlusFee}</div>
                                             <div>{convertToRupiah((sum(allNominal) + sum(allFee)), true, 2)}</div>
                                         </div>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center mt-3'>
                                         <div style={{ fontFamily: 'Nunito' }}>
-                                            <div style={{ fontSize: 14, color: '#383838' }}>Sisa Saldo Tersedia</div>
-                                            <div style={{ fontSize: 12, color: '#888888' }}>(Terhitung setelah seluruh disbursement berhasil)</div>
+                                            <div style={{ fontSize: 14, color: '#383838' }}>{language === null ? eng.sisaSaldoTersedia : language.sisaSaldoTersedia}</div>
+                                            <div style={{ fontSize: 12, color: '#888888' }}>{language === null ? eng.descTerhitung : language.descTerhitung}</div>
                                         </div>
                                         {
                                             Number(((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee))) < 0  ?
@@ -3993,7 +4421,7 @@ function DisbursementPage() {
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="d-flex justify-content-end align-items-center">
                             <button
                                 onClick={() => createDataDisburseExcel(dataDisburse, isDisbursementManual)}
@@ -4001,7 +4429,7 @@ function DisbursementPage() {
                                 disabled={dataDisburse.length === 0 || Number((getBalance) - (sum(allNominal) + sum(allFee))) < 0}
                                 style={{ width: '25%' }}
                             >
-                                Lakukan Disbursement
+                                {language === null ? eng.lakukanDisburse : language.lakukanDisburse}
                             </button>
                         </div>
 
@@ -4014,21 +4442,21 @@ function DisbursementPage() {
                                     aria-label="Close"
                                     onClick={() => batalIn('bank')}
                                 />
-                                
+
                             </Modal.Header>
                             <Modal.Title className="mt-1 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                                Daftar Bank
+                                {language === null ? eng.daftarBank : language.daftarBank}
                             </Modal.Title>
                             <Modal.Body>
                                 <div className="div-table mt-3">
-                                    <div style={{ fontFamily: 'Nunito', fontSize: 14}}>Cari Data Bank :</div>
+                                    <div style={{ fontFamily: 'Nunito', fontSize: 14}}>{language === null ? eng.cariDaftarBank : language.cariDaftarBank}</div>
                                     <div className="d-flex justify-content-between align-items-center position-relative mt-2 mb-3" style={{width: "100%"}}>
                                         <div className="position-absolute left-3 px-1"><img src={search} alt="search" /></div>
                                         <FormControl
                                             className="ps-5"
                                             id="search"
                                             type="text"
-                                            placeholder='Masukkan Nama / Kode Bank'
+                                            placeholder={language === null ? eng.placeholderDaftarBank : language.placeholderDaftarBank}
                                             aria-label="Search Input"
                                             value={filterTextBank}
                                             onChange={e => setFilterTextBank(e.target.value)}
@@ -4043,9 +4471,9 @@ function DisbursementPage() {
                                         >
                                             <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
                                                 <tr >
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 10 }}>No</th>
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 50 }}>Nama Bank</th>
-                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 80 }}>Kode Bank</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 10 }}>{language === null ? eng.no : language.no}</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 50 }}>{language === null ? eng.namaBank : language.namaBank}</th>
+                                                    <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo', width: 80 }}>{language === null ? eng.kodeBank : language.kodeBank}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -4088,7 +4516,7 @@ function DisbursementPage() {
                                             borderRadius: 6,
                                         }}
                                     >
-                                        Batal
+                                        {language === null ? eng.batal : language.batal}
                                     </button>
                                 </div>
                             </Modal.Body>
@@ -4103,21 +4531,21 @@ function DisbursementPage() {
                                     aria-label="Close"
                                     onClick={() => batalIn('rekening')}
                                 />
-                                
+
                             </Modal.Header>
                             <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                                Daftar Rekening
+                                {language === null ? eng.daftarRekening : language.daftarRekening}
                             </Modal.Title>
                             <Modal.Body>
                                 <div className="div-table bank-list-subakun mt-3">
-                                    <DataTable 
+                                    <DataTable
                                         columns={columnsRekening}
                                         data={filterItemsRekening}
                                         customStyles={customStyles}
                                         // progressComponent={<CustomLoader />}
                                         subHeader
                                         subHeaderComponent={subHeaderComponentMemoRekening}
-                                        noDataComponent={<div className='mt-3'>No Data</div>}
+                                        noDataComponent={<div className='mt-3'>{language === null ? eng.tidakAdaData : language.tidakAdaData}</div>}
                                         persistTableHead
                                         onRowClicked={handleRowClickedRekening}
                                         highlightOnHover
@@ -4143,7 +4571,7 @@ function DisbursementPage() {
                                             borderRadius: 6,
                                         }}
                                     >
-                                        Batal
+                                        {language === null ? eng.batal : language.batal}
                                     </button>
                                 </div>
                             </Modal.Body>
@@ -4154,7 +4582,7 @@ function DisbursementPage() {
                             <hr className='hr-style' style={{marginTop: -2}}/>
                             <div className='base-content'>
                                 <div className='d-flex justify-content-between align-items-center'>
-                                    <div style={{ fontFamily: 'Nunito', fontSize: 14 }}>Perhatikan panduan pengisian template untuk menghindari kesalahan: <span onClick={() => setShowModalPanduan(true)} style={{ textDecoration: 'underline', fontFamily: 'Exo', fontWeight: 700, fontSize: 14, color: '#077E86', cursor: 'pointer' }}>Lihat Panduan</span></div>
+                                    <div style={{ fontFamily: 'Nunito', fontSize: 14 }}>{language === null ? eng.descSubDisburseBulk : language.descSubDisburseBulk}<span onClick={() => setShowModalPanduan(true)} style={{ textDecoration: 'underline', fontFamily: 'Exo', fontWeight: 700, fontSize: 14, color: '#077E86', cursor: 'pointer' }}> {language === null ? eng.lihatPanduan : language.lihatPanduan}</span></div>
                                     <div>
                                         <button
                                             style={{
@@ -4166,12 +4594,13 @@ function DisbursementPage() {
                                                 backgroundColor: "#ffffff",
                                                 fontFamily:"Exo",
                                                 fontWeight: 700,
-                                                fontSize: 14
+                                                fontSize: 14,
+                                                width: "15rem"
                                             }}
                                         >
                                             <span className='me-2'><img src={saveIcon} alt="save icon"/></span>
-                                            <a href={templateBulkXLSX} download style={{ color: '#077E86' }}>
-                                                Download Template
+                                            <a href={language === null ? templateBulkXLSX : (language.flagName === "ID" ? templateBulkXLSX : language.flagName === "EN" ? templateBulkXLSXInggris : templateBulkXLSXChina)} download style={{ color: '#077E86' }}>
+                                                {language === null ? eng.unduhTemplate : language.unduhTemplate}
                                             </a>
                                         </button>
                                     </div>
@@ -4186,9 +4615,9 @@ function DisbursementPage() {
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
                                                     </div>
                                                     <div>
-                                                        <div>Kesalahan data yang perlu diperbaiki:</div>
-                                                        <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data pada baris ke ${errorFound[0].no} : ${errorFound[0].keterangan}`}
-                                                        <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Lihat Semua</div>
+                                                        <div>{language === null ? eng.kesalahanDataPerluDiperbaiki : language.kesalahanDataPerluDiperbaiki} :</div>
+                                                        <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`${language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} ${errorFound[0].no} ${language === null ? eng.barisKe : language.barisKe} : ${errorFound[0].keterangan}`}
+                                                        <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>{language === null ? eng.lihatSemua : language.lihatSemua}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -4201,8 +4630,8 @@ function DisbursementPage() {
                                                         <img class="me-2" src={noteIconRed} width="20px" height="20px" />
                                                     </div>
                                                     <div>
-                                                        <div>Kesalahan data yang perlu diperbaiki:</div>
-                                                        <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`Data pada baris ke ${errorFound[0].no} : ${errorFound[0].keterangan}`}
+                                                        <div>{language === null ? eng.kesalahanDataPerluDiperbaiki : language.kesalahanDataPerluDiperbaiki} :</div>
+                                                        <FontAwesomeIcon style={{ width: 5, marginTop: 3 }} icon={faCircle} /> {`${language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} ${errorFound[0].no} ${language === null ? eng.barisKe : language.barisKe} : ${errorFound[0].keterangan}`}
                                                         {/* <div onClick={() => openErrorListModal(errorFound)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Lihat Semua</div> */}
                                                     </div>
                                                 </div>
@@ -4238,7 +4667,7 @@ function DisbursementPage() {
                                         data={dataFromUploadExcel} //untuk excel
                                         customStyles={customStyles}
                                         conditionalRowStyles={conditionalRowStylesBulk}
-                                        noDataComponent={<div style={{ marginBottom: 10 }}>Belum ada data tujuan Disbursement</div>}
+                                        noDataComponent={<div style={{ marginBottom: 10 }}>{language === null ? eng.belumAdaDataDisburse : language.belumAdaDataDisburse}</div>}
                                         pagination
                                         highlightOnHover
                                         // progressComponent={<CustomLoader />}
@@ -4248,7 +4677,7 @@ function DisbursementPage() {
                             </div>
 
                             <div className="d-flex justify-content-end align-items-center my-4">
-                                <button 
+                                <button
                                     // className={dataFromUpload.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'} //untukcsv
                                     className={dataFromUploadExcel.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'} //untuk excel
                                     // disabled={dataFromUpload.length === 0} //untuk csv
@@ -4257,10 +4686,10 @@ function DisbursementPage() {
                                     // onClick={() => createDataDisburseExcel(dataFromUpload, isDisbursementManual)} //untuk csv
                                     onClick={() => createDataDisburseExcel(dataFromUploadExcel, isDisbursementManual, dataOriginFromUpload)} //untuk excel
                                 >
-                                    Lakukan Disbursement
+                                    {language === null ? eng.lakukanDisburse : language.lakukanDisburse}
                                 </button>
                             </div>
-                    
+
                             {/* Modal Lihat Panduan */}
                             <Modal className="panduan-modal" size="xl" centered show={showModalPanduan} onHide={() => setShowModalPanduan(false)}>
                                 <Modal.Header className="border-0">
@@ -4270,15 +4699,15 @@ function DisbursementPage() {
                                         aria-label="Close"
                                         onClick={() => setShowModalPanduan(false)}
                                     />
-                                    
+
                                 </Modal.Header>
                                 <Modal.Title className='text-center mt-4' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
-                                    Panduan Pengisian Disbursement Bulk
+                                    {language === null ? eng.panduanPengisianDisburseBulk : language.panduanPengisianDisburseBulk}
                                 </Modal.Title>
                                 <Modal.Body className='px-4'>
                                     <div style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'pre-wrap', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }} className='d-flex justify-content-center align-items-center'>
                                         <img src={noteInfo} width="25" height="25" alt="circle_info" style={{ marginRight: 10 }} />
-                                        <span>Pastikan data tujuan Disbursement sudah benar, Ezeelink tidak bertanggung jawab atas kesalahan data yang dilakukan. dan tetap akan dikenakan biaya sesuai dengan Fee Disbursement yang ditetapkan.</span>
+                                        <span>{language === null ? eng.descPanduanDisburseBulk : language.descPanduanDisburseBulk}</span>
                                     </div>
                                     {/* untuk uload file csv */}
                                     {/* <table className='mt-3' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
@@ -4331,43 +4760,47 @@ function DisbursementPage() {
                                     <table className='mt-3' style={{ color: '#383838', fontSize: 14, fontFamily: 'Nunito' }}>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>1.</td>
-                                            <td style={{ padding: 0 }}>File yang diunggah wajib dalam format excel, dan tidak dapat menggunakan format lain</td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan1 : language.panduan1}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>2.</td>
-                                            <td style={{ padding: 0 }}>File yang diunggah wajib menggunakan template file yang telah disediakan, tidak bisa membuat format sendiri</td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan2 : language.panduan2}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>3.</td>
-                                            <td style={{ padding: 0 }}>Dilarang mengubah atau menambahkan nama sheet, nama tabel, urutan tabel dan tipe data tabel. Mengubah nama file diperbolehkan sesuai kebutuhan</td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan3 : language.panduan3}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>4.</td>
-                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> - Bank Tujuan diisi sesuai dengan daftar bank tujuan disbursement dan wajib menyertakan kode bank. Untuk kode bank dengan awalan 0,  harus ditulis dengan tanda petik 1 untuk meminimalisir kesalahan pada data excel (Contoh: ’014-BCA)Daftar bank dapat dilihat pada file berikut : <a href={daftarBank} download style={{ color:"#077E86", textDecoration: "underline" }}>Daftar Bank Tujuan</a></td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan4 : language.panduan4}<a href={language === null ? daftarBank : language.flagName === "ID" ? daftarBank : language.flagName === "EN" ? daftarBankInggris : daftarBankChina} download style={{ color:"#077E86", textDecoration: "underline" }}>{language === null ? eng.daftarBankTujuan : language.daftarBankTujuan}</a></td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>5.</td>
-                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> khusus cabang tujuan bank selain BCA. Apabila bank yang dipilih adalah BCA maka dapat dikosongkan</td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan5 : language.panduan5}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>6.</td>
-                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> - Nomor Rekening Tujuan diisi sesuai format rekening bank tujuan. Gunakan format angka dan harap perhatikan digit rekening. Untuk nomor rekening dengan angka 0 didepan, harus ditulis dengan tanda petik 1 untuk meminimalisir kesalahan pada data excel (Contoh: ’098765421)</td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan6 : language.panduan6}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>7.</td>
-                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> - Nama Pemilik Rekening wajib diisi dengan benar dan sesuai </td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan7 : language.panduan7}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>8.</td>
-                                            <td style={{ padding: 0 }}><b>Wajib Diisi</b> - Nominal Disbursement diisi dalam format Rupiah. Nominal disbursement <strong>tidak boleh mengandung decimal</strong></td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan8 : language.panduan8}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>9.</td>
-                                            <td style={{ padding: 0 }}>Email Penerima bersifat opsional dan dapat diisi untuk mengirim notifikasi berhasil Disburse. Apabila email tidak diisi, maka dapat dikosongkan</td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan9 : language.panduan9}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>10.</td>
-                                            <td style={{ padding: 0 }}>Catatan dapat diisi bila diperlukan dan bersifat opsional dan maksimal 25 karakter (termasuk spasi).</td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan10 : language.panduan10}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>11.</td>
+                                            <td style={{ padding: 0 }}>{language === null ? eng.panduan11 : language.panduan11}</td>
                                         </tr>
                                     </table>
                                     <div className='text-center my-3'>
@@ -4376,12 +4809,12 @@ function DisbursementPage() {
                                             className='btn-ez-transfer'
                                             style={{ width: '25%' }}
                                         >
-                                            Mengerti
+                                            {language === null ? eng.mengerti : language.mengerti}
                                         </button>
                                     </div>
                                 </Modal.Body>
                             </Modal>
-                    
+
                             {/* Modal Lihat list error */}
                             <Modal className="list-error-modal" size="xl" centered show={showModalErrorList} onHide={() => closeModalError()}>
                                 <Modal.Header className="border-0">
@@ -4391,15 +4824,15 @@ function DisbursementPage() {
                                         aria-label="Close"
                                         onClick={() => closeModalError()}
                                     />
-                                    
+
                                 </Modal.Header>
                                 <Modal.Title className='text-center mt-4' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
-                                    Kesalahan Data yang Perlu Diperbaiki
+                                    {language === null ? eng.kesalahanDataPerluDiperbaiki : language.kesalahanDataPerluDiperbaiki}
                                 </Modal.Title>
                                 <Modal.Body className='px-4'>
                                     <div style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'pre-wrap', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }} className='d-flex justify-content-start align-items-center'>
                                         <img src={triangleAlertIcon} width="25" height="25" alt="circle_info" style={{ marginRight: 10 }} />
-                                        <span>Harap perbaiki data terlebih dahulu sebelum mengupload ulang file. </span>
+                                        <span>{language === null ? eng.harapPerbaikiData : language.harapPerbaikiData} </span>
                                     </div>
                                     <div className='mt-3' style={{ maxWidth: 622, backgroundColor: 'rgba(185, 18, 27, 0.08)', width: 'auto', padding: '20px 20px 20px 30px', borderRadius: 4 }}>
                                         <div style={{ height: 'auto' }}>
@@ -4410,7 +4843,7 @@ function DisbursementPage() {
                                                         return(
                                                             <tr>
                                                                 <td style={{ display: "flex", alignItems: "flex-start", justifyContent: "flex-end", marginRight: 5, padding: 0 }}>{(activePageErrorList > 1) ? (idx + 1)+((activePageErrorList-1)*10) : idx + 1}. </td>
-                                                                <td style={{ padding: 0 }}>Data pada baris ke <b>{`${err.no}`}</b>, {`${err.keterangan}`}</td>
+                                                                <td style={{ padding: 0 }}>{language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} <b>{`${err.no}`}</b> {language === null ? eng.barisKe : language.barisKe}, {`${err.keterangan}`}</td>
                                                             </tr>
                                                         )
                                                     })
@@ -4436,7 +4869,7 @@ function DisbursementPage() {
                                             className='btn-reset'
                                             style={{ width: '25%' }}
                                         >
-                                            Ganti File
+                                            {language === null ? eng.gantiFile : language.gantiFile}
                                         </button>
                                     </div>
                                 </Modal.Body>
@@ -4449,10 +4882,10 @@ function DisbursementPage() {
                 {/* Modal Pindah Halaman */}
                 <Modal size="xs" centered show={showModalPindahHalaman} onHide={() => setShowModalPindahHalaman(false)}>
                     <Modal.Title className='text-center mt-4' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
-                        Yakin ingin pindah halaman?
+                        {language === null ? eng.yakinPindahHalaman : language.yakinPindahHalaman}
                     </Modal.Title>
                     <Modal.Body >
-                        <div className='text-center mt-3 px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Seluruh data yang telah diinput akan terhapus jika pindah halaman, masih ingin melanjutkan ?</div>
+                        <div className='text-center mt-3 px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.seluruhDataDiinputAkanTerhapus : language.seluruhDataDiinputAkanTerhapus}</div>
                         <div className='d-flex justify-content-center align-items-center mt-3'>
                             <div className='me-1'>
                                 <button
@@ -4472,7 +4905,7 @@ function DisbursementPage() {
                                         borderRadius: 6,
                                     }}
                                 >
-                                    Ya
+                                    {language === null ? eng.ya : language.ya}
                                 </button>
                             </div>
                             <div className="ms-1">
@@ -4492,7 +4925,7 @@ function DisbursementPage() {
                                         borderRadius: 6,
                                     }}
                                 >
-                                    Tidak
+                                    {language === null ? eng.tidak : language.tidak}
                                 </button>
                             </div>
                         </div>
@@ -4508,20 +4941,20 @@ function DisbursementPage() {
                             aria-label="Close"
                             onClick={() => batalConfirm()}
                         />
-                        
+
                     </Modal.Header>
                     <Modal.Title className="mt-2 text-center" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                        Konfirmasi Disbursement
+                        {language === null ? eng.konfirmasiDisburse : language.konfirmasiDisburse}
                     </Modal.Title>
                     <Modal.Body className='mx-2'>
                         <div style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'pre-wrap', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }} className='d-flex justify-content-center align-items-center'>
                             <img src={noteInfo} width="25" height="25" alt="circle_info" style={{ marginRight: 10 }} />
-                            <span>Harap pastikan seluruh data disbursement sudah benar. Kesalahan pada data dapat menyebabkan kegagalan disbursement dan tetap akan dikenakan biaya sesuai dengan Fee Disbursement yang ditetapkan.</span>
+                            <span>{language === null ? eng.descKonfirmasiDisburse : language.descKonfirmasiDisburse}</span>
                         </div>
                         <div>
                             {/* <div className='mt-3' style={{ fontFamily: 'Source Sans Pro', fontSize: 14, color: '#888888' }}>Dari Rekening</div>
                             <div className='mt-1' style={{ fontFamily: 'Source Sans Pro', fontSize: 16, color: '#383838', fontWeight: 600 }}>2348-3492-0943</div> */}
-                            <div className='mt-3' style={{ fontFamily: 'Source Sans Pro', fontSize: 16, color: '#383838', fontWeight: 600 }}>Tujuan Disbursement</div>
+                            <div className='mt-3' style={{ fontFamily: 'Source Sans Pro', fontSize: 16, color: '#383838', fontWeight: 600 }}>{language === null ? eng.tujuanDisburse : language.tujuanDisburse}</div>
                             {
                                 !isDisbursementManual ?
                                 <div className="table-disburse-confirm pt-3">
@@ -4532,7 +4965,7 @@ function DisbursementPage() {
                                         data={dataFromUploadExcel} //untuk excel
                                         customStyles={customStyles}
                                         conditionalRowStyles={conditionalRowStylesBulk}
-                                        noDataComponent={<div style={{ marginBottom: 10 }}>Belum ada data tujuan Disbursement</div>}
+                                        noDataComponent={<div style={{ marginBottom: 10 }}>{language === null ? eng.belumAdaDataDisburse : language.belumAdaDataDisburse}</div>}
                                         pagination
                                         highlightOnHover
                                         fixedHeader
@@ -4549,17 +4982,17 @@ function DisbursementPage() {
                                         hover
                                     >
                                         <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                            <tr 
-                                                className='ms-3'  
+                                            <tr
+                                                className='ms-3'
                                             >
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Bank Tujuan</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Cabang</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No. Rekening Tujuan</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nama Pemilik Rekening</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nominal Disbursement</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Email Penerima</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Catatan</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.no : language.no}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.bankTujuan : language.bankTujuan}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.cabang : language.cabang}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.noRekTujuan : language.noRekTujuan}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.nominalDisburse : language.nominalDisburse}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.emailPenerima : language.emailPenerima}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.catatan : language.catatan}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -4605,48 +5038,48 @@ function DisbursementPage() {
                                         hover
                                     >
                                         <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
-                                            <tr 
-                                                
+                                            <tr
+
                                             >
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Bank Tujuan</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Cabang</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>No. Rekening Tujuan</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nama Pemilik Rekening</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Nominal Disbursement</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Email Penerima</th>
-                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>Catatan</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.no : language.no}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.bankTujuan : language.bankTujuan}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.cabang : language.cabang}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.noRekTujuan : language.noRekTujuan}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.nominalDisburse : language.nominalDisburse}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.emailPenerima : language.emailPenerima}</th>
+                                                <th style={{ fontWeight: "bold", fontSize: "14px", textTransform: 'unset', fontFamily: 'Exo' }}>{language === null ? eng.catatan : language.catatan}</th>
                                             </tr>
                                         </thead>
                                     </table>
-                                    <div className='text-center pb-3'>Belum ada data tujuan Disbursement</div>
+                                    <div className='text-center pb-3'>{language === null ? eng.belumAdaDataDisburse : language.belumAdaDataDisburse}</div>
                                 </div>
                             }
                             <div className='sub-base-content-disburse mt-3'>
                                 <div className='d-flex justify-content-between align-items-center mt-1'>
-                                    <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Disbursement</div>
+                                    <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>{language === null ? eng.totalDisburse : language.totalDisburse}</div>
                                     <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allNominal), true, 2)}</div>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center mt-2'>
-                                    <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>Total Fee Disbursement + Total Tax</div>
+                                    <div style={{ fontFamily:'Nunito', fontSize: 14, color: "#383838" }}>{language === null ? eng.totalFeeDisbursePlusTax : language.totalFeeDisbursePlusTax}</div>
                                     <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah(sum(allFee), true, 2)}</div>
                                 </div>
                                 <div className='mt-2' style={{ border: "1px dashed #C4C4C4" }}></div>
                                 <div className='d-flex justify-content-between align-items-center mt-3' style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>
-                                    <div>Total Disbursement + Total Fee</div>
+                                    <div>{language === null ? eng.totalDisbursePlusFee : language.totalDisbursePlusFee}</div>
                                     <div>{convertToRupiah((sum(allNominal) + sum(allFee)), true, 2)}</div>
                                 </div>
                             </div>
                             <div className='d-flex justify-content-between align-items-center mt-3'>
                                 <div style={{ fontFamily: 'Nunito' }}>
-                                    <div style={{ fontSize: 14, color: '#383838' }}>Sisa Saldo Tersedia</div>
-                                    <div style={{ fontSize: 12, color: '#888888' }}>(Terhitung setelah seluruh disbursement berhasil)</div>
+                                    <div style={{ fontSize: 14, color: '#383838' }}>{language === null ? eng.sisaSaldoTersedia : language.sisaSaldoTersedia}</div>
+                                    <div style={{ fontSize: 12, color: '#888888' }}>{language === null ? eng.descTerhitung : language.descTerhitung}</div>
                                 </div>
                                 {
                                     Number(((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee))) < 0  ?
                                     <div style={{ fontFamily:'Open Sans', fontSize: 12, color: "#B9121B", width: 250 }} className='text-end'>
                                         <span className='me-1'><img src={noteIconRed} alt='icon error' /></span>
-                                        Saldo Anda tidak cukup, Topup saldo terlebih dahulu sebelum melakukan disbursement
+                                        {language === null ? eng.saldoTidakCukup : language.saldoTidakCukup}
                                     </div> :
                                     <div style={{ fontFamily:'Exo', fontWeight: 600, fontSize: 16, color: "#383838" }}>{convertToRupiah((((getBalance) - (totalHoldBalance)) - (sum(allNominal) + sum(allFee))), true, 2)}</div>
                                 }
@@ -4654,7 +5087,7 @@ function DisbursementPage() {
                             <div className='mb-3 mt-3'>
                                 <Form.Check
                                     className='form-confirm'
-                                    label="Saya bertanggung jawab atas seluruh kebenaran maupun kesalahan data di atas"
+                                    label={language === null ? eng.sayaBertanggungJawab : language.sayaBertanggungJawab}
                                     id="statusId"
                                     onChange={handleChangeCheckBoxConfirm}
                                     checked={isCheckedConfirm}
@@ -4678,15 +5111,15 @@ function DisbursementPage() {
                                     borderRadius: 6,
                                 }}
                             >
-                                Batal
+                                {language === null ? eng.batal : language.batal}
                             </button>
-                            <button 
+                            <button
                                 onClick={() => sendDataDisburse(dataExcelDisburse, dataExcelOriginDisburse, isDisbursementManual)}
                                 className={isCheckedConfirm === true ? 'btn-ez-transfer ms-3' : 'btn-noez-transfer ms-3'}
                                 disabled={isCheckedConfirm === false}
                                 style={{ width: '25%' }}
                             >
-                                Lakukan Disbursement
+                                {language === null ? eng.lakukanDisburse : language.lakukanDisburse}
                             </button>
                         </div>
                     </Modal.Body>
@@ -4695,13 +5128,13 @@ function DisbursementPage() {
                 {/* Modal Data Duplikasi */}
                 <Modal size="xs" centered show={showModalDuplikasi} onHide={() => setShowModalDuplikasi(false)}>
                     <Modal.Title className='text-center mt-4' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
-                        Ditemukan Duplikasi Data, Ingin Tetap Melanjutkan?
+                        {language === null ? eng.ditemukanDuplikasiData : language.ditemukanDuplikasiData}
                     </Modal.Title>
                     <Modal.Body >
                         {
                             duplicateData.length === 0 ?
-                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data yang ingin Anda tambahkan sudah tersedia di tabel.</div> :
-                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>Data pada baris ke <b style={{ wordBreak: 'break-word', color: 'red' }}>{duplicateData.join(", ")}</b> : Terindikasi data duplikasi</div>
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.dataInginDitambahkanTelahTersedia : language.dataInginDitambahkanTelahTersedia}</div> :
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} <b style={{ wordBreak: 'break-word', color: 'red' }}>{duplicateData.join(", ")}</b> {language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} : Terindikasi data duplikasi</div>
                         }
                         <div className='d-flex justify-content-center align-items-center mt-3'>
                             {
@@ -4722,7 +5155,8 @@ function DisbursementPage() {
                                                     inputHandle.catatan,
                                                     isChecked,
                                                     getBalance,
-                                                    totalHoldBalance
+                                                    totalHoldBalance,
+                                                    feeBank
                                                 ) :
                                                 () => lanjutSaveEdit(
                                                     numbering,
@@ -4736,7 +5170,8 @@ function DisbursementPage() {
                                                     inputHandle.catatan,
                                                     isChecked,
                                                     getBalance,
-                                                    totalHoldBalance
+                                                    totalHoldBalance,
+                                                    feeBank
                                                 )
                                             }
                                             style={{
@@ -4754,7 +5189,7 @@ function DisbursementPage() {
                                                 borderRadius: 6,
                                             }}
                                         >
-                                            Lanjutkan
+                                            {language === null ? eng.lanjutkan : language.lanjutkan}
                                         </button>
                                     </div>
                                     <div className="ms-1">
@@ -4774,7 +5209,7 @@ function DisbursementPage() {
                                                 borderRadius: 6,
                                             }}
                                         >
-                                            Perbaiki
+                                            {language === null ? eng.perbaiki : language.perbaiki}
                                         </button>
                                     </div>
                                 </> :
@@ -4797,7 +5232,7 @@ function DisbursementPage() {
                                                 borderRadius: 6,
                                             }}
                                         >
-                                            Lanjutkan
+                                            {language === null ? eng.lanjutkan : language.lanjutkan}
                                         </button>
                                     </div>
                                     <div className="ms-1">
@@ -4817,7 +5252,7 @@ function DisbursementPage() {
                                                 borderRadius: 6,
                                             }}
                                         >
-                                            Perbaiki
+                                            {language === null ? eng.perbaiki : language.perbaiki}
                                         </button>
                                     </div>
                                 </>

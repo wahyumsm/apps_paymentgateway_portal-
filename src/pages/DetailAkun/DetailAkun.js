@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Image, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, language, RouteTo, setUserSession } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import { useHistory } from 'react-router-dom';
 import edit from '../../assets/icon/edit_icon.svg';
@@ -12,6 +12,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import { eng } from '../../components/Language';
+import validator from "validator";
+import noteIconRed from "../../assets/icon/note_icon_red.svg";
 
 function DetailAkun() {
 
@@ -19,14 +22,15 @@ function DetailAkun() {
     const [isDetailAkun, setIsDetailAkun] = useState(true);
     const [dataAkun, setDataAkun] = useState({})
     const [subAccount, setSubAccount] = useState([])
+    const [dataListCallBack, setDataListCallBack] = useState([])
     const history = useHistory()
     const myRef = useRef(null)
     const [expandedSubAcc, setExpandedSubAcc] = useState(false)
-    const [inputHandle, setInputHandle] = useState({
-        callbackUrl: dataAkun.callback_url,
-    })
+    const [inputHandle, setInputHandle] = useState({})
+    const [errorURL, setErrorURL] = useState([])
 
     function handleChange(e) {
+        setErrorURL([])
         setInputHandle({
             ...inputHandle,
             [e.target.name] : e.target.value
@@ -43,23 +47,24 @@ function DetailAkun() {
 
     const columns = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
+            width: "67px"
         },
         {
-            name: 'Sumber Agen',
+            name: language === null ? eng.sumberAgen : language.sumberAgen,
             selector: row => row.agen_source,
         },
         {
-            name: 'Nama Bank',
+            name: language === null ? eng.namaBank : language.namaBank,
             selector: row => row.bank_name,
         },
         {
-            name: 'No Rekening',
+            name: language === null ? eng.noRek : language.noRek,
             selector: row => row.bank_number,
         },
         {
-            name: 'Nama Pemilik Rekening',
+            name: language === null ? eng.namaPemilikRek : language.namaPemilikRek,
             selector: row => row.bank_account_name,
         }
     ]
@@ -76,15 +81,38 @@ function DetailAkun() {
                 userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setDataAkun(userDetailPartner.data.response_data)
                 setSubAccount(userDetailPartner.data.response_data.sub_account)
+                getListCallback(userDetailPartner.data.response_data.mpartner_id)
             } else if (userDetailPartner.data.response_code === 200 && userDetailPartner.status === 200 && userDetailPartner.data.response_new_token.length !== 0) {
                 userDetailPartner.data.response_data.sub_account = userDetailPartner.data.response_data.sub_account.map((obj, id) => ({...obj, number : id + 1, icon: <div className="d-flex justify-content-center align-items-center"><img src={edit} alt="edit" /><img src={deleted} alt="delete" className="ms-2" /></div>}))
                 setUserSession(userDetailPartner.data.response_new_token)
                 setDataAkun(userDetailPartner.data.response_data)
                 setSubAccount(userDetailPartner.data.response_data.sub_account)
+                getListCallback(userDetailPartner.data.response_data.mpartner_id)
             }
-            
+
         } catch (error) {
             // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function getListCallback(id) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"partner_id": "${id}"}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataListCallBacks = await axios.post(BaseURL + "/Partner/GetListCallbackForPartner", {data: dataParams}, {headers: headers})
+            if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length === 0) {
+                setDataListCallBack(dataListCallBacks.data.response_data)
+            } else if (dataListCallBacks.data.response_code === 200 && dataListCallBacks.status === 200 && dataListCallBacks.data.response_new_token.length !== 0) {
+                setUserSession(dataListCallBacks.data.response_new_token)
+                setDataListCallBack(dataListCallBacks.data.response_data)
+            }
+        } catch (error) {
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -114,23 +142,68 @@ function DetailAkun() {
         userDetailPartner('/Account/GetPartnerDetail')
     },[])
 
-    async function updateUrlCallback(id, callbackUrl) {
+    async function updateUrlCallback(id, newUrl, oldUrl) {
         try {
-            const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"mpartner_id":"${id}", "callback_url":"${callbackUrl}"}`)
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
+            let callbackList = []
+            let errorDataURL = []
+            if (Object.keys(newUrl).length !== 0) {
+                let newestUrl = []
+                for (const key in newUrl) {
+                    if (newUrl[key].length !== 0 && !validator.isURL(newUrl[key])) {
+                        errorDataURL.push(key)
+                    }
+                    newestUrl.push({
+                        callbackurl_id: Number(key),
+                        callbackurl_url: newUrl[key]
+                    })
+                }
+                let newUrlMap = new Map(newestUrl.map(item => [item.callbackurl_id, item.callbackurl_url]));
+                let combinedData = oldUrl.map(oldItem => {
+                    const newUrls = newUrlMap.get(oldItem.mcallbackurl_id);
+                    if (newUrls) {
+                        return {
+                            "mcallbackurl_id": oldItem.mcallbackurl_id,
+                            "mcallbackurl_name": oldItem.mcallbackurl_name,
+                            "mpartnercallback_url": newUrls,
+                            "mpartnercallback_id": oldItem.mpartnercallback_id !== null ? oldItem.mpartnercallback_id : 0
+                        };
+                    }
+                    return oldItem;
+                });
+                callbackList = combinedData.filter(item => {
+                    return item.mpartnercallback_url.length !== 0
+                })
+            } else {
+                callbackList = oldUrl.map(item => {
+                    return{
+                        callback_id: item.mpartnercallback_id,
+                        callbackurl_ID: item.mcallbackurl_id,
+                        callbackurl_url: item.mpartnercallback_url,
+                    }
+                })
             }
-            const editCallback = await axios.post(BaseURL + "/Account/UpdateCallbackUrl", { data: dataParams }, { headers: headers })
-            if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
-                history.push("/detailakun")
-            } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
-                setUserSession(editCallback.data.response_new_token)
-                history.push("/detailakun")
+            if (errorDataURL.length !== 0) {
+                setErrorURL(errorDataURL)
+                errorDataURL = []
+                return
+            } else {
+                setErrorURL([])
+                const auth = "Bearer " + getToken()
+                const dataParams = encryptData(`{"partner_id":"${id}", "callback_url_list":${JSON.stringify(callbackList)}}`)
+                const headers = {
+                    'Content-Type':'application/json',
+                    'Authorization' : auth
+                }
+                const editCallback = await axios.post(BaseURL + "/Partner/UpdateOrAddCallbackURLPartner", { data: dataParams }, { headers: headers })
+                if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length === 0) {
+                    alert(editCallback.data.response_data.response_message)
+                    window.location.reload()
+                } else if(editCallback.status === 200 && editCallback.data.response_code === 200 && editCallback.data.response_new_token.length !== 0) {
+                    setUserSession(editCallback.data.response_new_token)
+                    alert(editCallback.data.response_data.response_message)
+                    window.location.reload()
+                }
             }
-            
-            alert("Edit URL Berhasil")
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
@@ -155,22 +228,22 @@ function DetailAkun() {
 
   return (
     <div className='container-content mt-5'>
-        <span className='breadcrumbs-span'>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Akun</span>
+        <span className='breadcrumbs-span'>{language === null ? eng.laporan : language.laporan}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.detailAkun : language.detailAkun}</span>
         <div className='detail-akun-menu mt-5' style={{display: 'flex', height: 33}}>
             <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => detailAkunTabs(true)} id="detailakuntab">
-                <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">Detail Akun</span>
+                <span className='menu-detail-akun-span menu-detail-akun-span-active' id="detailakunspan">{language === null ? eng.detailAkun : language.detailAkun}</span>
             </div>
             <div className='detail-akun-tabs' style={{marginLeft: 15}} onClick={() => detailAkunTabs(false)} id="konfigurasitab">
-                <span className='menu-detail-akun-span' id="konfigurasispan">Konfigurasi</span>
+                <span className='menu-detail-akun-span' id="konfigurasispan">{language === null ? eng.konfigurasi : language.konfigurasi}</span>
             </div>
         </div>
         {
-            isDetailAkun ? 
+            isDetailAkun ?
             <>
-            <div className='detail-akun-section'>        
+            <div className='detail-akun-section'>
                 <hr className='hr-style' style={{marginTop: -2}}/>
                 <br/>
-                <span className='head-title'>Profil Perusahaan</span>
+                <span className='head-title'>{language === null ? eng.profilPerusahaan : language.profilPerusahaan}</span>
                 <br/>
                 <br/>
                 <div className='base-content'>
@@ -178,35 +251,35 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>Status</td>
-                                {dataAkun.mpartner_is_active === true ? 
-                                    <td><div className='active-box'><span className='active-box-span'>Aktif</span></div></td>
+                                <td style={{width: 200}}>{language === null ? eng.status : language.status}</td>
+                                {dataAkun.mpartner_is_active === true ?
+                                    <td><div className='active-box'><span className='active-box-span'>{language === null ? eng.aktif : language.aktif}</span></div></td>
                                     :
-                                    <td><div className='inactive-box'><span className='inactive-box-span'>Tidak Aktif</span></div></td>}
+                                    <td><div className='inactive-box'><span className='inactive-box-span'>{language === null ? eng.tidakAktif : language.tidakAktif}</span></div></td>}
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>ID Partner</td>
+                                <td style={{width: 200}}>{language === null ? eng.idPartner : language.idPartner}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_id} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>Nama Perusahaan</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaPerusahaan : language.namaPerusahaan}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>Email Perusahaan</td>
+                                <td style={{width: 200}}>{language === null ? eng.emailPerusahaan : language.emailPerusahaan}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_email} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>Nomor Telepon</td>
+                                <td style={{width: 200}}>{language === null ? eng.noTelp : language.noTelp}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_telp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>Alamat</td>
+                                <td style={{width: 200}}>{language === null ? eng.alamat : language.alamat}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_address} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -214,7 +287,7 @@ function DetailAkun() {
                     </table>
                 </div>
                 <br/>
-                <span className='head-title'>Detail NPWP</span>
+                <span className='head-title'>{language === null ? eng.detailNpwp : language.detailNpwp}</span>
                 <br/>
                 <br/>
                 <div className='base-content'>
@@ -222,12 +295,12 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>No NPWP</td>
+                                <td style={{width: 200}}>{language === null ? eng.noNpwp : language.noNpwp}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_npwp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>Nama NPWP</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaNpwp : language.namaNpwp}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_npwp_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -235,7 +308,7 @@ function DetailAkun() {
                     </table>
                 </div>
                 <br/>
-                <span className='head-title'>Profil Direktur Perusahaan</span>
+                <span className='head-title'>{language === null ? eng.profilDirekturPerusahaan : language.profilDirekturPerusahaan}</span>
                 <br/>
                 <br/>
                 <div className='base-content'>
@@ -243,12 +316,12 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>Nama Direktur</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaDirektur : language.namaDirektur}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_direktur} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>No Hp Direktur</td>
+                                <td style={{width: 200}}>{language === null ? eng.noHpDirektur : language.noHpDirektur}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartner_direktur_telp} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -256,7 +329,7 @@ function DetailAkun() {
                     </table>
                 </div>
                 <br/>
-                <span className='head-title'>Rekening</span>
+                <span className='head-title'>{language === null ? eng.rekening : language.rekening}</span>
                 <br/>
                 <br/>
                 <div className='base-content'>
@@ -264,17 +337,17 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>Nama Bank</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaBank : language.namaBank}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mbank_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>No. Rekening</td>
+                                <td style={{width: 200}}>{language === null ? eng.noRek : language.noRek}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_number} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>Nama Pemilik Rekening</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</td>
                                 <td><input type='text'className='input-text-ez' value={dataAkun.mpartnerdtl_account_name} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -282,7 +355,7 @@ function DetailAkun() {
                     </table>
                 </div>
                 <br/>
-                <span className='head-title'>Rekening Sub Account</span>
+                <span className='head-title'>{language === null ? eng.rekeningSubAkun : language.rekeningSubAkun}</span>
                 <br/>
                 <br/>
                 <div className='base-content mb-5'>
@@ -290,22 +363,22 @@ function DetailAkun() {
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style={{width: 200}}>Sumber Agen</td>
+                                <td style={{width: 200}}>{language === null ? eng.sumberAgen : language.sumberAgen}</td>
                                 <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].agen_source : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>Nama Bank</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaBank : language.namaBank}</td>
                                 <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_name : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>No. Rekening</td>
+                                <td style={{width: 200}}>{language === null ? eng.noRek : language.noRek}</td>
                                 <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_number : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
                             <tr>
-                                <td style={{width: 200}}>Nama Pemilik Rekening</td>
+                                <td style={{width: 200}}>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</td>
                                 <td><input type='text'className='input-text-ez' value={subAccount.length !== 0 ? subAccount[0].bank_account_name : "-"} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                             </tr>
                             <br/>
@@ -317,12 +390,12 @@ function DetailAkun() {
                             expandedSubAcc ?
                                 <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
                                     <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
-                                        Sembunyikan daftar sub account <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
+                                        {language === null ? eng.sembunyikanDaftarSubAkun : language.sembunyikanDaftarSubAkun} <FontAwesomeIcon icon={faChevronUp} className="ms-2" />
                                     </button>
                                 </div> :
                                 <div className='mb-4' style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}} >
                                     <button className='mb-4 pb-3 py-3 text-end' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
-                                        Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="ms-2" />
+                                        {language === null ? eng.lihatDaftarSubAkun : language.lihatDaftarSubAkun} <FontAwesomeIcon icon={faChevronDown} className="ms-2" />
                                     </button>
                                 </div>
                         ) : ""
@@ -347,12 +420,13 @@ function DetailAkun() {
                     }
                 </div>
             </div>
-            </> : 
+            </> :
             <>
                 <div className='konfigurasi-section' style={{marginTop: 24}}>
                     <hr className='hr-style' style={{marginTop: -25}}/>
                     <div className='base-content'>
-                        <span>You will need to know your <b>Partner ID</b> and <b>Secret Key</b> to communicate with Ezeelink. Please use the Development server while you are still in development.</span>
+                        {/* <span>You will need to know your <b>Partner ID</b> and <b>Secret Key</b> to communicate with Ezeelink. Please use the Development server while you are still in development.</span> */}
+                        <span>{language === null ? eng.descSectionOneSub : language.descSectionOneSub} <b>{language === null ? eng.partnerId : language.partnerId}</b> {language === null ? eng.dan : language.dan} <b>Secret Key</b> {language === null ? eng.descSectionTwoSub : language.descSectionTwoSub}</span>
                         <br/>
                         <br/>
                         <p className='head-title'>API Keys</p>
@@ -361,7 +435,7 @@ function DetailAkun() {
                                 <thead></thead>
                                 <tbody>
                                     <tr>
-                                        <td>Partner ID</td>
+                                        <td>{language === null ? eng.partnerId : language.partnerId}</td>
                                         <td>:</td>
                                         <td><span><b>{dataAkun.mpartner_id}</b></span></td>
                                     </tr>
@@ -383,7 +457,7 @@ function DetailAkun() {
                         <div className='base-content' style={{background: 'rgba(255, 214, 0, 0.16)', borderRadius: 4, padding: 12}}>
                             <span>
                                 <i>
-                                This key is auto generated by system and should not be changed. If you really need to change your key for some reason please contact our <b><u>contact support</u></b>
+                                    {language === null ? eng.thisKeyInKonfigurasi : language.thisKeyInKonfigurasi} <b><u>{language === null ? eng.hubungiKami : language.hubungiKami}</u></b>
                                 </i>
                             </span>
                         </div>
@@ -391,29 +465,56 @@ function DetailAkun() {
                     </div>
                     <br/>
                     <div className="base-content mb-5">
-                        <p>Ezeelink requires the URL endpoints for for the following scenarios:</p>
+                        <p>{language === null ? eng.ezeelinkMemerlukanUrl : language.ezeelinkMemerlukanUrl}</p>
                         <br/>
                         <Row>
-                            <Col xs={3}>
-                                <span>Payment Notification URL*</span>
+                            {
+                                dataListCallBack.length !== 0 &&
+                                dataListCallBack.map((item, idx) => {
+                                    return(
+                                        <>
+                                            <Col xs={3} key={item.mcallbackurl_id}>
+                                                <span>{item.mcallbackurl_name}</span>
+                                            </Col>
+                                            <Col xs={9}>
+                                                <div>
+                                                    <input type='text' className='input-text-ez' onChange={handleChange} defaultValue={item.mpartnercallback_url} name={`${item.mcallbackurl_id}`} style={{width: '100%', marginLeft: 'unset'}}/>
+                                                    {
+                                                        errorURL.length !== 0 && (errorURL.find(el => el === String(item.mcallbackurl_id)) !== undefined || String(errorURL.find(el => el === String(item.mcallbackurl_id))).length === 0) ?
+                                                        <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                                                            <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                                            Format URL salah
+                                                        </div> :
+                                                        <p>{language === null ? eng.addressUrl : language.addressUrl}</p>
+                                                    }
+                                                    {/* <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p> */}
+                                                    <br/>
+                                                </div>
+                                            </Col>
+                                        </>
+                                    )
+                                })
+                            }
+                            {/* <Col xs={3}>
+                                <span>{language === null ? eng.paymentNotifUrl : language.paymentNotifUrl}*</span>
                             </Col>
                             <Col xs={9}>
                                 <div>
-                                    <input type='text'className='input-text-ez' onChange={handleChange} defaultValue={dataAkun.callback_url} name="callbackUrl" style={{width: '100%', marginLeft: 'unset'}}/> 
-                                    <p>Address where we will send the notification via HTTP Post request. E.g http://yourwebsite.com/notification/handing</p>
+                                    <input type='text'className='input-text-ez' onChange={handleChange} defaultValue={dataAkun.callback_url} name="callbackUrl" style={{width: '100%', marginLeft: 'unset'}}/>
+                                    <p>{language === null ? eng.addressUrl : language.addressUrl}</p>
                                     <br/>
                                 </div>
-                            </Col>
+                            </Col> */}
                         </Row>
                         <div style={{ display: "flex", justifyContent: "end", marginTop: 16 }}>
-                        <button onClick={() => updateUrlCallback(dataAkun.mpartner_id, inputHandle.callbackUrl)} className='mb-5' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
-                            Update
+                        <button onClick={() => updateUrlCallback(dataAkun.mpartner_id, inputHandle, dataListCallBack)} className='mb-5' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+                            {language === null ? eng.update : language.update}
                         </button>
                     </div>
                     </div>
                 </div>
             </>
-        } 
+        }
     </div>
   )
 }

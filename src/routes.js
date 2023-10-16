@@ -1,4 +1,3 @@
-
 export const Routes = {
     // pages
     DashboardOverview: { path: "/" },
@@ -24,7 +23,7 @@ export const Routes = {
     ListMenuAccess : { path: "/menuaccess/:userId" },
     RiwayatTopUp : { path: "/riwayattopup" },
     // AlokasiSaldo : { path: "/alokasisaldo" },
-    ReNotifyVA : { path: "/HelpDesk/renotifyva" },
+    ReNotifyVA : { path: "/helpDesk/renotifyva" },
     RiwayatDisbursement : { path: "/Disbursement/report" },
     // DisbursementReport : { path: "/disbursement-report" },
     // Billing: { path: "/examples/billing" },
@@ -46,35 +45,37 @@ export const Routes = {
     ListRiwayatSubAccount: {path: "/Sub Account Bank/riwayat-sub-account"},
     InfoSaldoDanMutasi: {path: "/Sub Account Bank/info-saldo-dan-mutasi"},
     TransferSubAccount: {path: "/Sub Account Bank/transfer"},
+    TransaksiTopup: {path: "/transaksi/transaksi-topup"},
 
     // revamp menu
     UserDirectDebit: { path: "/user-direct-debit"},
-    InvoiceVASubMenu: { path: "/Buat Invoice/settlement" },
-    InvoiceDisbursementSubMenu: { path: "/Buat Invoice/disbursement" },
+    InvoiceVASubMenu: { path: "/buat-invoice/settlement" },
+    InvoiceDisbursementSubMenu: { path: "/buat-invoice/disbursement" },
     SaldoPartnerMenu: { path: "/riwayat-saldo-partner"},
     DisbursementPage : { path: "/disbursement" },
     SubAccountTransfer: {path: "/transfer-sub-account"},
-    Settlement: { path: "/Settlement/riwayat-settlement"},
+    Settlement: { path: "/settlement/riwayat-settlement"},
     RiwayatBalance: { path: "/riwayat-balance" },
+    GetBalance: { path: "/transaksi-bank"},
 
     // admin
-    VaDanPaymentLinkAdmin: {path: "/Transaksi/va-dan-paylink"},
-    RiwayatDirectDebitAdmin: {path: "/Transaksi/direct-debit"},
-    DisbursementAdmin: {path: "/Transaksi/disbursement"},
-    SubAccountAdmin: {path: "/Transaksi/sub-account"},
-    DisbursementTimeout: {path: "/Transaksi/disbursement-timeout"},
-    SettlementManual: {path: "/Settlement/settlement-manual"},
-    eWalletAdmin: {path: "/Transaksi/ewallet"},
-    ExcludeSettlementManual: {path: "/Settlement/exclude-settlement"},
-    ProsesSettlementManual: {path: "/Settlement/proses-settlement-manual"},
+    VaDanPaymentLinkAdmin: {path: "/transaksi/va-dan-paylink"},
+    RiwayatDirectDebitAdmin: {path: "/transaksi/direct-debit"},
+    DisbursementAdmin: {path: "/transaksi/disbursement"},
+    SubAccountAdmin: {path: "/transaksi/sub-account"},
+    DisbursementTimeout: {path: "/transaksi/disbursement-timeout"},
+    SettlementManual: {path: "/settlement/settlement-manual"},
+    eWalletAdmin: {path: "/transaksi/ewallet"},
+    ExcludeSettlementManual: {path: "/settlement/exclude-settlement"},
+    ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},
     VAUSD: {path: "/VA USD/create-va-usd"},
-    
+
     // partner
-    VaDanPaymentLink: {path: "/Riwayat Transaksi/va-dan-paylink"},
-    RiwayatDirectDebit: {path: "/Riwayat Transaksi/direct-debit"},
-    Disbursement: {path: "/Riwayat Transaksi/disbursement"},
-    SubAccount: {path: "/Riwayat Transaksi/sub-account"},
-    eWallet: {path: "/Riwayat Transaksi/ewallet"},
+    VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},
+    RiwayatDirectDebit: {path: "/riwayat-transaksi/direct-debit"},
+    Disbursement: {path: "/riwayat-transaksi/disbursement"},
+    SubAccount: {path: "/riwayat-transaksi/sub-account"},
+    eWallet: {path: "/riwayat-transaksi/ewallet"},
 
 
     // docs

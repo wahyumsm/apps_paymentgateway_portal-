@@ -10,18 +10,20 @@ import './css/global.css'
 
 import { Routes } from "../routes";
 import EzeeLogo from "../assets/icon/Logo_Ezeelink.svg";
+import EzeeLogoChina from "../assets/icon/Logo_Ezeelink_vers_China.svg";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
 import { GetUserAccessMenu } from "../redux/ActionCreators/UserAccessMenuAction";
 import { useDispatch, useSelector } from "react-redux";
-import { getRole, getToken } from "../function/helpers";
+import { getRole, getToken, language } from "../function/helpers";
 import arrowDown from "../assets/img/icons/arrow_down.svg";
 import arrowRight from "../assets/img/icons/arrow_right_white.png";
 
 export default (props = {}) => {
 
   const location = useLocation();
+  // console.log(location, "location");
   const dispatch = useDispatch()
   const history = useHistory()
   const access_token = getToken()
@@ -34,8 +36,15 @@ export default (props = {}) => {
   const onCollapse = () => setShow(!show);
 
   const CollapsableNavItem = (props) => {
-    const { eventKey, title, icon, image, children = null } = props;
-    const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
+    const { eventKey, title, url, icon, image, children = null } = props;
+    // const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
+    const defaultKey = pathname.indexOf(url) !== -1 ? eventKey : "";
+
+    // console.log(defaultKey, "defaultKey");
+    // console.log(pathname, "pathname");
+    // console.log(eventKey, "eventKey");
+    // console.log(title, "title");
+    // console.log(url, "url");
 
     return (
       <Accordion as={Nav.Item} defaultActiveKey={defaultKey}>
@@ -84,9 +93,9 @@ export default (props = {}) => {
     if (!access_token) {
       history.push("/login")
     }
-    dispatch(GetUserAccessMenu("/Account/GetUserAccess"))
+    dispatch(GetUserAccessMenu("/Account/GetUserAccess", language === null ? 'EN' : language.flagName))
   }, [])
-  
+
   if (!userAccessMenu) {
     return null
   }
@@ -102,7 +111,7 @@ export default (props = {}) => {
         </Navbar.Toggle>
       </Navbar>
       <CSSTransition timeout={300} in={show} classNames="sidebar-transition">
-        <SimpleBar className={`collapse ${showClass} sidebar d-md-block text-white`} style={{backgroundColor: '#2C1919'}}>       
+        <SimpleBar className={`collapse ${showClass} sidebar d-md-block text-white`} style={{backgroundColor: '#2C1919'}}>
           <div className="sidebar-inner">
             {/* <div className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
               <div className="d-flex align-items-center">
@@ -120,10 +129,10 @@ export default (props = {}) => {
                 <FontAwesomeIcon icon={faTimes} />
               </Nav.Link>
             </div> */}
-            <Nav className="flex-column pt-3 pt-md-0">              
+            <Nav className="flex-column pt-3 pt-md-0">
               <div style={{backgroundColor: '#DF9C43', height: '67px', textAlign: 'center'}}>
-                <img src={EzeeLogo} style={{width: 66, height: 36, marginTop: 12}} alt=""/>
-              </div>              
+                <img src={language === null ? EzeeLogo : language.flagName === "CN" ? EzeeLogoChina : EzeeLogo} style={{width: 66, height: language === null ? 36 : language.flagName === "CN" ? 46 : 36, marginTop: 12}} alt=""/>
+              </div>
               {
                 userAccessMenu.map((item) => {
                   return (
@@ -135,10 +144,11 @@ export default (props = {}) => {
                       title={item.label}
                       // image={(item.label === "Dashboard") ? BerandaIcon : (item.label === "Report") ? LaporanIcon : (item.label === "Daftar Agen") ? DaftarAgenIcon : ""}
                       image={item.icon}
+                      url={item.maccess_url}
                       // link={Routes.Transactions.path}
-                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 20) ? Routes.ListPayment.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 24) ? Routes.SubAccountTransfer.path : (item.id === 25) ? Routes.ListRiwayatSubAccountAdmin.path : (item.id === 26) ? Routes.DisbursementPage.path : (item.id === 27) ? Routes.SaldoPartnerMenu.path : (item.id === 28) ? Routes.UserDirectDebit.path : (item.id === 29) ? Routes.SaldoPartnerMenu.path : (item.id === 31) ? Routes.DisbursementPage.path : (item.id === 32) ? Routes.SubAccountTransfer.path : (item.id === 33) ? Routes.SettlementManual.path : (item.id === 34) ? Routes.RiwayatBalance.path : ""}
+                      link={(item.id === 10) ? Routes.DashboardOverview.path : (item.id === 11) ? Routes.Transactions.path : (item.id === 14) ? Routes.DaftarAgen.path : (item.id === 12) ? Routes.NotFound.path : (item.id === 15) ? Routes.DaftarPartner.path : (item.id === 17) ? Routes.InvoiceVA.path : (item.id === 18) ? Routes.ListUser.path : (item.id === 20) ? Routes.ListPayment.path : (item.id === 22) ? Routes.RiwayatTopUp.path : (item.id === 23) ? Routes.InvoiceDisbursement.path : (item.id === 24) ? Routes.SubAccountTransfer.path : (item.id === 25) ? Routes.ListRiwayatSubAccountAdmin.path : (item.id === 26) ? Routes.DisbursementPage.path : (item.id === 27) ? Routes.SaldoPartnerMenu.path : (item.id === 28) ? Routes.UserDirectDebit.path : (item.id === 29) ? Routes.SaldoPartnerMenu.path : (item.id === 31) ? Routes.DisbursementPage.path : (item.id === 32) ? Routes.SubAccountTransfer.path : (item.id === 33) ? Routes.SettlementManual.path : (item.id === 34) ? Routes.RiwayatBalance.path : (item.id === 36) ? Routes.GetBalance.path : ""}
                     /> :
-                    <CollapsableNavItem eventKey={item.label} key={item.id} title={item.label} image={item.icon}>
+                    <CollapsableNavItem eventKey={item.label} key={item.id} title={item.label} image={item.icon} url={item.maccess_url}>
                       {
                         item.detail.map(item2 => {
                           return (
@@ -147,9 +157,9 @@ export default (props = {}) => {
                               key={item2.id}
                               title={item2.label}
                               // icon={faAngleRight}
-                              // image={item2.icon} (item2.id === 1603) ? Routes.eWallet.path : 
+                              // image={item2.icon} (item2.id === 1603) ? Routes.eWallet.path :
                               // link={(item2.id === 1601) ? Routes.RiwayatTransaksi.path : (item2.id === 1602) ? Routes.SaldoPartner.path : (item2.id === 1603) ? Routes.VaDanPaymentLinkAdmin.path : (item2.id === 1604) ? Routes.RiwayatDirectDebitAdmin.path : (item2.id === 1605) ? Routes.DisbursementAdmin.path : (item2.id === 1606) ? Routes.SubAccountAdmin.path : (item2.id === 1607) ? Routes.DisbursementTimeout.path : (item2.id === 1701) ? Routes.InvoiceVASubMenu.path : (item2.id === 1702) ? Routes.InvoiceDisbursementSubMenu.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 2602) ? Routes.RiwayatDisbursement.path : (item2.id === 3001) ? Routes.VaDanPaymentLink.path : (item2.id === 3002) ? Routes.RiwayatDirectDebit.path : (item2.id === 3003) ? Routes.Disbursement.path : (item2.id === 3004) ? Routes.SubAccount.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
-                              link={(item2.id === 1101) ? Routes.VaDanPaymentLink.path : (item2.id === 1102) ? Routes.Disbursement.path : (item2.id === 1103) ? Routes.eWallet.path : (item2.id === 1104) ? Routes.RiwayatDirectDebit.path : (item2.id === 1105) ? Routes.SubAccount.path : (item2.id === 1601) ? Routes.VaDanPaymentLinkAdmin.path : (item2.id === 1602) ? Routes.DisbursementAdmin.path : (item2.id === 1603) ? Routes.eWalletAdmin.path : (item2.id === 1604) ? Routes.RiwayatDirectDebitAdmin.path : (item2.id === 1605) ? Routes.SubAccountAdmin.path : (item2.id === 1606) ? Routes.DisbursementTimeout.path : (item2.id === 1701) ? Routes.Settlement.path : (item2.id === 1702) ? Routes.SettlementManual.path : (item2.id === 1703) ? Routes.ExcludeSettlementManual.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2301) ? Routes.InvoiceDisbursementSubMenu.path : (item2.id === 2302) ? Routes.InvoiceVASubMenu.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
+                              link={(item2.id === 1101) ? Routes.VaDanPaymentLink.path : (item2.id === 1102) ? Routes.Disbursement.path : (item2.id === 1103) ? Routes.eWallet.path : (item2.id === 1104) ? Routes.RiwayatDirectDebit.path : (item2.id === 1105) ? Routes.SubAccount.path : (item2.id === 1601) ? Routes.VaDanPaymentLinkAdmin.path : (item2.id === 1602) ? Routes.DisbursementAdmin.path : (item2.id === 1603) ? Routes.eWalletAdmin.path : (item2.id === 1604) ? Routes.RiwayatDirectDebitAdmin.path : (item2.id === 1605) ? Routes.SubAccountAdmin.path : (item2.id === 1606) ? Routes.DisbursementTimeout.path : (item2.id === 2303) ? Routes.TransaksiTopup.path : (item2.id === 1701) ? Routes.Settlement.path : (item2.id === 1702) ? Routes.SettlementManual.path : (item2.id === 1703) ? Routes.ExcludeSettlementManual.path : (item2.id === 1901) ? Routes.ReNotifyVA.path : (item2.id === 2301) ? Routes.InvoiceDisbursementSubMenu.path : (item2.id === 2302) ? Routes.InvoiceVASubMenu.path : (item2.id === 2401) ? Routes.InfoSaldoDanMutasi.path : (item2.id === 2403) ? Routes.ListRiwayatSubAccount.path : (item2.id === 9901) ? Routes.NotFound.path : (item2.id === 9902) ? Routes.NotFound.path : ""}
                             /> :
                             <CollapsableNavItem key={item2.id} title={item2.label} image={item2.icon}>
                               {
@@ -180,7 +190,7 @@ export default (props = {}) => {
               {/* <NavItem title="Riwayat Transaksi" image={RiwayatIcon} link={Routes.RiwayatTransaksi.path} /> */}
               {/* <NavItem title="Daftar Agen" image={DaftarAgenIcon} link={Routes.DaftarAgen.path} /> */}
               {/* <NavItem title="Daftar Partner" image={DaftarPartnerIcon} link={Routes.DaftarPartner.path}/> */}
-{/* 
+{/*
               <CollapsableNavItem eventKey="tables/" title="Tables" icon={faTable}>
                 <NavItem title="Bootstrap Table" link={Routes.BootstrapTables.path} />
               </CollapsableNavItem>
@@ -227,7 +237,7 @@ export default (props = {}) => {
                 <NavItem title="Build Tools" link={Routes.DocsBuild.path} />
                 <NavItem title="Changelog" link={Routes.DocsChangelog.path} />
               </CollapsableNavItem>
-              
+
               <NavItem external title="Themesberg" link="https://themesberg.com" target="_blank" image={ThemesbergLogo} />
               <Button as={Link} to={Routes.Upgrade.path} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faRocket} className="me-1" /> Upgrade to Pro</Button> */}
             </Nav>
