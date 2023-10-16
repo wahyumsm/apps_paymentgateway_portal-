@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { BaseURL, convertDateAndTimeInfoDanSaldo, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertDateAndTimeInfoDanSaldo, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import SubAccountComponent from '../../components/SubAccountComponent'
 import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
@@ -22,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import transferFailed from "../../assets/icon/gagaltopup_icon.svg"
 import * as XLSX from "xlsx"
+import { eng } from '../../components/Language'
 
 const InfoSaldoDanMutasi = () => {
     const history = useHistory()
@@ -106,7 +107,7 @@ const InfoSaldoDanMutasi = () => {
     };
 
     /*SORT PARTNER */
-      
+
     const [idTrans, setIdTrans] = useState({
           isDesc: false,
         id: 1
@@ -231,7 +232,7 @@ const InfoSaldoDanMutasi = () => {
                 showIdTrans()
                 setOrderId(orderId)
                 setActivePageMutasi(1)
-                getListRiwayatMutasi(inputHandle.akunPartner, 1, inputMutasi.rowPerPage, orderId, orderField)
+                getListRiwayatMutasi(inputHandle.akunPartner, 1, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             } else if (orderField === "toffshorebank_code" && isFilter === true) {
                 setOrderField("toffshorebank_code");
                 showIdTrans()
@@ -249,14 +250,15 @@ const InfoSaldoDanMutasi = () => {
                     orderId,
                     orderField,
                     inputMutasi.idReff,
-                    inputMutasi.idReffTrans
+                    inputMutasi.idReffTrans,
+                    language === null ? 'EN' : language.flagName
                 )
             } else if (orderField === "id_referensi" && isFilter === false) {
                 setOrderField("id_referensi");
                 showIdReffBank()
                 setOrderId(orderId)
                 setActivePageMutasi(1)
-                getListRiwayatMutasi(inputHandle.akunPartner, 1, inputMutasi.rowPerPage, orderId, orderField)
+                getListRiwayatMutasi(inputHandle.akunPartner, 1, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             } else if (orderField === "id_referensi" && isFilter === true) {
                 setOrderField("id_referensi");
                 showIdReffBank()
@@ -274,14 +276,15 @@ const InfoSaldoDanMutasi = () => {
                     orderId,
                     orderField,
                     inputMutasi.idReff,
-                    inputMutasi.idReffTrans
+                    inputMutasi.idReffTrans,
+                    language === null ? 'EN' : language.flagName
                 )
             } else if (orderField === "id_referensi_transaksi" && isFilter === false) {
                 setOrderField("id_referensi_transaksi");
                 showIdReffTrans()
                 setOrderId(orderId)
                 setActivePageMutasi(1)
-                getListRiwayatMutasi(inputHandle.akunPartner, 1, inputMutasi.rowPerPage, orderId, orderField)
+                getListRiwayatMutasi(inputHandle.akunPartner, 1, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             } else if (orderField === "id_referensi_transaksi" && isFilter === true) {
                 setOrderField("id_referensi_transaksi");
                 showIdReffTrans()
@@ -299,14 +302,15 @@ const InfoSaldoDanMutasi = () => {
                     orderId,
                     orderField,
                     inputMutasi.idReff,
-                    inputMutasi.idReffTrans
+                    inputMutasi.idReffTrans,
+                    language === null ? 'EN' : language.flagName
                 )
             } else if (orderField === "toffshorebank_crtdt" && isFilter === false) {
                 setOrderField("toffshorebank_crtdt");
                 showDates()
                 setOrderId(orderId)
                 setActivePageMutasi(1)
-                getListRiwayatMutasi(inputHandle.akunPartner, 1, inputMutasi.rowPerPage, orderId, orderField)
+                getListRiwayatMutasi(inputHandle.akunPartner, 1, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             } else if (orderField === "toffshorebank_crtdt" && isFilter === true) {
                 setOrderField("toffshorebank_crtdt");
                 showDates()
@@ -324,7 +328,8 @@ const InfoSaldoDanMutasi = () => {
                     orderId,
                     orderField,
                     inputMutasi.idReff,
-                    inputMutasi.idReffTrans
+                    inputMutasi.idReffTrans,
+                    language === null ? 'EN' : language.flagName
                 )
             }
         } else if (role === "admin") {
@@ -334,7 +339,7 @@ const InfoSaldoDanMutasi = () => {
                 showIdTransAdmin()
                 setOrderIdAdmin(orderId)
                 setActivePageRiwayatTransferAdmin(1)
-                getListRiwayatTransferAdmin(1, inputHandleAdmin.rowPerPage, orderId, orderField)
+                getListRiwayatTransferAdmin(1, inputHandleAdmin.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             } else if (orderField === "toffshorebank_code" && isFilter === true) {
                 setOrderFieldAdmin("toffshorebank_code");
                 showIdTransAdmin()
@@ -351,14 +356,15 @@ const InfoSaldoDanMutasi = () => {
                     dateRangeRiwayatTranferAdmin,
                     inputHandleAdmin.periodeRiwayatTransfer,
                     1,
-                    inputHandleAdmin.rowPerPage
+                    inputHandleAdmin.rowPerPage,
+                    language === null ? 'EN' : language.flagName
                 )
             } else if (orderField === "id_referensi" && isFilter === false) {
                 setOrderFieldAdmin("id_referensi");
                 showIdReffBankAdmin()
                 setOrderIdAdmin(orderId)
                 setActivePageRiwayatTransferAdmin(1)
-                getListRiwayatTransferAdmin(1, inputHandleAdmin.rowPerPage, orderId, orderField)
+                getListRiwayatTransferAdmin(1, inputHandleAdmin.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             } else if (orderField === "id_referensi" && isFilter === true) {
                 setOrderFieldAdmin("id_referensi");
                 showIdReffBankAdmin()
@@ -375,14 +381,15 @@ const InfoSaldoDanMutasi = () => {
                     dateRangeRiwayatTranferAdmin,
                     inputHandleAdmin.periodeRiwayatTransfer,
                     1,
-                    inputHandleAdmin.rowPerPage
+                    inputHandleAdmin.rowPerPage,
+                    language === null ? 'EN' : language.flagName
                 )
             } else if (orderField === "id_referensi_transaksi" && isFilter === false) {
                 setOrderFieldAdmin("id_referensi_transaksi");
                 showIdReffTransAdmin()
                 setOrderIdAdmin(orderId)
                 setActivePageRiwayatTransferAdmin(1)
-                getListRiwayatTransferAdmin(1, inputHandleAdmin.rowPerPage, orderId, orderField)
+                getListRiwayatTransferAdmin(1, inputHandleAdmin.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             } else if (orderField === "id_referensi_transaksi" && isFilter === true) {
 
                 setOrderFieldAdmin("id_referensi_transaksi");
@@ -400,14 +407,15 @@ const InfoSaldoDanMutasi = () => {
                     dateRangeRiwayatTranferAdmin,
                     inputHandleAdmin.periodeRiwayatTransfer,
                     1,
-                    inputHandleAdmin.rowPerPage
+                    inputHandleAdmin.rowPerPage,
+                    language === null ? 'EN' : language.flagName
                 )
             } else if (orderField === "toffshorebank_crtdt" && isFilter === false) {
                 setOrderFieldAdmin("toffshorebank_crtdt");
                 showDatesAdmin()
                 setOrderIdAdmin(orderId)
                 setActivePageRiwayatTransferAdmin(1)
-                getListRiwayatTransferAdmin(1, inputHandleAdmin.rowPerPage, orderId, orderField)
+                getListRiwayatTransferAdmin(1, inputHandleAdmin.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             } else if (orderField === "toffshorebank_crtdt" && isFilter === true) {
                 setOrderFieldAdmin("toffshorebank_crtdt");
                 showDatesAdmin()
@@ -424,7 +432,8 @@ const InfoSaldoDanMutasi = () => {
                     dateRangeRiwayatTranferAdmin,
                     inputHandleAdmin.periodeRiwayatTransfer,
                     1,
-                    inputHandleAdmin.rowPerPage
+                    inputHandleAdmin.rowPerPage,
+                    language === null ? 'EN' : language.flagName
                 )
             }
         }
@@ -433,20 +442,21 @@ const InfoSaldoDanMutasi = () => {
     function handlePageChangeRiwayatMutasi(page) {
         if (isFilterMutasi) {
             setActivePageMutasi(page);
-            filterListRiwayatMutasi(inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.paymentType, inputMutasi.partnerName, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, page, inputMutasi.rowPerPage, orderId, orderField, inputMutasi.idReff, inputMutasi.idReffTrans)
+            filterListRiwayatMutasi(inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.paymentType, inputMutasi.partnerName, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, page, inputMutasi.rowPerPage, orderId, orderField, inputMutasi.idReff, inputMutasi.idReffTrans, language === null ? 'EN' : language.flagName)
         } else {
             setActivePageMutasi(page);
-            getListRiwayatMutasi(inputHandle.akunPartner, page, inputMutasi.rowPerPage, orderId, orderField);
+            getListRiwayatMutasi(inputHandle.akunPartner, page, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName);
         }
     }
 
-    async function getListRiwayatMutasi(partnerId, currentPage, rowPerPage, orderId, orderFieldId) {
+    async function getListRiwayatMutasi(partnerId, currentPage, rowPerPage, orderId, orderFieldId, lang) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"subpartner_id":"${partnerId}", "toffshorebank_code":"", "trans_type": 0, "partner_name":"", "date_from":"", "date_to":"", "period":2, "page":${(currentPage !== 0) ? currentPage : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "order": ${orderId}, "order_field": "${orderFieldId}", "id_referensi": "", "id_referensi_transaksi": ""}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const listDataMutasi = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
             // console.log(listDataMutasi, "ini data riwayat");
@@ -470,7 +480,7 @@ const InfoSaldoDanMutasi = () => {
         }
     }
 
-    async function filterListRiwayatMutasi(partnerId, idTrans, paymentType, partnerName, periode, dateId, page, rowPerPage, orderId, orderField, idReff, idReffTrans) {
+    async function filterListRiwayatMutasi(partnerId, idTrans, paymentType, partnerName, periode, dateId, page, rowPerPage, orderId, orderField, idReff, idReffTrans, lang) {
         try {
             setPendingMutasi(true)
             setIsFilterMutasi(true)
@@ -479,7 +489,8 @@ const InfoSaldoDanMutasi = () => {
             const dataParams = encryptData(`{"subpartner_id":"${partnerId}", "toffshorebank_code":"${idTrans.length !== 0 ? idTrans : ""}", "trans_type": ${paymentType}, "partner_name":"${partnerName.length !== 0 ? partnerName : ""}", "date_from":"${periode.length !== 0 ? periode[0] : ""}", "date_to":"${periode.length !== 0 ? periode[1] : ""}", "period": ${dateId}, "page":${(page !== 0) ? page : 1}, "row_per_page": ${rowPerPage !== 0 ? rowPerPage : 10}, "order": ${orderId}, "order_field": "${orderField}", "id_referensi": "${idReff.length !== 0 ? idReff : ""}", "id_referensi_transaksi": "${idReffTrans.length !== 0 ? idReffTrans : ""}"}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const listDataMutasi = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
             // console.log(listDataMutasi, "ini data riwayat");
@@ -527,7 +538,7 @@ const InfoSaldoDanMutasi = () => {
           setDateRangeInfoMutasi(item)
         }
     }
-    
+
     async function fetchMoreData() {
         try {
             const auth = "Bearer " + getToken()
@@ -566,14 +577,14 @@ const InfoSaldoDanMutasi = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-    
+
     const style = {
         height: 30,
         border: "1px solid green",
         margin: 6,
         padding: 8
     };
-    
+
     const [inputHandle, setInputHandle] = useState({
         akunPartner: "",
         nomorAkun: "",
@@ -583,7 +594,7 @@ const InfoSaldoDanMutasi = () => {
     const [inputDataMutasi, setInputDataMutasi] = useState({
         periodeInfoMutasi: 0
     })
-    
+
     const { allowedMaxDays, allowedRange, combine } = DateRangePicker;
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate() + 1).toISOString().split('T')[0]
@@ -603,7 +614,7 @@ const InfoSaldoDanMutasi = () => {
                 opacity: 'unset'
             },
             placement: 'bottom',
-            
+
         },
     ]
     const Locale = {
@@ -620,7 +631,7 @@ const InfoSaldoDanMutasi = () => {
     function handleChange(e, listAkun) {
         listAkun = listAkun.find(item => item.partner_id === e.target.value)
         // console.log(listAkun.partner_id, "list akun");
-        getListRiwayatMutasi(listAkun.partner_id, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField)
+        getListRiwayatMutasi(listAkun.partner_id, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
         setInputHandle({
             ...inputHandle,
             [e.target.name]: e.target.value,
@@ -642,7 +653,7 @@ const InfoSaldoDanMutasi = () => {
     }
 
     function toLaporan() {
-        history.push("/Riwayat Transaksi/va-dan-paylink");
+        history.push("/riwayat-transaksi/va-dan-paylink");
     }
 
     async function getAkunPartner() {
@@ -665,7 +676,7 @@ const InfoSaldoDanMutasi = () => {
                     namaAkun: listPartnerAkun.data.response_data[0].account_name,
                 })
                 // getListMutasi(listPartnerAkun.data.response_data[0].partner_id, pageMutasi.next_record, pageMutasi.matched_record)
-                getListRiwayatMutasi(listPartnerAkun.data.response_data[0].partner_id, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField)
+                getListRiwayatMutasi(listPartnerAkun.data.response_data[0].partner_id, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             }
           } else if (listPartnerAkun.status === 200 && listPartnerAkun.data.response_code === 200 && listPartnerAkun.data.response_new_token.length !== 0) {
             setUserSession(listPartnerAkun.data.response_new_token)
@@ -678,7 +689,7 @@ const InfoSaldoDanMutasi = () => {
                     nomorAkun: listPartnerAkun.data.response_data[0].account_number,
                     namaAkun: listPartnerAkun.data.response_data[0].account_name,
                 })
-                getListRiwayatMutasi(listPartnerAkun.data.response_data[0].partner_id, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField)
+                getListRiwayatMutasi(listPartnerAkun.data.response_data[0].partner_id, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
             }
           }
         } catch (error) {
@@ -767,7 +778,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingMutasi(false)
             }
             history.push(errorCatch(error.response.status))
-            
+
         }
     }
 
@@ -834,10 +845,10 @@ const InfoSaldoDanMutasi = () => {
         setShowDateInfoMutasi("none")
     }
     // console.log(inputDataMutasi.periodeInfoMutasi, 'inputDataMutasi.periodeInfoMutasi');
-    
+
     function viewSaldo () {
         getInfoSaldo(inputHandle.akunPartner, inputPass.passwordRek)
-        
+
     }
 
     function formPassword () {
@@ -857,7 +868,7 @@ const InfoSaldoDanMutasi = () => {
                 fontWeight: 'bold',
                 fontSize: '16px',
                 paddingRight: 'none'
-                
+
             },
         },
     };
@@ -874,10 +885,10 @@ const InfoSaldoDanMutasi = () => {
     function handlePageChangeRiwayatTransferAdmin(page) {
         if (isFilterRiwayatTransferAdmin) {
             setActivePageRiwayatTransferAdmin(page)
-            filterListRiwayatTransaksiAdmin(inputHandleAdmin.idTrans, inputHandleAdmin.idReffTrans, inputHandleAdmin.idReff, orderIdAdmin, orderFieldAdmin, inputHandleAdmin.fiturTransaksi, inputHandleAdmin.namaPartner, dateRangeRiwayatTranferAdmin, inputHandleAdmin.periodeRiwayatTransfer, page, inputHandleAdmin.rowPerPage)
+            filterListRiwayatTransaksiAdmin(inputHandleAdmin.idTrans, inputHandleAdmin.idReffTrans, inputHandleAdmin.idReff, orderIdAdmin, orderFieldAdmin, inputHandleAdmin.fiturTransaksi, inputHandleAdmin.namaPartner, dateRangeRiwayatTranferAdmin, inputHandleAdmin.periodeRiwayatTransfer, page, inputHandleAdmin.rowPerPage, language === null ? 'EN' : language.flagName)
         } else {
             setActivePageRiwayatTransferAdmin(page)
-            getListRiwayatTransferAdmin(page, inputHandleAdmin.rowPerPage, orderIdAdmin, orderFieldAdmin)
+            getListRiwayatTransferAdmin(page, inputHandleAdmin.rowPerPage, orderIdAdmin, orderFieldAdmin, language === null ? 'EN' : language.flagName)
         }
     }
 
@@ -905,13 +916,14 @@ const InfoSaldoDanMutasi = () => {
         }
     }
 
-    async function getListRiwayatTransferAdmin(currentPage, rowPerPage, orderId, orderFieldId) {
+    async function getListRiwayatTransferAdmin(currentPage, rowPerPage, orderId, orderFieldId, lang) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"subpartner_id":"", "toffshorebank_code":"", "trans_type": 0, "partner_name":"", "date_from":"", "date_to":"", "period":2, "page":${(currentPage !== 0) ? currentPage : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "order": ${orderId}, "order_field": "${orderFieldId}", "id_referensi": "", "id_referensi_transaksi": ""}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
             // console.log(listDataRiwayat, "ini data riwayat");
@@ -935,7 +947,7 @@ const InfoSaldoDanMutasi = () => {
         }
     }
 
-    async function filterListRiwayatTransaksiAdmin(idTrans, idReffTrans, idReff, orderId, orderField, transType, namaPartner, periode, dateID, page, rowPerPage) {
+    async function filterListRiwayatTransaksiAdmin(idTrans, idReffTrans, idReff, orderId, orderField, transType, namaPartner, periode, dateID, page, rowPerPage, lang) {
         try {
             setPendingRiwayatTransferAdmin(true)
             setIsFilterRiwayatTransferAdmin(true)
@@ -944,7 +956,8 @@ const InfoSaldoDanMutasi = () => {
             const dataParams = encryptData(`{"subpartner_id":"", "toffshorebank_code":"${idTrans.length !== 0 ? idTrans : ""}", "id_referensi_transaksi": "${idReffTrans.length !== 0 ? idReffTrans : ""}", "id_referensi":"${(idReff.length !== 0) ? idReff : ""}", "order": ${orderId}, "order_field": "${orderField}", "trans_type": ${transType !== 0 ? transType : 0}, "partner_name":"${namaPartner.length !== 0 ? namaPartner : ""}", "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to":"${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateID}, "page":${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
             // console.log(listDataRiwayat, "ini data riwayat");
@@ -968,15 +981,16 @@ const InfoSaldoDanMutasi = () => {
         }
     }
 
-    function ExportReportRiwayatTransfer (isFilter, idTrans, idReffTrans, idReff, transType, namaPartner, orderId, orderField, periode, dateID) {
+    function ExportReportRiwayatTransfer (isFilter, partnerId, idTrans, idReffTrans, idReff, transType, namaPartner, orderId, orderField, periode, dateID, lang) {
         if (isFilter) {
             async function dataExportFilter(idTrans, idReffTrans, idReff, transType, namaPartner, orderId, orderField, periode, dateID) {
                 try {
                     const auth = "Bearer " + getToken()
-                    const dataParams = encryptData(`{"subpartner_id":"", "toffshorebank_code":"${idTrans.length !== 0 ? idTrans : ""}", "id_referensi_transaksi": "${idReffTrans.length !== 0 ? idReffTrans : ""}", "id_referensi":"${(idReff.length !== 0) ? idReff : ""}", "order": ${orderId}, "order_field": "${orderField}", "trans_type": ${transType !== 0 ? transType : 0}, "partner_name":"${namaPartner.length !== 0 ? namaPartner : ""}", "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to":"${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateID}, "page":1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"subpartner_id": "${user_role === "102" ? partnerId : ""}", "toffshorebank_code":"${idTrans.length !== 0 ? idTrans : ""}", "id_referensi_transaksi": "${idReffTrans.length !== 0 ? idReffTrans : ""}", "id_referensi":"${(idReff.length !== 0) ? idReff : ""}", "order": ${orderId}, "order_field": "${orderField}", "trans_type": ${transType !== 0 ? transType : 0}, "partner_name":"${namaPartner.length !== 0 ? namaPartner : ""}", "date_from":"${(periode.length !== 0) ? periode[0] : ""}", "date_to":"${(periode.length !== 0) ? periode[1] : ""}", "period": ${dateID}, "page":1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type':'application/json',
-                        'Authorization' : auth
+                        'Authorization' : auth,
+                        'Accept-Language' : lang
                     }
                     const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
                     // console.log(listDataRiwayat, "ini data riwayat");
@@ -985,7 +999,7 @@ const InfoSaldoDanMutasi = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].toffshorebank_code, "ID Referensi Bank": data[i].id_referensi, "ID Referensi Transaksi": data[i].id_referensi_transaksi, "Waktu": data[i].toffshorebank_crtdt, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].moffshorebank_type_name, "Rekening Tujuan": data[i].toffshorebank_account, "Nominal": data[i].toffshorebank_amount, "Keterangan": data[i].toffshorebank_desc})
+                                dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].toffshorebank_code, [language === null ? eng.idRefBank : language.idRefBank]: data[i].id_referensi, [language === null ? eng.idRefTrans : language.idRefTrans]: data[i].id_referensi_transaksi, [language === null ? eng.waktu : language.waktu]: data[i].toffshorebank_crtdt, [language === null ? eng.namaPartner : language.namaPartner]: data[i].mpartner_name, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].moffshorebank_type_name, [language === null ? eng.rekTujuan : language.rekTujuan]: data[i].toffshorebank_account, [language === null ? eng.nominal : language.nominal]: data[i].toffshorebank_amount, [language === null ? eng.deskripsi : language.deskripsi]: data[i].toffshorebank_desc, [language === null ? eng.keterangan : language.keterangan]: data[i].keterangan})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
@@ -995,14 +1009,14 @@ const InfoSaldoDanMutasi = () => {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi Sub Account .xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel} .xlsx`);
                     } else if (listDataRiwayat.data.response_code === 200 && listDataRiwayat.status === 200 && listDataRiwayat.data.response_new_token.length !== 0) {
                         setUserSession(listDataRiwayat.data.response_new_token)
                         const data = listDataRiwayat.data.response_data.results;
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].toffshorebank_code, "ID Referensi Bank": data[i].id_referensi, "ID Referensi Transaksi": data[i].id_referensi_transaksi, "Waktu": data[i].toffshorebank_crtdt, "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].moffshorebank_type_name, "Rekening Tujuan": data[i].toffshorebank_account, "Nominal": data[i].toffshorebank_amount, "Keterangan": data[i].toffshorebank_desc})
+                                dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].toffshorebank_code, [language === null ? eng.idRefBank : language.idRefBank]: data[i].id_referensi, [language === null ? eng.idRefTrans : language.idRefTrans]: data[i].id_referensi_transaksi, [language === null ? eng.waktu : language.waktu]: data[i].toffshorebank_crtdt, [language === null ? eng.namaPartner : language.namaPartner]: data[i].mpartner_name, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].moffshorebank_type_name, [language === null ? eng.rekTujuan : language.rekTujuan]: data[i].toffshorebank_account, [language === null ? eng.nominal : language.nominal]: data[i].toffshorebank_amount, [language === null ? eng.deskripsi : language.deskripsi]: data[i].toffshorebank_desc, [language === null ? eng.keterangan : language.keterangan]: data[i].keterangan})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
@@ -1012,7 +1026,7 @@ const InfoSaldoDanMutasi = () => {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi Sub Account .xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel} .xlsx`);
                     }
                 } catch (error) {
                   // console.log(error)
@@ -1024,10 +1038,11 @@ const InfoSaldoDanMutasi = () => {
             async function dataDefault() {
                 try {
                     const auth = "Bearer " + getToken()
-                    const dataParams = encryptData(`{"subpartner_id":"", "toffshorebank_code":"", "trans_type": 0, "partner_name":"", "date_from":"", "date_to":"", "period":2, "page":1, "row_per_page": 1000000, "order": ${orderId}, "order_field": "${orderField}", "id_referensi": "", "id_referensi_transaksi": ""}`)
+                    const dataParams = encryptData(`{"subpartner_id": "${user_role === "102" ? partnerId : ""}", "toffshorebank_code":"", "trans_type": 0, "partner_name":"", "date_from":"", "date_to":"", "period":2, "page":1, "row_per_page": 1000000, "order": ${orderId}, "order_field": "${orderField}", "id_referensi": "", "id_referensi_transaksi": ""}`)
                     const headers = {
                         'Content-Type':'application/json',
-                        'Authorization' : auth
+                        'Authorization' : auth,
+                        'Accept-Language' : lang
                     }
                     const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
                     // console.log(listDataRiwayat, "ini data riwayat");
@@ -1036,7 +1051,7 @@ const InfoSaldoDanMutasi = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Referensi": data[i].toffshorebank_code, "Waktu": data[i].toffshorebank_crtdt, "Jenis Transaksi": data[i].moffshorebank_type_name, "Rekening Sub Account": data[i].toffshorebank_account, "Nominal": data[i].toffshorebank_amount, "Biaya Admin": data[i].toffshorebank_fee, "Keterangan": data[i].toffshorebank_desc})
+                                dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].toffshorebank_code, [language === null ? eng.idRefBank : language.idRefBank]: data[i].id_referensi, [language === null ? eng.idRefTrans : language.idRefTrans]: data[i].id_referensi_transaksi, [language === null ? eng.waktu : language.waktu]: data[i].toffshorebank_crtdt, [language === null ? eng.namaPartner : language.namaPartner]: data[i].mpartner_name, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].moffshorebank_type_name, [language === null ? eng.rekTujuan : language.rekTujuan]: data[i].toffshorebank_account, [language === null ? eng.nominal : language.nominal]: data[i].toffshorebank_amount, [language === null ? eng.deskripsi : language.deskripsi]: data[i].toffshorebank_desc, [language === null ? eng.keterangan : language.keterangan]: data[i].keterangan})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
@@ -1046,13 +1061,13 @@ const InfoSaldoDanMutasi = () => {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi Sub Account .xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel} .xlsx`);
                     } else if (listDataRiwayat.data.response_code === 200 && listDataRiwayat.status === 200 && listDataRiwayat.data.response_new_token.length !== 0) {
                         const data = listDataRiwayat.data.response_data.results;
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Referensi": data[i].toffshorebank_code, "Waktu": data[i].toffshorebank_crtdt, "Jenis Transaksi": data[i].moffshorebank_type_name, "Rekening Sub Account": data[i].toffshorebank_account, "Nominal": data[i].toffshorebank_amount, "Biaya Admin": data[i].toffshorebank_fee, "Keterangan": data[i].toffshorebank_desc})
+                                dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].toffshorebank_code, [language === null ? eng.idRefBank : language.idRefBank]: data[i].id_referensi, [language === null ? eng.idRefTrans : language.idRefTrans]: data[i].id_referensi_transaksi, [language === null ? eng.waktu : language.waktu]: data[i].toffshorebank_crtdt, [language === null ? eng.namaPartner : language.namaPartner]: data[i].mpartner_name, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].moffshorebank_type_name, [language === null ? eng.rekTujuan : language.rekTujuan]: data[i].toffshorebank_account, [language === null ? eng.nominal : language.nominal]: data[i].toffshorebank_amount, [language === null ? eng.deskripsi : language.deskripsi]: data[i].toffshorebank_desc, [language === null ? eng.keterangan : language.keterangan]: data[i].keterangan})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
@@ -1062,7 +1077,7 @@ const InfoSaldoDanMutasi = () => {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi Sub Account .xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel} .xlsx`);
                     }
                 } catch (error) {
                   // console.log(error)
@@ -1080,15 +1095,18 @@ const InfoSaldoDanMutasi = () => {
         </div>
     );
 
+    // console.log(listAkunPartner, "listAkunPartner");
+    // console.log(inputHandle.akunPartner, "inputHandle.akunPartner");
+
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
         }
         if (user_role === "102") {
             getAkunPartner()
-            getListRiwayatMutasi(inputHandle.akunPartner, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField)
+            getListRiwayatMutasi(inputHandle.akunPartner, activePageMutasi, inputMutasi.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName)
         } else if (user_role === "100") {
-            getListRiwayatTransferAdmin(activePageRiwayatTransferAdmin, inputHandleAdmin.rowPerPage, orderIdAdmin, orderFieldAdmin)
+            getListRiwayatTransferAdmin(activePageRiwayatTransferAdmin, inputHandleAdmin.rowPerPage, orderIdAdmin, orderFieldAdmin, language === null ? 'EN' : language.flagName)
         }
         // userDetails()
     }, [])
@@ -1096,9 +1114,9 @@ const InfoSaldoDanMutasi = () => {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{user_role === "102" ? "Info Saldo & Mutasi" : "Riwayat Transaksi Sub Account"}</span> 
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role === "102" ? (language === null ? eng.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Sub Account bank"} &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{user_role === "102" ? (language === null ? eng.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account"}</span>
             <div className="head-title">
-                <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{user_role === "102" ? "Info Saldo & Mutasi" : "Riwayat Transaksi Sub Account Partner"}</div>
+                <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{user_role === "102" ? (language === null ? eng.infoSaldoDanMutasi : language.infoSaldoDanMutasi) : "Riwayat Transaksi Sub Account Partner"}</div>
             </div>
             {
                 user_role === "102" ? (
@@ -1107,7 +1125,7 @@ const InfoSaldoDanMutasi = () => {
                             listAkunPartner.length !== 0 ?
                             <>
                                 <div className='base-content-custom px-3 pt-4 pb-4' style={{ width: "38%" }}>
-                                    <div className="mb-3">Pilih Akun</div>
+                                    <div className="mb-3">{language === null ? eng.pilihAkun : language.pilihAkun}</div>
                                     <Form.Select name='akunPartner' value={inputHandle.akunPartner} onChange={(e) => handleChange(e, listAkunPartner)}>
                                         {/* <option defaultChecked disabled value="">Pilih Status</option> */}
                                         {listAkunPartner.map((item, idx) => {
@@ -1119,12 +1137,12 @@ const InfoSaldoDanMutasi = () => {
                                         })}
                                     </Form.Select>
                                     <div className='p-3 mt-3' style={{ border: "1px solid #EBEBEB", borderRadius: 8 }}>
-                                        <div style={{ fontSize: 14, fontFamily: "Nunito", color: "#888888" }}>Saldo Rekening Sub Account</div>
+                                        <div style={{ fontSize: 14, fontFamily: "Nunito", color: "#888888" }}>{language === null ? eng.saldoRekSubAkun : language.saldoRekSubAkun}</div>
                                         {
                                             (dataAkun.length === 0 || dataAkun === null) ? (
                                                 <div className='d-flex justify-content-start align-items-center mt-2' style={{ cursor: "pointer" }} onClick={() => formPassword()}>
                                                     <img src={iconMata} alt="mata" />
-                                                    <div className='ms-2' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 16, color: "#077E86", textDecoration: "underline" }}>Klik Untuk Lihat Saldo</div>
+                                                    <div className='ms-2' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 16, color: "#077E86", textDecoration: "underline" }}>{language === null ? eng.klikUntukLihatSaldo : language.klikUntukLihatSaldo}</div>
                                                 </div>
                                             ) : (
                                                 <>
@@ -1134,58 +1152,58 @@ const InfoSaldoDanMutasi = () => {
                                             )
                                         }
                                         <div className='mt-3' style={{ border:"1px solid #C4C4C4", backgroundColor: "#C4C4C4" }} />
-                                        <div className='mt-3' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>No Rekening Sub Account : </div>
-                                        <div className='mt-2' style={{ fontSize: 12, fontFamily: "Nunito", color: "#383838" }}>{`${inputHandle.nomorAkun} a.n. ${inputHandle.namaAkun}`}</div>
+                                        <div className='mt-3' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>{language === null ? eng.noRekSubAkun : language.noRekSubAkun} : </div>
+                                        <div className='mt-2' style={{ fontSize: 12, fontFamily: "Nunito", color: "#383838" }}>{inputHandle.nomorAkun} {language === null ? eng.atasNama : language.atasNama} {inputHandle.namaAkun}</div>
                                     </div>
                                 </div>
                                 <div className="head-title">
-                                    <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Mutasi Rekening Sub Account</div>
+                                    <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>{language === null ? eng.mutasiRekSubAkun : language.mutasiRekSubAkun}</div>
                                 </div>
                                 <div className="base-content mt-3">
                                     <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
-                                        Filter
+                                        {language === null ? eng.filter : language.filter}
                                     </span>
                                     <Row className="mt-4">
                                         <Col
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>ID Referensi Bank</div>
+                                            <div>{language === null ? eng.idRefBank : language.idRefBank}</div>
                                             <input
                                                 name="idReff"
                                                 value={inputMutasi.idReff}
                                                 onChange={(e) => handleChangeMutasi(e)}
                                                 type="text"
                                                 className="input-text-sub"
-                                                placeholder="Masukkan ID Referensi"
+                                                placeholder={language === null ? eng.placeholderIdRefBank : language.placeholderIdRefBank}
                                             />
                                         </Col>
                                         <Col
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>ID Transaksi</div>
+                                            <div>{language === null ? eng.idTransaksi : language.idTransaksi}</div>
                                             <input
                                                 name="idTrans"
                                                 value={inputMutasi.idTrans}
                                                 onChange={(e) => handleChangeMutasi(e)}
                                                 type="text"
                                                 className="input-text-sub"
-                                                placeholder="Masukkan ID Transaksi"
+                                                placeholder={language === null ? eng.placeholderIdTrans : language.placeholderIdTrans}
                                             />
                                         </Col>
                                         <Col
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>ID Referensi Transaksi</div>
+                                            <div>{language === null ? eng.idRefTrans : language.idRefTrans}</div>
                                             <input
                                                 name="idReffTrans"
                                                 value={inputMutasi.idReffTrans}
                                                 onChange={(e) => handleChangeMutasi(e)}
                                                 type="text"
                                                 className="input-text-sub"
-                                                placeholder="Masukkan ID Referensi Transaksi"
+                                                placeholder={language === null ? eng.placeholderIdRefTrans : language.placeholderIdRefTrans}
                                             />
                                         </Col>
                                     </Row>
@@ -1194,36 +1212,36 @@ const InfoSaldoDanMutasi = () => {
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>Jenis Transaksi</div>
+                                            <div>{language === null ? eng.jenisTransaksi : language.jenisTransaksi}</div>
                                             <Form.Select
                                                 name="paymentType"
                                                 value={inputMutasi.paymentType}
                                                 onChange={(e) => handleChangeMutasi(e)}
                                                 className="input-text-sub"
-                                                placeholder='Pilih Jenis Transaksi'
+                                                placeholder={language === null ? eng.placeholderJenisTransaksi : language.placeholderJenisTransaksi}
                                             >
-                                                <option value={0}>Pilih Jenis Transaksi</option>
-                                                <option value={1}>Transaksi Masuk ( cr )</option>
-                                                <option value={2}>Transaksi Keluar ( db )</option>
-                                                <option value={3}>Biaya Admin</option>
+                                                <option value={0}>{language === null ? eng.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
+                                                <option value={1}>{language === null ? eng.transaksiMasuk : language.transaksiMasuk} ( cr )</option>
+                                                <option value={2}>{language === null ? eng.transaksiKeluar : language.transaksiKeluar} ( db )</option>
+                                                <option value={3}>{language === null ? eng.biayaAdmin : language.biayaAdmin}</option>
                                             </Form.Select>
-                                        </Col> 
+                                        </Col>
                                         <Col
                                             xs={4}
                                             className="d-flex justify-content-between align-items-center"
                                         >
-                                            <div>Periode <span style={{ color: "red" }}>*</span></div>
+                                            <div>{language === null ? eng.periode : language.periode} <span style={{ color: "red" }}>*</span></div>
                                             <Form.Select
                                                 name="periodeInfoMutasi"
                                                 className="input-text-sub"
                                                 value={inputDataMutasi.periodeInfoMutasi}
                                                 onChange={(e) => handleChangePeriodeMutasi(e)}
                                             >
-                                                <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                                <option value={2}>Hari Ini</option>
-                                                <option value={3}>Kemarin</option>
-                                                <option value={4}>7 Hari Terakhir</option>
-                                                <option value={7}>Pilih Range Tanggal</option>
+                                                <option defaultChecked disabled value={0}>{language === null ? eng.pilihPeriode : language.pilihPeriode}</option>
+                                                <option value={2}>{language === null ? eng.hariIni : language.hariIni}</option>
+                                                <option value={3}>{language === null ? eng.kemarin : language.kemarin}</option>
+                                                <option value={4}>{language === null ? eng.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                                <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                             </Form.Select>
                                         </Col>
                                     </Row>
@@ -1239,7 +1257,7 @@ const InfoSaldoDanMutasi = () => {
                                                     cleanable={true}
                                                     placement='bottomEnd'
                                                     size='lg'
-                                                    placeholder="Select Date Range" 
+                                                    placeholder="Select Date Range"
                                                     disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
                                                     className='datePicker'
                                                     locale={Locale}
@@ -1252,28 +1270,34 @@ const InfoSaldoDanMutasi = () => {
                                     <Row className='mt-3'>
                                         <Col xs={5}>
                                             <Row>
-                                                <Col xs={6} style={{ width: "unset" }}>
-                                                    <button 
+                                                <Col xs={6} style={{ width: "40%" }}>
+                                                    <button
                                                         className={((inputDataMutasi.periodeInfoMutasi === "2") || (inputDataMutasi.periodeInfoMutasi === "3") || (inputDataMutasi.periodeInfoMutasi === "4") || (inputDataMutasi.periodeInfoMutasi !== 0 && (inputDataMutasi.periodeInfoMutasi === "7" && dateRangeInfoMutasi.length !== 0))) ? 'btn-ez-on' : 'btn-noez-transfer'}
                                                         disabled={inputDataMutasi.periodeInfoMutasi === 0 || (inputDataMutasi.periodeInfoMutasi === "7" && dateRangeInfoMutasi.length === 0)}
-                                                        onClick={() => filterListRiwayatMutasi(inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.paymentType, inputMutasi.partnerName, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, 1, 10, orderId, orderField, inputMutasi.idReff, inputMutasi.idReffTrans)}
+                                                        onClick={() => filterListRiwayatMutasi(inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.paymentType, inputMutasi.partnerName, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, 1, 10, orderId, orderField, inputMutasi.idReff, inputMutasi.idReffTrans, language === null ? 'EN' : language.flagName)}
                                                     >
-                                                        Terapkan
+                                                        {language === null ? eng.terapkan : language.terapkan}
                                                     </button>
                                                 </Col>
-                                                <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                                    <button 
+                                                <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                                    <button
                                                         className={(inputDataMutasi.periodeInfoMutasi !== 0) ? 'btn-reset' : 'btn-ez-reset'}
                                                         disabled={(inputDataMutasi.periodeInfoMutasi === 0 )}
                                                         onClick={() => resetButtonHandle()}
                                                     >
-                                                        Atur Ulang
+                                                        {language === null ? eng.aturUlang : language.aturUlang}
                                                     </button>
                                                 </Col>
                                             </Row>
                                         </Col>
                                     </Row>
-                                    <div className="div-table mt-4 pb-4" style={{ paddingBottom: 20, marginBottom: 20, display: "flex", justifyContent: "center" }}>
+                                    {
+                                        dataMutasi.length !== 0 &&
+                                        <div className='mt-3 mb-5'>
+                                            <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterMutasi, inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.idReffTrans, inputMutasi.idReff, inputMutasi.paymentType, inputMutasi.partnerName, orderId, orderField, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
+                                        </div>
+                                    }
+                                    <div className="div-table mt-4 pb-4" style={{ paddingBottom: 20, marginBottom: 20}}>
                                         <div id="tableInvoice" style={{  overflowX: "auto" }} className=" table-bordered mt-3">
                                             {
                                                 dataMutasi.length !== 0 ? (
@@ -1281,16 +1305,16 @@ const InfoSaldoDanMutasi = () => {
                                                         <table className='table mt-3'>
                                                             <thead style={{ borderStyle: "hidden", fontWeight: 600 }}>
                                                                 <tr>
-                                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>No</th>
-                                                                    {!idTrans.isDesc ? <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>ID Transaksi <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>ID Transaksi <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2'/></span></th>}
-                                                                    {!idReffBank.isDesc ? <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Bank <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Bank <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    {!idReffTrans.isDesc ? <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Transaksi <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Transaksi <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    {!dates.isDesc ? <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>Waktu <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>Waktu <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Jenis Transaksi</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Rekening Tujuan</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Nominal</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Deskripsi</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Keterangan</th>
+                                                                    <th style={{ background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.no : language.no}</th>
+                                                                    {!idTrans.isDesc ? <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>{language === null ? eng.idTransaksi : language.idTransaksi} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>{language === null ? eng.idTransaksi : language.idTransaksi} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2'/></span></th>}
+                                                                    {!idReffBank.isDesc ? <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.idRefBank : language.idRefBank} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.idRefBank : language.idRefBank} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    {!idReffTrans.isDesc ? <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.idRefTrans : language.idRefTrans} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.idRefTrans : language.idRefTrans} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    {!dates.isDesc ? <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.waktu : language.waktu} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.waktu : language.waktu} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.jenisTransaksi : language.jenisTransaksi}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.rekTujuan : language.rekTujuan}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.nominal : language.nominal}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.deskripsi : language.deskripsi}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.keterangan : language.keterangan}</th>
                                                                 </tr>
                                                             </thead>
                                                             {
@@ -1313,7 +1337,7 @@ const InfoSaldoDanMutasi = () => {
                                                                             ))
                                                                         }
                                                                     </tbody>
-                                                                ) 
+                                                                )
                                                             }
                                                         </table>
                                                         {pendingMutasi && (<div className='text-center'><CustomLoader /></div>)}
@@ -1323,20 +1347,20 @@ const InfoSaldoDanMutasi = () => {
                                                         <table className='table mt-3'>
                                                             <thead style={{ borderStyle: "hidden", fontWeight: 600, }}>
                                                                 <tr>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>No</th>
-                                                                    {!idTrans.isDesc ? <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>ID Transaksi <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>ID Transaksi <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2'/></span></th>}
-                                                                    {!idReffBank.isDesc ? <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Bank <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Bank <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    {!idReffTrans.isDesc ? <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Transaksi <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>ID Referensi Transaksi <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    {!dates.isDesc ? <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>Waktu <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>Waktu <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Jenis Transaksi</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Rekening Tujuan</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Nominal</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Deskripsi</th>
-                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>Keterangan</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.no : language.no}</th>
+                                                                    {!idTrans.isDesc ? <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>{language === null ? eng.idTransaksi : language.idTransaksi} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idTrans.id, "toffshorebank_code", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer" }}>{language === null ? eng.idTransaksi : language.idTransaksi} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2'/></span></th>}
+                                                                    {!idReffBank.isDesc ? <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.idRefBank : language.idRefBank} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffBank.id, "id_referensi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.idRefBank : language.idRefBank} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    {!idReffTrans.isDesc ? <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.idRefTrans : language.idRefTrans} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(idReffTrans.id, "id_referensi_transaksi", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.idRefTrans : language.idRefTrans} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    {!dates.isDesc ? <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.waktu : language.waktu} <span><FontAwesomeIcon icon={faSortUp} size="lg" className='ms-2' /></span></th> : <th onClick={() => handleClickSort(dates.id, "toffshorebank_crtdt", isFilterMutasi, "partner")} style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838", cursor: "pointer"  }}>{language === null ? eng.waktu : language.waktu} <span><FontAwesomeIcon icon={faSortDown} size="lg" className='ms-2' /></span></th>}
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.jenisTransaksi : language.jenisTransaksi}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.rekTujuan : language.rekTujuan}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.nominal : language.nominal}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.deskripsi : language.deskripsi}</th>
+                                                                    <th style={{ textTransform: "none", background: "#F3F4F5", fontFamily: "Exo", fontSize: 14, color: "#383838"  }}>{language === null ? eng.keterangan : language.keterangan}</th>
                                                                 </tr>
                                                             </thead>
                                                         </table>
-                                                        {!pendingMutasi ? <div className='text-center pb-3' style={{ color: '#393939' }}>Tidak ada data</div> : <div className='text-center'><CustomLoader /></div>}
+                                                        {!pendingMutasi ? <div className='text-center pb-3' style={{ color: '#393939' }}>{language === null ? eng.tidakAdaData : language.tidakAdaData}</div> : <div className='text-center'><CustomLoader /></div>}
                                                     </>
                                                 )
                                             }
@@ -1352,7 +1376,7 @@ const InfoSaldoDanMutasi = () => {
                                         }}
                                     >
                                         <div style={{ marginRight: 10, marginTop: 10 }}>
-                                            Total Page: {totalPageMutasi}
+                                            {language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageMutasi}
                                         </div>
                                         <Pagination
                                             activePage={activePageMutasi}
@@ -1447,17 +1471,17 @@ const InfoSaldoDanMutasi = () => {
                             <Col xs={4}></Col>
                             <Col xs={4} className='d-flex justify-content-end align-items-center' >
                                 <div style={{ display: showDateRiwayatTranferAdmin }}>
-                                    <DateRangePicker 
-                                        value={stateRiwayatTransferAdmin} 
-                                        ranges={column} 
-                                        onChange={(e) => pickDateRiwayatTransferAdmin(e)} 
-                                        character=' - ' 
-                                        cleanable={true} 
-                                        placement={'bottomEnd'} 
-                                        size='lg' 
-                                        appearance="default" 
-                                        placeholder="Select Date Range" 
-                                        disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}  
+                                    <DateRangePicker
+                                        value={stateRiwayatTransferAdmin}
+                                        ranges={column}
+                                        onChange={(e) => pickDateRiwayatTransferAdmin(e)}
+                                        character=' - '
+                                        cleanable={true}
+                                        placement={'bottomEnd'}
+                                        size='lg'
+                                        appearance="default"
+                                        placeholder="Select Date Range"
+                                        disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
                                         className='datePicker'
                                         locale={Locale}
                                         format="yyyy-MM-dd"
@@ -1470,17 +1494,17 @@ const InfoSaldoDanMutasi = () => {
                             <Col xs={5}>
                                 <Row>
                                     <Col xs={6} style={{ width: "unset" }}>
-                                        <button 
-                                            className={((inputHandleAdmin.periodeRiwayatTransfer === "2") || (inputHandleAdmin.periodeRiwayatTransfer === "3") || (inputHandleAdmin.periodeRiwayatTransfer === "4") || (inputHandleAdmin.periodeRiwayatTransfer !== 0 && dateRangeRiwayatTranferAdmin.length !== 0) ) ? "btn-ez-on" : "btn-ez"} 
-                                            disabled={inputHandleAdmin.periodeRiwayatTransfer === 0 || ( inputHandleAdmin.periodeRiwayatTransfer === "7" && dateRangeRiwayatTranferAdmin.length === 0) } 
-                                            onClick={() => filterListRiwayatTransaksiAdmin(inputHandleAdmin.idTrans, inputHandleAdmin.idReffTrans, inputHandleAdmin.idReff, orderIdAdmin, orderFieldAdmin, inputHandleAdmin.fiturTransaksi, inputHandleAdmin.namaPartner, dateRangeRiwayatTranferAdmin, inputHandleAdmin.periodeRiwayatTransfer, 1, inputHandleAdmin.rowPerPage)}
+                                        <button
+                                            className={((inputHandleAdmin.periodeRiwayatTransfer === "2") || (inputHandleAdmin.periodeRiwayatTransfer === "3") || (inputHandleAdmin.periodeRiwayatTransfer === "4") || (inputHandleAdmin.periodeRiwayatTransfer !== 0 && dateRangeRiwayatTranferAdmin.length !== 0) ) ? "btn-ez-on" : "btn-ez"}
+                                            disabled={inputHandleAdmin.periodeRiwayatTransfer === 0 || ( inputHandleAdmin.periodeRiwayatTransfer === "7" && dateRangeRiwayatTranferAdmin.length === 0) }
+                                            onClick={() => filterListRiwayatTransaksiAdmin(inputHandleAdmin.idTrans, inputHandleAdmin.idReffTrans, inputHandleAdmin.idReff, orderIdAdmin, orderFieldAdmin, inputHandleAdmin.fiturTransaksi, inputHandleAdmin.namaPartner, dateRangeRiwayatTranferAdmin, inputHandleAdmin.periodeRiwayatTransfer, 1, inputHandleAdmin.rowPerPage, language === null ? 'EN' : language.flagName)}
                                         >
                                             Terapkan
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                        <button className={(inputHandleAdmin.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranferAdmin.length !== 0 || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.idReff.length !== 0) || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.namaPartner.length !== 0) || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.fiturTransaksi !== 0)) ? "btn-reset" : "btn-ez"} 
-                                        disabled={inputHandleAdmin.periodeRiwayatTransfer === 0 || (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.idReff.length === 0) || (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.namaPartner.length === 0)|| (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.fiturTransaksi === 0)} 
+                                        <button className={(inputHandleAdmin.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranferAdmin.length !== 0 || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.idReff.length !== 0) || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.namaPartner.length !== 0) || (dateRangeRiwayatTranferAdmin.length !== 0 && inputHandleAdmin.fiturTransaksi !== 0)) ? "btn-reset" : "btn-ez"}
+                                        disabled={inputHandleAdmin.periodeRiwayatTransfer === 0 || (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.idReff.length === 0) || (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.namaPartner.length === 0)|| (inputHandleAdmin.periodeRiwayatTransfer === 0 && inputHandleAdmin.fiturTransaksi === 0)}
                                         onClick={() => resetButtonHandle()}
                                     >
                                             Atur Ulang
@@ -1490,9 +1514,9 @@ const InfoSaldoDanMutasi = () => {
                             </Col>
                         </Row>
                         {
-                            dataRiwayatTransferAdmin.length !== 0 && 
+                            dataRiwayatTransferAdmin.length !== 0 &&
                             <div className='mt-3 mb-5'>
-                                <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransferAdmin, inputHandleAdmin.idTrans, inputHandleAdmin.idReffTrans, inputHandleAdmin.idReff, inputHandleAdmin.fiturTransaksi, inputHandleAdmin.namaPartner, orderIdAdmin, orderFieldAdmin, dateRangeRiwayatTranferAdmin, inputHandleAdmin.periodeRiwayatTransfer)} className="export-span">Export</Link>
+                                <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransferAdmin, inputHandleAdmin.idTrans, inputHandleAdmin.idReffTrans, inputHandleAdmin.idReff, inputHandleAdmin.fiturTransaksi, inputHandleAdmin.namaPartner, orderIdAdmin, orderFieldAdmin, dateRangeRiwayatTranferAdmin, inputHandleAdmin.periodeRiwayatTransfer, language === null ? 'EN' : language.flagName)} className="export-span">Export</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4" id="tableInvoice" style={{  overflowX: "auto" }}>
@@ -1538,14 +1562,14 @@ const InfoSaldoDanMutasi = () => {
                                                     </tbody>
                                                 )
                                             }
-                                        </table> 
+                                        </table>
                                         {pendingRiwayatTransferAdmin && (<div className='text-center'><CustomLoader /></div>)}
                                     </>
-                                    
+
                                 ) : (
                                     <div id='table-body' style={{ overflowX: 'auto', maxWidth: 'max-content' }} className='scroll-confirm'>
                                         <>
-                                            <table className="table text-center mt-4" id="tableInvoice" hover>
+                                            <table className="table text-start mt-4" id="tableInvoice" hover>
                                                 <thead style={{ backgroundColor: "#F2F2F2", color: "rgba(0,0,0,0.87)" }}>
                                                     <tr>
                                                         <th style={{ fontWeight: "bold", fontSize: 14, textTransform: 'none', fontFamily: 'Exo', width: 60 }}>No</th>
@@ -1561,7 +1585,7 @@ const InfoSaldoDanMutasi = () => {
                                                     </tr>
                                                 </thead>
                                             </table>
-                                            {!pendingRiwayatTransferAdmin ? <div className='text-center pb-3' style={{ color: '#393939' }}>Tidak ada data</div> : <div className='text-center'><CustomLoader /></div>}
+                                            {!pendingRiwayatTransferAdmin ? <div className='text-center pb-3' style={{ color: '#393939' }}>Tidak ada data </div> : <div className='text-center'><CustomLoader /></div>}
                                         </>
                                     </div>
                                 )
@@ -1585,13 +1609,13 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="saldo-sub-acc" size="xs" centered show={loginToSaldo} onHide={() => setLoginToSaldo(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    Masukkan Kata Sandi Login Anda 
+                    {language === null ? eng.masukkanKataSandiSub : language.masukkanKataSandiSub}
                 </Modal.Title>
                 <Modal.Body >
                     <div className=' mt-2' style={{ padding: "0px 24px"}}>
-                        <div style={{ fontSize: 14, fontFamily: "Nunito" }}>Kata Sandi</div>
+                        <div style={{ fontSize: 14, fontFamily: "Nunito" }}>{language === null ? eng.kataSandi : language.kataSandi}</div>
                         <div className='d-flex justify-content-center align-items-center text-center mt-1 position-relative' >
-                            <input value={inputPass.passwordRek} name="passwordRek" type={passwordInputType} onChange={handleChangePass} className='input-text-saldo-sub-acc' placeholder='Masukkan Kata Sandi' style={{width: "100%", borderColor: errMsg.length !== 0 ? "#B9121B" : "#C4C4C4"}} />
+                            <input value={inputPass.passwordRek} name="passwordRek" type={passwordInputType} onChange={handleChangePass} className='input-text-saldo-sub-acc' placeholder={language === null ? eng.placeholderKataSandi : language.placeholderKataSandi} style={{width: "100%", borderColor: errMsg.length !== 0 ? "#B9121B" : "#C4C4C4"}} />
                             <img onClick={() => togglePassword()} src={eyeIcon} alt="eye icon" className='position-absolute right-0 me-2' style={{ cursor: "pointer" }} />
                         </div>
                     </div>
@@ -1600,7 +1624,7 @@ const InfoSaldoDanMutasi = () => {
                             errMsg.length !== 0 ? (
                                 <div className='d-flex justify-content-center align items-center mt-3'>
                                     <img src={noteIconError} alt="icon error" />
-                                    <div style={{ color: "#B9121B", fontFamily: "Nunito", fontSize: 14 }} className='ms-2'>Kata Sandi Salah</div>
+                                    <div style={{ color: "#B9121B", fontFamily: "Nunito", fontSize: 14 }} className='ms-2'>{language === null ? eng.kataSandiSalah : language.kataSandiSalah}</div>
                                 </div>
                             ) : ""
                         }
@@ -1622,7 +1646,7 @@ const InfoSaldoDanMutasi = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            Lihat Saldo
+                            {language === null ? eng.lihatSaldo : language.lihatSaldo}
                         </button>
                     </div>
                 </Modal.Body>
@@ -1638,11 +1662,11 @@ const InfoSaldoDanMutasi = () => {
                     />
                 </Modal.Header>
                 <Modal.Title className="mt-3 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    <div><img src={transferFailed} alt="success transfer" /></div> 
-                    <div className='mt-3'>Sistem Sedang Bermasalah</div> 
+                    <div><img src={transferFailed} alt="success transfer" /></div>
+                    <div className='mt-3'>{language === null ? eng.sistemSedangBermasalah : language.sistemSedangBermasalah}</div>
                 </Modal.Title>
                 <Modal.Body >
-                    <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>Saat ini sistem kami sedang mengalami gangguan sehingga tidak dapat menampilkan saldo anda. Mohon coba beberapa saat lagi</div>
+                    <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>{language === null ? eng.descSistemBermasalah : language.descSistemBermasalah}</div>
                     <div className='px-4 mt-4'>
                         <button
                             onClick={() => setShowErrSistem(false)}
@@ -1660,7 +1684,7 @@ const InfoSaldoDanMutasi = () => {
                                 borderRadius: 6,
                             }}
                         >
-                            Oke
+                            {language === null ? eng.oke : language.oke}
                         </button>
                     </div>
                 </Modal.Body>
@@ -1668,7 +1692,7 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="history-modal" size="xs" centered show={showSaldoSubAcc} onHide={() => setShowSaldoSubAcc(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    Saldo Rekening Sub Account 
+                    {language === null ? eng.saldoRekSubAccount : language.saldoRekSubAccount}
                 </Modal.Title>
                 <Modal.Body>
                     {
@@ -1677,10 +1701,10 @@ const InfoSaldoDanMutasi = () => {
                             <CustomLoader/>
                         </div> :
                         <>
-                            <div className='text-center' style={{ fontSize: 14, fontWeight: 400, color: "#383838", fontFamily: "Nunito" }}>Nominal Saldo Saat Ini</div>
+                            <div className='text-center' style={{ fontSize: 14, fontWeight: 400, color: "#383838", fontFamily: "Nunito" }}>{language === null ? eng.nominalSaldoSaatIni : language.nominalSaldoSaatIni}</div>
                             <div className='text-center mt-2' style={{ fontSize: 12, fontWeight: 400, color: "#888888", fontFamily: "Nunito" }}>{convertDateAndTimeInfoDanSaldo(dataAkun.timestamp_request)}</div>
                             <div className='text-center mt-2' style={{color: "#077E86", fontSize: 20, fontFamily: "Exo", fontWeight: 700 }}>{convertToRupiah(dataAkun.availablebalance, true, 2)}</div>
-                            <div className='text-center mt-3' style={{color: "#888888", fontSize: 12, fontFamily: "Nunito", fontWeight: 400 }}>No. Rekening: {dataAkun.account_number} a.n {dataAkun.account_name}</div>
+                            <div className='text-center mt-3' style={{color: "#888888", fontSize: 12, fontFamily: "Nunito", fontWeight: 400 }}>{language === null ? eng.noRek : language.noRek}: {dataAkun.account_number} {language === null ? eng.atasNama : language.atasNama} {dataAkun.account_name}</div>
                             <div className='px-5'>
                                 <button
                                     onClick={() => setShowSaldoSubAcc(false)}
@@ -1698,7 +1722,7 @@ const InfoSaldoDanMutasi = () => {
                                         borderRadius: 6,
                                     }}
                                 >
-                                    Oke
+                                    {language === null ? eng.oke : language.oke}
                                 </button>
                             </div>
                         </>

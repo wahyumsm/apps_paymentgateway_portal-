@@ -4,13 +4,14 @@ import React, { useEffect, useState } from 'react'
 import Pagination from 'react-js-pagination';
 import { Link, useHistory } from 'react-router-dom';
 import ReactSelect, { components } from 'react-select'
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
 import * as XLSX from "xlsx"
 import axios from 'axios';
 import encryptData from '../../function/encryptData';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
+import { eng, ind } from '../../components/Language';
 
 function SettlementPage() {
 
@@ -95,7 +96,7 @@ function SettlementPage() {
     }
 
     function toLaporan() {
-        history.push("/Riwayat Transaksi/va-dan-paylink");
+        history.push("/riwayat-transaksi/va-dan-paylink");
     }
 
     function handleChange(e) {
@@ -199,7 +200,7 @@ function SettlementPage() {
                 })
                 setListEWallet(newArr)
             }
-            
+
         } catch (error) {
             // console.log(error);
             history.push(errorCatch(error.response.status))
@@ -271,15 +272,101 @@ function SettlementPage() {
         }
     }
 
-    async function riwayatSettlementPartner(currentPage, currentDate) {
+    async function riwayatSettlementPartner(currentPage, currentDate, lang) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10, "fitur_id": 0, "bank_code": ""}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const dataSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
+            // console.log(dataSettlement, "data settlement");
+            if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
+                dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                setPageNumberSettlementPartner(dataSettlement.data.response_data)
+                setTotalPageSettlementPartner(dataSettlement.data.response_data.max_page)
+                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)
+                setPendingSettlementPartner(false)
+            } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
+                setUserSession(dataSettlement.data.response_new_token)
+                dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                setPageNumberSettlementPartner(dataSettlement.data.response_data)
+                setTotalPageSettlementPartner(dataSettlement.data.response_data.max_page)
+                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)
+                setPendingSettlementPartner(false)
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function userDetails() {
+        try {
+          const auth = "Bearer " + access_token
+          const headers = {
+              'Content-Type':'application/json',
+              'Authorization' : auth
+          }
+          const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
+          // console.log(userDetail, 'ini user detal funct');
+          if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
+            setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
+            riwayatSettlementPartnerNew(currentDate, activePageSettlementPartner, userDetail.data.response_data.muser_partnerdtl_id)
+          } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
+            setUserSession(userDetail.data.response_new_token)
+            setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
+            riwayatSettlementPartnerNew(currentDate, activePageSettlementPartner, userDetail.data.response_data.muser_partnerdtl_id)
+          }
+    } catch (error) {
+          // console.log(error);
+          history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function riwayatSettlementNew(currentDate, currentPage) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": ${(currentPage !== 0) ? currentPage : 1}, "row_per_page": 10}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataSettlement = await axios.post(BaseURL + "/Home/GetSettlementLogList", { data: dataParams }, { headers: headers })
+            // console.log(dataSettlement, "data settlement");
+            if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
+                dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                setPageNumberSettlement(dataSettlement.data.response_data)
+                setTotalPageSettlement(dataSettlement.data.response_data.max_page)
+                setDataRiwayatSettlement(dataSettlement.data.response_data.results.list_data)        
+                setTotalSettlement(dataSettlement.data.response_data.results.total_settle_amount)
+                setPendingSettlement(false)
+            } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
+                setUserSession(dataSettlement.data.response_new_token)
+                dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
+                setPageNumberSettlement(dataSettlement.data.response_data)
+                setTotalPageSettlement(dataSettlement.data.response_data.max_page)
+                setDataRiwayatSettlement(dataSettlement.data.response_data.results.list_data)        
+                setTotalSettlement(dataSettlement.data.response_data.results.total_settle_amount)
+                setPendingSettlement(false)
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function riwayatSettlementPartnerNew(currentDate, currentPage, partnerId) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": ${(currentPage !== 0) ? currentPage : 1}, "row_per_page": 10}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataSettlement = await axios.post(BaseURL + "/Home/GetSettlementLogList", { data: dataParams }, { headers: headers })
             // console.log(dataSettlement, "data settlement");
             if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length === 0) {
                 dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
@@ -437,7 +524,7 @@ function SettlementPage() {
         }
     }
 
-    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement, eWalletSettlement) {
+    async function filterSettlement(page, statusId, transId, partnerId, dateId, periode, rowPerPage, fiturSettlement, bankSettlement, eWalletSettlement, lang) {
         try {
             setPendingSettlement(true)
             setIsFilterSettlement(true)
@@ -446,7 +533,8 @@ function SettlementPage() {
             const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,7,9]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "partnerID":"${(partnerId !== undefined) ? partnerId : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fiturSettlement}, "bank_code": "${Number(fiturSettlement) === 105 ? (eWalletSettlement !== undefined ? eWalletSettlement : "") : (bankSettlement !== undefined ? bankSettlement : "")}"}`)
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': auth
+                'Authorization': auth,
+                'Accept-Language' : lang
             }
             const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", {data: dataParams}, { headers: headers });
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
@@ -471,7 +559,7 @@ function SettlementPage() {
         }
     }
 
-    async function filterSettlementPartner(idTransaksi, periode, dateId, page, rowPerPage, status, fitur) {
+    async function filterSettlementPartner(idTransaksi, periode, dateId, page, rowPerPage, status, fitur, lang) {
         try {
             setPendingSettlementPartner(true)
             setIsFilterSettlementPartner(true)
@@ -480,7 +568,8 @@ function SettlementPage() {
             const dataParams = encryptData(`{"statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "transID" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}, "fitur_id": ${fitur}, "bank_code": ""}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const filterSettlement = await axios.post(BaseURL + "/Home/GetListHistorySettlement", { data: dataParams }, { headers: headers })
             if (filterSettlement.status === 200 && filterSettlement.data.response_code === 200 && filterSettlement.data.response_new_token.length === 0) {
@@ -740,12 +829,12 @@ function SettlementPage() {
 
     const columnsSettlementPartner = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.tsettlelog_settlement_code,
             cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${'0'}/${row.tsettlelog_paytype_id}/${'0'}`}>{row.tsettlelog_settlement_code}</Link>,
             // selector: row => row.tvasettl_code,
@@ -753,26 +842,26 @@ function SettlementPage() {
             // width: "251px"
         },
         {
-            name: 'Waktu',
+            name: language === null ? eng.waktu : language.waktu,
             selector: row => row.tsettlelog_date_format,
             // selector: row => row.tvasettl_crtdt_format,
         },
         {
-            name: 'Jenis Transaksi',
+            name: language === null ? eng.jenisTransaksi : language.jenisTransaksi,
             selector: row => row.tsettlelog_paytype_name,
             // selector: row => row.mfitur_desc,
             // sortable: true
         },
         {
-            name: 'Jumlah',
+            name: language === null ? eng.jumlah : language.jumlah,
             selector: row => convertToRupiah(row.tsettlelog_amount_trx - row.tsettlelog_amount_fee),
             cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tsettlelog_amount_trx - row.tsettlelog_amount_fee) }</div>
             // selector: row => row.tvasettl_amount,
             // cell: row => <div style={{ padding: "0px 16px" }}>{ convertToRupiah(row.tvasettl_amount) }</div>
         },
         {
-            name: 'Status',
-            selector: row => row.tsettlelog_is_settle === true ? "Berhasil" : "Gagalok",
+            name: language === null ? eng.status : language.status,
+            selector: row => row.tsettlelog_is_settle === true ? (language === null ? eng.berhasil : language.berhasil) : (language === null ? eng.gagal : language.gagal),
             // selector: row => row.mstatus_name_ind,
             width: "127px",
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: 6, margin: "6px 16px", width: "50%", borderRadius: 4 },
@@ -817,7 +906,7 @@ function SettlementPage() {
             },
         },
     };
-    
+
     const customStylesSettlement = {
         headCells: {
             style: {
@@ -860,7 +949,8 @@ function SettlementPage() {
                     const dataParams = encryptData(`{"partner_name": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        // 'Accept-Language' : lang
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Home/GetExportList", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
@@ -898,7 +988,8 @@ function SettlementPage() {
                     const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': auth
+                        'Authorization': auth,
+                        // 'Accept-Language' : lang
                     }
                     const dataExportSettlement = await axios.post(BaseURL + "/Home/GetExportList", {data: dataParams}, { headers: headers });
                     if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length === 0) {
@@ -941,30 +1032,31 @@ function SettlementPage() {
                     const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
                     const headers = {
                         'Content-Type':'application/json',
-                        'Authorization' : auth
+                        'Authorization' : auth,
+                        // 'Accept-Language' : lang
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/Home/GetExportPartnerList", { data: dataParams }, { headers: headers })
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tsettlelog_settlement_code, [language === null ? eng.waktu : language.waktu]: data[i].tsettlelog_date_format, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].tsettlelog_paytype_name, [language === null ? eng.jumlah : language.jumlah]: data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, [language === null ? eng.status : language.status]: data[i].tsettlelog_is_settle === true ? (language === null ? eng.berhasil : language.berhasil) : (language === null ? eng.gagal : language.gagal)})
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
-                    } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {            
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
+                    } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {
                         setUserSession(dataExportFilter.data.response_new_token)
                         const data = dataExportFilter.data.response_data.results.list_data = dataExportFilter.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tsettlelog_settlement_code, [language === null ? eng.waktu : language.waktu]: data[i].tsettlelog_date_format, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].tsettlelog_paytype_name, [language === null ? eng.jumlah : language.jumlah]: data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, [language === null ? eng.status : language.status]: data[i].tsettlelog_is_settle === true ? (language === null ? eng.berhasil : language.berhasil) : (language === null ? eng.gagal : language.gagal)})
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
                     }
                 } catch (error) {
                     // console.log(error)
@@ -980,7 +1072,8 @@ function SettlementPage() {
                     const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
                     const headers = {
                         'Content-Type':'application/json',
-                        'Authorization' : auth
+                        'Authorization' : auth,
+                        // 'Accept-Language' : lang
                     }
                     const dataSettlement = await axios.post(BaseURL + "/Home/GetExportPartnerList", { data: dataParams }, { headers: headers })
                     // console.log(dataSettlement, "data settlement");
@@ -988,23 +1081,23 @@ function SettlementPage() {
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tsettlelog_settlement_code, [language === null ? eng.waktu : language.waktu]: data[i].tsettlelog_date_format, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].tsettlelog_paytype_name, [language === null ? eng.jumlah : language.jumlah]: data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, [language === null ? eng.status : language.status]: data[i].tsettlelog_is_settle === true ? (language === null ? eng.berhasil : language.berhasil) : (language === null ? eng.gagal : language.gagal)})
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
                     } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
                         setUserSession(dataSettlement.data.response_new_token)
                         const data = dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, id) => ({ ...obj, number: id + 1 }));
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tsettlelog_settlement_code, "Waktu": data[i].tsettlelog_date_format, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Jumlah": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal"})
+                            dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tsettlelog_settlement_code, [language === null ? eng.waktu : language.waktu]: data[i].tsettlelog_date_format, [language === null ? eng.jenisTransaksi : language.jenisTransaksi]: data[i].tsettlelog_paytype_name, [language === null ? eng.jumlah : language.jumlah]: data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, [language === null ? eng.status : language.status]: data[i].tsettlelog_is_settle === true ? (language === null ? eng.berhasil : language.berhasil) : (language === null ? eng.gagal : language.gagal)})
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.laporanSettlement : language.laporanSettlement}.xlsx`);
                     }
                 } catch (error) {
                     // console.log(error)
@@ -1025,9 +1118,9 @@ function SettlementPage() {
 
     return (
         <div className="content-page mt-6">
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Settlement</span>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> {language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role === "102" ? (language === null ? eng.settlement : language.settlement) : "Settlement"}</span>
             <div className='head-title'>
-                <h2 className="h5 mb-1 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>Settlement</h2>
+                <h2 className="h5 mb-1 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{user_role === "102" ? (language === null ? eng.settlement : language.settlement) : "Settlement"}</h2>
             </div>
             <div className='main-content'>
                 {
@@ -1197,34 +1290,34 @@ function SettlementPage() {
                         </div>
                     </div> :
                     <div className='riwayat-settlement-div mt-3 mb-4'>
-                        <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Tabel Riwayat Settlement Partner</span>
+                        <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>{language === null ? eng.tabelRiwayatSettlementPartner : language.tabelRiwayatSettlementPartner}</span>
                         <div className='base-content mt-3'>
-                            <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Filter</span>
+                            <span className='mt-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>{language === null ? eng.filter : language.filter}</span>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span className="me-1">ID Transaksi</span>
-                                    <input name="idTransaksiSettlementPartner" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlementPartner} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder='Masukkan ID Transaksi'/>
+                                    <span className="me-1">{language === null ? eng.idTransaksi : language.idTransaksi}</span>
+                                    <input name="idTransaksiSettlementPartner" onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiSettlementPartner} type='text'className='input-text-riwayat' style={{marginLeft: 31}} placeholder={language === null ? eng.placeholderIdTrans : language.placeholderIdTrans}/>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateSettlementPartner === "none") ? "33%" : "33%" }}>
-                                    <span >Periode<span style={{ color: "red" }}>*</span></span>
+                                    <span >{language === null ? eng.periode : language.periode}<span style={{ color: "red" }}>*</span></span>
                                     <Form.Select name='periodeSettlementPartner' className="input-text-riwayat ms-3" value={inputHandle.periodeSettlementPartner} onChange={(e) => handleChangePeriodeSettlement(e, "partner")}>
-                                        <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                        <option value={([`${currentDate}`, `${currentDate}`])}>Hari Ini</option>
-                                        <option value={([`${yesterdayDate}`, `${yesterdayDate}`])}>Kemarin</option>
-                                        <option value={([`${sevenDaysAgo}`, `${yesterdayDate}`])}>7 Hari Terakhir</option>
-                                        <option value={([`${firstDayThisMonth}`, `${lastDayThisMonth}`])}>Bulan Ini</option>
-                                        <option value={([`${firstDayLastMonth}`, `${lastDayLastMonth}`])}>Bulan Kemarin</option>
-                                        <option value={7}>Pilih Range Tanggal</option>
+                                        <option defaultChecked disabled value={0}>{language === null ? eng.pilihPeriode : language.pilihPeriode}</option>
+                                        <option value={([`${currentDate}`, `${currentDate}`])}>{language === null ? eng.hariIni : language.hariIni}</option>
+                                        <option value={([`${yesterdayDate}`, `${yesterdayDate}`])}>{language === null ? eng.kemarin : language.kemarin}</option>
+                                        <option value={([`${sevenDaysAgo}`, `${yesterdayDate}`])}>{language === null ? eng.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                        <option value={([`${firstDayThisMonth}`, `${lastDayThisMonth}`])}>{language === null ? eng.bulanIni : language.bulanIni}</option>
+                                        <option value={([`${firstDayLastMonth}`, `${lastDayLastMonth}`])}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
+                                        <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                     </Form.Select>                    
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                    <span>Jenis Transaksi</span>
+                                    <span>{language === null ? eng.jenisTransaksi : language.jenisTransaksi}</span>
                                     <Form.Select name="fiturSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.fiturSettlementPartner} onChange={(e) => handleChange(e)}>
-                                        <option defaultValue value={0}>Pilih Jenis Transaksi</option>
-                                        <option value={104}>Payment Link</option>
-                                        <option value={100}>VA Partner</option>
-                                        <option value={107}>Direct Debit</option>
-                                        <option value={105}>E-Money</option>
+                                        <option defaultValue value={0}>{language === null ? eng.placeholderJenisTransaksi : language.placeholderJenisTransaksi}</option>
+                                        <option value={104}>{language === null ? eng.paymentLink : language.paymentLink}</option>
+                                        <option value={100}>{language === null ? eng.vapartner : language.vapartner}</option>
+                                        <option value={107}>{language === null ? eng.directDebit : language.directDebit}</option>
+                                        <option value={105}>{language === null ? eng.emoney : language.emoney}</option>
                                     </Form.Select>
                                 </Col>          
                                 {/* <Col xs={4}>
@@ -1249,23 +1342,23 @@ function SettlementPage() {
                             <Row className='mt-3'>
                                 <Col xs={5}>
                                     <Row>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                                 // onClick={() => filterSettlementPartner(inputHandle.idTransaksiSettlementPartner, dateRangeSettlementPartner, inputHandle.periodeSettlementPartner, 1, 0, inputHandle.statusSettlementPartner, inputHandle.fiturSettlementPartner)}
                                                 onClick={() => filterSettlementPartnerNew(inputHandle.fiturSettlementPartner, inputHandle.idTransaksiSettlementPartner, inputHandle.periodeSettlementPartner, dateRangeSettlementPartner, partnerId, 1, 0)}
                                                 className={(inputHandle.periodeSettlementPartner !== 0 || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                                 disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
                                             >
-                                                Terapkan
+                                                {language === null ? eng.terapkan : language.terapkan}
                                             </button>
                                         </Col>
-                                        <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => resetButtonHandle("partner")}
                                                 className={(inputHandle.periodeSettlementPartner || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                                 disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
                                             >
-                                                Atur Ulang
+                                                {language === null ? eng.aturUlang : language.aturUlang}
                                             </button>
                                         </Col>
                                     </Row>
@@ -1279,17 +1372,18 @@ function SettlementPage() {
                             }
                             <br/>
                             <br/>
-                            <div className="div-table">
+                            <div className="div-table pb-4">
                                 <DataTable
                                     columns={columnsSettlementPartner}
                                     data={dataRiwayatSettlementPartner}
                                     customStyles={customStylesPartner}
                                     progressPending={pendingSettlementPartner}
                                     progressComponent={<CustomLoader />}
+                                    noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
                                 />
                             </div>
                             <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlementPartner}</div>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageSettlementPartner}</div>
                                 <Pagination
                                     activePage={activePageSettlementPartner}
                                     itemsCountPerPage={pageNumberSettlementPartner.row_per_page}

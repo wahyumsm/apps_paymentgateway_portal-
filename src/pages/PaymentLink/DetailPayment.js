@@ -4,13 +4,15 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faCog} from "@fortawesome/free-solid-svg-icons";
 import CopyIcon from '../../assets/icon/carbon_copy.svg'
 import { useHistory, useParams } from "react-router-dom";
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Button } from "@themesberg/react-bootstrap";
+import { eng, ind } from "../../components/Language";
 
 function DetailPayment() {
+
     const history = useHistory()
     const access_token = getToken()
     const { paymentId } = useParams()
@@ -33,13 +35,14 @@ function DetailPayment() {
     }, [])
 
 
-    async function getDetailPayLink(paymentId) {
+    async function getDetailPayLink(paymentId, lang) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"tpaylink_id":"${paymentId}"}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const detailPayment = await axios.post(BaseURL + "/PaymentLink/PaymentLinkDetails", { data: dataParams }, { headers: headers })
             // console.log(detailPayment, "ini detail payment");
@@ -91,13 +94,13 @@ function DetailPayment() {
     };
 
     function toLaporan() {
-        history.push("/Riwayat Transaksi/va-dan-paylink");
+        history.push("/riwayat-transaksi/va-dan-paylink");
     }
 
     function toDashboard() {
         history.push("/");
     }
-    
+
     function toListPay() {
         history.push("/listpayment");
     }
@@ -110,20 +113,20 @@ function DetailPayment() {
         if(!access_token) {
             history.push('/login')
         }
-        getDetailPayLink(paymentId)
+        getDetailPayLink(paymentId, language === null ? 'EN' : language.flagName)
     }, [paymentId])
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-            <span className='breadcrumbs-span'>{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toListPay()}>Payment Link</span> &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{cursor: "pointer"}} onClick={() => toDetailPayment(paymentId)}>Payment Link Detail</span></span>
+            <span className='breadcrumbs-span'>{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>{language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toListPay()}>{language === null ? eng.paymentLink : language.paymentLink}</span> &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{cursor: "pointer"}} onClick={() => toDetailPayment(paymentId)}>{language === null ? eng.detailPaymentLink : language.detailPaymentLink}</span></span>
             <div className="head-title">
-                <h2 className="h4 mt-4 mb-4" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 18, color: "#383838"}}>Payment Link Detail</h2>
+                <h2 className="h4 mt-4 mb-4" style={{fontFamily: "Exo", fontWeight: 700, fontSize: 18, color: "#383838"}}>{language === null ? eng.detailPaymentLink : language.detailPaymentLink}</h2>
             </div>
             <div className="base-content-beranda">
                 <div className="d-flex justify-content-between align-items-between mx-3 my-1">
-                    <div>Payment ID</div>
-                    <div>Nominal</div>
+                    <div>{language === null ? eng.paymentId : language.paymentId}</div>
+                    <div>{language === null ? eng.nominal : language.nominal}</div>
                     {detailPayment.mstatus_name === "Active" ?
-                        <div className="me-1">Payment Link</div> : ""
+                        <div className="me-1">{language === null ? eng.paymentLink : language.paymentLink}</div> : ""
                     }
                 </div>
                 <div style={{fontWeight: 700}} className="d-flex justify-content-between align-items-center mx-3 my-1">
@@ -133,44 +136,44 @@ function DetailPayment() {
                         <div className="d-flex justify-content-center align-items-center">
                             <button onClick={toNewTab} style={{border:"unset", background: "unset", fontWeight: 700, color: "#077E86"}} >Kunjungi</button>
                             <div className="mx-1">|</div>
-                            <CopyToClipboard onCopy={onCopy} text={detailPayment.tpaylink_url}><button onClick={onClick} style={{border:"unset", background: "unset", fontWeight: 700, color: "#077E86"}} className=" d-flex justify-content-center align-items-center"><span><img src={CopyIcon} alt="copy" className="me-1" /></span>Salin</button></CopyToClipboard>
+                            <CopyToClipboard onCopy={onCopy} text={detailPayment.tpaylink_url}><button onClick={onClick} style={{border:"unset", background: "unset", fontWeight: 700, color: "#077E86"}} className=" d-flex justify-content-center align-items-center"><span><img src={CopyIcon} alt="copy" className="me-1" /></span>{language === null ? eng.salin : language.salin}</button></CopyToClipboard>
                         </div> : ""
                     }
                 </div>
             </div>
             <div className="head-title">
-                <h4 className="h4 mt-4 mb-4" style={{fontSize: "18px"}}>Detail</h4>
+                <h4 className="h4 mt-4 mb-4" style={{fontSize: "18px"}}>{language === null ? eng.detail : language.detail}</h4>
             </div>
             <div className="base-content-beranda">
                 <table className="report-pie-table">
                     <thead></thead>
                     <tbody>
                         <tr>
-                            <td><div style={{color: "#888888"}}>ID Referensi</div></td>
+                            <td><div style={{color: "#888888"}}>{language === null ? eng.idRef : language.idRef}</div></td>
                             <td><div className="ms-5" style={{fontWeight: 600, fontFamily: "Exo"}}>{detailPayment.tpaylink_ref_id}</div></td>
                         </tr>
                         <tr>
-                            <td><div style={{color: "#888888"}}>Dibuat Pada</div></td>
+                            <td><div style={{color: "#888888"}}>{language === null ? eng.dibuatPada : language.dibuatPada}</div></td>
                             <td><div className="ms-5" style={{fontWeight: 600, fontFamily: "Exo"}}>{(`${detailPayment.tpaylink_crtdt}`).slice(0,10).replace(/-/g,"/") + " " + (`${detailPayment.tpaylink_crtdt}`).slice(11,16)}</div></td>
                         </tr>
                         <tr>
-                            <td><div style={{color: "#888888"}}>Tanggal Kadaluarsa</div></td>
+                            <td><div style={{color: "#888888"}}>{language === null ? eng.tanggalKadaluarsa : language.tanggalKadaluarsa}</div></td>
                             <td><div className="ms-5" style={{fontWeight: 600, fontFamily: "Exo"}}>{(`${detailPayment.tpaylink_exp_date}`).slice(0,10).replace(/-/g,"/") + " " + (`${detailPayment.tpaylink_exp_date}`).slice(11,16)}</div></td>
                         </tr>
                         <tr>
-                            <td><div style={{color: "#888888"}}>Metode Pembayaran</div></td>
+                            <td><div style={{color: "#888888"}}>{language === null ? eng.metodePembayaran : language.metodePembayaran}</div></td>
                             <td><div className="ms-5" style={{fontWeight: 600, fontFamily: "Exo"}}>{detailPayment.payment_method !== null ? String(detailPayment.payment_method) : "-"}</div></td>
                         </tr>
                         <tr>
-                            <td><div style={{color: "#888888"}}>Batas Pembayaran</div></td>
+                            <td><div style={{color: "#888888"}}>{language === null ? eng.batasPembayaran : language.batasPembayaran}</div></td>
                             <td><div className="ms-5" style={{fontWeight: 600, fontFamily: "Exo"}}>{detailPayment.tpaylink_use_limit}</div></td>
                         </tr>
                         <tr>
-                            <td><div style={{color: "#888888"}}>Deskripsi</div></td>
+                            <td><div style={{color: "#888888"}}>{language === null ? eng.deskripsi : language.deskripsi}</div></td>
                             <td><div className="ms-5" style={{fontWeight: 600, fontFamily: "Exo"}}>{detailPayment.tpaylink_desc !== "" ? detailPayment.tpaylink_desc : "-"}</div></td>
                         </tr>
                         <tr>
-                            <td><div style={{color: "#888888"}}>Status</div></td>
+                            <td><div style={{color: "#888888"}}>{language === null ? eng.status : language.status}</div></td>
                             <td><div className="ms-5" style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "55%", color: "#3DB54A", fontWeight: 600, background: "#EBF8EC", borderRadius: 4, fontFamily: "Nunito"}}>{detailPayment.mstatus_name}</div></td>
                             {/* {(detailPayment.status_name === "Active") ?
                                 <td><div className="ms-5 px-5" style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "75%", color: "#3DB54A", fontWeight: 600, background: "#EBF8EC", borderRadius: 4, fontFamily: "Nunito"}}>{detailPayment.status_name}</div></td> :
@@ -183,7 +186,7 @@ function DetailPayment() {
             </div>
             <div className='mb-5 mt-3' style={{ display: "flex", justifyContent: "end"}}>
                 <button onClick={() => tutupPaymentLinkHandler(detailPayment.tpaylink_code)} style={{ display: detailPayment.mstatus_name === "Active" ? "" : "none", color:"#FFFFFF", fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: 250, height: 45, background: "linear-gradient(180deg, #FF434D 0%, #B9121B 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
-                    Tutup Payment Link
+                    {language === null ? eng.tutupPaymentLink : language.tutupPaymentLink}
                 </button>
             </div>
         </div>

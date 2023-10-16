@@ -11,25 +11,24 @@ export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms=";
 // export const authBearer = "Basic ZXplZWxpbms6ZXplZWxpbms="
 
 export const setUserSession = (token) => {
-//   localStorage.setItem("token", token);
+	localStorage.setItem("token", token);
 	sessionStorage.setItem("token", token);
 };
 
 export const setRoleSession = (role) => {
-//   localStorage.setItem("role", role);
+	localStorage.setItem("role", role);
 	sessionStorage.setItem("role", role);
 };
 
 export const getToken = () => {
 	return (
-		// localStorage.getItem("token") ||
+		localStorage.getItem("token") ||
 		sessionStorage.getItem("token") || null
 	);
 };
 
 export const getRole = () => {
-//   return localStorage.getItem("role") ||
-	return sessionStorage.getItem("role") || null;
+	return localStorage.getItem("role") || sessionStorage.getItem("role") || null;
 };
 
 export const removeUserSession = () => {
@@ -37,6 +36,7 @@ export const removeUserSession = () => {
 	localStorage.removeItem("role");
 	sessionStorage.removeItem("token");
 	sessionStorage.removeItem("role");
+	sessionStorage.removeItem("lang")
 };
 
 export function convertToRupiah(money, isRupiah, fractionDigits) {
@@ -86,11 +86,27 @@ export function convertDateAndTimeInfoDanSaldo(time) {
 	return `${tanggal}, ${jam} WIB`
 }
 
+export const language = JSON.parse(localStorage.getItem('lang'))
+
 export const convertDateTimeStamp = (time) => {
-	return new Intl.DateTimeFormat("id-ID", {
-		dateStyle: "full",
-		timeStyle: "short",
-	}).format(new Date(time * 1000));
+	if (language === null) {
+		return new Intl.DateTimeFormat("id-ID", {
+			dateStyle: "full",
+			timeStyle: "short",
+		}).format(new Date(time * 1000));
+	} else {
+		if (language.flagName === "ID") {
+			return new Intl.DateTimeFormat("id-ID", {
+				dateStyle: "full",
+				timeStyle: "short",
+			}).format(new Date(time * 1000));
+		} else {
+			return new Intl.DateTimeFormat("en-EN", {
+				dateStyle: "full",
+				timeStyle: "short",
+			}).format(new Date(time * 1000));
+		}
+	}
 };
 
 export const convertTimeDigit = (num) => {
@@ -311,7 +327,7 @@ function terb_belakang(t){
 }
 
 export function terbilangDisbursement(nAngka) {
-	var 
+	var
 		v = 0,
 		sisa = 0,
 		tanda = '',
@@ -324,7 +340,7 @@ export function terbilangDisbursement(nAngka) {
 	if (nAngka>999999999999999999){
 		return 'Unidentified';
 	}
-	v = nAngka;	
+	v = nAngka;
 	if (v<0){
 		tanda = 'Minus ';
 	}
@@ -332,7 +348,7 @@ export function terbilangDisbursement(nAngka) {
 	tmp = v.toString().split('.');
 	p1 = tmp[0];
 	p2 = '';
-	if (tmp.length > 1) {		
+	if (tmp.length > 1) {
 		p2 = tmp[1];
 	}
 	v = parseFloat(p1);

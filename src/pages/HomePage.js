@@ -90,6 +90,8 @@ import SettlementManual from './Settlement/SettlementManual';
 import RiwayatBalance from './RiwayatBalance/RiwayatBalance';
 import ExcludeSettlementManual from './Settlement/ExcludeSettlementManual';
 import ProsesSettlementManual from './Settlement/ProsesSettlementManual';
+import GetBalance from './Transfer/GetBalance';
+import TransaksiTopUp from './TopUp/TransaksiTopUp';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -196,16 +198,16 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
     <RouteWithSidebar exact path={Routes.SubAccountTransfer.path} component={TransferSubAccount} />
     {/* admin */}
-    <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
-    <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
+    <RouteWithSidebar exact path={Routes.VaDanPaymentLinkAdmin.path} component={VaDanPaymentLink} />
+    <RouteWithSidebar exact path={Routes.RiwayatDirectDebitAdmin.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.DisbursementAdmin.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccountAdmin.path} component={InfoSaldoMutasi} />
     <RouteWithSidebar exact path={Routes.DisbursementTimeout.path} component={DisbursementTimeout} />
     <RouteWithSidebar exact path={Routes.ExcludeSettlementManual.path} component={ExcludeSettlementManual} />
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
     {/* partner */}
-    <RouteWithSidebar exact path={Routes.VaDanPaymentLinkAdmin.path} component={VaDanPaymentLink} />
-    <RouteWithSidebar exact path={Routes.RiwayatDirectDebitAdmin.path} component={RiwayatDirectDebit} />
+    <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
+    <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
 
@@ -213,6 +215,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.SettlementManual.path} component={SettlementManual} />
     <RouteWithSidebar exact path={Routes.RiwayatBalance.path} component={RiwayatBalance} />
+    <RouteWithSidebar exact path={Routes.GetBalance.path} component={GetBalance} />
+    <RouteWithSidebar exact path={Routes.TransaksiTopup.path} component={TransaksiTopUp} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

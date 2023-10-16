@@ -14,15 +14,17 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DataTable from "react-data-table-component";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, getToken, setUserSession, styleStatusPaylink } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, language, setUserSession, styleStatusPaylink } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import Pagination from "react-js-pagination";
 import { pageVisits } from "../../data/tables";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { useCallback } from "react";
+import { eng, ind } from "../../components/Language";
 
 function ListPayment() {
+
   const history = useHistory();
   const access_token = getToken();
   const user_role = getRole()
@@ -113,7 +115,7 @@ function ListPayment() {
       showPayment();
       setOrderId(orderId);
       setActivePagePaylink(1)
-      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
+      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName);
     } else if (orderField === "tpaylink_code" && isFilterPaylink === true) {
       setOrderField("tpaylink_code");
       showPayment();
@@ -128,14 +130,15 @@ function ListPayment() {
         inputHandle.rowPerPage,
         orderId,
         orderField,
-        inputHandle.statusPaylink
+        inputHandle.statusPaylink,
+        language === null ? 'EN' : language.flagName
       );
     } else if (orderField === "tpaylink_crtdt" && isFilterPaylink === false) {
       setOrderField("tpaylink_code");
       showDate();
       setOrderId(orderId);
       setActivePagePaylink(1)
-      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
+      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName);
     } else if (orderField === "tpaylink_crtdt" && isFilterPaylink === true) {
       setOrderField("tpaylink_code");
       showDate();
@@ -150,14 +153,15 @@ function ListPayment() {
         inputHandle.rowPerPage,
         orderId,
         orderField,
-        inputHandle.statusPaylink
+        inputHandle.statusPaylink,
+        language === null ? 'EN' : language.flagName
       );
     } else if (orderField === "mstatus_name" && isFilterPaylink === false) {
       setOrderField("mstatus_name");
       showStatus();
       setOrderId(orderId);
       setActivePagePaylink(1)
-      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField);
+      getListPaymentLink(1, inputHandle.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName);
     } else if (orderField === "mstatus_name" && isFilterPaylink === true) {
       setOrderField("mstatus_name");
       showStatus();
@@ -172,7 +176,8 @@ function ListPayment() {
         inputHandle.rowPerPage,
         orderId,
         orderField,
-        inputHandle.statusPaylink
+        inputHandle.statusPaylink,
+        language === null ? 'EN' : language.flagName
       );
     }
   }
@@ -189,11 +194,12 @@ function ListPayment() {
         inputHandle.rowPerPage,
         orderId,
         orderField,
-        inputHandle.statusPaylink
+        inputHandle.statusPaylink,
+        language === null ? 'EN' : language.flagName
       );
     } else {
       setActivePagePaylink(page);
-      getListPaymentLink(page, inputHandle.rowPerPage, orderId, orderField);
+      getListPaymentLink(page, inputHandle.rowPerPage, orderId, orderField, language === null ? 'EN' : language.flagName);
     }
   }
 
@@ -214,10 +220,11 @@ function ListPayment() {
         e.target.value,
         orderId,
         orderField,
-        inputHandle.statusPaylink
+        inputHandle.statusPaylink,
+        language === null ? 'EN' : language.flagName
       );
     } else {
-      getListPaymentLink(1, e.target.value, orderId, orderField);
+      getListPaymentLink(1, e.target.value, orderId, orderField, language === null ? 'EN' : language.flagName);
     }
   }
 
@@ -233,7 +240,7 @@ function ListPayment() {
     history.push(`/detailpayment/${paymentId}`);
   }
 
-  async function getListPaymentLink(page, rowPerPage, orderId, orderField) {
+  async function getListPaymentLink(page, rowPerPage, orderId, orderField, lang) {
     try {
       const auth = "Bearer " + getToken();
       const dataParams = encryptData(
@@ -245,7 +252,8 @@ function ListPayment() {
       );
       const headers = {
         "Content-Type": "application/json",
-        Authorization: auth,
+        'Authorization': auth,
+        'Accept-Language' : lang,
       };
       const listPaylink = await axios.post(BaseURL +
         "/PaymentLink/PaymentListGetOrder",
@@ -288,7 +296,8 @@ function ListPayment() {
     rowPerPage,
     orderId,
     orderField,
-    statusId
+    statusId,
+    lang
   ) {
     try {
       setPendingPaylink(true);
@@ -312,7 +321,8 @@ function ListPayment() {
       );
       const headers = {
         "Content-Type": "application/json",
-        Authorization: auth,
+        'Authorization': auth,
+        'Accept-Language' : lang,
       };
       const filterPaylink = await axios.post(BaseURL +
         "/PaymentLink/PaymentListGetOrder",
@@ -415,7 +425,7 @@ function ListPayment() {
   }
 
   function toLaporan() {
-    history.push("/Riwayat Transaksi/va-dan-paylink");
+    history.push("/riwayat-transaksi/va-dan-paylink");
   }
 
   function toListPay() {
@@ -435,7 +445,7 @@ function ListPayment() {
   // const handleMouseEnter = () => {
   //   setIsHover(true);
   // };
- 
+
   // const handleMouseLeave = () => {
   //   setIsHover(false);
   // };
@@ -449,7 +459,8 @@ function ListPayment() {
       activePagePaylink,
       inputHandle.rowPerPage,
       orderId,
-      orderField
+      orderField,
+      language === null ? 'EN' : language.flagName
     );
   }, [access_token]);
 
@@ -472,7 +483,7 @@ function ListPayment() {
       <span className="breadcrumbs-span">
         {user_role === "102" ?
           <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>
-            Laporan
+            {language === null ? eng.laporan : language.laporan}
           </span> :
           <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>
             Beranda
@@ -481,7 +492,7 @@ function ListPayment() {
         &nbsp;
         <img alt="" src={breadcrumbsIcon} /> &nbsp;
         <span style={{ cursor: "pointer" }} onClick={() => toListPay()}>
-          Payment Link
+          {language === null ? eng.paymentLink : language.paymentLink}
         </span>
       </span>
       <div className="head-title">
@@ -494,7 +505,7 @@ function ListPayment() {
             color: "#383838",
           }}
         >
-          Payment Link
+          {language === null ? eng.paymentLink : language.paymentLink}
         </h2>
       </div>
       <div
@@ -513,7 +524,7 @@ function ListPayment() {
             alignItems: "center",
             padding: "12px 24px",
             gap: 8,
-            width: 230,
+            width: 240,
             height: 48,
             background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
             border: "0.6px solid #2C1919",
@@ -521,8 +532,7 @@ function ListPayment() {
           }}
           onClick={() => toAddPayment()}
         >
-          <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Buat
-          Payment Link
+          <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> {language === null ? eng.buatPaymentLink : language.buatPaymentLink}
         </button>
         <button
           className="mx-3 px-3"
@@ -542,61 +552,61 @@ function ListPayment() {
       </div>
       <div className="base-content mt-3">
         <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
-          Filter
+          {language === null ? eng.filter : language.filter}
         </span>
         <Row className="mt-4">
           <Col
             xs={4}
-            className="d-flex justify-content-start align-items-center"
+            className="d-flex justify-content-between align-items-center"
           >
-            <div>Payment ID</div>
+            <div>{language === null ? eng.paymentId : language.paymentId}</div>
             <input
               onChange={(e) => handleChange(e)}
               value={inputHandle.paymentId}
               name="paymentId"
               type="text"
               className="input-text-edit"
-              placeholder="Masukkan Payment ID"
+              placeholder={language === null ? eng.placeholderPaymentId : language.placeholderPaymentId}
             />
           </Col>
           <Col
             xs={4}
-            className="d-flex justify-content-start align-items-center"
+            className="d-flex justify-content-between align-items-center"
           >
-            <div>ID Referensi</div>
+            <div>{language === null ? eng.idRef : language.idRef}</div>
             <input
               onChange={(e) => handleChange(e)}
               value={inputHandle.refId}
               name="refId"
               type="text"
               className="input-text-edit"
-              placeholder="Masukkan ID Referensi"
+              placeholder={language === null ? eng.placeholderIdRef : language.placeholderIdRef}
             />
           </Col>
           <Col
             xs={4}
-            className="d-flex justify-content-start align-items-center"
+            className="d-flex justify-content-between align-items-center"
           >
-            <div>Tanggal pembuatan</div>
+            <div>{language === null ? eng.tanggalPembuatan : language.tanggalPembuatan}</div>
             <Form.Select
               name="periodePaylink"
               className="input-text-ez"
               value={inputHandle.periodePaylink}
               onChange={(e) => handleChangePeriodePaylink(e)}
             >
-              {inputHandle.periodePaylink === 0 && <option value={0}>Pilih Periode</option>}
-              <option value={2}>Hari Ini</option>
-              <option value={3}>Kemarin</option>
-              <option value={4}>7 Hari Terakhir</option>
-              <option value={5}>Bulan Ini</option>
-              <option value={6}>Bulan Kemarin</option>
-              <option value={7}>Pilih Range Tanggal</option>
+              {inputHandle.periodePaylink === 0 && <option value={0}>{language === null ? eng.pilihPeriode : language.pilihPeriode}</option>}
+              <option value={2}>{language === null ? eng.hariIni : language.hariIni}</option>
+              <option value={3}>{language === null ? eng.kemarin : language.kemarin}</option>
+              <option value={4}>{language === null ? eng.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+              <option value={5}>{language === null ? eng.bulanIni : language.bulanIni}</option>
+              <option value={6}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
+              <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
             </Form.Select>
           </Col>
         </Row>
         <Row className="mt-3">
-          <Col xs={4}>
-            <span>Status</span>
+          <Col xs={4} className="d-flex justify-content-between align-items-center">
+            <span>{language === null ? eng.status : language.status}</span>
             <Form.Select
               name="statusPaylink"
               value={inputHandle.statusPaylink}
@@ -604,13 +614,13 @@ function ListPayment() {
               className="input-text-ez ms-5"
               style={{ display: "inline" }}
             >
-              {inputHandle.statusPaylink === "" && <option value={""}>Pilih Status</option>}
-              <option value={"17"}>Aktif</option>
-              <option value={"2"}>Berhasil</option>
-              <option value={"18"}>Settlement</option>
-              <option value={"16"}>Ditutup</option>
-              <option value={"7"}>Menunggu Pembayaran</option>
-              <option value={"9"}>Kadaluwarsa</option>
+              {inputHandle.statusPaylink === "" && <option value={""}>{language === null ? eng.placeholderStatus : language.placeholderStatus}</option>}
+              <option value={"17"}>{language === null ? eng.aktif : language.aktif}</option>
+              <option value={"2"}>{language === null ? eng.berhasil : language.berhasil}</option>
+              <option value={"18"}>{language === null ? eng.settlement : language.settlement}</option>
+              <option value={"16"}>{language === null ? eng.ditutup : language.ditutup}</option>
+              <option value={"7"}>{language === null  ? eng.menungguPembayaran : language.menungguPembayaran}</option>
+              <option value={"9"}>{language === null  ? eng.kadaluwarsa : language.kadaluwarsa}</option>
             </Form.Select>
           </Col>
           <Col xs={4}></Col>
@@ -628,7 +638,7 @@ function ListPayment() {
         <Row className="mt-3">
           <Col xs={5}>
             <Row>
-              <Col xs={6} style={{ width: "unset" }}>
+              <Col xs={6} style={{ width: "40%" }}>
                 <button
                   onClick={() =>
                     filterPaymentLinkHandler(
@@ -640,7 +650,8 @@ function ListPayment() {
                       inputHandle.rowPerPage,
                       orderId,
                       orderField,
-                      inputHandle.statusPaylink
+                      inputHandle.statusPaylink,
+                      language === null ? 'EN' : language.flagName
                     )
                   }
                   className={
@@ -665,10 +676,10 @@ function ListPayment() {
                       inputHandle.refId.length === 0)
                   }
                 >
-                  Terapkan
+                  {language === null  ? eng.terapkan : language.terapkan}
                 </button>
               </Col>
-              <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
+              <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                 <button
                   onClick={() => resetButtonHandle("Reset Filter")}
                   className={
@@ -693,14 +704,14 @@ function ListPayment() {
                       inputHandle.refId.length === 0)
                   }
                 >
-                  Atur Ulang
+                  {language === null  ? eng.aturUlang : language.aturUlang}
                 </button>
               </Col>
             </Row>
           </Col>
         </Row>
         <div className="d-flex justify-content-start align-items-center mt-3">
-          <div>Show</div>
+          <div>{language === null  ? eng.show : language.show}</div>
           <Form.Select
             className="ms-3"
             style={{ display: "inline", width: "8.5%" }}
@@ -714,7 +725,7 @@ function ListPayment() {
             <option value={100}>100</option>
             <option value={150}>150</option>
           </Form.Select>
-          <div className="ms-3">entries</div>
+          <div className="ms-3">{language === null  ? eng.entries : language.entries}</div>
         </div>
         <div
           className="div-table"
@@ -745,7 +756,7 @@ function ListPayment() {
                     style={{ width: 155, background: "#F3F4F5", cursor: "pointer" }}
                     className="align-items-center"
                   >
-                    Payment ID
+                    {language === null  ? eng.paymentId : language.paymentId}
                     <span>
                       <FontAwesomeIcon
                         icon={faSortUp}
@@ -766,7 +777,7 @@ function ListPayment() {
                     style={{ width: 155, background: "#F3F4F5", cursor: "pointer" }}
                     className="align-items-center"
                   >
-                    Payment ID
+                    {language === null  ? eng.paymentId : language.paymentId}
                     <span>
                       <FontAwesomeIcon
                         icon={faSortDown}
@@ -776,7 +787,7 @@ function ListPayment() {
                     </span>
                   </th>
                 )}
-                <th style={{ background: "#F3F4F5" }}>ID Referensi</th>
+                <th style={{ background: "#F3F4F5" }}>{language === null  ? eng.idRef : language.idRef}</th>
                 {!dates.isDesc ? (
                   <th
                     onClick={() =>
@@ -788,7 +799,7 @@ function ListPayment() {
                     }
                     style={{ background: "#F3F4F5", cursor: "pointer" }}
                   >
-                    Tanggal Pembuatan
+                    {language === null  ? eng.tanggalPembuatan : language.tanggalPembuatan}
                     <span>
                       <FontAwesomeIcon
                         icon={faSortUp}
@@ -808,7 +819,7 @@ function ListPayment() {
                     }
                     style={{ background: "#F3F4F5", cursor: "pointer" }}
                   >
-                    Tanggal Pembuatan
+                    {language === null  ? eng.tanggalPembuatan : language.tanggalPembuatan}
                     <span>
                       <FontAwesomeIcon
                         icon={faSortDown}
@@ -829,7 +840,7 @@ function ListPayment() {
                     }
                     style={{ background: "#F3F4F5", cursor: "pointer" }}
                   >
-                    Status
+                    {language === null  ? eng.status : language.status}
                     <span>
                       <FontAwesomeIcon
                         icon={faSortUp}
@@ -849,7 +860,7 @@ function ListPayment() {
                     }
                     style={{ background: "#F3F4F5", cursor: "pointer" }}
                   >
-                    Status
+                    {language === null  ? eng.status : language.status}
                     <span>
                       <FontAwesomeIcon
                         icon={faSortDown}
@@ -859,7 +870,7 @@ function ListPayment() {
                     </span>
                   </th>
                 )}
-                <th style={{ background: "#F3F4F5" }}>Aksi</th>
+                <th style={{ background: "#F3F4F5" }}>{language === null  ? eng.aksi : language.aksi}</th>
               </tr>
             </thead>
             {!pendingPaylink ? (
@@ -989,7 +1000,7 @@ function ListPayment() {
           }}
         >
           <div style={{ marginRight: 10, marginTop: 10 }}>
-            Total Page: {totalPagePaylink}
+            {language === null  ? eng.totalHalaman : language.totalHalaman} : {totalPagePaylink}
           </div>
           <Pagination
             activePage={activePagePaylink}

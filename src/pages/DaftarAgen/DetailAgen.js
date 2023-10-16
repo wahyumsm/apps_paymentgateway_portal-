@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
-import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, language, RouteTo, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import alertIcon from "../../assets/icon/alert_icon.svg";
+import { ind } from '../../components/Language';
 
 function DetailAgen() {
 
@@ -44,7 +45,7 @@ function DetailAgen() {
     function toDashboard() {
         history.push("/");
     }
-    
+
     function toLaporan() {
         history.push("/laporan");
     }
@@ -59,12 +60,12 @@ function DetailAgen() {
     function editAgen(agenId) {
         history.push(`/editagen/${agenId}`)
     }
-    
+
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>Daftar Agen</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Detail Agen</span>
+            <span className='breadcrumbs-span'>{user_role === "102"? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>{language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/daftaragen"}>{language === null ? ind.daftarAgen : language.daftarAgen}</Link> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;{language === null ? ind.detailAgen : language.detailAgen}</span>
             <div className="head-title">
-                <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Detail Agen</div>
+                <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? ind.detailAgen : language.detailAgen}</div>
                 {/* <h5 style={{ fontFamily: "Exo" }}>Detail Agen</h5> */}
             </div>
             <div className='base-content' style={{ width:"100%", padding: 50 }}>
@@ -72,14 +73,14 @@ function DetailAgen() {
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Status
+                                {language === null ? ind.status : language.status}
                             </span>
                         </Col>
                         <Col xs={2}>
                             <Form.Check
                                 type="switch"
                                 id="custom-switch"
-                                label={(detailAgen.status === true) ? "Aktif" : "Tidak Aktif"}
+                                label={(detailAgen.status === true) ? (language === null ? ind.aktif : language.aktif) : (language === null ? ind.tidakAktif : language.tidakAktif)}
                                 checked={detailAgen.status}
                             />
                         </Col>
@@ -87,7 +88,7 @@ function DetailAgen() {
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                ID Agen
+                                {language === null ? ind.idAgen : language.idAgen}
                             </span>
                         </Col>
                         <Col xs={9}>
@@ -102,7 +103,7 @@ function DetailAgen() {
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Agen
+                                {language === null ? ind.namaAgen : language.namaAgen}
                             </span>
                         </Col>
                         <Col xs={9}>
@@ -117,7 +118,7 @@ function DetailAgen() {
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Email Agen
+                                {language === null ? ind.emailAgen : language.emailAgen}
                             </span>
                         </Col>
                         <Col xs={9}>
@@ -132,7 +133,7 @@ function DetailAgen() {
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                No Hp Agen
+                                {language === null ? ind.noHpAgen : language.noHpAgen}
                             </span>
                         </Col>
                         <Col xs={9}>
@@ -147,7 +148,7 @@ function DetailAgen() {
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Bank
+                                {language === null ? ind.namaBank : language.namaBank}
                             </span>
                         </Col>
                         <Col xs={9}>
@@ -162,7 +163,7 @@ function DetailAgen() {
                     <Row className='mb-4'>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                No Rekening
+                                {language === null ? ind.noRek : language.noRek}
                             </span>
                         </Col>
                         <Col xs={9}>
@@ -178,7 +179,7 @@ function DetailAgen() {
                     <Row>
                         <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                Nama Pemilik Rekening
+                                {language === null ? ind.namaPemilikRek : language.namaPemilikRek}
                             </span>
                         </Col>
                         <Col xs={9}>
@@ -208,7 +209,7 @@ function DetailAgen() {
                 </div>
             </div>
             <div className="head-title">
-                <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Rekening Sub Account</div>
+                <div className="mt-4 mb-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? ind.rekSubAkun : language.rekSubAkun}</div>
             </div>
             {
                 detailAgen.subaccount_acc_number !== null ?
@@ -218,7 +219,7 @@ function DetailAgen() {
                             <Row className='mb-4'>
                                 <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                                     <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                        Nama Bank
+                                        {language === null ? ind.namaBank : language.namaBank}
                                     </span>
                                 </Col>
                                 <Col xs={9}>
@@ -233,7 +234,7 @@ function DetailAgen() {
                             <Row className='mb-4'>
                                 <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                                     <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                        No Rekening
+                                        {language === null ? ind.noRek : language.noRek}
                                     </span>
                                 </Col>
                                 <Col xs={9}>
@@ -249,7 +250,7 @@ function DetailAgen() {
                             <Row>
                                 <Col xs={3} style={{ width: '14%', paddingRight: "unset" }}>
                                     <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                        Nama Pemilik Rekening
+                                        {language === null ? ind.namaPemilikRek : language.namaPemilikRek}
                                     </span>
                                 </Col>
                                 <Col xs={9}>
@@ -279,7 +280,7 @@ function DetailAgen() {
                         <span className="mx-2">
                             <img src={alertIcon} alt="alert" />
                         </span>
-                        Silahkan hubungi Admin untuk menambahkan Sub Account pada agen
+                        {language === null ? ind.silahkanHubungiAdmin : language.silahkanHubungiAdmin}
                     </div>
                 )
             }
@@ -287,7 +288,7 @@ function DetailAgen() {
                 user_role === "102" ?
                 <div style={{ display: "flex", justifyContent: "end", marginTop: 16}}>
                     <button onClick={() => editAgen(agenId)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
-                        Edit
+                        {language === null ? ind.edit : language.edit}
                     </button>
                 </div> : ""
             }

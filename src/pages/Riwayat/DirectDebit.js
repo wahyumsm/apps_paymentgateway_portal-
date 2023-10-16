@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, replaceText, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, replaceText, setUserSession } from '../../function/helpers';
 import { Link, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -13,8 +13,10 @@ import ReactSelect, { components } from 'react-select';
 import Pagination from 'react-js-pagination';
 import { DateRangePicker } from 'rsuite';
 import * as XLSX from "xlsx"
+import { eng } from '../../components/Language';
 
 const RiwayatDirectDebit = () => {
+
     const user_role = getRole()
     const access_token = getToken();
     const history = useHistory();
@@ -78,10 +80,10 @@ const RiwayatDirectDebit = () => {
     function handlePageChangeRiwayatDirectDebit(page) {
         if (isFilterDirectDebit) {
             setActivePageDirectDebit(page);
-            filterListDirectDebit(Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, user_role === "102" ? inputHandle.partnerId : selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit[0].value, inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, page, 10)
+            filterListDirectDebit(Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, user_role === "102" ? inputHandle.partnerId : selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit[0].value, inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, page, 10, language === null ? 'EN' : language.flagName)
         } else {
             setActivePageDirectDebit(page);
-            getDirectDebit(page, user_role === "102" ? partnerId : "");
+            getDirectDebit(page, user_role === "102" ? partnerId : "", language === null ? 'EN' : language.flagName);
         }
     }
 
@@ -121,11 +123,11 @@ const RiwayatDirectDebit = () => {
           // console.log(userDetail, 'ini user detal funct');
           if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
-            getDirectDebit(activePageDirectDebit, userDetail.data.response_data.muser_partnerdtl_id)
+            getDirectDebit(activePageDirectDebit, userDetail.data.response_data.muser_partnerdtl_id, language === null ? 'EN' : language.flagName)
           } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
             setUserSession(userDetail.data.response_new_token)
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
-            getDirectDebit(activePageDirectDebit, userDetail.data.response_data.muser_partnerdtl_id)
+            getDirectDebit(activePageDirectDebit, userDetail.data.response_data.muser_partnerdtl_id, language === null ? 'EN' : language.flagName)
           }
     } catch (error) {
           // console.log(error);
@@ -203,13 +205,14 @@ const RiwayatDirectDebit = () => {
         }
     }
 
-    async function getDirectDebit(currentPage, partnerId) {
+    async function getDirectDebit(currentPage, partnerId, lang) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"transactionID":0, "date_from":"", "date_to":"", "dateID": 0, "partner_id": "${user_role === "102" ? partnerId : ""}", "mobile_number":"", "partner_transid": "", "fitur_id": 0, "statusID":[2,4], "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const dataRiwayatDirectDebit = await axios.post(BaseURL + "/Report/GetListTransDirectDebit", { data: dataParams }, { headers: headers })
             if (dataRiwayatDirectDebit.data.response_code === 200 && dataRiwayatDirectDebit.status === 200 && dataRiwayatDirectDebit.data.response_new_token.length === 0) {
@@ -232,7 +235,7 @@ const RiwayatDirectDebit = () => {
         }
     }
 
-    async function filterListDirectDebit(idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId, page, rowPerPage) {
+    async function filterListDirectDebit(idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId, page, rowPerPage, lang) {
         try {
             setPendingDirectDebit(true)
             setIsFilterDirectDebit(true)
@@ -241,7 +244,8 @@ const RiwayatDirectDebit = () => {
             const dataParams = encryptData(`{"transactionID": "${idTrans.length !== 0 ? idTrans : ""}", "date_from":"${periode.length !== 0 ? periode[0] : ""}", "date_to":"${periode.length !== 0 ? periode[1] : ""}", "dateID": ${dateId}, "partner_id": "${partnerId}", "mobile_number":"${userMobile}", "partner_transid": "${partnerTransId}", "fitur_id": ${fiturId}, "statusID": [${(statusId.length !== 0) ? statusId : [2,4]}], "page":${(page !== 0) ? page : 1}, "row_per_page": ${rowPerPage !== 0 ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type':'application/json',
-                'Authorization' : auth
+                'Authorization' : auth,
+                'Accept-Language' : lang
             }
             const dataRiwayatDirectDebit = await axios.post(BaseURL + "/Report/GetListTransDirectDebit", { data: dataParams }, { headers: headers })
             if (dataRiwayatDirectDebit.data.response_code === 200 && dataRiwayatDirectDebit.status === 200 && dataRiwayatDirectDebit.data.response_new_token.length === 0) {
@@ -265,7 +269,7 @@ const RiwayatDirectDebit = () => {
     }
 
     function getDetailDataDirectDebit (number) {
-        const findData = dataDirectDebit.find((item) => item.number === number) 
+        const findData = dataDirectDebit.find((item) => item.number === number)
         // console.log(findData);
         setDataDetail(findData)
         setShowModalDetailDirectDebit(true)
@@ -273,7 +277,7 @@ const RiwayatDirectDebit = () => {
 
 
     function resetButtonDirectDebit(param) {
-        getDirectDebit(activePageDirectDebit, user_role === "102" ? partnerId : "")
+        getDirectDebit(activePageDirectDebit, user_role === "102" ? partnerId : "", language === null ? 'EN' : language.flagName)
         if (param === "Direct Debit") {
             setInputHandle({
                 ...inputHandle,
@@ -288,7 +292,7 @@ const RiwayatDirectDebit = () => {
             setStateDirectDebit(null)
             setDateRangeDirectDebit([])
             setShowDateDirectDebit("none")
-        } 
+        }
     }
 
     function ExportDataDirectDebit (isFilter, idTrans, periode, dateId, partnerId, userMobile, partnerTransId, fiturId, statusId) {
@@ -308,34 +312,34 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tdirectdebit_id, [language === null ? eng.waktu : language.waktu]: data[i].tdirectdebit_crtdt_format, [language === null ? eng.namaUser : language.namaUser]: data[i].mdirdebituser_fullname, [language === null ? eng.noHandphone : language.noHandphone]: data[i].mdirdebituser_mobile, [language === null ? eng.channelDirectDebit : language.channelDirectDebit]: data[i].mpaytype_name, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].tdirectdebit_partner_fee, [language === null ? eng.status : language.status]: data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_amount, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Biaya": data[i].tdirectdebit_total_fee, "Total Akhir": data[i].tdirectdebit_total_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi Direct Debit .xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiDirectDebitExcel : language.riwayatTransaksiDirectDebitExcel} .xlsx"`);
                     } else if (listDataDirectDebit.data.response_code === 200 && listDataDirectDebit.status === 200 && listDataDirectDebit.data.response_new_token.length !== 0) {
                         setUserSession(listDataDirectDebit.data.response_new_token)
                         const data = listDataDirectDebit.data.response_data.results;
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tdirectdebit_id, [language === null ? eng.waktu : language.waktu]: data[i].tdirectdebit_crtdt_format, [language === null ? eng.namaUser : language.namaUser]: data[i].mdirdebituser_fullname, [language === null ? eng.noHandphone : language.noHandphone]: data[i].mdirdebituser_mobile, [language === null ? eng.channelDirectDebit : language.channelDirectDebit]: data[i].mpaytype_name, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].tdirectdebit_partner_fee, [language === null ? eng.status : language.status]: data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_amount, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Biaya": data[i].tdirectdebit_total_fee, "Total Akhir": data[i].tdirectdebit_total_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi Direct Debit .xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiDirectDebitExcel : language.riwayatTransaksiDirectDebitExcel} .xlsx"`);
                     }
                 } catch (error) {
                   // console.log(error)
@@ -359,34 +363,34 @@ const RiwayatDirectDebit = () => {
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tdirectdebit_id, [language === null ? eng.waktu : language.waktu]: data[i].tdirectdebit_crtdt_format, [language === null ? eng.namaUser : language.namaUser]: data[i].mdirdebituser_fullname, [language === null ? eng.noHandphone : language.noHandphone]: data[i].mdirdebituser_mobile, [language === null ? eng.channelDirectDebit : language.channelDirectDebit]: data[i].mpaytype_name, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].tdirectdebit_partner_fee, [language === null ? eng.status : language.status]: data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_amount, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Biaya": data[i].tdirectdebit_total_fee, "Total Akhir": data[i].tdirectdebit_total_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi Direct Debit .xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiDirectDebitExcel : language.riwayatTransaksiDirectDebitExcel} .xlsx"`);
                     } else if (listDataDirectDebit.data.response_code === 200 && listDataDirectDebit.status === 200 && listDataDirectDebit.data.response_new_token.length !== 0) {
                         setUserSession(listDataDirectDebit.data.response_new_token)
                         const data = listDataDirectDebit.data.response_data.results;
                         let dataExcel = []
                         if (user_role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ [language === null ? eng.no : language.no]: i + 1, [language === null ? eng.idTransaksi : language.idTransaksi]: data[i].tdirectdebit_id, [language === null ? eng.waktu : language.waktu]: data[i].tdirectdebit_crtdt_format, [language === null ? eng.namaUser : language.namaUser]: data[i].mdirdebituser_fullname, [language === null ? eng.noHandphone : language.noHandphone]: data[i].mdirdebituser_mobile, [language === null ? eng.channelDirectDebit : language.channelDirectDebit]: data[i].mpaytype_name, [language === null ? eng.nominalTransaksi : language.nominalTransaksi]: data[i].tdirectdebit_partner_fee, [language === null ? eng.status : language.status]: data[i].mppobstatus_name})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_partner_fee, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Akhir": data[i].toffshorebank_amount, "Status": data[i].mppobstatus_name})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tdirectdebit_id, "Waktu": data[i].tdirectdebit_crtdt_format, "Nama Partner": data[i].mpartner_name, "Nama User": data[i].mdirdebituser_fullname, "Partner Trans ID": data[i].tdirectdebit_transaction_id, "Channel Direct Debit": data[i].mpaytype_name, "No Handphone": data[i].mdirdebituser_mobile, "Nominal Transaksi": data[i].tdirectdebit_amount, "Biaya Admin": data[i].tdirectdebit_fee, "Biaya Bank": data[i].tdirectdebit_bank_fee, "Biaya Pajak": data[i].tdirectdebit_tax_fee, "Total Biaya": data[i].tdirectdebit_total_fee, "Total Akhir": data[i].tdirectdebit_total_amount, "Status": data[i].mppobstatus_name})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Transaksi Direct Debit .xlsx");
+                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiDirectDebitExcel : language.riwayatTransaksiDirectDebitExcel} .xlsx"`);
                     }
                 } catch (error) {
                   // console.log(error)
@@ -399,41 +403,41 @@ const RiwayatDirectDebit = () => {
 
     const columnPartner = [
         {
-            name: 'No',
+            name: language === null ? eng.no : language.no,
             selector: row => row.number,
             width: "67px"
         },
         {
-            name: 'ID Transaksi',
+            name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.tdirectdebit_id
         },
         {
-            name: 'Waktu',
+            name: language === null ? eng.waktu : language.waktu,
             selector: row => row.tdirectdebit_crtdt_format,
             width: "145px"
         },
         {
-            name: 'Nama User',
+            name: language === null ? eng.namaUser : language.namaUser,
             selector: row => row.mdirdebituser_fullname,
             width: "160px"
         },
         {
-            name: 'No Handphone',
+            name: language === null ? eng.noHandphone : language.noHandphone,
             selector: row => row.mdirdebituser_mobile === null ? "-" : row.mdirdebituser_mobile,
             width: "170px"
         },
         {
-            name: 'Channel Direct Debit',
+            name: language === null ? eng.channelDirectDebit : language.channelDirectDebit,
             selector: row => replaceText(row.mpaytype_name),
             width: "185px"
         },
         {
-            name: 'Nominal Transaksi',
+            name: language === null ? eng.nominalTransaksi : language.nominalTransaksi,
             selector: row => convertToRupiah(row.tdirectdebit_amount, false, 0),
             width: "170px"
         },
         {
-            name: 'Status',
+            name: language === null ? eng.status : language.status,
             selector: row => row.mppobstatus_name,
             width: "150px",
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4, fontFamily: "Nunito", fontSize: 14, fontWeight: 600 },
@@ -519,7 +523,7 @@ const RiwayatDirectDebit = () => {
         },
         {
             name: 'Total Akhir',
-            selector: row => convertToRupiah(row.tdirectdebit_amount, false, 0),
+            selector: row => convertToRupiah(row.tdirectdebit_total_amount, false, 0),
             width: "170px"
         },
         {
@@ -569,7 +573,17 @@ const RiwayatDirectDebit = () => {
         option: (provided, state) => ({
             ...provided,
             backgroundColor: "none",
-            color: "black"
+            color: "#888888",
+            fontSize: "14px",
+            fontFamily: "Nunito"
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            border: "1px solid #E0E0E0",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontFamily: "Nunito",
+            height: "40px",
         })
     }
 
@@ -584,7 +598,7 @@ const RiwayatDirectDebit = () => {
         if (!access_token) {
             history.push('/login');
         }
-        getDirectDebit(activePageDirectDebit, partnerId)
+        getDirectDebit(activePageDirectDebit, partnerId, language === null ? 'EN' : language.flagName)
         listUser()
         if (user_role !== "102") {
             listPartner()
@@ -597,59 +611,59 @@ const RiwayatDirectDebit = () => {
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span' style={{ fontSize: 14 }}>
                 <span style={{ cursor: "pointer" }}>
-                    {user_role === "102" ? `Laporan` : `Beranda`}
+                    {user_role === "102" ? (language === null ? eng.laporan : language.laporan) : `Beranda`}
                 </span>{" "}
                 <img alt="" src={breadcrumbsIcon} /> &nbsp;
                 <span style={{ cursor: "pointer" }}>
-                    Transaksi
+                    {language === null ? eng.transaksi : language.transaksi}
                 </span>{" "} &nbsp;
                 <img alt="" src={breadcrumbsIcon} /> &nbsp;
-                Direct Debit
+                    {language === null ? eng.directDebit : language.directDebit}
             </span>
             <div className="head-title">
-                <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Transaksi</h2>
+                <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? eng.transaksi : language.transaksi}</h2>
             </div>
-            <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>{user_role === "102" ? `Transaksi Direct Debit User` : `Transaksi Direct Debit Partner`}</h2>
+            <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>{user_role === "102" ? (language === null ? eng.transaksiDirectDebitUser : language.transaksiDirectDebitUser) : `Transaksi Direct Debit Partner`}</h2>
             <div className='base-content'>
-                <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Filter</span>
+                <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>{language === null ? eng.filter : language.filter}</span>
                 {
                     user_role === "102" ? (
                         <>
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div>Nama User</div>
-                                    <div className="dropdown dropTopupPartner">
+                                    <div>{language === null ? eng.namaUser : language.namaUser}</div>
+                                    <div className="dropdown dropTopupPartner" style={{ width: "11.7rem" }}>
                                         <ReactSelect
                                             closeMenuOnSelect={true}
                                             hideSelectedOptions={false}
                                             options={dataListUser}
                                             value={selectedNamaUserDirectDebit}
                                             onChange={(selected) => setSelectedNamaUserDirectDebit([selected])}
-                                            placeholder="Pilih Nama User"
+                                            placeholder={language === null ? eng.placeholderNamaUser : language.placeholderNamaUser}
                                             components={{ Option }}
                                             styles={customStylesSelectedOption}
                                         />
                                     </div>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div>Channel</div>
+                                    <div>{language === null ? eng.channel : language.channel}</div>
                                     <Form.Select
                                         name="fiturId"
                                         value={inputHandle.fiturId}
                                         onChange={(e) => handleChange(e)}
                                         className="input-text-ez"
                                     >
-                                        <option defaultChecked disabled value={0}>Channel Direct Debit</option>
+                                        <option defaultChecked disabled value={0}>{language === null ? eng.channelDirectDebit : language.channelDirectDebit}</option>
                                         <option value={36}>One Klik</option>
                                         <option value={37}>Mandiri</option>
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div>ID Transaksi</div>
+                                    <div>{language === null ? eng.idTransaksi : language.idTransaksi}</div>
                                     <input
                                         type="text"
                                         className="input-text-edit"
-                                        placeholder="ID Transaksi"
+                                        placeholder={language === null ? eng.idTransaksi : language.idTransaksi}
                                         name="idTrans"
                                         value={inputHandle.idTrans.length === 0 ? "" : inputHandle.idTrans}
                                         onChange={(e) => handleChange(e)}
@@ -658,28 +672,28 @@ const RiwayatDirectDebit = () => {
                             </Row>
                             <Row className='mt-3'>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div>Periode <span style={{ color: "red" }}>*</span></div>
+                                    <div>{language === null ? eng.periode : language.periode} <span style={{ color: "red" }}>*</span></div>
                                     <Form.Select
                                         name="periode"
                                         className="input-text-ez"
                                         value={inputHandle.periode}
                                         onChange={(e) => handleChangePeriodeDirectDebit(e)}
                                     >
-                                        <option defaultChecked disabled value={0}>Periode Transaksi</option>
-                                        <option value={2}>Hari Ini</option>
-                                        <option value={3}>Kemarin</option>
-                                        <option value={4}>7 Hari Terakhir</option>
-                                        <option value={5}>Bulan Ini</option>
-                                        <option value={6}>Bulan Kemarin</option>
-                                        <option value={7}>Pilih Range Tanggal</option>
+                                        <option defaultChecked disabled value={0}>{language === null ? eng.periodeTransaksi : language.periodeTransaksi}</option>
+                                        <option value={2}>{language === null ? eng.hariIni : language.hariIni}</option>
+                                        <option value={3}>{language === null ? eng.kemarin : language.kemarin}</option>
+                                        <option value={4}>{language === null ? eng.tujuhHariTerakhir : language.tujuhHariTerakhir}</option>
+                                        <option value={5}>{language === null ? eng.bulanIni : language.bulanIni}</option>
+                                        <option value={6}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
+                                        <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
                                     </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                    <div>Status</div>
+                                    <div>{language === null ? eng.status : language.status}</div>
                                     <Form.Select name="statusId" value={inputHandle.statusId} className='input-text-ez' onChange={(e) => handleChange(e)} style={{ display: "inline" }}>
-                                        <option defaultChecked disabled value="">Status Transaksi</option>
-                                        <option value={2}>Berhasil</option>
-                                        <option value={4}>Gagal</option>
+                                        <option defaultChecked disabled value="">{language === null ? eng.statusTransaksi : language.statusTransaksi}</option>
+                                        <option value={2}>{language === null ? eng.berhasil : language.berhasil}</option>
+                                        <option value={4}>{language === null ? eng.gagal : language.gagal}</option>
                                     </Form.Select>
                                 </Col>
                             </Row>
@@ -695,7 +709,7 @@ const RiwayatDirectDebit = () => {
                                             cleanable={true}
                                             placement='bottomStart'
                                             size='lg'
-                                            placeholder="Select Date Range" 
+                                            placeholder={language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}
                                             disabledDate={combine(allowedMaxDays(90), afterToday())}
                                             className='datePicker'
                                             locale={Locale}
@@ -705,34 +719,39 @@ const RiwayatDirectDebit = () => {
                                     </div>
                                 </Col>
                             </Row>
-                            <Row className='mt-3' >
-                                <Col xs={6} style={{ width: "unset", padding: "8px 16px" }}>
-                                    <button 
-                                        onClick={() => filterListDirectDebit(Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, partnerId, selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10)}
-                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || ((dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0))) ? 'btn-ez-on' : 'btn-ez'} 
-                                        disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
-                                    >
-                                        Terapkan
-                                    </button>
-                                </Col>
-                                <Col xs={6} style={{ width: "unset", padding: "8px 16px" }}>
-                                    <button 
-                                        onClick={() => resetButtonDirectDebit("Direct Debit")}
-                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-reset'  : 'btn-ez-reset'} 
-                                        disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
-                                    >
-                                        Atur Ulang
-                                    </button>
+                            <Row className='mt-4'>
+                                <Col xs={5}>
+                                    <Row>
+                                        <Col xs={6} style={{ width: "40%", padding: "8px 16px" }}>
+                                            <button
+                                                onClick={() => filterListDirectDebit(Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, partnerId, selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10, language === null ? 'EN' : language.flagName)}
+                                                className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || ((dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0))) ? 'btn-ez-on' : 'btn-ez'}
+                                                disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
+                                            >
+                                                {language === null ? eng.terapkan : language.terapkan}
+                                            </button>
+                                        </Col>
+                                        <Col xs={6} style={{ width: "40%", padding: "8px 16px" }}>
+                                            <button
+                                                onClick={() => resetButtonDirectDebit("Direct Debit")}
+                                                className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-reset'  : 'btn-ez-reset'}
+                                                disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
+                                            >
+                                                {language === null ? eng.aturUlang : language.aturUlang}
+                                            </button>
+                                        </Col>
+                                    </Row>
                                 </Col>
                             </Row>
                             <div className='mt-3 mb-5'>
-                                <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >Export</Link>
+                                <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >{language === null ? eng.export : language.export}</Link>
                             </div>
                             <div className="div-table mt-3 scroll-direct-debit">
                                 <DataTable
                                     columns={columnPartner}
                                     data={dataDirectDebit}
                                     customStyles={customStyles}
+                                    noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
                                     highlightOnHover
                                     progressPending={pendingDirectDebit}
                                     progressComponent={<CustomLoader />}
@@ -749,7 +768,7 @@ const RiwayatDirectDebit = () => {
                                 }}
                             >
                                 <div style={{ marginRight: 10, marginTop: 10 }}>
-                                    Total Page: {totalPageDirectDebit}
+                                {language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageDirectDebit}
                                 </div>
                                 <Pagination
                                     activePage={activePageDirectDebit}
@@ -769,7 +788,7 @@ const RiwayatDirectDebit = () => {
                             <Row className='mt-4'>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <div>Nama Partner</div>
-                                    <div className="dropdown dropDirectDebit">
+                                    <div className="dropdown dropDirectDebit" style={{ width: "11.7rem" }}>
                                         <ReactSelect
                                             closeMenuOnSelect={true}
                                             hideSelectedOptions={false}
@@ -784,7 +803,7 @@ const RiwayatDirectDebit = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center">
                                     <div>Nama User</div>
-                                    <div className="dropdown dropTopupPartner">
+                                    <div className="dropdown dropTopupPartner" style={{ width: "11.7rem" }}>
                                         <ReactSelect
                                             closeMenuOnSelect={true}
                                             hideSelectedOptions={false}
@@ -873,7 +892,7 @@ const RiwayatDirectDebit = () => {
                                             cleanable={true}
                                             placement='bottomEnd'
                                             size='lg'
-                                            placeholder="Select Date Range" 
+                                            placeholder="Select Date Range"
                                             disabledDate={combine(allowedMaxDays(90), afterToday())}
                                             className='datePicker'
                                             locale={Locale}
@@ -886,18 +905,18 @@ const RiwayatDirectDebit = () => {
                             </Row>
                             <Row className='mt-2'>
                                 <Col xs={6} style={{ width: "unset", padding: "8px 16px" }}>
-                                    <button 
-                                        onClick={() => filterListDirectDebit(Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10)}
-                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-ez-on' : 'btn-ez'} 
+                                    <button
+                                        onClick={() => filterListDirectDebit(Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId, 1, 10, language === null ? 'EN' : language.flagName)}
+                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-ez-on' : 'btn-ez'}
                                         disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && selectedPartnerDirectDebit.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
                                     >
                                         Terapkan
                                     </button>
                                 </Col>
                                 <Col xs={6} style={{ width: "unset", padding: "8px 16px" }}>
-                                    <button 
+                                    <button
                                         onClick={() => resetButtonDirectDebit("Direct Debit")}
-                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-reset'  : 'btn-ez-reset'} 
+                                        className={(inputHandle.periode !== 0 || dateRangeDirectDebit.length !== 0 || (dateRangeDirectDebit.length !== 0 && inputHandle.idTrans !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.partnerTransId.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.statusId.length !== 0) || (dateRangeDirectDebit.length !== 0 && selectedPartnerDirectDebit.length !== 0) || (dateRangeDirectDebit.length !== 0 && inputHandle.fiturId !== 0)) ? 'btn-reset'  : 'btn-ez-reset'}
                                         disabled={inputHandle.periode === 0 || (inputHandle.periode === 0 && inputHandle.idTrans === 0) || (inputHandle.periode === 0 && inputHandle.partnerTransId.length === 0) || (inputHandle.periode === 0 && inputHandle.statusId.length === 0) || (inputHandle.periode === 0 && selectedPartnerDirectDebit.length === 0) || (inputHandle.periode === 0 && inputHandle.fiturId === 0)}
                                     >
                                         Atur Ulang
