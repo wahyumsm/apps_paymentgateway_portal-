@@ -93,7 +93,7 @@ export default (props = {}) => {
     if (!access_token) {
       history.push("/login")
     }
-    dispatch(GetUserAccessMenu("/Account/GetUserAccess", language === null ? 'EN' : language.flagName))
+    dispatch(GetUserAccessMenu("/Account/GetUserAccess", user_role === "100" ? "EN" : (language === null ? 'EN' : language.flagName)))
   }, [])
 
   if (!userAccessMenu) {

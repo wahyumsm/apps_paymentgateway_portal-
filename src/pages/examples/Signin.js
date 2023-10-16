@@ -9,7 +9,7 @@ import axios from "axios";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
-import { authorization, BaseURL, language, setRoleSession, setUserSession } from "../../function/helpers";
+import { authorization, BaseURL, getRole, language, setRoleSession, setUserSession } from "../../function/helpers";
 import validator from "validator";
 import $ from 'jquery'
 import { chn, eng, ind } from "../../components/Language";
@@ -17,6 +17,7 @@ import { chn, eng, ind } from "../../components/Language";
 export default () => {
 
   const history = useHistory()
+  const user_role = getRole()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
@@ -239,7 +240,7 @@ export default () => {
       const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         setRoleSession(userDetail.data.response_data.muser_role_id)
-        userAccessMenu("/Account/GetUserAccess", token, language === null ? 'EN' : language.flagName)
+        userAccessMenu("/Account/GetUserAccess", token, user_role === "100" ? "EN" : (language === null ? 'EN' : language.flagName))
       }
     } catch (error) {
       // console.log(error)
