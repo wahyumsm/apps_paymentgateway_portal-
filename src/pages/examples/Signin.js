@@ -246,7 +246,7 @@ export default () => {
     }
   }
 
-  async function signingInHandler(e, username, password) {
+  async function signingInHandler(e, username, password, lang) {
     try {
       e.preventDefault()
       if (username.length === 0 && password.length === 0) {
@@ -266,7 +266,8 @@ export default () => {
       const dataParams = encryptData(`{"username" : "${username}", "password" : "${password}"}`)
       const headers = {
         'Content-Type':'application/json',
-        'Authorization' : auth
+        'Authorization' : auth,
+        'Accept-Language' : lang
       }
       const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
@@ -324,7 +325,7 @@ export default () => {
                       <Card.Link className="small text-end">Lost password?</Card.Link>
                     </div> */}
                   </Form.Group>
-                  <Button onClick={(e) => signingInHandler(e, username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
+                  <Button onClick={(e) => signingInHandler(e, username, password, language === null ? 'EN' : language.flagName)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
                     {language === null ? eng.login : language.login}
                   </Button>
                 </Form>
