@@ -11,7 +11,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
 import alertIcon from "../../assets/icon/alert_icon.svg";
 import CurrencyInput from 'react-currency-input-field'
-import { ind } from '../../components/Language';
+import { eng } from '../../components/Language';
 
 function TambahAgen() {
 
@@ -99,10 +99,10 @@ function TambahAgen() {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>{language === null ? ind.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toDaftarAgen()}>{language === null ? ind.daftarAgen : language.daftarAgen}</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>{language === null ? ind.tambahAgen : language.tambahAgen}</span> </span>
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}>{language === null ? eng.laporan : language.laporan}</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}>Beranda</span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<span style={{ cursor: "pointer" }} onClick={() => toDaftarAgen()}>{language === null ? eng.daftarAgen : language.daftarAgen}</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>{language === null ? eng.tambahAgen : language.tambahAgen}</span> </span>
             <div className="head-title">
-                <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>{language === null ? ind.tambahAgenBaru : language.tambahAgenBaru}</h4>
-                <h5 style={{ fontFamily: "Exo" }}>{language === null ? ind.detailAgen : language.detailAgen}</h5>
+                <h4 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>{language === null ? eng.tambahAgenBaru : language.tambahAgenBaru}</h4>
+                <h5 style={{ fontFamily: "Exo" }}>{language === null ? eng.detailAgen : language.detailAgen}</h5>
             </div>
             <div className='base-content' style={{ width:"93%", padding: 50 }}>
                 <div>
@@ -124,7 +124,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                {language === null ? ind.namaAgen : language.namaAgen} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.namaAgen : language.namaAgen} <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -132,7 +132,7 @@ function TambahAgen() {
                                 className='input-text-user'
                                 name='nama'
                                 onChange={handleChange}
-                                placeholder={language === null ? ind.placeholderCariNamaAgen : language.placeholderCariNamaAgen}
+                                placeholder={language === null ? eng.placeholderCariNamaAgen : language.placeholderCariNamaAgen}
                                 type='text'
                                 required
                                 // aria-label="Masukkan Nama Agen"
@@ -144,7 +144,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                {language === null ? ind.emailAgen : language.emailAgen} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.emailAgen : language.emailAgen} <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -152,7 +152,7 @@ function TambahAgen() {
                                 className='input-text-user'
                                 name='email'
                                 onChange={handleChange}
-                                placeholder={language === null ? ind.placeholderEmailAgen : language.placeholderEmailAgen}
+                                placeholder={language === null ? eng.placeholderEmailAgen : language.placeholderEmailAgen}
                                 type='email'
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
@@ -161,7 +161,7 @@ function TambahAgen() {
                             {errorCode === 101 &&
                                 <span style={{ color: "#B9121B", fontSize: 12 }}>
                                     <img src={noteIconRed} className="me-2" />
-                                    {language === null ? ind.emailSudahTerdaftar : language.emailSudahTerdaftar}
+                                    {language === null ? eng.emailSudahTerdaftar : language.emailSudahTerdaftar}
                                 </span>
                             }
                         </Col>
@@ -169,7 +169,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                {language === null ? ind.noHpAgen : language.noHpAgen} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.noHpAgen : language.noHpAgen} <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -177,7 +177,7 @@ function TambahAgen() {
                                 className='input-text-user'
                                 name='mobileNumber'
                                 onChange={handleChange}
-                                placeholder={language === null ? ind.placeholderNoHpAgen : language.placeholderNoHpAgen}
+                                placeholder={language === null ? eng.placeholderNoHpAgen : language.placeholderNoHpAgen}
                                 type='number'
                                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 required
@@ -188,7 +188,7 @@ function TambahAgen() {
                             {errorCode === 102 &&
                                 <span style={{ color: "#B9121B", fontSize: 12 }}>
                                     <img src={noteIconRed} className="me-2" />
-                                    {language === null ? ind.noHpSudahTerdaftar : language.noHpSudahTerdaftar}
+                                    {language === null ? eng.noHpSudahTerdaftar : language.noHpSudahTerdaftar}
                                 </span>
                             }
                         </Col>
@@ -196,7 +196,7 @@ function TambahAgen() {
                     <Row className='mb-4'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                {language === null ? ind.namaBank : language.namaBank} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.namaBank : language.namaBank} <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -216,7 +216,7 @@ function TambahAgen() {
                     <Row className='mb-3'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                {language === null ? ind.noRek : language.noRek} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.noRek : language.noRek} <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -224,7 +224,7 @@ function TambahAgen() {
                                 className='input-text-user'
                                 name='akunBank'
                                 onChange={handleChange}
-                                placeholder={language === null ? ind.placeholderNoRek : language.placeholderNoRek}
+                                placeholder={language === null ? eng.placeholderNoRek : language.placeholderNoRek}
                                 type='number'
                                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                 required
@@ -237,7 +237,7 @@ function TambahAgen() {
                     <Row className='align-items-center mb-3'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                {language === null ? ind.namaPemilikRek : language.namaPemilikRek} <span style={{ color: "red" }}>*</span>
+                                {language === null ? eng.namaPemilikRek : language.namaPemilikRek} <span style={{ color: "red" }}>*</span>
                             </span>
                         </Col>
                         <Col xs={10}>
@@ -245,7 +245,7 @@ function TambahAgen() {
                                 className='input-text-user'
                                 name='rekeningOwner'
                                 onChange={handleChange}
-                                placeholder={language === null ? ind.placeholderNamaPemilikRek : language.placeholderNamaPemilikRek}
+                                placeholder={language === null ? eng.placeholderNamaPemilikRek : language.placeholderNamaPemilikRek}
                                 type='text'
                                 // aria-label="Masukkan Nama Agen"
                                 // aria-describedby="basic-addon2"
@@ -256,13 +256,13 @@ function TambahAgen() {
                     <Row className='align-items-center'>
                         <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                             <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
-                                {language === null ? ind.biayaSettlement : language.biayaSettlement}
+                                {language === null ? eng.biayaSettlement : language.biayaSettlement}
                             </span>
                         </Col>
                         <Col xs={10}>
                             <CurrencyInput
                                 className='input-text-user'
-                                placeholder={language === null ? ind.placeholderSettleFee : language.placeholderSettleFee}
+                                placeholder={language === null ? eng.placeholderSettleFee : language.placeholderSettleFee}
                                 defaultValue={inputHandle.settlementFee === undefined ? 0 : inputHandle.settlementFee}
                                 onValueChange={(e) => handleChangeNominal(e)}
                                 groupSeparator={"."}
@@ -327,7 +327,7 @@ function TambahAgen() {
                 </div>
             </div>
             <div className="head-title">
-                <h5 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>{language === null ? ind.rekSubAkun : language.rekSubAkun}</h5>
+                <h5 className="mt-4 mb-4" style={{ fontFamily: "Exo" }}>{language === null ? eng.rekSubAkun : language.rekSubAkun}</h5>
             </div>
             <div
                 style={{
@@ -344,11 +344,11 @@ function TambahAgen() {
                 <span className="mx-2">
                     <img src={alertIcon} alt="alert" />
                 </span>
-                {language === null ? ind.silahkanHubungiAdmin : language.silahkanHubungiAdmin}
+                {language === null ? eng.silahkanHubungiAdmin : language.silahkanHubungiAdmin}
             </div>
             <div style={{ display: "flex", justifyContent: "end", marginTop: 16, marginRight: 83 }}>
                 <button onClick={() => tambahAgen(1, inputHandle.nama, inputHandle.email, inputHandle.mobileNumber, 1, inputHandle.akunBank, inputHandle.rekeningOwner, inputHandle.settlementFee)} className={(inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0) ? "btn-off" : "add-button"} disabled={ inputHandle.nama.length === 0 || inputHandle.mobileNumber.length === 0 || inputHandle.akunBank.length === 0 || inputHandle.bankName.length === 0 || inputHandle.rekeningOwner.length === 0 }>
-                    {language === null ? ind.tambahkan : language.tambahkan}
+                    {language === null ? eng.tambahkan : language.tambahkan}
                 </button>
             </div>
             <Modal centered show={showModal} onHide={() => setShowModal(false)} style={{ borderRadius: 8 }}>
@@ -357,56 +357,56 @@ function TambahAgen() {
                         <img src={checklistCircle} alt="logo" />
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                        <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>{language === null ? ind.agenBerhasilDitambah : language.agenBerhasilDitambah}</p>
+                        <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>{language === null ? eng.agenBerhasilDitambah : language.agenBerhasilDitambah}</p>
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
-                        <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>{language === null ? ind.agenSudahAktif : language.agenSudahAktif}</p>
+                        <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>{language === null ? eng.agenSudahAktif : language.agenSudahAktif}</p>
                     </div>
                     <center>
                         <div style={{ margin: "20px -15px 15px -15px", width: 420, height: 1, padding: "0px 24px", backgroundColor: "#EBEBEB" }} />
                     </center>
                     <div>
-                        <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{language === null ? ind.detailAgen : language.detailAgen}</p>
+                        <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{language === null ? eng.detailAgen : language.detailAgen}</p>
                         <Table className='detailSave'>
                             <tr>
-                                <td>{language === null ? ind.namaAgen : language.namaAgen}</td>
+                                <td>{language === null ? eng.namaAgen : language.namaAgen}</td>
                                 <td style={{ fontWeight: 600 }}>: {detailNewAgen.agen_name}</td>
                             </tr>
                             <tr>
-                                <td>{language === null ? ind.emailAgen : language.emailAgen}</td>
+                                <td>{language === null ? eng.emailAgen : language.emailAgen}</td>
                                 <td style={{ fontWeight: 600 }}>: {detailNewAgen.agen_email}</td>
                             </tr>
                             <tr>
-                                <td>{language === null ? ind.noHpAgen : language.noHpAgen}</td>
+                                <td>{language === null ? eng.noHpAgen : language.noHpAgen}</td>
                                 <td style={{ fontWeight: 600 }}>: {detailNewAgen.agen_mobile}</td>
                             </tr>
                             <tr>
-                                <td>{language === null ? ind.namaBank : language.namaBank}</td>
+                                <td>{language === null ? eng.namaBank : language.namaBank}</td>
                                 <td style={{ fontWeight: 600 }}>: {detailNewAgen.agen_bank}</td>
                             </tr>
                             <tr>
-                                <td>{language === null ? ind.noRek : language.noRek}</td>
+                                <td>{language === null ? eng.noRek : language.noRek}</td>
                                 <td style={{ fontWeight: 600 }}>: {detailNewAgen.agen_bank_number}</td>
                             </tr>
                             <tr>
-                                <td>{language === null ? ind.namaPemilikRek : language.namaPemilikRek}</td>
+                                <td>{language === null ? eng.namaPemilikRek : language.namaPemilikRek}</td>
                                 <td style={{ fontWeight: 600 }}>: {detailNewAgen.agen_bank_name}</td>
                             </tr>
                             <tr>
-                                <td>{language === null ? ind.biayaSettlement : language.biayaSettlement}</td>
+                                <td>{language === null ? eng.biayaSettlement : language.biayaSettlement}</td>
                                 <td style={{ fontWeight: 600 }}>: {convertToRupiah(detailNewAgen.settlement_fee, false, detailNewAgen.settlement_fee === 0 ? 0 : 2)}</td>
                             </tr>
                         </Table>
-                        <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{language === null ? ind.idAgenDanKodeUnik : language.idAgenDanKodeUnik}</p>
+                        <p style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{language === null ? eng.idAgenDanKodeUnik : language.idAgenDanKodeUnik}</p>
                         <Table className='detailSave'>
                             <tr>
-                                <td>{language === null ? ind.idAgen : language.idAgen}</td>
+                                <td>{language === null ? eng.idAgen : language.idAgen}</td>
                                 <td style={{ fontWeight: 600 }}>: {detailNewAgen.agen_id}</td>
                             </tr>
                         </Table>
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                        <Button variant="primary" onClick={() => successButtonHandle()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.oke : language.oke}</Button>
+                        <Button variant="primary" onClick={() => successButtonHandle()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? eng.oke : language.oke}</Button>
                     </div>
                 </Modal.Body>
             </Modal>

@@ -24,6 +24,7 @@ export const Routes = {
     RiwayatTopUp : { path: "/riwayattopup" },
     // AlokasiSaldo : { path: "/alokasisaldo" },
     ReNotifyVA : { path: "/helpDesk/renotifyva" },
+    ReNotifyEwallet : { path: "/helpDesk/renotify-ewallet" },
     RiwayatDisbursement : { path: "/Disbursement/report" },
     // DisbursementReport : { path: "/disbursement-report" },
     // Billing: { path: "/examples/billing" },

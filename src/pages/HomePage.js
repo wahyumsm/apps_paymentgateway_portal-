@@ -92,6 +92,7 @@ import ExcludeSettlementManual from './Settlement/ExcludeSettlementManual';
 import ProsesSettlementManual from './Settlement/ProsesSettlementManual';
 import GetBalance from './Transfer/GetBalance';
 import TransaksiTopUp from './TopUp/TransaksiTopUp';
+import ReNotifyEwallet from './HelpDesk/ReNotifyEwallet';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -177,6 +178,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceVA.path} component={InvoiceVA}/>
     <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
+    <RouteWithSidebar exact path={Routes.ReNotifyEwallet.path} component={ReNotifyEwallet}/>
     <RouteWithSidebar exact path={Routes.RiwayatDisbursement.path} component={DisbursementReport}/>
     {/* <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/> */}
     {/* <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} /> */}
