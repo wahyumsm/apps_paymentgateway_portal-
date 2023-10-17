@@ -6,7 +6,7 @@ import { BaseURL, errorCatch, getRole, getToken, language, RouteTo, setUserSessi
 import axios from 'axios';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import alertIcon from "../../assets/icon/alert_icon.svg";
-import { eng} from '../../components/Language';
+import { eng } from '../../components/Language';
 
 function DetailAgen() {
 
