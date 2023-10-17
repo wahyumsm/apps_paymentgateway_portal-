@@ -10,7 +10,7 @@ import { Routes } from "../../routes";
 import { authorization, BaseURL, language, setUserSession } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
-import { ind } from "../../components/Language";
+import { eng } from "../../components/Language";
 
 export default () => {
 
@@ -45,7 +45,7 @@ export default () => {
         // setShowModal(true)
       } else {
         // console.log('email invalid');
-        alert(`${language === null ? ind.silahkanIsiAlamatEmail : language.silahkanIsiAlamatEmail}`)
+        alert(`${language === null ? eng.silahkanIsiAlamatEmail : language.silahkanIsiAlamatEmail}`)
       }
     } catch (error) {
       // console.log(error)
@@ -62,22 +62,22 @@ export default () => {
           <Row className="justify-content-center">
             <p className="text-center">
               <Card.Link as={Link} to={Routes.Login.path} style={{ fontFamily: "Exo", color: "#077E86" }}>
-                <FontAwesomeIcon icon={faAngleLeft} className="me-2" /> {language === null ? ind.kembaliKeLoginPage : language.kembaliKeLoginPage}
+                <FontAwesomeIcon icon={faAngleLeft} className="me-2" /> {language === null ? eng.kembaliKeLoginPage : language.kembaliKeLoginPage}
               </Card.Link>
             </p>
             <Col xs={12} className="d-flex align-items-center justify-content-center">
               <div className="signin-inner my-3 my-lg-0 bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
-                <h3 style={{ marginBottom: 10, fontFamily: "Exo" }}>{language === null ? ind.lupaKataSandi : language.lupaKataSandi}</h3>
-                <p className="mb-4" style={{ fontFamily: "Nunito" }}>{language === null ? ind.descKataSandi : language.descKataSandi}</p>
+                <h3 style={{ marginBottom: 10, fontFamily: "Exo" }}>{language === null ? eng.lupaKataSandi : language.lupaKataSandi}</h3>
+                <p className="mb-4" style={{ fontFamily: "Nunito" }}>{language === null ? eng.descKataSandi : language.descKataSandi}</p>
                 <Form>
                   <div className="mb-4" style={{ fontFamily: "Nunito" }}>
-                    <Form.Label htmlFor="email">{language === null ? ind.email : language.email}</Form.Label>
+                    <Form.Label htmlFor="email">{language === null ? eng.email : language.email}</Form.Label>
                     <InputGroup id="email">
-                      <Form.Control required autoFocus type="email" onChange={e => setEmail(e.target.value)} placeholder={language === null ? ind.placeholderMasukkanEmail : language.placeholderMasukkanEmail} />
+                      <Form.Control required autoFocus type="email" onChange={e => setEmail(e.target.value)} placeholder={language === null ? eng.placeholderMasukkanEmail : language.placeholderMasukkanEmail} />
                     </InputGroup>
                   </div>
                   <Button variant="primary" onClick={(e) => sendEmail(e, email)} className="w-100" style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }}>
-                    {language === null ? ind.kirimLink : language.kirimLink}
+                    {language === null ? eng.kirimLink : language.kirimLink}
                   </Button>
                 </Form>
               </div>
@@ -91,13 +91,13 @@ export default () => {
             <img src={sendEmailIcon} alt="logo" />
           </div>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>{language === null ? ind.linkBehasilDikirim : language.linkBehasilDikirim}</p>
+            <p style={{ fontFamily: "Exo", fontSize: 20, fontWeight: 700, marginBottom: "unset" }}>{language === null ? eng.linkBehasilDikirim : language.linkBehasilDikirim}</p>
           </div>
           <div style={{ display: "flex", justifyContent: "center", textAlign: "center", marginBottom: 24 }}>
-            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>{language === null ? ind.periksaEmailDanIkutiInstruksi : language.periksaEmailDanIkutiInstruksi}</p>
+            <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }}>{language === null ? eng.periksaEmailDanIkutiInstruksi : language.periksaEmailDanIkutiInstruksi}</p>
           </div>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-            <Button variant="primary" onClick={redirectToLogin} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? ind.oke : language.oke}</Button>
+            <Button variant="primary" onClick={redirectToLogin} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>{language === null ? eng.oke : language.oke}</Button>
           </div>
         </Modal.Body>
       </Modal>
