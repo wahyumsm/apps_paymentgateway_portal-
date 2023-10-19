@@ -489,6 +489,14 @@ function EWallet() {
             width: "173px"
         },
         {
+            name: 'Reference No',
+            selector: row => row.paymentReffID !== null ? row.paymentReffID : "-",
+            // sortable: true,
+            wrap: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "flex-start", },
+            width: "173px"
+        },
+        {
             name: 'Status',
             selector: row => row.status,
             width: "150px",
