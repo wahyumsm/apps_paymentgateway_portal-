@@ -258,7 +258,7 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, "Reference No": data[i].paymentReffID !== null ? data[i].paymentReffID : "-", Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -269,7 +269,7 @@ function EWallet() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, "Reference No": data[i].paymentReffID !== null ? data[i].paymentReffID : "-", Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -298,7 +298,7 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, "Reference No": data[i].paymentReffID !== null ? data[i].paymentReffID : "-", Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -309,7 +309,7 @@ function EWallet() {
                         const data = dataExportEWallet.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, Status: data[i].status })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transID, Waktu: data[i].processDate, "Partner Trans ID": data[i].referenceNumber, "Nama Partner": data[i].partnerName, "Channel eWallet": data[i].ewalletName, "Nominal Transaksi": data[i].amount, "Biaya eWallet": data[i].ewalletFee, "Biaya Pajak": data[i].feeTax, "Total Biaya": data[i].totalAmount, "Reference No": data[i].paymentReffID !== null ? data[i].paymentReffID : "-", Status: data[i].status })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
