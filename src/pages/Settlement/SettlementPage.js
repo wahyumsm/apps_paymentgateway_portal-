@@ -322,7 +322,7 @@ function SettlementPage() {
     async function riwayatSettlementNew(currentDate, currentPage) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": ${(currentPage !== 0) ? currentPage : 1}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"subpartner_id": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": ${(currentPage !== 0) ? currentPage : 1}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -333,7 +333,7 @@ function SettlementPage() {
                 dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberSettlement(dataSettlement.data.response_data)
                 setTotalPageSettlement(dataSettlement.data.response_data.max_page)
-                setDataRiwayatSettlement(dataSettlement.data.response_data.results.list_data)        
+                setDataRiwayatSettlement(dataSettlement.data.response_data.results.list_data)
                 setTotalSettlement(dataSettlement.data.response_data.results.total_settle_amount)
                 setPendingSettlement(false)
             } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
@@ -341,7 +341,7 @@ function SettlementPage() {
                 dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberSettlement(dataSettlement.data.response_data)
                 setTotalPageSettlement(dataSettlement.data.response_data.max_page)
-                setDataRiwayatSettlement(dataSettlement.data.response_data.results.list_data)        
+                setDataRiwayatSettlement(dataSettlement.data.response_data.results.list_data)
                 setTotalSettlement(dataSettlement.data.response_data.results.total_settle_amount)
                 setPendingSettlement(false)
             }
@@ -354,7 +354,7 @@ function SettlementPage() {
     async function riwayatSettlementPartnerNew(currentDate, currentPage, partnerId) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": ${(currentPage !== 0) ? currentPage : 1}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"subpartner_id": "${partnerId}", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}", "page": ${(currentPage !== 0) ? currentPage : 1}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -365,14 +365,14 @@ function SettlementPage() {
                 dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberSettlementPartner(dataSettlement.data.response_data)
                 setTotalPageSettlementPartner(dataSettlement.data.response_data.max_page)
-                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)        
+                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)
                 setPendingSettlementPartner(false)
             } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
                 setUserSession(dataSettlement.data.response_new_token)
                 dataSettlement.data.response_data.results.list_data = dataSettlement.data.response_data.results.list_data.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
                 setPageNumberSettlementPartner(dataSettlement.data.response_data)
                 setTotalPageSettlementPartner(dataSettlement.data.response_data.max_page)
-                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)        
+                setDataRiwayatSettlementPartner(dataSettlement.data.response_data.results.list_data)
                 setPendingSettlementPartner(false)
             }
         } catch (error) {
@@ -506,7 +506,7 @@ function SettlementPage() {
             setIsFilterSettlement(true)
             setActivePageSettlement(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"partner_name": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"subpartner_id": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -540,7 +540,7 @@ function SettlementPage() {
             setIsFilterSettlementPartner(true)
             setActivePageSettlementPartner(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"subpartner_id": "${partnerId}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -655,7 +655,7 @@ function SettlementPage() {
             name: 'ID Transaksi',
             selector: row => row.tsettlelog_settlement_code,
             width: "224px",
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${row.tvatrans_bank_code === null ? "0" : row.tvatrans_bank_code}/${row.tsettlelog_paytype_id}/${row.mewallet_code === null ? "0" : row.mewallet_code}`} >{row.tsettlelog_settlement_code}</Link>
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${row.tvatrans_bank_code === null ? "0" : row.tvatrans_bank_code}/${row.tsettlelog_settle_type}/${row.mewallet_code === null ? "0" : row.mewallet_code}`} >{row.tsettlelog_settlement_code}</Link>
         },
         {
             name: 'Waktu',
@@ -744,7 +744,7 @@ function SettlementPage() {
         {
             name: language === null ? eng.idTransaksi : language.idTransaksi,
             selector: row => row.tsettlelog_settlement_code,
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${'0'}/${row.tsettlelog_paytype_id}/${'0'}`}>{row.tsettlelog_settlement_code}</Link>,
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tsettlelog_settlement_id}/${'0'}/${row.tsettlelog_settle_type}/${'0'}`}>{row.tsettlelog_settlement_code}</Link>,
             // selector: row => row.tvasettl_code,
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}/${'0'}/${row.settlement_type}/${'0'}`}>{row.tvasettl_code}</Link>,
             // width: "251px"
@@ -849,12 +849,12 @@ function SettlementPage() {
         },
     };
 
-    function ExportReportSettlementHandler(isFilter, namaPartner, fitur, idTransaksi, periode, dateRange) {
-        if (isFilter) {
+    function ExportReportSettlementHandler(isExport, isFilter, namaPartner, fitur, idTransaksi, periode, dateRange) {
+        if (isFilter && isExport === "details") {
             async function dataExportFilter(namaPartner, fitur, idTransaksi, periode, dateRange) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"partner_name": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
+                    const dataParams = encryptData(`{"subpartner_id": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -870,7 +870,7 @@ function SettlementPage() {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
+                        XLSX.writeFile(workBook, "Riwayat Settlement Details.xlsx");
                     } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {
                         setUserSession(dataExportFilter.data.response_new_token)
                         const data = dataExportFilter.data.response_data.results.list_data
@@ -881,7 +881,7 @@ function SettlementPage() {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
+                        XLSX.writeFile(workBook, "Riwayat Settlement Details.xlsx");
                     }
                 } catch (error) {
                     // console.log(error)
@@ -889,11 +889,11 @@ function SettlementPage() {
                 }
             }
             dataExportFilter(namaPartner, fitur, idTransaksi, periode, dateRange)
-        } else {
+        } else if (!isFilter && isExport === "details") {
             async function dataExportSettlement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"partner_name": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
+                    const dataParams = encryptData(`{"subpartner_id": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -909,7 +909,7 @@ function SettlementPage() {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
+                        XLSX.writeFile(workBook, "Riwayat Settlement Details.xlsx");
                     } else if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length !== 0) {
                         setUserSession(dataExportSettlement.data.response_new_token)
                         const data = dataExportSettlement.data.response_data.results.list_data
@@ -920,7 +920,85 @@ function SettlementPage() {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, "Riwayat Settlement.xlsx");
+                        XLSX.writeFile(workBook, "Riwayat Settlement Details.xlsx");
+                    }
+                } catch (error) {
+                    // console.log(error);
+                    history.push(errorCatch(error.response.status))
+                }
+            }
+            dataExportSettlement()
+        } else if (isFilter && isExport === "summary") {
+            async function dataExportFilter(namaPartner, fitur, idTransaksi, periode, dateRange) {
+                try {
+                    const auth = 'Bearer ' + getToken();
+                    const dataParams = encryptData(`{"subpartner_id": "${namaPartner}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}","Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth,
+                        // 'Accept-Language' : lang
+                    }
+                    const dataExportFilter = await axios.post(BaseURL + "/Home/GetExportPartnerList", {data: dataParams}, { headers: headers });
+                    if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length === 0) {
+                        const data = dataExportFilter.data.response_data.results.list_data
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi Settlement": data[i].tsettlelog_settlement_code, "Waktu Settlement": data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Jasa Layanan": data[i].tsettlelog_fee_partner, "PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_fee_payment, "Jasa Settlement": data[i].tsettlelog_amount_settle === null ? 0 : data[i].tsettlelog_amount_settle, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Riwayat Settlement Summary.xlsx");
+                    } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {
+                        setUserSession(dataExportFilter.data.response_new_token)
+                        const data = dataExportFilter.data.response_data.results.list_data
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi Settlement": data[i].tsettlelog_settlement_code, "Waktu Settlement": data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Total Jasa Layanan": data[i].tsettlelog_fee_partner, "Total PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_fee_payment, "Jasa Settlement": data[i].tsettlelog_amount_settle === null ? 0 : data[i].tsettlelog_amount_settle, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Riwayat Settlement Summary.xlsx");
+                    }
+                } catch (error) {
+                    // console.log(error)
+                    history.push(errorCatch(error.response.status))
+                }
+            }
+            dataExportFilter(namaPartner, fitur, idTransaksi, periode, dateRange)
+        } else if (!isFilter && isExport === "summary") {
+            async function dataExportSettlement() {
+                try {
+                    const auth = 'Bearer ' + getToken();
+                    const dataParams = encryptData(`{"subpartner_id": "", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': auth,
+                        // 'Accept-Language' : lang
+                    }
+                    const dataExportSettlement = await axios.post(BaseURL + "/Home/GetExportPartnerList", {data: dataParams}, { headers: headers });
+                    if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length === 0) {
+                        const data = dataExportSettlement.data.response_data.results.list_data
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi Settlement": data[i].tsettlelog_settlement_code, "Waktu Settlement": data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Total Jasa Layanan": data[i].tsettlelog_fee_partner, "Total PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_fee_payment, "Jasa Settlement": data[i].tsettlelog_amount_settle === null ? 0 : data[i].tsettlelog_amount_settle, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Riwayat Settlement Summary.xlsx");
+                    } else if (dataExportSettlement.status === 200 && dataExportSettlement.data.response_code === 200 && dataExportSettlement.data.response_new_token.length !== 0) {
+                        setUserSession(dataExportSettlement.data.response_new_token)
+                        const data = dataExportSettlement.data.response_data.results.list_data
+                        let dataExcel = []
+                        for (let i = 0; i < data.length; i++) {
+                            dataExcel.push({ No: i + 1, "ID Transaksi Settlement": data[i].tsettlelog_settlement_code, "Waktu Settlement": data[i].tsettlelog_date_format, "Nama Partner": data[i].tsettlelog_subpartner_name, "Jenis Transaksi": data[i].tsettlelog_paytype_name, "Nominal Settlement": data[i].tsettlelog_amount_trx - data[i].tsettlelog_amount_fee, "Total Transaksi": data[i].tsettlelog_count_trx, "Total Jasa Layanan": data[i].tsettlelog_fee_partner, "Total PPN atas Jasa Layanan": data[i].tsettlelog_fee_partner_tax, "Reimbursement by VA": data[i].tsettlelog_fee_payment, "Jasa Settlement": data[i].tsettlelog_amount_settle === null ? 0 : data[i].tsettlelog_amount_settle, "Status": data[i].tsettlelog_is_settle === true ? "Berhasil" : "Gagal" })
+                        }
+                        let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                        let workBook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                        XLSX.writeFile(workBook, "Riwayat Settlement Summary.xlsx");
                     }
                 } catch (error) {
                     // console.log(error);
@@ -937,7 +1015,7 @@ function SettlementPage() {
                 try {
                     const auth = "Bearer " + getToken()
                     // const dataParams = encryptData(`{"statusID": [${(status.length !== 0) ? status : [1,2,7,9]}], "transID" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "dateID": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000, "fitur_id": ${fitur}, "bank_code": ""}`)
-                    const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
+                    const dataParams = encryptData(`{"subpartner_id": "${partnerId}", "paytype_id": ${fitur}, "id_transaksi" : "${(idTransaksi.length !== 0) ? idTransaksi : ""}", "Date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "Date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}"}`)
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth,
@@ -977,7 +1055,7 @@ function SettlementPage() {
                 try {
                     const auth = "Bearer " + getToken()
                     // const dataParams = encryptData(`{"statusID": [1,2,7,9], "transID" : "", "dateID": 2, "date_from": "", "date_to": "", "fitur_id": 0, "bank_code": ""}`)
-                    const dataParams = encryptData(`{"partner_name": "${partnerId}", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
+                    const dataParams = encryptData(`{"subpartner_id": "${partnerId}", "paytype_id": 0, "id_transaksi" : "", "Date_from": "${currentDate}", "Date_to": "${currentDate}"}`)
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth,
@@ -1089,7 +1167,7 @@ function SettlementPage() {
                                         <option value={([`${firstDayThisMonth}`, `${lastDayThisMonth}`])}>Bulan Ini</option>
                                         <option value={([`${firstDayLastMonth}`, `${lastDayLastMonth}`])}>Bulan Kemarin</option>
                                         <option value={7}>Pilih Range Tanggal</option>
-                                    </Form.Select>                            
+                                    </Form.Select>
                                 </Col>
                                 {/* {
                                     Number(inputHandle.fiturSettlement) === 105 ?
@@ -1169,9 +1247,10 @@ function SettlementPage() {
                             </div>
                             {
                                 dataRiwayatSettlement.length !== 0 &&
-                                <div style={{ marginBottom: 30 }}>
-                                    <Link to={"#"} onClick={() => ExportReportSettlementHandler(isFilterSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.fiturSettlement, inputHandle.idTransaksiSettlement, inputHandle.periodeSettlement, dateRangeSettlement)} className="export-span">Export</Link>
-                                </div>
+                                    <div className='d-flex justify-content-end' style={{ marginBottom: -15 }}>
+                                        <Link to={"#"} style={{ marginRight: 15 }} onClick={() => ExportReportSettlementHandler("summary", isFilterSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.fiturSettlement, inputHandle.idTransaksiSettlement, inputHandle.periodeSettlement, dateRangeSettlement)} className="export-span">Export Summary</Link>
+                                        <Link to={"#"} onClick={() => ExportReportSettlementHandler("details", isFilterSettlement, selectedPartnerSettlement.length !== 0 ? selectedPartnerSettlement[0].value : "", inputHandle.fiturSettlement, inputHandle.idTransaksiSettlement, inputHandle.periodeSettlement, dateRangeSettlement)} className="export-span">Export Details</Link>
+                                    </div>
                             }
                             <div className="div-table mt-4 pb-4">
                                 <DataTable
@@ -1216,7 +1295,7 @@ function SettlementPage() {
                                         <option value={([`${firstDayThisMonth}`, `${lastDayThisMonth}`])}>{language === null ? eng.bulanIni : language.bulanIni}</option>
                                         <option value={([`${firstDayLastMonth}`, `${lastDayLastMonth}`])}>{language === null ? eng.bulanKemarin : language.bulanKemarin}</option>
                                         <option value={7}>{language === null ? eng.pilihRangeTanggal : language.pilihRangeTanggal}</option>
-                                    </Form.Select>                    
+                                    </Form.Select>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <span>{language === null ? eng.jenisTransaksi : language.jenisTransaksi}</span>
@@ -1227,7 +1306,7 @@ function SettlementPage() {
                                         <option value={107}>{language === null ? eng.directDebit : language.directDebit}</option>
                                         <option value={105}>{language === null ? eng.emoney : language.emoney}</option>
                                     </Form.Select>
-                                </Col>          
+                                </Col>
                                 {/* <Col xs={4}>
                                     <span>Status</span>
                                     <Form.Select name="statusSettlementPartner" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlementPartner} onChange={(e) => handleChange(e)}>
@@ -1238,7 +1317,7 @@ function SettlementPage() {
                                     </Form.Select>
                                 </Col> */}
                             </Row>
-                            <Row className='mt-4'>       
+                            <Row className='mt-4'>
                                 <Col xs={4} style={{ display: showDateSettlementPartner }}>
                                     <DateRangePicker
                                         onChange={pickDateSettlementPartner}
