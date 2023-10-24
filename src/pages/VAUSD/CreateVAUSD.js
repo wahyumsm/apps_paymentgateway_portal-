@@ -19,7 +19,7 @@ function CreateVAUSD() {
 
     const history = useHistory()
     const [isVAUSD, setIsVAUSD] = useState("createTab")
-    const [isTabFile, setIsTabFile] = useState(1)
+    const [isTabFileId, setIsTabFileId] = useState(1)
     const [dataVABaru, setDataVABaru] = useState(0)
     const [generatedVA, setGeneratedVA] = useState({})
     const [fileTabs, setFileTabs] = useState([])
@@ -39,6 +39,7 @@ function CreateVAUSD() {
     const [activePageCreate, setActivePageCreate] = useState(1)
     const [pageNumberCreate, setPageNumberCreate] = useState({})
     console.log(stockVA, 'stockVA');
+    console.log(isTabFileId, 'isTabFileId');
 
     const dataForTable = [
         {
@@ -245,6 +246,28 @@ function CreateVAUSD() {
         setDataVABaru(e)
     }
 
+    async function generateFileCSV(bulkId) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"bulk_id": ${bulkId}, "username": ""}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            console.log(dataParams, 'dataParams');
+            const dataFileCSV = await axios.post(BaseURL + "/VirtualAccountUSD/GetUnavailableVAUSD", {data: dataParams}, {headers: headers})
+            console.log(dataFileCSV, 'dataFileCSV');
+            if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token === null) {
+
+            } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
+                setUserSession(dataFileCSV.data.response_new_token)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     async function getVAUSD(fileId) {
         try {
             setPendingVAUSD(true)
@@ -282,13 +305,13 @@ function CreateVAUSD() {
             console.log(fileNameAndStockVa, 'fileNameAndStockVa');
             if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token === null) {
                 setFileTabs(fileNameAndStockVa.data.response_data.results.bulk)
-                setIsTabFile(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                setIsTabFileId(fileNameAndStockVa.data.response_data.results.bulk[0].id)
                 getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id)
                 setStockVA(fileNameAndStockVa.data.response_data.results.stock)
             } else if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token !== null) {
                 setUserSession(fileNameAndStockVa.data.response_new_token)
                 setFileTabs(fileNameAndStockVa.data.response_data.results.bulk)
-                setIsTabFile(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                setIsTabFileId(fileNameAndStockVa.data.response_data.results.bulk[0].id)
                 setStockVA(fileNameAndStockVa.data.response_data.results.stock)
             }
         } catch (error) {
@@ -327,7 +350,8 @@ function CreateVAUSD() {
     }, [])
 
     function pindahFileTab(fileId) {
-        setIsTabFile(fileId)
+        console.log(fileId, 'fileId');
+        setIsTabFileId(fileId)
         getVAUSD(fileId)
     }
 
@@ -544,7 +568,7 @@ function CreateVAUSD() {
                         <Col>
                             <Row className='d-flex justify-content-end'>
                                 <Col xs={3} className="card-information mt-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
-                                    <div className='d-flex'>
+                                    <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => generateFileCSV(isTabFileId)}>
                                         <img src={downloadIcon} width="24" height="24" alt="download_icon" />
                                         <span style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Download File CSV</span>
                                     </div>
@@ -563,8 +587,8 @@ function CreateVAUSD() {
                             {
                                 fileTabs.length !== 0 &&
                                 fileTabs.map(item => (
-                                        <div key={item.id} className={`me-2 detail-akun-tabs ${isTabFile === item.id && "menu-detail-akun-hr-active"}`} onClick={() => pindahFileTab(item.id)} id={item.name}>
-                                            <span className={`menu-detail-akun-span ${isTabFile === item.id && "menu-detail-akun-span-active"}`} id="createSpan">{item.name}</span>
+                                        <div key={item.id} className={`me-2 detail-akun-tabs ${isTabFileId === item.id && "menu-detail-akun-hr-active"}`} onClick={() => pindahFileTab(item.id)} id={item.name}>
+                                            <span className={`menu-detail-akun-span ${isTabFileId === item.id && "menu-detail-akun-span-active"}`} id="createSpan">{item.name}</span>
                                         </div>
                                 ))
                             }
