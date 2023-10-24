@@ -258,7 +258,7 @@ function CreateVAUSD() {
             const dataFileCSV = await axios.post(BaseURL + "/VirtualAccountUSD/GetUnavailableVAUSD", {data: dataParams}, {headers: headers})
             console.log(dataFileCSV, 'dataFileCSV');
             if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token === null) {
-
+                // const ws =
             } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
                 setUserSession(dataFileCSV.data.response_new_token)
             }
@@ -593,7 +593,7 @@ function CreateVAUSD() {
                                 ))
                             }
                         </div>
-                        <hr className='hr-style mb-4' style={{marginTop: -2}}/>
+                        <hr className='hr-style mb-4' style={{marginTop: -2, height: 0}}/>
                         <div className="div-table mt-4 pb-4">
                             <DataTable
                                 columns={columnsVAUSD}
