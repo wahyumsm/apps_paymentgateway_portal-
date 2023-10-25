@@ -246,6 +246,29 @@ function CreateVAUSD() {
         setDataVABaru(e)
     }
 
+    async function renewDataVA(bulkId) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            const dataParams = encryptData(`{"bulk_id": ${bulkId}, "username": ""}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            console.log(dataParams, 'dataParams');
+            const newData = await axios.post(BaseURL + "/VirtualAccountUSD/UpdateUnvailabletoAvailableVA", {data: dataParams}, {headers: headers})
+            console.log(newData, 'newData');
+            if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token === null) {
+                getVAUSD(bulkId)
+            } else if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token !== null) {
+                setUserSession(newData.data.response_new_token)
+                getVAUSD(bulkId)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     async function generateFileCSV(bulkId) {
         try {
             const auth = 'Bearer ' + getToken();
@@ -574,7 +597,7 @@ function CreateVAUSD() {
                                     </div>
                                 </Col>
                                 <Col xs={3} className="card-information mt-3 ms-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
-                                    <div className='d-flex'>
+                                    <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => renewDataVA(isTabFileId)}>
                                         <img src={refreshIcon} width="24" height="24" alt="refresh_icon" />
                                         <span className="p-info" style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Perbarui Data</span>
                                     </div>
