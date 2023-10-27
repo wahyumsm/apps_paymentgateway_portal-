@@ -787,7 +787,7 @@ function Disbursement() {
                 <div className='mt-2'>
                     <span className='mt-4' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600}}>{(user_role === "102") ? (language === null ? eng.riwayatDisburse : language.riwayatDisburse) : "Disbursement Report"}</span>
                     <div className='base-content mt-3'>
-                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? eng.filter : language.filter}</span>
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{user_role !== "102" ? "Filter" : (language === null ? eng.filter : language.filter)}</span>
                         {
                             user_role !== "102" ?
                             <>
@@ -957,7 +957,7 @@ function Disbursement() {
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-ez-on" : "btn-ez"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
-                                            {language === null ? eng.terapkan : language.terapkan}
+                                            {user_role !== "102" ? "Terapkan" : (language === null ? eng.terapkan : language.terapkan)}
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
@@ -966,7 +966,7 @@ function Disbursement() {
                                             className={(inputHandle.periodeDisbursement || dateRangeDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.idTransaksiDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.statusDisbursement.length !== 0 || dateRangeDisbursement.length !== 0 && inputHandle.referenceNo.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                                             disabled={inputHandle.periodeDisbursement === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.idTransaksiDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.statusDisbursement.length === 0 || inputHandle.periodeDisbursement === 0 && inputHandle.referenceNo.length === 0}
                                         >
-                                            {language === null ? eng.aturUlang : language.aturUlang}
+                                            {user_role !== "102" ? "Atur Ulang" : (language === null ? eng.aturUlang : language.aturUlang)}
                                         </button>
                                     </Col>
                                 </Row>
@@ -987,7 +987,7 @@ function Disbursement() {
                         {
                             dataDisbursement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", inputHandle.idTransaksiDisbursement, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
+                                <Link to={"#"} onClick={() => ExportReportDisbursementHandler(isFilterDisbursement, user_role, inputHandle.statusDisbursement, selectedPaymentDisbursement.length !== 0 ? selectedPaymentDisbursement[0].value : "", inputHandle.idTransaksiDisbursement, selectedPartnerDisbursement.length !== 0 ? selectedPartnerDisbursement[0].value : "", inputHandle.periodeDisbursement, dateRangeDisbursement, inputHandle.partnerTransId, inputHandle.referenceNo, language === null ? 'EN' : language.flagName)} className="export-span">{user_role !== "102" ? "Ekspor" : (language === null ? eng.export : language.export)}</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
@@ -998,12 +998,12 @@ function Disbursement() {
                                 progressPending={pendingDisbursement}
                                 progressComponent={<CustomLoader />}
                                 dense
-                                noDataComponent={<div style={{ marginBottom: 10 }}>{language === null ? eng.tidakAdaData : language.tidakAdaData}</div>}
+                                noDataComponent={<div style={{ marginBottom: 10 }}>{user_role !== "102" ? "Tidak ada data" : (language === null ? eng.tidakAdaData : language.tidakAdaData)}</div>}
                                 // pagination
                             />
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                        <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageDisbursement}</div>
+                        <div style={{ marginRight: 10, marginTop: 10 }}>{user_role !== "102" ? "Total Halaman" : (language === null ? eng.totalHalaman : language.totalHalaman)} : {totalPageDisbursement}</div>
                             <Pagination
                                 activePage={activePageDisbursement}
                                 itemsCountPerPage={pageNumberDisbursement.row_per_page}

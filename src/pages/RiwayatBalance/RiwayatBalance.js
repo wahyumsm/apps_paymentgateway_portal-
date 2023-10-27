@@ -178,7 +178,7 @@ function RiwayatBalance() {
                     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                     let workBook = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                    XLSX.writeFile(workBook, `${language === null ? eng.riwayatSaldoFileExcel : language.riwayatSaldoFileExcel}.xlsx`);
+                    XLSX.writeFile(workBook, `${user_role !== "102" ? "Riwayat Saldo" : (language === null ? eng.riwayatSaldoFileExcel : language.riwayatSaldoFileExcel)}.xlsx`);
                 } else {
                     filteredRiwayatBalance.data.response_data.results = filteredRiwayatBalance.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                     setPageNumberRiwayatBalance(filteredRiwayatBalance.data.response_data)
@@ -201,7 +201,7 @@ function RiwayatBalance() {
                     let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                     let workBook = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                    XLSX.writeFile(workBook, `${language === null ? eng.riwayatSaldoFileExcel : language.riwayatSaldoFileExcel}.xlsx`);
+                    XLSX.writeFile(workBook, `${user_role !== "102" ? "Riwayat Saldo" : (language === null ? eng.riwayatSaldoFileExcel : language.riwayatSaldoFileExcel)}.xlsx`);
                 } else {
                     filteredRiwayatBalance.data.response_data.results = filteredRiwayatBalance.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                     setPageNumberRiwayatBalance(filteredRiwayatBalance.data.response_data)
@@ -375,13 +375,13 @@ function RiwayatBalance() {
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-            <span className='breadcrumbs-span'>{user_role !== '102' ? <Link to={"/"}>Beranda</Link> : <Link to={"#"}>{language === null ? eng.riwayatTransaksi : language.riwayatTransaksi}</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.riwayatSaldo : language.riwayatSaldo}</span>
+            <span className='breadcrumbs-span'>{user_role !== '102' ? <Link to={"/"}>Beranda</Link> : <Link to={"#"}>{language === null ? eng.riwayatTransaksi : language.riwayatTransaksi}</Link>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role !== "102" ? "Riwayat Saldo" : (language === null ? eng.riwayatSaldo : language.riwayatSaldo)}</span>
             <div className="head-title">
-                <h2 className="h4 my-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? eng.riwayatSaldo : language.riwayatSaldo}</h2>
+                <h2 className="h4 my-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{user_role !== "102" ? "Riwayat Saldo" : (language === null ? eng.riwayatSaldo : language.riwayatSaldo)}</h2>
             </div>
             {/* <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Riwayat Dana Masuk</h2> */}
             <div className='base-content mt-3'>
-                <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{language === null ? eng.filter : language.filter}</span>
+                <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{user_role !== "102" ? "Filter" : (language === null ? eng.filter : language.filter)}</span>
                 <Row className='mt-4'>
                     {
                         user_role !== '102' ?
@@ -497,7 +497,7 @@ function RiwayatBalance() {
                                         (inputHandle.periodeRiwayatBalance === 0 || (Number(inputHandle.periodeRiwayatBalance) === 7 && dateRangeRiwayatBalance.length == 0))
                                     }
                                 >
-                                    {language === null ? eng.terapkan : language.terapkan}
+                                    {user_role !== "102" ? "Terapkan" : (language === null ? eng.terapkan : language.terapkan)}
                                 </button>
                             </Col>
                             <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
@@ -514,7 +514,7 @@ function RiwayatBalance() {
                                         (inputHandle.periodeRiwayatBalance === 0 || (Number(inputHandle.periodeRiwayatBalance) === 7 && dateRangeRiwayatBalance.length == 0))
                                     }
                                 >
-                                    {language === null ? eng.aturUlang : language.aturUlang}
+                                    {user_role !== "102" ? "Atur Ulang" : (language === null ? eng.aturUlang : language.aturUlang)}
                                 </button>
                             </Col>
                         </Row>
@@ -523,7 +523,7 @@ function RiwayatBalance() {
                 {
                     dataRiwayatBalance.length !== 0 &&
                     <div style={{ marginBottom: 30 }}>
-                        <Link onClick={() => filterRiwayatBalance(1, selectedPartnerRiwayatBalance.length !== 0 ? selectedPartnerRiwayatBalance[0].value : "", selectedAgenRiwayatBalance.length !== 0 ? selectedAgenRiwayatBalance[0].value : "", inputHandle.typeRiwayatBalance, inputHandle.periodeRiwayatBalance, dateRangeRiwayatBalance, true, user_role)} className="export-span">{language === null ? eng.export : language.export}</Link>
+                        <Link onClick={() => filterRiwayatBalance(1, selectedPartnerRiwayatBalance.length !== 0 ? selectedPartnerRiwayatBalance[0].value : "", selectedAgenRiwayatBalance.length !== 0 ? selectedAgenRiwayatBalance[0].value : "", inputHandle.typeRiwayatBalance, inputHandle.periodeRiwayatBalance, dateRangeRiwayatBalance, true, user_role)} className="export-span">{user_role !== "102" ? "Ekspor" : (language === null ? eng.export : language.export)}</Link>
                     </div>
                 }
                 <div className="div-table mt-4 pb-4">
@@ -533,12 +533,12 @@ function RiwayatBalance() {
                         customStyles={customStyles}
                         highlightOnHover
                         progressPending={pendingRiwayatBalance}
-                        noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
+                        noDataComponent={user_role !== "102" ? "Tidak ada data" : (language === null ? eng.tidakAdaData : language.tidakAdaData)}
                         progressComponent={<CustomLoader />}
                     />
                 </div>
                 <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 24, borderTop: "groove" }}>
-                <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageRiwayatBalance}</div>
+                <div style={{ marginRight: 10, marginTop: 10 }}>{user_role !== "102" ? "Total Halaman" : (language === null ? eng.totalHalaman : language.totalHalaman)} : {totalPageRiwayatBalance}</div>
                     <Pagination
                         activePage={activePageRiwayatBalance}
                         itemsCountPerPage={pageNumberRiwayatBalance.row_per_page}

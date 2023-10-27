@@ -456,7 +456,7 @@ const InfoSaldoDanMutasi = () => {
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang
+                'Accept-Language' : user_role !== "102" ? "ID" : lang
             }
             const listDataMutasi = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
             // console.log(listDataMutasi, "ini data riwayat");
@@ -490,7 +490,7 @@ const InfoSaldoDanMutasi = () => {
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang
+                'Accept-Language' : user_role !== "102" ? "ID" : lang
             }
             const listDataMutasi = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
             // console.log(listDataMutasi, "ini data riwayat");
@@ -923,7 +923,7 @@ const InfoSaldoDanMutasi = () => {
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang
+                'Accept-Language' : user_role !== "102" ? "ID" : lang
             }
             const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
             // console.log(listDataRiwayat, "ini data riwayat");
@@ -957,7 +957,7 @@ const InfoSaldoDanMutasi = () => {
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang
+                'Accept-Language' : user_role !== "102" ? "ID" : lang
             }
             const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
             // console.log(listDataRiwayat, "ini data riwayat");
@@ -990,7 +990,7 @@ const InfoSaldoDanMutasi = () => {
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth,
-                        'Accept-Language' : lang
+                        'Accept-Language' : user_role !== "102" ? "ID" : lang
                     }
                     const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
                     // console.log(listDataRiwayat, "ini data riwayat");
@@ -1009,7 +1009,7 @@ const InfoSaldoDanMutasi = () => {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel} .xlsx`);
+                        XLSX.writeFile(workBook, `${user_role !== "102" ? "Riwayat Transaksi Sub Akun" : (language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel)} .xlsx`);
                     } else if (listDataRiwayat.data.response_code === 200 && listDataRiwayat.status === 200 && listDataRiwayat.data.response_new_token.length !== 0) {
                         setUserSession(listDataRiwayat.data.response_new_token)
                         const data = listDataRiwayat.data.response_data.results;
@@ -1026,7 +1026,7 @@ const InfoSaldoDanMutasi = () => {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel} .xlsx`);
+                        XLSX.writeFile(workBook, `${user_role !== "102" ? "Riwayat Transaksi Sub Akun" : (language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel)} .xlsx`);
                     }
                 } catch (error) {
                   // console.log(error)
@@ -1042,7 +1042,7 @@ const InfoSaldoDanMutasi = () => {
                     const headers = {
                         'Content-Type':'application/json',
                         'Authorization' : auth,
-                        'Accept-Language' : lang
+                        'Accept-Language' : user_role !== "102" ? "ID" : lang
                     }
                     const listDataRiwayat = await axios.post(BaseURL + "/SubAccount/HistoryPartnerSubAccount", { data: dataParams }, { headers: headers })
                     // console.log(listDataRiwayat, "ini data riwayat");
@@ -1061,7 +1061,7 @@ const InfoSaldoDanMutasi = () => {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel} .xlsx`);
+                        XLSX.writeFile(workBook, `${user_role !== "102" ? "Riwayat Transaksi Sub Akun" : (language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel)} .xlsx`);
                     } else if (listDataRiwayat.data.response_code === 200 && listDataRiwayat.status === 200 && listDataRiwayat.data.response_new_token.length !== 0) {
                         const data = listDataRiwayat.data.response_data.results;
                         let dataExcel = []
@@ -1077,7 +1077,7 @@ const InfoSaldoDanMutasi = () => {
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                        XLSX.writeFile(workBook, `${language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel} .xlsx`);
+                        XLSX.writeFile(workBook, `${user_role !== "102" ? "Riwayat Transaksi Sub Akun" : (language === null ? eng.riwayatTransaksiSubAkunExcel : language.riwayatTransaksiSubAkunExcel)} .xlsx`);
                     }
                 } catch (error) {
                   // console.log(error)
