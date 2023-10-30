@@ -432,7 +432,8 @@ export var ind = {
     silahkanMasukkanPassword: "Silahkan masukkan password",
     silahkanMasukkanEmailAndPass: "Silahkan masukkan alamat email & password",
     silahkanMasukkanEmail: "Silahkan masukkan alamat email",
-    formatEmailSalah: "Format email yang dimasukan salah"
+    formatEmailSalah: "Format email yang dimasukan salah",
+    terindikasiDataDuplikasi: "Terindikasi data duplikasi"
 }
 
 export var eng = {
@@ -865,7 +866,8 @@ export var eng = {
     silahkanMasukkanPassword: "Please enter your password",
     silahkanMasukkanEmailAndPass: "Please enter your Email & password",
     silahkanMasukkanEmail: "Please enter your Email",
-    formatEmailSalah: "The email format you entered is incorrect"
+    formatEmailSalah: "The email format you entered is incorrect",
+    terindikasiDataDuplikasi: "Indicate as duplicate data"
 }
 
 export var chn = {
@@ -1298,5 +1300,6 @@ export var chn = {
     silahkanMasukkanPassword: "请输入您的密码",
     silahkanMasukkanEmailAndPass: "请输入您的电子邮件和密码",
     silahkanMasukkanEmail: "请输入您的电子邮箱",
-    formatEmailSalah: "您输入的电子邮件格式错误"
+    formatEmailSalah: "您输入的电子邮件格式错误",
+    terindikasiDataDuplikasi: "指示为重复数据"
 }

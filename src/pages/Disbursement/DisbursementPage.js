@@ -5134,7 +5134,7 @@ function DisbursementPage() {
                         {
                             duplicateData.length === 0 ?
                             <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.dataInginDitambahkanTelahTersedia : language.dataInginDitambahkanTelahTersedia}</div> :
-                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} <b style={{ wordBreak: 'break-word', color: 'red' }}>{duplicateData.join(", ")}</b> {language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} : Terindikasi data duplikasi</div>
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} <b style={{ wordBreak: 'break-word', color: 'red' }}>{duplicateData.join(", ")}</b> {language === null ? eng.barisKe : language.barisKe} : {language === null ? eng.terindikasiDataDuplikasi : language.terindikasiDataDuplikasi}</div>
                         }
                         <div className='d-flex justify-content-center align-items-center mt-3'>
                             {
