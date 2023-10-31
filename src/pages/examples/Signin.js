@@ -25,7 +25,6 @@ export default () => {
   const [isTabLanguage, setIsTabLanguage] = useState("bahasa")
   const passwordInputType = showPassword ? "text" : "password";
   const passwordIconColor = showPassword ? "#262B40" : "";
-  console.log(language, 'language');
 
   function tabLanguage (isTabs) {
     if (isTabs === "bahasa") {

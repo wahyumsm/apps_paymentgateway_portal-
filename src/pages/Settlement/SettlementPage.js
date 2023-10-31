@@ -649,7 +649,7 @@ function SettlementPage() {
         {
             name: 'Send Email',
             width: "180px",
-            cell: (row) => <button className='btn-riwayat-settlement' onClick={() => resendEmailHandler(row.tsettlelog_settlement_id, row.tsettlelog_paytype_id)} >Send Email</button>
+            cell: (row) => <button className='btn-riwayat-settlement' onClick={() => resendEmailHandler(row.tsettlelog_settlement_id, row.tsettlelog_settle_type)} >Send Email</button>
         },
         {
             name: 'ID Transaksi',
