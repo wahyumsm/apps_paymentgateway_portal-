@@ -888,12 +888,25 @@ width: 150px;
 .dropLaporanPartner .css-qqcyw1-option:hover,
 .dropLaporanPartnerBank .css-qqcyw1-option:hover,
 .dropTopupPartner .css-qqcyw1-option:hover,
-.dropDirectDebit .css-qqcyw1-option:hover  {
+.dropDirectDebit .css-qqcyw1-option:hover,
+.dropVAUSD .css-qqcyw1-option:hover {
     background-color: #3b8aff;
 }
 
 .dropPartner .css-17rpq10-option:hover {
     background-color: #3b8aff;
+}
+
+.dropVAUSD .css-b62m3t-container {
+    min-width: 260px;
+    max-width: 265px;
+    width: max-content;
+}
+
+.dropVAUSD .css-g1d714-ValueContainer {
+    overflow-y: auto !important;
+    max-height: 43px !important;
+    max-width: 265px !important;
 }
 
 /* select option in dashboard */
@@ -1354,6 +1367,39 @@ header.sc-dIouRR.evxAbm {
 /* .filepond--panel-center {
     border-radius: 8px !important;
 } */
+
+/* VA USD */
+
+.btn-va-usd-active {
+    font-family: Exo;
+    font-size: 16;
+    font-weight: 900;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+    width: 308px;
+    height: 44px;
+    background: linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%);
+    border: 0.6px solid #2C1919;
+    border-radius: 6px;
+}
+
+.btn-va-usd-non-active {
+    font-family: Exo;
+    font-size: 16;
+    font-weight: 900;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+    width: 308px;
+    height: 44px;
+    color: #C4C4C4;
+    border: 0.6px solid #EBEBEB;
+    border-radius: 6px;
+    background: #EBEBEB;
+}
+
+/* VA USD */
 
 /* Disbursement Page */
 
