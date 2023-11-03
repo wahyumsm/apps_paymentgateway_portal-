@@ -15,8 +15,6 @@ function InvoiceDisbursement() {
     const history = useHistory()
     const access_token = getToken()
     const user_role = getRole()
-    const [stateInvoiceDisbursement, setStateInvoiceDisbursement] = useState(null)
-    const [dateRangeInvoiceDisbursement, setDateRangeInvoiceDisbursement] = useState([])
     const [dataInvoiceDisbursement, setDataInvoiceDisbursement] = useState({})
     const [dataListPartner, setDataListPartner] = useState([])
     const [namaPartner, setNamaPartner] = useState("")
@@ -29,6 +27,7 @@ function InvoiceDisbursement() {
     const [totalAmount, setTotalAmount] = useState(0)
     const [taxTotalAmount, setTaxTotalAmount] = useState(0)
     const [selectedPartnerInvoiceDisbursement, setSelectedPartnerInvoiceDisbursement] = useState([])
+    const [selectedMonthYear, setSelectedMonthYear] = useState("")
 
     const Option = (props) => {
         return (
@@ -74,21 +73,18 @@ function InvoiceDisbursement() {
     }
 
     function resetButtonHandle() {
-        setStateInvoiceDisbursement(null)
-        setDateRangeInvoiceDisbursement([])
+        setSelectedMonthYear("")
         setSelectedPartnerInvoiceDisbursement([])
+        setInvoiceDate("")
+        setIsIgnoreZeroAmount(false)
     }
 
     function handleChangeNamaPartner(e) {
         setNamaPartner(e.target.value)
     }
 
-    function pickDateInvoiceDisbursement(item) {
-        setStateInvoiceDisbursement(item)
-        if (item !== null) {
-            item = item.map(el => el.toLocaleDateString('en-CA'))
-            setDateRangeInvoiceDisbursement(item)
-        }
+    function handleOnChangeMonthPicker(e) {
+        setSelectedMonthYear(e.target.value)
     }
 
     async function listPartner() {
@@ -126,10 +122,10 @@ function InvoiceDisbursement() {
         }
     }
 
-    async function generateInvoiceDisbursement(dateRange, partnerId, dateInv, includeZeroAmount, isSave) {
+    async function generateInvoiceDisbursement(monthYear, partnerId, dateInv, includeZeroAmount, isSave) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}", "inv_date": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "is_save": ${isSave}}`);
+            const dataParams = encryptData(`{"year": "${monthYear.split("-")[0]}", "month": "${monthYear.split("-")[1]}", "subpartner_id" :"${partnerId}", "inv_date": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "is_save": ${isSave}}`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -170,9 +166,9 @@ function InvoiceDisbursement() {
             }
         }
     }
-    
+
     const SaveAsPDFHandler = () => {
-        generateInvoiceDisbursement(dateRangeInvoiceDisbursement, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, true)
+        generateInvoiceDisbursement(selectedMonthYear, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, true)
         // const dom = document.getElementById('tableInvoice');
         const dom = document.getElementById('tableInvoiceModal');
         toPng(dom)
@@ -190,26 +186,26 @@ function InvoiceDisbursement() {
                         floatPrecision: 16
                     });
                     pdf.setFont('Nunito');
-            
+
                     // Define reused data
                     const imgProps = pdf.getImageProperties(img);
                     const imageType = imgProps.fileType;
                     const pdfWidth = pdf.internal.pageSize.getWidth();
-            
+
                     // Calculate the number of pages.
                     const pxFullHeight = imgProps.height;
                     const pxPageHeight = Math.floor((imgProps.width * 12.5) / 5.5);
                     const nPages = Math.ceil(pxFullHeight / pxPageHeight);
-            
+
                     // Define pageHeight separately so it can be trimmed on the final page.
                     let pageHeight = pdf.internal.pageSize.getHeight();
-            
+
                     // Create a one-page canvas to split up the full image.
                     const pageCanvas = document.createElement('canvas');
                     const pageCtx = pageCanvas.getContext('2d');
                     pageCanvas.width = imgProps.width;
                     pageCanvas.height = pxPageHeight;
-            
+
                     for (let page = 0; page < nPages; page++) {
                         // Trim the final page to reduce file size.
                         if (page === nPages - 1 && pxFullHeight % pxPageHeight !== 0) {
@@ -222,10 +218,10 @@ function InvoiceDisbursement() {
                         pageCtx.fillStyle = 'white';
                         pageCtx.fillRect(0, 0, w, h);
                         pageCtx.drawImage(img, 0, page * pxPageHeight, w, h, 0, 0, w, h);
-            
+
                         // Add the page to the PDF.
                         if (page) pdf.addPage();
-            
+
                         const imgData = pageCanvas.toDataURL(`image/${imageType}`, 1);
                         // data 8
                         // pdf.addImage(imgData, imageType, 45, 55, (pdfWidth*0.8), (pageHeight*0.8));
@@ -255,7 +251,7 @@ function InvoiceDisbursement() {
         }
         listPartner()
     }, [access_token, user_role])
-    
+
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
@@ -271,13 +267,8 @@ function InvoiceDisbursement() {
                             <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
                                 <span className='me-5'>Periode<span style={{ color: "red" }}>*</span></span>
                                 <div>
-                                    <DateRangePicker 
-                                        onChange={pickDateInvoiceDisbursement}
-                                        value={stateInvoiceDisbursement}
-                                        clearIcon={null}
-                                        className='me-3'
-                                    />
-                                </div>                                
+                                    <input onChange={handleOnChangeMonthPicker} value={selectedMonthYear} type='month' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
+                                </div>
                             </Col>
                             <Col xs={6} className="d-flex justify-content-start align-items-center">
                                 <span className='me-5'>Nama Partner <span style={{ color: "red" }}>*</span></span>
@@ -295,16 +286,6 @@ function InvoiceDisbursement() {
                                         styles={customStylesSelectedOption}
                                     />
                                 </div>
-                                {/* <Form.Select name='namaPartner' className="input-text-ez me-4" value={namaPartner} onChange={(e) => handleChangeselectedPartnerInvoiceDisbursement(e)}>
-                                    <option defaultChecked disabled value="">Pilih Nama Partner</option>
-                                    {
-                                        dataListPartner.map((item, index) => {
-                                            return (
-                                                <option key={index} value={item.partner_id}>{item.nama_perusahaan}</option>
-                                            )
-                                        })
-                                    }
-                                </Form.Select> */}
                             </Col>
                         </Row>
                         <Row className='mt-2 mb-4'>
@@ -328,18 +309,18 @@ function InvoiceDisbursement() {
                             </Col>
                         </Row>
                         <button
-                            onClick={() => generateInvoiceDisbursement(dateRangeInvoiceDisbursement, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, false)}
-                            className={(stateInvoiceDisbursement === null || selectedPartnerInvoiceDisbursement.length === 0 || invoiceDate.length === 0) ? 'btn-off' : 'add-button'}
+                            onClick={() => generateInvoiceDisbursement(selectedMonthYear, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, false)}
+                            className={(selectedMonthYear.length === 0 || selectedPartnerInvoiceDisbursement.length === 0 || invoiceDate.length === 0) ? 'btn-off' : 'add-button'}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                            disabled={(stateInvoiceDisbursement === null || selectedPartnerInvoiceDisbursement.length === 0 || invoiceDate.length === 0) ? true : false}
+                            disabled={(selectedMonthYear.length === 0 || selectedPartnerInvoiceDisbursement.length === 0 || invoiceDate.length === 0) ? true : false}
                         >
                             Generate
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateInvoiceDisbursement !== null && selectedPartnerInvoiceDisbursement.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                            className={(selectedMonthYear.length !== 0 && selectedPartnerInvoiceDisbursement.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                            disabled={(stateInvoiceDisbursement !== null && selectedPartnerInvoiceDisbursement.length !== 0 && invoiceDate.length !== 0) ? false : true}
+                            disabled={(selectedMonthYear.length !== 0 && selectedPartnerInvoiceDisbursement.length !== 0 && invoiceDate.length !== 0) ? false : true}
                         >
                             Atur Ulang
                         </button>
