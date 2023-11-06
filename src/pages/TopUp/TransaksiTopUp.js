@@ -34,6 +34,7 @@ function TransaksiTopUp() {
     const [showResponseLog, setShowResponseLog] = useState(false)
     const [responseLogData, setResponseLogData] = useState("")
     const [eWalletBalance, setEWalletBalance] = useState([])
+    const [eWalletOvoRealBalance, setEWalletOvoRealBalance] = useState({})
 
     function responseLogHandler(responseLogData) {
         setResponseLogData(responseLogData)
@@ -95,6 +96,27 @@ function TransaksiTopUp() {
             } else if (eWalletBalanceData.status === 200 && eWalletBalanceData.data.response_code === 200 && eWalletBalanceData.data.response_new_token.length !== 0) {
                 setUserSession(eWalletBalanceData.data.response_new_token)
                 setEWalletBalance(eWalletBalanceData.data.response_data)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function getEWalletOvoReal() {
+        try {
+            const auth = "Bearer " + access_token
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const eWalletOvoRealData = await axios.post(BaseURL + "/Report/GetBalanceMerchantOVO", {data: ""}, {headers: headers})
+            // console.log(eWalletOvoRealData, 'eWalletOvoRealData');
+            if (eWalletOvoRealData.status === 200 && eWalletOvoRealData.data.response_code === 200 && eWalletOvoRealData.data.response_new_token.length === 0) {
+                setEWalletOvoRealBalance(eWalletOvoRealData.data.response_data.amount)
+            } else if (eWalletOvoRealData.status === 200 && eWalletOvoRealData.data.response_code === 200 && eWalletOvoRealData.data.response_new_token.length !== 0) {
+                setUserSession(eWalletOvoRealData.data.response_new_token)
+                setEWalletOvoRealBalance(eWalletOvoRealData.data.response_data.amount)
             }
         } catch (error) {
             // console.log(error);
@@ -259,6 +281,7 @@ function TransaksiTopUp() {
     useEffect(() => {
         getListTransaskiTopup(activePageTransaksiTopup)
         getEWalletBalance()
+        getEWalletOvoReal()
     }, [])
 
 
@@ -360,8 +383,15 @@ function TransaksiTopUp() {
                                 </div>
                             </Col>
                         )
-                    }) : null
+                    })
+                    : null
                 }
+                <Col lg={3}>
+                    <div className="card-information base-content-beranda">
+                        <p className="p-info">Saldo OVO Real</p>
+                        <p className="p-amount">{convertToRupiah(eWalletOvoRealBalance.value, true, 2)}</p>
+                    </div>
+                </Col>
             </Row>
             <div className="head-title">
                 <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Riwayat Transaksi Topup</h2>
