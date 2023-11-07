@@ -142,7 +142,7 @@ function CreateVAUSD() {
         try {
             setPendingVAUSD(true)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"bulk_id": ${fileId}, "page": ${page}, "row_per_page": 20}`)
+            const dataParams = encryptData(`{"bulk_id": ${fileId}, "page": ${page}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -372,13 +372,11 @@ function CreateVAUSD() {
     function pindahHalaman(param) {
         if (param === "create") {
             VAUSDTabs(100)
-            // resetButtonHandle("eMoney")
         } else if (param === "update") {
+            getListUpdateVA(1)
             VAUSDTabs(101)
-            // resetButtonHandle("eMoney")
         } else if (param === "riwayat") {
             VAUSDTabs(102)
-            // resetButtonHandle("VA")
         }
     }
 
