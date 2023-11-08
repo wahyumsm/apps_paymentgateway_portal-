@@ -28,6 +28,7 @@ function InvoiceDisbursement() {
     const [taxTotalAmount, setTaxTotalAmount] = useState(0)
     const [selectedPartnerInvoiceDisbursement, setSelectedPartnerInvoiceDisbursement] = useState([])
     const [selectedMonthYear, setSelectedMonthYear] = useState("")
+    const [invoiceType, setInvoiceType] = useState(0)
 
     const Option = (props) => {
         return (
@@ -77,6 +78,7 @@ function InvoiceDisbursement() {
         setSelectedPartnerInvoiceDisbursement([])
         setInvoiceDate("")
         setIsIgnoreZeroAmount(false)
+        setInvoiceType(0)
     }
 
     function handleChangeNamaPartner(e) {
@@ -85,6 +87,10 @@ function InvoiceDisbursement() {
 
     function handleOnChangeMonthPicker(e) {
         setSelectedMonthYear(e.target.value)
+    }
+
+    function handleOnChangeInvType(e) {
+        setInvoiceType(e.target.value)
     }
 
     async function listPartner() {
@@ -122,10 +128,10 @@ function InvoiceDisbursement() {
         }
     }
 
-    async function generateInvoiceDisbursement(monthYear, partnerId, dateInv, includeZeroAmount, isSave) {
+    async function generateInvoiceDisbursement(monthYear, partnerId, dateInv, includeZeroAmount, invType, isSave) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"year": "${monthYear.split("-")[0]}", "month": "${monthYear.split("-")[1]}", "subpartner_id" :"${partnerId}", "inv_date": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "is_save": ${isSave}}`);
+            const dataParams = encryptData(`{"year": "${monthYear.split("-")[0]}", "month": "${monthYear.split("-")[1]}", "subpartner_id" :"${partnerId}", "inv_date": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "inv_type": ${invType}, "is_save": ${isSave}}`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -168,7 +174,7 @@ function InvoiceDisbursement() {
     }
 
     const SaveAsPDFHandler = () => {
-        generateInvoiceDisbursement(selectedMonthYear, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, true)
+        generateInvoiceDisbursement(selectedMonthYear, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, Number(invoiceType), true)
         // const dom = document.getElementById('tableInvoice');
         const dom = document.getElementById('tableInvoiceModal');
         toPng(dom)
@@ -264,14 +270,12 @@ function InvoiceDisbursement() {
                     <div className='base-content mt-3 mb-3'>
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-2 mb-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span className='me-5'>Periode<span style={{ color: "red" }}>*</span></span>
-                                <div>
-                                    <input onChange={handleOnChangeMonthPicker} value={selectedMonthYear} type='month' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
-                                </div>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Periode<span style={{ color: "red" }}>*</span></span>
+                                <input onChange={handleOnChangeMonthPicker} value={selectedMonthYear} type='month' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
                             </Col>
-                            <Col xs={6} className="d-flex justify-content-start align-items-center">
-                                <span className='me-5'>Nama Partner <span style={{ color: "red" }}>*</span></span>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span >Nama Partner <span style={{ color: "red" }}>*</span></span>
                                 <div className="dropdown dropTopupPartner">
                                     <ReactSelect
                                         // isMulti
@@ -287,15 +291,21 @@ function InvoiceDisbursement() {
                                     />
                                 </div>
                             </Col>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Tipe Invoice</span>
+                                <Form.Select name="invoiceType" value={invoiceType} onChange={(e) => handleOnChangeInvType(e)} className='input-text-riwayat' style={{ display: "inline" }}>
+                                    <option defaultChecked disabled value={0}>Pilih Status</option>
+                                    <option value={100}>Bank</option>
+                                    <option value={101}>E-Money</option>
+                                </Form.Select>
+                            </Col>
                         </Row>
                         <Row className='mt-2 mb-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span className='me-3'>Tanggal Invoice<span style={{ color: "red" }}>*</span></span>
-                                <div>
-                                    <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
-                                </div>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Tanggal Invoice<span style={{ color: "red" }}>*</span></span>
+                                <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
                             </Col>
-                            <Col xs={6} className="d-flex justify-content-start align-items-center">
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
                                 <span className='me-4'>Include Zero Amount</span>
                                 <div>
                                     <Form.Check
@@ -309,7 +319,7 @@ function InvoiceDisbursement() {
                             </Col>
                         </Row>
                         <button
-                            onClick={() => generateInvoiceDisbursement(selectedMonthYear, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, false)}
+                            onClick={() => generateInvoiceDisbursement(selectedMonthYear, selectedPartnerInvoiceDisbursement.length !== 0 ? selectedPartnerInvoiceDisbursement[0].value : "", invoiceDate, isIgnoreZeroAmount, Number(invoiceType), false)}
                             className={(selectedMonthYear.length === 0 || selectedPartnerInvoiceDisbursement.length === 0 || invoiceDate.length === 0) ? 'btn-off' : 'add-button'}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
                             disabled={(selectedMonthYear.length === 0 || selectedPartnerInvoiceDisbursement.length === 0 || invoiceDate.length === 0) ? true : false}
