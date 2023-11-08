@@ -93,6 +93,8 @@ import ProsesSettlementManual from './Settlement/ProsesSettlementManual';
 import GetBalance from './Transfer/GetBalance';
 import TransaksiTopUp from './TopUp/TransaksiTopUp';
 import ReNotifyEwallet from './HelpDesk/ReNotifyEwallet';
+import QrisTransaksi from './Riwayat/QrisTransaksi';
+import QrisSettlement from './Settlement/QrisSettlement';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -205,8 +207,10 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DisbursementAdmin.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccountAdmin.path} component={InfoSaldoMutasi} />
     <RouteWithSidebar exact path={Routes.DisbursementTimeout.path} component={DisbursementTimeout} />
+    <RouteWithSidebar exact path={Routes.QrisTransaksiAdmin.path} component={QrisTransaksi} />
     <RouteWithSidebar exact path={Routes.ExcludeSettlementManual.path} component={ExcludeSettlementManual} />
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
+    <RouteWithSidebar exact path={Routes.QrisAdminSettlement.path} component={QrisSettlement} />
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
