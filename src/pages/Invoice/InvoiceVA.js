@@ -316,7 +316,7 @@ function InvoiceVA() {
                                 </div>
                             </Col>
                             <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                <span>Tipe Invoice</span>
+                                <span>Tipe Invoice <span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name="invoiceType" value={invoiceType} onChange={(e) => handleOnChangeInvType(e)} className='input-text-riwayat' style={{ display: "inline" }}>
                                     <option defaultChecked disabled value={0}>Pilih Status</option>
                                     <option value={100}>Bank</option>
@@ -344,17 +344,17 @@ function InvoiceVA() {
                         </Row>
                         <button
                             onClick={() => generateInvoice(selectedMonthYear, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, invoiceType, false)}
-                            className={(selectedMonthYear.length === 0 || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0) ? "btn-off" : "add-button"}
+                            className={(selectedMonthYear.length === 0 || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0 || invoiceType === 0) ? "btn-off" : "add-button"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                            disabled={(selectedMonthYear.length === 0 || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0) ? true : false}
+                            disabled={(selectedMonthYear.length === 0 || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0 || invoiceType === 0) ? true : false}
                         >
                             Generate
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(selectedMonthYear.length !== 0 && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                            className={(selectedMonthYear.length !== 0 && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0 && invoiceType !== 0) ? "btn-reset" : "btn-ez-reset"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                            disabled={(selectedMonthYear.length !== 0 && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0) ? false : true}
+                            disabled={(selectedMonthYear.length !== 0 && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0 && invoiceType !== 0) ? false : true}
                         >
                             Atur Ulang
                         </button>
@@ -468,7 +468,7 @@ function InvoiceVA() {
                                                             <input name={`QTYTransaksi${idx+1}`} onChange={(e) => handleChange(e, idx, inputHandle[`QTYTransaksi${idx+1}`], inputHandle[`priceUnit${idx+1}`])} value={inputHandle[`QTYTransaksi${idx+1}`] === undefined ? 0 : convertFormatNumber(inputHandle[`QTYTransaksi${idx+1}`])} type='number' style={{ width: 75, height: 40, borderRadius: 8, border: '1px solid #E0E0E0' }} placeholder='0'/>
                                                             {/* { convertFormatNumber(item.qty_trx) } */}
                                                         </td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "-"}</td>
                                                         <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
@@ -672,7 +672,7 @@ function InvoiceVA() {
                                                     <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
                                                     <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
                                                     <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ inputHandle[`QTYTransaksi${idx+1}`] }</td>
-                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "-"}</td>
                                                     <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
                                                 </tr>
                                             )
