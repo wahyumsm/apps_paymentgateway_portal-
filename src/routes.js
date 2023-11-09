@@ -78,7 +78,7 @@ export const Routes = {
     Disbursement: {path: "/riwayat-transaksi/disbursement"},
     SubAccount: {path: "/riwayat-transaksi/sub-account"},
     eWallet: {path: "/riwayat-transaksi/ewallet"},
-
+    QrisTransaksi: {path: "/riwayat-transaksi/transaksi-qris"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },

@@ -1610,3 +1610,24 @@ th {
     border: 0.6px solid #2C1919;
     border-radius: 6px;
 }
+
+.base-content-qris {
+    width: 26%;
+    border-radius: 8px;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15);
+}
+
+.biaya-settlement-qris {
+    color: #B9121B;
+    font-family: "Nunito";
+    font-size: 14px;
+}
+
+.saldo-dan-total-settlement {
+    color: #383838;
+    font-family: "Nunito";
+    font-size: 14px;
+    font-weight: 700;
+}
