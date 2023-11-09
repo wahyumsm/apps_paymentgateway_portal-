@@ -52,7 +52,6 @@ export const Routes = {
     UserDirectDebit: { path: "/user-direct-debit"},
     InvoiceVASubMenu: { path: "/buat-invoice/settlement" },
     InvoiceDisbursementSubMenu: { path: "/buat-invoice/disbursement" },
-    InvoiceEwalletSubMenu: { path: "/buat-invoice/ewallet" },
     SaldoPartnerMenu: { path: "/riwayat-saldo-partner"},
     DisbursementPage : { path: "/disbursement" },
     SubAccountTransfer: {path: "/transfer-sub-account"},
