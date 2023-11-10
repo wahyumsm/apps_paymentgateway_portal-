@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
@@ -8,14 +8,17 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import { agenLists } from '../../data/tables'
 
 const RiwayatInvoice = () => {
+    const [showModalDetailInvoice, setShowModalDetailInvoice] = useState(false)
     const columnsAdmin = [
         {
             name: 'No',
             selector: row => row.id,
+            width: "67px"
         },
         {
             name: 'No Invoice',
             selector: row => row.IDAgen,
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={() => setShowModalDetailInvoice(true)} >{row.IDAgen}</Link>
         },
         {
             name: 'Waktu',
@@ -64,9 +67,9 @@ const RiwayatInvoice = () => {
             <div className="head-title">
                 <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Riwayat Invoice</h2>
             </div>
-            <div className='base-content'>
+            <div className='base-content mt-4'>
                 <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Filter</span>
-                <Row className='mt-4'>
+                <Row className='mt-3'>
                     <Col xs={4} className="d-flex justify-content-between align-items-center" >
                         <span >Periode <span style={{ color: "red" }}>*</span></span>
                         <Form.Select name='periodeDanaMasukAdmin' className="input-text-riwayat ms-3" >
