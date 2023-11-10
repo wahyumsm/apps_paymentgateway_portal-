@@ -93,6 +93,7 @@ import ProsesSettlementManual from './Settlement/ProsesSettlementManual';
 import GetBalance from './Transfer/GetBalance';
 import TransaksiTopUp from './TopUp/TransaksiTopUp';
 import ReNotifyEwallet from './HelpDesk/ReNotifyEwallet';
+import RiwayatInvoice from './Invoice/RiwayatInvoice';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -196,6 +197,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.UserDirectDebit.path} component={DaftarUserDirectDebit} />
     <RouteWithSidebar exact path={Routes.InvoiceVASubMenu.path} component={InvoiceVA}/>
     <RouteWithSidebar exact path={Routes.InvoiceDisbursementSubMenu.path} component={InvoiceDisbursement}/>
+    <RouteWithSidebar exact path={Routes.RiwayatInvoice.path} component={RiwayatInvoice}/>
     <RouteWithSidebar exact path={Routes.SaldoPartnerMenu.path} component={SaldoPartner} />
     <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
     <RouteWithSidebar exact path={Routes.SubAccountTransfer.path} component={TransferSubAccount} />
