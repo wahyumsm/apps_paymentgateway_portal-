@@ -26,6 +26,7 @@ function InvoiceDisbursement() {
     const [inputHandle, setInputHandle] = useState({})
     const [totalAmount, setTotalAmount] = useState(0)
     const [taxTotalAmount, setTaxTotalAmount] = useState(0)
+    const [invDpp, setInvDpp] = useState(0)
     const [selectedPartnerInvoiceDisbursement, setSelectedPartnerInvoiceDisbursement] = useState([])
     const [selectedMonthYear, setSelectedMonthYear] = useState("")
     const [invoiceType, setInvoiceType] = useState(0)
@@ -128,6 +129,7 @@ function InvoiceDisbursement() {
         }
     }
 
+
     async function generateInvoiceDisbursement(monthYear, partnerId, dateInv, includeZeroAmount, invType, isSave) {
         try {
             const auth = 'Bearer ' + getToken();
@@ -145,8 +147,9 @@ function InvoiceDisbursement() {
                     objQTY[`priceTotal${i+1}`] = e.price_total
                 });
                 setDataInvoiceDisbursement(invoiceData.data.response_data)
-                setTotalAmount(invoiceData.data.response_data.inv_dpp)
+                setTotalAmount(invoiceData.data.response_data.inv_total_price)
                 setTaxTotalAmount(invoiceData.data.response_data.inv_ppn)
+                setInvDpp(invoiceData.data.response_data.inv_dpp)
                 setInvoiceNumber(invoiceData.data.response_data.inv_no)
                 setInputHandle(objQTY)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
@@ -158,8 +161,9 @@ function InvoiceDisbursement() {
                     objQTY[`priceTotal${i+1}`] = e.price_total
                 });
                 setDataInvoiceDisbursement(invoiceData.data.response_data)
-                setTotalAmount(invoiceData.data.response_data.inv_dpp)
+                setTotalAmount(invoiceData.data.response_data.inv_total_price)
                 setTaxTotalAmount(invoiceData.data.response_data.inv_ppn)
+                setInvDpp(invoiceData.data.response_data.inv_dpp)
                 setInvoiceNumber(invoiceData.data.response_data.inv_no)
                 setInputHandle(objQTY)
             }
@@ -401,7 +405,7 @@ function InvoiceDisbursement() {
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                            <td style={{ paddingRight: 366, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                            <td style={{ paddingRight: 281, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456</td>
                                         </tr>
                                 </table>
                             </div>
@@ -439,10 +443,10 @@ function InvoiceDisbursement() {
                                                     <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
                                                         <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
                                                         <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
-                                                        <td style={{ padding: 0, textAlign: "end", borderRight: 'hidden' }}>
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertToRupiah(inputHandle[`QTYTransaksi${idx+1}`], false, 0) }</td>
+                                                        {/* <td style={{ padding: 0, textAlign: "end", borderRight: 'hidden' }}>
                                                             <input name={`QTYTransaksi${idx+1}`} onChange={(e) => handleChange(e, idx, inputHandle[`QTYTransaksi${idx+1}`], inputHandle[`priceUnit${idx+1}`])} value={inputHandle[`QTYTransaksi${idx+1}`] === undefined ? 0 : convertFormatNumber(inputHandle[`QTYTransaksi${idx+1}`])} type='number' style={{ width: 75, height: 40, borderRadius: 8, border: '1px solid #E0E0E0' }} placeholder='0'/>
-                                                            {/* { convertFormatNumber(item.qty_trx) } */}
-                                                        </td>
+                                                        </td> */}
                                                         {/* <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertFormatNumber(item.qty_trx) }</td> */}
                                                         <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "-"}</td>
                                                         <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
@@ -482,35 +486,35 @@ function InvoiceDisbursement() {
                                             <td></td>
                                             <td>Harga Jual</td>
                                             <td style={{ textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0,00"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0,00</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(invDpp !== undefined) ? convertToRupiah(invDpp, true, 2).slice(3) : "0,00"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0,00"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_dpp !== undefined || dataInvoiceDisbursement.inv_ppn !== undefined) ? convertToRupiah((totalAmount + taxTotalAmount), true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_total !== undefined) ? convertToRupiah((dataInvoiceDisbursement.inv_total), true, 2).slice(3) : "0,00"}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -518,7 +522,7 @@ function InvoiceDisbursement() {
                             <div style={{ fontSize: 13, fontWeight: 700 }}>
                                 <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                     <tr>
-                                        <td>Terbilang: {(dataInvoiceDisbursement.inv_dpp !== undefined || dataInvoiceDisbursement.inv_ppn !== undefined) ? terbilangDisbursement((totalAmount + taxTotalAmount).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
+                                        <td>Terbilang: {(dataInvoiceDisbursement.inv_total !== undefined) ? terbilangDisbursement((dataInvoiceDisbursement.inv_total).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                     </tr>
                                 </table>
                                 <div>Remark:</div>
@@ -603,7 +607,7 @@ function InvoiceDisbursement() {
                                     <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                         <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                         <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                        <td style={{ paddingRight: 366, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                        <td style={{ paddingRight: 214, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456</td>
                                     </tr>
                                 {/* </tbody> */}
                             </table>
@@ -642,7 +646,7 @@ function InvoiceDisbursement() {
                                                 <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
                                                     <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
                                                     <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
-                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ inputHandle[`QTYTransaksi${idx+1}`] }</td>
+                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertToRupiah(inputHandle[`QTYTransaksi${idx+1}`], false, 0) }</td>
                                                     <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "-"}</td>
                                                     <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
                                                 </tr>
@@ -682,7 +686,7 @@ function InvoiceDisbursement() {
                                         <td></td>
                                         <td>Harga Jual</td>
                                         <td style={{ textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                        <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0,00"}</td>
                                         {/* <td style={{ textAlign: "end" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, true, 2).slice(3) : "0"}</td> */}
                                     </tr>
                                     <tr style={{ fontWeight: 700 }}>
@@ -691,7 +695,7 @@ function InvoiceDisbursement() {
                                         <td style={{ border: 'hidden' }}></td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0,00</td>
                                     </tr>
                                     <tr style={{ fontWeight: 700 }}>
                                         <td style={{ border: 'hidden' }}></td>
@@ -699,7 +703,7 @@ function InvoiceDisbursement() {
                                         <td style={{ border: 'hidden' }}></td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(invDpp !== undefined) ? convertToRupiah(invDpp, true, 2).slice(3) : "0,00"}</td>
                                     </tr>
                                     <tr style={{ fontWeight: 700 }}>
                                         <td style={{ border: 'hidden' }}></td>
@@ -707,7 +711,7 @@ function InvoiceDisbursement() {
                                         <td style={{ border: 'hidden' }}></td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0"}</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0,00"}</td>
                                     </tr>
                                     <tr style={{ fontWeight: 700 }}>
                                         <td style={{ border: 'hidden' }}></td>
@@ -715,7 +719,7 @@ function InvoiceDisbursement() {
                                         <td style={{ border: 'hidden' }}></td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined || taxTotalAmount !== undefined) ? convertToRupiah((totalAmount + taxTotalAmount), true, 2).slice(3) : "0"}</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoiceDisbursement.inv_total !== undefined) ? convertToRupiah((dataInvoiceDisbursement.inv_total), true, 2).slice(3) : "0,00"}</td>
                                     </tr>
                                 </tbody>
                             </Table>
@@ -723,7 +727,7 @@ function InvoiceDisbursement() {
                         <div style={{ fontSize: 13, fontWeight: 700 }}>
                             <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                 <tr>
-                                    <td>Terbilang: {(totalAmount !== undefined || taxTotalAmount !== undefined) ? terbilangDisbursement((totalAmount + taxTotalAmount).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
+                                    <td>Terbilang: {(dataInvoiceDisbursement.inv_total !== undefined) ? terbilangDisbursement((dataInvoiceDisbursement.inv_total).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                 </tr>
                             </table>
                             <div>Remark:</div>
