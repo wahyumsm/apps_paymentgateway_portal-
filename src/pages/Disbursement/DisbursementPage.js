@@ -3689,10 +3689,10 @@ function DisbursementPage() {
             // console.log(dataOrigin, "dataOrigin");
             const auth = "Bearer " + getToken()
             var formData = new FormData()
-            formData.append('file_excel', data, isDisburseManual ? "--" : 'file_data_karyawan.xlsx')
+            formData.append('file_excel', data, isDisburseManual ? "--.xlsx" : 'file_data_karyawan.xlsx')
 
             // var formDataOrigin = new FormData()
-            formData.append('file_excel', (isDisburseManual ? data : dataOrigin),  isDisburseManual ? "--" : 'file_data_karyawan_original_upload.xlsx')
+            formData.append('file_excel', (isDisburseManual ? data : dataOrigin),  isDisburseManual ? "--.xlsx" : 'file_data_karyawan_original_upload.xlsx')
             const headers = {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth

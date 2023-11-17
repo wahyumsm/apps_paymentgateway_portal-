@@ -1294,8 +1294,8 @@ function Disbursement() {
                                                     <option defaultChecked disabled value="">Pilih Status</option>
                                                     <option value={2}>Berhasil</option>
                                                     <option value={1}>Dalam Proses</option>
+                                                    <option value={19}>Diproses Bank</option>
                                                     <option value={4}>Gagal</option>
-                                                    {/* <option value={7}>Menunggu Pembayaran</option> */}
                                                     {/* <option value={9}>Kadaluwarsa</option> */}
                                                 </Form.Select>
                                             </Col>
@@ -1380,8 +1380,8 @@ function Disbursement() {
                                                     <option defaultChecked disabled value="">{language === null ? eng.placeholderStatus : language.placeholderStatus}</option>
                                                     <option value={2}>{language === null ? eng.berhasil : language.berhasil}</option>
                                                     <option value={1}>{language === null ? eng.dalamProses : language.dalamProses}</option>
+                                                    <option value={19}>Diproses Bank</option>
                                                     <option value={4}>{language === null ? eng.gagal : language.gagal}</option>
-                                                    {/* <option value={7}>Menunggu Pembayaran</option> */}
                                                     {/* <option value={9}>Kadaluwarsa</option> */}
                                                 </Form.Select>
                                             </Col>
@@ -1547,8 +1547,8 @@ function Disbursement() {
                             </div>
                             <div className="d-flex justify-content-end align-items-center my-4">
                                 <button
-                                    className={Object.keys(isChecklist).length === 0 || isChecklist.dataDiperbaikiAll === false || perbaikanDataDisbursement.list_invalid_data.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'}
-                                    disabled={Object.keys(isChecklist).length === 0 || isChecklist.dataDiperbaikiAll === false || perbaikanDataDisbursement.list_invalid_data.length === 0}
+                                    className={Object.keys(isChecklist).length === 0 || isChecklist.dataDiperbaikiAll === false || (isChecklist.dataDiperbaikiAll === true && Object.keys(isChecklist).length === 1) || perbaikanDataDisbursement.list_invalid_data.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'}
+                                    disabled={Object.keys(isChecklist).length === 0 || isChecklist.dataDiperbaikiAll === false || (isChecklist.dataDiperbaikiAll === true && Object.keys(isChecklist).length === 1) || perbaikanDataDisbursement.list_invalid_data.length === 0}
                                     // disabled={dataFromUploadExcel.length === 0} //untuk excel
                                     style={{ width: '25%' }}
                                     onClick={() => createDataForModal(perbaikanDataDisbursement.list_invalid_data, isChecklist)}
