@@ -735,8 +735,8 @@ const RiwayatInvoice = () => {
                     </div>
                     <div style={{ display: "flex", justifyContent: "end", marginRight: -15, width: "unset", padding: "0px 15px" }}>
                         <button
-                            // onClick={SaveAsPDFHandler}
-                            onClick={CreatePDFfromHTML}
+                            onClick={SaveAsPDFHandler}
+                            // onClick={CreatePDFfromHTML}
                             className={'add-button mb-3'}
                             style={{ maxWidth: 'fit-content' }}
                             // disabled={Object.keys(dataInvoice).length === 0}
