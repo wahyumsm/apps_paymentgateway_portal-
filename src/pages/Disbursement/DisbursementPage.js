@@ -3685,25 +3685,19 @@ function DisbursementPage() {
 
     async function sendDataDisburse (data, dataOrigin, isDisburseManual) {
         try {
-            // console.log(data, "data");
-            // console.log(dataOrigin, "dataOrigin");
             const auth = "Bearer " + getToken()
             var formData = new FormData()
             formData.append('file_excel', data, isDisburseManual ? "--.xlsx" : 'file_data_karyawan.xlsx')
-
-            // var formDataOrigin = new FormData()
             formData.append('file_excel', (isDisburseManual ? data : dataOrigin),  isDisburseManual ? "--.xlsx" : 'file_data_karyawan_original_upload.xlsx')
+            formData.append('file_ID', isDisburseManual ? 1 : 2)
             const headers = {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
             }
-            // console.log(formData, 'formData');
-            // console.log(formDataOrigin, 'formDataOrigin');
             const dataSendHandler = await axios.post(BaseURL + "/Partner/UploadDisbursementFile", formData, {headers: headers})
             // console.log(dataSendHandler, 'dataSendHandler');
             if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length === 0) {
                 setShowModalConfirm(false)
-                // history.push("/disbursement/disbursementpage")
                 setDataDisburse([])
                 setDataFromUploadExcel([])
                 setAllNominal([])
@@ -3716,7 +3710,6 @@ function DisbursementPage() {
             } else if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length !== 0) {
                 sessionStorage(dataSendHandler.data.response_new_token)
                 setShowModalConfirm(false)
-                // history.push("/disbursement/disbursementpage")
                 setDataDisburse([])
                 setDataFromUploadExcel([])
                 setAllNominal([])

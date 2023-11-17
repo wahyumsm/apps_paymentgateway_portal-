@@ -17,6 +17,7 @@ import $ from 'jquery'
 import { sum } from 'lodash'
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import Checklist from '../../assets/icon/checklist_icon.svg'
+import ChecklistError from '../../assets/icon/note_icon_white.svg'
 
 function Disbursement() {
 
@@ -71,6 +72,7 @@ function Disbursement() {
     const [totalHoldBalance, setTotalHoldBalance] = useState(0)
     const [showModalStatusDisburse, setShowModalStatusDisburse] = useState(false)
     const [responMsg, setResponMsg] = useState(0)
+    const [errorDisbursementPerbaikanData, setErrorDisbursementPerbaikanData] = useState(false)
     console.log(perbaikanDataDisbursement, 'perbaikanDataDisbursement');
     console.log(isChecklist, 'isChecklist');
 
@@ -230,6 +232,7 @@ function Disbursement() {
             var formData = new FormData()
             formData.append('file_excel', data, 'perbaikan_data_disbursement.xlsx')
             formData.append('file_excel', data, 'perbaikan_data_disbursement_origin.xlsx')
+            formData.append('file_ID', 3)
             const headers = {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
@@ -278,42 +281,56 @@ function Disbursement() {
     function createDataForModal(dataFromAPI, dataChecklist) {
         console.log(dataFromAPI, 'dataFromAPI');
         console.log(dataChecklist, 'dataChecklist');
-        let idTrue = []
-        let dataExcel = []
-        let allFee = 0
-        let allNominal = 0
-        let allTotalNominal = 0
+        let isUncheck = 0
         for (const key in dataChecklist) {
-            if (key !== "dataDiperbaikiAll" && dataChecklist[key]) {
-                idTrue.push(key.split('baiki')[1])
-            }
+            dataChecklist[key] === false && isUncheck ++
         }
-        let filteredData = dataFromAPI.filter(item => item.similarity > 50 && idTrue.includes(String(item.invalid_account_id)));
-        filteredData.forEach(item => {
-            allFee += (item.tdishburse_fee + item.tdishburse_fee_bank + item.tdishburse_fee_tax)
-            allNominal += item.tdishburse_amount
-            allTotalNominal += item.tdishburse_total_amount
-            dataExcel.push({"bank_code": item.bank_code, "branch_name": item.branch_name, "account_number": item.acc_number, "account_name": item.nama_submit, "amount": item.tdishburse_amount, "email": item.email, "description": item.notes, "save_account_number": false, invalid_account_id: item.invalid_account_id})
-        })
-        let workSheet = XLSX.utils.json_to_sheet(dataExcel)
-        let workBook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-        // XLSX.writeFile(workBook, "Disbursement Report.xlsx");
-        const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "array"})
-        var data = new Blob([new Uint8Array(convertFile)], { type: "application/octet-stream"})
-        console.log(filteredData, 'filteredData');
-        console.log(idTrue, 'idTrue');
-        console.log(dataExcel, 'dataExcel');
-        console.log(data, 'data');
-        console.log(allFee, 'allFee');
-        console.log(allNominal, 'allNominal');
-        console.log(allTotalNominal, 'allTotalNominal');
-        setDataPerbaikanModal(filteredData)
-        setDataForUpload(data)
-        setAllFee(allFee)
-        setAllNominal(allNominal)
-        setAllTotalNominal(allTotalNominal)
-        setShowModalKonfirmasiPerbaikanData(true)
+        console.log(isUncheck, 'isUncheck');
+        console.log(Object.keys(dataChecklist).length, 'Object.keys(dataChecklist).length');
+        if (Object.keys(dataChecklist).length === 0 || Object.keys(dataChecklist).length === isUncheck) {
+            setErrorDisbursementPerbaikanData(true)
+            setTimeout(() => {
+                setErrorDisbursementPerbaikanData(false)
+            }, 5000);
+        } else {
+            setErrorDisbursementPerbaikanData(false)
+            let idTrue = []
+            let dataExcel = []
+            let allFee = 0
+            let allNominal = 0
+            let allTotalNominal = 0
+            for (const key in dataChecklist) {
+                if (key !== "dataDiperbaikiAll" && dataChecklist[key]) {
+                    idTrue.push(key.split('baiki')[1])
+                }
+            }
+            let filteredData = dataFromAPI.filter(item => item.similarity > 50 && idTrue.includes(String(item.invalid_account_id)));
+            filteredData.forEach(item => {
+                allFee += (item.tdishburse_fee + item.tdishburse_fee_bank + item.tdishburse_fee_tax)
+                allNominal += item.tdishburse_amount
+                allTotalNominal += item.tdishburse_total_amount
+                dataExcel.push({"bank_code": item.bank_code, "branch_name": item.branch_name, "account_number": item.acc_number, "account_name": item.nama_submit, "amount": item.tdishburse_amount, "email": item.email, "description": item.notes, "save_account_number": false, invalid_account_id: item.invalid_account_id})
+            })
+            let workSheet = XLSX.utils.json_to_sheet(dataExcel)
+            let workBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+            // XLSX.writeFile(workBook, "Disbursement Report.xlsx");
+            const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "array"})
+            var data = new Blob([new Uint8Array(convertFile)], { type: "application/octet-stream"})
+            console.log(filteredData, 'filteredData');
+            console.log(idTrue, 'idTrue');
+            console.log(dataExcel, 'dataExcel');
+            console.log(data, 'data');
+            console.log(allFee, 'allFee');
+            console.log(allNominal, 'allNominal');
+            console.log(allTotalNominal, 'allTotalNominal');
+            setDataPerbaikanModal(filteredData)
+            setDataForUpload(data)
+            setAllFee(allFee)
+            setAllNominal(allNominal)
+            setAllTotalNominal(allTotalNominal)
+            setShowModalKonfirmasiPerbaikanData(true)
+        }
     }
 
     function handleCheckPerbaikanDataAll(e, dataFromAPI) {
@@ -339,15 +356,31 @@ function Disbursement() {
         console.log(checkAll, 'checkAll');
     }
 
-    function handleCheckPerbaikanData(e, dataIsChecklist) {
+    function handleCheckPerbaikanData(e, dataIsChecklist, dataFromAPI) {
         console.log(e.target.name, 'e.target.name');
         console.log(e.target.checked, 'e.target.checked');
         if (e.target.checked) {
-            setIsChecklist({
-                ...isChecklist,
-                dataDiperbaikiAll: true,
-                [e.target.name]: e.target.checked
-            })
+            let isTrue = 0
+            for (const key in dataIsChecklist) {
+                if (key !== "dataDiperbaikiAll" && dataIsChecklist[key]) {
+                    isTrue ++
+                }
+            }
+            const filteredDataFromAPI = dataFromAPI.filter(item => item.similarity > 50)
+            console.log(isTrue, 'isTrue');
+            console.log(filteredDataFromAPI, 'filteredDataFromAPI');
+            if (filteredDataFromAPI.length !== (isTrue + 1)) {
+                setIsChecklist({
+                    ...isChecklist,
+                    [e.target.name]: e.target.checked
+                })
+            } else {
+                setIsChecklist({
+                    ...isChecklist,
+                    dataDiperbaikiAll: true,
+                    [e.target.name]: e.target.checked
+                })
+            }
         } else {
             console.log('masuk false');
             let isFalse = 0
@@ -475,7 +508,7 @@ function Disbursement() {
         try {
             if (userRole !== "102") {
                 const auth = 'Bearer ' + getToken();
-                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "date_from": "${dateNow}", "date_to": "${dateNow}", "partner_trans_id":"", "payment_code":"", "reference_no": "", "keterangan": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "sub_partner_id":"", "date_from": "${dateNow}", "date_to": "${dateNow}", "partner_trans_id":"", "payment_code":"", "reference_no": "", "keterangan": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth,
@@ -500,7 +533,7 @@ function Disbursement() {
                 }
             } else {
                 const auth = 'Bearer ' + getToken();
-                const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "date_from": "${dateNow}", "date_to": "${dateNow}", "partner_trans_id":"", "payment_code":"", "reference_no": "", "keterangan": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "date_from": "${dateNow}", "date_to": "${dateNow}", "partner_trans_id":"", "payment_code":"", "reference_no": "", "keterangan": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth,
@@ -544,8 +577,8 @@ function Disbursement() {
             setIsFilterDisbursement(true)
             setActivePageDisbursement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParamsAdmin = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
-            const dataParamsPertner = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParamsAdmin = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParamsPertner = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
@@ -729,7 +762,7 @@ function Disbursement() {
                     style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tdishburse_status_id === 1 || row.tdishburse_status_id === 7,
+                    when: row => row.tdishburse_status_id === 1 || row.tdishburse_status_id === 7 || row.tdishburse_status_id === 19,
                     style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
                 },
                 {
@@ -829,7 +862,7 @@ function Disbursement() {
                     style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tdishburse_status_id === 1 || row.tdishburse_status_id === 7,
+                    when: row => row.tdishburse_status_id === 1 || row.tdishburse_status_id === 7 || row.tdishburse_status_id === 19,
                     style: { background: "#FEF4E9", color: "#F79421", paddingLeft: "unset" }
                 },
                 {
@@ -911,7 +944,7 @@ function Disbursement() {
                         name={'dataDiperbaiki' + row.invalid_account_id}
                         value={row.invalid_account_id}
                         checked={isChecklist[`dataDiperbaiki${row.invalid_account_id}`] !== undefined ? isChecklist[`dataDiperbaiki${row.invalid_account_id}`] : false}
-                        onChange={(e) => handleCheckPerbaikanData(e, isChecklist)}
+                        onChange={(e) => handleCheckPerbaikanData(e, isChecklist, perbaikanDataDisbursement.list_invalid_data)}
                         disabled={row.similarity < 50}
                     />
                 </div>,
@@ -1027,7 +1060,7 @@ function Disbursement() {
                     // console.log(dateRange, 'dateRange 2');
                     // console.log(partnerTransId, "partner trans filter");
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId === undefined ? "" : partnerTransId}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "reference_no": "", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId === undefined ? "" : partnerTransId}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "reference_no": "", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -1068,7 +1101,7 @@ function Disbursement() {
                 try {
                     // console.log(partnerTransId, "partner trans filter");
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "${referenceNo}", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "${referenceNo}", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -1107,7 +1140,7 @@ function Disbursement() {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "payment_code": "", "date_from": "${currentDate}", "date_to": "${currentDate}", "partner_trans_id":"", "reference_no":"", "keterangan": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "payment_code": "", "date_from": "${currentDate}", "date_to": "${currentDate}", "partner_trans_id":"", "reference_no":"", "keterangan": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -1146,7 +1179,7 @@ function Disbursement() {
             async function dataExportDisbursement() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4], "transID" : "", "sub_partner_id":"", "payment_code": "", "date_from": "${currentDate}", "date_to": "${currentDate}", "partner_trans_id":"", "reference_no":"", "keterangan": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "sub_partner_id":"", "payment_code": "", "date_from": "${currentDate}", "date_to": "${currentDate}", "partner_trans_id":"", "reference_no":"", "keterangan": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -1185,12 +1218,12 @@ function Disbursement() {
     }
 
     function pindahHalaman(params) {
+        setIsChecklist({})
+        resetButtonHandle()
         if (params === "riwayat") {
-            setIsChecklist({})
             disbursementReport(currentDate, activePageDisbursement, user_role, language === null ? 'EN' : language.flagName)
             disbursementTabs(true)
         } else {
-            resetButtonHandle()
             disbursementPerbaikanData(1)
             getBalanceHandle()
             disbursementTabs(false)
@@ -1225,6 +1258,14 @@ function Disbursement() {
                 <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
                     <Toast style={{ width: "900px", backgroundColor: "#077E86" }} position="bottom-center" className="text-center">
                         <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>Disbursement Berhasil.</Toast.Body>
+                    </Toast>
+                </div>
+            }
+            {
+                errorDisbursementPerbaikanData &&
+                <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
+                    <Toast style={{ width: "900px", backgroundColor: "#B9121B" }} position="bottom-center" className="text-center">
+                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={ChecklistError} alt="checklist" /></span>Wajib Pilih Data Disbursement</Toast.Body>
                     </Toast>
                 </div>
             }
@@ -1366,12 +1407,12 @@ function Disbursement() {
                                     </> :
                                     <>
                                         <Row className='mt-4'>
-                                            <Col xs={4} className="d-flex justify-content-between  align-items-center">
+                                            <Col xs={4} className="d-flex justify-content-between align-items-center">
                                                 <span className={language !== null ? (language.flagName === "CN" ? 'me-5' : 'me-4') : 'me-4'}>{language === null ? eng.idTransaksi : language.idTransaksi}</span>
                                                 <input onChange={(e) => handleChange(e)} value={inputHandle.idTransaksiDisbursement} name="idTransaksiDisbursement" type='text'className={language !== null ? (language.flagName === "CN" ? 'input-text-report ms-5' : 'input-text-report ') : 'input-text-report '} placeholder={language === null ? eng.placeholderIdTrans : language.placeholderIdTrans}/>
                                             </Col>
                                             <Col xs={4} className='d-flex justify-content-between align-items-center'>
-                                                <span>{language === null ? eng.partnerTransId : language.partnerTransId}</span>
+                                                <span style={{ marginLeft: 7 }}>{language === null ? eng.partnerTransId : language.partnerTransId}</span>
                                                 <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransId} name="partnerTransId" type='text'className='input-text-report' placeholder={language === null ? eng.placeholderPartnerTransId : language.placeholderPartnerTransId}/>
                                             </Col>
                                             <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: "30%"}}>
@@ -1380,9 +1421,8 @@ function Disbursement() {
                                                     <option defaultChecked disabled value="">{language === null ? eng.placeholderStatus : language.placeholderStatus}</option>
                                                     <option value={2}>{language === null ? eng.berhasil : language.berhasil}</option>
                                                     <option value={1}>{language === null ? eng.dalamProses : language.dalamProses}</option>
-                                                    <option value={19}>Diproses Bank</option>
+                                                    <option value={19}>{language === null ? eng.diprosesBank : language.diprosesBank}</option>
                                                     <option value={4}>{language === null ? eng.gagal : language.gagal}</option>
-                                                    {/* <option value={9}>Kadaluwarsa</option> */}
                                                 </Form.Select>
                                             </Col>
                                         </Row>
@@ -1400,8 +1440,8 @@ function Disbursement() {
                                                 </Form.Select>
                                             </Col>
                                             <Col xs={4} className="d-flex justify-content-between align-items-center" style={{  width: "34%" }}>
-                                                <span style={{ marginRight: 26 }}>Keterangan</span>
-                                                <Form.Select name='keteranganDisbursement' className="input-text-ez me-2" value={inputHandle.keteranganDisbursement} onChange={(e) => handleChange(e)}>
+                                                <span>Keterangan</span>
+                                                <Form.Select name='keteranganDisbursement' className="input-text-ez" style={{ marginRight: 20 }} value={inputHandle.keteranganDisbursement} onChange={(e) => handleChange(e)}>
                                                     <option defaultChecked disabled value={""}>Pilih Keterangan</option>
                                                     <option value={"Kesalahan Nomor Rekening"}>Kesalahan Nomor Rekening</option>
                                                     <option value={"Kesalahan Nama Pemilik Rekening"}>Kesalahan Nama Pemilik Rekening</option>
@@ -1547,8 +1587,9 @@ function Disbursement() {
                             </div>
                             <div className="d-flex justify-content-end align-items-center my-4">
                                 <button
-                                    className={Object.keys(isChecklist).length === 0 || isChecklist.dataDiperbaikiAll === false || (isChecklist.dataDiperbaikiAll === true && Object.keys(isChecklist).length === 1) || perbaikanDataDisbursement.list_invalid_data.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'}
-                                    disabled={Object.keys(isChecklist).length === 0 || isChecklist.dataDiperbaikiAll === false || (isChecklist.dataDiperbaikiAll === true && Object.keys(isChecklist).length === 1) || perbaikanDataDisbursement.list_invalid_data.length === 0}
+                                    className='btn-ez-transfer'
+                                    // className={Object.keys(isChecklist).length === 0 || isChecklist.dataDiperbaikiAll === false || (isChecklist.dataDiperbaikiAll === true && Object.keys(isChecklist).length === 1) || perbaikanDataDisbursement.list_invalid_data.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'}
+                                    // disabled={Object.keys(isChecklist).length === 0 || isChecklist.dataDiperbaikiAll === false || (isChecklist.dataDiperbaikiAll === true && Object.keys(isChecklist).length === 1) || perbaikanDataDisbursement.list_invalid_data.length === 0}
                                     // disabled={dataFromUploadExcel.length === 0} //untuk excel
                                     style={{ width: '25%' }}
                                     onClick={() => createDataForModal(perbaikanDataDisbursement.list_invalid_data, isChecklist)}
