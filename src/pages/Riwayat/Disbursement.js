@@ -287,6 +287,7 @@ function Disbursement() {
         }
         console.log(isUncheck, 'isUncheck');
         console.log(Object.keys(dataChecklist).length, 'Object.keys(dataChecklist).length');
+        console.log(Object.keys(dataChecklist).length === isUncheck, 'Object.keys(dataChecklist).length === isUncheck');
         if (Object.keys(dataChecklist).length === 0 || Object.keys(dataChecklist).length === isUncheck) {
             setErrorDisbursementPerbaikanData(true)
             setTimeout(() => {
@@ -305,11 +306,18 @@ function Disbursement() {
                 }
             }
             let filteredData = dataFromAPI.filter(item => item.similarity > 50 && idTrue.includes(String(item.invalid_account_id)));
-            filteredData.forEach(item => {
+            // filteredData.forEach(item => {
+            //     allFee += (item.tdishburse_fee + item.tdishburse_fee_bank + item.tdishburse_fee_tax)
+            //     allNominal += item.tdishburse_amount
+            //     allTotalNominal += item.tdishburse_total_amount
+            //     dataExcel.push({"bank_code": item.bank_code, "branch_name": item.branch_name, "account_number": item.acc_number, "account_name": item.nama_submit, "amount": item.tdishburse_amount, "email": item.email, "description": item.notes, "save_account_number": false, invalid_account_id: item.invalid_account_id})
+            // })
+            filteredData = filteredData.map((item, id) => {
                 allFee += (item.tdishburse_fee + item.tdishburse_fee_bank + item.tdishburse_fee_tax)
                 allNominal += item.tdishburse_amount
                 allTotalNominal += item.tdishburse_total_amount
                 dataExcel.push({"bank_code": item.bank_code, "branch_name": item.branch_name, "account_number": item.acc_number, "account_name": item.nama_submit, "amount": item.tdishburse_amount, "email": item.email, "description": item.notes, "save_account_number": false, invalid_account_id: item.invalid_account_id})
+                return {...item, number: id + 1}
             })
             let workSheet = XLSX.utils.json_to_sheet(dataExcel)
             let workBook = XLSX.utils.book_new();
@@ -383,26 +391,26 @@ function Disbursement() {
             }
         } else {
             console.log('masuk false');
-            let isFalse = 0
-            for (const key in dataIsChecklist) {
-                dataIsChecklist[key] === false && isFalse ++
-            }
-            console.log(Object.keys(dataIsChecklist).length, 'Object.keys(dataIsChecklist).length');
-            console.log(isFalse + 2, 'isFalse');
-            if (Object.keys(dataIsChecklist).length !== (isFalse + 2)) {
-                console.log('masuk false tidak sama');
-                setIsChecklist({
-                    ...isChecklist,
-                    [e.target.name]: e.target.checked
-                })
-            } else {
-                console.log('masuk false sama');
-                setIsChecklist({
-                    ...isChecklist,
-                    dataDiperbaikiAll: false,
-                    [e.target.name]: e.target.checked
-                })
-            }
+            // let isFalse = 0
+            // for (const key in dataIsChecklist) {
+            //     dataIsChecklist[key] === false && isFalse ++
+            // }
+            // console.log(Object.keys(dataIsChecklist).length, 'Object.keys(dataIsChecklist).length');
+            // console.log(isFalse + 2, 'isFalse');
+            // if (Object.keys(dataIsChecklist).length !== (isFalse + 2)) {
+            //     console.log('masuk false tidak sama');
+            //     setIsChecklist({
+            //         ...isChecklist,
+            //         [e.target.name]: e.target.checked
+            //     })
+            // } else {
+            //     console.log('masuk false sama');
+            // }
+            setIsChecklist({
+                ...isChecklist,
+                dataDiperbaikiAll: false,
+                [e.target.name]: e.target.checked
+            })
         }
     }
 
