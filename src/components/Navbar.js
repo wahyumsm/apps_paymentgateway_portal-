@@ -565,10 +565,10 @@ export default (props) => {
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayat-transaksi/disbursement')
 
-                // (window.location.href === 'http://reactdev/dev3/#/dev3/disbursement') ||
-                // (window.location.href === 'http://reactdev/dev3/#/dev3/riwayattopup') ||
-                // (window.location.href === 'http://reactdev/dev3/#/dev3/alokasisaldo') ||
-                // (window.location.href === 'http://reactdev/dev3/#/dev3/riwayat-transaksi/disbursement')
+                || (window.location.href === 'http://reactdev/dev2/#/dev2/disbursement') ||
+                (window.location.href === 'http://reactdev/dev2/#/dev2/riwayattopup') ||
+                (window.location.href === 'http://reactdev/dev2/#/dev2/alokasisaldo') ||
+                (window.location.href === 'http://reactdev/dev2/#/dev2/riwayat-transaksi/disbursement')
 
                 // (window.location.href === 'https://localhost:3000/dev3#/dev3/disbursement') ||
                 // (window.location.href === 'https://localhost:3000/dev3#/dev3/riwayattopup') ||
