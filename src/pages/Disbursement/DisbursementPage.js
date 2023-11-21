@@ -88,6 +88,7 @@ function DisbursementPage() {
     const [dataFromUpload, setDataFromUpload] = useState([])
     const [dataOriginFromUpload, setDataOriginFromUpload] = useState([])
     const [dataFromUploadExcel, setDataFromUploadExcel] = useState([])
+    const [fileNameDisbursementBulk, setFileNameDisbursementBulk] = useState("")
     const [errorFound, setErrorFound] = useState([])
     const [errorLoadPagination, setErrorLoadPagination] = useState([])
     const [errorFoundPagination, setErrorFoundPagination] = useState([])
@@ -214,7 +215,10 @@ function DisbursementPage() {
                         const wb = XLSX.read(pond, {type: "base64"})
                         const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
                         let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
-                        // console.log(ws, "ws");
+                        console.log(pond, "pond");
+                        console.log(wb, "wb");
+                        console.log(ws, "ws");
+                        console.log(dataTemp, "dataTemp");
                         if (wb.SheetNames.length !== 1) {
                             setDataFromUploadExcel([])
                             setErrorFound([])
@@ -1161,6 +1165,7 @@ function DisbursementPage() {
                                 }, 2500);
                                 setTimeout(() => {
                                     // console.log(data, 'masuk usestate');
+                                    setFileNameDisbursementBulk(newValue[0].file.name)
                                     setDataFromUploadExcel(data)
                                 }, 2500);
                             }
@@ -3683,12 +3688,12 @@ function DisbursementPage() {
         setShowModalConfirm(true)
     }
 
-    async function sendDataDisburse (data, dataOrigin, isDisburseManual) {
+    async function sendDataDisburse (data, dataOrigin, isDisburseManual, fileNameBulk) {
         try {
             const auth = "Bearer " + getToken()
             var formData = new FormData()
-            formData.append('file_excel', data, isDisburseManual ? "--.xlsx" : 'file_data_karyawan.xlsx')
-            formData.append('file_excel', (isDisburseManual ? data : dataOrigin),  isDisburseManual ? "--.xlsx" : 'file_data_karyawan_original_upload.xlsx')
+            formData.append('file_excel', data, isDisburseManual ? "--.xlsx" : `data_non_ori_${fileNameBulk}`)
+            formData.append('file_excel', (isDisburseManual ? data : dataOrigin),  isDisburseManual ? "--.xlsx" : fileNameBulk)
             formData.append('file_ID', isDisburseManual ? 1 : 2)
             const headers = {
                 'Content-Type':'multipart/form-data',
@@ -5107,7 +5112,7 @@ function DisbursementPage() {
                                 {language === null ? eng.batal : language.batal}
                             </button>
                             <button
-                                onClick={() => sendDataDisburse(dataExcelDisburse, dataExcelOriginDisburse, isDisbursementManual)}
+                                onClick={() => sendDataDisburse(dataExcelDisburse, dataExcelOriginDisburse, isDisbursementManual, fileNameDisbursementBulk)}
                                 className={isCheckedConfirm === true ? 'btn-ez-transfer ms-3' : 'btn-noez-transfer ms-3'}
                                 disabled={isCheckedConfirm === false}
                                 style={{ width: '25%' }}

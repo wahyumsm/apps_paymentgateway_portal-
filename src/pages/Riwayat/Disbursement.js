@@ -282,6 +282,7 @@ function Disbursement() {
         console.log(dataFromAPI, 'dataFromAPI');
         console.log(dataChecklist, 'dataChecklist');
         let isUncheck = 0
+        delete dataChecklist.dataDiperbaikiAll
         for (const key in dataChecklist) {
             dataChecklist[key] === false && isUncheck ++
         }
@@ -306,12 +307,6 @@ function Disbursement() {
                 }
             }
             let filteredData = dataFromAPI.filter(item => item.similarity > 50 && idTrue.includes(String(item.invalid_account_id)));
-            // filteredData.forEach(item => {
-            //     allFee += (item.tdishburse_fee + item.tdishburse_fee_bank + item.tdishburse_fee_tax)
-            //     allNominal += item.tdishburse_amount
-            //     allTotalNominal += item.tdishburse_total_amount
-            //     dataExcel.push({"bank_code": item.bank_code, "branch_name": item.branch_name, "account_number": item.acc_number, "account_name": item.nama_submit, "amount": item.tdishburse_amount, "email": item.email, "description": item.notes, "save_account_number": false, invalid_account_id: item.invalid_account_id})
-            // })
             filteredData = filteredData.map((item, id) => {
                 allFee += (item.tdishburse_fee + item.tdishburse_fee_bank + item.tdishburse_fee_tax)
                 allNominal += item.tdishburse_amount
