@@ -612,7 +612,7 @@ function CreateVAUSD() {
                             <Row>
                                 <Col>
                                     <Row className='d-flex justify-content-start'>
-                                        <Col xs={3} className="card-information mt-3" style={{border: '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
+                                        <Col xs={3} className="card-information mt-3" style={{border: stockVA.available_stock.stock_will_run_out ? '1px solid #B9121B' : '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
                                             <div className='d-flex'> {/*noteInfoRed*/}
                                                 <img src={stockVA.available_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
                                                 <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total sisa stok VA Tersedia: </span>
