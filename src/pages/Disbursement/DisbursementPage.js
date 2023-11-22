@@ -3692,8 +3692,8 @@ function DisbursementPage() {
         try {
             const auth = "Bearer " + getToken()
             var formData = new FormData()
-            formData.append('file_excel', data, isDisburseManual ? "--.xlsx" : `data_non_ori_${fileNameBulk}`)
-            formData.append('file_excel', (isDisburseManual ? data : dataOrigin),  isDisburseManual ? "--.xlsx" : fileNameBulk)
+            formData.append('file_excel', data, isDisburseManual ? "--.xlsx" : fileNameBulk)
+            formData.append('file_excel', (isDisburseManual ? data : dataOrigin),  isDisburseManual ? "--.xlsx" : `data_ori_${fileNameBulk}`)
             formData.append('file_ID', isDisburseManual ? 1 : 2)
             const headers = {
                 'Content-Type':'multipart/form-data',
@@ -3707,6 +3707,12 @@ function DisbursementPage() {
                 setDataFromUploadExcel([])
                 setAllNominal([])
                 setAllFee([])
+                setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
+                <div className='pb-4'>
+                    <span class="filepond--label-action">
+                        ${language === null ? eng.unggahFile : language.unggahFile}
+                    </span>
+                </div>`)
                 setShowModalStatusDisburse(true)
                 setResponMsg(dataSendHandler.data.response_data.status_id)
                 setTimeout(() => {
@@ -3719,6 +3725,12 @@ function DisbursementPage() {
                 setDataFromUploadExcel([])
                 setAllNominal([])
                 setAllFee([])
+                setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
+                <div className='pb-4'>
+                    <span class="filepond--label-action">
+                        ${language === null ? eng.unggahFile : language.unggahFile}
+                    </span>
+                </div>`)
                 setShowModalStatusDisburse(true)
                 setResponMsg(dataSendHandler.data.response_data.status_id)
                 setTimeout(() => {
