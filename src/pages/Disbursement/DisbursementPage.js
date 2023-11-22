@@ -3713,6 +3713,12 @@ function DisbursementPage() {
                 setDataFromUploadExcel([])
                 setAllNominal([])
                 setAllFee([])
+                setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
+                <div className='pb-4'>
+                    <span class="filepond--label-action">
+                        ${language === null ? eng.unggahFile : language.unggahFile}
+                    </span>
+                </div>`)
                 setIsLoadingDisburseMentConfirm(false)
                 setShowModalStatusDisburse(true)
                 setResponMsg(dataSendHandler.data.response_data.status_id)
@@ -3729,6 +3735,12 @@ function DisbursementPage() {
                 setDataFromUploadExcel([])
                 setAllNominal([])
                 setAllFee([])
+                setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
+                <div className='pb-4'>
+                    <span class="filepond--label-action">
+                        ${language === null ? eng.unggahFile : language.unggahFile}
+                    </span>
+                </div>`)
                 setIsLoadingDisburseMentConfirm(false)
                 setShowModalStatusDisburse(true)
                 setResponMsg(dataSendHandler.data.response_data.status_id)
