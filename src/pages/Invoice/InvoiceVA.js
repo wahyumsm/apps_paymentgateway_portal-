@@ -218,9 +218,6 @@ function InvoiceVA() {
         }
     }
 
-    console.log(taxTotalAmount, "taxTotalAmount");
-    console.log(dataInvoice.inv_total, "dataInvoice.inv_total");
-
     async function generateInvoice(monthYear, partnerId, dateInv, includeZeroAmount, invType, isSave) {
         try {
             const auth = 'Bearer ' + getToken();

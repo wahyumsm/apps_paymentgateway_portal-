@@ -49,14 +49,23 @@ const ReNotifyEwallet = () => {
         }
     }
 
-    async function submitReNotify(noEwallet) {
+    const [inputHandlePayTransId, setInputHandlePayTransId] = useState("")
+    function handleChangePayTransId (e) {
+        setInputHandlePayTransId(e.target.value)
+    }
+    
+    // console.log(inputHandlePayTransId, "inputHandlePayTransId");
+    // console.log(dataEwallet.tpayewallet_pay_trans_id, "dataEwallet.tpayewallet_pay_trans_id");
+
+    async function submitReNotify(noEwallet, payTransId) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"emoney_code": "${noEwallet}"}`)
+            const dataParams = encryptData(`{"emoney_code": "${noEwallet}", "payment_trans_code": "${payTransId}"}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
+            // console.log(dataParams, "dataParams");
             const submittedReNotify = await axios.post(BaseURL + "/Helpdesk/SubmitReNotifyEmoney", { data: dataParams }, { headers: headers })
             if (submittedReNotify.status === 200 && submittedReNotify.data.response_code === 200 && submittedReNotify.data.response_new_token === null) {
                 alert(submittedReNotify.data.response_data.results.Message)
@@ -188,6 +197,22 @@ const ReNotifyEwallet = () => {
                         </Col>
                     </Row>
                     <div className='base-content' style={{ width:"100%", padding: 50 }}>
+                        <Row className='mb-4'>
+                            <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
+                                <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                    Payment Trans ID
+                                </span>
+                            </Col>
+                            <Col xs={10}>
+                                <Form.Control
+                                    value={dataEwallet.tpayewallet_pay_trans_id !== null ? dataEwallet.tpayewallet_pay_trans_id : inputHandlePayTransId}
+                                    onChange={(e) => handleChangePayTransId(e)}
+                                    disabled={dataEwallet.tpayewallet_pay_trans_id !== null}
+                                    type='text'
+                                    style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                    />
+                            </Col>
+                        </Row>
                         <Row className='mb-4'>
                             <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                                 <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
@@ -338,9 +363,9 @@ const ReNotifyEwallet = () => {
                         </button>
                         <button
                             onClick={() => setShowModalSubmitEwallet(true)}
-                            className={(dataEwallet.is_success === undefined || dataEwallet.is_success !== false) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}
+                            className={(dataEwallet.is_success === undefined || dataEwallet.is_success !== false  || (dataEwallet.tpayewallet_pay_trans_id !== null && inputHandlePayTransId.length !== 0) || (dataEwallet.tpayewallet_pay_trans_id === null && inputHandlePayTransId.length === 0)) ? "btn-off mt-3 mb-3" : 'add-button mt-3 mb-3'}
                             style={{ maxWidth: 'max-content', padding: 7, height: 40, }}
-                            disabled={dataEwallet.is_success === undefined || dataEwallet.is_success !== false}
+                            disabled={dataEwallet.is_success === undefined || dataEwallet.is_success !== false || (dataEwallet.tpayewallet_pay_trans_id !== null && inputHandlePayTransId.length !== 0) || (dataEwallet.tpayewallet_pay_trans_id === null && inputHandlePayTransId.length === 0)}
                         >
                             Submit Re-Notify
                         </button>
@@ -367,7 +392,7 @@ const ReNotifyEwallet = () => {
                     </p>                
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSubmitEwallet(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
-                        <Button onClick={() => submitReNotify(noEwallet)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
+                        <Button onClick={() => submitReNotify(noEwallet, dataEwallet.tpayewallet_pay_trans_id !== null ? dataEwallet.tpayewallet_pay_trans_id : inputHandlePayTransId)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
                     </div>
                 </Modal.Body>
             </Modal>
