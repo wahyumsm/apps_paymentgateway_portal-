@@ -6,7 +6,7 @@ import noteInfo from "../../assets/icon/note_icon_grey_transparent_bg.svg"
 import noteInfoRed from "../../assets/icon/note_icon_red_transparent_bg.svg"
 import downloadIcon from "../../assets/icon/download_icon.svg"
 import refreshIcon from "../../assets/icon/refresh_icon.svg"
-import { Col, Image, Modal, Row } from '@themesberg/react-bootstrap'
+import { Col, Image, Modal, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
 import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import CurrencyInput from "react-currency-input-field";
@@ -60,7 +60,14 @@ function CreateVAUSD() {
     }
 
     function handleChange(e) {
-        setDataVABaru(e)
+        console.log(e, 'e');
+        if (e === undefined || e === "") {
+            setDataVABaru("0")
+        } else if (e.length === 4 && e !== "1000") {
+            setDataVABaru("1000")
+        } else {
+            setDataVABaru(e)
+        }
     }
 
     function pindahFileTabCreate(fileId) {
@@ -127,14 +134,33 @@ function CreateVAUSD() {
                 const wb = XLSX.utils.sheet_to_csv(ws)
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
-                XLSX.writeFile(workBook, "data VA USD.csv");
+                XLSX.writeFile(workBook, `vausd_${new Date().toLocaleString('en-GB').split('/').join('').split(':').join('').split(', ').join('')}.csv`);
                 // console.log(wb, 'wb');
             } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
                 setUserSession(dataFileCSV.data.response_new_token)
+                const data = dataFileCSV.data.response_data.results
+                const arrayOfArraysIndex0 = data.map(obj => {
+                    // const values = Object.values(obj);
+                    const keys = Object.keys(obj);
+                    return keys;
+                });
+                const arrayOfArraysNextIndex = data.map(obj => {
+                    const values = Object.values(obj);
+                    // const keys = Object.keys(obj);
+                    return values;
+                });
+                arrayOfArraysNextIndex.unshift(arrayOfArraysIndex0[0])
+
+                console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
+                const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
+                const wb = XLSX.utils.sheet_to_csv(ws)
+                let workBook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
+                XLSX.writeFile(workBook, `vausd_${new Date().toLocaleString('en-GB').split('/').join('').split(':').join('').split(', ').join('')}.csv`);
             }
         } catch (error) {
             // console.log(error);
-            // history.push(errorCatch(error.response.status))
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -151,10 +177,12 @@ function CreateVAUSD() {
             const dataListVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/GetVirtualAccountUSD", {data: dataParams}, {headers: headers})
             console.log(dataListVAUSD, 'dataListVAUSD');
             if (dataListVAUSD.status === 200 && dataListVAUSD.data.response_code === 200 && dataListVAUSD.data.response_new_token === null) {
+                dataListVAUSD.data.response_data.results = dataListVAUSD.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setListVAUSD(dataListVAUSD.data.response_data.results)
                 setPendingVAUSD(false)
             } else if (dataListVAUSD.status === 200 && dataListVAUSD.data.response_code === 200 && dataListVAUSD.data.response_new_token !== null) {
                 setUserSession(dataListVAUSD.data.response_new_token)
+                dataListVAUSD.data.response_data.results = dataListVAUSD.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setListVAUSD(dataListVAUSD.data.response_data.results)
                 setPendingVAUSD(false)
             }
@@ -408,8 +436,22 @@ function CreateVAUSD() {
 
     const columnsVAUSD = [
         {
-            name: 'Member Code',
+            name: 'No',
+            selector: row => row.number,
+            width: "70px",
+            wrap: true,
+            // sortable: true
+        },
+        {
+            name: 'VA Company Code',
             selector: row => row.company_code,
+            // width: "150px",
+            wrap: true,
+            // sortable: true
+        },
+        {
+            name: 'Member Code',
+            selector: row => row.member_code,
             // width: "150px",
             wrap: true,
             // sortable: true
@@ -614,14 +656,30 @@ function CreateVAUSD() {
                                     <Row className='d-flex justify-content-start'>
                                         <Col xs={3} className="card-information mt-3" style={{border: stockVA.available_stock.stock_will_run_out ? '1px solid #B9121B' : '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
                                             <div className='d-flex'>
-                                                <img src={stockVA.available_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
+                                                <OverlayTrigger
+                                                    placement="bottom"
+                                                    trigger={["hover"]}
+                                                    overlay={
+                                                        <Tooltip style={{ minWidth: 240 }}>Total sisa stok VA tersedia adalah VA yang telah di buat oleh Ezeelink dan telah aktif di OCBC, serta telah mengalami pembaruan status.</Tooltip>
+                                                    }
+                                                >
+                                                    <img src={stockVA.available_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
+                                                </OverlayTrigger>
                                                 <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total sisa stok VA Tersedia: </span>
                                                 <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVA.available_stock.stock, false)}</span>
                                             </div>
                                         </Col>
                                         <Col xs={3} className="card-information mt-3 ms-3" style={{border: stockVA.unavailable_stock.stock_will_run_out ? '1px solid #B9121B' : '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
                                             <div className='d-flex'>
-                                                <img src={stockVA.unavailable_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
+                                                <OverlayTrigger
+                                                    placement="bottom"
+                                                    trigger={["hover"]}
+                                                    overlay={
+                                                        <Tooltip style={{ minWidth: 240 }}>Total VA belum tersedia adalah VA yang telah di buat oleh Ezeelink, tapi belum diaktifkan</Tooltip>
+                                                    }
+                                                >
+                                                    <img src={stockVA.unavailable_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
+                                                </OverlayTrigger>
                                                 <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total VA Belum Tersedia: </span>
                                                 <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVA.unavailable_stock.stock, false)}</span>
                                             </div>
@@ -637,10 +695,18 @@ function CreateVAUSD() {
                                             </div>
                                         </Col>
                                         <Col xs={3} className="card-information mt-3 ms-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
-                                            <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => setShowModalPerbaruiDataVA(true)}>
-                                                <img src={refreshIcon} width="24" height="24" alt="refresh_icon" />
-                                                <span className="p-info" style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Perbarui Data</span>
-                                            </div>
+                                            <OverlayTrigger
+                                                placement="bottom"
+                                                trigger={["hover"]}
+                                                overlay={
+                                                    <Tooltip style={{ minWidth: 240 }}>Perbarui Data VA setelah file request VA yang telah di upload ke Dashboard OCBC sudah berubah. Hanya aktif setelah generate VA.</Tooltip>
+                                                }
+                                            >
+                                                <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => setShowModalPerbaruiDataVA(true)}>
+                                                    <img src={refreshIcon} width="24" height="24" alt="refresh_icon" />
+                                                    <span className="p-info" style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Perbarui Data</span>
+                                                </div>
+                                            </OverlayTrigger>
                                         </Col>
                                     </Row>
                                 </Col>
