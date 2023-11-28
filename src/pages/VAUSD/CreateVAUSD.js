@@ -56,6 +56,7 @@ function CreateVAUSD() {
 
     function handlePageChangeCreate(page, bulkId) {
         console.log(page, 'getVAUSD changePage');
+        setActivePageCreate(page)
         getVAUSD(bulkId, page)
     }
 
@@ -89,10 +90,12 @@ function CreateVAUSD() {
             console.log(newData, 'newData');
             if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token === null) {
                 getVAUSD(bulkId, 1)
+                getFileNameAndStockVA()
                 setShowModalPerbaruiDataVA(false)
             } else if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token !== null) {
                 setUserSession(newData.data.response_new_token)
                 getVAUSD(bulkId, 1)
+                getFileNameAndStockVA()
                 setShowModalPerbaruiDataVA(false)
             }
         } catch (error) {
@@ -178,11 +181,15 @@ function CreateVAUSD() {
             console.log(dataListVAUSD, 'dataListVAUSD');
             if (dataListVAUSD.status === 200 && dataListVAUSD.data.response_code === 200 && dataListVAUSD.data.response_new_token === null) {
                 dataListVAUSD.data.response_data.results = dataListVAUSD.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
+                setPageNumberCreate(dataListVAUSD.data.response_data)
+                setTotalPageCreate(dataListVAUSD.data.response_data.max_page)
                 setListVAUSD(dataListVAUSD.data.response_data.results)
                 setPendingVAUSD(false)
             } else if (dataListVAUSD.status === 200 && dataListVAUSD.data.response_code === 200 && dataListVAUSD.data.response_new_token !== null) {
                 setUserSession(dataListVAUSD.data.response_new_token)
                 dataListVAUSD.data.response_data.results = dataListVAUSD.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
+                setPageNumberCreate(dataListVAUSD.data.response_data)
+                setTotalPageCreate(dataListVAUSD.data.response_data.max_page)
                 setListVAUSD(dataListVAUSD.data.response_data.results)
                 setPendingVAUSD(false)
             }
