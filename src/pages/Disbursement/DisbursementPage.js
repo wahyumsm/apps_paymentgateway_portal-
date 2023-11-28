@@ -8,7 +8,7 @@ import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setU
 import { Button, Col, Form, FormControl, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCircle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
 import noteIconGrey from "../../assets/icon/note_icon_grey.svg";
@@ -117,6 +117,8 @@ function DisbursementPage() {
         dana: false
     })
     const [totalHoldBalance, setTotalHoldBalance] = useState(0)
+    const [isLoadingDisburseMentConfirm, setIsLoadingDisburseMentConfirm] = useState(false)
+    const [isDisableChecked, setIsDisableChecked] = useState(false)
 
     // console.log(dataDisburse, "dataDisburse");
     // console.log(minMaxDisbursement.minDisbursement, "minMaxDisbursement.minDisbursement");
@@ -3690,6 +3692,11 @@ function DisbursementPage() {
 
     async function sendDataDisburse (data, dataOrigin, isDisburseManual, fileNameBulk) {
         try {
+            // console.log(data, "data");
+            // console.log(dataOrigin, "dataOrigin");
+            setIsLoadingDisburseMentConfirm(true)
+            setIsDisableChecked(true)
+            setIsCheckedConfirm(false)
             const auth = "Bearer " + getToken()
             var formData = new FormData()
             formData.append('file_excel', data, isDisburseManual ? "--.xlsx" : fileNameBulk)
@@ -3713,8 +3720,11 @@ function DisbursementPage() {
                         ${language === null ? eng.unggahFile : language.unggahFile}
                     </span>
                 </div>`)
+                setIsLoadingDisburseMentConfirm(false)
                 setShowModalStatusDisburse(true)
                 setResponMsg(dataSendHandler.data.response_data.status_id)
+                setIsLoadingDisburseMentConfirm(false)
+                setIsDisableChecked(false)
                 setTimeout(() => {
                     setShowModalStatusDisburse(false)
                 }, 10000);
@@ -3731,8 +3741,11 @@ function DisbursementPage() {
                         ${language === null ? eng.unggahFile : language.unggahFile}
                     </span>
                 </div>`)
+                setIsLoadingDisburseMentConfirm(false)
                 setShowModalStatusDisburse(true)
                 setResponMsg(dataSendHandler.data.response_data.status_id)
+                setIsLoadingDisburseMentConfirm(false)
+                setIsDisableChecked(false)
                 setTimeout(() => {
                     setShowModalStatusDisburse(false)
                 }, 10000);
@@ -5101,6 +5114,7 @@ function DisbursementPage() {
                                     id="statusId"
                                     onChange={handleChangeCheckBoxConfirm}
                                     checked={isCheckedConfirm}
+                                    disabled={isDisableChecked}
                                 />
                             </div>
                         </div>
@@ -5129,7 +5143,7 @@ function DisbursementPage() {
                                 disabled={isCheckedConfirm === false}
                                 style={{ width: '25%' }}
                             >
-                                {language === null ? eng.lakukanDisburse : language.lakukanDisburse}
+                                {isLoadingDisburseMentConfirm ? (<>{(language === null ? eng.mohonTunggu : language.mohonTunggu)}... <FontAwesomeIcon icon={faSpinner} spin /></>) : (language === null ? eng.lakukanDisburse : language.lakukanDisburse)}
                             </button>
                         </div>
                     </Modal.Body>

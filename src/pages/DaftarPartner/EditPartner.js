@@ -203,23 +203,37 @@ function EditPartner() {
 
   function handleChangeFee(e, feeType) {
     // console.log(feeType, 'feeType');
-    // console.log(e, 'e');
+    // console.log((e), '(e)');
+    // console.log(Number(e.replaceAll(',', '.')), 'Numbere.replaceAll')
     setAlertFee(false)
-    setBiayaHandle({
-      ...biayaHandle,
-      fee: e,
-    });
     if (feeType === 101) {
       if (e === undefined || e === "") {
         // console.log('masuk if 1');
         setAlertFee(true)
-      } else if (e.length === 3 && e !== "100") {
+        setBiayaHandle({
+          ...biayaHandle,
+          fee: 0,
+        });
+      } else if (Number(e.replaceAll(',', '.')) > 100 && e !== "100" || e === "100,") {
+        // console.log(Number(e.replaceAll(',', '.')), 'Number(e.replaceAll(');
         // console.log('masuk if 2');
         setBiayaHandle({
           ...biayaHandle,
-          fee: "100",
+          fee: 100,
+        });
+      } else {
+        // console.log('masuk if 3');
+        setBiayaHandle({
+          ...biayaHandle,
+          fee: e,
         });
       }
+    } else {
+        // console.log('masuk if 4');
+        setBiayaHandle({
+        ...biayaHandle,
+        fee: e,
+      });
     }
   }
 
@@ -1852,7 +1866,8 @@ function EditPartner() {
                       }}
                       groupSeparator={"."}
                       decimalSeparator={','}
-                      maxLength={biayaHandle.feeType === 101 ? 3 : false}
+                      allowDecimals={(biayaHandle.feeType === 0 || biayaHandle.feeType === 100) ? false : true}
+                      // maxLength={biayaHandle.feeType === 101 ? 3 : false}
                       prefix={biayaHandle.feeType === 0 || biayaHandle.feeType === 100 ? "Rp " : ""}
                       suffix={biayaHandle.feeType === 0 || biayaHandle.feeType === 100 ? "" : "%"}
                     />
