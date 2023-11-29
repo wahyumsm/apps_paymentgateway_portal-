@@ -115,8 +115,8 @@ function SettlementPage() {
                 })
             } else {
                 setShowDateSettlement("none")
-                setStateSettlementPartner(null)
-                setDateRangeSettlementPartner([])
+                setStateSettlement(null)
+                setDateRangeSettlement([])
                 setInputHandle({
                     ...inputHandle,
                     [e.target.name] : e.target.value.split(",")
