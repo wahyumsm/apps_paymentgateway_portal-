@@ -13,6 +13,7 @@ import { useEffect } from 'react'
 import encryptData from '../../function/encryptData'
 import ReactSelect, { components } from 'react-select'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import Pagination from 'react-js-pagination'
 
 const QrisSettlement = () => {
     const history = useHistory()
@@ -32,6 +33,21 @@ const QrisSettlement = () => {
     const [pendingSettlementQrisOtomatisMerchant, setPendingSettlementQrisOtomatisMerchant] = useState(true)
     const [dataSettlementQrisOtomatisMerchant, setDataSettlementQrisOtomatisMerchant] = useState([])
     const [inputHandleSettlementQrisOtomatisMerchant, setInputHandleSettlementQrisOtomatisMerchant] = useState({
+        idSettlement: "",
+        periode: 0,
+        statusQris: 0 
+    })
+
+    const [showDateSettlementQrisOtomatisAdmin, setShowDateSettlementQrisOtomatisAdmin] = useState("none")
+    const [dateRangeSettlementQrisOtomatisAdmin, setDateRangeSettlementQrisOtomatisAdmin] = useState([])
+    const [stateSettlementQrisOtomatisAdmin, setStateSettlementQrisOtomatisAdmin] = useState(null)
+    const [activePageSettlementQrisOtomatisAdmin, setActivePageSettlementQrisOtomatisAdmin] = useState(1)
+    const [pageNumberSettlementQrisOtomatisAdmin, setPageNumberSettlementQrisOtomatisAdmin] = useState({})
+    const [totalPageSettlementQrisOtomatisAdmin, setTotalPageSettlementQrisOtomatisAdmin] = useState(0)
+    const [isFilterSettlementQrisOtomatisAdmin, setIsFilterSettlementQrisOtomatisAdmin] = useState(false)
+    const [pendingSettlementQrisOtomatisAdmin, setPendingSettlementQrisOtomatisAdmin] = useState(true)
+    const [dataSettlementQrisOtomatisAdmin, setDataSettlementQrisOtomatisAdmin] = useState([])
+    const [inputHandleSettlementQrisOtomatisAdmin, setInputHandleSettlementQrisOtomatisAdmin] = useState({
         idSettlement: "",
         periode: 0,
         statusQris: 0 
@@ -123,6 +139,59 @@ const QrisSettlement = () => {
         }
     }
 
+    function handlePageChangeSettlementQrisOtomatisMerchant(page) {
+        if (isFilterSettlementQrisOtomatisMerchant) {
+            setActivePageSettlementQrisOtomatisMerchant(page)
+            filterDataSettlementQrisOtomatisMerchantHandler(inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, page, 10)
+
+        } else {
+            setActivePageSettlementQrisOtomatisMerchant(page)
+            getDataSettlementQrisOtomatisHandler(user_role, page)
+        }
+    }
+
+    function handleChangeSettleQrisOtomatisAdmin(e) {
+        setInputHandleSettlementQrisOtomatisAdmin({
+            ...inputHandleSettlementQrisOtomatisAdmin,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    function handleChangePeriodeSettlementQrisOtomatisAdmin(e) {
+        if (e.target.value === "7") {
+            setShowDateSettlementQrisOtomatisAdmin("")
+            setInputHandleSettlementQrisOtomatisAdmin({
+                ...inputHandleSettlementQrisOtomatisAdmin,
+                [e.target.name] : e.target.value
+            })
+        } else {
+            setShowDateSettlementQrisOtomatisAdmin("none")
+            setInputHandleSettlementQrisOtomatisAdmin({
+                ...inputHandleSettlementQrisOtomatisAdmin,
+                [e.target.name] : e.target.value
+            })
+        }
+    }
+
+    function pickDateSettlementQrisOtomatisAdmin(item) {
+        setStateSettlementQrisOtomatisAdmin(item)
+        if (item !== null) {
+          item = item.map(el => el.toLocaleDateString('en-CA'))
+          setDateRangeSettlementQrisOtomatisAdmin(item)
+        }
+    }
+
+    function handlePageChangeSettlementQrisOtomatisAdmin(page) {
+        if (isFilterSettlementQrisOtomatisAdmin) {
+            setActivePageSettlementQrisOtomatisAdmin(page)
+            // filterDataSettlementQrisOtomatisAdminHandler(inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris, page, 10)
+
+        } else {
+            setActivePageSettlementQrisOtomatisAdmin(page)
+            getDataSettlementQrisOtomatisHandler(user_role, page)
+        }
+    }
+
     function handleChangeSettleQrisManualMerchant(e) {
         setInputHandleSettlementQrisManualMerchant({
             ...inputHandleSettlementQrisManualMerchant,
@@ -163,6 +232,17 @@ const QrisSettlement = () => {
         })
     }
 
+    function handlePageChangeSettlementQrisManualMerchant(page) {
+        if (isFilterSettlementQrisManualMerchant) {
+            setActivePageSettlementQrisManualMerchant(page)
+            filterDataSettlementQrisManualHandler(inputHandleSettlementQrisManualMerchant.idSettlement, null, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualMerchant.statusQris, inputHandleSettlementQrisManualMerchant.periode, dateRangeSettlementQrisManualMerchant, user_role, partnerId, page, 10)
+
+        } else {
+            setActivePageSettlementQrisManualMerchant(page)
+            getDataSettlementQrisManualHandler(user_role, page, partnerId)
+        }
+    }
+
     function handleChangePeriodeSettlementQrisManualAdmin(e) {
         if (e.target.value === "7") {
             setShowDateSettlementQrisManualAdmin("")
@@ -189,6 +269,17 @@ const QrisSettlement = () => {
         }
     }
 
+    function handlePageChangeSettlementQrisManualAdmin(page) {
+        if (isFilterSettlementQrisManualAdmin) {
+            setActivePageSettlementQrisManualAdmin(page)
+            filterDataSettlementQrisManualHandler(inputHandleSettlementQrisManualAdmin.idSettlement, null, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualAdmin.statusQris, inputHandleSettlementQrisManualAdmin.periode, dateRangeSettlementQrisManualAdmin, user_role, partnerId, page, 10)
+
+        } else {
+            setActivePageSettlementQrisManualAdmin(page)
+            getDataSettlementQrisManualHandler(user_role, page, partnerId)
+        }
+    }
+
     function disbursementTabs(isTabs){
         setIsSettlementOtomatis(isTabs)
         if(!isTabs){
@@ -212,7 +303,7 @@ const QrisSettlement = () => {
     }
 
     function resetButtonSettlementQrisOtomatisMerchant () {
-        getDataSettlementQrisOtomatisMerchantHandler(1)
+        getDataSettlementQrisOtomatisHandler(user_role, 1)
         setInputHandleSettlementQrisOtomatisMerchant({
             idSettlement: "",
             periode: 0,
@@ -259,16 +350,16 @@ const QrisSettlement = () => {
     const columnsSettleOtomatisAdmin = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.number,
             width: "67px"
         },
         {
             name: 'ID Settlement',
-            selector: row => row.IDAgen,
+            selector: row => row.tqrissettl_code,
         },
         {
             name: 'Waktu',
-            selector: row => row.noHp
+            selector: row => row.tqrissettl_crtdt
         },
         {
             name: 'Tujuan Settlement',
@@ -276,51 +367,51 @@ const QrisSettlement = () => {
         },
         {
             name: 'Nama Grup',
-            selector: row => row.namaAgen,
+            selector: row => row.GroupName,
         },
         {
             name: 'Nama Brand',
-            selector: row => row.namaAgen,
+            selector: row => row.BrandName,
         },
         {
             name: 'Nama Outlet',
-            selector: row => row.namaAgen,
+            selector: row => row.StoreName,
         },
         {
             name: 'Bank Tujuan',
-            selector: row => row.namaAgen,
+            selector: row => row.mbank_name,
         },
         {
             name: 'Nomor Rekening',
-            selector: row => row.kodeUnik,
+            selector: row => row.tqrissettl_bank_acc_num_to,
         },
         {
             name: 'Nama Pemilik Rekening',
-            selector: row => row.kodeUnik,
+            selector: row => row.tqrissettl_bank_acc_name_to,
         },
         {
             name: 'Jumlah Transaksi',
-            selector: row => row.noRekening,
+            selector: row => row.tqrissettl_trx_amount,
         },
         {
             name: 'Total Transaksi',
-            selector: row => row.noRekening,
+            selector: row => row.tqrissettl_trx_count,
         },
         {
             name: 'Total MDR',
-            selector: row => row.noRekening,
+            selector: row => row.tqrissettl_total_mdr,
         },
         {
             name: 'Biaya Admin',
-            selector: row => row.noRekening,
+            selector: row => row.tqrissettl_admin_fee,
         },
         {
             name: 'Nominal Settlement',
-            selector: row => row.noRekening,
+            selector: row => row.tqrissettl_total_settle,
         },
         {
             name: 'Status',
-            selector: row => row.status,
+            selector: row => row.mstatus_name,
         },
     ];
 
@@ -603,12 +694,13 @@ const QrisSettlement = () => {
                     if (settleType === 102) {
                         getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualMerchant, userDetail.data.response_data.muser_partnerdtl_id)
                     } else {
-                        getDataSettlementQrisOtomatisMerchantHandler(activePageSettlementQrisOtomatisMerchant)
+                        getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisMerchant)
                     }
                 } else if (user_role === "107") {
                     getOutletInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
                 } else if (user_role === "100") {
                     getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualAdmin, userDetail.data.response_data.muser_partnerdtl_id)
+                    getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisAdmin)
                 }
             } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
                 setUserSession(userDetail.data.response_new_token)
@@ -618,12 +710,13 @@ const QrisSettlement = () => {
                     if (settleType === 102) {
                         getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualMerchant, userDetail.data.response_data.muser_partnerdtl_id)
                     } else {
-                        getDataSettlementQrisOtomatisMerchantHandler(activePageSettlementQrisOtomatisMerchant)
+                        getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisMerchant)
                     }
                 } else if (user_role === "107") {
                     getOutletInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
                 } else if (user_role === "100") {
                     getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualAdmin, userDetail.data.response_data.muser_partnerdtl_id)
+                    getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisAdmin)
                 }
             }
     } catch (error) {
@@ -739,29 +832,54 @@ const QrisSettlement = () => {
         }
     }
 
-    async function getDataSettlementQrisOtomatisMerchantHandler(currentPage) {
+    async function getDataSettlementQrisOtomatisHandler(role, currentPage) {
         try {
-            const auth = "Bearer " + access_token
-            const dataParams = encryptData(`{"settle_code": "", "status" : "1,2,7,9", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
-            }
-            const dataReportSettleQris = await axios.post(BaseURL + "/QRIS/QRISSettlementAutomaticPaging", { data: dataParams }, { headers: headers })
-            // console.log(dataReportSettleQris, 'ini user detal funct');
-            if (dataReportSettleQris.status === 200 && dataReportSettleQris.data.response_code === 200 && dataReportSettleQris.data.response_new_token === null) {
-                dataReportSettleQris.data.response_data.results = dataReportSettleQris.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
-                setPageNumberSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data)
-                setTotalPageSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.max_page)
-                setDataSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.results)
-                setPendingSettlementQrisOtomatisMerchant(false)
-            } else if (dataReportSettleQris.status === 200 && dataReportSettleQris.data.response_code === 200 && dataReportSettleQris.data.response_new_token !== null) {
-                setUserSession(dataReportSettleQris.data.response_new_token)
-                dataReportSettleQris.data.response_data.results = dataReportSettleQris.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
-                setPageNumberSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data)
-                setTotalPageSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.max_page)
-                setDataSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.results)
-                setPendingSettlementQrisOtomatisMerchant(false)
+            if (role === "106" || role === "107" || role === "108") {
+                const auth = "Bearer " + access_token
+                const dataParams = encryptData(`{"settle_code": "", "status" : "1,2,7,9", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const headers = {
+                    'Content-Type':'application/json',
+                    'Authorization' : auth
+                }
+                const dataReportSettleQris = await axios.post(BaseURL + "/QRIS/QRISSettlementAutomaticPaging", { data: dataParams }, { headers: headers })
+                // console.log(dataReportSettleQris, 'ini user detal funct');
+                if (dataReportSettleQris.status === 200 && dataReportSettleQris.data.response_code === 200 && dataReportSettleQris.data.response_new_token === null) {
+                    dataReportSettleQris.data.response_data.results = dataReportSettleQris.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
+                    setPageNumberSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data)
+                    setTotalPageSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.max_page)
+                    setDataSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.results)
+                    setPendingSettlementQrisOtomatisMerchant(false)
+                } else if (dataReportSettleQris.status === 200 && dataReportSettleQris.data.response_code === 200 && dataReportSettleQris.data.response_new_token !== null) {
+                    setUserSession(dataReportSettleQris.data.response_new_token)
+                    dataReportSettleQris.data.response_data.results = dataReportSettleQris.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
+                    setPageNumberSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data)
+                    setTotalPageSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.max_page)
+                    setDataSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.results)
+                    setPendingSettlementQrisOtomatisMerchant(false)
+                }
+            } else if (role === "100") {
+                const auth = "Bearer " + access_token
+                const dataParams = encryptData(`{"settle_code": "", "status" : "1,2,7,9", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const headers = {
+                    'Content-Type':'application/json',
+                    'Authorization' : auth
+                }
+                const dataReportSettleQris = await axios.post(BaseURL + "/QRIS/QRISSettlementAutomaticPaging", { data: dataParams }, { headers: headers })
+                // console.log(dataReportSettleQris, 'ini user detal funct');
+                if (dataReportSettleQris.status === 200 && dataReportSettleQris.data.response_code === 200 && dataReportSettleQris.data.response_new_token === null) {
+                    dataReportSettleQris.data.response_data.results = dataReportSettleQris.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
+                    setPageNumberSettlementQrisOtomatisAdmin(dataReportSettleQris.data.response_data)
+                    setTotalPageSettlementQrisOtomatisAdmin(dataReportSettleQris.data.response_data.max_page)
+                    setDataSettlementQrisOtomatisAdmin(dataReportSettleQris.data.response_data.results)
+                    setPendingSettlementQrisOtomatisAdmin(false)
+                } else if (dataReportSettleQris.status === 200 && dataReportSettleQris.data.response_code === 200 && dataReportSettleQris.data.response_new_token !== null) {
+                    setUserSession(dataReportSettleQris.data.response_new_token)
+                    dataReportSettleQris.data.response_data.results = dataReportSettleQris.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
+                    setPageNumberSettlementQrisOtomatisAdmin(dataReportSettleQris.data.response_data)
+                    setTotalPageSettlementQrisOtomatisAdmin(dataReportSettleQris.data.response_data.max_page)
+                    setDataSettlementQrisOtomatisAdmin(dataReportSettleQris.data.response_data.results)
+                    setPendingSettlementQrisOtomatisAdmin(false)
+                }
             }
     } catch (error) {
           // console.log(error);
@@ -1039,27 +1157,58 @@ const QrisSettlement = () => {
                                     <Row className="mt-4">
                                         <Col xs={4} className="d-flex justify-content-between align-items-center">
                                             <span>Nama Grup</span>
-                                            <Form.Select name='tipePeriodeAdmin' className='input-text-riwayat ms-4' style={{ display: "inline" }}>
-                                                <option defaultValue disabled value={0}>Pilih Grup</option>
-                                                <option value={1}>Periode Buat</option>
-                                                <option value={2}>Periode Proses</option>
-                                            </Form.Select>
+                                            <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
+                                                <ReactSelect
+                                                    closeMenuOnSelect={true}
+                                                    hideSelectedOptions={false}
+                                                    options={dataGrupInQris}
+                                                    value={selectedGrupName}
+                                                    onChange={(selected) => handleChangeGrup(selected)}
+                                                    placeholder="Pilih Grup"
+                                                    components={{ Option }}
+                                                    styles={customStylesSelectedOption}
+                                                    filterOption={customFilter}
+                                                />
+                                            </div>
+                                        </Col>
+                                        <Col xs={4} className='text-end mt-4' style={{ display: showDateSettlementQrisManualAdmin }}>
+                                            <DateRangePicker
+                                                onChange={pickDateSettlementQrisOtomatisAdmin}
+                                                value={stateSettlementQrisOtomatisAdmin}
+                                                clearIcon={null}
+                                            />
                                         </Col>
                                         <Col xs={4} className="d-flex justify-content-between align-items-center">
                                             <span>Nama Brand</span>
-                                            <Form.Select name='tipePeriodeAdmin' className='input-text-riwayat ms-4' style={{ display: "inline" }}>
-                                                <option defaultValue disabled value={0}>Pilih Brand</option>
-                                                <option value={1}>Periode Buat</option>
-                                                <option value={2}>Periode Proses</option>
-                                            </Form.Select>
+                                            <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
+                                                <ReactSelect
+                                                    closeMenuOnSelect={true}
+                                                    hideSelectedOptions={false}
+                                                    options={dataBrandInQris}
+                                                    value={selectedBrandName}
+                                                    onChange={(selected) => handleChangeBrand(selected)}
+                                                    placeholder="Pilih Brand"
+                                                    components={{ Option }}
+                                                    styles={customStylesSelectedOption}
+                                                    filterOption={customFilter}
+                                                />
+                                            </div>
                                         </Col>
                                         <Col xs={4} className="d-flex justify-content-between align-items-center">
                                             <span>Nama Outlet</span>
-                                            <Form.Select name='tipePeriodeAdmin' className='input-text-riwayat ms-4' style={{ display: "inline" }}>
-                                                <option defaultValue disabled value={0}>Pilih Outlet</option>
-                                                <option value={1}>Periode Buat</option>
-                                                <option value={2}>Periode Proses</option>
-                                            </Form.Select>
+                                            <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
+                                                <ReactSelect
+                                                    closeMenuOnSelect={true}
+                                                    hideSelectedOptions={false}
+                                                    options={dataOutletInQris}
+                                                    value={selectedOutletName}
+                                                    onChange={(selected) => handleChangeOutlet(selected)}
+                                                    placeholder="Pilih Outlet"
+                                                    components={{ Option }}
+                                                    styles={customStylesSelectedOption}
+                                                    filterOption={customFilter}
+                                                />
+                                            </div>
                                         </Col>
                                     </Row>
                                     <Row className='mt-4'>
@@ -1088,12 +1237,23 @@ const QrisSettlement = () => {
                                     <div className="div-table mt-5 pb-4">
                                         <DataTable
                                             columns={columnsSettleOtomatisAdmin}
-                                            data={agenLists}
+                                            data={dataSettlementQrisOtomatisAdmin}
                                             customStyles={customStylesSettlementQris}
                                             highlightOnHover
-                                            // progressPending={pendingTransferAdmin}
+                                            progressPending={pendingSettlementQrisOtomatisAdmin}
                                             progressComponent={<CustomLoader />}
-                                            // pagination
+                                        />
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlementQrisOtomatisAdmin}</div>
+                                        <Pagination
+                                            activePage={activePageSettlementQrisOtomatisAdmin}
+                                            itemsCountPerPage={pageNumberSettlementQrisOtomatisAdmin.row_per_page}
+                                            totalItemsCount={(pageNumberSettlementQrisOtomatisAdmin.row_per_page*pageNumberSettlementQrisOtomatisAdmin.max_page)}
+                                            pageRangeDisplayed={5}
+                                            itemClass="page-item"
+                                            linkClass="page-link"
+                                            onChange={handlePageChangeSettlementQrisOtomatisAdmin}
                                         />
                                     </div>
                                 </div>
@@ -1220,6 +1380,18 @@ const QrisSettlement = () => {
                                             highlightOnHover
                                             progressPending={pendingSettlementQrisManualAdmin}
                                             progressComponent={<CustomLoader />}
+                                        />
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlementQrisManualAdmin}</div>
+                                        <Pagination
+                                            activePage={activePageSettlementQrisManualAdmin}
+                                            itemsCountPerPage={pageNumberSettlementQrisManualAdmin.row_per_page}
+                                            totalItemsCount={(pageNumberSettlementQrisManualAdmin.row_per_page*pageNumberSettlementQrisManualAdmin.max_page)}
+                                            pageRangeDisplayed={5}
+                                            itemClass="page-item"
+                                            linkClass="page-link"
+                                            onChange={handlePageChangeSettlementQrisManualAdmin}
                                         />
                                     </div>
                                 </div>
@@ -1402,6 +1574,18 @@ const QrisSettlement = () => {
                                                 progressComponent={<CustomLoader />}
                                             />
                                         </div>
+                                        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                                            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlementQrisManualMerchant}</div>
+                                            <Pagination
+                                                activePage={activePageSettlementQrisManualMerchant}
+                                                itemsCountPerPage={pageNumberSettlementQrisManualMerchant.row_per_page}
+                                                totalItemsCount={(pageNumberSettlementQrisManualMerchant.row_per_page*pageNumberSettlementQrisManualMerchant.max_page)}
+                                                pageRangeDisplayed={5}
+                                                itemClass="page-item"
+                                                linkClass="page-link"
+                                                onChange={handlePageChangeSettlementQrisManualMerchant}
+                                            />
+                                        </div>
                                     </div>
                                 </>
                             ) : (
@@ -1536,6 +1720,18 @@ const QrisSettlement = () => {
                                             highlightOnHover
                                             progressPending={pendingSettlementQrisOtomatisMerchant}
                                             progressComponent={<CustomLoader />}
+                                        />
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageSettlementQrisOtomatisMerchant}</div>
+                                        <Pagination
+                                            activePage={activePageSettlementQrisOtomatisMerchant}
+                                            itemsCountPerPage={pageNumberSettlementQrisOtomatisMerchant.row_per_page}
+                                            totalItemsCount={(pageNumberSettlementQrisOtomatisMerchant.row_per_page*pageNumberSettlementQrisOtomatisMerchant.max_page)}
+                                            pageRangeDisplayed={5}
+                                            itemClass="page-item"
+                                            linkClass="page-link"
+                                            onChange={handlePageChangeSettlementQrisOtomatisMerchant}
                                         />
                                     </div>
                                 </div>
