@@ -210,7 +210,6 @@ export default () => (
     <RouteWithSidebar exact path={Routes.QrisTransaksiAdmin.path} component={QrisTransaksi} />
     <RouteWithSidebar exact path={Routes.ExcludeSettlementManual.path} component={ExcludeSettlementManual} />
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
-    <RouteWithSidebar exact path={Routes.QrisAdminSettlement.path} component={QrisSettlement} />
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
@@ -224,6 +223,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.RiwayatBalance.path} component={RiwayatBalance} />
     <RouteWithSidebar exact path={Routes.GetBalance.path} component={GetBalance} />
     <RouteWithSidebar exact path={Routes.TransaksiTopup.path} component={TransaksiTopUp} />
+    <RouteWithSidebar exact path={Routes.QrisSettlement.path} component={QrisSettlement} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

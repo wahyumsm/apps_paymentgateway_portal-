@@ -58,6 +58,7 @@ export const Routes = {
     Settlement: { path: "/settlement/riwayat-settlement"},
     RiwayatBalance: { path: "/riwayat-balance" },
     GetBalance: { path: "/transaksi-bank"},
+    QrisSettlement: {path: "/settlement/settlement-qris"},
 
     // admin
     VaDanPaymentLinkAdmin: {path: "/transaksi/va-dan-paylink"},
@@ -70,7 +71,6 @@ export const Routes = {
     QrisTransaksiAdmin: {path: "/transaksi/transaksi-qris"},
     ExcludeSettlementManual: {path: "/settlement/exclude-settlement"},
     ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},
-    QrisAdminSettlement: {path: "/settlement/settlement-qris"},
 
     // partner
     VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},

@@ -370,3 +370,21 @@ export function replaceText (text) {
 		return text.replace("Direct Debit", "")
 	}
 }
+
+export const customFilter = (option, searchText) => {
+	if (
+		option.data.label.toLowerCase().includes(searchText.toLowerCase())
+	) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+export const currentDate = new Date().toISOString().split('T')[0]
+export const yesterdayDate = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0]
+export const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]
+export const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 2).toISOString().split('T')[0]
+export const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1).toISOString().split('T')[0]
+export const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 2).toISOString().split('T')[0]
+export const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth()).toISOString().split('T')[0]
