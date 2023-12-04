@@ -166,7 +166,7 @@ function CreateVAUSD() {
                         obj.member_code = item.member_code
                         obj.member_name = item.member_name
                         obj.amount = ""
-                        obj.period = new Date(item.period).toLocaleDateString('id-ID').split("/20").join("/")
+                        obj.period = new Date(item.period).toLocaleDateString('en-GB').split("/20").join("/")
                         data.push(obj)
                     })
                     console.log(data, 'data new');
@@ -178,10 +178,12 @@ function CreateVAUSD() {
 
                     console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
                     const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
-                    const wb = XLSX.utils.sheet_to_csv(ws)
+                    const wb = XLSX.utils.sheet_to_txt(ws)
+                    console.log(ws, 'ws');
+                    console.log(wb, 'wb');
                     let workBook = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
-                    XLSX.writeFile(workBook, `${fileName}.csv`);
+                    XLSX.utils.book_append_sheet(workBook, wb, "Sheet1");
+                    XLSX.writeFile(workBook, `${fileName}.txt`);
                     // console.log(wb, 'wb');
                 } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
                     setUserSession(dataFileCSV.data.response_new_token)
@@ -200,10 +202,10 @@ function CreateVAUSD() {
 
                     console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
                     const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
-                    const wb = XLSX.utils.sheet_to_csv(ws)
+                    const wb = XLSX.utils.sheet_to_txt(ws)
                     let workBook = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
-                    XLSX.writeFile(workBook, `${fileName}.csv`);
+                    XLSX.utils.book_append_sheet(workBook, wb, "Sheet1");
+                    XLSX.writeFile(workBook, `${fileName}.txt`);
                 }
             }
         } catch (error) {
