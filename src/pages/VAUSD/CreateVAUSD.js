@@ -6,7 +6,7 @@ import noteInfo from "../../assets/icon/note_icon_grey_transparent_bg.svg"
 import noteInfoRed from "../../assets/icon/note_icon_red_transparent_bg.svg"
 import downloadIcon from "../../assets/icon/download_icon.svg"
 import refreshIcon from "../../assets/icon/refresh_icon.svg"
-import { Col, Image, Modal, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
+import { Col, Image, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
 import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import CurrencyInput from "react-currency-input-field";
@@ -16,13 +16,15 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import Pagination from 'react-js-pagination'
 import * as XLSX from "xlsx"
 import ReactSelect, { components } from 'react-select';
+import Checklist from '../../assets/icon/checklist_icon.svg'
 
 function CreateVAUSD() {
 
     const history = useHistory()
     const [isVAUSD, setIsVAUSD] = useState(100)
     const [isTabFileId, setIsTabFileId] = useState(1)
-    const [dataVABaru, setDataVABaru] = useState(0)
+    const [selectedFileNameVAUSD, setSelectedFileNameVAUSD] = useState("")
+    const [dataVABaru, setDataVABaru] = useState("0")
     const [generatedVA, setGeneratedVA] = useState({})
     const [fileTabs, setFileTabs] = useState([])
     const [listVAUSD, setListVAUSD] = useState([])
@@ -42,6 +44,8 @@ function CreateVAUSD() {
     const [pageNumberCreate, setPageNumberCreate] = useState({})
     const [showModalPerbaruiDataVA, setShowModalPerbaruiDataVA] = useState(false)
     const [showModalKonfirmasiVAUpdate, setShowModalKonfirmasiVAUpdate] = useState(false)
+    const [showToastSuccessUpdateAvailable, setShowToastSuccessUpdateAvailable] = useState(false)
+    const [successAvailableUpdateMessage, setSuccessAvailableUpdateMessage] = useState("")
 
     const [dataListFile, setDataListFile] = useState([])
     const [selectedFileUpdate, setSelectedFileUpdate] = useState([])
@@ -71,13 +75,35 @@ function CreateVAUSD() {
         }
     }
 
-    function pindahFileTabCreate(fileId) {
+    function pindahFileTabCreate(fileId, fileName) {
         console.log(fileId, 'fileId');
         setIsTabFileId(fileId)
+        setSelectedFileNameVAUSD(fileName)
+        setActivePageCreate(1)
         getVAUSD(fileId, 1)
     }
 
-    async function renewDataVA(bulkId) {
+    function perbaruiDataHandleClick(listVA) {
+        let isAvailable = 0
+        listVA.forEach(item => {
+            if (item.status_name === "Tersedia") {
+                isAvailable++
+            }
+        })
+        console.log(isAvailable, 'isAvailable');
+        if (isAvailable !== 0) {
+            setSuccessAvailableUpdateMessage("Semua Data VA Sudah Tersedia")
+            setShowModalPerbaruiDataVA(false)
+            setShowToastSuccessUpdateAvailable(true)
+            setTimeout(() => {
+                setShowToastSuccessUpdateAvailable(false)
+            }, 5000);
+        } else {
+            setShowModalPerbaruiDataVA(true)
+        }
+    }
+
+    async function renewDataVA(bulkId, listVA) {
         try {
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"bulk_id": ${bulkId}, "username": ""}`)
@@ -89,14 +115,26 @@ function CreateVAUSD() {
             const newData = await axios.post(BaseURL + "/VirtualAccountUSD/UpdateUnvailabletoAvailableVA", {data: dataParams}, {headers: headers})
             console.log(newData, 'newData');
             if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token === null) {
+                setActivePageCreate(1)
                 getVAUSD(bulkId, 1)
                 getFileNameAndStockVA()
                 setShowModalPerbaruiDataVA(false)
+                setSuccessAvailableUpdateMessage(`Berhasil perbarui <b>${listVA.length}</b> data VA`)
+                setShowToastSuccessUpdateAvailable(true)
+                setTimeout(() => {
+                    setShowToastSuccessUpdateAvailable(false)
+                }, 5000);
             } else if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token !== null) {
                 setUserSession(newData.data.response_new_token)
+                setActivePageCreate(1)
                 getVAUSD(bulkId, 1)
                 getFileNameAndStockVA()
                 setShowModalPerbaruiDataVA(false)
+                setSuccessAvailableUpdateMessage(`Berhasil perbarui <b>${listVA.length}</b> data VA`)
+                setShowToastSuccessUpdateAvailable(true)
+                setTimeout(() => {
+                    setShowToastSuccessUpdateAvailable(false)
+                }, 5000);
             }
         } catch (error) {
             // console.log(error);
@@ -104,62 +142,69 @@ function CreateVAUSD() {
         }
     }
 
-    async function generateFileCSV(bulkId) {
+    async function generateFileCSV(bulkId, fileName, listVA) {
         try {
-            const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"bulk_id": ${bulkId}, "username": ""}`)
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': auth
-            }
-            console.log(dataParams, 'dataParams');
-            const dataFileCSV = await axios.post(BaseURL + "/VirtualAccountUSD/GetUnavailableVAUSD", {data: dataParams}, {headers: headers})
-            console.log(dataFileCSV, 'dataFileCSV');
-            if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token === null) {
-                // const ws = XLSX.utils.sheet_to_csv(dataFileCSV.data.response_data.results)
-                // const ws = XLSX.utils.json_to_sheet(dataFileCSV.data.response_data.results)
-                // console.log(ws, 'ws');
-                const data = dataFileCSV.data.response_data.results
-                const arrayOfArraysIndex0 = data.map(obj => {
-                    // const values = Object.values(obj);
-                    const keys = Object.keys(obj);
-                    return keys;
-                });
-                const arrayOfArraysNextIndex = data.map(obj => {
-                    const values = Object.values(obj);
-                    // const keys = Object.keys(obj);
-                    return values;
-                });
-                arrayOfArraysNextIndex.unshift(arrayOfArraysIndex0[0])
+            console.log(listVA, 'listVA');
+            console.log(fileName, 'fileName');
+            if (listVA.length === 0 || listVA[0].status_id === 11) {
+                console.log("Data Kosong");
+            } else {
+                const auth = 'Bearer ' + getToken();
+                const dataParams = encryptData(`{"bulk_id": ${bulkId}, "username": ""}`)
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth
+                }
+                console.log(dataParams, 'dataParams');
+                const dataFileCSV = await axios.post(BaseURL + "/VirtualAccountUSD/GetUnavailableVAUSD", {data: dataParams}, {headers: headers})
+                console.log(dataFileCSV, 'dataFileCSV');
+                if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token === null) {
+                    let data = []
+                    dataFileCSV.data.response_data.results.forEach(item => {
+                        let obj = {}
+                        obj.company_code = item.company_code
+                        obj.member_code = item.member_code
+                        obj.member_name = item.member_name
+                        obj.amount = ""
+                        obj.period = new Date(item.period).toLocaleDateString('id-ID').split("/20").join("/")
+                        data.push(obj)
+                    })
+                    console.log(data, 'data new');
+                    const arrayOfArraysNextIndex = data.map(obj => {
+                        const values = Object.values(obj);
+                        // const keys = Object.keys(obj);
+                        return values;
+                    });
 
-                console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
-                const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
-                const wb = XLSX.utils.sheet_to_csv(ws)
-                let workBook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
-                XLSX.writeFile(workBook, `vausd_${new Date().toLocaleString('en-GB').split('/').join('').split(':').join('').split(', ').join('')}.csv`);
-                // console.log(wb, 'wb');
-            } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
-                setUserSession(dataFileCSV.data.response_new_token)
-                const data = dataFileCSV.data.response_data.results
-                const arrayOfArraysIndex0 = data.map(obj => {
-                    // const values = Object.values(obj);
-                    const keys = Object.keys(obj);
-                    return keys;
-                });
-                const arrayOfArraysNextIndex = data.map(obj => {
-                    const values = Object.values(obj);
-                    // const keys = Object.keys(obj);
-                    return values;
-                });
-                arrayOfArraysNextIndex.unshift(arrayOfArraysIndex0[0])
+                    console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
+                    const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
+                    const wb = XLSX.utils.sheet_to_csv(ws)
+                    let workBook = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
+                    XLSX.writeFile(workBook, `${fileName}.csv`);
+                    // console.log(wb, 'wb');
+                } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
+                    setUserSession(dataFileCSV.data.response_new_token)
+                    const data = dataFileCSV.data.response_data.results
+                    // const arrayOfArraysIndex0 = data.map(obj => {
+                    //     // const values = Object.values(obj);
+                    //     const keys = Object.keys(obj);
+                    //     return keys;
+                    // });
+                    const arrayOfArraysNextIndex = data.map(obj => {
+                        const values = Object.values(obj);
+                        // const keys = Object.keys(obj);
+                        return values;
+                    });
+                    // arrayOfArraysNextIndex.unshift(arrayOfArraysIndex0[0])
 
-                console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
-                const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
-                const wb = XLSX.utils.sheet_to_csv(ws)
-                let workBook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
-                XLSX.writeFile(workBook, `vausd_${new Date().toLocaleString('en-GB').split('/').join('').split(':').join('').split(', ').join('')}.csv`);
+                    console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
+                    const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
+                    const wb = XLSX.utils.sheet_to_csv(ws)
+                    let workBook = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
+                    XLSX.writeFile(workBook, `${fileName}.csv`);
+                }
             }
         } catch (error) {
             // console.log(error);
@@ -211,12 +256,16 @@ function CreateVAUSD() {
             if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token === null) {
                 setFileTabs(fileNameAndStockVa.data.response_data.results.bulk)
                 setIsTabFileId(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                setSelectedFileNameVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].name)
+                setActivePageCreate(1)
                 getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id, 1)
                 setStockVA(fileNameAndStockVa.data.response_data.results.stock)
             } else if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token !== null) {
                 setUserSession(fileNameAndStockVa.data.response_new_token)
                 setFileTabs(fileNameAndStockVa.data.response_data.results.bulk)
                 setIsTabFileId(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                setSelectedFileNameVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].name)
+                setActivePageCreate(1)
                 getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id, 1)
                 setStockVA(fileNameAndStockVa.data.response_data.results.stock)
             }
@@ -492,19 +541,19 @@ function CreateVAUSD() {
             conditionalCellStyles: [
                 {
                     when: row => row.status_id === 2,
-                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", fontWeight: 600 }
                 },
                 {
-                    when: row => row.status_id === 1 || row.status_id === 7,
-                    style: { background: "#FEF4E9", color: "#F79421", }
+                    when: row => row.status_id === 1 || row.status_id === 7 || row.status_id === 11 || row.status_id === 12,
+                    style: { background: "#FEF4E9", color: "#F79421", fontWeight: 600 }
                 },
                 {
-                    when: row => row.status_id === 4,
-                    style: { background: "#FDEAEA", color: "#EE2E2C", }
+                    when: row => row.status_id === 4 || row.status_id === 9,
+                    style: { background: "#FDEAEA", color: "#EE2E2C", fontWeight: 600 }
                 },
                 {
-                    when: row => row.status_id === 3 || row.status_id === 5 || row.status_id === 6 || row.status_id === 8 || row.status_id === 9 || row.status_id === 10 || row.status_id === 11 || row.status_id === 12 || row.status_id === 13 || row.status_id === 14 || row.status_id === 15,
-                    style: { background: "#F0F0F0", color: "#888888", }
+                    when: row => row.status_id === 3 || row.status_id === 5 || row.status_id === 6 || row.status_id === 8 || row.status_id === 10 || row.status_id === 13 || row.status_id === 14 || row.status_id === 15,
+                    style: { background: "#F0F0F0", color: "#888888", fontWeight: 600 }
                 }
             ],
         },
@@ -561,19 +610,19 @@ function CreateVAUSD() {
             conditionalCellStyles: [
                 {
                     when: row => row.status_id === 2,
-                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", fontWeight: 600 }
                 },
                 {
-                    when: row => row.status_id === 1 || row.status_id === 7,
-                    style: { background: "#FEF4E9", color: "#F79421", }
+                    when: row => row.status_id === 1 || row.status_id === 7 || row.status_id === 11 || row.status_id === 12,
+                    style: { background: "#FEF4E9", color: "#F79421", fontWeight: 600 }
                 },
                 {
-                    when: row => row.status_id === 4,
-                    style: { background: "#FDEAEA", color: "#EE2E2C", }
+                    when: row => row.status_id === 4 || row.status_id === 9,
+                    style: { background: "#FDEAEA", color: "#EE2E2C", fontWeight: 600 }
                 },
                 {
-                    when: row => row.status_id === 3 || row.status_id === 5 || row.status_id === 6 || row.status_id === 8 || row.status_id === 9 || row.status_id === 10 || row.status_id === 11 || row.status_id === 12 || row.status_id === 13 || row.status_id === 14 || row.status_id === 15,
-                    style: { background: "#F0F0F0", color: "#888888", }
+                    when: row => row.status_id === 3 || row.status_id === 5 || row.status_id === 6 || row.status_id === 8 || row.status_id === 10 || row.status_id === 13 || row.status_id === 14 || row.status_id === 15,
+                    style: { background: "#F0F0F0", color: "#888888", fontWeight: 600 }
                 }
             ],
         },
@@ -610,6 +659,14 @@ function CreateVAUSD() {
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
+            {
+                showToastSuccessUpdateAvailable &&
+                <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
+                    <Toast style={{ width: "900px", backgroundColor: "#077E86" }} position="bottom-center" className="text-center">
+                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span><span style={{ fontSize: 16 }} dangerouslySetInnerHTML={{ __html: successAvailableUpdateMessage }} /></Toast.Body>
+                    </Toast>
+                </div>
+            }
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;VA USD  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Buat VA USD</span>
             <div className="head-title">
                 <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Virtual Account USD</h2>
@@ -632,7 +689,7 @@ function CreateVAUSD() {
                     <>
                         <span className='font-weight-bold mt-3' style={{fontFamily: "Exo", fontWeight: 700}}>Buat VA</span>
                         <div className='d-flex justify-content-start align-items-center mt-3 mb-3' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
-                            <div className='ms-2'>Virtual Account akan aktif selama <b>30 hari</b> setelah dibuat, dan akan aktif sejak tanggal <b>{`${new Date().toLocaleDateString('en-GB')} - ${new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()).toLocaleDateString('en-GB')}`}</b></div>
+                            <div className='ms-2'>Virtual Account akan aktif selama <b>30 hari</b> setelah dibuat, dan akan aktif sejak tanggal <b>{`${new Date().toLocaleDateString('en-GB')} - ${new Date(new Date().setDate(new Date().getDate() + 30)).toLocaleDateString('en-GB')}`}</b></div>
                         </div>
                         <div className='my-4'>
                             <div style={{ fontSize: 14, fontWeight: 400, marginBottom: 10 }}>Jumlah data VA baru</div>
@@ -649,7 +706,8 @@ function CreateVAUSD() {
                             <button
                                 onClick={() => generateDataVABaru(dataVABaru)}
                                 // className={dataFromUpload.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'} //untukcsv
-                                className={'btn-ez-transfer'} //untuk excel
+                                className={dataVABaru === undefined || dataVABaru === "0" ? 'btn-noez-transfer' : 'btn-ez-transfer'}
+                                disabled={dataVABaru === undefined || dataVABaru === "0"}
                                 style={{ width: '18%', marginLeft: 10 }}
                             >
                                 Generate Virtual Account
@@ -696,7 +754,7 @@ function CreateVAUSD() {
                                 <Col>
                                     <Row className='d-flex justify-content-end'>
                                         <Col xs={3} className="card-information mt-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
-                                            <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => generateFileCSV(isTabFileId)}>
+                                            <div className='d-flex' style={{ cursor: listVAUSD[0]?.status_id === 11 ? "not-allowed" : "pointer" }} disabled={listVAUSD[0]?.status_id === 11} onClick={() => generateFileCSV(isTabFileId, selectedFileNameVAUSD, listVAUSD)}>
                                                 <img src={downloadIcon} width="24" height="24" alt="download_icon" />
                                                 <span style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Download File CSV</span>
                                             </div>
@@ -709,7 +767,7 @@ function CreateVAUSD() {
                                                     <Tooltip style={{ minWidth: 240 }}>Perbarui Data VA setelah file request VA yang telah di upload ke Dashboard OCBC sudah berubah. Hanya aktif setelah generate VA.</Tooltip>
                                                 }
                                             >
-                                                <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => setShowModalPerbaruiDataVA(true)}>
+                                                <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => perbaruiDataHandleClick(listVAUSD)}>
                                                     <img src={refreshIcon} width="24" height="24" alt="refresh_icon" />
                                                     <span className="p-info" style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Perbarui Data</span>
                                                 </div>
@@ -723,7 +781,7 @@ function CreateVAUSD() {
                                     {
                                         fileTabs.length !== 0 &&
                                         fileTabs.map(item => (
-                                                <div key={item.id} className={`me-2 detail-akun-tabs ${isTabFileId === item.id && "menu-detail-akun-hr-active"}`} onClick={() => pindahFileTabCreate(item.id)} id={item.name}>
+                                                <div key={item.id} className={`me-2 detail-akun-tabs ${isTabFileId === item.id && "menu-detail-akun-hr-active"}`} onClick={() => pindahFileTabCreate(item.id, item.name)} id={item.name}>
                                                     <span className={`menu-detail-akun-span ${isTabFileId === item.id && "menu-detail-akun-span-active"}`} id="createSpan">{item.name}</span>
                                                 </div>
                                         ))
@@ -762,7 +820,7 @@ function CreateVAUSD() {
                             </Modal.Title>
                             <Modal.Body >
                                 <div className='text-center px-2' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>
-                                    Terdapat <b>{`${10}`} VA Baru yang akan Tersedia</b> untuk dapat digunakan oleh partner
+                                    Terdapat <b>{`${listVAUSD.length}`} VA Baru yang akan Tersedia</b> untuk dapat digunakan oleh partner
                                 </div>
                                 <div className='d-flex justify-content-center align-items-center mt-3'>
                                     <div className='me-1'>
@@ -788,7 +846,7 @@ function CreateVAUSD() {
                                     </div>
                                     <div className="ms-1">
                                         <button
-                                            onClick={() => renewDataVA(isTabFileId)}
+                                            onClick={() => renewDataVA(isTabFileId, listVAUSD)}
                                             style={{
                                                 fontFamily: "Exo",
                                                 fontSize: 16,
