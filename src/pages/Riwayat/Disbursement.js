@@ -659,6 +659,7 @@ function Disbursement() {
             name: 'ID Transaksi',
             selector: row => row.tdishburse_code,
             // sortable: true
+            wrap: true,
             width: "200px",
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detailsettlement/${row.tvasettl_id}`}>{row.tvasettl_code}</Link>
         },
@@ -671,6 +672,7 @@ function Disbursement() {
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_trans_id,
+            wrap: true,
             width: "238px",
             // sortable: true,
         },

@@ -560,15 +560,15 @@ export default (props) => {
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement') ||
 
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
+                // || (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayat-transaksi/disbursement')
 
-                || (window.location.href === 'http://reactdev/dev1/#/dev1/disbursement') ||
-                (window.location.href === 'http://reactdev/dev1/#/dev1/riwayattopup') ||
-                (window.location.href === 'http://reactdev/dev1/#/dev1/alokasisaldo') ||
-                (window.location.href === 'http://reactdev/dev1/#/dev1/riwayat-transaksi/disbursement')
+                // || (window.location.href === 'http://reactdev/dev1/#/dev1/disbursement') ||
+                // (window.location.href === 'http://reactdev/dev1/#/dev1/riwayattopup') ||
+                // (window.location.href === 'http://reactdev/dev1/#/dev1/alokasisaldo') ||
+                // (window.location.href === 'http://reactdev/dev1/#/dev1/riwayat-transaksi/disbursement')
 
                 // (window.location.href === 'https://localhost:3000/dev3#/dev3/disbursement') ||
                 // (window.location.href === 'https://localhost:3000/dev3#/dev3/riwayattopup') ||
