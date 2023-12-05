@@ -105,7 +105,7 @@ function SettlementPage() {
     }
 
     function handleChangePeriodeSettlement(e, role) {
-        console.log(e.target.value, 'e.target.value');
+        // console.log(e.target.value, 'e.target.value');
         if (role !== "partner") {
             if (e.target.value === "7") {
                 setShowDateSettlement("")

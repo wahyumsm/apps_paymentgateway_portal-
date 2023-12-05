@@ -217,10 +217,10 @@ function DisbursementPage() {
                         const wb = XLSX.read(pond, {type: "base64"})
                         const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
                         let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
-                        console.log(pond, "pond");
-                        console.log(wb, "wb");
-                        console.log(ws, "ws");
-                        console.log(dataTemp, "dataTemp");
+                        // console.log(pond, "pond");
+                        // console.log(wb, "wb");
+                        // console.log(ws, "ws");
+                        // console.log(dataTemp, "dataTemp");
                         if (wb.SheetNames.length !== 1) {
                             setDataFromUploadExcel([])
                             setErrorFound([])
@@ -546,18 +546,22 @@ function DisbursementPage() {
                                     const codeBank = el !== undefined && el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)] !== undefined ? el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)].slice(0, 3) : undefined
                                     const filteredListBank = bankLists.filter(item => item.is_enabled === true) //bank yg aktif
                                     const sameBankName = filteredListBank.find(list => list.mbank_code === codeBank) //bank yg sama
+                                    // console.log(codeBank, 'codeBank');
+                                    // console.log(filteredListBank, 'filteredListBank');
                                     // console.log(sameBankName, 'sameBankName');
                                     const balanceBank = filteredBallanceBank.find((item) => { //ballance bank
                                         // console.log(item.channel_id, "balance detail");
-                                        if (codeBank === "011") {
+                                        if (codeBank === item.channel_id) {
                                             return item.channel_id === codeBank
                                         } else {
                                             // el.bankCode = "BIF"
                                             return item.channel_id === "BIF"
                                         }
                                     })
+                                    // console.log(balanceBank, 'balanceBank');
+                                    // console.log(bankFee, 'bankFee');
                                     const resultBankFee = bankFee.find((item) => { //filter fee bank
-                                        if (sameBankName.mbank_code === "011") {
+                                        if (sameBankName.mbank_code === item.mpaytype_bank_code) {
                                             return item.mpaytype_bank_code === sameBankName.mbank_code
                                         } else {
                                             // sameBankName.mbank_code = "BIF"
@@ -1032,6 +1036,7 @@ function DisbursementPage() {
                                                         totalNominalDisburse += el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]
                                                         sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
                                                     }
+                                                    // console.log('masuk return');
                                                     return {
                                                         ...el,
                                                         [(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]: el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]

@@ -73,8 +73,6 @@ function Disbursement() {
     const [showModalStatusDisburse, setShowModalStatusDisburse] = useState(false)
     const [responMsg, setResponMsg] = useState(0)
     const [errorDisbursementPerbaikanData, setErrorDisbursementPerbaikanData] = useState(false)
-    console.log(perbaikanDataDisbursement, 'perbaikanDataDisbursement');
-    console.log(isChecklist, 'isChecklist');
 
     const Option = (props) => {
         return (
@@ -238,7 +236,7 @@ function Disbursement() {
                 'Authorization' : auth
             }
             const perbaikanDataDisburse = await axios.post(BaseURL + "/Partner/UploadDisbursementFile", formData, {headers: headers})
-            console.log(perbaikanDataDisburse, 'perbaikanDataDisburse');
+            // console.log(perbaikanDataDisburse, 'perbaikanDataDisburse');
             if (perbaikanDataDisburse.data.response_code === 200 && perbaikanDataDisburse.status === 200 && perbaikanDataDisburse.data.response_new_token.length === 0) {
                 setShowModalKonfirmasiPerbaikanData(false)
                 setIsChecklist({})
@@ -268,7 +266,7 @@ function Disbursement() {
                 }, 5000);
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
@@ -279,8 +277,8 @@ function Disbursement() {
     }
 
     function createDataForModal(dataFromAPI, dataChecklist) {
-        console.log(dataFromAPI, 'dataFromAPI');
-        console.log(dataChecklist, 'dataChecklist');
+        // console.log(dataFromAPI, 'dataFromAPI');
+        // console.log(dataChecklist, 'dataChecklist');
         let isUncheck = 0
         let filteredChecklist = {}
         for (const key in dataChecklist) {
@@ -288,13 +286,10 @@ function Disbursement() {
                 filteredChecklist[key] = dataChecklist[key]
             }
         }
-        console.log(filteredChecklist, 'filteredChecklist');
+        // console.log(filteredChecklist, 'filteredChecklist');
         for (const key in filteredChecklist) {
             filteredChecklist[key] === false && isUncheck ++
         }
-        console.log(isUncheck, 'isUncheck');
-        console.log(Object.keys(filteredChecklist).length, 'Object.keys(filteredChecklist).length');
-        console.log(Object.keys(filteredChecklist).length === isUncheck, 'Object.keys(filteredChecklist).length === isUncheck');
         if (Object.keys(filteredChecklist).length === 0 || Object.keys(filteredChecklist).length === isUncheck) {
             setErrorDisbursementPerbaikanData(true)
             setTimeout(() => {
@@ -326,13 +321,6 @@ function Disbursement() {
             // XLSX.writeFile(workBook, "Disbursement Report.xlsx");
             const convertFile = XLSX.write(workBook, {bookType: "xlsx", type: "array"})
             var data = new Blob([new Uint8Array(convertFile)], { type: "application/octet-stream"})
-            console.log(filteredData, 'filteredData');
-            console.log(idTrue, 'idTrue');
-            console.log(dataExcel, 'dataExcel');
-            console.log(data, 'data');
-            console.log(allFee, 'allFee');
-            console.log(allNominal, 'allNominal');
-            console.log(allTotalNominal, 'allTotalNominal');
             setDataPerbaikanModal(filteredData)
             setDataForUpload(data)
             setAllFee(allFee)
@@ -343,9 +331,6 @@ function Disbursement() {
     }
 
     function handleCheckPerbaikanDataAll(e, dataFromAPI) {
-        console.log(e.target.name, 'e.target.name');
-        console.log(e.target.checked, 'e.target.checked');
-        console.log(dataFromAPI, 'dataFromAPI');
         let checkAll = {
             dataDiperbaikiAll: true
         }
@@ -362,12 +347,9 @@ function Disbursement() {
                 dataDiperbaikiAll: false
             })
         }
-        console.log(checkAll, 'checkAll');
     }
 
     function handleCheckPerbaikanData(e, dataIsChecklist, dataFromAPI) {
-        console.log(e.target.name, 'e.target.name');
-        console.log(e.target.checked, 'e.target.checked');
         if (e.target.checked) {
             let isTrue = 0
             for (const key in dataIsChecklist) {
@@ -376,8 +358,6 @@ function Disbursement() {
                 }
             }
             const filteredDataFromAPI = dataFromAPI.filter(item => item.similarity > 50)
-            console.log(isTrue, 'isTrue');
-            console.log(filteredDataFromAPI, 'filteredDataFromAPI');
             if (filteredDataFromAPI.length !== (isTrue + 1)) {
                 setIsChecklist({
                     ...isChecklist,
@@ -391,7 +371,7 @@ function Disbursement() {
                 })
             }
         } else {
-            console.log('masuk false');
+            // console.log('masuk false');
             // let isFalse = 0
             // for (const key in dataIsChecklist) {
             //     dataIsChecklist[key] === false && isFalse ++
@@ -447,7 +427,7 @@ function Disbursement() {
                 'Authorization': auth,
             }
             const getDataPerbaikan = await axios.post(BaseURL + "/Report/DisbursementInvalidAccountList", {data: dataParams}, {headers: headers})
-            console.log(getDataPerbaikan, 'getDataPerbaikan');
+            // console.log(getDataPerbaikan, 'getDataPerbaikan');
             // console.log(getDataPerbaikan1, 'getDataPerbaikan1');
             if (getDataPerbaikan.status === 200 && getDataPerbaikan.data.response_code === 200 && getDataPerbaikan.data.response_new_token === null) {
                 getDataPerbaikan.data.response_data.results.list_invalid_data = getDataPerbaikan.data.response_data.results.list_invalid_data.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
@@ -474,7 +454,7 @@ function Disbursement() {
                 'Authorization': auth,
             }
             const getDataPerbaikan = await axios.post(BaseURL + "/Report/DisbursementInvalidAccountList", {data: dataParams}, {headers: headers})
-            console.log(getDataPerbaikan, 'getDataPerbaikan');
+            // console.log(getDataPerbaikan, 'getDataPerbaikan');
             // console.log(getDataPerbaikan1, 'getDataPerbaikan1');
             if (getDataPerbaikan.status === 200 && getDataPerbaikan.data.response_code === 200 && getDataPerbaikan.data.response_new_token === null) {
                 const data = getDataPerbaikan.data.response_data.results.list_invalid_data
@@ -1061,15 +1041,9 @@ function Disbursement() {
     };
 
     function ExportReportDisbursementHandler(isFilter, userRole, statusId, paymentCode, transId, partnerId, dateRange, periode, partnerTransId, referenceNo, keterangan, lang) {
-        // console.log(partnerTransId, 'partnerTransId');
-        // console.log(dateRange, 'dateRange');
-        console.log('masuk export disbursement');
         if (isFilter === true && userRole === "102") {
             async function dataExportFilter(statusId, transId, paymentCode, keterangan, dateRange, periode, partnerTransId) {
                 try {
-                    console.log("partner export filter");
-                    // console.log(dateRange, 'dateRange 2');
-                    // console.log(partnerTransId, "partner trans filter");
                     const auth = 'Bearer ' + getToken();
                     const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId === undefined ? "" : partnerTransId}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "reference_no": "", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
