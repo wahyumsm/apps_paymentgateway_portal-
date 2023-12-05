@@ -1953,6 +1953,7 @@ function DisbursementPage() {
         {
             name: `${language === null ? eng.bankTujuan : language.bankTujuan}*`,
             selector: row => row[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)],
+            wrap: true,
             width: "180px"
         },
         {
