@@ -2288,6 +2288,7 @@ function DisbursementPage() {
         allHoldBalance,
         bankFee
     ) {
+        console.log(bankCodeTujuan, "bankCodeTujuan");
         let alertCount = 0
         if (bankNameTujuan.length === 0 && bankCodeTujuan.length === 0) {
             setAlertSaldo(false)
@@ -2391,14 +2392,18 @@ function DisbursementPage() {
         // } else {
         //     setAlertNotValid(false)
         // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
-            }
-        })
+        // const balanceBank = balanceDetail.find((item) => {
+        //     console.log(bankCodeTujuan, "bankCodeTujuan");
+        //     console.log(item.channel_id, "item.channel_id");
+        //     if (bankCodeTujuan === "011") {
+        //         console.log("masuk balance 1");
+        //         return item.channel_id === bankCodeTujuan
+        //     } else {
+        //         console.log("masuk balance 2");
+        //         bankCodeTujuan = "BIF"
+        //         return item.channel_id === bankCodeTujuan
+        //     }
+        // })
         // let sisaAllSaldoTemp = 0
         // console.log(nominal <= balanceBank.mpartballchannel_balance, 'masuk0');
         if (alertCount === 0) {
@@ -2415,13 +2420,26 @@ function DisbursementPage() {
                     // console.log('masuk2');
                     setShowModalDuplikasi(false)
                     const result = feeBank.find((item) => {
-                        if (bankCodeTujuan === "011") {
+                        console.log(bankCodeTujuan, "bankCodeTujuan");
+                        console.log(item.mpaytype_bank_code, "item.mpaytype_bank_code");
+                        if (bankCodeTujuan === item.mpaytype_bank_code) {
+                            console.log("masuk 1");
                             return item.mpaytype_bank_code === bankCodeTujuan
                         } else {
+                            console.log("masuk 2");
                             bankCodeTujuan = "BIF"
                             return item.mpaytype_bank_code === bankCodeTujuan
                         }
+                        // if (bankCodeTujuan === "011") {
+                        //     console.log("masuk 1");
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
+                        // } else {
+                        //     console.log("masuk 2");
+                        //         bankCodeTujuan = "BIF"
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
+                        // }
                     })
+                    console.log(result, "result");
                     if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
                         setAlertSaldo(true)
                     } else {
@@ -2721,26 +2739,34 @@ function DisbursementPage() {
         // } else {
         //     setAlertNotValid(false)
         // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
+        // const balanceBank = balanceDetail.find((item) => {
+        //     if (bankCodeTujuan === "011") {
+        //         return item.channel_id === bankCodeTujuan
+        //     } else {
+        //         bankCodeTujuan = "BIF"
+        //         return item.channel_id === bankCodeTujuan
 
-            }
-        })
+        //     }
+        // })
         // let sisaAllSaldoTemp = 0
         if (alertCount === 0) {
             if (nominal <= allBalance) {
                 setAlertSaldo(false)
                 const result = feeBank.find((item) => {
-                    if (bankCodeTujuan === "011") {
+                    if (bankCodeTujuan === item.mpaytype_bank_code) {
+                        console.log("masuk 1");
                         return item.mpaytype_bank_code === bankCodeTujuan
                     } else {
+                        console.log("masuk 2");
                         bankCodeTujuan = "BIF"
                         return item.mpaytype_bank_code === bankCodeTujuan
                     }
+                    // if (bankCodeTujuan === "011") {
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
+                    // } else {
+                    //     bankCodeTujuan = "BIF"
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
+                    // }
                 })
                 if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
                     setAlertSaldo(true)
@@ -3055,14 +3081,14 @@ function DisbursementPage() {
         // } else {
         //     setAlertNotValid(false)
         // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
-            }
-        })
+        // const balanceBank = balanceDetail.find((item) => {
+        //     if (bankCodeTujuan === "011") {
+        //         return item.channel_id === bankCodeTujuan
+        //     } else {
+        //         bankCodeTujuan = "BIF"
+        //         return item.channel_id === bankCodeTujuan
+        //     }
+        // })
         // let sisaAllSaldoTemp = 0
         if (alertCount === 0) {
             if (nominal <= allBalance) {
@@ -3080,20 +3106,31 @@ function DisbursementPage() {
                         return object.number === number
                     })
                     const result = feeBank.find((item) => {
-                        if (bankCodeTujuan === "011") {
+                        if (bankCodeTujuan === item.mpaytype_bank_code) {
+                            console.log("masuk 1");
                             return item.mpaytype_bank_code === bankCodeTujuan
                         } else {
+                            console.log("masuk 2");
                             bankCodeTujuan = "BIF"
                             return item.mpaytype_bank_code === bankCodeTujuan
                         }
+                        // if (bankCodeTujuan === "011") {
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
+                        // } else {
+                        //     bankCodeTujuan = "BIF"
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
+                        // }
                     })
                     const dataLama = dataDisburse.find((item) => item.number === number);
-
+                    console.log(dataLama.bankCodeTujuan, "dataLama.bankCodeTujuan");
+                    console.log(bankCodeTujuan, "bankCodeTujuan");
                     if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
                         if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("masuk alert save edit 1");
                             setAlertSaldo(true)
                             return
                         } else {
+                            console.log("masuk alert save edit 2");
                             setAlertSaldo(false)
                             setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
                             // setSisaSaldoAlokasiPerBank({
@@ -3136,10 +3173,17 @@ function DisbursementPage() {
                         //     }
                         // }
                     } else {
-                        if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                        console.log(sisaAllSaldoTempManual, "sisaAllSaldoTempManual");
+                        console.log(allBalance, "allBalance");
+                        console.log(allHoldBalance, "allHoldBalance");
+                        console.log(nominal, "nominal");
+                        console.log(result.fee_total, "result.fee_total");
+                        if ((sisaAllSaldoTempManual !== 0 ? (sisaAllSaldoTempManual + Number(dataLama.nominal + dataLama.feeTotal)) : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                            console.log("masuk alert save edit 1");
                             setAlertSaldo(true)
                             return
                         } else {
+                            console.log("masuk alert save edit 2");
                             setAlertSaldo(false)
                             setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
                             // setSisaSaldoAlokasiPerBank({
@@ -3396,14 +3440,14 @@ function DisbursementPage() {
         // } else {
         //     setAlertNotValid(false)
         // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
-            }
-        })
+        // const balanceBank = balanceDetail.find((item) => {
+        //     if (bankCodeTujuan === "011") {
+        //         return item.channel_id === bankCodeTujuan
+        //     } else {
+        //         bankCodeTujuan = "BIF"
+        //         return item.channel_id === bankCodeTujuan
+        //     }
+        // })
         // let sisaAllSaldoTemp = 0
         if (alertCount === 0) {
             if (nominal <= allBalance) {
@@ -3413,12 +3457,20 @@ function DisbursementPage() {
                     return object.number === number
                 })
                 const result = feeBank.find((item) => {
-                    if (bankCodeTujuan === "011") {
+                    if (bankCodeTujuan === item.mpaytype_bank_code) {
+                        console.log("masuk 1");
                         return item.mpaytype_bank_code === bankCodeTujuan
                     } else {
+                        console.log("masuk 2");
                         bankCodeTujuan = "BIF"
                         return item.mpaytype_bank_code === bankCodeTujuan
                     }
+                    // if (bankCodeTujuan === "011") {
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
+                    // } else {
+                    //     bankCodeTujuan = "BIF"
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
+                    // }
                 })
                 const dataLama = dataDisburse.find((item) => item.number === number);
 
@@ -3470,7 +3522,7 @@ function DisbursementPage() {
                     //     }
                     // }
                 } else {
-                    if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                    if ((sisaAllSaldoTempManual !== 0 ? (sisaAllSaldoTempManual + Number(dataLama.nominal + dataLama.feeTotal)) : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
                         setAlertSaldo(true)
                         return
                     } else {
