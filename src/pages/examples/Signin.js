@@ -150,6 +150,9 @@ export default () => {
             case 1702:
               history.push("/settlement/settlement-manual")
             break;
+            case 1705:
+              history.push("/settlement/settlement-manual")
+            break;
             case 1901:
               history.push("/HelpDesk/renotifyva")
             break;
