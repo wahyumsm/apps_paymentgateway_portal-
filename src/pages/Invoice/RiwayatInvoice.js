@@ -217,7 +217,6 @@ const RiwayatInvoice = () => {
     }
 
     const [dataDetailRiwayatInvoice, setDataDetailRiwayatInvoice] = useState({})
-    console.log(dataDetailRiwayatInvoice, "dataDetailRiwayatInvoice");
 
     function getDataDetailDataInvoice (noInv) {
         const findDataInvoiceDetail = dataRiwayatInvoice.find((item) => item.tinv_no === noInv)
@@ -255,7 +254,6 @@ const RiwayatInvoice = () => {
         toPng(dom)
             .then((dataUrl) => {
                 const img = new Image();
-                console.log(img);
                 img.crossOrigin = 'annoymous';
                 img.src = dataUrl;
                 img.onload = () => {
@@ -638,7 +636,6 @@ const RiwayatInvoice = () => {
                                     {
                                         dataDetailRiwayatInvoice?.tinv_data?.inv_products ?
                                         dataDetailRiwayatInvoice?.tinv_data?.inv_products.map((item, idx) => {
-                                            console.log(item, "item");
                                             return (
                                                 <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
                                                     <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
