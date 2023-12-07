@@ -298,7 +298,7 @@ function InvoiceDisbursement() {
                             <Col xs={4} className="d-flex justify-content-between align-items-center">
                                 <span>Tipe Invoice <span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name="invoiceType" value={invoiceType} onChange={(e) => handleOnChangeInvType(e)} className='input-text-riwayat' style={{ display: "inline" }}>
-                                    <option defaultChecked disabled value={0}>Pilih Status</option>
+                                    <option defaultChecked disabled value={0}>Pilih Tipe Invoice</option>
                                     <option value={100}>Bank</option>
                                     <option value={101}>E-Money</option>
                                 </Form.Select>

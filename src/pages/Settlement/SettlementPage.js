@@ -105,6 +105,7 @@ function SettlementPage() {
     }
 
     function handleChangePeriodeSettlement(e, role) {
+        // console.log(e.target.value, 'e.target.value');
         if (role !== "partner") {
             if (e.target.value === "7") {
                 setShowDateSettlement("")
@@ -114,8 +115,8 @@ function SettlementPage() {
                 })
             } else {
                 setShowDateSettlement("none")
-                setStateSettlementPartner(null)
-                setDateRangeSettlementPartner([])
+                setStateSettlement(null)
+                setDateRangeSettlement([])
                 setInputHandle({
                     ...inputHandle,
                     [e.target.name] : e.target.value.split(",")
