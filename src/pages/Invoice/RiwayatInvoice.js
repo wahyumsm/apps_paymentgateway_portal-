@@ -79,7 +79,7 @@ const RiwayatInvoice = () => {
             filterGetDataRiwayatInvoiceHandler(selectedPartnerRiwayatInvoice.length !== 0 ? selectedPartnerRiwayatInvoice[0].value : "", inputHandleRiwayatInvoice.invType, inputHandleRiwayatInvoice.fiturId, inputHandleRiwayatInvoice.periode, dateRangeRiwayatInvoice, page, 10)
         } else {
             setActivePageRiwayatInvoice(page)
-            getDataRiwayatInvoiceHandler(page)
+            getDataRiwayatInvoiceHandler(firstDayThisMonth, lastDayThisMonth, page)
         }
     }
 
@@ -203,7 +203,7 @@ const RiwayatInvoice = () => {
     }
 
     function resetButtonRiwayatInvoice () {
-        getDataRiwayatInvoiceHandler(activePageRiwayatInvoice)
+        getDataRiwayatInvoiceHandler(firstDayThisMonth, lastDayThisMonth, activePageRiwayatInvoice)
         setInputHandleRiwayatInvoice({
             periode: 0,
             partnerId: "",
