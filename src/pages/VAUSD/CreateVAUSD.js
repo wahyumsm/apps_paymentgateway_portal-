@@ -162,11 +162,12 @@ function CreateVAUSD() {
                     let data = []
                     dataFileCSV.data.response_data.results.forEach(item => {
                         let obj = {}
-                        obj.company_code = item.company_code
-                        obj.member_code = item.member_code
-                        obj.member_name = item.member_name
-                        obj.amount = ""
-                        obj.period = new Date(item.period).toLocaleDateString('en-GB').split("/20").join("/")
+                        obj.company_code = `${item.company_code}`
+                        obj.member_code = `${item.member_code}`
+                        obj.member_name = `${item.member_name}`
+                        obj.amount = "1"
+                        obj.period = `${new Date(item.period).toLocaleDateString('en-GB').split("/20").join("/")}`
+                        obj.member_status = ""
                         data.push(obj)
                     })
                     console.log(data, 'data new');
@@ -177,14 +178,20 @@ function CreateVAUSD() {
                     });
 
                     console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
-                    const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
-                    const wb = XLSX.utils.sheet_to_txt(ws)
-                    console.log(ws, 'ws');
-                    console.log(wb, 'wb');
-                    let workBook = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(workBook, wb, "Sheet1");
-                    XLSX.writeFile(workBook, `${fileName}.txt`);
+                    // const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
+                    // const csv = XLSX.utils.sheet_to_csv(ws)
+                    // console.log(ws, 'ws');
+                    // console.log(csv, 'csv');
+                    // let workBook = XLSX.utils.book_new();
+                    // XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
+                    // XLSX.writeFile(workBook, `${fileName}.txt`, {bookType: "csv"});
                     // console.log(wb, 'wb');
+                    let wb = XLSX.utils.book_new();
+                    let ws = XLSX.utils.json_to_sheet([])
+                    XLSX.utils.sheet_add_aoa(ws, arrayOfArraysNextIndex)
+                    // XLSX.utils.sheet_add_json(ws, data, {origin: "A2", skipHeader: true})
+                    XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
+                    XLSX.writeFile(wb, `${fileName}.csv`, {bookType: "csv"})
                 } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
                     setUserSession(dataFileCSV.data.response_new_token)
                     const data = dataFileCSV.data.response_data.results
