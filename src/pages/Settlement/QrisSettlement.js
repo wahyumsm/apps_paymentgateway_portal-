@@ -14,6 +14,7 @@ import ReactSelect, { components } from 'react-select'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import Pagination from 'react-js-pagination'
 import * as XLSX from "xlsx"
+import CurrencyInput from 'react-currency-input-field'
 
 const QrisSettlement = () => {
     const history = useHistory()
@@ -22,21 +23,6 @@ const QrisSettlement = () => {
     const [isSettlementOtomatis, setIsSettlementOtomatis] = useState(true)
     const [partnerId, setPartnerId] = useState("")
     const [settleType, setSettleType] = useState(0)
-
-    const [showDateSettlementQrisOtomatisMerchant, setShowDateSettlementQrisOtomatisMerchant] = useState("none")
-    const [dateRangeSettlementQrisOtomatisMerchant, setDateRangeSettlementQrisOtomatisMerchant] = useState([])
-    const [stateSettlementQrisOtomatisMerchant, setStateSettlementQrisOtomatisMerchant] = useState(null)
-    const [activePageSettlementQrisOtomatisMerchant, setActivePageSettlementQrisOtomatisMerchant] = useState(1)
-    const [pageNumberSettlementQrisOtomatisMerchant, setPageNumberSettlementQrisOtomatisMerchant] = useState({})
-    const [totalPageSettlementQrisOtomatisMerchant, setTotalPageSettlementQrisOtomatisMerchant] = useState(0)
-    const [isFilterSettlementQrisOtomatisMerchant, setIsFilterSettlementQrisOtomatisMerchant] = useState(false)
-    const [pendingSettlementQrisOtomatisMerchant, setPendingSettlementQrisOtomatisMerchant] = useState(true)
-    const [dataSettlementQrisOtomatisMerchant, setDataSettlementQrisOtomatisMerchant] = useState([])
-    const [inputHandleSettlementQrisOtomatisMerchant, setInputHandleSettlementQrisOtomatisMerchant] = useState({
-        idSettlement: "",
-        periode: 0,
-        statusQris: 0 
-    })
 
     const [showDateSettlementQrisOtomatisAdmin, setShowDateSettlementQrisOtomatisAdmin] = useState("none")
     const [dateRangeSettlementQrisOtomatisAdmin, setDateRangeSettlementQrisOtomatisAdmin] = useState([])
@@ -53,16 +39,16 @@ const QrisSettlement = () => {
         statusQris: 0 
     })
 
-    const [showDateSettlementQrisManualMerchant, setShowDateSettlementQrisManualMerchant] = useState("none")
-    const [dateRangeSettlementQrisManualMerchant, setDateRangeSettlementQrisManualMerchant] = useState([])
-    const [stateSettlementQrisManualMerchant, setStateSettlementQrisManualMerchant] = useState(null)
-    const [activePageSettlementQrisManualMerchant, setActivePageSettlementQrisManualMerchant] = useState(1)
-    const [pageNumberSettlementQrisManualMerchant, setPageNumberSettlementQrisManualMerchant] = useState({})
-    const [totalPageSettlementQrisManualMerchant, setTotalPageSettlementQrisManualMerchant] = useState(0)
-    const [isFilterSettlementQrisManualMerchant, setIsFilterSettlementQrisManualMerchant] = useState(false)
-    const [pendingSettlementQrisManualMerchant, setPendingSettlementQrisManualMerchant] = useState(true)
-    const [dataSettlementQrisManualMerchant, setDataSettlementQrisManualMerchant] = useState([])
-    const [inputHandleSettlementQrisManualMerchant, setInputHandleSettlementQrisManualMerchant] = useState({
+    const [showDateSettlementQrisOtomatisMerchant, setShowDateSettlementQrisOtomatisMerchant] = useState("none")
+    const [dateRangeSettlementQrisOtomatisMerchant, setDateRangeSettlementQrisOtomatisMerchant] = useState([])
+    const [stateSettlementQrisOtomatisMerchant, setStateSettlementQrisOtomatisMerchant] = useState(null)
+    const [activePageSettlementQrisOtomatisMerchant, setActivePageSettlementQrisOtomatisMerchant] = useState(1)
+    const [pageNumberSettlementQrisOtomatisMerchant, setPageNumberSettlementQrisOtomatisMerchant] = useState({})
+    const [totalPageSettlementQrisOtomatisMerchant, setTotalPageSettlementQrisOtomatisMerchant] = useState(0)
+    const [isFilterSettlementQrisOtomatisMerchant, setIsFilterSettlementQrisOtomatisMerchant] = useState(false)
+    const [pendingSettlementQrisOtomatisMerchant, setPendingSettlementQrisOtomatisMerchant] = useState(true)
+    const [dataSettlementQrisOtomatisMerchant, setDataSettlementQrisOtomatisMerchant] = useState([])
+    const [inputHandleSettlementQrisOtomatisMerchant, setInputHandleSettlementQrisOtomatisMerchant] = useState({
         idSettlement: "",
         periode: 0,
         statusQris: 0 
@@ -83,12 +69,54 @@ const QrisSettlement = () => {
         statusQris: 0 
     })
 
+    const [showDateSettlementQrisManualMerchant, setShowDateSettlementQrisManualMerchant] = useState("none")
+    const [dateRangeSettlementQrisManualMerchant, setDateRangeSettlementQrisManualMerchant] = useState([])
+    const [stateSettlementQrisManualMerchant, setStateSettlementQrisManualMerchant] = useState(null)
+    const [activePageSettlementQrisManualMerchant, setActivePageSettlementQrisManualMerchant] = useState(1)
+    const [pageNumberSettlementQrisManualMerchant, setPageNumberSettlementQrisManualMerchant] = useState({})
+    const [totalPageSettlementQrisManualMerchant, setTotalPageSettlementQrisManualMerchant] = useState(0)
+    const [isFilterSettlementQrisManualMerchant, setIsFilterSettlementQrisManualMerchant] = useState(false)
+    const [pendingSettlementQrisManualMerchant, setPendingSettlementQrisManualMerchant] = useState(true)
+    const [dataSettlementQrisManualMerchant, setDataSettlementQrisManualMerchant] = useState([])
+    const [inputHandleSettlementQrisManualMerchant, setInputHandleSettlementQrisManualMerchant] = useState({
+        idSettlement: "",
+        periode: 0,
+        statusQris: 0 
+    })
+    const [nominalPengajuan, setNominalPengajuan] = useState("")
+    const [totalSettlement, setTotalSettlement] = useState(0)
+    const [dataAccBankManualQrisSettleMerchant, setDataAccBankManualQrisSettleMerchant] = useState({})
+    const [dataBalanceTypeManualQrisSettleMerchant, setDataBalanceTypeManualQrisSettleMerchant] = useState({})
+
+    function handleChangeNominal (e, dataAccBank) {
+        setNominalPengajuan(e)
+        setTotalSettlement(Number(e) +  dataAccBank.biaya_admin)
+    }
+
+    const [dataBrandInQrisManualMerchant, setDataBrandInQrisManualMerchant] = useState([])
+    const [selectedBrandNameQrisManualMerchant, setSelectedBrandNameQrisManualMerchant] = useState([])
+    function handleChangeBrandQrisManualMerchant(e) {
+        setSelectedBrandNameQrisManualMerchant([e])
+        if (settleType[0]?.mqrismerchant_settle_group === 103) {
+            getOutletInQrisTransactionHandler(e.value)
+        }
+    }
+
+    const [dataOutletInQrisManualMerchant, setDataOutletInQrisManualMerchant] = useState([])
+    const [selectedOutletNameQrisManualMerchant, setSelectedOutletNameQrisManualMerchant] = useState([])
+    function handleChangeOutletQrisManualMerchant(e) {
+        setSelectedOutletNameQrisManualMerchant([e])
+    }
+
+    console.log(selectedBrandNameQrisManualMerchant, "selectedBrandNameQrisManualMerchant");
+    console.log(dataBrandInQrisManualMerchant, "dataBrandInQrisManualMerchant");
+    
     const [dataGrupInQris, setDataGrupInQris] = useState([])
     const [selectedGrupName, setSelectedGrupName] = useState([])
-
+    
     const [dataBrandInQris, setDataBrandInQris] = useState([])
     const [selectedBrandName, setSelectedBrandName] = useState([])
-
+    
     const [dataOutletInQris, setDataOutletInQris] = useState([])
     const [selectedOutletName, setSelectedOutletName] = useState([])
 
@@ -297,8 +325,32 @@ const QrisSettlement = () => {
     function pindahHalaman (param) {
         if (param === "otomatis") {
             disbursementTabs(true)
+            getDataSettlementQrisManualHandler(user_role, 1, partnerId)
+            setInputHandleSettlementQrisManualAdmin({
+                idSettlement: "",
+                periode: 0,
+                statusQris: 0 
+            })
+            setShowDateSettlementQrisManualAdmin("none")
+            setDateRangeSettlementQrisManualAdmin([])
+            setStateSettlementQrisManualAdmin(null)
+            setSelectedGrupName([])
+            setSelectedBrandName([])
+            setSelectedOutletName([])
         } else {
             disbursementTabs(false)
+            getDataSettlementQrisOtomatisHandler(user_role, 1)
+            setInputHandleSettlementQrisOtomatisAdmin({
+                idSettlement: "",
+                periode: 0,
+                statusQris: 0 
+            })
+            setShowDateSettlementQrisOtomatisAdmin("none")
+            setDateRangeSettlementQrisOtomatisAdmin([])
+            setStateSettlementQrisOtomatisAdmin(null)
+            setSelectedGrupName([])
+            setSelectedBrandName([])
+            setSelectedOutletName([])
         }
     }
 
@@ -429,8 +481,6 @@ const QrisSettlement = () => {
             selector: row => row.mstatus_name,
         },
     ];
-
-    console.log(settleType[0]?.mqrismerchant_settle_group, "settleType[0]?.mqrismerchant_settle_group");
 
     const columnsSettleOtomatisMerchant = [
         {
@@ -670,7 +720,6 @@ const QrisSettlement = () => {
         },
     ];
 
-    const [dataAccBankManualQrisSettleMerchant, setDataAccBankManualQrisSettleMerchant] = useState({})
 
     async function getAccountBankSettlementQrisManualMerchantHandler() {
         try {
@@ -693,6 +742,54 @@ const QrisSettlement = () => {
         }
     }
 
+    async function getDataBalanceTypeManualSettleQris(settleGroup) {
+        try {
+            const auth = "Bearer " + access_token
+            const dataParams = encryptData(`{"settle_group": ${settleGroup}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataBalanceTypeManualSettleQris = await axios.post(BaseURL + "/QRIS/QRISGetBalance", { data: dataParams }, { headers: headers })
+            // console.log(dataBalanceTypeManualSettleQris, 'ini user detal funct');
+            if (dataBalanceTypeManualSettleQris.status === 200 && dataBalanceTypeManualSettleQris.data.response_code === 200 && dataBalanceTypeManualSettleQris.data.response_new_token === null) {
+                setDataBalanceTypeManualQrisSettleMerchant(dataBalanceTypeManualSettleQris.data.response_data.results)
+            } else if (dataBalanceTypeManualSettleQris.status === 200 && dataBalanceTypeManualSettleQris.data.response_code === 200 && dataBalanceTypeManualSettleQris.data.response_new_token !== null) {
+                setUserSession(dataBalanceTypeManualSettleQris.data.response_new_token)
+                setDataBalanceTypeManualQrisSettleMerchant(dataBalanceTypeManualSettleQris.data.response_data.results)
+            }
+    } catch (error) {
+          // console.log(error);
+          history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function submitSettlementHandler(merchSettle, settleAmount, groupId, brandId, outletId) {
+        try {
+            const auth = "Bearer " + access_token
+            const dataParams = encryptData(`{"mqrismerchsettle_id": ${merchSettle}, "settle_amount": ${settleAmount}, "groupID" : ${groupId}, "brandID" : ${brandId}, "outletID" : ${outletId}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataSubmitSettle = await axios.post(BaseURL + "/QRIS/ApplySettlement", { data: dataParams }, { headers: headers })
+            // console.log(dataSubmitSettle, 'ini user detal funct');
+            if (dataSubmitSettle.status === 200 && dataSubmitSettle.data.response_code === 200 && dataSubmitSettle.data.response_new_token === null) {
+                alert(dataSubmitSettle.data.response_data.results)
+                window.location.reload()
+            } else if (dataSubmitSettle.status === 200 && dataSubmitSettle.data.response_code === 200 && dataSubmitSettle.data.response_new_token !== null) {
+                setUserSession(dataSubmitSettle.data.response_new_token)
+                alert(dataSubmitSettle.data.response_data.results)
+                window.location.reload()
+            }
+    } catch (error) {
+          // console.log(error);
+          history.push(errorCatch(error.response.status))
+        }
+    }
+
+    console.log(nominalPengajuan, "nominalPengajuan");
+
     async function getSettlementTypeHandler() {
         try {
             const auth = "Bearer " + access_token
@@ -705,10 +802,12 @@ const QrisSettlement = () => {
             if (dataSettleType.status === 200 && dataSettleType.data.response_code === 200 && dataSettleType.data.response_new_token === null) {
                 setSettleType(dataSettleType.data.response_data.results)
                 userDetails(dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_type)
+                getDataBalanceTypeManualSettleQris(dataSettleType.data.response_data.results[0]?.mqrismerchsettle_id)
             } else if (dataSettleType.status === 200 && dataSettleType.data.response_code === 200 && dataSettleType.data.response_new_token !== null) {
                 setUserSession(dataSettleType.data.response_new_token)
                 setSettleType(dataSettleType.data.response_data.results)
                 userDetails(dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_type)
+                getDataBalanceTypeManualSettleQris(dataSettleType.data.response_data.results[0]?.mqrismerchsettle_id)
             }
     } catch (error) {
           // console.log(error);
@@ -817,6 +916,7 @@ const QrisSettlement = () => {
                     newArr.push(obj)
                 })
                 setDataBrandInQris(newArr)
+                setDataBrandInQrisManualMerchant(newArr)
             } else if (dataBrandQris.status === 200 && dataBrandQris.data.response_code === 200 && dataBrandQris.data.response_new_token !== null) {
                 setUserSession(dataBrandQris.data.response_new_token)
                 let newArr = []
@@ -827,6 +927,7 @@ const QrisSettlement = () => {
                     newArr.push(obj)
                 })
                 setDataBrandInQris(newArr)
+                setDataBrandInQrisManualMerchant(newArr)
             }
         } catch (error) {
             // console.log(error);
@@ -853,6 +954,7 @@ const QrisSettlement = () => {
                     newArr.push(obj)
                 })
                 setDataOutletInQris(newArr)
+                setDataOutletInQrisManualMerchant(newArr)
             } else if (dataOutletQris.status === 200 && dataOutletQris.data.response_code === 200 && dataOutletQris.data.response_new_token !== null) {
                 setUserSession(dataOutletQris.data.response_new_token)
                 let newArr = []
@@ -863,6 +965,7 @@ const QrisSettlement = () => {
                     newArr.push(obj)
                 })
                 setDataOutletInQris(newArr)
+                setDataOutletInQrisManualMerchant(newArr)
             }
         } catch (error) {
             // console.log(error);
@@ -1807,11 +1910,61 @@ const QrisSettlement = () => {
                                 <>
                                     <div className='base-content mt-3'>
                                         <span className='mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Ajukan Settlement QRIS</span>
-                                        <div className='mt-3'>Tujuan settlement : <span style={{ fontWeight: 700, fontFamily: "Nunito", fontSize: 14, color: "#383838" }}>Group</span> </div>
+                                        <div className='mt-3'>Tujuan settlement : <span style={{ fontWeight: 700, fontFamily: "Nunito", fontSize: 14, color: "#383838" }}>{settleType[0]?.mqrismerchant_settle_group === 101 ? `Group` : settleType[0]?.mqrismerchant_settle_group === 102 ? `Brand` : `Outlet`}</span> </div>
+                                        {
+                                            user_role === "106" && (
+                                                (settleType[0]?.mqrismerchant_settle_group === 102 || settleType[0]?.mqrismerchant_settle_group === 103) && (
+                                                    <Row className='align-items-center'>
+                                                        <Col xs={2} className='mt-3'>
+                                                            <div>Brand</div>
+                                                        </Col>
+                                                        <Col xs={10} className='mt-3'>
+                                                            <div className="dropdown dropPartnerAddUser">
+                                                                <ReactSelect
+                                                                    closeMenuOnSelect={true}
+                                                                    hideSelectedOptions={false}
+                                                                    options={dataBrandInQrisManualMerchant}
+                                                                    value={selectedBrandNameQrisManualMerchant}
+                                                                    onChange={(selected) => handleChangeBrandQrisManualMerchant(selected)}
+                                                                    placeholder="Pilih Brand"
+                                                                    components={{ Option }}
+                                                                    styles={customStylesSelectedOption}
+                                                                />
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                )
+                                            )
+                                        }
+                                        {
+                                            user_role === "107" && (
+                                                settleType[0]?.mqrismerchant_settle_group === 103 && (
+                                                    <Row className='align-items-center'>
+                                                        <Col xs={2} className='mt-3'>
+                                                            <div>Outlet</div>
+                                                        </Col>
+                                                        <Col xs={10} className='mt-3'>
+                                                            <div className="dropdown dropPartnerAddUser">
+                                                                <ReactSelect
+                                                                    closeMenuOnSelect={true}
+                                                                    hideSelectedOptions={false}
+                                                                    options={dataOutletInQrisManualMerchant}
+                                                                    value={selectedOutletNameQrisManualMerchant}
+                                                                    onChange={(selected) => handleChangeOutletQrisManualMerchant(selected)}
+                                                                    placeholder="Pilih Outlet"
+                                                                    components={{ Option }}
+                                                                    styles={customStylesSelectedOption}
+                                                                />
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                )
+                                            )
+                                        }
                                         <div className="card-information base-content-qris mt-3">
                                             <p style={{ color: "#383838", fontSize: 12 }}>Jumlah saldo</p>
-                                            <p className="p-amount" style={{ fontFamily: "Exo" }}>Rp 100.000.000</p>
-                                            <p className="mt-2"  style={{ fontFamily: "Nunito", fontSize: 10, color: "#888888" }}>Total keseluruhan saldo semua brand dan outlet</p>
+                                            <p className="p-amount" style={{ fontFamily: "Exo" }}>{convertToRupiah(dataBalanceTypeManualQrisSettleMerchant[0]?.EndBalance, true, 0)}</p>
+                                            <p className="mt-2"  style={{ fontFamily: "Nunito", fontSize: 10, color: "#888888" }}>{user_role === "106" ? "Total keseluruhan saldo semua brand dan outlet" : user_role === "107" ? "Total keseluruhan saldo semua outlet" : ""}</p>
                                         </div>
                                         <Row className='align-items-center'>
                                             <Col xs={2} className='mt-4' >
@@ -1823,24 +1976,28 @@ const QrisSettlement = () => {
                                             <Col xs={2} className='mt-3'>
                                                 <div>Nominal Pengajuan</div>
                                             </Col>
-                                            <Col xs={10} className='d-flex justify-content-between align-items-center mt-3'>
-                                                <Form.Control
-                                                    type='text'
-                                                    className='input-text-user'
-                                                    placeholder='Rp'
+                                            <Col xs={10} className='d-flex justify-content-between align-items-center mt-3 position-relative'>
+                                                <div className='position-absolute ms-2' style={{ fontSize: 14, color: "#888888", fontFamily: "Nunito" }}>Rp</div>
+                                                <CurrencyInput
+                                                    className="input-text-user text-end"
+                                                    value={nominalPengajuan}
+                                                    onValueChange={(e) => handleChangeNominal(e, dataAccBankManualQrisSettleMerchant)}
+                                                    groupSeparator={"."}
+                                                    decimalSeparator={','}
+                                                    placeholder='0'
                                                 />
                                             </Col>
                                             <Col xs={12} className='d-flex justify-content-between align-items-center mt-3'>
                                                 <div>Biaya settlement</div>
-                                                <div className='biaya-settlement-qris'>Rp. 5.000</div>
+                                                <div className='biaya-settlement-qris'>{convertToRupiah(dataAccBankManualQrisSettleMerchant.biaya_admin, true, 0)}</div>
                                             </Col>
                                             <Col xs={12} className='d-flex justify-content-between align-items-center mt-3'>
                                                 <div>Total settlement</div>
-                                                <div className='saldo-dan-total-settlement'>Rp. 505.000</div>
+                                                <div className='saldo-dan-total-settlement'>{convertToRupiah(nominalPengajuan === undefined || nominalPengajuan.length === 0 ? dataAccBankManualQrisSettleMerchant.biaya_admin : totalSettlement, true, 0)}</div>
                                             </Col>
                                             <Col xs={12} className='d-flex justify-content-between align-items-center mt-3'>
                                                 <div>Sisa saldo</div>
-                                                <div className='saldo-dan-total-settlement'>Rp. 9.995.000</div>
+                                                <div className='saldo-dan-total-settlement'>{convertToRupiah(dataBalanceTypeManualQrisSettleMerchant[0]?.EndBalance - (nominalPengajuan === undefined || nominalPengajuan.length === 0 ? dataAccBankManualQrisSettleMerchant.biaya_admin : totalSettlement), true, 0)}</div>
                                             </Col>
                                         </Row>
                                         <Row className='mt-4 pb-4'>
@@ -1848,7 +2005,9 @@ const QrisSettlement = () => {
                                                 <Row>
                                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                         <button
-                                                            className='btn-ez-on'
+                                                            className={(nominalPengajuan !== undefined && nominalPengajuan.length !== 0 && Number(nominalPengajuan) !== 0 && Number(nominalPengajuan) >= 50000 && Number(dataBalanceTypeManualQrisSettleMerchant[0]?.EndBalance - totalSettlement) > 0) ? 'btn-ez-on' : 'btn-ez'}
+                                                            disabled={nominalPengajuan === undefined || nominalPengajuan.length === 0 || Number(nominalPengajuan) === 0 || Number(nominalPengajuan) < 50000 || Number(dataBalanceTypeManualQrisSettleMerchant[0]?.EndBalance - totalSettlement) <= 0}
+                                                            onClick={() => submitSettlementHandler(dataAccBankManualQrisSettleMerchant.ID, Number(nominalPengajuan), dataBalanceTypeManualQrisSettleMerchant[0]?.mqrisbalance_merchant_nou, settleType[0].mqrismerchant_settle_group === 101 ? 0 : selectedBrandNameQrisManualMerchant.map((item, idx) => item.value), 0)}
                                                         >
                                                             Ajukan
                                                         </button>
