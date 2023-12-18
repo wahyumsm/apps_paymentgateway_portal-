@@ -1,15 +1,14 @@
-import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
+import { Col, Form, Row } from '@themesberg/react-bootstrap'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import React, { useEffect, useState } from 'react'
 import Pagination from 'react-js-pagination';
 import { Link, useHistory } from 'react-router-dom';
 import ReactSelect, { components } from 'react-select'
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession, CustomLoader } from '../../function/helpers';
 import * as XLSX from "xlsx"
 import axios from 'axios';
 import encryptData from '../../function/encryptData';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { eng, ind } from '../../components/Language';
 
@@ -829,12 +828,6 @@ function SettlementPage() {
             exportGetSettlement(oneMonthAgo, currentDate)
         }
     }
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
 
     // console.log(user_role, user_role !== "102" || user_role !== "104",'user_role' );
 

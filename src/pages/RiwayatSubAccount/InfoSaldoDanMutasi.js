@@ -1,13 +1,12 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { BaseURL, convertDateAndTimeInfoDanSaldo, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertDateAndTimeInfoDanSaldo, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import SubAccountComponent from '../../components/SubAccountComponent'
-import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import iconMata from "../../assets/icon/toggle_mata_icon.svg"
 import noteIconError from "../../assets/icon/note_icon_red.svg"
 import DataTable from 'react-data-table-component'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
 import { useState } from 'react'
 // import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import { DateRangePicker } from 'rsuite'
@@ -84,7 +83,7 @@ const InfoSaldoDanMutasi = () => {
     const togglePassword = () => {
         setShowPassword(!showPassword);
       };
-      
+
       const [idTrans, setIdTrans] = useState({
           isDesc: false,
         id: 1
@@ -345,7 +344,7 @@ const InfoSaldoDanMutasi = () => {
           setDateRangeInfoMutasi(item)
         }
     }
-    
+
     async function fetchMoreData() {
         try {
             const auth = "Bearer " + getToken()
@@ -384,14 +383,14 @@ const InfoSaldoDanMutasi = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-    
+
     const style = {
         height: 30,
         border: "1px solid green",
         margin: 6,
         padding: 8
     };
-    
+
     const [inputHandle, setInputHandle] = useState({
         akunPartner: "",
         nomorAkun: "",
@@ -401,7 +400,7 @@ const InfoSaldoDanMutasi = () => {
     const [inputDataMutasi, setInputDataMutasi] = useState({
         periodeInfoMutasi: 0
     })
-    
+
     const { allowedMaxDays, allowedRange, combine } = DateRangePicker;
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate() + 1).toISOString().split('T')[0]
@@ -421,7 +420,7 @@ const InfoSaldoDanMutasi = () => {
                 opacity: 'unset'
             },
             placement: 'bottom',
-            
+
         },
     ]
     const Locale = {
@@ -585,7 +584,7 @@ const InfoSaldoDanMutasi = () => {
                 setPendingMutasi(false)
             }
             history.push(errorCatch(error.response.status))
-            
+
         }
     }
 
@@ -652,10 +651,10 @@ const InfoSaldoDanMutasi = () => {
         setShowDateInfoMutasi("none")
     }
     // console.log(inputDataMutasi.periodeInfoMutasi, 'inputDataMutasi.periodeInfoMutasi');
-    
+
     function viewSaldo () {
         getInfoSaldo(inputHandle.akunPartner, inputPass.passwordRek)
-        
+
     }
 
     function formPassword () {
@@ -675,17 +674,10 @@ const InfoSaldoDanMutasi = () => {
                 fontWeight: 'bold',
                 fontSize: '16px',
                 paddingRight: 'none'
-                
+
             },
         },
     };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          <div>Loading...</div>
-        </div>
-    );
 
     useEffect(() => {
         if (!access_token) {
@@ -699,7 +691,7 @@ const InfoSaldoDanMutasi = () => {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Info Saldo & Mutasi</span> 
+            <span className='breadcrumbs-span'>{user_role === "102" ? <span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span> : <span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda </span>}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Sub Account Bank &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;Info Saldo & Mutasi</span>
             <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Info Saldo & Mutasi</div>
             </div>
@@ -807,7 +799,7 @@ const InfoSaldoDanMutasi = () => {
                                     <option value={2}>Transaksi Keluar ( db )</option>
                                     <option value={3}>Biaya Admin</option>
                                 </Form.Select>
-                            </Col> 
+                            </Col>
                             <Col
                                 xs={4}
                                 className="d-flex justify-content-between align-items-center"
@@ -839,7 +831,7 @@ const InfoSaldoDanMutasi = () => {
                                         cleanable={true}
                                         placement='bottomEnd'
                                         size='lg'
-                                        placeholder="Select Date Range" 
+                                        placeholder="Select Date Range"
                                         disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
                                         className='datePicker'
                                         locale={Locale}
@@ -853,7 +845,7 @@ const InfoSaldoDanMutasi = () => {
                             <Col xs={5}>
                                 <Row>
                                     <Col xs={6} style={{ width: "unset" }}>
-                                        <button 
+                                        <button
                                             className={((inputDataMutasi.periodeInfoMutasi === "2") || (inputDataMutasi.periodeInfoMutasi === "3") || (inputDataMutasi.periodeInfoMutasi === "4") || (inputDataMutasi.periodeInfoMutasi !== 0 && (inputDataMutasi.periodeInfoMutasi === "7" && dateRangeInfoMutasi.length !== 0))) ? 'btn-ez-on' : 'btn-noez-transfer'}
                                             disabled={inputDataMutasi.periodeInfoMutasi === 0 || (inputDataMutasi.periodeInfoMutasi === "7" && dateRangeInfoMutasi.length === 0)}
                                             onClick={() => filterListRiwayatMutasi(inputHandle.akunPartner, inputMutasi.idTrans, inputMutasi.paymentType, inputMutasi.partnerName, dateRangeInfoMutasi, inputDataMutasi.periodeInfoMutasi, 1, 10, orderId, orderField, inputMutasi.idReff, inputMutasi.idReffTrans)}
@@ -862,7 +854,7 @@ const InfoSaldoDanMutasi = () => {
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                        <button 
+                                        <button
                                             className={(inputDataMutasi.periodeInfoMutasi !== 0) ? 'btn-reset' : 'btn-ez-reset'}
                                             disabled={(inputDataMutasi.periodeInfoMutasi === 0 )}
                                             onClick={() => resetButtonHandle()}
@@ -913,7 +905,7 @@ const InfoSaldoDanMutasi = () => {
                                                                 ))
                                                             }
                                                         </tbody>
-                                                    ) 
+                                                    )
                                                 }
                                             </table>
                                             {pendingMutasi && (<div className='text-center'><CustomLoader /></div>)}
@@ -973,7 +965,7 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="saldo-sub-acc" size="xs" centered show={loginToSaldo} onHide={() => setLoginToSaldo(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    Masukkan Kata Sandi Login Anda 
+                    Masukkan Kata Sandi Login Anda
                 </Modal.Title>
                 <Modal.Body >
                     <div className=' mt-2' style={{ padding: "0px 24px"}}>
@@ -1026,8 +1018,8 @@ const InfoSaldoDanMutasi = () => {
                     />
                 </Modal.Header>
                 <Modal.Title className="mt-3 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 20, fontWeight: 700 }}>
-                    <div><img src={transferFailed} alt="success transfer" /></div> 
-                    <div className='mt-3'>Sistem Sedang Bermasalah</div> 
+                    <div><img src={transferFailed} alt="success transfer" /></div>
+                    <div className='mt-3'>Sistem Sedang Bermasalah</div>
                 </Modal.Title>
                 <Modal.Body >
                     <div className='text-center px-4' style={{ fontFamily: "Source Sans Pro", fontSize: 16, color: "#888888" }}>Saat ini sistem kami sedang mengalami gangguan sehingga tidak dapat menampilkan saldo anda. Mohon coba beberapa saat lagi</div>
@@ -1056,7 +1048,7 @@ const InfoSaldoDanMutasi = () => {
 
             <Modal className="history-modal" size="xs" centered show={showSaldoSubAcc} onHide={() => setShowSaldoSubAcc(false)}>
                 <Modal.Title className="mt-4 text-center px-3" style={{ fontFamily: 'Exo', fontSize: 24, fontWeight: 700 }}>
-                    Saldo Rekening Sub Account 
+                    Saldo Rekening Sub Account
                 </Modal.Title>
                 <Modal.Body>
                     {

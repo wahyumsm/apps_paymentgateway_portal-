@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
-import { Col, Form, Row, Image, Fade, OverlayTrigger, Tooltip } from "@themesberg/react-bootstrap";
+import { Col, Form, Row, Fade, OverlayTrigger, Tooltip } from "@themesberg/react-bootstrap";
 import $ from "jquery";
 import axios from "axios";
 import {
@@ -11,6 +11,7 @@ import {
   getToken,
   RouteTo,
   setUserSession,
+  CustomLoader
 } from "../../function/helpers";
 import { Link, useHistory, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
@@ -22,7 +23,6 @@ import {
   faChevronUp,
   faTruckLoading,
 } from "@fortawesome/free-solid-svg-icons";
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
@@ -1422,17 +1422,6 @@ function EditPartner() {
     getTypeFitur();
     listSumberAgenHandler(partnerId)
   }, [access_token, user_role, partnerId]);
-
-  const CustomLoader = () => (
-    <div style={{ padding: "24px" }}>
-      <Image
-        className="loader-element animate__animated animate__jackInTheBox"
-        src={loadingEzeelink}
-        height={80}
-      />
-      <div>Loading...</div>
-    </div>
-  );
 
   const customStyles = {
     headCells: {

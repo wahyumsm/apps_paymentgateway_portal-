@@ -1,3 +1,14 @@
+import React from "react";
+import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
+import { Image } from "@themesberg/react-bootstrap";
+
+export const CustomLoader = () => (
+	<div style={{ padding: '24px' }}>
+		<Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+		<div>Loading...</div>
+	</div>
+);
+
 // export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile1"

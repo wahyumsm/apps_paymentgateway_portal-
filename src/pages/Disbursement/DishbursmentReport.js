@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, Image} from '@themesberg/react-bootstrap';
+import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -76,7 +75,7 @@ function DisbursementReport() {
     }
 
     function handleChangePeriodeDisbursement(e) {
-        
+
         if (e.target.value === "7") {
             setShowDateDisbursement("")
             setInputHandle({
@@ -551,7 +550,7 @@ function DisbursementReport() {
             ],
         },
     ];
-    
+
     const customStylesDisbursement = {
         headCells: {
             style: {
@@ -748,19 +747,13 @@ function DisbursementReport() {
         }
     }
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
-
     // console.log(showDateDisbursement, 'ini show date range');
     // console.log(stateDateDisbursement, 'ini state disburs');
     // console.log(dateRangeDisbursement, 'ini data date range');
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px" }}>
-            <span className='breadcrumbs-span'>{(user_role === "102") ? <><span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Disbursement</> : <><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</>}</span> 
+            <span className='breadcrumbs-span'>{(user_role === "102") ? <><span style={{ cursor: "pointer" }} onClick={() => toLaporan()}> Laporan</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Disbursement</> : <><span style={{ cursor: "pointer" }} onClick={() => toDashboard()}> Beranda</span>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Disbursement Report</>}</span>
             <div className='head-title'>
                 <h2 className="h5 mb-3 mt-4">{(user_role === "102") ? "Riwayat Disbursement" : "Disbursement Report"}</h2>
             </div>
@@ -820,7 +813,7 @@ function DisbursementReport() {
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: (showDateDisbursement === "none") ? "33.2%" : "33.2%" }}>
                                         <span style={{ marginRight: 26 }}>Periode <span style={{ color: "red" }}>*</span></span>
                                         <Form.Select name='periodeDisbursement' className="input-text-ez" value={inputHandle.periodeDisbursement} onChange={(e) => handleChangePeriodeDisbursement(e)}>
-                                            <option defaultChecked disabled value={0}>Pilih Periode</option> 
+                                            <option defaultChecked disabled value={0}>Pilih Periode</option>
                                             <option value={2}>Hari Ini</option>
                                             <option value={3}>Kemarin</option>
                                             <option value={4}>7 Hari Terakhir</option>
@@ -864,7 +857,7 @@ function DisbursementReport() {
                                 <Row className='mt-4' style={{ display: showDateDisbursement }}>
                                     <Col xs={4}>
                                         <div className='text-end me-4'>
-                                            <DateRangePicker 
+                                            <DateRangePicker
                                                 onChange={pickDateDisbursement}
                                                 value={stateDateDisbursement}
                                                 clearIcon={null}
@@ -909,7 +902,7 @@ function DisbursementReport() {
                                             {/* <option value={9}>Kadaluwarsa</option> */}
                                         </Form.Select>
                                     </Col>
-                                    
+
                                 </Row>
                                 <Row className='mt-3'>
                                     <Col xs={4} className='d-flex justify-content-start align-items-center'>
@@ -918,7 +911,7 @@ function DisbursementReport() {
                                     </Col>
                                     <Col xs={4} className="d-flex justify-content-end align-items-center" >
                                         <div style={{ display: showDateDisbursement}} className='me-4'>
-                                            <DateRangePicker 
+                                            <DateRangePicker
                                                 onChange={pickDateDisbursement}
                                                 value={stateDateDisbursement}
                                                 clearIcon={null}

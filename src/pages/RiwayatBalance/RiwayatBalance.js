@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Link, useHistory } from 'react-router-dom'
-import { Button, Col, Container, Form, Image, Modal, Row } from '@themesberg/react-bootstrap';
+import { Button, Col, Container, Form, Modal, Row } from '@themesberg/react-bootstrap';
 import ReactSelect, { components } from 'react-select';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import Pagination from 'react-js-pagination';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
+import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession, CustomLoader } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import * as XLSX from "xlsx"
@@ -365,13 +364,6 @@ function RiwayatBalance() {
             },
         },
     };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-            <div>Loading...</div>
-        </div>
-    );
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>

@@ -3,13 +3,12 @@ import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Col, Image, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
+import { Col, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
 import DataTable from 'react-data-table-component'
 import { DateRangePicker } from 'rsuite'
 import { isAfter } from 'date-fns'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import triangleInfo from "../../assets/icon/triangle-info.svg"
-import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
@@ -226,12 +225,6 @@ const SettlementAdminManual = () => {
             },
         },
     };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
 
     useEffect(() => {
         if (!access_token) {

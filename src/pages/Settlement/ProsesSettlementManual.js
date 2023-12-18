@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Form, Image } from '@themesberg/react-bootstrap'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { Form } from '@themesberg/react-bootstrap'
+import { BaseURL, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
@@ -139,12 +138,6 @@ const ProsesSettlementManual = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
 
     useEffect(() => {
         if (!access_token) {

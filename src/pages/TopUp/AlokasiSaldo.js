@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Col, Form, Row, Table, Modal, Alert, Toast, Image } from '@themesberg/react-bootstrap'
-import { BaseURL, convertFormatNumber, convertToRupiah, getRole, getToken, setUserSession } from '../../function/helpers'
+import { Button, Col, Form, Row, Table, Modal, Alert, Toast } from '@themesberg/react-bootstrap'
+import { BaseURL, convertFormatNumber, convertToRupiah, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Link, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -11,7 +11,6 @@ import encryptData from '../../function/encryptData'
 import noteIconRed from "../../assets/icon/note_icon_red.svg"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker/dist/DateRangePicker'
 import DataTable from 'react-data-table-component'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import Pagination from 'react-js-pagination'
 import gagalMasukAlokasi from '../../assets/icon/gagaltopup_icon.svg'
 import CurrencyInput from 'react-currency-input-field'
@@ -763,7 +762,7 @@ function AlokasiSaldo() {
     //     {
     //         name: 'Status',
     //         selector: row => row.mstatus_name,
-    //         // cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
+    //         // cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>,
     //         // width: "150px",
     //         // sortable: true,
     //         style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -773,7 +772,7 @@ function AlokasiSaldo() {
     //                 style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
     //             },
     //             {
-    //                 when: row => row.tpartballchannel_status_id === 1 || row.tpartballchannel_status_id === 7, 
+    //                 when: row => row.tpartballchannel_status_id === 1 || row.tpartballchannel_status_id === 7,
     //                 className: ['detailStatus'],
     //                 style: { cursor:"pointer", textDecoration: "underline", background: "rgba(247, 148, 33, 0.08)", paddingLeft: "unset", '&:hover': {cursor: 'pointer', backgroundColor: '#FFFFFF'},},
     //                 option: {'&:hover': {backgroundColor: "#FFFFFF"} }
@@ -802,13 +801,6 @@ function AlokasiSaldo() {
     //         },
     //     },
     // };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-            <div>Loading...</div>
-        </div>
-    );
 
     return (
         <div className="py-5 mt-5 content-page">
@@ -874,7 +866,7 @@ function AlokasiSaldo() {
                                                 <CurrencyInput
                                                     className='input-text-ez'
                                                     value={inputHandle[`nominal${item.mpaytype_name}`] === undefined ? 0 : inputHandle[`nominal${item.mpaytype_name}`]}
-                                                    style={{ width: "70%", marginLeft: "unset" }} 
+                                                    style={{ width: "70%", marginLeft: "unset" }}
                                                     placeholder="Rp"
                                                     onValueChange={(e) => handleChangeAmount(e, item.mpaytype_mpaycat_id, item.min_topup_allocation, item.mpaytype_id, `nominal${item.mpaytype_name}`)}
                                                     groupSeparator={"."}
@@ -886,7 +878,7 @@ function AlokasiSaldo() {
                                                     inputHandle[`${item.mpaytype_name}Flag`] === true?
                                                     <Form.Control onBlur={() => setOnBlurFunction(!inputHandle[`${item.mpaytype_name}Flag`], `${item.mpaytype_name}Flag`)} onChange={handleChangeNumber} className='input-text-ez' style={{ width: "70%", marginLeft: "unset" }} placeholder="Rp" name={item.mpaytype_name} type="number" value={inputHandle.nominalBCA === 0 ? "Rp" : inputHandle.nominalBCA} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} /> :
                                                     <Form.Control onFocus={() => setOnFocusFunction(!inputHandle[`${item.mpaytype_name}Flag`], `${item.mpaytype_name}Flag`)} onChange={handleChangeText} className='input-text-ez' style={{ width: "70%", marginLeft: "unset" }} placeholder="Rp" name={item.mpaytype_name} type="text" value={inputHandle.nominalBCA === 0 ? "Rp" : convertFormatNumber(inputHandle.nominalBCA)} />
-                                                    
+
                                                 } */}
                                                 {
                                                     // DISBURSE INTERBANK
@@ -1245,8 +1237,8 @@ function AlokasiSaldo() {
                                                         <td style={{ paddingRight: 20, width: 155, textAlign: "end" }}>{item.tpartballchannel_amount_rp}</td>
                                                         <td style={{ paddingRight: 20, width: 155, textAlign: "end" }}>{item.tpartballchannel_balance_before_rp}</td>
                                                         <td style={{ paddingRight: 20, width: 155, textAlign: "end" }}>{item.tpartballchannel_balance_after_rp}</td>
-                                                        <td 
-                                                            style={{ 
+                                                        <td
+                                                            style={{
                                                                 background:
                                                                     (item.tpartballchannel_status_id === 2) ? "rgba(7, 126, 134, 0.08)" :
                                                                     (item.tpartballchannel_status_id === 1 || item.tpartballchannel_status_id === 7) ? "#FEF4E9" :
@@ -1472,8 +1464,8 @@ function AlokasiSaldo() {
                         <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Saldo yang sudah di alokasikan tidak dapat dipindahkan atau ditarik ulang.</p>
                     </div>
                     <p>
-                        
-                    </p>                
+
+                    </p>
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSaveAlokasiSaldo(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;" }} className="mx-2">Tidak</Button>
                         <Button onClick={() => saveAlokasiSaldo(disburseDana, disburseBCA, disburseMandiri, disburseInterbank, disburseBIFAST, disburseDanamon)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
@@ -1547,7 +1539,7 @@ function AlokasiSaldo() {
                         Please contact your admin.
                     </p>
                     </div>
-                    <div 
+                    <div
                         style={{
                             display: "flex",
                             justifyContent: "center",

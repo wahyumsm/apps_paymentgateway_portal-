@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Col, Row, Form, Image, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
 import DataTable from 'react-data-table-component';
-import { BaseURL, errorCatch, getRole, getToken, setUserSession } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, setUserSession, CustomLoader } from "../../function/helpers";
 import axios from "axios";
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faEye, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -153,17 +152,10 @@ function ListUser () {
             fontWeight: 'bold',
             fontSize: '16px',
             paddingRight: 'none'
-            
+
         },
     },
 };
-
-  const CustomLoader = () => (
-    <div style={{ padding: '24px' }}>
-      <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-      <div>Loading...</div>
-    </div>
-  );
 
     const tambahUser = () => {
         history.push("/adduser")
@@ -181,7 +173,7 @@ function ListUser () {
         </button>
         <div className='base-content'>
             <span className='mb-4' style={{fontWeight: 600}}>Data User</span>
-            
+
             <br/>
             <div className="div-table">
                 <DataTable

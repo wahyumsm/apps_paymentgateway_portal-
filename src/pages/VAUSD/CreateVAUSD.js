@@ -6,65 +6,91 @@ import noteInfo from "../../assets/icon/note_icon_grey_transparent_bg.svg"
 import noteInfoRed from "../../assets/icon/note_icon_red_transparent_bg.svg"
 import downloadIcon from "../../assets/icon/download_icon.svg"
 import refreshIcon from "../../assets/icon/refresh_icon.svg"
-import { Col, Image, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
-import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
+import { Col, Form, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
+import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession, CustomLoader } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import CurrencyInput from "react-currency-input-field";
 import axios from 'axios'
 import DataTable, { defaultThemes } from 'react-data-table-component'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import Pagination from 'react-js-pagination'
 import * as XLSX from "xlsx"
 import ReactSelect, { components } from 'react-select';
 import Checklist from '../../assets/icon/checklist_icon.svg'
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import { saveAs } from 'file-saver';
 
 function CreateVAUSD() {
 
     const history = useHistory()
     const [isVAUSD, setIsVAUSD] = useState(100)
-    const [isTabFileId, setIsTabFileId] = useState(1)
-    const [selectedFileNameVAUSD, setSelectedFileNameVAUSD] = useState("")
+
+    // STATE VA BARU
+
+    const [isTabFileIdVABaru, setIsTabFileIdVABaru] = useState(1)
+    const [selectedFileNameVAUSDBaru, setSelectedFileNameVAUSDBaru] = useState("")
+    const [unAvailableVAUSDBaru, setUnAvailableVAUSDBaru] = useState(0)
     const [dataVABaru, setDataVABaru] = useState("0")
-    const [generatedVA, setGeneratedVA] = useState({})
-    const [fileTabs, setFileTabs] = useState([])
-    const [listVAUSD, setListVAUSD] = useState([])
-    const [pendingVAUSD, setPendingVAUSD] = useState(false)
-    const [stockVA, setStockVA] = useState({
+    const [fileTabsVABaru, setFileTabsVABaru] = useState([])
+    const [listVAUSDBaru, setListVAUSDBaru] = useState([])
+    const [pendingVAUSDBaru, setPendingVAUSDBaru] = useState(false)
+    const [stockVABaru, setStockVABaru] = useState({
         available_stock: {
             stock: 0,
-            stock_will_run_out: false
+            stock_will_run_out: true
         },
         unavailable_stock: {
             stock: 0,
             stock_will_run_out: false
         }
     })
-    const [totalPageCreate, setTotalPageCreate] = useState(1)
-    const [activePageCreate, setActivePageCreate] = useState(1)
-    const [pageNumberCreate, setPageNumberCreate] = useState({})
-    const [showModalPerbaruiDataVA, setShowModalPerbaruiDataVA] = useState(false)
-    const [showModalKonfirmasiVAUpdate, setShowModalKonfirmasiVAUpdate] = useState(false)
-    const [showToastSuccessUpdateAvailable, setShowToastSuccessUpdateAvailable] = useState(false)
-    const [successAvailableUpdateMessage, setSuccessAvailableUpdateMessage] = useState("")
+    const [totalPageVABaru, setTotalPageVABaru] = useState(1)
+    const [activePageVABaru, setActivePageVABaru] = useState(1)
+    const [pageNumberVABaru, setPageNumberVABaru] = useState({})
+    const [showModalPerbaruiDataVABaru, setShowModalPerbaruiDataVABaru] = useState(false)
+    const [showToastSuccessUpdateAvailableVABaru, setShowToastSuccessUpdateAvailableVABaru] = useState(false)
+    const [successAvailableUpdateMessageVABaru, setSuccessAvailableUpdateMessageVABaru] = useState("")
 
-    const [dataListFile, setDataListFile] = useState([])
-    const [selectedFileUpdate, setSelectedFileUpdate] = useState([])
+    // STATE VA BARU END
+
+    // STATE UPDATE VA
+
+    const [dataListFileUpdateVA, setDataListFileUpdateVA] = useState([])
+    const [selectedFileUpdateUpdateVA, setSelectedFileUpdateUpdateVA] = useState([])
     const [listUpdateVA, setListUpdateVA] = useState([])
+    const [pendingUpdateVA, setPendingUpdateVA] = useState(false)
+    const [showModalKonfirmasiUpdateVA, setShowModalKonfirmasiUpdateVA] = useState(false)
 
-    console.log(stockVA, 'stockVA');
-    console.log(isTabFileId, 'isTabFileId');
+    // STATE UPDATE VA END
+
+    console.log(isVAUSD, 'isVAUSD');
+    console.log(stockVABaru, 'stockVABaru');
+    console.log(isTabFileIdVABaru, 'isTabFileIdVABaru');
     console.log(dataVABaru, 'dataVABaru');
-    console.log(selectedFileUpdate, 'selectedFileUpdate');
+    console.log(selectedFileUpdateUpdateVA, 'selectedFileUpdateUpdateVA');
 
-    // SECTION TAB CREATE NEW VA
+    // STATE RIWAYAT VA
+
+    const [inputHandleRiwayatVA, setInputHandleRiwayatVA] = useState({
+        kodeVARiwayatVA: "",
+        namaFileRiwayatVA: "",
+        statusRiwayatVA: 0,
+        periodeRiwayatVA: 0
+    })
+    const [showDateRiwayatVA, setShowDateRiwayatVA] = useState("none")
+    const [stateRiwayatVA, setStateRiwayatVA] = useState(null)
+    const [dateRangeRiwayatVA, setDateRangeRiwayatVA] = useState([])
+
+    // STATE RIWAYAT VA END
+
+    // FUNCTION SECTION TAB CREATE NEW VA
 
     function handlePageChangeCreate(page, bulkId) {
         console.log(page, 'getVAUSD changePage');
-        setActivePageCreate(page)
+        setActivePageVABaru(page)
         getVAUSD(bulkId, page)
     }
 
-    function handleChange(e) {
+    function handleChangeVABaru(e) {
         console.log(e, 'e');
         if (e === undefined || e === "") {
             setDataVABaru("0")
@@ -75,12 +101,13 @@ function CreateVAUSD() {
         }
     }
 
-    function pindahFileTabCreate(fileId, fileName) {
-        console.log(fileId, 'fileId');
-        setIsTabFileId(fileId)
-        setSelectedFileNameVAUSD(fileName)
-        setActivePageCreate(1)
-        getVAUSD(fileId, 1)
+    function pindahFileTabCreate(item) {
+        console.log(item.id, 'item.id');
+        setIsTabFileIdVABaru(item.id)
+        setSelectedFileNameVAUSDBaru(item.name)
+        setUnAvailableVAUSDBaru(item.total_unavailable)
+        setActivePageVABaru(1)
+        getVAUSD(item.id, 1)
     }
 
     function perbaruiDataHandleClick(listVA) {
@@ -92,14 +119,14 @@ function CreateVAUSD() {
         })
         console.log(isAvailable, 'isAvailable');
         if (isAvailable !== 0) {
-            setSuccessAvailableUpdateMessage("Semua Data VA Sudah Tersedia")
-            setShowModalPerbaruiDataVA(false)
-            setShowToastSuccessUpdateAvailable(true)
+            setSuccessAvailableUpdateMessageVABaru("Semua Data VA Sudah Tersedia")
+            setShowModalPerbaruiDataVABaru(false)
+            setShowToastSuccessUpdateAvailableVABaru(true)
             setTimeout(() => {
-                setShowToastSuccessUpdateAvailable(false)
+                setShowToastSuccessUpdateAvailableVABaru(false)
             }, 5000);
         } else {
-            setShowModalPerbaruiDataVA(true)
+            setShowModalPerbaruiDataVABaru(true)
         }
     }
 
@@ -115,25 +142,25 @@ function CreateVAUSD() {
             const newData = await axios.post(BaseURL + "/VirtualAccountUSD/UpdateUnvailabletoAvailableVA", {data: dataParams}, {headers: headers})
             console.log(newData, 'newData');
             if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token === null) {
-                setActivePageCreate(1)
+                setActivePageVABaru(1)
                 getVAUSD(bulkId, 1)
                 getFileNameAndStockVA()
-                setShowModalPerbaruiDataVA(false)
-                setSuccessAvailableUpdateMessage(`Berhasil perbarui <b>${listVA.length}</b> data VA`)
-                setShowToastSuccessUpdateAvailable(true)
+                setShowModalPerbaruiDataVABaru(false)
+                setSuccessAvailableUpdateMessageVABaru(`Berhasil perbarui <b>${listVA.length}</b> data VA`)
+                setShowToastSuccessUpdateAvailableVABaru(true)
                 setTimeout(() => {
-                    setShowToastSuccessUpdateAvailable(false)
+                    setShowToastSuccessUpdateAvailableVABaru(false)
                 }, 5000);
             } else if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token !== null) {
                 setUserSession(newData.data.response_new_token)
-                setActivePageCreate(1)
+                setActivePageVABaru(1)
                 getVAUSD(bulkId, 1)
                 getFileNameAndStockVA()
-                setShowModalPerbaruiDataVA(false)
-                setSuccessAvailableUpdateMessage(`Berhasil perbarui <b>${listVA.length}</b> data VA`)
-                setShowToastSuccessUpdateAvailable(true)
+                setShowModalPerbaruiDataVABaru(false)
+                setSuccessAvailableUpdateMessageVABaru(`Berhasil perbarui <b>${listVA.length}</b> data VA`)
+                setShowToastSuccessUpdateAvailableVABaru(true)
                 setTimeout(() => {
-                    setShowToastSuccessUpdateAvailable(false)
+                    setShowToastSuccessUpdateAvailableVABaru(false)
                 }, 5000);
             }
         } catch (error) {
@@ -155,7 +182,6 @@ function CreateVAUSD() {
                     'Content-Type': 'application/json',
                     'Authorization': auth
                 }
-                console.log(dataParams, 'dataParams');
                 const dataFileCSV = await axios.post(BaseURL + "/VirtualAccountUSD/GetUnavailableVAUSD", {data: dataParams}, {headers: headers})
                 console.log(dataFileCSV, 'dataFileCSV');
                 if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token === null) {
@@ -173,46 +199,51 @@ function CreateVAUSD() {
                     console.log(data, 'data new');
                     const arrayOfArraysNextIndex = data.map(obj => {
                         const values = Object.values(obj);
-                        // const keys = Object.keys(obj);
                         return values;
                     });
-
-                    console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
-                    // const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
-                    // const csv = XLSX.utils.sheet_to_csv(ws)
-                    // console.log(ws, 'ws');
-                    // console.log(csv, 'csv');
-                    // let workBook = XLSX.utils.book_new();
-                    // XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
-                    // XLSX.writeFile(workBook, `${fileName}.txt`, {bookType: "csv"});
-                    // console.log(wb, 'wb');
-                    let wb = XLSX.utils.book_new();
-                    let ws = XLSX.utils.json_to_sheet([])
-                    XLSX.utils.sheet_add_aoa(ws, arrayOfArraysNextIndex)
-                    // XLSX.utils.sheet_add_json(ws, data, {origin: "A2", skipHeader: true})
-                    XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
-                    XLSX.writeFile(wb, `${fileName}.csv`, {bookType: "csv"})
-                } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
-                    setUserSession(dataFileCSV.data.response_new_token)
-                    const data = dataFileCSV.data.response_data.results
-                    // const arrayOfArraysIndex0 = data.map(obj => {
-                    //     // const values = Object.values(obj);
-                    //     const keys = Object.keys(obj);
-                    //     return keys;
-                    // });
-                    const arrayOfArraysNextIndex = data.map(obj => {
-                        const values = Object.values(obj);
-                        // const keys = Object.keys(obj);
-                        return values;
-                    });
-                    // arrayOfArraysNextIndex.unshift(arrayOfArraysIndex0[0])
-
                     console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
                     const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
-                    const wb = XLSX.utils.sheet_to_txt(ws)
-                    let workBook = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(workBook, wb, "Sheet1");
-                    XLSX.writeFile(workBook, `${fileName}.txt`);
+                    const csv = XLSX.utils.sheet_to_csv(ws)
+                    const zip = require('jszip')()
+                    zip.file(`${fileName}.csv`, csv)
+                    zip.generateAsync({type: "blob"}).then(content => {
+                        saveAs(content, `${fileName}.zip`)
+                    })
+                    // const csvContent = `data:text/csv;charset=utf-8,${csv}`;
+                    // const encodedURI = encodeURI(csvContent);
+                    // console.log(encodedURI, 'encodedURI');
+                    // var link = document.createElement("a");
+                    // link.setAttribute('download', fileName);
+                    // link.href = encodedURI;
+                    // document.body.appendChild(link);
+                    // link.click();
+                    // link.remove();
+                } else if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token !== null) {
+                    setUserSession(dataFileCSV.data.response_new_token)
+                    let data = []
+                    dataFileCSV.data.response_data.results.forEach(item => {
+                        let obj = {}
+                        obj.company_code = `${item.company_code}`
+                        obj.member_code = `${item.member_code}`
+                        obj.member_name = `${item.member_name}`
+                        obj.amount = "1"
+                        obj.period = `${new Date(item.period).toLocaleDateString('en-GB').split("/20").join("/")}`
+                        obj.member_status = ""
+                        data.push(obj)
+                    })
+                    console.log(data, 'data new');
+                    const arrayOfArraysNextIndex = data.map(obj => {
+                        const values = Object.values(obj);
+                        return values;
+                    });
+                    console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
+                    const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
+                    const csv = XLSX.utils.sheet_to_csv(ws)
+                    const zip = require('jszip')()
+                    zip.file(`${fileName}.csv`, csv)
+                    zip.generateAsync({type: "blob"}).then(content => {
+                        saveAs(content, `${fileName}.zip`)
+                    })
                 }
             }
         } catch (error) {
@@ -223,7 +254,7 @@ function CreateVAUSD() {
 
     async function getVAUSD(fileId, page) {
         try {
-            setPendingVAUSD(true)
+            setPendingVAUSDBaru(true)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"bulk_id": ${fileId}, "page": ${page}, "row_per_page": 10}`)
             const headers = {
@@ -235,17 +266,17 @@ function CreateVAUSD() {
             console.log(dataListVAUSD, 'dataListVAUSD');
             if (dataListVAUSD.status === 200 && dataListVAUSD.data.response_code === 200 && dataListVAUSD.data.response_new_token === null) {
                 dataListVAUSD.data.response_data.results = dataListVAUSD.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
-                setPageNumberCreate(dataListVAUSD.data.response_data)
-                setTotalPageCreate(dataListVAUSD.data.response_data.max_page)
-                setListVAUSD(dataListVAUSD.data.response_data.results)
-                setPendingVAUSD(false)
+                setPageNumberVABaru(dataListVAUSD.data.response_data)
+                setTotalPageVABaru(dataListVAUSD.data.response_data.max_page)
+                setListVAUSDBaru(dataListVAUSD.data.response_data.results)
+                setPendingVAUSDBaru(false)
             } else if (dataListVAUSD.status === 200 && dataListVAUSD.data.response_code === 200 && dataListVAUSD.data.response_new_token !== null) {
                 setUserSession(dataListVAUSD.data.response_new_token)
                 dataListVAUSD.data.response_data.results = dataListVAUSD.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
-                setPageNumberCreate(dataListVAUSD.data.response_data)
-                setTotalPageCreate(dataListVAUSD.data.response_data.max_page)
-                setListVAUSD(dataListVAUSD.data.response_data.results)
-                setPendingVAUSD(false)
+                setPageNumberVABaru(dataListVAUSD.data.response_data)
+                setTotalPageVABaru(dataListVAUSD.data.response_data.max_page)
+                setListVAUSDBaru(dataListVAUSD.data.response_data.results)
+                setPendingVAUSDBaru(false)
             }
         } catch (error) {
             // console.log(error);
@@ -263,20 +294,22 @@ function CreateVAUSD() {
             const fileNameAndStockVa = await axios.post(BaseURL + "/VirtualAccountUSD/GetFileandStockforVAUSD", {data: ""}, {headers: headers})
             console.log(fileNameAndStockVa, 'fileNameAndStockVa');
             if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token === null) {
-                setFileTabs(fileNameAndStockVa.data.response_data.results.bulk)
-                setIsTabFileId(fileNameAndStockVa.data.response_data.results.bulk[0].id)
-                setSelectedFileNameVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].name)
-                setActivePageCreate(1)
+                setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
+                setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
+                setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
+                setActivePageVABaru(1)
                 getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id, 1)
-                setStockVA(fileNameAndStockVa.data.response_data.results.stock)
+                setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
             } else if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token !== null) {
                 setUserSession(fileNameAndStockVa.data.response_new_token)
-                setFileTabs(fileNameAndStockVa.data.response_data.results.bulk)
-                setIsTabFileId(fileNameAndStockVa.data.response_data.results.bulk[0].id)
-                setSelectedFileNameVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].name)
-                setActivePageCreate(1)
+                setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
+                setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
+                setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
+                setActivePageVABaru(1)
                 getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id, 1)
-                setStockVA(fileNameAndStockVa.data.response_data.results.stock)
+                setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
             }
         } catch (error) {
             // console.log(error);
@@ -296,12 +329,10 @@ function CreateVAUSD() {
             const generateVA = await axios.post(BaseURL + "/VirtualAccountUSD/GenerateVirtualAccount", {data: dataParams}, {headers: headers})
             console.log(generateVA, 'generateVA');
             if (generateVA.status === 200 && generateVA.data.response_code === 200 && generateVA.data.response_new_token === null) {
-                // setGeneratedVA(generateVA.data.response_data.results)
                 getFileNameAndStockVA(generateVA.data.response_data.results)
                 setDataVABaru(0)
             } else if (generateVA.status === 200 && generateVA.data.response_code === 200 && generateVA.data.response_new_token !== null) {
                 setUserSession(generateVA.data.response_new_token)
-                // setGeneratedVA(generateVA.data.response_data.results)
                 getFileNameAndStockVA(generateVA.data.response_data.results)
                 setDataVABaru(0)
             }
@@ -311,12 +342,28 @@ function CreateVAUSD() {
         }
     }
 
-    // SECTION TAB CREATE NEW VA END
+    // FUNCTION SECTION TAB CREATE NEW VA END
 
-    // SECTION TAB UPDATE VA
+    // FUNCTION SECTION TAB UPDATE VA
+
+    async function downloadFileVABulk(params) {
+        try {
+            const auth = 'Bearer ' + getToken();
+            // const dataParams = encryptData(`{"list": ${JSON.stringify(idLists)}}`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            // console.log(dataParams, 'dataParams');
+            // const getDataBulkVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/GetMasterBulkVAUSD", {data: ""}, {headers: headers})
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
 
     function handleChangeFile(selected) {
-        setSelectedFileUpdate(selected)
+        setSelectedFileUpdateUpdateVA(selected)
     }
 
     async function confirmUpdatedVAUSD(listFile) {
@@ -335,10 +382,10 @@ function CreateVAUSD() {
             const confirmedVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/ConfirmVAUSDFileUpdated", {data: dataParams}, {headers: headers})
             console.log(confirmedVAUSD, 'confirmedVAUSD');
             if (confirmedVAUSD.status === 200 && confirmedVAUSD.data.response_code === 200 && confirmedVAUSD.data.response_new_token === null) {
-                setShowModalKonfirmasiVAUpdate(false)
+                setShowModalKonfirmasiUpdateVA(false)
             } else if (confirmedVAUSD.status === 200 && confirmedVAUSD.data.response_code === 200 && confirmedVAUSD.data.response_new_token !== null) {
                 setUserSession(confirmedVAUSD.data.response_new_token)
-                setShowModalKonfirmasiVAUpdate(false)
+                setShowModalKonfirmasiUpdateVA(false)
             }
         } catch (error) {
             // console.log(error);
@@ -358,12 +405,12 @@ function CreateVAUSD() {
             if (downloadUpdatedVA.status === 200 && downloadUpdatedVA.data.response_code === 200 && downloadUpdatedVA.data.response_new_token === null) {
                 getListUpdateVA(1)
                 getDataNameFile()
-                setSelectedFileUpdate([])
+                setSelectedFileUpdateUpdateVA([])
             } else if (downloadUpdatedVA.status === 200 && downloadUpdatedVA.data.response_code === 200 && downloadUpdatedVA.data.response_new_token !== null) {
                 setUserSession(downloadUpdatedVA.data.response_new_token)
                 getListUpdateVA(1)
                 getDataNameFile()
-                setSelectedFileUpdate([])
+                setSelectedFileUpdateUpdateVA([])
             }
         } catch (error) {
             // console.log(error);
@@ -388,7 +435,7 @@ function CreateVAUSD() {
                     obj.label = e.name
                     newArr.push(obj)
                 })
-                setDataListFile(newArr)
+                setDataListFileUpdateVA(newArr)
             } else if (dataListFileName.status === 200 && dataListFileName.data.response_code === 200 && dataListFileName.data.response_new_token !== null) {
                 setUserSession(dataListFileName.data.response_new_token)
                 let newArr = []
@@ -398,7 +445,7 @@ function CreateVAUSD() {
                     obj.label = e.name
                     newArr.push(obj)
                 })
-                setDataListFile(newArr)
+                setDataListFileUpdateVA(newArr)
             }
         } catch (error) {
             // console.log(error);
@@ -408,6 +455,7 @@ function CreateVAUSD() {
 
     async function getListUpdateVA(page) {
         try {
+            setPendingUpdateVA(true)
             const auth = 'Bearer ' + getToken();
             const dataParams = encryptData(`{"page": ${page}, "row_per_page": 20}`)
             const headers = {
@@ -420,10 +468,12 @@ function CreateVAUSD() {
             if (dataListUpdateVA.status === 200 && dataListUpdateVA.data.response_code === 200 && dataListUpdateVA.data.response_new_token === null) {
                 dataListUpdateVA.data.response_data.results = dataListUpdateVA.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setListUpdateVA(dataListUpdateVA.data.response_data.results)
+                setPendingUpdateVA(false)
             } else if (dataListUpdateVA.status === 200 && dataListUpdateVA.data.response_code === 200 && dataListUpdateVA.data.response_new_token !== null) {
                 setUserSession(dataListUpdateVA.data.response_new_token)
                 dataListUpdateVA.data.response_data.results = dataListUpdateVA.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setListUpdateVA(dataListUpdateVA.data.response_data.results)
+                setPendingUpdateVA(false)
             }
         } catch (error) {
             // console.log(error);
@@ -431,13 +481,48 @@ function CreateVAUSD() {
         }
     }
 
-    // SECTION TAB UPDATE VA END
+    // FUNCTION SECTION TAB UPDATE VA END
+
+    // FUNCTION SECTION TAB RIWAYAT VA
+
+    function handleChange(e) {
+        setInputHandleRiwayatVA({
+            ...inputHandleRiwayatVA,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    function handleChangePeriodeRiwayatVA(e) {
+        if (e.target.value === "7") {
+            setShowDateRiwayatVA("")
+            setInputHandleRiwayatVA({
+                ...inputHandleRiwayatVA,
+                [e.target.name] : e.target.value
+            })
+        } else {
+            setShowDateRiwayatVA("none")
+            setInputHandleRiwayatVA({
+                ...inputHandleRiwayatVA,
+                [e.target.name] : e.target.value
+            })
+        }
+    }
+
+    function pickDateRiwayatVA(item) {
+        setStateRiwayatVA(item)
+        if (item !== null) {
+            item = item.map(el => el.toLocaleDateString('en-CA'))
+            setDateRangeRiwayatVA(item)
+        }
+    }
+
+    // FUNCTION SECTION TAB RIWAYAT VA END
 
     useEffect(() => {
         getFileNameAndStockVA()
-        getListUpdateVA(1)
-        getDataNameFile()
-    }, [])
+        // getListUpdateVA(1)
+        // getDataNameFile()
+    }, [isVAUSD])
 
     const Option = (props) => {
         return (
@@ -464,11 +549,17 @@ function CreateVAUSD() {
 
     function pindahHalaman(param) {
         if (param === "create") {
+            setSelectedFileUpdateUpdateVA([])
+            getFileNameAndStockVA()
             VAUSDTabs(100)
         } else if (param === "update") {
+            setDataVABaru("0")
             getListUpdateVA(1)
+            getDataNameFile()
             VAUSDTabs(101)
         } else if (param === "riwayat") {
+            setDataVABaru("0")
+            setSelectedFileUpdateUpdateVA([])
             VAUSDTabs(102)
         }
     }
@@ -659,20 +750,13 @@ function CreateVAUSD() {
         },
     };
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-            <div>Loading...</div>
-        </div>
-    );
-
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             {
-                showToastSuccessUpdateAvailable &&
+                showToastSuccessUpdateAvailableVABaru &&
                 <div style={{ position: "fixed", zIndex: 999, width: "80%" }} className="d-flex justify-content-center align-items-center mt-4 ms-5">
                     <Toast style={{ width: "900px", backgroundColor: "#077E86" }} position="bottom-center" className="text-center">
-                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span><span style={{ fontSize: 16 }} dangerouslySetInnerHTML={{ __html: successAvailableUpdateMessage }} /></Toast.Body>
+                        <Toast.Body className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span><span style={{ fontSize: 16 }} dangerouslySetInnerHTML={{ __html: successAvailableUpdateMessageVABaru }} /></Toast.Body>
                     </Toast>
                 </div>
             }
@@ -695,315 +779,370 @@ function CreateVAUSD() {
                 <hr className='hr-style mb-4' style={{marginTop: -2}}/>
                 {
                     isVAUSD === 100 ?
-                    <>
-                        <span className='font-weight-bold mt-3' style={{fontFamily: "Exo", fontWeight: 700}}>Buat VA</span>
-                        <div className='d-flex justify-content-start align-items-center mt-3 mb-3' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
-                            <div className='ms-2'>Virtual Account akan aktif selama <b>30 hari</b> setelah dibuat, dan akan aktif sejak tanggal <b>{`${new Date().toLocaleDateString('en-GB')} - ${new Date(new Date().setDate(new Date().getDate() + 30)).toLocaleDateString('en-GB')}`}</b></div>
-                        </div>
-                        <div className='my-4'>
-                            <div style={{ fontSize: 14, fontWeight: 400, marginBottom: 10 }}>Jumlah data VA baru</div>
-                            <CurrencyInput
-                                className="input-text-ez"
-                                value={dataVABaru}
-                                onValueChange={(e) => handleChange(e)}
-                                placeholder="0"
-                                style={{ width: "9%", marginLeft: "unset", }}
-                                allowDecimals={false}
-                                allowNegativeValue={false}
-                                maxLength={4}
-                            />
-                            <button
-                                onClick={() => generateDataVABaru(dataVABaru)}
-                                // className={dataFromUpload.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'} //untukcsv
-                                className={dataVABaru === undefined || dataVABaru === "0" ? 'btn-noez-transfer' : 'btn-ez-transfer'}
-                                disabled={dataVABaru === undefined || dataVABaru === "0"}
-                                style={{ width: '18%', marginLeft: 10 }}
-                            >
-                                Generate Virtual Account
-                            </button>
-                        </div>
-                        <hr className='hr-style mb-4' style={{marginTop: -2}}/>
-                        <div className='my-4'>
-                            <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar File & VA</div>
-                            <Row>
-                                <Col>
-                                    <Row className='d-flex justify-content-start'>
-                                        <Col xs={3} className="card-information mt-3" style={{border: stockVA.available_stock.stock_will_run_out ? '1px solid #B9121B' : '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
-                                            <div className='d-flex'>
+                        <>
+                            <span className='font-weight-bold mt-3' style={{fontFamily: "Exo", fontWeight: 700}}>Buat VA</span>
+                            <div className='d-flex justify-content-start align-items-center mt-3 mb-3' style={{ color: '#383838', padding: '14px 25px 14px 14px', fontSize: 14, fontStyle: 'italic', whiteSpace: 'normal', backgroundColor: 'rgba(255, 214, 0, 0.16)', borderRadius: 4 }}>
+                                <div className='ms-2'>Virtual Account akan aktif selama <b>30 hari</b> setelah dibuat, dan akan aktif sejak tanggal <b>{`${new Date().toLocaleDateString('en-GB')} - ${new Date(new Date().setDate(new Date().getDate() + 30)).toLocaleDateString('en-GB')}`}</b></div>
+                            </div>
+                            <div className='my-4'>
+                                <div style={{ fontSize: 14, fontWeight: 400, marginBottom: 10 }}>Jumlah data VA baru</div>
+                                <CurrencyInput
+                                    className="input-text-ez"
+                                    value={dataVABaru}
+                                    onValueChange={(e) => handleChangeVABaru(e)}
+                                    placeholder="0"
+                                    style={{ width: "9%", marginLeft: "unset", }}
+                                    allowDecimals={false}
+                                    allowNegativeValue={false}
+                                    maxLength={4}
+                                />
+                                <button
+                                    onClick={() => generateDataVABaru(dataVABaru)}
+                                    // className={dataFromUpload.length === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'} //untukcsv
+                                    className={dataVABaru === undefined || dataVABaru === "0" || dataVABaru === 0 ? 'btn-noez-transfer' : 'btn-ez-transfer'}
+                                    disabled={dataVABaru === undefined || dataVABaru === "0" || dataVABaru === 0}
+                                    style={{ width: '18%', marginLeft: 10 }}
+                                >
+                                    Generate Virtual Account
+                                </button>
+                            </div>
+                            <hr className='hr-style mb-4' style={{marginTop: -2}}/>
+                            <div className='my-4'>
+                                <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar File & VA</div>
+                                <Row>
+                                    <Col>
+                                        <Row className='d-flex justify-content-start'>
+                                            <Col xs={3} className="card-information mt-3" style={{border: stockVABaru.available_stock.stock_will_run_out ? '1px solid #B9121B' : '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
+                                                <div className='d-flex'>
+                                                    <OverlayTrigger
+                                                        placement="bottom"
+                                                        trigger={["hover"]}
+                                                        overlay={
+                                                            <Tooltip style={{ minWidth: 240 }}>Total sisa stok VA tersedia adalah VA yang telah di buat oleh Ezeelink dan telah aktif di OCBC, serta telah mengalami pembaruan status.</Tooltip>
+                                                        }
+                                                    >
+                                                        <img src={stockVABaru.available_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
+                                                    </OverlayTrigger>
+                                                    <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total sisa stok VA Tersedia: </span>
+                                                    <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVABaru.available_stock.stock, false)}</span>
+                                                </div>
+                                            </Col>
+                                            <Col xs={3} className="card-information mt-3 ms-3" style={{border: stockVABaru.unavailable_stock.stock_will_run_out ? '1px solid #B9121B' : '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
+                                                <div className='d-flex'>
+                                                    <OverlayTrigger
+                                                        placement="bottom"
+                                                        trigger={["hover"]}
+                                                        overlay={
+                                                            <Tooltip style={{ minWidth: 240 }}>Total VA belum tersedia adalah VA yang telah di buat oleh Ezeelink, tapi belum diaktifkan</Tooltip>
+                                                        }
+                                                    >
+                                                        <img src={stockVABaru.unavailable_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
+                                                    </OverlayTrigger>
+                                                    <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total VA Belum Tersedia: </span>
+                                                    <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVABaru.unavailable_stock.stock, false)}</span>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                    <Col>
+                                        <Row className='d-flex justify-content-end'>
+                                            <Col xs={3} className="card-information mt-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
+                                                <Link
+                                                    className='d-flex'
+                                                    style={{ cursor: listVAUSDBaru[0]?.status_id === 11 ? "not-allowed" : "pointer" }}
+                                                    disabled={listVAUSDBaru[0]?.status_id === 11}
+                                                    onClick={() => generateFileCSV(isTabFileIdVABaru, selectedFileNameVAUSDBaru, listVAUSDBaru)}
+                                                >
+                                                    <img src={downloadIcon} width="24" height="24" alt="download_icon" />
+                                                    <span style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Download File CSV</span>
+                                                </Link>
+                                            </Col>
+                                            <Col xs={3} className="card-information mt-3 ms-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
                                                 <OverlayTrigger
                                                     placement="bottom"
                                                     trigger={["hover"]}
                                                     overlay={
-                                                        <Tooltip style={{ minWidth: 240 }}>Total sisa stok VA tersedia adalah VA yang telah di buat oleh Ezeelink dan telah aktif di OCBC, serta telah mengalami pembaruan status.</Tooltip>
+                                                        <Tooltip style={{ minWidth: 240 }}>Perbarui Data VA setelah file request VA yang telah di upload ke Dashboard OCBC sudah berubah. Hanya aktif setelah generate VA.</Tooltip>
                                                     }
                                                 >
-                                                    <img src={stockVA.available_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
+                                                    <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => perbaruiDataHandleClick(listVAUSDBaru)}>
+                                                        <img src={refreshIcon} width="24" height="24" alt="refresh_icon" />
+                                                        <span className="p-info" style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Perbarui Data</span>
+                                                    </div>
                                                 </OverlayTrigger>
-                                                <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total sisa stok VA Tersedia: </span>
-                                                <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVA.available_stock.stock, false)}</span>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                                <div className='mt-4' style={{ width: "auto" }}>
+                                    <div className='detail-akun-menu filename-bar' style={{fontFamily: "Exo", display: 'flex', height: 33, overflowX : "scroll"}}>
+                                        {
+                                            fileTabsVABaru.length !== 0 &&
+                                            fileTabsVABaru.map(item => (
+                                                    <div key={item.id} className={`me-2 detail-akun-tabs ${isTabFileIdVABaru === item.id && "menu-detail-akun-hr-active"}`} onClick={() => pindahFileTabCreate(item)} id={item.name}>
+                                                        <span className={`menu-detail-akun-span ${isTabFileIdVABaru === item.id && "menu-detail-akun-span-active"}`} id="createSpan">{item.name}</span>
+                                                    </div>
+                                            ))
+                                        }
+                                    </div>
+                                    <hr className='hr-style mb-4' style={{marginTop: -2, height: 0}}/>
+                                    <div className="div-table mt-4 pb-4">
+                                        <DataTable
+                                            columns={columnsVAUSD}
+                                            data={listVAUSDBaru}
+                                            customStyles={customStyles}
+                                            highlightOnHover
+                                            progressPending={pendingVAUSDBaru}
+                                            progressComponent={<CustomLoader />}
+                                            // pagination
+                                        />
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                                        <div style={{ marginRight: 10, marginTop: 10 }}>Total Halaman : {totalPageVABaru}</div>
+                                        <Pagination
+                                            activePage={activePageVABaru}
+                                            itemsCountPerPage={pageNumberVABaru.row_per_page}
+                                            totalItemsCount={(pageNumberVABaru.row_per_page*pageNumberVABaru.max_page)}
+                                            pageRangeDisplayed={5}
+                                            itemClass="page-item"
+                                            linkClass="page-link"
+                                            onChange={(page) => handlePageChangeCreate(page, isTabFileIdVABaru)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Modal perbaharui data VA */}
+                            <Modal size="xs" className='py-3' centered show={showModalPerbaruiDataVABaru} onHide={() => setShowModalPerbaruiDataVABaru(false)}>
+                                <Modal.Title className='text-center mt-4 px-3' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
+                                    Yakin Perbarui file data VA dan data di Velocity (OCBC) sudah berubah?
+                                </Modal.Title>
+                                <Modal.Body >
+                                    <div className='text-center px-2' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>
+                                        Terdapat <b>{`${unAvailableVAUSDBaru}`} VA Baru yang akan Tersedia</b> untuk dapat digunakan oleh partner
+                                    </div>
+                                    <div className='d-flex justify-content-center align-items-center mt-3'>
+                                        <div className='me-1'>
+                                            <button
+                                                onClick={() => setShowModalPerbaruiDataVABaru(false)}
+                                                style={{
+                                                    fontFamily: "Exo",
+                                                    fontSize: 16,
+                                                    fontWeight: 900,
+                                                    alignItems: "center",
+                                                    padding: "12px 24px",
+                                                    gap: 8,
+                                                    width: 136,
+                                                    height: 45,
+                                                    background: "#FFFFFF",
+                                                    color: "#888888",
+                                                    border: "0.6px solid #EBEBEB",
+                                                    borderRadius: 6,
+                                                }}
+                                            >
+                                                Batal
+                                            </button>
+                                        </div>
+                                        <div className="ms-1">
+                                            <button
+                                                onClick={() => renewDataVA(isTabFileIdVABaru, listVAUSDBaru)}
+                                                style={{
+                                                    fontFamily: "Exo",
+                                                    fontSize: 16,
+                                                    fontWeight: 900,
+                                                    alignItems: "center",
+                                                    padding: "12px 24px",
+                                                    gap: 8,
+                                                    width: 136,
+                                                    height: 45,
+                                                    background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                                                    border: "0.6px solid #2C1919",
+                                                    borderRadius: 6,
+                                                }}
+                                            >
+                                                Konfirmasi
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Modal.Body>
+                            </Modal>
+                        </> :
+                    isVAUSD === 101 ?
+                        <>
+                            <span className='font-weight-bold mt-3' style={{fontFamily: "Exo", fontWeight: 700}}>Daftar VA</span>
+                            <Row className='d-flex justify-content-between mt-3'>
+                                <Col xs={5}>
+                                    <Row className=' justify-content-around'>
+                                        <Col xs={3} className="card-information" style={{border: '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
+                                            <div className='d-flex'>
+                                                <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total VA yang perlu update: </span>
+                                                <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVABaru.available_stock.stock, false)}</span>
                                             </div>
                                         </Col>
-                                        <Col xs={3} className="card-information mt-3 ms-3" style={{border: stockVA.unavailable_stock.stock_will_run_out ? '1px solid #B9121B' : '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
+                                        <Col xs={3} className="card-information ms-3">
                                             <div className='d-flex'>
-                                                <OverlayTrigger
-                                                    placement="bottom"
-                                                    trigger={["hover"]}
-                                                    overlay={
-                                                        <Tooltip style={{ minWidth: 240 }}>Total VA belum tersedia adalah VA yang telah di buat oleh Ezeelink, tapi belum diaktifkan</Tooltip>
-                                                    }
+                                                <button
+                                                    onClick={() => downloadVAUpdated()}
+                                                    className={listUpdateVA.length !== 0 ? 'btn-va-usd-active' : "btn-va-usd-non-active"}
+                                                    disabled={listUpdateVA.length === 0}
                                                 >
-                                                    <img src={stockVA.unavailable_stock.stock_will_run_out ? noteInfoRed : noteInfo} width="20" height="20" alt="circle_info" />
-                                                </OverlayTrigger>
-                                                <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total VA Belum Tersedia: </span>
-                                                <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVA.unavailable_stock.stock, false)}</span>
+                                                    Download File VA Terupdate
+                                                </button>
                                             </div>
                                         </Col>
                                     </Row>
                                 </Col>
-                                <Col>
-                                    <Row className='d-flex justify-content-end'>
-                                        <Col xs={3} className="card-information mt-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
-                                            <div className='d-flex' style={{ cursor: listVAUSD[0]?.status_id === 11 ? "not-allowed" : "pointer" }} disabled={listVAUSD[0]?.status_id === 11} onClick={() => generateFileCSV(isTabFileId, selectedFileNameVAUSD, listVAUSD)}>
-                                                <img src={downloadIcon} width="24" height="24" alt="download_icon" />
-                                                <span style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Download File CSV</span>
+                                <Col xs={1}>
+                                    <div style={{ border:"0.5px solid #EBEBEB", width: 0, borderRadius: "unset", height: 35, marginTop: 18 }}></div>
+                                </Col>
+                                <Col xs={4}>
+                                    <Row style={{border:"1px solid #EBEBEB", borderRadius: 8, height: 70, marginTop: 5}}>
+                                        <Col className="card-information d-flex justify-content-center ms-3 mt-1" style={{ height: 50, padding: '12px 0px 12px 16px' }}>
+                                            <div className="dropdown dropVAUSD">
+                                                <ReactSelect
+                                                    isMulti
+                                                    closeMenuOnSelect={false}
+                                                    hideSelectedOptions={false}
+                                                    allowSelectAll={true}
+                                                    options={dataListFileUpdateVA}
+                                                    value={selectedFileUpdateUpdateVA}
+                                                    onChange={handleChangeFile}
+                                                    placeholder="Pilih File"
+                                                    components={{ Option }}
+                                                    styles={customStylesSelectedOption}
+                                                />
                                             </div>
                                         </Col>
-                                        <Col xs={3} className="card-information mt-3 ms-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
-                                            <OverlayTrigger
-                                                placement="bottom"
-                                                trigger={["hover"]}
-                                                overlay={
-                                                    <Tooltip style={{ minWidth: 240 }}>Perbarui Data VA setelah file request VA yang telah di upload ke Dashboard OCBC sudah berubah. Hanya aktif setelah generate VA.</Tooltip>
-                                                }
-                                            >
-                                                <div className='d-flex' style={{ cursor: "pointer" }} onClick={() => perbaruiDataHandleClick(listVAUSD)}>
-                                                    <img src={refreshIcon} width="24" height="24" alt="refresh_icon" />
-                                                    <span className="p-info" style={{ paddingLeft: 7, fontFamily: 'Exo', fontSize: 18, fontWeight: 700, color: '#077E86' }}>Perbarui Data</span>
-                                                </div>
-                                            </OverlayTrigger>
+                                        <Col xs={1} className='d-flex justify-content-center'>
+                                            <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 35, marginTop: 18}}></div>
+                                        </Col>
+                                        <Col className='d-flex justify-content-center' style={{ paddingLeft: 'unset' }}>
+                                            <button onClick={() => downloadFileVABulk()} style={{ backgroundColor: 'unset', border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18, marginRight: 20 }}>
+                                                <img src={downloadIcon} width="24" height="24" alt="download_icon" />
+                                            </button>
+                                            <button onClick={() => setShowModalKonfirmasiUpdateVA(true)} style={{ backgroundColor: 'unset', color: '#077E86', fontWeight: 700, border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18 }}>
+                                                Konfirmasi
+                                            </button>
                                         </Col>
                                     </Row>
                                 </Col>
                             </Row>
-                            <div className='mt-4' style={{ width: "auto" }}>
-                                <div className='detail-akun-menu filename-bar' style={{fontFamily: "Exo", display: 'flex', height: 33, overflowX : "scroll"}}>
-                                    {
-                                        fileTabs.length !== 0 &&
-                                        fileTabs.map(item => (
-                                                <div key={item.id} className={`me-2 detail-akun-tabs ${isTabFileId === item.id && "menu-detail-akun-hr-active"}`} onClick={() => pindahFileTabCreate(item.id, item.name)} id={item.name}>
-                                                    <span className={`menu-detail-akun-span ${isTabFileId === item.id && "menu-detail-akun-span-active"}`} id="createSpan">{item.name}</span>
-                                                </div>
-                                        ))
-                                    }
-                                </div>
-                                <hr className='hr-style mb-4' style={{marginTop: -2, height: 0}}/>
-                                <div className="div-table mt-4 pb-4">
-                                    <DataTable
-                                        columns={columnsVAUSD}
-                                        data={listVAUSD}
-                                        customStyles={customStyles}
-                                        highlightOnHover
-                                        progressPending={pendingVAUSD}
-                                        progressComponent={<CustomLoader />}
-                                        // pagination
-                                    />
-                                </div>
-                                <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                                    <div style={{ marginRight: 10, marginTop: 10 }}>Total Halaman : {totalPageCreate}</div>
-                                    <Pagination
-                                        activePage={activePageCreate}
-                                        itemsCountPerPage={pageNumberCreate.row_per_page}
-                                        totalItemsCount={(pageNumberCreate.row_per_page*pageNumberCreate.max_page)}
-                                        pageRangeDisplayed={5}
-                                        itemClass="page-item"
-                                        linkClass="page-link"
-                                        onChange={(page) => handlePageChangeCreate(page, isTabFileId)}
-                                    />
-                                </div>
+                            <div className="div-table mt-4 pb-4">
+                                <DataTable
+                                    columns={columnsUpdateVA}
+                                    data={listUpdateVA}
+                                    customStyles={customStyles}
+                                    highlightOnHover
+                                    progressPending={pendingUpdateVA}
+                                    progressComponent={<CustomLoader />}
+                                    // pagination
+                                />
                             </div>
-                        </div>
-                        {/* Modal perbaharui data VA */}
-                        <Modal size="xs" className='py-3' centered show={showModalPerbaruiDataVA} onHide={() => setShowModalPerbaruiDataVA(false)}>
-                            <Modal.Title className='text-center mt-4 px-3' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
-                                Yakin Perbarui file data VA dan data di Velocity (OCBC) sudah berubah?
-                            </Modal.Title>
-                            <Modal.Body >
-                                <div className='text-center px-2' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>
-                                    Terdapat <b>{`${listVAUSD.length}`} VA Baru yang akan Tersedia</b> untuk dapat digunakan oleh partner
-                                </div>
-                                <div className='d-flex justify-content-center align-items-center mt-3'>
-                                    <div className='me-1'>
-                                        <button
-                                            onClick={() => setShowModalPerbaruiDataVA(false)}
-                                            style={{
-                                                fontFamily: "Exo",
-                                                fontSize: 16,
-                                                fontWeight: 900,
-                                                alignItems: "center",
-                                                padding: "12px 24px",
-                                                gap: 8,
-                                                width: 136,
-                                                height: 45,
-                                                background: "#FFFFFF",
-                                                color: "#888888",
-                                                border: "0.6px solid #EBEBEB",
-                                                borderRadius: 6,
-                                            }}
-                                        >
-                                            Batal
-                                        </button>
+                            {/* Modal konfirmasi file VA update */}
+                            <Modal size="xs" className='py-3' centered show={showModalKonfirmasiUpdateVA} onHide={() => setShowModalKonfirmasiUpdateVA(false)}>
+                                <Modal.Title className='text-center mt-4 px-3' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
+                                    Yakin file data VA yang di upload ke Velocity (OCBC) sudah berubah?
+                                </Modal.Title>
+                                <Modal.Body >
+                                    <div className='text-center px-2' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>
+                                        Total data VA yang akan di update adalah <b>{`${10}`}</b> data
                                     </div>
-                                    <div className="ms-1">
-                                        <button
-                                            onClick={() => renewDataVA(isTabFileId, listVAUSD)}
-                                            style={{
-                                                fontFamily: "Exo",
-                                                fontSize: 16,
-                                                fontWeight: 900,
-                                                alignItems: "center",
-                                                padding: "12px 24px",
-                                                gap: 8,
-                                                width: 136,
-                                                height: 45,
-                                                background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
-                                                border: "0.6px solid #2C1919",
-                                                borderRadius: 6,
-                                            }}
-                                        >
-                                            Konfirmasi
-                                        </button>
-                                    </div>
-                                </div>
-                            </Modal.Body>
-                        </Modal>
-                    </> :
-                    isVAUSD === 101 ?
-                    <>
-                        <span className='font-weight-bold mt-3' style={{fontFamily: "Exo", fontWeight: 700}}>Daftar VA</span>
-                        <Row className='d-flex justify-content-between mt-3'>
-                            <Col xs={5}>
-                                <Row className=' justify-content-around'>
-                                    <Col xs={3} className="card-information" style={{border: '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
-                                        <div className='d-flex'>
-                                            <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total VA yang perlu update: </span>
-                                            <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVA.available_stock.stock, false)}</span>
-                                        </div>
-                                    </Col>
-                                    <Col xs={3} className="card-information ms-3">
-                                        <div className='d-flex'>
+                                    <div className='d-flex justify-content-center align-items-center mt-3'>
+                                        <div className='me-1'>
                                             <button
-                                                onClick={() => downloadVAUpdated()}
-                                                className={listUpdateVA.length !== 0 ? 'btn-va-usd-active' : "btn-va-usd-non-active"}
-                                                disabled={listUpdateVA.length === 0}
+                                                onClick={() => setShowModalKonfirmasiUpdateVA(false)}
+                                                style={{
+                                                    fontFamily: "Exo",
+                                                    fontSize: 16,
+                                                    fontWeight: 900,
+                                                    alignItems: "center",
+                                                    padding: "12px 24px",
+                                                    gap: 8,
+                                                    width: 136,
+                                                    height: 45,
+                                                    background: "#FFFFFF",
+                                                    color: "#888888",
+                                                    border: "0.6px solid #EBEBEB",
+                                                    borderRadius: 6,
+                                                }}
                                             >
-                                                Download File VA Terupdate
+                                                Batal
                                             </button>
                                         </div>
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col xs={1}>
-                                <div style={{ border:"0.5px solid #EBEBEB", width: 0, borderRadius: "unset", height: 35, marginTop: 18 }}></div>
-                            </Col>
-                            <Col xs={4}>
-                                <Row style={{border:"1px solid #EBEBEB", borderRadius: 8, height: 70, marginTop: 5}}>
-                                    <Col className="card-information d-flex justify-content-center ms-3 mt-1" style={{ height: 50, padding: '12px 0px 12px 16px' }}>
-                                        <div className="dropdown dropVAUSD">
-                                            <ReactSelect
-                                                isMulti
-                                                closeMenuOnSelect={false}
-                                                hideSelectedOptions={false}
-                                                allowSelectAll={true}
-                                                options={dataListFile}
-                                                value={selectedFileUpdate}
-                                                onChange={handleChangeFile}
-                                                placeholder="Pilih File"
-                                                components={{ Option }}
-                                                styles={customStylesSelectedOption}
-                                            />
+                                        <div className="ms-1">
+                                            <button
+                                                onClick={() => confirmUpdatedVAUSD(selectedFileUpdateUpdateVA)}
+                                                style={{
+                                                    fontFamily: "Exo",
+                                                    fontSize: 16,
+                                                    fontWeight: 900,
+                                                    alignItems: "center",
+                                                    padding: "12px 24px",
+                                                    gap: 8,
+                                                    width: 136,
+                                                    height: 45,
+                                                    background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
+                                                    border: "0.6px solid #2C1919",
+                                                    borderRadius: 6,
+                                                }}
+                                            >
+                                                Konfirmasi
+                                            </button>
                                         </div>
-                                    </Col>
-                                    <Col xs={1} className='d-flex justify-content-center'>
-                                        <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 35, marginTop: 18}}></div>
-                                    </Col>
-                                    <Col className='d-flex justify-content-center' style={{ paddingLeft: 'unset' }}>
-                                        <button style={{ backgroundColor: 'unset', border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18, marginRight: 20 }}>
-                                            <img src={downloadIcon} width="24" height="24" alt="download_icon" />
-                                        </button>
-                                        <button onClick={() => setShowModalKonfirmasiVAUpdate(true)} style={{ backgroundColor: 'unset', color: '#077E86', fontWeight: 700, border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18 }}>
-                                            Konfirmasi
-                                        </button>
-                                    </Col>
-                                </Row>
+                                    </div>
+                                </Modal.Body>
+                            </Modal>
+                        </> :
+                    <>
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Filter</span>
+                        <Row className='mt-4'>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span>Kode VA</span>
+                                <input onChange={handleChange} value={inputHandleRiwayatVA.kodeVARiwayatVA} name="kodeVARiwayatVA" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan Kode VA'/>
+                            </Col>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span>Nama File</span>
+                                <input onChange={handleChange} value={inputHandleRiwayatVA.namaFileRiwayatVA} name="namaFileRiwayatVA" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan Nama File'/>
+                            </Col>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center">
+                                <span>Status</span>
+                                <Form.Select name="statusRiwayatVA" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={inputHandleRiwayatVA.statusRiwayatVA} onChange={(e) => handleChange(e)}>
+                                    <option defaultChecked disabled value={0}>Pilih Status</option>
+                                    <option value={1}>Belum Tersedia</option>
+                                    <option value={2}>Tersedia</option>
+                                    <option value={3}>Proses Bayar</option>
+                                    <option value={4}>Sudah Bayar</option>
+                                    <option value={5}>Kadaluwarsa</option>
+                                    <option value={6}>Ditutup</option>
+                                    {/* <option value={2}>Berhasil</option>
+                                    <option value={1}>Dalam Proses</option>
+                                    <option value={7}>Menunggu Pembayaran</option>
+                                    <option value={9}>Kadaluwarsa</option> */}
+                                </Form.Select>
                             </Col>
                         </Row>
-                        <div className="div-table mt-4 pb-4">
-                            <DataTable
-                                columns={columnsUpdateVA}
-                                data={listUpdateVA}
-                                customStyles={customStyles}
-                                highlightOnHover
-                                progressPending={pendingVAUSD}
-                                progressComponent={<CustomLoader />}
-                                // pagination
-                            />
-                        </div>
-                        {/* Modal konfirmasi file VA update */}
-                        <Modal size="xs" className='py-3' centered show={showModalKonfirmasiVAUpdate} onHide={() => setShowModalKonfirmasiVAUpdate(false)}>
-                            <Modal.Title className='text-center mt-4 px-3' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
-                                Yakin file data VA yang di upload ke Velocity (OCBC) sudah berubah?
-                            </Modal.Title>
-                            <Modal.Body >
-                                <div className='text-center px-2' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>
-                                    Total data VA yang akan di update adalah <b>{`${10}`}</b> data
+                        <Row className='mt-4'>
+                            <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateRiwayatVA === "none") ? "33.2%" : "33.2%" }}>
+                                <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
+                                <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" value={inputHandleRiwayatVA.periodeRiwayatVA} onChange={handleChangePeriodeRiwayatVA}>
+                                    <option defaultChecked disabled value={0}>Pilih Periode</option>
+                                    <option value={2}>Hari Ini</option>
+                                    <option value={3}>Kemarin</option>
+                                    <option value={4}>7 Hari Terakhir</option>
+                                    <option value={5}>Bulan Ini</option>
+                                    <option value={6}>Bulan Kemarin</option>
+                                    <option value={7}>Pilih Range Tanggal</option>
+                                </Form.Select>
+                            </Col>
+                            <Col xs={4} style={{ display: showDateRiwayatVA }} className='text-end'>
+                                <div className='me-4' style={{ paddingRight: "0.5rem" }}>
+                                    <DateRangePicker
+                                        onChange={pickDateRiwayatVA}
+                                        value={stateRiwayatVA}
+                                        clearIcon={null}
+                                    />
                                 </div>
-                                <div className='d-flex justify-content-center align-items-center mt-3'>
-                                    <div className='me-1'>
-                                        <button
-                                            onClick={() => setShowModalKonfirmasiVAUpdate(false)}
-                                            style={{
-                                                fontFamily: "Exo",
-                                                fontSize: 16,
-                                                fontWeight: 900,
-                                                alignItems: "center",
-                                                padding: "12px 24px",
-                                                gap: 8,
-                                                width: 136,
-                                                height: 45,
-                                                background: "#FFFFFF",
-                                                color: "#888888",
-                                                border: "0.6px solid #EBEBEB",
-                                                borderRadius: 6,
-                                            }}
-                                        >
-                                            Batal
-                                        </button>
-                                    </div>
-                                    <div className="ms-1">
-                                        <button
-                                            onClick={() => confirmUpdatedVAUSD(selectedFileUpdate)}
-                                            style={{
-                                                fontFamily: "Exo",
-                                                fontSize: 16,
-                                                fontWeight: 900,
-                                                alignItems: "center",
-                                                padding: "12px 24px",
-                                                gap: 8,
-                                                width: 136,
-                                                height: 45,
-                                                background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
-                                                border: "0.6px solid #2C1919",
-                                                borderRadius: 6,
-                                            }}
-                                        >
-                                            Konfirmasi
-                                        </button>
-                                    </div>
-                                </div>
-                            </Modal.Body>
-                        </Modal>
-                    </> :
-                    <>
+                            </Col>
+                        </Row>
                     </>
                 }
             </div>

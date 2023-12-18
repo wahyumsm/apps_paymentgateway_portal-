@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row, Form, Image } from "@themesberg/react-bootstrap";
+import { Col, Row, Form } from "@themesberg/react-bootstrap";
 import { useHistory } from "react-router-dom";
 import encryptData from "../../function/encryptData";
 import {
@@ -10,10 +10,10 @@ import {
   getToken,
   RouteTo,
   setUserSession,
+  CustomLoader
 } from "../../function/helpers";
 import axios from "axios";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
 import { useCallback } from "react";
 import DataTable from "react-data-table-component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -817,17 +817,6 @@ function TambahPartner() {
 function toDashboard() {
   history.push("/");
 }
-
-  const CustomLoader = () => (
-    <div style={{ padding: "24px" }}>
-      <Image
-        className="loader-element animate__animated animate__jackInTheBox"
-        src={loadingEzeelink}
-        height={80}
-      />
-      <div>Loading...</div>
-    </div>
-  );
 
   const customStyles = {
     headCells: {

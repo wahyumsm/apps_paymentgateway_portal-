@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Image, Row} from '@themesberg/react-bootstrap';
+import { Col, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, errorCatch, getRole, getToken, language, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, language, RouteTo, setUserSession, CustomLoader } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import { useHistory } from 'react-router-dom';
 import edit from '../../assets/icon/edit_icon.svg';
@@ -11,7 +11,6 @@ import deleted from '../../assets/icon/delete_icon.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { eng } from '../../components/Language';
 import validator from "validator";
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
@@ -116,13 +115,6 @@ function DetailAkun() {
             history.push(errorCatch(error.response.status))
         }
     }
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-            <div>Loading...</div>
-        </div>
-    );
 
     const customStyles = {
         headCells: {

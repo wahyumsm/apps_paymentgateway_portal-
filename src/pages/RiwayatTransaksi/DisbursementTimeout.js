@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { useHistory } from 'react-router';
-import { BaseURL, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
-import { Col, Form, Image, Row, Toast } from '@themesberg/react-bootstrap';
+import { BaseURL, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers';
+import { Col, Form, Row, Toast } from '@themesberg/react-bootstrap';
 import ReactSelect, { components } from 'react-select';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import axios from 'axios';
 import encryptData from '../../function/encryptData';
 import Pagination from 'react-js-pagination';
@@ -89,7 +88,7 @@ const DisbursementTimeout = () => {
     }
 
     function handleChangePeriodeDisburseTimeout(e) {
-        
+
         if (e.target.value === "7") {
             setShowDateDisbursementTimeout("")
             setInputHandleTimeout({
@@ -455,7 +454,7 @@ const DisbursementTimeout = () => {
                                 </span>
                             </div>`)
                         }, 2000)
-        
+
                         setTimeout(() => {
                             setDataFromExcel(data)
                         }, 2500)
@@ -616,12 +615,6 @@ const DisbursementTimeout = () => {
         })
     }
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
-
     const customStylesDisbursement = {
         headCells: {
             style: {
@@ -632,7 +625,7 @@ const DisbursementTimeout = () => {
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                
+
             },
         },
         headRow: {
@@ -731,7 +724,7 @@ const DisbursementTimeout = () => {
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{  width: (showDateDisbursementTimeout === "none") ? "33.2%" : "33.2%" }}>
                                 <span style={{ marginRight: 26 }}>Periode <span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeDisburseTimeout' className="input-text-ez" value={inputHandleTimeout.periodeDisburseTimeout} onChange={(e) => handleChangePeriodeDisburseTimeout(e)}>
-                                    <option defaultChecked disabled value={0}>Pilih Periode</option> 
+                                    <option defaultChecked disabled value={0}>Pilih Periode</option>
                                     <option value={2}>Hari Ini</option>
                                     <option value={3}>Kemarin</option>
                                     <option value={4}>7 Hari Terakhir</option>
@@ -752,7 +745,7 @@ const DisbursementTimeout = () => {
                             </Col>
                             <Col xs={4} style={{ display: showDateDisbursementTimeout }}>
                                 <div className='text-end me-4'>
-                                    <DateRangePicker 
+                                    <DateRangePicker
                                         onChange={pickDateDisbursementTimeout}
                                         value={stateDateDisbursementTimeout}
                                         clearIcon={null}
@@ -844,7 +837,7 @@ const DisbursementTimeout = () => {
                                                 Partner Trans ID
                                             </Col>
                                             <Col xs={10}>
-                                                <Form.Control 
+                                                <Form.Control
                                                     placeholder='Masukkan Partner Trans ID'
                                                     type='text'
                                                     className='input-text-user'
@@ -899,7 +892,7 @@ const DisbursementTimeout = () => {
                                                         }
                                                     </tbody>
                                                 </table>
-                                            </div> : 
+                                            </div> :
                                             saveDataRefundDisburse.length !== 0 ?
                                             <>
                                                 <div style={{ marginBottom: 30 }}>
