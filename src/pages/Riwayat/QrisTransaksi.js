@@ -394,30 +394,7 @@ const QrisTransaksi = () => {
 
     async function getTransactionReportQris(currentPage, IdNou) {
         try {
-            if (user_role === "100") {
-                const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": 0, "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
-                const headers = {
-                    'Content-Type':'application/json',
-                    'Authorization' : auth
-                }
-                const getDataQrisReport = await axios.post(BaseURL + "/QRIS/TransactionReport", { data: dataParams }, { headers: headers })
-                // console.log(getDataQrisReport, 'ini user detal funct');
-                if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
-                    setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
-                    setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
-                    setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
-                    setPendingTransactionReportQris(false)
-                } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
-                    setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
-                    setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
-                    setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
-                    setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
-                    setPendingTransactionReportQris(false)
-                }
-            } else if (user_role === "106" || user_role === "107" || user_role === "108") {
+            if (user_role === "106" || user_role === "107" || user_role === "108") {
                 const auth = "Bearer " + access_token
                 const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": ${user_role === "106" ? IdNou : 0}, "brand_nou": ${user_role === "107" ? IdNou : 0}, "outlet_nou": ${user_role === "108" ? IdNou : 0}, "mterminal_id": 0, "status": 0, "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
@@ -440,6 +417,30 @@ const QrisTransaksi = () => {
                     setDataTransactionReportQrisMerchant(getDataQrisReport.data.response_data.results)
                     setPendingTransactionReportQrisMerchant(false)
                 }
+            } else if (user_role !== "102" || user_role !== "104") {
+                const auth = "Bearer " + access_token
+                const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": 0, "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const headers = {
+                    'Content-Type':'application/json',
+                    'Authorization' : auth
+                }
+                const getDataQrisReport = await axios.post(BaseURL + "/QRIS/TransactionReport", { data: dataParams }, { headers: headers })
+                // console.log(getDataQrisReport, 'ini user detal funct');
+                if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
+                    setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
+                    setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
+                    setPendingTransactionReportQris(false)
+                } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
+                    setUserSession(getDataQrisReport.data.response_new_token)
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
+                    setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
+                    setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
+                    setPendingTransactionReportQris(false)
+                }
+
             }
         } catch (error) {
             // console.log(error);
@@ -452,33 +453,7 @@ const QrisTransaksi = () => {
 
     async function filterGetTransactionReportQris(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, page, rowPerPage) {
         try {
-            if (user_role === "100") {
-                setPendingTransactionReportQris(true)
-                setIsFilterTransactionReportQris(true)
-                setActivePageTransactionReportQris(page)
-                const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": ${status}, "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
-                const headers = {
-                    'Content-Type':'application/json',
-                    'Authorization' : auth
-                }
-                const getDataQrisReport = await axios.post(BaseURL + "/QRIS/TransactionReport", { data: dataParams }, { headers: headers })
-                // console.log(getDataQrisReport, 'ini user detal funct');
-                if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
-                    setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
-                    setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
-                    setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
-                    setPendingTransactionReportQris(false)
-                } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
-                    setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
-                    setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
-                    setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
-                    setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
-                    setPendingTransactionReportQris(false)
-                }
-            } else if (user_role === "106" || user_role === "107" || user_role === "108") {
+            if (user_role === "106" || user_role === "107" || user_role === "108") {
                 setPendingTransactionReportQrisMerchant(true)
                 setIsFilterTransactionReportQrisMerchant(true)
                 setActivePageTransactionReportQrisMerchant(page)
@@ -503,6 +478,32 @@ const QrisTransaksi = () => {
                     setTotalPageTransactionReportQrisMerchant(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQrisMerchant(getDataQrisReport.data.response_data.results)
                     setPendingTransactionReportQrisMerchant(false)
+                }
+            } else if (user_role !== "102" || user_role !== "104") {
+                setPendingTransactionReportQris(true)
+                setIsFilterTransactionReportQris(true)
+                setActivePageTransactionReportQris(page)
+                const auth = "Bearer " + access_token
+                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": ${status}, "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const headers = {
+                    'Content-Type':'application/json',
+                    'Authorization' : auth
+                }
+                const getDataQrisReport = await axios.post(BaseURL + "/QRIS/TransactionReport", { data: dataParams }, { headers: headers })
+                // console.log(getDataQrisReport, 'ini user detal funct');
+                if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
+                    setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
+                    setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
+                    setPendingTransactionReportQris(false)
+                } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
+                    setUserSession(getDataQrisReport.data.response_new_token)
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
+                    setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
+                    setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
+                    setPendingTransactionReportQris(false)
                 }
             }
         } catch (error) {
@@ -766,7 +767,7 @@ const QrisTransaksi = () => {
     function handlePageChangeTransactionReportQrisMerchant(page) {
         if (isFilterTransactionReportQrisMerchant) {
             setActivePageTransactionReportQrisMerchant(page)
-            filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, user_role === "100" ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, user_role === "100" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), user_role === "100" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, page, 10)
+            filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, page, 10)
         } else {
             setActivePageTransactionReportQrisMerchant(page)
             getTransactionReportQris(page, partnerId)
@@ -966,7 +967,7 @@ const QrisTransaksi = () => {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role === "100") {
+        if (user_role !== "102" || user_role !== "104") {
             getGrupInQrisTransactionHandler()
             getTransactionReportQris(activePageTransactionReportQris, partnerId)
         }
@@ -979,7 +980,191 @@ const QrisTransaksi = () => {
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             {
-                user_role === "100" ? (
+                (user_role === "106" || user_role === "107" || user_role === "108") ? (
+                    <>
+                        <span className='breadcrumbs-span' style={{ cursor: "pointer" }}>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp; <Link to={"/riwayat-transaksi/transaksi-qris"}>Riwayat Transaksi</Link> &nbsp; <img alt="" src={breadcrumbsIcon} />  &nbsp;QRIS</span>
+                        <div className="head-title">
+                            <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Transaksi QRIS</h2>
+                        </div>
+                        <div className='base-content mt-3'>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                            <Row className=''>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span>ID Transaksi</span>
+                                    <input name="idTransaksi" value={inputHandleTransactionReportQrisMerchant.idTransaksi} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                                </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span>Periode <span style={{ color: "red" }}>*</span></span>
+                                    <Form.Select name='periode' value={inputHandleTransactionReportQrisMerchant.periode} onChange={(e) => handleChangePeriodeTransactionReportQrisMerchant(e)} className="input-text-riwayat ms-3">
+                                        <option defaultChecked disabled value={0}>Pilih Periode</option>
+                                        <option value={2}>Hari Ini</option>
+                                        <option value={3}>Kemarin</option>
+                                        <option value={4}>7 Hari Terakhir</option>
+                                        <option value={5}>Bulan Ini</option>
+                                        <option value={6}>Bulan Kemarin</option>
+                                        <option value={7}>Pilih Range Tanggal</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span className="me-4">RRN</span>
+                                    <input name="rrn" value={inputHandleTransactionReportQrisMerchant.rrn} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan RRN'/>
+                                </Col>
+                                {
+                                    (user_role === "106") && (
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                            <span>Nama Brand</span>
+                                            <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
+                                                <ReactSelect
+                                                    closeMenuOnSelect={true}
+                                                    hideSelectedOptions={false}
+                                                    options={dataBrandInQris}
+                                                    value={selectedBrandNameMerchant}
+                                                    onChange={(selected) => handleChangeBrandMerchant(selected)}
+                                                    placeholder="Pilih Brand"
+                                                    components={{ Option }}
+                                                    styles={customStylesSelectedOption}
+                                                    filterOption={customFilter}
+                                                />
+                                            </div>
+                                        </Col>
+                                    ) 
+                                }
+                                {
+                                    user_role === "106" && (
+                                        <Col xs={4} className='text-end mt-4' style={{ display: showDateTransactionReportQrisMerchant }}>
+                                            <DateRangePicker
+                                                onChange={pickDateTransactionReportQrisMerchant}
+                                                value={stateTransactionReportQrisMerchant}
+                                                clearIcon={null}
+                                            />
+                                        </Col>
+                                    )
+                                }
+                                {
+                                    (user_role === "106" || user_role === "107") && (
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                            <span>Nama Outlet</span>
+                                            <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
+                                                <ReactSelect
+                                                    closeMenuOnSelect={true}
+                                                    hideSelectedOptions={false}
+                                                    options={dataOutletInQris}
+                                                    value={selectedOutletNameMerchant}
+                                                    onChange={(selected) => handleChangeOutletMerchant(selected)}
+                                                    placeholder="Pilih Outlet"
+                                                    components={{ Option }}
+                                                    styles={customStylesSelectedOption}
+                                                    filterOption={customFilter}
+                                                />
+                                            </div>
+                                        </Col>
+                                    )
+                                }
+                                {
+                                    user_role === "107" && (
+                                        <Col xs={4} className='text-end mt-4' style={{ display: showDateTransactionReportQrisMerchant }}>
+                                            <DateRangePicker
+                                                onChange={pickDateTransactionReportQrisMerchant}
+                                                value={stateTransactionReportQrisMerchant}
+                                                clearIcon={null}
+                                            />
+                                        </Col>
+                                    )
+                                }
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span>ID Kasir</span>
+                                    <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
+                                        <ReactSelect
+                                            closeMenuOnSelect={true}
+                                            hideSelectedOptions={false}
+                                            options={dataIdKasirInQris}
+                                            value={selectedIdKasirNameMerchant}
+                                            onChange={(selected) => handleChangeIdKasirMerchant(selected)}
+                                            placeholder="Pilih Kasir"
+                                            components={{ Option }}
+                                            styles={customStylesSelectedOption}
+                                            filterOption={customFilter}
+                                        />
+                                    </div>
+                                </Col>
+                                {
+                                    user_role === "108" && (
+                                        <Col xs={4} className='text-end mt-4' style={{ display: showDateTransactionReportQrisMerchant }}>
+                                            <DateRangePicker
+                                                onChange={pickDateTransactionReportQrisMerchant}
+                                                value={stateTransactionReportQrisMerchant}
+                                                clearIcon={null}
+                                            />
+                                        </Col>
+                                    )
+                                }
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span>Status</span>
+                                    <Form.Select name="statusQris" value={inputHandleTransactionReportQrisMerchant.statusQris} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
+                                        <option defaultChecked disabled value={0}>Pilih Status</option>
+                                        <option value={3}>Dalam Proses</option>
+                                        <option value={2}>Berhasil</option>
+                                        <option value={4}>Gagal</option>
+                                        <option value={6}>Kadaluwarsa</option>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <Row className='mt-4'>
+                                <Col xs={5}>
+                                    <Row>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, 1, 10)}
+                                                className={(inputHandleTransactionReportQrisMerchant.periode !== 0 || dateRangeTransactionReportQrisMerchant.length !== 0 || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length !== 0) || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.rrn.length !== 0) || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.statusQris !== 0) ? 'btn-ez-on' : 'btn-ez')}
+                                                disabled={inputHandleTransactionReportQrisMerchant.periode === 0 || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length === 0) || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.rrn.length === 0) || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.statusQris === 0)}
+                                            >
+                                                Terapkan
+                                            </button>
+                                        </Col>
+                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                            <button
+                                                onClick={() => resetButtonQrisTransaction("merchant")}
+                                                className={(inputHandleTransactionReportQrisMerchant.periode !== 0 || dateRangeTransactionReportQrisMerchant.length !== 0 || inputHandleTransactionReportQrisMerchant.idTransaksi.length !== 0 || inputHandleTransactionReportQrisMerchant.rrn.length !== 0 || inputHandleTransactionReportQrisMerchant.statusQris !== 0 || selectedBrandNameMerchant.length !== 0 || selectedOutletNameMerchant.length !== 0 || selectedIdKasirNameMerchant.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={inputHandleTransactionReportQrisMerchant.periode === 0 && dateRangeTransactionReportQrisMerchant.length === 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length === 0 && inputHandleTransactionReportQrisMerchant.rrn.length === 0 && inputHandleTransactionReportQrisMerchant.statusQris === 0 && selectedBrandNameMerchant.length === 0 && selectedOutletNameMerchant.length === 0 && selectedIdKasirNameMerchant.length === 0}
+                                            >
+                                                Atur Ulang
+                                            </button>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            {
+                                dataTransactionReportQrisMerchant.length !== 0 && (
+                                    <div style={{ marginBottom: 30 }} className='mt-3'>
+                                        <Link className="export-span" onClick={() => ExportReportTransactionReportQrisMerchantHandler(isFilterTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant)}>Export</Link>
+                                    </div>
+                                )
+                            }
+                            <div className="div-table mt-5 pb-4">
+                                <DataTable
+                                    columns={columnsPartner}
+                                    data={dataTransactionReportQrisMerchant}
+                                    customStyles={customStylesQris}
+                                    highlightOnHover
+                                    progressPending={pendingTransactionReportQrisMerchant}
+                                    progressComponent={<CustomLoader />}
+                                />
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageTransactionReportQrisMerchant}</div>
+                                <Pagination
+                                    activePage={activePageTransactionReportQrisMerchant}
+                                    itemsCountPerPage={pageNumberTransactionReportQrisMerchant.row_per_page}
+                                    totalItemsCount={(pageNumberTransactionReportQrisMerchant.row_per_page*pageNumberTransactionReportQrisMerchant.max_page)}
+                                    pageRangeDisplayed={5}
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    onChange={handlePageChangeTransactionReportQrisMerchant}
+                                />
+                            </div>
+                        </div>
+                    </>
+                ) : (user_role !== "102" || user_role !== "104") ? (
                     <>
                         <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp; Transaksi &nbsp; <img alt="" src={breadcrumbsIcon} />  &nbsp;QRIS</span>
                         <div className="head-title">
@@ -1153,191 +1338,7 @@ const QrisTransaksi = () => {
                             </div>
                         </div>
                     </>
-                ) : (user_role === "106" || user_role === "107" || user_role === "108") && (
-                    <>
-                        <span className='breadcrumbs-span' style={{ cursor: "pointer" }}>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp; <Link to={"/riwayat-transaksi/transaksi-qris"}>Riwayat Transaksi</Link> &nbsp; <img alt="" src={breadcrumbsIcon} />  &nbsp;QRIS</span>
-                        <div className="head-title">
-                            <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Transaksi QRIS</h2>
-                        </div>
-                        <div className='base-content mt-3'>
-                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
-                            <Row className=''>
-                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                                    <span>ID Transaksi</span>
-                                    <input name="idTransaksi" value={inputHandleTransactionReportQrisMerchant.idTransaksi} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
-                                </Col>
-                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                                    <span>Periode <span style={{ color: "red" }}>*</span></span>
-                                    <Form.Select name='periode' value={inputHandleTransactionReportQrisMerchant.periode} onChange={(e) => handleChangePeriodeTransactionReportQrisMerchant(e)} className="input-text-riwayat ms-3">
-                                        <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                        <option value={2}>Hari Ini</option>
-                                        <option value={3}>Kemarin</option>
-                                        <option value={4}>7 Hari Terakhir</option>
-                                        <option value={5}>Bulan Ini</option>
-                                        <option value={6}>Bulan Kemarin</option>
-                                        <option value={7}>Pilih Range Tanggal</option>
-                                    </Form.Select>
-                                </Col>
-                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                                    <span className="me-4">RRN</span>
-                                    <input name="rrn" value={inputHandleTransactionReportQrisMerchant.rrn} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan RRN'/>
-                                </Col>
-                                {
-                                    (user_role === "106") && (
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                                            <span>Nama Brand</span>
-                                            <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
-                                                <ReactSelect
-                                                    closeMenuOnSelect={true}
-                                                    hideSelectedOptions={false}
-                                                    options={dataBrandInQris}
-                                                    value={selectedBrandNameMerchant}
-                                                    onChange={(selected) => handleChangeBrandMerchant(selected)}
-                                                    placeholder="Pilih Brand"
-                                                    components={{ Option }}
-                                                    styles={customStylesSelectedOption}
-                                                    filterOption={customFilter}
-                                                />
-                                            </div>
-                                        </Col>
-                                    ) 
-                                }
-                                {
-                                    user_role === "106" && (
-                                        <Col xs={4} className='text-end mt-4' style={{ display: showDateTransactionReportQrisMerchant }}>
-                                            <DateRangePicker
-                                                onChange={pickDateTransactionReportQrisMerchant}
-                                                value={stateTransactionReportQrisMerchant}
-                                                clearIcon={null}
-                                            />
-                                        </Col>
-                                    )
-                                }
-                                {
-                                    (user_role === "106" || user_role === "107") && (
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                                            <span>Nama Outlet</span>
-                                            <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
-                                                <ReactSelect
-                                                    closeMenuOnSelect={true}
-                                                    hideSelectedOptions={false}
-                                                    options={dataOutletInQris}
-                                                    value={selectedOutletNameMerchant}
-                                                    onChange={(selected) => handleChangeOutletMerchant(selected)}
-                                                    placeholder="Pilih Outlet"
-                                                    components={{ Option }}
-                                                    styles={customStylesSelectedOption}
-                                                    filterOption={customFilter}
-                                                />
-                                            </div>
-                                        </Col>
-                                    )
-                                }
-                                {
-                                    user_role === "107" && (
-                                        <Col xs={4} className='text-end mt-4' style={{ display: showDateTransactionReportQrisMerchant }}>
-                                            <DateRangePicker
-                                                onChange={pickDateTransactionReportQrisMerchant}
-                                                value={stateTransactionReportQrisMerchant}
-                                                clearIcon={null}
-                                            />
-                                        </Col>
-                                    )
-                                }
-                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                                    <span>ID Kasir</span>
-                                    <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
-                                        <ReactSelect
-                                            closeMenuOnSelect={true}
-                                            hideSelectedOptions={false}
-                                            options={dataIdKasirInQris}
-                                            value={selectedIdKasirNameMerchant}
-                                            onChange={(selected) => handleChangeIdKasirMerchant(selected)}
-                                            placeholder="Pilih Kasir"
-                                            components={{ Option }}
-                                            styles={customStylesSelectedOption}
-                                            filterOption={customFilter}
-                                        />
-                                    </div>
-                                </Col>
-                                {
-                                    user_role === "108" && (
-                                        <Col xs={4} className='text-end mt-4' style={{ display: showDateTransactionReportQrisMerchant }}>
-                                            <DateRangePicker
-                                                onChange={pickDateTransactionReportQrisMerchant}
-                                                value={stateTransactionReportQrisMerchant}
-                                                clearIcon={null}
-                                            />
-                                        </Col>
-                                    )
-                                }
-                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                                    <span>Status</span>
-                                    <Form.Select name="statusQris" value={inputHandleTransactionReportQrisMerchant.statusQris} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
-                                        <option defaultChecked disabled value={0}>Pilih Status</option>
-                                        <option value={3}>Dalam Proses</option>
-                                        <option value={2}>Berhasil</option>
-                                        <option value={4}>Gagal</option>
-                                        <option value={6}>Kadaluwarsa</option>
-                                    </Form.Select>
-                                </Col>
-                            </Row>
-                            <Row className='mt-4'>
-                                <Col xs={5}>
-                                    <Row>
-                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
-                                            <button
-                                                onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, user_role === "100" ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, user_role === "100" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), user_role === "100" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, 1, 10)}
-                                                className={(inputHandleTransactionReportQrisMerchant.periode !== 0 || dateRangeTransactionReportQrisMerchant.length !== 0 || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length !== 0) || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.rrn.length !== 0) || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.statusQris !== 0) ? 'btn-ez-on' : 'btn-ez')}
-                                                disabled={inputHandleTransactionReportQrisMerchant.periode === 0 || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length === 0) || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.rrn.length === 0) || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.statusQris === 0)}
-                                            >
-                                                Terapkan
-                                            </button>
-                                        </Col>
-                                        <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
-                                            <button
-                                                onClick={() => resetButtonQrisTransaction("merchant")}
-                                                className={(inputHandleTransactionReportQrisMerchant.periode !== 0 || dateRangeTransactionReportQrisMerchant.length !== 0 || inputHandleTransactionReportQrisMerchant.idTransaksi.length !== 0 || inputHandleTransactionReportQrisMerchant.rrn.length !== 0 || inputHandleTransactionReportQrisMerchant.statusQris !== 0 || selectedBrandNameMerchant.length !== 0 || selectedOutletNameMerchant.length !== 0 || selectedIdKasirNameMerchant.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                                disabled={inputHandleTransactionReportQrisMerchant.periode === 0 && dateRangeTransactionReportQrisMerchant.length === 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length === 0 && inputHandleTransactionReportQrisMerchant.rrn.length === 0 && inputHandleTransactionReportQrisMerchant.statusQris === 0 && selectedBrandNameMerchant.length === 0 && selectedOutletNameMerchant.length === 0 && selectedIdKasirNameMerchant.length === 0}
-                                            >
-                                                Atur Ulang
-                                            </button>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            {
-                                dataTransactionReportQrisMerchant.length !== 0 && (
-                                    <div style={{ marginBottom: 30 }} className='mt-3'>
-                                        <Link className="export-span" onClick={() => ExportReportTransactionReportQrisMerchantHandler(isFilterTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, user_role === "100" ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, user_role === "100" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), user_role === "100" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant)}>Export</Link>
-                                    </div>
-                                )
-                            }
-                            <div className="div-table mt-5 pb-4">
-                                <DataTable
-                                    columns={columnsPartner}
-                                    data={dataTransactionReportQrisMerchant}
-                                    customStyles={customStylesQris}
-                                    highlightOnHover
-                                    progressPending={pendingTransactionReportQrisMerchant}
-                                    progressComponent={<CustomLoader />}
-                                />
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
-                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageTransactionReportQrisMerchant}</div>
-                                <Pagination
-                                    activePage={activePageTransactionReportQrisMerchant}
-                                    itemsCountPerPage={pageNumberTransactionReportQrisMerchant.row_per_page}
-                                    totalItemsCount={(pageNumberTransactionReportQrisMerchant.row_per_page*pageNumberTransactionReportQrisMerchant.max_page)}
-                                    pageRangeDisplayed={5}
-                                    itemClass="page-item"
-                                    linkClass="page-link"
-                                    onChange={handlePageChangeTransactionReportQrisMerchant}
-                                />
-                            </div>
-                        </div>
-                    </>
-                )
+                ) : ""
             }
         </div>
     )
