@@ -71,11 +71,11 @@ body {
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15);
 }
 
-.base-content {    
+.base-content {
     padding: 37px 27px 0px 27px;
 }
 
-.base-content-beranda {    
+.base-content-beranda {
     padding: 27px;
 }
 
@@ -127,7 +127,7 @@ body {
 }
 
 .input-text-report {
-    width: 57%;
+    width: 58%;
     margin-left: 20px;
     height: 40px;
     border-radius: 8px;
@@ -531,7 +531,7 @@ body {
     border-right: unset;
 }
 
-.reff {    
+.reff {
     border-color: "#B9121B"
 }
 
@@ -572,16 +572,16 @@ body {
   /* .multiselect {
     width: 200px;
   } */
-  
+
   /* .selectBox {
     position: relative;
   }
-  
+
   .selectBox select {
     width: 100%;
     font-weight: bold;
   } */
-  
+
   .overSelect {
     position: absolute;
     left: 0;
@@ -589,16 +589,16 @@ body {
     top: 0;
     bottom: 0;
   }
-  
+
   #checkboxes {
     display: none;
     border: 1px #dadada solid;
   }
-  
+
   #checkboxes label {
     display: block;
   }
-  
+
   #checkboxes label:hover {
     background-color: #1e90ff;
   }
@@ -678,7 +678,7 @@ body {
     height: 34px;
 }
 
-.switch input { 
+.switch input {
 opacity: 0;
 width: 0;
 height: 0;
@@ -882,12 +882,12 @@ width: 150px;
 }
 
 /* untuk di dashboard */
-.dropPartner .css-qqcyw1-option:hover, 
-.dropDisbursePartner .css-qqcyw1-option:hover, 
-.dropSaldoPartner .css-qqcyw1-option:hover, 
-.dropLaporanPartner .css-qqcyw1-option:hover, 
-.dropLaporanPartnerBank .css-qqcyw1-option:hover, 
-.dropTopupPartner .css-qqcyw1-option:hover, 
+.dropPartner .css-qqcyw1-option:hover,
+.dropDisbursePartner .css-qqcyw1-option:hover,
+.dropSaldoPartner .css-qqcyw1-option:hover,
+.dropLaporanPartner .css-qqcyw1-option:hover,
+.dropLaporanPartnerBank .css-qqcyw1-option:hover,
+.dropTopupPartner .css-qqcyw1-option:hover,
 .dropDirectDebit .css-qqcyw1-option:hover  {
     background-color: #3b8aff;
 }
@@ -1006,13 +1006,13 @@ header.sc-dIouRR.evxAbm {
 } */
 
 /* ok button style */
-.rs-picker-toolbar-right-btn-ok { 
+.rs-picker-toolbar-right-btn-ok {
     text-align: center;
     height: 40px;
     cursor: pointer;
-    border: 1px solid #077E86; 
-    padding: 0px 10px; 
-    font-size: 14px; 
+    border: 1px solid #077E86;
+    padding: 0px 10px;
+    font-size: 14px;
     border-radius: 8px;
     font-family: 'Nunito';
     font-style: bold;
@@ -1630,4 +1630,17 @@ th {
     font-family: "Nunito";
     font-size: 14px;
     font-weight: 700;
+}
+
+.input-nominal-qris-settlement {
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 0px 10px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #000000;
 }

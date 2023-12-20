@@ -36,7 +36,7 @@ const QrisSettlement = () => {
     const [inputHandleSettlementQrisOtomatisAdmin, setInputHandleSettlementQrisOtomatisAdmin] = useState({
         idSettlement: "",
         periode: 0,
-        statusQris: 0 
+        statusQris: "" 
     })
 
     const [showDateSettlementQrisOtomatisMerchant, setShowDateSettlementQrisOtomatisMerchant] = useState("none")
@@ -51,7 +51,7 @@ const QrisSettlement = () => {
     const [inputHandleSettlementQrisOtomatisMerchant, setInputHandleSettlementQrisOtomatisMerchant] = useState({
         idSettlement: "",
         periode: 0,
-        statusQris: 0 
+        statusQris: "" 
     })
 
     const [showDateSettlementQrisManualAdmin, setShowDateSettlementQrisManualAdmin] = useState("none")
@@ -66,7 +66,7 @@ const QrisSettlement = () => {
     const [inputHandleSettlementQrisManualAdmin, setInputHandleSettlementQrisManualAdmin] = useState({
         idSettlement: "",
         periode: 0,
-        statusQris: 0 
+        statusQris: ""
     })
 
     const [showDateSettlementQrisManualMerchant, setShowDateSettlementQrisManualMerchant] = useState("none")
@@ -81,7 +81,7 @@ const QrisSettlement = () => {
     const [inputHandleSettlementQrisManualMerchant, setInputHandleSettlementQrisManualMerchant] = useState({
         idSettlement: "",
         periode: 0,
-        statusQris: 0 
+        statusQris: ""
     })
     const [nominalPengajuan, setNominalPengajuan] = useState("")
     const [totalSettlement, setTotalSettlement] = useState(0)
@@ -90,7 +90,11 @@ const QrisSettlement = () => {
 
     function handleChangeNominal (e, dataAccBank) {
         setNominalPengajuan(e)
-        setTotalSettlement(Number(e) +  dataAccBank.biaya_admin)
+        if (Object.keys(dataAccBank).length !== 0) {
+            setTotalSettlement(Number(e) -  dataAccBank.biaya_admin)
+        } else {
+            setTotalSettlement(Number(e) -  0)
+        }
     }
 
     const [dataBrandInQrisManualMerchant, setDataBrandInQrisManualMerchant] = useState([])
@@ -99,17 +103,21 @@ const QrisSettlement = () => {
         setSelectedBrandNameQrisManualMerchant([e])
         if (settleType[0]?.mqrismerchant_settle_group === 103) {
             getOutletInQrisTransactionHandler(e.value)
+        } else {
+            getAccountBankSettlementQrisManualMerchantHandler(e.value, 0)
         }
     }
+
+    console.log(totalSettlement, "totalSettlement");
 
     const [dataOutletInQrisManualMerchant, setDataOutletInQrisManualMerchant] = useState([])
     const [selectedOutletNameQrisManualMerchant, setSelectedOutletNameQrisManualMerchant] = useState([])
     function handleChangeOutletQrisManualMerchant(e) {
         setSelectedOutletNameQrisManualMerchant([e])
+        if  (settleType[0]?.mqrismerchant_settle_group === 103) {
+            getAccountBankSettlementQrisManualMerchantHandler(selectedBrandNameQrisManualMerchant[0]?.value, e.value)
+        }
     }
-
-    console.log(selectedBrandNameQrisManualMerchant, "selectedBrandNameQrisManualMerchant");
-    console.log(dataBrandInQrisManualMerchant, "dataBrandInQrisManualMerchant");
     
     const [dataGrupInQris, setDataGrupInQris] = useState([])
     const [selectedGrupName, setSelectedGrupName] = useState([])
@@ -329,7 +337,7 @@ const QrisSettlement = () => {
             setInputHandleSettlementQrisManualAdmin({
                 idSettlement: "",
                 periode: 0,
-                statusQris: 0 
+                statusQris: ""
             })
             setShowDateSettlementQrisManualAdmin("none")
             setDateRangeSettlementQrisManualAdmin([])
@@ -343,7 +351,7 @@ const QrisSettlement = () => {
             setInputHandleSettlementQrisOtomatisAdmin({
                 idSettlement: "",
                 periode: 0,
-                statusQris: 0 
+                statusQris: ""
             })
             setShowDateSettlementQrisOtomatisAdmin("none")
             setDateRangeSettlementQrisOtomatisAdmin([])
@@ -360,7 +368,7 @@ const QrisSettlement = () => {
             setInputHandleSettlementQrisOtomatisMerchant({
                 idSettlement: "",
                 periode: 0,
-                statusQris: 0 
+                statusQris: ""
             })
             setShowDateSettlementQrisOtomatisMerchant("none")
             setDateRangeSettlementQrisOtomatisMerchant([])
@@ -372,11 +380,13 @@ const QrisSettlement = () => {
             setInputHandleSettlementQrisOtomatisAdmin({
                 idSettlement: "",
                 periode: 0,
-                statusQris: 0 
+                statusQris: ""
             })
             setShowDateSettlementQrisOtomatisAdmin("none")
             setDateRangeSettlementQrisOtomatisAdmin([])
             setStateSettlementQrisOtomatisAdmin(null)
+            setDataBrandInQris([])
+            setDataOutletInQris([])
             setSelectedGrupName([])
             setSelectedBrandName([])
             setSelectedOutletName([])
@@ -390,7 +400,7 @@ const QrisSettlement = () => {
             setInputHandleSettlementQrisManualMerchant({
                 idSettlement: "",
                 periode: 0,
-                statusQris: 0 
+                statusQris: ""
             })
             setShowDateSettlementQrisManualMerchant("none")
             setDateRangeSettlementQrisManualMerchant([])
@@ -402,11 +412,13 @@ const QrisSettlement = () => {
             setInputHandleSettlementQrisManualAdmin({
                 idSettlement: "",
                 periode: 0,
-                statusQris: 0 
+                statusQris: ""
             })
             setShowDateSettlementQrisManualAdmin("none")
             setDateRangeSettlementQrisManualAdmin([])
             setStateSettlementQrisManualAdmin(null)
+            setDataBrandInQris([])
+            setDataOutletInQris([])
             setSelectedGrupName([])
             setSelectedBrandName([])
             setSelectedOutletName([])
@@ -418,67 +430,96 @@ const QrisSettlement = () => {
         {
             name: 'No',
             selector: row => row.number,
-            width: "67px"
+            width: "57px"
         },
         {
             name: 'ID Settlement',
             selector: row => row.tqrissettl_code,
+            width: "190px"
         },
         {
             name: 'Waktu',
-            selector: row => row.tqrissettl_crtdt
+            selector: row => row.tqrissettl_crtdt,
+            width: "180px"
         },
         {
             name: 'Tujuan Settlement',
-            selector: row => row.mqrismerchsettle_settlegroup_id,
+            selector: row => row.mqrissettlegroup_name,
+            width: "170px"
         },
         {
             name: 'Nama Grup',
             selector: row => row.GroupName,
+            width: "160px"
         },
         {
             name: 'Nama Brand',
             selector: row => row.BrandName,
+            width: "160px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.StoreName,
+            width: "160px"
         },
         {
             name: 'Bank Tujuan',
             selector: row => row.mbank_name,
+            width: "130px"
         },
         {
             name: 'Nomor Rekening',
             selector: row => row.tqrissettl_bank_acc_num_to,
+            width: "160px"
         },
         {
             name: 'Nama Pemilik Rekening',
             selector: row => row.tqrissettl_bank_acc_name_to,
+            width: "230px"
         },
         {
             name: 'Jumlah Transaksi',
-            selector: row => row.tqrissettl_trx_amount,
+            selector: row => convertToRupiah(row.tqrissettl_trx_count, false, 0),
+            width: "160px"
         },
         {
-            name: 'Total Transaksi',
-            selector: row => row.tqrissettl_trx_count,
+            name: 'Total Nominal',
+            selector: row => convertToRupiah(row.tqrissettl_trx_amount, true, 2),
+            width: "160px"
         },
         {
             name: 'Total MDR',
-            selector: row => row.tqrissettl_total_mdr,
+            selector: row => convertToRupiah(row.tqrissettl_total_mdr, true, 2),
+            width: "140px"
         },
         {
             name: 'Biaya Admin',
-            selector: row => row.tqrissettl_admin_fee,
+            selector: row => convertToRupiah(row.tqrissettl_admin_fee, true, 2),
+            width: "130px"
         },
         {
             name: 'Nominal Settlement',
-            selector: row => row.tqrissettl_total_settle,
+            selector: row => convertToRupiah(row.tqrissettl_total_settle, true, 2),
+            width: "190px"
         },
         {
             name: 'Status',
             selector: row => row.mstatus_name,
+            style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status_id === 9 || row.status_id === 5 || row.status_id === 3,
+                    style: { background: "#FEF4E9", color: "#F79421"}
+                },
+                {
+                    when: row => row.status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86"}
+                },
+                {
+                    when: row => row.status_id === 7 || row.status_id === 6 || row.status_id === 4,
+                    style: { background: "#FDEAEA", color: "#EE2E2C"}
+                },
+            ]
         },
     ];
 
@@ -491,7 +532,7 @@ const QrisSettlement = () => {
         {
             name: 'ID Settlement',
             selector: row => row.tqrissettl_code,
-            width: "170px"
+            width: "190px"
         },
         {
             name: 'Waktu',
@@ -501,11 +542,13 @@ const QrisSettlement = () => {
         {
             name: 'Nama Brand',
             selector: row => row.BrandName,
+            width: "160px",
             omit: user_role === "106" ? (settleType[0]?.mqrismerchant_settle_group === 101 ? true : false) : user_role === "107" ? (settleType[0]?.mqrismerchant_settle_group === 102 ? true : false) : true,
         },
         {
             name: 'Nama Outlet',
             selector: row => row.StoreName,
+            width: "160px",
             omit: (user_role === "106" || user_role === "107") ? (settleType[0]?.mqrismerchant_settle_group === 103 ? false : true) : true,
         },
         {
@@ -525,11 +568,11 @@ const QrisSettlement = () => {
         },
         {
             name: 'Jumlah Transaksi',
-            selector: row => row.tqrissettl_trx_count,
+            selector: row => convertToRupiah(row.tqrissettl_trx_count, false, 0),
             width: "160px"
         },
         {
-            name: 'Total Transaksi',
+            name: 'Total Nominal',
             selector: row => convertToRupiah(row.tqrissettl_trx_amount, true, 2),
             width: "160px"
         },
@@ -551,6 +594,21 @@ const QrisSettlement = () => {
         {
             name: 'Status',
             selector: row => row.mstatus_name,
+            style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status_id === 9 || row.status_id === 5 || row.status_id === 3,
+                    style: { background: "#FEF4E9", color: "#F79421"}
+                },
+                {
+                    when: row => row.status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86"}
+                },
+                {
+                    when: row => row.status_id === 7 || row.status_id === 6 || row.status_id === 4,
+                    style: { background: "#FDEAEA", color: "#EE2E2C"}
+                },
+            ]
         },
     ];
 
@@ -563,7 +621,7 @@ const QrisSettlement = () => {
         {
             name: 'ID Settlement',
             selector: row => row.ID,
-            width: "150px"
+            width: "190px"
         },
         {
             name: 'Waktu Pengajuan',
@@ -576,29 +634,16 @@ const QrisSettlement = () => {
             width: "180px"
         },
         {
-            name: 'Jenis Merchant',
-            selector: row => row.jenis_merchant,
-            width: "160px"
-        },
-        {
-            name: 'Tujuan Settlement',
-            selector: row => row.tujuan_settle,
-            width: "170px"
-        },
-        {
-            name: 'Nama Grup',
-            selector: row => row.nama_grup,
-            width: "160px"
-        },
-        {
             name: 'Nama Brand',
             selector: row => row.nama_brand,
-            width: "160px"
+            width: "160px",
+            omit: user_role === "106" ? (settleType[0]?.mqrismerchant_settle_group === 101 ? true : false) : user_role === "107" ? (settleType[0]?.mqrismerchant_settle_group === 102 ? true : false) : true,
         },
         {
             name: 'Nama Outlet',
             selector: row => row.nama_outlet,
-            width: "160px"
+            width: "160px",
+            omit: (user_role === "106" || user_role === "107") ? (settleType[0]?.mqrismerchant_settle_group === 103 ? false : true) : true,
         },
         {
             name: 'Bank Tujuan',
@@ -616,24 +661,38 @@ const QrisSettlement = () => {
             width: "230px"
         },
         {
-            name: 'Jumlah Transaksi',
-            selector: row => row.noRekening,
+            name: 'Total Nominal',
+            selector: row => convertToRupiah(row.amount, true, 2),
             width: "160px"
         },
         {
             name: 'Biaya Admin',
-            selector: row => row.biaya_admin,
+            selector: row => convertToRupiah(row.biaya_admin, true, 2),
             width: "130px"
         },
         {
             name: 'Nominal Settlement',
-            selector: row => row.total_settle,
+            selector: row => convertToRupiah(row.total_settle, true, 2),
             width: "190px"
         },
         {
             name: 'Status',
             selector: row => row.status,
-            width: "160px"
+            style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status_id === 9 || row.status_id === 5 || row.status_id === 3,
+                    style: { background: "#FEF4E9", color: "#F79421"}
+                },
+                {
+                    when: row => row.status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86"}
+                },
+                {
+                    when: row => row.status_id === 7 || row.status_id === 6 || row.status_id === 4,
+                    style: { background: "#FDEAEA", color: "#EE2E2C"}
+                },
+            ]
         },
     ];
 
@@ -646,7 +705,7 @@ const QrisSettlement = () => {
         {
             name: 'ID Settlement',
             selector: row => row.ID,
-            width: "150px"
+            width: "190px"
         },
         {
             name: 'Waktu Pengajuan',
@@ -671,7 +730,8 @@ const QrisSettlement = () => {
         {
             name: 'Nama Grup',
             selector: row => row.nama_grup,
-            width: "160px"
+            width: "160px",
+            wrap: true
         },
         {
             name: 'Nama Brand',
@@ -699,42 +759,59 @@ const QrisSettlement = () => {
             width: "230px"
         },
         {
-            name: 'Jumlah Transaksi',
-            selector: row => row.noRekening,
+            name: 'Total Nominal',
+            selector: row => convertToRupiah(row.amount, true, 2),
             width: "160px"
         },
         {
             name: 'Biaya Admin',
-            selector: row => row.biaya_admin,
+            selector: row => convertToRupiah(row.biaya_admin, true, 2),
             width: "130px"
         },
         {
             name: 'Nominal Settlement',
-            selector: row => row.total_settle,
+            selector: row => convertToRupiah(row.total_settle, true, 2),
             width: "190px"
         },
         {
             name: 'Status',
             selector: row => row.status,
-            width: "160px"
+            style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status_id === 9 || row.status_id === 5 || row.status_id === 3,
+                    style: { background: "#FEF4E9", color: "#F79421"}
+                },
+                {
+                    when: row => row.status_id === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86"}
+                },
+                {
+                    when: row => row.status_id === 7 || row.status_id === 6 || row.status_id === 4,
+                    style: { background: "#FDEAEA", color: "#EE2E2C"}
+                },
+            ]
         },
     ];
 
-
-    async function getAccountBankSettlementQrisManualMerchantHandler() {
+    
+    async function getAccountBankSettlementQrisManualMerchantHandler(brandNou, outletNou) {
         try {
             const auth = "Bearer " + access_token
+            const dataParams = encryptData(`{"brandID": ${brandNou}, "outletID": ${outletNou}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const getDataAccountBank = await axios.post(BaseURL + "/QRIS/GetBankAccount", { data: "" }, { headers: headers })
+            const getDataAccountBank = await axios.post(BaseURL + "/QRIS/GetBankAccount", { data: dataParams }, { headers: headers })
             // console.log(getDataAccountBank, 'ini user detal funct');
             if (getDataAccountBank.status === 200 && getDataAccountBank.data.response_code === 200 && getDataAccountBank.data.response_new_token === null) {
                 setDataAccBankManualQrisSettleMerchant(getDataAccountBank.data.response_data.results)
+                setTotalSettlement(Number(nominalPengajuan) - getDataAccountBank.data.response_data.results.biaya_admin)
             } else if (getDataAccountBank.status === 200 && getDataAccountBank.data.response_code === 200 && getDataAccountBank.data.response_new_token !== null) {
                 setUserSession(getDataAccountBank.data.response_new_token)
                 setDataAccBankManualQrisSettleMerchant(getDataAccountBank.data.response_data.results)
+                setTotalSettlement(Number(nominalPengajuan) - getDataAccountBank.data.response_data.results.biaya_admin)
             }
     } catch (error) {
           // console.log(error);
@@ -742,27 +819,27 @@ const QrisSettlement = () => {
         }
     }
 
-    async function getDataBalanceTypeManualSettleQris(settleGroup) {
-        try {
-            const auth = "Bearer " + access_token
-            const dataParams = encryptData(`{"settle_group": ${settleGroup}}`)
-            const headers = {
-                'Content-Type':'application/json',
-                'Authorization' : auth
-            }
-            const dataBalanceTypeManualSettleQris = await axios.post(BaseURL + "/QRIS/QRISGetBalance", { data: dataParams }, { headers: headers })
-            // console.log(dataBalanceTypeManualSettleQris, 'ini user detal funct');
-            if (dataBalanceTypeManualSettleQris.status === 200 && dataBalanceTypeManualSettleQris.data.response_code === 200 && dataBalanceTypeManualSettleQris.data.response_new_token === null) {
-                setDataBalanceTypeManualQrisSettleMerchant(dataBalanceTypeManualSettleQris.data.response_data.results)
-            } else if (dataBalanceTypeManualSettleQris.status === 200 && dataBalanceTypeManualSettleQris.data.response_code === 200 && dataBalanceTypeManualSettleQris.data.response_new_token !== null) {
-                setUserSession(dataBalanceTypeManualSettleQris.data.response_new_token)
-                setDataBalanceTypeManualQrisSettleMerchant(dataBalanceTypeManualSettleQris.data.response_data.results)
-            }
-    } catch (error) {
-          // console.log(error);
-          history.push(errorCatch(error.response.status))
-        }
-    }
+    // async function getDataBalanceTypeManualSettleQris(settleGroup) {
+    //     try {
+    //         const auth = "Bearer " + access_token
+    //         const dataParams = encryptData(`{"settle_group": ${settleGroup}}`)
+    //         const headers = {
+    //             'Content-Type':'application/json',
+    //             'Authorization' : auth
+    //         }
+    //         const dataBalanceTypeManualSettleQris = await axios.post(BaseURL + "/QRIS/QRISGetBalance", { data: dataParams }, { headers: headers })
+    //         // console.log(dataBalanceTypeManualSettleQris, 'ini user detal funct');
+    //         if (dataBalanceTypeManualSettleQris.status === 200 && dataBalanceTypeManualSettleQris.data.response_code === 200 && dataBalanceTypeManualSettleQris.data.response_new_token === null) {
+    //             setDataBalanceTypeManualQrisSettleMerchant(dataBalanceTypeManualSettleQris.data.response_data.results)
+    //         } else if (dataBalanceTypeManualSettleQris.status === 200 && dataBalanceTypeManualSettleQris.data.response_code === 200 && dataBalanceTypeManualSettleQris.data.response_new_token !== null) {
+    //             setUserSession(dataBalanceTypeManualSettleQris.data.response_new_token)
+    //             setDataBalanceTypeManualQrisSettleMerchant(dataBalanceTypeManualSettleQris.data.response_data.results)
+    //         }
+    // } catch (error) {
+    //       // console.log(error);
+    //       history.push(errorCatch(error.response.status))
+    //     }
+    // }
 
     async function submitSettlementHandler(merchSettle, settleAmount, groupId, brandId, outletId) {
         try {
@@ -775,10 +852,20 @@ const QrisSettlement = () => {
             const dataSubmitSettle = await axios.post(BaseURL + "/QRIS/ApplySettlement", { data: dataParams }, { headers: headers })
             // console.log(dataSubmitSettle, 'ini user detal funct');
             if (dataSubmitSettle.status === 200 && dataSubmitSettle.data.response_code === 200 && dataSubmitSettle.data.response_new_token === null) {
+                setDataAccBankManualQrisSettleMerchant({})
+                setNominalPengajuan("")
+                setTotalSettlement(0)
+                setSelectedBrandNameQrisManualMerchant([])
+                setSelectedOutletNameQrisManualMerchant([])
                 alert(dataSubmitSettle.data.response_data.results)
                 window.location.reload()
             } else if (dataSubmitSettle.status === 200 && dataSubmitSettle.data.response_code === 200 && dataSubmitSettle.data.response_new_token !== null) {
                 setUserSession(dataSubmitSettle.data.response_new_token)
+                setDataAccBankManualQrisSettleMerchant({})
+                setNominalPengajuan("")
+                setTotalSettlement(0)
+                setSelectedBrandNameQrisManualMerchant([])
+                setSelectedOutletNameQrisManualMerchant([])
                 alert(dataSubmitSettle.data.response_data.results)
                 window.location.reload()
             }
@@ -787,8 +874,6 @@ const QrisSettlement = () => {
           history.push(errorCatch(error.response.status))
         }
     }
-
-    console.log(nominalPengajuan, "nominalPengajuan");
 
     async function getSettlementTypeHandler() {
         try {
@@ -802,12 +887,22 @@ const QrisSettlement = () => {
             if (dataSettleType.status === 200 && dataSettleType.data.response_code === 200 && dataSettleType.data.response_new_token === null) {
                 setSettleType(dataSettleType.data.response_data.results)
                 userDetails(dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_type)
-                getDataBalanceTypeManualSettleQris(dataSettleType.data.response_data.results[0]?.mqrismerchsettle_id)
+                if (dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_type === 102) {
+                    // getDataBalanceTypeManualSettleQris(dataSettleType.data.response_data.results[0]?.mqrismerchsettle_id)
+                    if ((user_role === "106" && dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_group === 101) || (user_role === "107" && dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_group === 102) || user_role === "108" && dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_group === 103) {
+                        getAccountBankSettlementQrisManualMerchantHandler(0, 0)
+                    }
+                }
             } else if (dataSettleType.status === 200 && dataSettleType.data.response_code === 200 && dataSettleType.data.response_new_token !== null) {
                 setUserSession(dataSettleType.data.response_new_token)
                 setSettleType(dataSettleType.data.response_data.results)
                 userDetails(dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_type)
-                getDataBalanceTypeManualSettleQris(dataSettleType.data.response_data.results[0]?.mqrismerchsettle_id)
+                if (dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_type === 102) {
+                    // getDataBalanceTypeManualSettleQris(dataSettleType.data.response_data.results[0]?.mqrismerchsettle_id)
+                    if ((user_role === "106" && dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_group === 101) || (user_role === "107" && dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_group === 102) || user_role === "108" && dataSettleType.data.response_data.results[0]?.mqrismerchant_settle_group === 103) {
+                        getAccountBankSettlementQrisManualMerchantHandler(0, 0)
+                    }
+                }
             }
     } catch (error) {
           // console.log(error);
@@ -833,8 +928,13 @@ const QrisSettlement = () => {
                     } else {
                         getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisMerchant)
                     }
-                } else if (user_role === "107") {
+                } else if (user_role === "107" || user_role === "108") {
                     getOutletInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
+                    if (settleType === 102) {
+                        getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualMerchant, userDetail.data.response_data.muser_partnerdtl_id)
+                    } else {
+                        getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisMerchant)
+                    }
                 } else if (user_role === "100") {
                     getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualAdmin, userDetail.data.response_data.muser_partnerdtl_id)
                     getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisAdmin)
@@ -849,8 +949,13 @@ const QrisSettlement = () => {
                     } else {
                         getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisMerchant)
                     }
-                } else if (user_role === "107") {
+                } else if (user_role === "107" || user_role === "108") {
                     getOutletInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
+                    if (settleType === 102) {
+                        getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualMerchant, userDetail.data.response_data.muser_partnerdtl_id)
+                    } else {
+                        getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisMerchant)
+                    }
                 } else if (user_role === "100") {
                     getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualAdmin, userDetail.data.response_data.muser_partnerdtl_id)
                     getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisAdmin)
@@ -977,7 +1082,7 @@ const QrisSettlement = () => {
         try {
             if (role === "106" || role === "107" || role === "108") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settle_code": "", "status" : "1,2,7,9", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1000,7 +1105,7 @@ const QrisSettlement = () => {
                 }
             } else if (role === "100") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settle_code": "", "status" : "1,2,7,9", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1035,7 +1140,7 @@ const QrisSettlement = () => {
                 setIsFilterSettlementQrisOtomatisMerchant(true)
                 setActivePageSettlementQrisOtomatisMerchant(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
+                const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1061,7 +1166,7 @@ const QrisSettlement = () => {
                 setIsFilterSettlementQrisOtomatisAdmin(true)
                 setActivePageSettlementQrisOtomatisAdmin(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
+                const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1093,7 +1198,7 @@ const QrisSettlement = () => {
         try {
             if (role === "106" || role === "107" || role === "108") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settlementCode": "", "groupID" : ${partnerId}, "brandID" : 0, "outletID" : 0, "statusid" : "", "date_from": "2023-11-29", "date_to": "2023-11-29", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"settlementCode": "", "groupID" : ${partnerId}, "brandID" : 0, "outletID" : 0, "statusid" : "2,4,5,6,8", "date_from": "${currentDate}", "date_to": "${currentDate}", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1116,7 +1221,7 @@ const QrisSettlement = () => {
                 }
             } else if (role === "100") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settlementCode": "", "groupID" : 0, "brandID" : 0, "outletID" : 0, "statusid" : "", "date_from": "2023-11-29", "date_to": "2023-11-29", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"settlementCode": "", "groupID" : 0, "brandID" : 0, "outletID" : 0, "statusid" : "2,4,5,6,8", "date_from": "${currentDate}", "date_to": "${currentDate}", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1151,7 +1256,7 @@ const QrisSettlement = () => {
                 setIsFilterSettlementQrisManualMerchant(true)
                 setActivePageSettlementQrisManualMerchant(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settlementCode": "${settlementCode}", "groupID" : ${partnerId}, "brandID" : ${brandId}, "outletID" : ${outletId}, "statusid" : "${statusId}", "date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
+                const dataParams = encryptData(`{"settlementCode": "${settlementCode}", "groupID" : ${partnerId}, "brandID" : ${brandId}, "outletID" : ${outletId}, "statusid" : "${statusId.length !== 0 ? statusId : "2,4,5,6,8"}", "date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1177,7 +1282,7 @@ const QrisSettlement = () => {
                 setIsFilterSettlementQrisManualAdmin(true)
                 setActivePageSettlementQrisManualAdmin(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settlementCode": "${settlementCode}", "groupID" : ${groupId}, "brandID" : ${brandId}, "outletID" : ${outletId}, "statusid" : "${statusId}", "date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
+                const dataParams = encryptData(`{"settlementCode": "${settlementCode}", "groupID" : ${groupId}, "brandID" : ${brandId}, "outletID" : ${outletId}, "statusid" : "${statusId.length !== 0 ? statusId : "2,4,5,6,8"}", "date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1211,7 +1316,7 @@ const QrisSettlement = () => {
                 async function dataExportFilter(idSettle, dateId, periode, statusQris) {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
@@ -1221,7 +1326,7 @@ const QrisSettlement = () => {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1232,7 +1337,7 @@ const QrisSettlement = () => {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1249,7 +1354,7 @@ const QrisSettlement = () => {
                 async function dataExportSettlementQris() {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settle_code": "", "status" : "1,2,7,9", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
@@ -1259,7 +1364,7 @@ const QrisSettlement = () => {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1270,7 +1375,7 @@ const QrisSettlement = () => {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1289,7 +1394,7 @@ const QrisSettlement = () => {
                 async function dataExportFilter(idSettle, dateId, periode, statusQris) {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
@@ -1299,7 +1404,23 @@ const QrisSettlement = () => {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                if (user_role === "106") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 101) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Brand": data[i].BrandName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    }
+                                } else if (user_role === "107") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    }
+                                } else {
+                                    dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                }
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1310,7 +1431,23 @@ const QrisSettlement = () => {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                if (user_role === "106") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 101) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Brand": data[i].BrandName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    }
+                                } else if (user_role === "107") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    }
+                                } else {
+                                    dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                }
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1327,7 +1464,7 @@ const QrisSettlement = () => {
                 async function dataExportSettlementQris() {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settle_code": "", "status" : "1,2,7,9", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
@@ -1337,7 +1474,23 @@ const QrisSettlement = () => {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                if (user_role === "106") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 101) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Brand": data[i].BrandName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    }
+                                } else if (user_role === "107") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    }
+                                } else {
+                                    dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                }
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1348,7 +1501,23 @@ const QrisSettlement = () => {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                if (user_role === "106") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 101) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Brand": data[i].BrandName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    }
+                                } else if (user_role === "107") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                    }
+                                } else {
+                                    dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Transaksi": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Settlement": data[i].tqrissettl_total_settle, "Status": data[i].mstatus_name })
+                                }
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1371,17 +1540,17 @@ const QrisSettlement = () => {
                 async function dataExportFilter(settlementCode, groupId, brandId, outletId, statusId, periode, dateRange) {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settlementCode": "${settlementCode}", "groupID" : ${groupId}, "brandID" : ${brandId}, "outletID" : ${outletId}, "statusid" : "${statusId}", "date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settlementCode": "${settlementCode}", "groupID" : ${groupId}, "brandID" : ${brandId}, "outletID" : ${outletId}, "statusid" : "${statusId.length !== 0 ? statusId : "2,4,5,6,8"}", "date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
                         }
-                        const dataExportFilter = await axios.post(BaseURL + "/QRIS/QRISSettlementAutomaticPaging", {data: dataParams}, { headers: headers });
+                        const dataExportFilter = await axios.post(BaseURL + "/QRIS/ManualSettleQRIS", {data: dataParams}, { headers: headers });
                         if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Jenis Merchant": data[i].jenis_merchant, "Tujuan Settlement": data[i].tujuan_settle, "Nama Grup": data[i].nama_grup, "Nama Brand": data[i].nama_brand, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1392,7 +1561,7 @@ const QrisSettlement = () => {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Jenis Merchant": data[i].jenis_merchant, "Tujuan Settlement": data[i].tujuan_settle, "Nama Grup": data[i].nama_grup, "Nama Brand": data[i].nama_brand, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1409,17 +1578,17 @@ const QrisSettlement = () => {
                 async function dataExportSettlementQris() {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settlementCode": "", "groupID" : 0, "brandID" : 0, "outletID" : 0, "statusid" : "", "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settlementCode": "", "groupID" : 0, "brandID" : 0, "outletID" : 0, "statusid" : "2,4,5,6,8", "date_from": "${currentDate}", "date_to": "${currentDate}", "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
                         }
-                        const dataExportSettlementQris = await axios.post(BaseURL + "/QRIS/QRISSettlementAutomaticPaging", {data: dataParams}, { headers: headers });
+                        const dataExportSettlementQris = await axios.post(BaseURL + "/QRIS/ManualSettleQRIS", {data: dataParams}, { headers: headers });
                         if (dataExportSettlementQris.status === 200 && dataExportSettlementQris.data.response_code === 200 && dataExportSettlementQris.data.response_new_token === null) {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Jenis Merchant": data[i].jenis_merchant, "Tujuan Settlement": data[i].tujuan_settle, "Nama Grup": data[i].nama_grup, "Nama Brand": data[i].nama_brand, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1430,7 +1599,7 @@ const QrisSettlement = () => {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Jenis Merchant": data[i].jenis_merchant, "Tujuan Settlement": data[i].tujuan_settle, "Nama Grup": data[i].nama_grup, "Nama Brand": data[i].nama_brand, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1449,17 +1618,33 @@ const QrisSettlement = () => {
                 async function dataExportFilter(settlementCode, brandId, outletId, statusId, periode, dateRange, partnerId) {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settlementCode": "${settlementCode}", "groupID" : ${partnerId}, "brandID" : ${brandId}, "outletID" : ${outletId}, "statusid" : "${statusId}", "date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settlementCode": "${settlementCode}", "groupID" : ${partnerId}, "brandID" : ${brandId}, "outletID" : ${outletId}, "statusid" : "${statusId.length !== 0 ? statusId : "2,4,5,6,8"}", "date_from": "${(periode.length !== 0) ? (periode === "7" ? dateRange[0] : periode[0]) : ""}", "date_to": "${(periode.length !== 0) ? periode === "7" ? dateRange[1] : periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
                         }
-                        const dataExportFilter = await axios.post(BaseURL + "/QRIS/QRISSettlementAutomaticPaging", {data: dataParams}, { headers: headers });
+                        const dataExportFilter = await axios.post(BaseURL + "/QRIS/ManualSettleQRIS", {data: dataParams}, { headers: headers });
                         if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                if (user_role === "106") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 101) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Brand": data[i].nama_brand, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Brand": data[i].nama_brand, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    }
+                                } else if (user_role === "107") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    }
+                                } else {
+                                    dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                }
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1470,7 +1655,23 @@ const QrisSettlement = () => {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                if (user_role === "106") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 101) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Brand": data[i].nama_brand, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Brand": data[i].nama_brand, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    }
+                                } else if (user_role === "107") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    }
+                                } else {
+                                    dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                }
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1484,20 +1685,36 @@ const QrisSettlement = () => {
                 }
                 dataExportFilter(settlementCode, brandId, outletId, statusId, periode, dateRange, partnerId)
             } else {
-                async function dataExportSettlementQris() {
+                async function dataExportSettlementQris(partnerId) {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settlementCode": "", "groupID" : 0, "brandID" : 0, "outletID" : 0, "statusid" : "", "date_from": "2023-11-29", "date_to": "2023-11-29", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settlementCode": "", "groupID" : ${partnerId}, "brandID" : 0, "outletID" : 0, "statusid" : "2,4,5,6,8", "date_from": "${currentDate}", "date_to": "${currentDate}", "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
                         }
-                        const dataExportSettlementQris = await axios.post(BaseURL + "/QRIS/QRISSettlementAutomaticPaging", {data: dataParams}, { headers: headers });
+                        const dataExportSettlementQris = await axios.post(BaseURL + "/QRIS/ManualSettleQRIS", {data: dataParams}, { headers: headers });
                         if (dataExportSettlementQris.status === 200 && dataExportSettlementQris.data.response_code === 200 && dataExportSettlementQris.data.response_new_token === null) {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                if (user_role === "106") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 101) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Brand": data[i].nama_brand, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Brand": data[i].nama_brand, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    }
+                                } else if (user_role === "107") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    }
+                                } else {
+                                    dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                }
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1508,7 +1725,23 @@ const QrisSettlement = () => {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrismerchsettle_settlegroup_id, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_amount, "Total Transaksi": data[i].tqrissettl_trx_count, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                if (user_role === "106") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 101) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Brand": data[i].nama_brand, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Brand": data[i].nama_brand, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    }
+                                } else if (user_role === "107") {
+                                    if (settleType[0]?.mqrismerchant_settle_group === 102) {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    } else {
+                                        dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Nama Outlet": data[i].nama_outlet, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                    }
+                                } else {
+                                    dataExcel.push({ No: i + 1, "ID Settlement": data[i].ID, "Waktu Pengajuan": data[i].waktu_pengajuan, "Waktu Diterima": data[i].waktu_diterima, "Bank Tujuan": data[i].bank_tujuan, "Nomor Rekening": data[i].norek_penerima, "Nama Pemilik Rekening": data[i].nama_penerima, "Total Nominal": data[i].amount, "Biaya Admin": data[i].biaya_admin, "Nominal Settlement": data[i].total_settle, Status: data[i].status })
+                                }
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1520,7 +1753,7 @@ const QrisSettlement = () => {
                         history.push(errorCatch(error.response.status))
                     }
                 }
-                dataExportSettlementQris()
+                dataExportSettlementQris(partnerId)
             }
         }
     }
@@ -1590,10 +1823,6 @@ const QrisSettlement = () => {
         if (user_role === "100") {
             getGrupInQrisTransactionHandler()
         }
-
-        if (user_role === "106" || user_role === "107" || user_role === "108") {
-            getAccountBankSettlementQrisManualMerchantHandler()
-        }
       }, [access_token])
 
     return (
@@ -1618,13 +1847,13 @@ const QrisSettlement = () => {
                             isSettlementOtomatis ? (
                                 <div className='base-content mb-4 pb-4'>
                                     <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Filter</span>
-                                    <Row className='mt-4'>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <Row className=''>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>ID Settlement</span>
-                                            <input name="idSettlement" value={inputHandleSettlementQrisOtomatisAdmin.idSettlement} onChange={(e) => handleChangeSettleQrisOtomatisAdmin(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                                            <input name="idSettlement" value={inputHandleSettlementQrisOtomatisAdmin.idSettlement} onChange={(e) => handleChangeSettleQrisOtomatisAdmin(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                            <span>Periode</span>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                            <span>Periode <span style={{ color: "red" }}>*</span></span>
                                             <Form.Select name="periode" value={inputHandleSettlementQrisOtomatisAdmin.periode} onChange={(e) => handleChangePeriodeSettlementQrisOtomatisAdmin(e)} className="input-text-riwayat ms-3">
                                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                                 <option value={2}>Hari Ini</option>
@@ -1635,19 +1864,18 @@ const QrisSettlement = () => {
                                                 <option value={7}>Pilih Range Tanggal</option>
                                             </Form.Select>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>Status</span>
                                             <Form.Select name="statusQris" value={inputHandleSettlementQrisOtomatisAdmin.statusQris} onChange={(e) => handleChangeSettleQrisOtomatisAdmin(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
-                                                <option defaultChecked disabled value={0}>Pilih Status</option>
+                                                <option defaultChecked disabled value={""}>Pilih Status</option>
+                                                <option value={5}>Diminta</option>
                                                 <option value={2}>Berhasil</option>
-                                                <option value={1}>Dalam Proses</option>
-                                                <option value={7}>Menunggu Pembayaran</option>
-                                                <option value={9}>Kadaluwarsa</option>
+                                                <option value={8}>Ditransfer</option>
+                                                <option value={4}>Gagal</option>
+                                                <option value={6}>Kadaluwarsa</option>
                                             </Form.Select>
                                         </Col>
-                                    </Row>
-                                    <Row className="mt-4">
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>Nama Grup</span>
                                             <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
                                                 <ReactSelect
@@ -1670,7 +1898,7 @@ const QrisSettlement = () => {
                                                 clearIcon={null}
                                             />
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>Nama Brand</span>
                                             <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
                                                 <ReactSelect
@@ -1686,7 +1914,7 @@ const QrisSettlement = () => {
                                                 />
                                             </div>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>Nama Outlet</span>
                                             <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
                                                 <ReactSelect
@@ -1709,7 +1937,7 @@ const QrisSettlement = () => {
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
                                                         className={(inputHandleSettlementQrisOtomatisAdmin.periode !== 0 || dateRangeSettlementQrisOtomatisAdmin.length !== 0 || (dateRangeSettlementQrisOtomatisAdmin.length !== 0 && inputHandleSettlementQrisOtomatisAdmin.idSettlement.length !== 0) || (dateRangeSettlementQrisOtomatisAdmin.length !== 0 && inputHandleSettlementQrisOtomatisAdmin.statusQris.length !== 0)) ? 'btn-ez-on' : 'btn-ez'}
-                                                        disabled={inputHandleSettlementQrisOtomatisAdmin.periode === 0 || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.statusQris === 0)}
+                                                        disabled={inputHandleSettlementQrisOtomatisAdmin.periode === 0 || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.statusQris.length === 0)}
                                                         onClick={() => filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris, activePageSettlementQrisOtomatisAdmin, 10 )}
                                                     >
                                                         Terapkan
@@ -1718,7 +1946,7 @@ const QrisSettlement = () => {
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
                                                         className={(inputHandleSettlementQrisOtomatisAdmin.periode !== 0 || dateRangeSettlementQrisOtomatisAdmin.length !== 0 || (dateRangeSettlementQrisOtomatisAdmin.length !== 0 && inputHandleSettlementQrisOtomatisAdmin.idSettlement.length !== 0) || (dateRangeSettlementQrisOtomatisAdmin.length !== 0 && inputHandleSettlementQrisOtomatisAdmin.statusQris.length !== 0)) ? 'btn-reset' : 'btn-ez-reset'}
-                                                        disabled={inputHandleSettlementQrisOtomatisAdmin.periode === 0 || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.statusQris === 0)}
+                                                        disabled={inputHandleSettlementQrisOtomatisAdmin.periode === 0 || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.statusQris.length === 0)}
                                                         onClick={() => resetButtonSettlementQrisOtomatis("admin")}
                                                     >
                                                         Atur Ulang
@@ -1760,13 +1988,13 @@ const QrisSettlement = () => {
                             ) : (
                                 <div className='base-content mb-4 pb-4'>
                                     <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Filter</span>
-                                    <Row className='mt-4'>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                    <Row className=''>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>ID Settlement</span>
-                                            <input name="idSettlement" value={inputHandleSettlementQrisManualAdmin.idSettlement} onChange={(e) => handleChangeSettleQrisManualAdmin(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                                            <input name="idSettlement" value={inputHandleSettlementQrisManualAdmin.idSettlement} onChange={(e) => handleChangeSettleQrisManualAdmin(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                            <span>Periode</span>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                            <span>Periode <span style={{ color: "red" }}>*</span></span>
                                             <Form.Select name='periode'  value={inputHandleSettlementQrisManualAdmin.periode} onChange={(e) => handleChangePeriodeSettlementQrisManualAdmin(e)} className="input-text-riwayat ms-3">
                                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                                 <option value={([`${currentDate}`, `${currentDate}`])}>Hari Ini</option>
@@ -1777,19 +2005,18 @@ const QrisSettlement = () => {
                                                 <option value={7}>Pilih Range Tanggal</option>
                                             </Form.Select>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>Status</span>
                                             <Form.Select name="statusQris" value={inputHandleSettlementQrisManualAdmin.statusQris} onChange={(e) => handleChangeSettleQrisManualAdmin(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
-                                                <option defaultChecked disabled value={0}>Pilih Status</option>
+                                                <option defaultChecked disabled value={""}>Pilih Status</option>
+                                                <option value={5}>Diminta</option>
                                                 <option value={2}>Berhasil</option>
-                                                <option value={1}>Dalam Proses</option>
-                                                <option value={7}>Menunggu Pembayaran</option>
-                                                <option value={9}>Kadaluwarsa</option>
+                                                <option value={8}>Ditransfer</option>
+                                                <option value={4}>Gagal</option>
+                                                <option value={6}>Kadaluwarsa</option>
                                             </Form.Select>
                                         </Col>
-                                    </Row>
-                                    <Row className="mt-4">
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>Nama Grup</span>
                                             <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
                                                 <ReactSelect
@@ -1812,7 +2039,7 @@ const QrisSettlement = () => {
                                                 clearIcon={null}
                                             />
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>Nama Brand</span>
                                             <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
                                                 <ReactSelect
@@ -1828,7 +2055,7 @@ const QrisSettlement = () => {
                                                 />
                                             </div>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                             <span>Nama Outlet</span>
                                             <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
                                                 <ReactSelect
@@ -1850,8 +2077,8 @@ const QrisSettlement = () => {
                                             <Row>
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
-                                                        className={(inputHandleSettlementQrisManualAdmin.periode !== 0 || (dateRangeSettlementQrisManualAdmin.length !== 0 && inputHandleSettlementQrisManualAdmin.idSettlement.length !== 0) || (dateRangeSettlementQrisManualAdmin.length !== 0 && inputHandleSettlementQrisManualAdmin.statusQris !== 0) || (dateRangeSettlementQrisManualAdmin.length !== 0 && selectedGrupName[0].value !== undefined) || (dateRangeSettlementQrisManualAdmin.length !== 0 && selectedBrandName[0].value !== undefined) || (dateRangeSettlementQrisManualAdmin.length !== 0 && selectedOutletName[0].value !== undefined)) ? 'btn-ez-on' : 'btn-ez'}
-                                                        disabled={inputHandleSettlementQrisManualAdmin.periode === 0 || (inputHandleSettlementQrisManualAdmin.periode === 0 && inputHandleSettlementQrisManualAdmin.idSettlement.length === 0) || (inputHandleSettlementQrisManualAdmin.periode === 0 && inputHandleSettlementQrisManualAdmin.statusQris === 0) || (inputHandleSettlementQrisManualAdmin.periode === 0 && selectedGrupName[0].value === undefined) || (inputHandleSettlementQrisManualAdmin.periode === 0 && selectedBrandName[0].value === undefined) || (inputHandleSettlementQrisManualAdmin.periode === 0 && selectedOutletName[0].value === undefined)}
+                                                        className={(inputHandleSettlementQrisManualAdmin.periode !== 0 || (dateRangeSettlementQrisManualAdmin.length !== 0 && inputHandleSettlementQrisManualAdmin.idSettlement.length !== 0) || (dateRangeSettlementQrisManualAdmin.length !== 0 && inputHandleSettlementQrisManualAdmin.statusQris.length !== 0) || (dateRangeSettlementQrisManualAdmin.length !== 0 && selectedGrupName[0].value !== undefined) || (dateRangeSettlementQrisManualAdmin.length !== 0 && selectedBrandName[0].value !== undefined) || (dateRangeSettlementQrisManualAdmin.length !== 0 && selectedOutletName[0].value !== undefined)) ? 'btn-ez-on' : 'btn-ez'}
+                                                        disabled={inputHandleSettlementQrisManualAdmin.periode === 0 || (inputHandleSettlementQrisManualAdmin.periode === 0 && inputHandleSettlementQrisManualAdmin.idSettlement.length === 0) || (inputHandleSettlementQrisManualAdmin.periode === 0 && inputHandleSettlementQrisManualAdmin.statusQris.length === 0) || (inputHandleSettlementQrisManualAdmin.periode === 0 && selectedGrupName[0].value === undefined) || (inputHandleSettlementQrisManualAdmin.periode === 0 && selectedBrandName[0].value === undefined) || (inputHandleSettlementQrisManualAdmin.periode === 0 && selectedOutletName[0].value === undefined)}
                                                         onClick={() => filterDataSettlementQrisManualHandler(inputHandleSettlementQrisManualAdmin.idSettlement, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualAdmin.statusQris, inputHandleSettlementQrisManualAdmin.periode, dateRangeSettlementQrisManualAdmin, user_role, partnerId, 1, 10)}
                                                     >
                                                         Terapkan
@@ -1859,8 +2086,8 @@ const QrisSettlement = () => {
                                                 </Col>
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
-                                                        className={(inputHandleSettlementQrisManualAdmin.periode !== 0 || dateRangeSettlementQrisManualAdmin.length !== 0 || inputHandleSettlementQrisManualAdmin.idSettlement.length !== 0 || inputHandleSettlementQrisManualAdmin.statusQris !== 0 || selectedGrupName.length !== 0 || selectedBrandName.length !== 0 || selectedOutletName.length !== 0) ? 'btn-reset' : 'btn-ez-reset'}
-                                                        disabled={inputHandleSettlementQrisManualAdmin.periode === 0 && dateRangeSettlementQrisManualAdmin.length === 0 && inputHandleSettlementQrisManualAdmin.idSettlement.length === 0 && inputHandleSettlementQrisManualAdmin.statusQris === 0 && selectedGrupName.length === 0 && selectedBrandName.length === 0 && selectedOutletName.length === 0}
+                                                        className={(inputHandleSettlementQrisManualAdmin.periode !== 0 || dateRangeSettlementQrisManualAdmin.length !== 0 || inputHandleSettlementQrisManualAdmin.idSettlement.length !== 0 || inputHandleSettlementQrisManualAdmin.statusQris.length !== 0 || selectedGrupName.length !== 0 || selectedBrandName.length !== 0 || selectedOutletName.length !== 0) ? 'btn-reset' : 'btn-ez-reset'}
+                                                        disabled={inputHandleSettlementQrisManualAdmin.periode === 0 && dateRangeSettlementQrisManualAdmin.length === 0 && inputHandleSettlementQrisManualAdmin.idSettlement.length === 0 && inputHandleSettlementQrisManualAdmin.statusQris.length === 0 && selectedGrupName.length === 0 && selectedBrandName.length === 0 && selectedOutletName.length === 0}
                                                         onClick={() => resetButtonSettlementQrisManual("admin")}
                                                     >
                                                         Atur Ulang
@@ -1937,7 +2164,7 @@ const QrisSettlement = () => {
                                             )
                                         }
                                         {
-                                            user_role === "107" && (
+                                            (user_role === "106" || user_role === "107") && (
                                                 settleType[0]?.mqrismerchant_settle_group === 103 && (
                                                     <Row className='align-items-center'>
                                                         <Col xs={2} className='mt-3'>
@@ -1963,41 +2190,42 @@ const QrisSettlement = () => {
                                         }
                                         <div className="card-information base-content-qris mt-3">
                                             <p style={{ color: "#383838", fontSize: 12 }}>Jumlah saldo</p>
-                                            <p className="p-amount" style={{ fontFamily: "Exo" }}>{convertToRupiah(dataBalanceTypeManualQrisSettleMerchant[0]?.EndBalance, true, 0)}</p>
-                                            <p className="mt-2"  style={{ fontFamily: "Nunito", fontSize: 10, color: "#888888" }}>{user_role === "106" ? "Total keseluruhan saldo semua brand dan outlet" : user_role === "107" ? "Total keseluruhan saldo semua outlet" : ""}</p>
+                                            <p className="p-amount" style={{ fontFamily: "Exo" }}>{convertToRupiah(Object.keys(dataAccBankManualQrisSettleMerchant).length === 0 ? 0 : dataAccBankManualQrisSettleMerchant.balance, true, 0)}</p>
+                                            <p className="mt-2"  style={{ fontFamily: "Nunito", fontSize: 10, color: "#888888" }}>{user_role === "106" ? (settleType[0]?.mqrismerchant_settle_group === 101 ? "Total keseluruhan saldo semua brand dan outlet" : settleType[0]?.mqrismerchant_settle_group === 102 ? "Total keseluruhan saldo semua outlet" : "Total keseluruhan saldo outlet yang dipilih") : user_role === "107" ? (settleType[0]?.mqrismerchant_settle_group === 10 ? "Total keseluruhan saldo semua outlet" : "Total keseluruhan saldo outlet yang dipilih") : ""}</p>
                                         </div>
                                         <Row className='align-items-center'>
                                             <Col xs={2} className='mt-4' >
                                                 <div>Rekening Tujuan</div>
                                             </Col>
                                             <Col xs={10} className='mt-4'>
-                                                <div className='input-text-user' style={{ padding: "10px", fontSize: 13 }}>{`${dataAccBankManualQrisSettleMerchant.acc_name} - ${dataAccBankManualQrisSettleMerchant.acc_num}  (${dataAccBankManualQrisSettleMerchant.bank_name})`}</div>
+                                                <div className='input-text-user' style={{ padding: "10px", fontSize: 13 }}>{Object.keys(dataAccBankManualQrisSettleMerchant).length === 0 ? "Pilih rekening tujuan" : (dataAccBankManualQrisSettleMerchant.acc_name === null ? "Pilih rekening tujuan" : `${dataAccBankManualQrisSettleMerchant.acc_name} - ${dataAccBankManualQrisSettleMerchant.acc_num}  (${dataAccBankManualQrisSettleMerchant.bank_name})`)}</div>
                                             </Col>
                                             <Col xs={2} className='mt-3'>
                                                 <div>Nominal Pengajuan</div>
                                             </Col>
-                                            <Col xs={10} className='d-flex justify-content-between align-items-center mt-3 position-relative'>
+                                            <Col xs={10} style={{ color: "000000" }} className='d-flex justify-content-between align-items-center mt-3 position-relative'>
                                                 <div className='position-absolute ms-2' style={{ fontSize: 14, color: "#888888", fontFamily: "Nunito" }}>Rp</div>
                                                 <CurrencyInput
-                                                    className="input-text-user text-end"
+                                                    className="input-nominal-qris-settlement text-end"
                                                     value={nominalPengajuan}
-                                                    onValueChange={(e) => handleChangeNominal(e, dataAccBankManualQrisSettleMerchant)}
+                                                     onValueChange={(e) => handleChangeNominal(e, dataAccBankManualQrisSettleMerchant)}
                                                     groupSeparator={"."}
                                                     decimalSeparator={','}
                                                     placeholder='0'
+                                                    onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()}
                                                 />
                                             </Col>
                                             <Col xs={12} className='d-flex justify-content-between align-items-center mt-3'>
                                                 <div>Biaya settlement</div>
-                                                <div className='biaya-settlement-qris'>{convertToRupiah(dataAccBankManualQrisSettleMerchant.biaya_admin, true, 0)}</div>
+                                                <div className='biaya-settlement-qris'>{convertToRupiah(Object.keys(dataAccBankManualQrisSettleMerchant).length === 0 ? 0 : dataAccBankManualQrisSettleMerchant.biaya_admin, true, 0)}</div>
                                             </Col>
                                             <Col xs={12} className='d-flex justify-content-between align-items-center mt-3'>
-                                                <div>Total settlement</div>
-                                                <div className='saldo-dan-total-settlement'>{convertToRupiah(nominalPengajuan === undefined || nominalPengajuan.length === 0 ? dataAccBankManualQrisSettleMerchant.biaya_admin : totalSettlement, true, 0)}</div>
+                                                <div>Uang yang diterima</div>
+                                                <div className='saldo-dan-total-settlement'>{convertToRupiah(nominalPengajuan === undefined || nominalPengajuan.length === 0 ? 0 : (totalSettlement > dataAccBankManualQrisSettleMerchant.balance ? 0 : (totalSettlement) < 0 ? 0 : (totalSettlement)), true, 0)}</div>
                                             </Col>
                                             <Col xs={12} className='d-flex justify-content-between align-items-center mt-3'>
                                                 <div>Sisa saldo</div>
-                                                <div className='saldo-dan-total-settlement'>{convertToRupiah(dataBalanceTypeManualQrisSettleMerchant[0]?.EndBalance - (nominalPengajuan === undefined || nominalPengajuan.length === 0 ? dataAccBankManualQrisSettleMerchant.biaya_admin : totalSettlement), true, 0)}</div>
+                                                <div className='saldo-dan-total-settlement'>{Object.keys(dataAccBankManualQrisSettleMerchant).length === 0 ? "Rp 0" : convertToRupiah(((nominalPengajuan !== undefined && nominalPengajuan.length !== 0) ? ((dataAccBankManualQrisSettleMerchant.balance - dataAccBankManualQrisSettleMerchant.biaya_admin - (totalSettlement)) < 0 ? 0 : (dataAccBankManualQrisSettleMerchant.balance - dataAccBankManualQrisSettleMerchant.biaya_admin - (totalSettlement))) : dataAccBankManualQrisSettleMerchant.balance), true, 0)}</div>
                                             </Col>
                                         </Row>
                                         <Row className='mt-4 pb-4'>
@@ -2005,9 +2233,9 @@ const QrisSettlement = () => {
                                                 <Row>
                                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                         <button
-                                                            className={(nominalPengajuan !== undefined && nominalPengajuan.length !== 0 && Number(nominalPengajuan) !== 0 && Number(nominalPengajuan) >= 50000 && Number(dataBalanceTypeManualQrisSettleMerchant[0]?.EndBalance - totalSettlement) > 0) ? 'btn-ez-on' : 'btn-ez'}
-                                                            disabled={nominalPengajuan === undefined || nominalPengajuan.length === 0 || Number(nominalPengajuan) === 0 || Number(nominalPengajuan) < 50000 || Number(dataBalanceTypeManualQrisSettleMerchant[0]?.EndBalance - totalSettlement) <= 0}
-                                                            onClick={() => submitSettlementHandler(dataAccBankManualQrisSettleMerchant.ID, Number(nominalPengajuan), dataBalanceTypeManualQrisSettleMerchant[0]?.mqrisbalance_merchant_nou, settleType[0].mqrismerchant_settle_group === 101 ? 0 : selectedBrandNameQrisManualMerchant.map((item, idx) => item.value), 0)}
+                                                            className={(nominalPengajuan !== undefined && nominalPengajuan.length !== 0 && Number(nominalPengajuan) !== 0 && Number(nominalPengajuan) >= 50000 && dataAccBankManualQrisSettleMerchant.balance - dataAccBankManualQrisSettleMerchant.biaya_admin - (totalSettlement) >= 0 && Object.keys(dataAccBankManualQrisSettleMerchant).length !== 0 ) ? 'btn-ez-on' : 'btn-ez'}
+                                                            disabled={nominalPengajuan === undefined || nominalPengajuan.length === 0 || Number(nominalPengajuan) === 0 || Number(nominalPengajuan) < 50000 || dataAccBankManualQrisSettleMerchant.balance - dataAccBankManualQrisSettleMerchant.biaya_admin - (totalSettlement) < 0 || Object.keys(dataAccBankManualQrisSettleMerchant).length === 0}
+                                                            onClick={() => submitSettlementHandler(dataAccBankManualQrisSettleMerchant.ID, Number(nominalPengajuan), user_role === "106" ? partnerId : 0, user_role === "106" ? ((settleType[0]?.mqrismerchant_settle_group === 102 || settleType[0]?.mqrismerchant_settle_group === 103) && selectedBrandNameQrisManualMerchant.map((item, idx) => item.value)) : (user_role === "107" ? partnerId : 0), (user_role === "106" || user_role === "107") ? (settleType[0]?.mqrismerchant_settle_group === 103 && selectedOutletNameQrisManualMerchant.map((item, idx) => item.value)) : user_role === "108" && partnerId)}
                                                         >
                                                             Ajukan
                                                         </button>
@@ -2020,10 +2248,10 @@ const QrisSettlement = () => {
                                         <Row className='mt-1'>
                                             <Col xs={4} className="d-flex justify-content-between align-items-center">
                                                 <span>ID Settlement</span>
-                                                <input name="idSettlement" value={inputHandleSettlementQrisManualMerchant.idSettlement} onChange={(e) => handleChangeSettleQrisManualMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                                                <input name="idSettlement" value={inputHandleSettlementQrisManualMerchant.idSettlement} onChange={(e) => handleChangeSettleQrisManualMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
                                             </Col>
                                             <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                                <span>Periode</span>
+                                                <span>Periode <span style={{ color: "red" }}>*</span></span>
                                                 <Form.Select name="periode" value={inputHandleSettlementQrisManualMerchant.periode} onChange={(e) => handleChangePeriodeSettlementQrisManualMerchant(e)} className="input-text-riwayat ms-3">
                                                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                                                     <option value={([`${currentDate}`, `${currentDate}`])}>Hari Ini</option>
@@ -2037,15 +2265,16 @@ const QrisSettlement = () => {
                                             <Col xs={4} className="d-flex justify-content-between align-items-center">
                                                 <span>Status</span>
                                                 <Form.Select name="statusQris" value={inputHandleSettlementQrisManualMerchant.statusQris} onChange={(e) => handleChangeSettleQrisManualMerchant(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
-                                                    <option defaultChecked disabled value={0}>Pilih Status</option>
+                                                    <option defaultChecked disabled value={""}>Pilih Status</option>
+                                                    <option value={5}>Diminta</option>
                                                     <option value={2}>Berhasil</option>
-                                                    <option value={1}>Dalam Proses</option>
-                                                    <option value={7}>Menunggu Pembayaran</option>
-                                                    <option value={9}>Kadaluwarsa</option>
+                                                    <option value={8}>Ditransfer</option>
+                                                    <option value={4}>Gagal</option>
+                                                    <option value={6}>Kadaluwarsa</option>
                                                 </Form.Select>
                                             </Col>
                                             {
-                                                user_role === "106" && (
+                                                (settleType[0]?.mqrismerchant_settle_group === 102 || settleType[0]?.mqrismerchant_settle_group === 103) && (
                                                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                                         <span>Nama Brand</span>
                                                         <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
@@ -2072,7 +2301,7 @@ const QrisSettlement = () => {
                                                 />
                                             </Col>
                                             {
-                                                (user_role === "106" || user_role === "107") && (
+                                                (settleType[0]?.mqrismerchant_settle_group === 103) && (
                                                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                                         <span>Nama Outlet</span>
                                                         <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
@@ -2097,8 +2326,8 @@ const QrisSettlement = () => {
                                                 <Row>
                                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                         <button
-                                                            className={(inputHandleSettlementQrisManualMerchant.periode !== 0 || (dateRangeSettlementQrisManualMerchant.length !== 0 && inputHandleSettlementQrisManualMerchant.idSettlement.length !== 0) || (dateRangeSettlementQrisManualMerchant.length !== 0 && inputHandleSettlementQrisManualMerchant.statusQris !== 0) || (dateRangeSettlementQrisManualMerchant.length !== 0 && selectedBrandName[0].value !== undefined) || (dateRangeSettlementQrisManualMerchant.length !== 0 && selectedOutletName[0].value !== undefined)) ? 'btn-ez-on' : 'btn-ez'}
-                                                            disabled={inputHandleSettlementQrisManualMerchant.periode === 0 || (inputHandleSettlementQrisManualMerchant.periode === 0 && inputHandleSettlementQrisManualMerchant.idSettlement.length === 0) || (inputHandleSettlementQrisManualMerchant.periode === 0 && inputHandleSettlementQrisManualMerchant.statusQris === 0) || (inputHandleSettlementQrisManualMerchant.periode === 0 && selectedBrandName[0].value === undefined) || (inputHandleSettlementQrisManualMerchant.periode === 0 && selectedOutletName[0].value === undefined)}
+                                                            className={(inputHandleSettlementQrisManualMerchant.periode !== 0 || (dateRangeSettlementQrisManualMerchant.length !== 0 && inputHandleSettlementQrisManualMerchant.idSettlement.length !== 0) || (dateRangeSettlementQrisManualMerchant.length !== 0 && inputHandleSettlementQrisManualMerchant.statusQris.length !== 0) || (dateRangeSettlementQrisManualMerchant.length !== 0 && selectedBrandName[0].value !== undefined) || (dateRangeSettlementQrisManualMerchant.length !== 0 && selectedOutletName[0].value !== undefined)) ? 'btn-ez-on' : 'btn-ez'}
+                                                            disabled={inputHandleSettlementQrisManualMerchant.periode === 0 || (inputHandleSettlementQrisManualMerchant.periode === 0 && inputHandleSettlementQrisManualMerchant.idSettlement.length === 0) || (inputHandleSettlementQrisManualMerchant.periode === 0 && inputHandleSettlementQrisManualMerchant.statusQris.length === 0) || (inputHandleSettlementQrisManualMerchant.periode === 0 && selectedBrandName[0].value === undefined) || (inputHandleSettlementQrisManualMerchant.periode === 0 && selectedOutletName[0].value === undefined)}
                                                             onClick={() => filterDataSettlementQrisManualHandler(inputHandleSettlementQrisManualMerchant.idSettlement, null, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualMerchant.statusQris, inputHandleSettlementQrisManualMerchant.periode, dateRangeSettlementQrisManualMerchant, user_role, partnerId, 1, 10)}
                                                         >
                                                             Terapkan
@@ -2106,8 +2335,8 @@ const QrisSettlement = () => {
                                                     </Col>
                                                     <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                         <button
-                                                            className={(inputHandleSettlementQrisManualMerchant.periode !== 0 || dateRangeSettlementQrisManualMerchant.length !== 0 || inputHandleSettlementQrisManualMerchant.idSettlement.length !== 0 || inputHandleSettlementQrisManualMerchant.statusQris !== 0 || selectedBrandName.length !== 0 || selectedOutletName.length !== 0) ? 'btn-reset' : 'btn-ez-reset'}
-                                                            disabled={inputHandleSettlementQrisManualMerchant.periode === 0 && dateRangeSettlementQrisManualMerchant.length === 0 && inputHandleSettlementQrisManualMerchant.idSettlement.length === 0 && inputHandleSettlementQrisManualMerchant.statusQris === 0 && selectedBrandName.length === 0 && selectedOutletName.length === 0}
+                                                            className={(inputHandleSettlementQrisManualMerchant.periode !== 0 || dateRangeSettlementQrisManualMerchant.length !== 0 || inputHandleSettlementQrisManualMerchant.idSettlement.length !== 0 || inputHandleSettlementQrisManualMerchant.statusQris.length !== 0 || selectedBrandName.length !== 0 || selectedOutletName.length !== 0) ? 'btn-reset' : 'btn-ez-reset'}
+                                                            disabled={inputHandleSettlementQrisManualMerchant.periode === 0 && dateRangeSettlementQrisManualMerchant.length === 0 && inputHandleSettlementQrisManualMerchant.idSettlement.length === 0 && inputHandleSettlementQrisManualMerchant.statusQris.length === 0 && selectedBrandName.length === 0 && selectedOutletName.length === 0}
                                                             onClick={() => resetButtonSettlementQrisManual("merchant")}
                                                         >
                                                             Atur Ulang
@@ -2120,7 +2349,7 @@ const QrisSettlement = () => {
                                             <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600, color: "#383838" }}>Daftar pengajuan settlement</div>
                                             {
                                                 dataSettlementQrisManualMerchant.length !== 0 && (
-                                                    <Link onClick={() => ExportReportSettlementQrisManualHandler(user_role, isFilterSettlementQrisManualMerchant, inputHandleSettlementQrisManualMerchant.idSettlement, null, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualMerchant.statusQris, inputHandleSettlementQrisManualMerchant.periode, dateRangeSettlementQrisManualMerchant, user_role, partnerId)} className="export-span">Export</Link>
+                                                    <Link onClick={() => ExportReportSettlementQrisManualHandler(user_role, isFilterSettlementQrisManualMerchant, inputHandleSettlementQrisManualMerchant.idSettlement, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualMerchant.statusQris, inputHandleSettlementQrisManualMerchant.periode, dateRangeSettlementQrisManualMerchant, partnerId)} className="export-span">Export</Link>
                                                 )
                                             }
                                         </div>
@@ -2153,10 +2382,10 @@ const QrisSettlement = () => {
                                     <Row className='mt-1'>
                                         <Col xs={4} className="d-flex justify-content-between align-items-center">
                                             <span>ID Settlement</span>
-                                            <input name="idSettlement" value={inputHandleSettlementQrisOtomatisMerchant.idSettlement} onChange={(e) => handleChangeSettleQrisOtomatisMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                                            <input name="idSettlement" value={inputHandleSettlementQrisOtomatisMerchant.idSettlement} onChange={(e) => handleChangeSettleQrisOtomatisMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
                                         </Col>
                                         <Col xs={4} className="d-flex justify-content-between align-items-center">
-                                            <span>Periode</span>
+                                            <span>Periode <span style={{ color: "red" }}>*</span></span>
                                             <Form.Select name="periode" value={inputHandleSettlementQrisOtomatisMerchant.periode} onChange={(e) => handleChangePeriodeSettlementQrisOtomatisMerchant(e)} className="input-text-riwayat ms-3">
                                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                                 <option value={2}>Hari Ini</option>
@@ -2170,16 +2399,17 @@ const QrisSettlement = () => {
                                         <Col xs={4} className="d-flex justify-content-between align-items-center">
                                             <span>Status</span>
                                             <Form.Select name="statusQris" value={inputHandleSettlementQrisOtomatisMerchant.statusQris} onChange={(e) => handleChangeSettleQrisOtomatisMerchant(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
-                                                <option defaultChecked disabled value={0}>Pilih Status</option>
+                                                <option defaultChecked disabled value={""}>Pilih Status</option>
+                                                <option value={5}>Diminta</option>
                                                 <option value={2}>Berhasil</option>
-                                                <option value={1}>Dalam Proses</option>
-                                                <option value={7}>Menunggu Pembayaran</option>
-                                                <option value={9}>Kadaluwarsa</option>
+                                                <option value={8}>Ditransfer</option>
+                                                <option value={4}>Gagal</option>
+                                                <option value={6}>Kadaluwarsa</option>
                                             </Form.Select>
                                         </Col>
                                         {
                                             user_role === "106" && (
-                                                settleType[0]?.mqrismerchant_settle_type !== 101 ? (
+                                                settleType[0]?.mqrismerchant_settle_group !== 101 ? (
                                                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                                         <span>Nama Brand</span>
                                                         <div className="dropdown dropSaldoPartner" style={{ width: "11.7rem" }}>
@@ -2246,7 +2476,7 @@ const QrisSettlement = () => {
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
                                                         className={(inputHandleSettlementQrisOtomatisMerchant.periode !== 0 || dateRangeSettlementQrisOtomatisMerchant.length !== 0 || (dateRangeSettlementQrisOtomatisMerchant.length !== 0 && inputHandleSettlementQrisOtomatisMerchant.idSettlement.length !== 0) || (dateRangeSettlementQrisOtomatisMerchant.length !== 0 && inputHandleSettlementQrisOtomatisMerchant.statusQris.length !== 0)) ? 'btn-ez-on' : 'btn-ez'}
-                                                        disabled={inputHandleSettlementQrisOtomatisMerchant.periode === 0 || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.statusQris === 0)}
+                                                        disabled={inputHandleSettlementQrisOtomatisMerchant.periode === 0 || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.statusQris.length === 0)}
                                                         onClick={() => filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, activePageSettlementQrisOtomatisMerchant, 10 )}
                                                     >
                                                         Terapkan
@@ -2255,7 +2485,7 @@ const QrisSettlement = () => {
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
                                                         className={(inputHandleSettlementQrisOtomatisMerchant.periode !== 0 || dateRangeSettlementQrisOtomatisMerchant.length !== 0 || (dateRangeSettlementQrisOtomatisMerchant.length !== 0 && inputHandleSettlementQrisOtomatisMerchant.idSettlement.length !== 0) || (dateRangeSettlementQrisOtomatisMerchant.length !== 0 && inputHandleSettlementQrisOtomatisMerchant.statusQris.length !== 0)) ? 'btn-reset' : 'btn-ez-reset'}
-                                                        disabled={inputHandleSettlementQrisOtomatisMerchant.periode === 0 || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.statusQris === 0)}
+                                                        disabled={inputHandleSettlementQrisOtomatisMerchant.periode === 0 || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.statusQris.length === 0)}
                                                         onClick={() => resetButtonSettlementQrisOtomatis("merchant")}
                                                     >
                                                         Atur Ulang

@@ -1,6 +1,6 @@
 // export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile1"
+// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile9"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile11/"
 export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile16/"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile14/"
@@ -372,6 +372,7 @@ export function replaceText (text) {
 }
 
 export const customFilter = (option, searchText) => {
+	console.log(option.data.label.toLowerCase().includes(searchText.toLowerCase()), "option");
 	if (
 		option.data.label.toLowerCase().includes(searchText.toLowerCase())
 	) {

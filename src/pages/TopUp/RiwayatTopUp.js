@@ -907,7 +907,7 @@ function RiwayatTopUp() {
                             <div className="mx-2 text-start">{language === null ? eng.lakukanTransfer : language.lakukanTransfer} {/*<span style={{ fontWeight: 600 }}>3 digit terakhir.</span>*/} </div>
                         </Table>
                         <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                            <Button onClick={() => topUpHandleConfirm()} variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>... <FontAwesomeIcon icon={faSpinner} spin /></>) : (language === null ? eng.sayaSudahTransfer : language.sayaSudahTransfer)}</Button>
+                            <Button onClick={() => topUpHandleConfirm()} variant="primary" style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>{user_role !== "102" ? "Mohon tunggu" : (language === null ? eng.mohonTunggu : language.mohonTunggu)}... <FontAwesomeIcon icon={faSpinner} spin /></>) : (language === null ? eng.sayaSudahTransfer : language.sayaSudahTransfer)}</Button>
                         </div>
                     </Modal.Body>
                 </Modal>

@@ -346,8 +346,7 @@ function AddUser() {
   ) {
     try {
       const dataParams = encryptData(
-        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${role === "102" ? partnerId : role === "104" ? agenId : role === "106" ? grupNou : role === "107" ? brandNou : role === "108" ? storeNou : ""
-        }"}`
+        `{"name": "${name}", "email": "${email}", "password": "${password}", "role": ${role}, "is_active": "${isActive}", "partnerdtl_id": "${role === "102" ? partnerId : role === "104" ? agenId : role === "106" ? grupNou : role === "107" ? brandNou : role === "108" ? storeNou : ""}"}`
       );
       const headers = {
         "Content-Type": "application/json",

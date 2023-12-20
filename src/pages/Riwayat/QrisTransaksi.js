@@ -47,14 +47,22 @@ const QrisTransaksi = () => {
 
     function handleChange(e) {
         getBrandInQrisTransactionHandler(e.value)
+        setDataOutletInQris([])
+        setDataIdKasirInQris([])
         setSelectedGrupName([e])
         setSelectedBrandName([])
         setSelectedOutletName([])
         setSelectedIdKasirName([])
     }
 
+    console.log(selectedGrupName, "selectedGrupName");
+    console.log(selectedBrandName, "selectedBrandName");
+    console.log(selectedOutletName, "selectedGOutletame");
+    console.log(selectedIdKasirName, "selectedGIdKasirame");
+
     function handleChangeBrand(e) {
         getOutletInQrisTransactionHandler(e.value)
+        setDataIdKasirInQris([])
         setSelectedBrandName([e])
         setSelectedOutletName([])
         setSelectedIdKasirName([])
@@ -86,6 +94,7 @@ const QrisTransaksi = () => {
             })
         } else {
             setShowDateTransactionReportQris("none")
+            setDateRangeTransactionReportQris([])
             setInputHandleTransactionReportQrisAdmin({
                 ...inputHandleTransactionReportQrisAdmin,
                 [e.target.name] : e.target.value
@@ -111,9 +120,6 @@ const QrisTransaksi = () => {
         }
     }
 
-    console.log(dataIdKasirInQris, "dataIdKasirInQris");
-    console.log(selectedGrupName.map((item, idx) => item.nou), "selectedGrupName.map((item, idx) => item.nou)");
-
     const columnsAdmin = [
         {
             name: 'No',
@@ -129,7 +135,7 @@ const QrisTransaksi = () => {
         {
             name: 'RRN',
             selector: row => row.RRN,
-            width: "100px"
+            width: "150px"
         },
         {
             name: 'Waktu',
@@ -163,22 +169,22 @@ const QrisTransaksi = () => {
         },
         {
             name: 'ID Kasir',
-            selector: row => row.mterminal_id,
+            selector: row => row.mterminal_name,
             width: "100px"
         },
         {
             name: 'Nominal Transaksi',
-            selector: row => convertToRupiah(row.amount, true, 0),
+            selector: row => convertToRupiah(row.amount, true, 2),
             width: "180px"
         },
         {
             name: 'Potongan MDR',
-            selector: row => convertToRupiah(row.MDR, true, 0),
+            selector: row => convertToRupiah(row.MDR, true, 2),
             width: "150px"
         },
         {
             name: 'Pendapatan',
-            selector: row => convertToRupiah(row.net_amount, true, 0),
+            selector: row => convertToRupiah(row.net_amount, true, 2),
             width: "150px"
         },
         {
@@ -215,6 +221,7 @@ const QrisTransaksi = () => {
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
             if (user_role === "106") {
                 getBrandInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
+                getOutletInQrisTransactionHandler(0)
             } else if (user_role === "107") {
                 getOutletInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
             } else if (user_role === "108") {
@@ -226,6 +233,7 @@ const QrisTransaksi = () => {
             setPartnerId(userDetail.data.response_data.muser_partnerdtl_id)
             if (user_role === "106") {
                 getBrandInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
+                getOutletInQrisTransactionHandler(0)
             } else if (user_role === "107") {
                 getOutletInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
             } else if (user_role === "108") {
@@ -273,9 +281,6 @@ const QrisTransaksi = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-
-    console.log(dataGrupInQris, "dataGrupInQris");
-    console.log(selectedGrupName, "selectedGrupName");
 
     async function getBrandInQrisTransactionHandler(nouGrup) {
         try {
@@ -349,6 +354,8 @@ const QrisTransaksi = () => {
         }
     }
 
+    console.log(dataOutletInQris, "dataOutletInQris");
+
     async function getIdKasirInQrisTransactionHandler(storeNou) {
         try {
             const auth = "Bearer " + access_token
@@ -363,7 +370,7 @@ const QrisTransaksi = () => {
                 let newArr = []
                 dataIdKasirQris.data.response_data.results.forEach(e => {
                     let obj = {}
-                    obj.value = e.nou
+                    obj.value = e.id
                     obj.label = e.id
                     newArr.push(obj)
                 })
@@ -373,7 +380,7 @@ const QrisTransaksi = () => {
                 let newArr = []
                 dataIdKasirQris.data.response_data.results.forEach(e => {
                     let obj = {}
-                    obj.value = e.nou
+                    obj.value = e.id
                     obj.label = e.id
                     newArr.push(obj)
                 })
@@ -439,6 +446,9 @@ const QrisTransaksi = () => {
             history.push(errorCatch(error.response.status))
         }
     }
+
+    console.log(dateRangeTransactionReportQris, "dateRangeTransactionReportQris");
+    console.log(inputHandleTransactionReportQrisAdmin.periode, "inputHandleTransactionReportQrisAdmin.periode");
 
     async function filterGetTransactionReportQris(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, page, rowPerPage) {
         try {
@@ -516,7 +526,7 @@ const QrisTransaksi = () => {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Jenis Usaha": data[i].business_type, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -527,7 +537,7 @@ const QrisTransaksi = () => {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Jenis Usaha": data[i].business_type, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -554,7 +564,7 @@ const QrisTransaksi = () => {
                         const data = dataExportTransactionQris.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Jenis Usaha": data[i].business_type, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -565,7 +575,7 @@ const QrisTransaksi = () => {
                         const data = dataExportTransactionQris.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Jenis Usaha": data[i].business_type, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -597,11 +607,11 @@ const QrisTransaksi = () => {
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
                             if (user_role === "106") {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             } else if (user_role === "107") {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             } else {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -614,11 +624,11 @@ const QrisTransaksi = () => {
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
                             if (user_role === "106") {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             } else if (user_role === "107") {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             } else {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -647,11 +657,11 @@ const QrisTransaksi = () => {
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
                             if (user_role === "106") {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             } else if (user_role === "107") {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             } else {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -664,11 +674,11 @@ const QrisTransaksi = () => {
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
                             if (user_role === "106") {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             } else if (user_role === "107") {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             } else {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_id, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -737,6 +747,7 @@ const QrisTransaksi = () => {
             })
         } else {
             setShowDateTransactionReportQris("none")
+            setDateRangeTransactionReportQrisMerchant([])
             setInputHandleTransactionReportQrisMerchant({
                 ...inputHandleTransactionReportQrisMerchant,
                 [e.target.name] : e.target.value
@@ -777,7 +788,7 @@ const QrisTransaksi = () => {
         {
             name: 'RRN',
             selector: row => row.RRN,
-            width: "75px"
+            width: "150px"
         },
         {
             name: 'Waktu',
@@ -798,7 +809,7 @@ const QrisTransaksi = () => {
         },
         {
             name: 'ID Kasir',
-            selector: row => row.mterminal_id,
+            selector: row => row.mterminal_name,
             width: "100px"
         },
         {
@@ -808,17 +819,17 @@ const QrisTransaksi = () => {
         },
         {
             name: 'Nominal Transaksi',
-            selector: row => convertToRupiah(row.amount, true, 0),
+            selector: row => convertToRupiah(row.amount, true, 2),
             width: "170px"
         },
         {
             name: 'Potongan MDR',
-            selector: row => convertToRupiah(row.MDR, true, 0),
+            selector: row => convertToRupiah(row.MDR, true, 2),
             width: "150px"
         },
         {
             name: 'Pendapatan',
-            selector: row => convertToRupiah(row.net_amount, true, 0),
+            selector: row => convertToRupiah(row.net_amount, true, 2),
             width: "150px"
         },
         {
@@ -827,8 +838,8 @@ const QrisTransaksi = () => {
             style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
             conditionalCellStyles: [
                 {
-                    when: row => row.status_id === 9 || row.status_id === 5,
-                    style: { background: "#FEF4E9", color: "#F79421" }
+                    when: row => row.status_id === 9 || row.status_id === 5 || row.status_id === 3,
+                    style: { background: "#FEF4E9", color: "#F79421"}
                 },
                 {
                     when: row => row.status_id === 2,
@@ -951,9 +962,6 @@ const QrisTransaksi = () => {
         );
     };
 
-    console.log(partnerId, "partnerId");
-    console.log(dataTransactionReportQris, "dataTransactionReportQris");
-
     useEffect(() => {
         if (!access_token) {
             history.push('/login');
@@ -964,9 +972,6 @@ const QrisTransaksi = () => {
         }
         if (user_role === "106" || user_role === "107" || user_role === "108") {
             userDetails()
-        }
-        if (user_role === "106") {
-            getOutletInQrisTransactionHandler(0)
         }
     }, [access_token])
     
@@ -1086,7 +1091,7 @@ const QrisTransaksi = () => {
                                     <span>Status</span>
                                     <Form.Select name="statusQris" value={inputHandleTransactionReportQrisAdmin.statusQris} onChange={(e) => handleChangeTransactionReposrtQris(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
                                         <option defaultChecked disabled value={0}>Pilih Status</option>
-                                        <option value={1}>Sedang Berjalan</option>
+                                        <option value={3}>Dalam Proses</option>
                                         <option value={2}>Berhasil</option>
                                         <option value={4}>Gagal</option>
                                         <option value={6}>Kadaluwarsa</option>
@@ -1150,7 +1155,7 @@ const QrisTransaksi = () => {
                     </>
                 ) : (user_role === "106" || user_role === "107" || user_role === "108") && (
                     <>
-                        <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp; Transaksi &nbsp; <img alt="" src={breadcrumbsIcon} />  &nbsp;QRIS</span>
+                        <span className='breadcrumbs-span' style={{ cursor: "pointer" }}>Beranda  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp; <Link to={"/riwayat-transaksi/transaksi-qris"}>Riwayat Transaksi</Link> &nbsp; <img alt="" src={breadcrumbsIcon} />  &nbsp;QRIS</span>
                         <div className="head-title">
                             <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Transaksi QRIS</h2>
                         </div>
@@ -1159,7 +1164,7 @@ const QrisTransaksi = () => {
                             <Row className=''>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>ID Transaksi</span>
-                                    <input name="idTransaksi" value={inputHandleTransactionReportQrisMerchant.idTransaksi} onChange={(e) => handleChangePeriodeTransactionReportQrisMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                                    <input name="idTransaksi" value={inputHandleTransactionReportQrisMerchant.idTransaksi} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>Periode <span style={{ color: "red" }}>*</span></span>
@@ -1270,7 +1275,7 @@ const QrisTransaksi = () => {
                                     <span>Status</span>
                                     <Form.Select name="statusQris" value={inputHandleTransactionReportQrisMerchant.statusQris} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
                                         <option defaultChecked disabled value={0}>Pilih Status</option>
-                                        <option value={1}>Sedang Berjalan</option>
+                                        <option value={3}>Dalam Proses</option>
                                         <option value={2}>Berhasil</option>
                                         <option value={4}>Gagal</option>
                                         <option value={6}>Kadaluwarsa</option>
