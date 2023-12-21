@@ -102,7 +102,8 @@ const QrisSettlement = () => {
     function handleChangeBrandQrisManualMerchant(e) {
         setSelectedBrandNameQrisManualMerchant([e])
         if (settleType[0]?.mqrismerchant_settle_group === 103) {
-            getOutletInQrisTransactionHandler(e.value)
+            getOutletInQrisManualHandler(e.value)
+            setSelectedOutletNameQrisManualMerchant([])
         } else {
             getAccountBankSettlementQrisManualMerchantHandler(e.value, 0)
         }
@@ -141,6 +142,7 @@ const QrisSettlement = () => {
         setSelectedBrandName([e])
         if (user_role !== "102" || user_role !== "104") {
             getOutletInQrisTransactionHandler(e.value)
+            setSelectedOutletName([])
         }
     }
 
@@ -409,6 +411,7 @@ const QrisSettlement = () => {
             setShowDateSettlementQrisManualMerchant("none")
             setDateRangeSettlementQrisManualMerchant([])
             setStateSettlementQrisManualMerchant(null)
+            setDataOutletInQris([])
             setSelectedBrandName([])
             setSelectedOutletName([])
         } else {
@@ -1080,7 +1083,6 @@ const QrisSettlement = () => {
                     newArr.push(obj)
                 })
                 setDataOutletInQris(newArr)
-                setDataOutletInQrisManualMerchant(newArr)
             } else if (dataOutletQris.status === 200 && dataOutletQris.data.response_code === 200 && dataOutletQris.data.response_new_token !== null) {
                 setUserSession(dataOutletQris.data.response_new_token)
                 let newArr = []
@@ -1091,6 +1093,41 @@ const QrisSettlement = () => {
                     newArr.push(obj)
                 })
                 setDataOutletInQris(newArr)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function getOutletInQrisManualHandler(nouBrand) {
+        try {
+            const auth = "Bearer " + access_token
+            const dataParams = encryptData(`{"moutlet_nou": ${nouBrand}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataOutletQris = await axios.post(BaseURL + "/QRIS/MasterOutlet", { data: dataParams }, { headers: headers })
+            // console.log(dataOutletQris, 'ini user detal funct');
+            if (dataOutletQris.status === 200 && dataOutletQris.data.response_code === 200 && dataOutletQris.data.response_new_token === null) {
+                let newArr = []
+                dataOutletQris.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.nou
+                    obj.label = e.name
+                    newArr.push(obj)
+                })
+                setDataOutletInQrisManualMerchant(newArr)
+            } else if (dataOutletQris.status === 200 && dataOutletQris.data.response_code === 200 && dataOutletQris.data.response_new_token !== null) {
+                setUserSession(dataOutletQris.data.response_new_token)
+                let newArr = []
+                dataOutletQris.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.nou
+                    obj.label = e.name
+                    newArr.push(obj)
+                })
                 setDataOutletInQrisManualMerchant(newArr)
             }
         } catch (error) {
@@ -1997,6 +2034,7 @@ const QrisSettlement = () => {
                                                 </Form.Select>
                                             </Col>
                                             {
+                                                user_role === "106" &&
                                                 (settleType[0]?.mqrismerchant_settle_group === 102 || settleType[0]?.mqrismerchant_settle_group === 103) && (
                                                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                                         <span>Nama Brand</span>
@@ -2024,6 +2062,7 @@ const QrisSettlement = () => {
                                                 />
                                             </Col>
                                             {
+                                                (user_role === "106" || user_role === "107") &&
                                                 (settleType[0]?.mqrismerchant_settle_group === 103) && (
                                                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                                         <span>Nama Outlet</span>
