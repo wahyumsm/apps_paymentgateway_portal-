@@ -1886,7 +1886,7 @@ const QrisSettlement = () => {
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
-            <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp; Settlement &nbsp; <img alt="" src={breadcrumbsIcon} />  &nbsp;QRIS</span>
+            <span className='breadcrumbs-span'><Link style={{ cursor: "pointer" }}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp; Settlement &nbsp; <img alt="" src={breadcrumbsIcon} />  &nbsp;QRIS</span>
             <div className="head-title">
                 <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Settlement QRIS</h2>
             </div>
@@ -1952,7 +1952,7 @@ const QrisSettlement = () => {
                                         <div className="card-information base-content-qris mt-3">
                                             <p style={{ color: "#383838", fontSize: 12 }}>Jumlah saldo</p>
                                             <p className="p-amount" style={{ fontFamily: "Exo" }}>{convertToRupiah(Object.keys(dataAccBankManualQrisSettleMerchant).length === 0 ? 0 : dataAccBankManualQrisSettleMerchant.balance, true, 0)}</p>
-                                            <p className="mt-2"  style={{ fontFamily: "Nunito", fontSize: 10, color: "#888888" }}>{user_role === "106" ? (settleType[0]?.mqrismerchant_settle_group === 101 ? "Total keseluruhan saldo semua brand dan outlet" : settleType[0]?.mqrismerchant_settle_group === 102 ? "Total keseluruhan saldo semua outlet" : "Total keseluruhan saldo outlet yang dipilih") : user_role === "107" ? (settleType[0]?.mqrismerchant_settle_group === 10 ? "Total keseluruhan saldo semua outlet" : "Total keseluruhan saldo outlet yang dipilih") : ""}</p>
+                                            <p className="mt-2"  style={{ fontFamily: "Nunito", fontSize: 10, color: "#888888" }}>{user_role === "106" ? (settleType[0]?.mqrismerchant_settle_group === 101 ? "Total keseluruhan saldo semua brand dan outlet" : settleType[0]?.mqrismerchant_settle_group === 102 ? "Total keseluruhan saldo semua outlet" : "Total keseluruhan saldo outlet yang dipilih") : user_role === "107" ? (settleType[0]?.mqrismerchant_settle_group === 102 ? "Total keseluruhan saldo semua outlet" : "Total keseluruhan saldo outlet yang dipilih") : ""}</p>
                                         </div>
                                         <Row className='align-items-center'>
                                             <Col xs={2} className='mt-4' >
