@@ -70,6 +70,7 @@ export const Routes = {
     SettlementManual: {path: "/settlement/settlement-manual"},
     eWalletAdmin: {path: "/transaksi/ewallet"},
     QrisTransaksiAdmin: {path: "/transaksi/transaksi-qris"},
+    TransaksiQrisApiAdmin: {path: "/transaksi/transaksi-qris-api"},
     ExcludeSettlementManual: {path: "/settlement/exclude-settlement"},
     ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},
 
