@@ -376,6 +376,7 @@ const QrisSettlement = () => {
                 periode: 0,
                 statusQris: ""
             })
+            setIsFilterSettlementQrisOtomatisMerchant(false)
             setShowDateSettlementQrisOtomatisMerchant("none")
             setDateRangeSettlementQrisOtomatisMerchant([])
             setStateSettlementQrisOtomatisMerchant(null)
@@ -388,6 +389,7 @@ const QrisSettlement = () => {
                 periode: 0,
                 statusQris: ""
             })
+            setIsFilterSettlementQrisOtomatisAdmin(false)
             setShowDateSettlementQrisOtomatisAdmin("none")
             setDateRangeSettlementQrisOtomatisAdmin([])
             setStateSettlementQrisOtomatisAdmin(null)
@@ -408,6 +410,7 @@ const QrisSettlement = () => {
                 periode: 0,
                 statusQris: ""
             })
+            setIsFilterSettlementQrisManualMerchant(false)
             setShowDateSettlementQrisManualMerchant("none")
             setDateRangeSettlementQrisManualMerchant([])
             setStateSettlementQrisManualMerchant(null)
@@ -421,6 +424,7 @@ const QrisSettlement = () => {
                 periode: 0,
                 statusQris: ""
             })
+            setIsFilterSettlementQrisManualAdmin(false)
             setShowDateSettlementQrisManualAdmin("none")
             setDateRangeSettlementQrisManualAdmin([])
             setStateSettlementQrisManualAdmin(null)

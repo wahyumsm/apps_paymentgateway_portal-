@@ -872,6 +872,7 @@ const QrisTransaksi = () => {
             setDataBrandInQris([])
             setDataOutletInQris([])
             setDataIdKasirInQris([])
+            setIsFilterTransactionReportQris(false)
             setShowDateTransactionReportQris("none")
             setDateRangeTransactionReportQris([])
             setStateTransactionReportQris(null)
@@ -900,6 +901,7 @@ const QrisTransaksi = () => {
             setDataBrandInQris([])
             setDataOutletInQris([])
             setDataIdKasirInQris([])
+            setIsFilterTransactionReportQrisMerchant(false)
             setShowDateTransactionReportQrisMerchant("none")
             setDateRangeTransactionReportQrisMerchant([])
             setStateTransactionReportQrisMerchant(null)
@@ -1178,7 +1180,7 @@ const QrisTransaksi = () => {
                                     <input name="idTransaksi" value={inputHandleTransactionReportQrisAdmin.idTransaksi} onChange={(e) => handleChangeTransactionReposrtQris(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                                    <span>Periode</span>
+                                    <span>Periode <span style={{ color: "red" }}>*</span></span>
                                     <Form.Select name='periode' value={inputHandleTransactionReportQrisAdmin.periode} onChange={(e) => handleChangePeriodeTransactionReportQris(e)} className="input-text-riwayat ms-3">
                                         <option defaultChecked disabled value={0}>Pilih Periode</option>
                                         <option value={2}>Hari Ini</option>
