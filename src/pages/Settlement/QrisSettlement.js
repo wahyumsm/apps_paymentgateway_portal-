@@ -941,6 +941,7 @@ const QrisSettlement = () => {
                     }
                 } else if (user_role === "107" || user_role === "108") {
                     getOutletInQrisTransactionHandler(userDetail.data.response_data.muser_partnerdtl_id)
+                    getOutletInQrisManualHandler(userDetail.data.response_data.muser_partnerdtl_id)
                     if (settleType === 102) {
                         getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualMerchant, userDetail.data.response_data.muser_partnerdtl_id)
                         if (user_role === "107" && settleGroup === 102 ) {
