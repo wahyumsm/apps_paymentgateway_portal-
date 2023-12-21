@@ -839,7 +839,7 @@ width: 150px;
 }
 
 /* select option in riwayat Top up admin and disburse report*/
-.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control  {
+.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control, .dropVAUSD .css-1s2u09g-control  {
     min-height: 40px;
     min-width: 188px;
     border-radius: 8px;
@@ -903,7 +903,7 @@ width: 150px;
     width: max-content;
 }
 
-.dropVAUSD .css-g1d714-ValueContainer {
+.dropVAUSD .css-g1d714-ValueContainer, .dropVAUSD .css-1hwfws3 {
     overflow-y: auto !important;
     max-height: 43px !important;
     max-width: 265px !important;

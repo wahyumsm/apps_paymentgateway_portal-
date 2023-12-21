@@ -55,10 +55,14 @@ function CreateVAUSD() {
     // STATE UPDATE VA
 
     const [dataListFileUpdateVA, setDataListFileUpdateVA] = useState([])
+    const [dataListFileAPIUpdateVA, setDataListFileAPIUpdateVA] = useState([])
     const [selectedFileUpdateUpdateVA, setSelectedFileUpdateUpdateVA] = useState([])
     const [listUpdateVA, setListUpdateVA] = useState([])
     const [pendingUpdateVA, setPendingUpdateVA] = useState(false)
     const [showModalKonfirmasiUpdateVA, setShowModalKonfirmasiUpdateVA] = useState(false)
+    const [totalPageUpdateVA, setTotalPageUpdateVA] = useState(1)
+    const [activePageUpdateVA, setActivePageUpdateVA] = useState(1)
+    const [pageNumberUpdateVA, setPageNumberUpdateVA] = useState({})
 
     // STATE UPDATE VA END
 
@@ -191,7 +195,7 @@ function CreateVAUSD() {
                         obj.company_code = `${item.company_code}`
                         obj.member_code = `${item.member_code}`
                         obj.member_name = `${item.member_name}`
-                        obj.amount = "1"
+                        obj.amount = ""
                         obj.period = `${new Date(item.period).toLocaleDateString('en-GB').split("/20").join("/")}`
                         obj.member_status = ""
                         data.push(obj)
@@ -226,17 +230,15 @@ function CreateVAUSD() {
                         obj.company_code = `${item.company_code}`
                         obj.member_code = `${item.member_code}`
                         obj.member_name = `${item.member_name}`
-                        obj.amount = "1"
+                        obj.amount = ""
                         obj.period = `${new Date(item.period).toLocaleDateString('en-GB').split("/20").join("/")}`
                         obj.member_status = ""
                         data.push(obj)
                     })
-                    console.log(data, 'data new');
                     const arrayOfArraysNextIndex = data.map(obj => {
                         const values = Object.values(obj);
                         return values;
                     });
-                    console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
                     const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
                     const csv = XLSX.utils.sheet_to_csv(ws)
                     const zip = require('jszip')()
@@ -346,19 +348,28 @@ function CreateVAUSD() {
 
     // FUNCTION SECTION TAB UPDATE VA
 
-    async function downloadFileVABulk(params) {
-        try {
-            const auth = 'Bearer ' + getToken();
-            // const dataParams = encryptData(`{"list": ${JSON.stringify(idLists)}}`)
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': auth
-            }
-            // console.log(dataParams, 'dataParams');
-            // const getDataBulkVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/GetMasterBulkVAUSD", {data: ""}, {headers: headers})
-        } catch (error) {
-            // console.log(error);
-            history.push(errorCatch(error.response.status))
+    function downloadFileVABulk(selectedFile, listVA) {
+        console.log(selectedFile, 'selectedFile');
+        console.log(listVA, 'listVA');
+        if (selectedFile.length === 0) {
+            console.log('data kosong');
+        } else if (selectedFile.length === 1) {
+            const foundedList = listVA.find(item => item.id === selectedFile[0].value)
+            // window.open("www.google.com", '_blank')
+            window.open(foundedList.source, '_blank')
+            // window.location.replace("www.google.com",)
+        } else {
+            let arrSource = []
+            listVA.forEach(item => {
+                const foundedList = selectedFile.find(el => el.value === item.id)
+                if (foundedList !== undefined) {
+                    arrSource.push(item.source)
+                }
+            })
+            console.log(arrSource, 'arrSource');
+            arrSource.forEach(item => {
+                window.open(item, '_blank')
+            })
         }
     }
 
@@ -436,6 +447,7 @@ function CreateVAUSD() {
                     newArr.push(obj)
                 })
                 setDataListFileUpdateVA(newArr)
+                setDataListFileAPIUpdateVA(dataListFileName.data.response_data.results)
             } else if (dataListFileName.status === 200 && dataListFileName.data.response_code === 200 && dataListFileName.data.response_new_token !== null) {
                 setUserSession(dataListFileName.data.response_new_token)
                 let newArr = []
@@ -446,6 +458,7 @@ function CreateVAUSD() {
                     newArr.push(obj)
                 })
                 setDataListFileUpdateVA(newArr)
+                setDataListFileAPIUpdateVA(dataListFileName.data.response_data.results)
             }
         } catch (error) {
             // console.log(error);
@@ -456,8 +469,9 @@ function CreateVAUSD() {
     async function getListUpdateVA(page) {
         try {
             setPendingUpdateVA(true)
+            setActivePageUpdateVA(page)
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"page": ${page}, "row_per_page": 20}`)
+            const dataParams = encryptData(`{"page": ${page}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -467,11 +481,15 @@ function CreateVAUSD() {
             // console.log(dataListUpdateVA, 'dataListUpdateVA');
             if (dataListUpdateVA.status === 200 && dataListUpdateVA.data.response_code === 200 && dataListUpdateVA.data.response_new_token === null) {
                 dataListUpdateVA.data.response_data.results = dataListUpdateVA.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
+                setPageNumberUpdateVA(dataListUpdateVA.data.response_data)
+                setTotalPageUpdateVA(dataListUpdateVA.data.response_data.max_page)
                 setListUpdateVA(dataListUpdateVA.data.response_data.results)
                 setPendingUpdateVA(false)
             } else if (dataListUpdateVA.status === 200 && dataListUpdateVA.data.response_code === 200 && dataListUpdateVA.data.response_new_token !== null) {
                 setUserSession(dataListUpdateVA.data.response_new_token)
                 dataListUpdateVA.data.response_data.results = dataListUpdateVA.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
+                setPageNumberUpdateVA(dataListUpdateVA.data.response_data)
+                setTotalPageUpdateVA(dataListUpdateVA.data.response_data.max_page)
                 setListUpdateVA(dataListUpdateVA.data.response_data.results)
                 setPendingUpdateVA(false)
             }
@@ -522,7 +540,7 @@ function CreateVAUSD() {
         getFileNameAndStockVA()
         // getListUpdateVA(1)
         // getDataNameFile()
-    }, [isVAUSD])
+    }, [])
 
     const Option = (props) => {
         return (
@@ -975,7 +993,7 @@ function CreateVAUSD() {
                                         <Col xs={3} className="card-information" style={{border: '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
                                             <div className='d-flex'>
                                                 <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total VA yang perlu update: </span>
-                                                <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(stockVABaru.available_stock.stock, false)}</span>
+                                                <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(pageNumberUpdateVA.total_data, false)}</span>
                                             </div>
                                         </Col>
                                         <Col xs={3} className="card-information ms-3">
@@ -994,7 +1012,7 @@ function CreateVAUSD() {
                                 <Col xs={1}>
                                     <div style={{ border:"0.5px solid #EBEBEB", width: 0, borderRadius: "unset", height: 35, marginTop: 18 }}></div>
                                 </Col>
-                                <Col xs={4}>
+                                <Col xs={5}>
                                     <Row style={{border:"1px solid #EBEBEB", borderRadius: 8, height: 70, marginTop: 5}}>
                                         <Col className="card-information d-flex justify-content-center ms-3 mt-1" style={{ height: 50, padding: '12px 0px 12px 16px' }}>
                                             <div className="dropdown dropVAUSD">
@@ -1016,7 +1034,7 @@ function CreateVAUSD() {
                                             <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 35, marginTop: 18}}></div>
                                         </Col>
                                         <Col className='d-flex justify-content-center' style={{ paddingLeft: 'unset' }}>
-                                            <button onClick={() => downloadFileVABulk()} style={{ backgroundColor: 'unset', border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18, marginRight: 20 }}>
+                                            <button onClick={() => downloadFileVABulk(selectedFileUpdateUpdateVA, dataListFileAPIUpdateVA)} style={{ backgroundColor: 'unset', border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18, marginRight: 20 }}>
                                                 <img src={downloadIcon} width="24" height="24" alt="download_icon" />
                                             </button>
                                             <button onClick={() => setShowModalKonfirmasiUpdateVA(true)} style={{ backgroundColor: 'unset', color: '#077E86', fontWeight: 700, border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18 }}>
@@ -1035,6 +1053,18 @@ function CreateVAUSD() {
                                     progressPending={pendingUpdateVA}
                                     progressComponent={<CustomLoader />}
                                     // pagination
+                                />
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                                <div style={{ marginRight: 10, marginTop: 10 }}>Total Halaman : {totalPageUpdateVA}</div>
+                                <Pagination
+                                    activePage={activePageUpdateVA}
+                                    itemsCountPerPage={pageNumberUpdateVA.row_per_page}
+                                    totalItemsCount={(pageNumberUpdateVA.row_per_page*pageNumberUpdateVA.max_page)}
+                                    pageRangeDisplayed={5}
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    onChange={(page) => getListUpdateVA(page)}
                                 />
                             </div>
                             {/* Modal konfirmasi file VA update */}
