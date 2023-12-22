@@ -277,7 +277,7 @@ const QrisSettlement = () => {
     function handlePageChangeSettlementQrisManualMerchant(page) {
         if (isFilterSettlementQrisManualMerchant) {
             setActivePageSettlementQrisManualMerchant(page)
-            filterDataSettlementQrisManualHandler(inputHandleSettlementQrisManualMerchant.idSettlement, null, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualMerchant.statusQris, inputHandleSettlementQrisManualMerchant.periode, dateRangeSettlementQrisManualMerchant, user_role, partnerId, page, 10)
+            filterDataSettlementQrisManualHandler(inputHandleSettlementQrisManualMerchant.idSettlement, 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualMerchant.statusQris, inputHandleSettlementQrisManualMerchant.periode, dateRangeSettlementQrisManualMerchant, user_role, partnerId, page, 10)
 
         } else {
             setActivePageSettlementQrisManualMerchant(page)
@@ -314,7 +314,7 @@ const QrisSettlement = () => {
     function handlePageChangeSettlementQrisManualAdmin(page) {
         if (isFilterSettlementQrisManualAdmin) {
             setActivePageSettlementQrisManualAdmin(page)
-            filterDataSettlementQrisManualHandler(inputHandleSettlementQrisManualAdmin.idSettlement, null, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualAdmin.statusQris, inputHandleSettlementQrisManualAdmin.periode, dateRangeSettlementQrisManualAdmin, user_role, partnerId, page, 10)
+            filterDataSettlementQrisManualHandler(inputHandleSettlementQrisManualAdmin.idSettlement, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), inputHandleSettlementQrisManualAdmin.statusQris, inputHandleSettlementQrisManualAdmin.periode, dateRangeSettlementQrisManualAdmin, user_role, partnerId, page, 10)
 
         } else {
             setActivePageSettlementQrisManualAdmin(page)
@@ -376,6 +376,7 @@ const QrisSettlement = () => {
                 periode: 0,
                 statusQris: ""
             })
+            setIsFilterSettlementQrisOtomatisMerchant(false)
             setShowDateSettlementQrisOtomatisMerchant("none")
             setDateRangeSettlementQrisOtomatisMerchant([])
             setStateSettlementQrisOtomatisMerchant(null)
@@ -388,6 +389,7 @@ const QrisSettlement = () => {
                 periode: 0,
                 statusQris: ""
             })
+            setIsFilterSettlementQrisOtomatisAdmin(false)
             setShowDateSettlementQrisOtomatisAdmin("none")
             setDateRangeSettlementQrisOtomatisAdmin([])
             setStateSettlementQrisOtomatisAdmin(null)
@@ -408,6 +410,7 @@ const QrisSettlement = () => {
                 periode: 0,
                 statusQris: ""
             })
+            setIsFilterSettlementQrisManualMerchant(false)
             setShowDateSettlementQrisManualMerchant("none")
             setDateRangeSettlementQrisManualMerchant([])
             setStateSettlementQrisManualMerchant(null)
@@ -421,6 +424,7 @@ const QrisSettlement = () => {
                 periode: 0,
                 statusQris: ""
             })
+            setIsFilterSettlementQrisManualAdmin(false)
             setShowDateSettlementQrisManualAdmin("none")
             setDateRangeSettlementQrisManualAdmin([])
             setStateSettlementQrisManualAdmin(null)
@@ -849,7 +853,7 @@ const QrisSettlement = () => {
     // }
 
     function submitSettleManual () {
-        submitSettlementHandler(dataAccBankManualQrisSettleMerchant.ID, Number(nominalPengajuan), user_role === "106" ? partnerId : 0, user_role === "106" ? ((settleType[0]?.mqrismerchant_settle_group === 102 || settleType[0]?.mqrismerchant_settle_group === 103) && selectedBrandNameQrisManualMerchant.map((item, idx) => item.value)) : (user_role === "107" ? partnerId : 0), (user_role === "106" || user_role === "107") ? (settleType[0]?.mqrismerchant_settle_group === 103 && selectedOutletNameQrisManualMerchant.map((item, idx) => item.value)) : user_role === "108" && partnerId)
+        submitSettlementHandler(dataAccBankManualQrisSettleMerchant.ID, Number(nominalPengajuan), user_role === "106" ? partnerId : 0, user_role === "106" ? ((settleType[0]?.mqrismerchant_settle_group === 102 || settleType[0]?.mqrismerchant_settle_group === 103) ? selectedBrandNameQrisManualMerchant.map((item, idx) => item.value) : 0) : (user_role === "107" ? partnerId : 0), (user_role === "106" || user_role === "107") ? (settleType[0]?.mqrismerchant_settle_group === 103 ? selectedOutletNameQrisManualMerchant.map((item, idx) => item.value) : 0) : user_role === "108" ? partnerId : 0)
         setDataAccBankManualQrisSettleMerchant({})
         setNominalPengajuan("")
         setTotalSettlement(0)
