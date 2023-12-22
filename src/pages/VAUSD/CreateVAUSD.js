@@ -5,6 +5,7 @@ import $ from 'jquery'
 import noteInfo from "../../assets/icon/note_icon_grey_transparent_bg.svg"
 import noteInfoRed from "../../assets/icon/note_icon_red_transparent_bg.svg"
 import downloadIcon from "../../assets/icon/download_icon.svg"
+import downloadIconGrey from "../../assets/icon/download_icon_grey.svg"
 import refreshIcon from "../../assets/icon/refresh_icon.svg"
 import { Col, Form, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
 import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession, CustomLoader } from '../../function/helpers'
@@ -63,6 +64,7 @@ function CreateVAUSD() {
     const [totalPageUpdateVA, setTotalPageUpdateVA] = useState(1)
     const [activePageUpdateVA, setActivePageUpdateVA] = useState(1)
     const [pageNumberUpdateVA, setPageNumberUpdateVA] = useState({})
+    const [totalDataConfirmationUpdateVA, setTotalDataConfirmationUpdateVA] = useState(0)
 
     // STATE UPDATE VA END
 
@@ -71,6 +73,8 @@ function CreateVAUSD() {
     console.log(isTabFileIdVABaru, 'isTabFileIdVABaru');
     console.log(dataVABaru, 'dataVABaru');
     console.log(selectedFileUpdateUpdateVA, 'selectedFileUpdateUpdateVA');
+    console.log(dataListFileAPIUpdateVA, 'dataListFileAPIUpdateVA');
+    console.log(totalDataConfirmationUpdateVA, 'totalDataConfirmationUpdateVA');
 
     // STATE RIWAYAT VA
 
@@ -373,7 +377,25 @@ function CreateVAUSD() {
         }
     }
 
-    function handleChangeFile(selected) {
+    function handleChangeFile(selected, listFile) {
+        console.log(selected, 'selected');
+        console.log(listFile, 'listFile');
+        if (selected.length === 1) {
+            const foundFile = listFile.find(found => found.id === selected[0].value)
+            setTotalDataConfirmationUpdateVA(foundFile.total_data)
+        } else if (selected.length > 1) {
+            let totalData = 0
+            selected.forEach(item => {
+                listFile.forEach(item2 => {
+                    if (item2.id === item.value) {
+                        totalData += item2.total_data
+                    }
+                })
+            })
+            setTotalDataConfirmationUpdateVA(totalData)
+        } else {
+            setTotalDataConfirmationUpdateVA(0)
+        }
         setSelectedFileUpdateUpdateVA(selected)
     }
 
@@ -394,9 +416,13 @@ function CreateVAUSD() {
             console.log(confirmedVAUSD, 'confirmedVAUSD');
             if (confirmedVAUSD.status === 200 && confirmedVAUSD.data.response_code === 200 && confirmedVAUSD.data.response_new_token === null) {
                 setShowModalKonfirmasiUpdateVA(false)
+                getListUpdateVA(1)
+                getDataNameFile()
             } else if (confirmedVAUSD.status === 200 && confirmedVAUSD.data.response_code === 200 && confirmedVAUSD.data.response_new_token !== null) {
                 setUserSession(confirmedVAUSD.data.response_new_token)
                 setShowModalKonfirmasiUpdateVA(false)
+                getListUpdateVA(1)
+                getDataNameFile()
             }
         } catch (error) {
             // console.log(error);
@@ -993,7 +1019,7 @@ function CreateVAUSD() {
                                         <Col xs={3} className="card-information" style={{border: '1px solid #EBEBEB', height: 'fit-content', padding: '12px 0px 12px 16px'}}>
                                             <div className='d-flex'>
                                                 <span className="p-info" style={{ paddingLeft: 7, width: 110 }}>Total VA yang perlu update: </span>
-                                                <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{convertToRupiah(pageNumberUpdateVA.total_data, false)}</span>
+                                                <span style={{ fontFamily: "Exo", fontSize: 25, fontWeight: 700, paddingRight: 10, marginTop: 5 }}>{pageNumberUpdateVA.total_data !== undefined ? convertToRupiah(pageNumberUpdateVA.total_data, false) : 0 }</span>
                                             </div>
                                         </Col>
                                         <Col xs={3} className="card-information ms-3">
@@ -1023,7 +1049,7 @@ function CreateVAUSD() {
                                                     allowSelectAll={true}
                                                     options={dataListFileUpdateVA}
                                                     value={selectedFileUpdateUpdateVA}
-                                                    onChange={handleChangeFile}
+                                                    onChange={(selected) => handleChangeFile(selected, dataListFileAPIUpdateVA)}
                                                     placeholder="Pilih File"
                                                     components={{ Option }}
                                                     styles={customStylesSelectedOption}
@@ -1034,10 +1060,10 @@ function CreateVAUSD() {
                                             <div style={{border:"0.5px solid #EBEBEB", width: 0, height: 35, marginTop: 18}}></div>
                                         </Col>
                                         <Col className='d-flex justify-content-center' style={{ paddingLeft: 'unset' }}>
-                                            <button onClick={() => downloadFileVABulk(selectedFileUpdateUpdateVA, dataListFileAPIUpdateVA)} style={{ backgroundColor: 'unset', border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18, marginRight: 20 }}>
-                                                <img src={downloadIcon} width="24" height="24" alt="download_icon" />
+                                            <button onClick={() => downloadFileVABulk(selectedFileUpdateUpdateVA, dataListFileAPIUpdateVA)} disabled={selectedFileUpdateUpdateVA.length === 0} style={{ backgroundColor: 'unset', border: selectedFileUpdateUpdateVA.length !== 0 ? "1px solid #077E86" : "1px solid #C4C4C4", borderRadius: 8, height: 35, marginTop: 18, marginRight: 20 }}>
+                                                <img src={selectedFileUpdateUpdateVA.length !== 0 ? downloadIcon : downloadIconGrey} width="24" height="24" alt="download_icon" />
                                             </button>
-                                            <button onClick={() => setShowModalKonfirmasiUpdateVA(true)} style={{ backgroundColor: 'unset', color: '#077E86', fontWeight: 700, border: "1px solid #077E86", borderRadius: 8, height: 35, marginTop: 18 }}>
+                                            <button onClick={() => setShowModalKonfirmasiUpdateVA(true)} disabled={selectedFileUpdateUpdateVA.length === 0} style={{ backgroundColor: 'unset', color: selectedFileUpdateUpdateVA.length !== 0 ? "#077E86" : "#C4C4C4", fontWeight: 700, border: selectedFileUpdateUpdateVA.length !== 0 ? "1px solid #077E86" : "1px solid #C4C4C4", borderRadius: 8, height: 35, marginTop: 18 }}>
                                                 Konfirmasi
                                             </button>
                                         </Col>
@@ -1074,7 +1100,7 @@ function CreateVAUSD() {
                                 </Modal.Title>
                                 <Modal.Body >
                                     <div className='text-center px-2' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>
-                                        Total data VA yang akan di update adalah <b>{`${10}`}</b> data
+                                        Total data VA yang akan di update adalah <b>{`${totalDataConfirmationUpdateVA}`}</b> data
                                     </div>
                                     <div className='d-flex justify-content-center align-items-center mt-3'>
                                         <div className='me-1'>
