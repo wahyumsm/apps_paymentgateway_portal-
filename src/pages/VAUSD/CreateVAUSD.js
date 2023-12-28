@@ -360,7 +360,7 @@ function CreateVAUSD() {
         } else if (selectedFile.length === 1) {
             const foundedList = listVA.find(item => item.id === selectedFile[0].value)
             // window.open("www.google.com", '_blank')
-            window.open(foundedList.source, '_blank')
+            window.open(foundedList.source)
             // window.location.replace("www.google.com",)
         } else {
             let arrSource = []
@@ -371,9 +371,7 @@ function CreateVAUSD() {
                 }
             })
             console.log(arrSource, 'arrSource');
-            arrSource.forEach(item => {
-                window.open(item, '_blank')
-            })
+            arrSource.forEach(item => window.open(item))
         }
     }
 
