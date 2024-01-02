@@ -889,7 +889,7 @@ export default (props) => {
                       <div style={{padding:"unset"}} className="fw-bold mt-1">{user_role !== "102" ? "Transfer Bank" : (language === null ? eng.transferBank : language.transferBank)}</div>
                     </div>
                     <div className="d-flex flex-column">
-                      <div style={{padding:"unset"}} className="text-end"><img src={topUpBalance.metode_pembayaran} alt="bca" style={{width: "87px", height: "37px"}} /></div>
+                      <div style={{padding:"unset"}} className="text-end"><img src={topUpBalance.metode_pembayaran} alt="bca" style={{width: "135px", height: "37px"}} /></div>
                       <div style={{padding:"unset"}} className="mt-1">{topUpBalance.tf_bank}</div>
                     </div>
                   </div>

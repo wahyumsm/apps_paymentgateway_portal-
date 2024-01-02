@@ -45,13 +45,20 @@ function Disbursement() {
     const [totalPageDisbursement, setTotalPageDisbursement] = useState(1)
     const [isFilterDisbursement, setIsFilterDisbursement] = useState(false)
     const [listDisburseChannel, setListDisburseChannel] = useState([])
-    const currentDate = new Date().toISOString().split('T')[0]
-    const yesterdayDate = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0]
-    const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]
-    const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 2).toISOString().split('T')[0]
-    const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1).toISOString().split('T')[0]
-    const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 2).toISOString().split('T')[0]
-    const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth()).toISOString().split('T')[0]
+    const currentDate = new Date().toLocaleString().split(',')[0]
+    // const currentDate = new Date().toISOString().split('T')[0] //new Date().toLocaleString().split(',')[0]
+    const yesterdayDate = new Date(new Date().setDate(new Date().getDate() - 1)).toLocaleString().split(',')[0]
+    // const yesterdayDate = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] //new Date(new Date().setDate(new Date().getDate() - 1)).toLocaleString().split(',')[0]
+    const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleString().split(',')[0]
+    // const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0] //new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleString().split(',')[0]
+    const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleString().split(',')[0]
+    // const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 2).toISOString().split('T')[0] //new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleString().split(',')[0]
+    const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, -0).toLocaleString().split(',')[0]
+    // const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1).toISOString().split('T')[0] //new Date(new Date().getFullYear(), new Date().getMonth() + 1, -0).toLocaleString().split(',')[0]
+    const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toLocaleString().split(',')[0]
+    // const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 2).toISOString().split('T')[0] //new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toLocaleString().split(',')[0]
+    const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth(), -0).toLocaleString().split(',')[0]
+    // const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth()).toISOString().split('T')[0] //new Date(new Date().getFullYear(), new Date().getMonth(), -0).toLocaleString().split(',')[0]
 
     const [selectedPartnerDisbursement, setSelectedPartnerDisbursement] = useState([])
     const [selectedPaymentDisbursement, setSelectedPaymentDisbursement] = useState([])
