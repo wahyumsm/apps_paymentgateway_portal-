@@ -78,6 +78,11 @@ function CreateVAUSD() {
 
     // STATE RIWAYAT VA
 
+    const [dataRiwayatVAUSD, setDataRiwayatVAUSD] = useState([])
+    const [pendingRiwayatVA, setPendingRiwayatVA] = useState(false)
+    const [totalPageRiwayatVA, setTotalPageRiwayatVA] = useState(1)
+    const [activePageRiwayatVA, setActivePageRiwayatVA] = useState(1)
+    const [pageNumberRiwayatVA, setPageNumberRiwayatVA] = useState({})
     const [inputHandleRiwayatVA, setInputHandleRiwayatVA] = useState({
         kodeVARiwayatVA: "",
         namaFileRiwayatVA: "",
@@ -89,6 +94,10 @@ function CreateVAUSD() {
     const [dateRangeRiwayatVA, setDateRangeRiwayatVA] = useState([])
 
     // STATE RIWAYAT VA END
+    console.log(inputHandleRiwayatVA.kodeVARiwayatVA, 'inputHandleRiwayatVA.kodeVARiwayatVA');
+    console.log(inputHandleRiwayatVA.namaFileRiwayatVA, 'inputHandleRiwayatVA.namaFileRiwayatVA');
+    console.log(inputHandleRiwayatVA.statusRiwayatVA, 'inputHandleRiwayatVA.statusRiwayatVA');
+    console.log(inputHandleRiwayatVA.periodeRiwayatVA, 'inputHandleRiwayatVA.periodeRiwayatVA');
 
     // FUNCTION SECTION TAB CREATE NEW VA
 
@@ -355,24 +364,27 @@ function CreateVAUSD() {
     function downloadFileVABulk(selectedFile, listVA) {
         console.log(selectedFile, 'selectedFile');
         console.log(listVA, 'listVA');
-        if (selectedFile.length === 0) {
-            console.log('data kosong');
-        } else if (selectedFile.length === 1) {
-            const foundedList = listVA.find(item => item.id === selectedFile[0].value)
-            // window.open("www.google.com", '_blank')
-            window.open(foundedList.source)
-            // window.location.replace("www.google.com",)
-        } else {
-            let arrSource = []
-            listVA.forEach(item => {
-                const foundedList = selectedFile.find(el => el.value === item.id)
-                if (foundedList !== undefined) {
-                    arrSource.push(item.source)
-                }
-            })
-            console.log(arrSource, 'arrSource');
-            arrSource.forEach(item => window.open(item))
-        }
+        const foundedList = listVA.find(item => item.id === selectedFile.value)
+        window.open(foundedList.source)
+        // if (selectedFile.length === 0) {
+        //     console.log('data kosong');
+        // } else if (selectedFile.length === 1) {
+        //     const foundedList = listVA.find(item => item.id === selectedFile[0].value)
+        //     // window.open("www.google.com", '_blank')
+        //     window.open(foundedList.source)
+        //     // window.location.replace("www.google.com",)
+        // } else {
+        //     console.log('lebih dari 1');
+        //     let arrSource = []
+        //     listVA.forEach(item => {
+        //         const foundedList = selectedFile.find(el => el.value === item.id)
+        //         if (foundedList !== undefined) {
+        //             arrSource.push(item.source)
+        //         }
+        //     })
+        //     console.log(arrSource, 'arrSource');
+        //     arrSource.forEach((item, id) => {console.log(item, id+1); window.open(item)})
+        // }
     }
 
     function handleChangeFile(selected, listFile) {
@@ -527,6 +539,50 @@ function CreateVAUSD() {
 
     // FUNCTION SECTION TAB RIWAYAT VA
 
+    async function getRiwayatVAUSD(page, kodeVa, fileName, statusId, dateId, dateRange) {
+        try {
+            setActivePageRiwayatVA(page)
+            setPendingRiwayatVA(true)
+            const auth = 'Bearer ' + getToken();
+            // const dataParams = encryptData(`{ "bulk_id": 0, "status": '2,3,11', "username": "", "va_number": "", "page" : ${page}, "row_per_page": 10, "date_from": "", "date_to": "", "period": 2 }`)
+            const dataParams = encryptData(`{ "bulk_id": 0, "status": [${statusId !== 0 ? statusId : [2, 3, 11]}], "username": "${fileName}", "va_number": "${kodeVa}", "page" : ${page}, "row_per_page": 10, "date_from": "${dateId === 7 ? dateRange[0] : ""}", "date_to": "${dateId === 7 ? dateRange[1] : ""}", "period": ${dateId !== 0 ? dateId : 2} }`)
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+            const dataRiwayatVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/GetTransactionVAUSDBasedOnBulk", {data: dataParams}, {headers: headers})
+            console.log(dataRiwayatVAUSD, 'dataRiwayatVAUSD');
+            if (dataRiwayatVAUSD.status === 200 && dataRiwayatVAUSD.data.response_code === 200 && dataRiwayatVAUSD.data.response_new_token === null) {
+                setPageNumberRiwayatVA(dataRiwayatVAUSD.data.response_data)
+                setTotalPageRiwayatVA(dataRiwayatVAUSD.data.response_data.max_page)
+                setDataRiwayatVAUSD(dataRiwayatVAUSD.data.response_data.results)
+                setPendingRiwayatVA(false)
+            } else if (dataRiwayatVAUSD.status === 200 && dataRiwayatVAUSD.data.response_code === 200 && dataRiwayatVAUSD.data.response_new_token !== null) {
+                setUserSession(dataRiwayatVAUSD.data.response_new_token)
+                setPageNumberRiwayatVA(dataRiwayatVAUSD.data.response_data)
+                setTotalPageRiwayatVA(dataRiwayatVAUSD.data.response_data.max_page)
+                setDataRiwayatVAUSD(dataRiwayatVAUSD.data.response_data.results)
+                setPendingRiwayatVA(false)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    function resetButtonHandle() {
+        setInputHandleRiwayatVA({
+            ...inputHandleRiwayatVA,
+            kodeVARiwayatVA: "",
+            namaFileRiwayatVA: "",
+            statusRiwayatVA: 0,
+            periodeRiwayatVA: 0
+        })
+        setShowDateRiwayatVA("none")
+        setStateRiwayatVA(null)
+        setDateRangeRiwayatVA([])
+    }
+
     function handleChange(e) {
         setInputHandleRiwayatVA({
             ...inputHandleRiwayatVA,
@@ -591,17 +647,23 @@ function CreateVAUSD() {
 
     function pindahHalaman(param) {
         if (param === "create") {
+            setDataVABaru("0")
             setSelectedFileUpdateUpdateVA([])
+            resetButtonHandle()
             getFileNameAndStockVA()
             VAUSDTabs(100)
         } else if (param === "update") {
             setDataVABaru("0")
+            setSelectedFileUpdateUpdateVA([])
+            resetButtonHandle()
             getListUpdateVA(1)
             getDataNameFile()
             VAUSDTabs(101)
         } else if (param === "riwayat") {
             setDataVABaru("0")
             setSelectedFileUpdateUpdateVA([])
+            resetButtonHandle()
+            getRiwayatVAUSD(1, inputHandleRiwayatVA.kodeVARiwayatVA, inputHandleRiwayatVA.namaFileRiwayatVA, inputHandleRiwayatVA.statusRiwayatVA, inputHandleRiwayatVA.periodeRiwayatVA, dateRangeRiwayatVA)
             VAUSDTabs(102)
         }
     }
@@ -764,6 +826,62 @@ function CreateVAUSD() {
                 },
                 {
                     when: row => row.status_id === 3 || row.status_id === 5 || row.status_id === 6 || row.status_id === 8 || row.status_id === 10 || row.status_id === 13 || row.status_id === 14 || row.status_id === 15,
+                    style: { background: "#F0F0F0", color: "#888888", fontWeight: 600 }
+                }
+            ],
+        },
+    ];
+
+    const columnsRiwayatVA = [
+        {
+            name: 'No',
+            selector: row => row.No,
+            width: "80px",
+            wrap: true,
+            // sortable: true
+        },
+        {
+            name: 'Kode VA',
+            selector: row => row.va_number,
+            // width: "150px",
+            wrap: true,
+            // sortable: true
+        },
+        {
+            name: 'Nama File',
+            selector: row => row.file_name,
+            // width: "150px",
+            wrap: true,
+            // sortable: true
+        },
+        {
+            name: 'Periode',
+            selector: row => row.period,
+            // sortable: true,
+            // width: "180px",
+            wrap: true,
+        },
+        {
+            name: 'Status',
+            selector: row => row.status_name,
+            width: "150px",
+            // sortable: true,
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status === 2,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", fontWeight: 600 }
+                },
+                {
+                    when: row => row.status === 1 || row.status === 7 || row.status === 11 || row.status === 12,
+                    style: { background: "#FEF4E9", color: "#F79421", fontWeight: 600 }
+                },
+                {
+                    when: row => row.status === 4 || row.status === 9,
+                    style: { background: "#FDEAEA", color: "#EE2E2C", fontWeight: 600 }
+                },
+                {
+                    when: row => row.status === 3 || row.status === 5 || row.status === 6 || row.status === 8 || row.status === 10 || row.status === 13 || row.status === 14 || row.status === 15,
                     style: { background: "#F0F0F0", color: "#888888", fontWeight: 600 }
                 }
             ],
@@ -1041,8 +1159,8 @@ function CreateVAUSD() {
                                         <Col className="card-information d-flex justify-content-center ms-3 mt-1" style={{ height: 50, padding: '12px 0px 12px 16px' }}>
                                             <div className="dropdown dropVAUSD">
                                                 <ReactSelect
-                                                    isMulti
-                                                    closeMenuOnSelect={false}
+                                                    // isMulti
+                                                    // closeMenuOnSelect={false}
                                                     hideSelectedOptions={false}
                                                     allowSelectAll={true}
                                                     options={dataListFileUpdateVA}
@@ -1150,34 +1268,30 @@ function CreateVAUSD() {
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontSize: 16, fontFamily: "Exo", color: "#383838"}}>Filter</span>
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>Kode VA</span>
-                                <input onChange={handleChange} value={inputHandleRiwayatVA.kodeVARiwayatVA} name="kodeVARiwayatVA" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan Kode VA'/>
+                                <span style={{ marginRight: 26 }}>Kode VA</span>
+                                <input onChange={handleChange} value={inputHandleRiwayatVA.kodeVARiwayatVA} name="kodeVARiwayatVA" type='text' className='input-text-riwayat ms-3' placeholder='Masukkan Kode VA'/>
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                <span>Nama File</span>
-                                <input onChange={handleChange} value={inputHandleRiwayatVA.namaFileRiwayatVA} name="namaFileRiwayatVA" type='text'className='input-text-riwayat ms-3' placeholder='Masukkan Nama File'/>
+                                <span style={{ marginRight: 26 }}>Nama File</span>
+                                <input onChange={handleChange} value={inputHandleRiwayatVA.namaFileRiwayatVA} name="namaFileRiwayatVA" type='text' className='input-text-riwayat ms-3' placeholder='Masukkan Nama File'/>
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span>Status</span>
                                 <Form.Select name="statusRiwayatVA" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={inputHandleRiwayatVA.statusRiwayatVA} onChange={(e) => handleChange(e)}>
                                     <option defaultChecked disabled value={0}>Pilih Status</option>
-                                    <option value={1}>Belum Tersedia</option>
-                                    <option value={2}>Tersedia</option>
-                                    <option value={3}>Proses Bayar</option>
-                                    <option value={4}>Sudah Bayar</option>
-                                    <option value={5}>Kadaluwarsa</option>
-                                    <option value={6}>Ditutup</option>
-                                    {/* <option value={2}>Berhasil</option>
-                                    <option value={1}>Dalam Proses</option>
-                                    <option value={7}>Menunggu Pembayaran</option>
-                                    <option value={9}>Kadaluwarsa</option> */}
+                                    <option value={12}>Belum Tersedia</option>
+                                    <option value={11}>Tersedia</option>
+                                    <option value={7}>Proses Bayar</option>
+                                    <option value={2}>Sudah Bayar</option>
+                                    <option value={9}>Kadaluwarsa</option>
+                                    <option value={13}>Ditutup</option>
                                 </Form.Select>
                             </Col>
                         </Row>
                         <Row className='mt-4'>
                             <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: (showDateRiwayatVA === "none") ? "33.2%" : "33.2%" }}>
                                 <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
-                                <Form.Select name='periodeSettlement' className="input-text-riwayat ms-3" value={inputHandleRiwayatVA.periodeRiwayatVA} onChange={handleChangePeriodeRiwayatVA}>
+                                <Form.Select name='periodeRiwayatVA' className="input-text-riwayat ms-3" value={inputHandleRiwayatVA.periodeRiwayatVA} onChange={handleChangePeriodeRiwayatVA}>
                                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                                     <option value={2}>Hari Ini</option>
                                     <option value={3}>Kemarin</option>
@@ -1187,7 +1301,7 @@ function CreateVAUSD() {
                                     <option value={7}>Pilih Range Tanggal</option>
                                 </Form.Select>
                             </Col>
-                            <Col xs={4} style={{ display: showDateRiwayatVA }} className='text-end'>
+                            <Col xs={4} style={{ display: showDateRiwayatVA, paddingRight: 53 }} className='text-end'>
                                 <div className='me-4' style={{ paddingRight: "0.5rem" }}>
                                     <DateRangePicker
                                         onChange={pickDateRiwayatVA}
@@ -1197,6 +1311,53 @@ function CreateVAUSD() {
                                 </div>
                             </Col>
                         </Row>
+                        <Row className='mt-4'>
+                            <Col xs={5}>
+                                <Row>
+                                    <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                        <button
+                                            onClick={() => getRiwayatVAUSD(1, inputHandleRiwayatVA.kodeVARiwayatVA, inputHandleRiwayatVA.namaFileRiwayatVA, inputHandleRiwayatVA.statusRiwayatVA, inputHandleRiwayatVA.periodeRiwayatVA, dateRangeRiwayatVA)}
+                                            className={(inputHandleRiwayatVA.periodeRiwayatVA === 0 || (inputHandleRiwayatVA.periodeRiwayatVA === 7 && dateRangeRiwayatVA.length === 0)) ? "btn-ez" : "btn-ez-on"}
+                                            disabled={inputHandleRiwayatVA.periodeRiwayatVA === 0 || (inputHandleRiwayatVA.periodeRiwayatVA === 7 && dateRangeRiwayatVA.length === 0)}
+                                        >
+                                            Terapkan
+                                        </button>
+                                    </Col>
+                                    <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
+                                        <button
+                                            onClick={() => resetButtonHandle()}
+                                            className={(inputHandleRiwayatVA.periodeRiwayatVA === 0 || (inputHandleRiwayatVA.periodeRiwayatVA === 7 && dateRangeRiwayatVA.length === 0)) ? "btn-ez-reset" : "btn-reset"}
+                                            disabled={inputHandleRiwayatVA.periodeRiwayatVA === 0 || (inputHandleRiwayatVA.periodeRiwayatVA === 7 && dateRangeRiwayatVA.length === 0)}
+                                        >
+                                            Atur Ulang
+                                        </button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <div className="div-table mt-4 pb-4">
+                            <DataTable
+                                columns={columnsRiwayatVA}
+                                data={dataRiwayatVAUSD}
+                                customStyles={customStyles}
+                                highlightOnHover
+                                progressPending={pendingRiwayatVA}
+                                progressComponent={<CustomLoader />}
+                                // pagination
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                            <div style={{ marginRight: 10, marginTop: 10 }}>Total Halaman : {totalPageRiwayatVA}</div>
+                            <Pagination
+                                activePage={activePageRiwayatVA}
+                                itemsCountPerPage={pageNumberRiwayatVA.row_per_page}
+                                totalItemsCount={(pageNumberRiwayatVA.row_per_page*pageNumberRiwayatVA.max_page)}
+                                pageRangeDisplayed={5}
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                onChange={(page) => getRiwayatVAUSD(page, inputHandleRiwayatVA.kodeVARiwayatVA, inputHandleRiwayatVA.namaFileRiwayatVA, inputHandleRiwayatVA.statusRiwayatVA, inputHandleRiwayatVA.periodeRiwayatVA, dateRangeRiwayatVA)}
+                            />
+                        </div>
                     </>
                 }
             </div>
