@@ -1644,3 +1644,9 @@ th {
     font-size: 14px;
     color: #000000;
 }
+
+.qrisInput input::-webkit-outer-spin-button,
+.qrisInput input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

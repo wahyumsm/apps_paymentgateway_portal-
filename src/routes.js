@@ -25,6 +25,7 @@ export const Routes = {
     // AlokasiSaldo : { path: "/alokasisaldo" },
     ReNotifyVA : { path: "/helpDesk/renotifyva" },
     ReNotifyEwallet : { path: "/helpDesk/renotify-ewallet" },
+    ReNotifyQris : { path: "/helpDesk/renotify-qris" },
     RiwayatDisbursement : { path: "/Disbursement/report" },
     // DisbursementReport : { path: "/disbursement-report" },
     // Billing: { path: "/examples/billing" },
@@ -80,6 +81,7 @@ export const Routes = {
     Disbursement: {path: "/riwayat-transaksi/disbursement"},
     SubAccount: {path: "/riwayat-transaksi/sub-account"},
     eWallet: {path: "/riwayat-transaksi/ewallet"},
+    TransaksiQrisApi: {path: "/riwayat-transaksi/transaksi-qris-api"},
     QrisTransaksi: {path: "/riwayat-transaksi/transaksi-qris"},
 
     // docs

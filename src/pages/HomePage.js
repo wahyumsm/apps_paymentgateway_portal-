@@ -97,6 +97,7 @@ import QrisTransaksi from './Riwayat/QrisTransaksi';
 import QrisSettlement from './Settlement/QrisSettlement';
 import RiwayatInvoice from './Invoice/RiwayatInvoice';
 import TransaksiQrisApi from './Riwayat/TransaksiQrisApi';
+import ReNotifyQris from './HelpDesk/ReNotifyQris';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -183,6 +184,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
     <RouteWithSidebar exact path={Routes.ReNotifyEwallet.path} component={ReNotifyEwallet}/>
+    <RouteWithSidebar exact path={Routes.ReNotifyQris.path} component={ReNotifyQris}/>
     <RouteWithSidebar exact path={Routes.RiwayatDisbursement.path} component={DisbursementReport}/>
     {/* <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/> */}
     {/* <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} /> */}
@@ -220,6 +222,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
     <RouteWithSidebar exact path={Routes.QrisTransaksi.path} component={QrisTransaksi} />
+    <RouteWithSidebar exact path={Routes.TransaksiQrisApi.path} component={TransaksiQrisApi} />
 
     <RouteWithSidebar exact path={Routes.eWalletAdmin.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
