@@ -130,12 +130,12 @@ const DaftarMerchantQris = () => {
             </div>
             <hr className='hr-style' style={{marginTop: -2}}/>
             <div className='base-content positiion-relative'>
-                <div style={{ display: "flex", justifyContent: "end", marginTop: -10, paddingBottom: 24 }}>
+                <div style={{ display: "flex", justifyContent: "end" }}>
                     <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 201, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                         <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah Partner
                     </button>
                 </div>
-                <div className="div-table">
+                <div className="div-table" style={{ marginBottom: 500 }}>
                     <DataTable
                         columns={columns}
                         data={filteredItems}
