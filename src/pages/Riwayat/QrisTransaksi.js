@@ -20,7 +20,7 @@ const QrisTransaksi = () => {
     const [inputHandleTransactionReportQrisAdmin, setInputHandleTransactionReportQrisAdmin] = useState({
         idTransaksi: "",
         rrn: "",
-        statusQris: 0,
+        statusQris: "",
         periode: 0
     })
     const [dataGrupInQris, setDataGrupInQris] = useState([])
@@ -396,7 +396,7 @@ const QrisTransaksi = () => {
         try {
             if (user_role === "106" || user_role === "107" || user_role === "108") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": ${user_role === "106" ? IdNou : 0}, "brand_nou": ${user_role === "107" ? IdNou : 0}, "outlet_nou": ${user_role === "108" ? IdNou : 0}, "mterminal_id": 0, "status": 0, "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": ${user_role === "106" ? IdNou : 0}, "brand_nou": ${user_role === "107" ? IdNou : 0}, "outlet_nou": ${user_role === "108" ? IdNou : 0}, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -419,7 +419,7 @@ const QrisTransaksi = () => {
                 }
             } else if (user_role !== "102" || user_role !== "104") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": 0, "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -458,7 +458,7 @@ const QrisTransaksi = () => {
                 setIsFilterTransactionReportQrisMerchant(true)
                 setActivePageTransactionReportQrisMerchant(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": ${status}, "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -484,7 +484,7 @@ const QrisTransaksi = () => {
                 setIsFilterTransactionReportQris(true)
                 setActivePageTransactionReportQris(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": ${status}, "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -517,7 +517,7 @@ const QrisTransaksi = () => {
             async function dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": ${status}, "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -555,7 +555,7 @@ const QrisTransaksi = () => {
             async function dataExportTransactionQris() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": 0, "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -597,7 +597,7 @@ const QrisTransaksi = () => {
             async function dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": ${status}, "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -647,7 +647,7 @@ const QrisTransaksi = () => {
             async function dataExportTransactionQris() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": 0, "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -708,7 +708,7 @@ const QrisTransaksi = () => {
     const [inputHandleTransactionReportQrisMerchant, setInputHandleTransactionReportQrisMerchant] = useState({
         idTransaksi: "",
         rrn: "",
-        statusQris: 0,
+        statusQris: "",
         periode: 0
     })
     const [selectedBrandNameMerchant, setSelectedBrandNameMerchant] = useState([])
@@ -1103,10 +1103,10 @@ const QrisTransaksi = () => {
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>Status</span>
                                     <Form.Select name="statusQris" value={inputHandleTransactionReportQrisMerchant.statusQris} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
-                                        <option defaultChecked disabled value={0}>Pilih Status</option>
-                                        <option value={3}>Dalam Proses</option>
+                                        <option defaultChecked disabled value={""}>Pilih Status</option>
                                         <option value={2}>Berhasil</option>
                                         <option value={4}>Gagal</option>
+                                        <option value={5}>Menunggu Pembayaran</option>
                                         <option value={6}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>
@@ -1277,10 +1277,10 @@ const QrisTransaksi = () => {
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>Status</span>
                                     <Form.Select name="statusQris" value={inputHandleTransactionReportQrisAdmin.statusQris} onChange={(e) => handleChangeTransactionReposrtQris(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
-                                        <option defaultChecked disabled value={0}>Pilih Status</option>
-                                        <option value={3}>Dalam Proses</option>
+                                        <option defaultChecked disabled value={""}>Pilih Status</option>
                                         <option value={2}>Berhasil</option>
                                         <option value={4}>Gagal</option>
+                                        <option value={5}>Menunggu Pembayaran</option>
                                         <option value={6}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>

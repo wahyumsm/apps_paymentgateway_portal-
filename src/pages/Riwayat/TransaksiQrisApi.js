@@ -201,7 +201,7 @@ const TransaksiQrisApi = () => {
         try {
             if (user_role === "102") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "${partnerId}", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "${partnerId}", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth,
@@ -225,7 +225,7 @@ const TransaksiQrisApi = () => {
                 }
             } else if (user_role === "100") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth,
@@ -262,7 +262,7 @@ const TransaksiQrisApi = () => {
                 setIsFilterTransactionQrisApiPartner(true)
                 setActivePageTransactionQrisApiPartner(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "${partnerId}", "RRN": "${rrn}", "merchant_nou": 0, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "${partnerId}", "RRN": "${rrn}", "merchant_nou": 0, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth,
@@ -289,7 +289,7 @@ const TransaksiQrisApi = () => {
                 setIsFilterTransactionQrisApiAdmin(true)
                 setActivePageTransactionQrisApiAdmin(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "", "RRN": "${rrn}", "merchant_nou": ${partnerNameId}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "", "RRN": "${rrn}", "merchant_nou": ${partnerNameId}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth,
@@ -324,7 +324,7 @@ const TransaksiQrisApi = () => {
             async function dataExportFilter(transId, partnerTransId, partnerId, rrn, partnerNameId, brandNou, outletNou, idKasirNou, statusQris, dateId, periode, lang) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "${role === "102" ? partnerId : ""}", "RRN": "${rrn}", "merchant_nou": ${role === "100" ? partnerNameId : 0}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "${role === "102" ? partnerId : ""}", "RRN": "${rrn}", "merchant_nou": ${role === "100" ? partnerNameId : 0}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -375,7 +375,7 @@ const TransaksiQrisApi = () => {
             async function dataExportTransactionQrisApi(lang, role, partnerId) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "${role === "102" ? partnerId : ""}", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "${role === "102" ? partnerId : ""}", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -996,9 +996,9 @@ const TransaksiQrisApi = () => {
                                     <span>Status</span>
                                     <Form.Select name="statusQris" value={inputHandleTransactionApiPartner.statusQris} onChange={(e) => handleChangeTransactionQrisApiPartner(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
                                         <option defaultChecked disabled value={""}>Pilih Status</option>
-                                        <option value={3}>Dalam Proses</option>
                                         <option value={2}>Berhasil</option>
                                         <option value={4}>Gagal</option>
+                                        <option value={5}>Menunggu Pembayaran</option>
                                         <option value={6}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>
@@ -1170,9 +1170,9 @@ const TransaksiQrisApi = () => {
                                     <span>Status</span>
                                     <Form.Select name="statusQris" value={inputHandleTransactionApiAdmin.statusQris} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
                                         <option defaultChecked disabled value={""}>Pilih Status</option>
-                                        <option value={3}>Dalam Proses</option>
                                         <option value={2}>Berhasil</option>
                                         <option value={4}>Gagal</option>
+                                        <option value={5}>Menunggu Pembayaran</option>
                                         <option value={6}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>
