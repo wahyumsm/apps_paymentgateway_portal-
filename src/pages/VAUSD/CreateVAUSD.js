@@ -93,6 +93,14 @@ function CreateVAUSD() {
     const [stateRiwayatVA, setStateRiwayatVA] = useState(null)
     const [dateRangeRiwayatVA, setDateRangeRiwayatVA] = useState([])
 
+    const currentDate = new Date().toLocaleString('id-ID').split(',')[0]
+    const tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleString('id-ID').split(',')[0]
+    const sevenDaysLater = new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleString('id-ID').split(',')[0]
+    const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleString('id-ID').split(',')[0]
+    const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, -0).toLocaleString('id-ID').split(',')[0]
+    const firstDayNextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toLocaleString('id-ID').split(',')[0]
+    const lastDayNextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 2, -0).toLocaleString('id-ID').split(',')[0]
+
     // STATE RIWAYAT VA END
     console.log(inputHandleRiwayatVA.kodeVARiwayatVA, 'inputHandleRiwayatVA.kodeVARiwayatVA');
     console.log(inputHandleRiwayatVA.namaFileRiwayatVA, 'inputHandleRiwayatVA.namaFileRiwayatVA');
@@ -390,33 +398,41 @@ function CreateVAUSD() {
     function handleChangeFile(selected, listFile) {
         console.log(selected, 'selected');
         console.log(listFile, 'listFile');
-        if (selected.length === 1) {
-            const foundFile = listFile.find(found => found.id === selected[0].value)
-            setTotalDataConfirmationUpdateVA(foundFile.total_data)
-        } else if (selected.length > 1) {
-            let totalData = 0
-            selected.forEach(item => {
-                listFile.forEach(item2 => {
-                    if (item2.id === item.value) {
-                        totalData += item2.total_data
-                    }
-                })
-            })
-            setTotalDataConfirmationUpdateVA(totalData)
-        } else {
-            setTotalDataConfirmationUpdateVA(0)
-        }
+        const foundFile = listFile.find(found => found.id === selected.value)
+        console.log(foundFile, 'foundFile');
+        setTotalDataConfirmationUpdateVA(foundFile.total_data)
+        // if (selected.length === 1) {
+        //     console.log('masuk 1');
+        //     const foundFile = listFile.find(found => found.id === selected.value)
+        //     console.log(foundFile, 'foundFile');
+        //     setTotalDataConfirmationUpdateVA(foundFile.total_data)
+        // } else if (selected.length > 1) {
+        //     console.log('masuk 2');
+        //     let totalData = 0
+        //     selected.forEach(item => {
+        //         listFile.forEach(item2 => {
+        //             if (item2.id === item.value) {
+        //                 totalData += item2.total_data
+        //             }
+        //         })
+        //     })
+        //     setTotalDataConfirmationUpdateVA(totalData)
+        // } else {
+        //     console.log('masuk 3');
+        //     setTotalDataConfirmationUpdateVA(0)
+        // }
         setSelectedFileUpdateUpdateVA(selected)
     }
 
     async function confirmUpdatedVAUSD(listFile) {
         try {
-            let idLists = []
-            listFile.forEach(item => {
-                idLists.push(item.value)
-            })
+            console.log(listFile, 'listFile');
+            // let idLists = []
+            // listFile.forEach(item => {
+            //     idLists.push(item.value)
+            // })
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"list": ${JSON.stringify(idLists)}}`)
+            const dataParams = encryptData(`{"list": ${JSON.stringify([listFile.value])}}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -539,13 +555,14 @@ function CreateVAUSD() {
 
     // FUNCTION SECTION TAB RIWAYAT VA
 
-    async function getRiwayatVAUSD(page, kodeVa, fileName, statusId, dateId, dateRange) {
+    async function getRiwayatVAUSD(page, kodeVa, fileName, statusId, dateRange, periode) {
         try {
             setActivePageRiwayatVA(page)
             setPendingRiwayatVA(true)
             const auth = 'Bearer ' + getToken();
-            // const dataParams = encryptData(`{ "bulk_id": 0, "status": '2,3,11', "username": "", "va_number": "", "page" : ${page}, "row_per_page": 10, "date_from": "", "date_to": "", "period": 2 }`)
-            const dataParams = encryptData(`{ "bulk_id": 0, "status": [${statusId !== 0 ? statusId : [2, 3, 11]}], "username": "${fileName}", "va_number": "${kodeVa}", "page" : ${page}, "row_per_page": 10, "date_from": "${dateId === 7 ? dateRange[0] : ""}", "date_to": "${dateId === 7 ? dateRange[1] : ""}", "period": ${dateId !== 0 ? dateId : 2} }`)
+            // const dataParamsAdmin = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            // const dataParams = encryptData(`{ "bulk_id": 0, "status": [${statusId !== 0 ? statusId : [2, 3, 11]}], "username": "${fileName}", "va_number": "${kodeVa}", "page" : ${page}, "row_per_page": 10, "date_from": "${dateId === 7 ? dateRange[0] : ""}", "date_to": "${dateId === 7 ? dateRange[1] : ""}", "period": ${dateId !== 0 ? dateId : 2} }`)
+            const dataParams = encryptData(`{ "bulk_id": 0, "status": [${statusId !== 0 ? statusId : [2, 7, 9, 11, 12, 13]}], "username": "", "filename": "${fileName}", "va_number": "${kodeVa}", "page" : ${page}, "row_per_page": 10, "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}" }`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -599,9 +616,11 @@ function CreateVAUSD() {
             })
         } else {
             setShowDateRiwayatVA("none")
+            setStateRiwayatVA(null)
+            setDateRangeRiwayatVA([])
             setInputHandleRiwayatVA({
                 ...inputHandleRiwayatVA,
-                [e.target.name] : e.target.value
+                [e.target.name] : e.target.value.split(",")
             })
         }
     }
@@ -663,7 +682,7 @@ function CreateVAUSD() {
             setDataVABaru("0")
             setSelectedFileUpdateUpdateVA([])
             resetButtonHandle()
-            getRiwayatVAUSD(1, inputHandleRiwayatVA.kodeVARiwayatVA, inputHandleRiwayatVA.namaFileRiwayatVA, inputHandleRiwayatVA.statusRiwayatVA, inputHandleRiwayatVA.periodeRiwayatVA, dateRangeRiwayatVA)
+            getRiwayatVAUSD(1, inputHandleRiwayatVA.kodeVARiwayatVA, inputHandleRiwayatVA.namaFileRiwayatVA, inputHandleRiwayatVA.statusRiwayatVA, ([`${currentDate}`, `${currentDate}`]), dateRangeRiwayatVA)
             VAUSDTabs(102)
         }
     }
@@ -1293,12 +1312,18 @@ function CreateVAUSD() {
                                 <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
                                 <Form.Select name='periodeRiwayatVA' className="input-text-riwayat ms-3" value={inputHandleRiwayatVA.periodeRiwayatVA} onChange={handleChangePeriodeRiwayatVA}>
                                     <option defaultChecked disabled value={0}>Pilih Periode</option>
-                                    <option value={2}>Hari Ini</option>
+                                    <option value={([`${currentDate}`, `${currentDate}`])}>Hari Ini</option>
+                                    <option value={([`${tomorrowDate}`, `${tomorrowDate}`])}>Besok</option>
+                                    <option value={([`${sevenDaysLater}`, `${tomorrowDate}`])}>7 Hari Kedepan</option>
+                                    <option value={([`${firstDayThisMonth}`, `${lastDayThisMonth}`])}>Bulan Ini</option>
+                                    <option value={([`${firstDayNextMonth}`, `${lastDayNextMonth}`])}>Bulan Depan</option>
+                                    <option value={7}>Pilih Range Tanggal</option>
+                                    {/* <option value={2}>Hari Ini</option>
                                     <option value={3}>Kemarin</option>
                                     <option value={4}>7 Hari Terakhir</option>
                                     <option value={5}>Bulan Ini</option>
                                     <option value={6}>Bulan Kemarin</option>
-                                    <option value={7}>Pilih Range Tanggal</option>
+                                    <option value={7}>Pilih Range Tanggal</option> */}
                                 </Form.Select>
                             </Col>
                             <Col xs={4} style={{ display: showDateRiwayatVA, paddingRight: 53 }} className='text-end'>
@@ -1355,7 +1380,7 @@ function CreateVAUSD() {
                                 pageRangeDisplayed={5}
                                 itemClass="page-item"
                                 linkClass="page-link"
-                                onChange={(page) => getRiwayatVAUSD(page, inputHandleRiwayatVA.kodeVARiwayatVA, inputHandleRiwayatVA.namaFileRiwayatVA, inputHandleRiwayatVA.statusRiwayatVA, inputHandleRiwayatVA.periodeRiwayatVA, dateRangeRiwayatVA)}
+                                onChange={(page) => getRiwayatVAUSD(page, inputHandleRiwayatVA.kodeVARiwayatVA, inputHandleRiwayatVA.namaFileRiwayatVA, inputHandleRiwayatVA.statusRiwayatVA, inputHandleRiwayatVA.periodeRiwayatVA !== 0 ? inputHandleRiwayatVA.periodeRiwayatVA : ([`${currentDate}`, `${currentDate}`]), dateRangeRiwayatVA)}
                             />
                         </div>
                     </>
