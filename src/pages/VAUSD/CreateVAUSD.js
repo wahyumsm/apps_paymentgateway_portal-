@@ -882,7 +882,7 @@ function CreateVAUSD() {
         },
         {
             name: 'Status',
-            selector: row => row.status_name,
+            selector: row => row.status !== 13 ? row.status_name : "Ditutup",
             width: "150px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 0px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -896,11 +896,11 @@ function CreateVAUSD() {
                     style: { background: "#FEF4E9", color: "#F79421", fontWeight: 600 }
                 },
                 {
-                    when: row => row.status === 4 || row.status === 9,
+                    when: row => row.status === 4 || row.status === 9 || row.status === 13,
                     style: { background: "#FDEAEA", color: "#EE2E2C", fontWeight: 600 }
                 },
                 {
-                    when: row => row.status === 3 || row.status === 5 || row.status === 6 || row.status === 8 || row.status === 10 || row.status === 13 || row.status === 14 || row.status === 15,
+                    when: row => row.status === 3 || row.status === 5 || row.status === 6 || row.status === 8 || row.status === 10 || row.status === 14 || row.status === 15,
                     style: { background: "#F0F0F0", color: "#888888", fontWeight: 600 }
                 }
             ],
