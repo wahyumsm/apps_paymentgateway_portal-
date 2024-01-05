@@ -681,16 +681,19 @@ const TransaksiQrisApi = () => {
         {
             name: 'Nama Partner',
             selector: row => row.partner_name,
+            wrap: "true",
             width: "200px"
         },
         {
             name: 'Nama Brand',
             selector: row => row.brand_name,
+            wrap: "true",
             width: "200px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.outlet_name,
+            wrap: "true",
             width: "150px"
         },
         {
@@ -779,16 +782,19 @@ const TransaksiQrisApi = () => {
         {
             name: 'Nama Partner',
             selector: row => row.partner_name,
+            wrap: "true",
             width: "200px"
         },
         {
             name: 'Nama Brand',
             selector: row => row.brand_name,
+            wrap: "true",
             width: "200px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.outlet_name,
+            wrap: "true",
             width: "150px"
         },
         {

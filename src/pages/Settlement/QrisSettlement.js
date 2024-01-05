@@ -461,16 +461,19 @@ const QrisSettlement = () => {
         {
             name: 'Nama Grup',
             selector: row => row.GroupName,
+            wrap: "true",
             width: "160px"
         },
         {
             name: 'Nama Brand',
             selector: row => row.BrandName,
+            wrap: "true",
             width: "160px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.StoreName,
+            wrap: "true",
             width: "160px"
         },
         {
@@ -553,12 +556,14 @@ const QrisSettlement = () => {
         {
             name: 'Nama Brand',
             selector: row => row.BrandName,
+            wrap: "true",
             width: "160px",
             omit: user_role === "106" ? (settleType[0]?.mqrismerchant_settle_group === 101 ? true : false) : user_role === "107" ? (settleType[0]?.mqrismerchant_settle_group === 102 ? true : false) : true,
         },
         {
             name: 'Nama Outlet',
             selector: row => row.StoreName,
+            wrap: "true",
             width: "160px",
             omit: (user_role === "106" || user_role === "107") ? (settleType[0]?.mqrismerchant_settle_group === 103 ? false : true) : true,
         },
@@ -647,12 +652,14 @@ const QrisSettlement = () => {
         {
             name: 'Nama Brand',
             selector: row => row.nama_brand,
+            wrap: "true",
             width: "160px",
             omit: user_role === "106" ? (settleType[0]?.mqrismerchant_settle_group === 101 ? true : false) : user_role === "107" ? (settleType[0]?.mqrismerchant_settle_group === 102 ? true : false) : true,
         },
         {
             name: 'Nama Outlet',
             selector: row => row.nama_outlet,
+            wrap: "true",
             width: "160px",
             omit: (user_role === "106" || user_role === "107") ? (settleType[0]?.mqrismerchant_settle_group === 103 ? false : true) : true,
         },
@@ -741,17 +748,19 @@ const QrisSettlement = () => {
         {
             name: 'Nama Grup',
             selector: row => row.nama_grup,
+            wrap: true,
             width: "160px",
-            wrap: true
         },
         {
             name: 'Nama Brand',
             selector: row => row.nama_brand,
+            wrap: "true",
             width: "160px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.nama_outlet,
+            wrap: "true",
             width: "160px"
         },
         {

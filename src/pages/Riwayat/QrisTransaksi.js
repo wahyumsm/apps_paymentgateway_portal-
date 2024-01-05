@@ -150,21 +150,25 @@ const QrisTransaksi = () => {
         {
             name: 'Nama Grup',
             selector: row => row.merchant_name,
+            wrap: true,
             width: "180px"
         },
         {
             name: 'Nama Brand',
             selector: row => row.outlet_name,
+            wrap: true,
             width: "200px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.store_name,
+            wrap: true,
             width: "150px"
         },
         {
             name: 'Nama Kasir',
             selector: row => row.cashier_name,
+            wrap: true,
             width: "200px"
         },
         {
@@ -799,24 +803,27 @@ const QrisTransaksi = () => {
         {
             name: 'Nama Brand',
             selector: row => row.outlet_name,
+            wrap: true,
             omit: user_role === "106" ? false : true,
             width: "150px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.store_name,
+            wrap: true,
             omit: (user_role === "106" || user_role === "107") ? false : true,
+            width: "150px"
+        },
+        {
+            name: 'Nama Kasir',
+            wrap: true,
+            selector: row => row.cashier_name,
             width: "150px"
         },
         {
             name: 'ID Kasir',
             selector: row => row.mterminal_name,
             width: "100px"
-        },
-        {
-            name: 'Nama Kasir',
-            selector: row => row.cashier_name,
-            width: "150px"
         },
         {
             name: 'Nominal Transaksi',
