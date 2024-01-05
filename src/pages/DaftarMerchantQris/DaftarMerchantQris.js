@@ -3,15 +3,17 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import $ from 'jquery'
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Image } from '@themesberg/react-bootstrap';
+import { faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { Image, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
 import { agenLists } from '../../data/tables';
-import FilterComponent from '../../components/FilterComponent';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import { FilterComponentQrisBrand, FilterComponentQrisGrup, FilterComponentQrisOutlet } from '../../components/FilterComponentQris';
 
 const DaftarMerchantQris = () => {
+    const [isMerchantQris, setIsMerchantQris] = useState("merchantGrup")
     function disbursementTabs(isTabs){
         if(isTabs === "merchantGrup"){
+            setIsMerchantQris(isTabs)
             $('#merchantGrup').addClass('menu-detail-akun-hr-active')
             $('#merchantGrupspan').addClass('menu-detail-akun-span-active')
             $('#merchantBrand').removeClass('menu-detail-akun-hr-active')
@@ -19,6 +21,7 @@ const DaftarMerchantQris = () => {
             $('#merchantOutlet').removeClass('menu-detail-akun-hr-active')
             $('#merchantOutletspan').removeClass('menu-detail-akun-span-active')
         } else if (isTabs === "merchantBrand") {
+            setIsMerchantQris(isTabs)
             $('#merchantGrup').removeClass('menu-detail-akun-hr-active')
             $('#merchantGrupspan').removeClass('menu-detail-akun-span-active')
             $('#merchantBrand').addClass('menu-detail-akun-hr-active')
@@ -26,6 +29,7 @@ const DaftarMerchantQris = () => {
             $('#merchantOutlet').removeClass('menu-detail-akun-hr-active')
             $('#merchantOutletspan').removeClass('menu-detail-akun-span-active')
         } else {
+            setIsMerchantQris(isTabs)
             $('#merchantGrup').removeClass('menu-detail-akun-hr-active')
             $('#merchantGrupspan').removeClass('menu-detail-akun-span-active')
             $('#merchantBrand').removeClass('menu-detail-akun-hr-active')
@@ -36,58 +40,152 @@ const DaftarMerchantQris = () => {
     }
 
     const [pending, setPending] = useState(true)
-    const [filterText, setFilterText] = React.useState('');
-    const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
-    const filteredItems = agenLists.filter(
-        item => item.namaAgen && item.namaAgen.toLowerCase().includes(filterText.toLowerCase()),
+    const [filterTextGrup, setFilterTextGrup] = React.useState('');
+    const [resetPaginationToggleGrup, setResetPaginationToggleGrup] = React.useState(false);
+    const filteredItemsGrup = agenLists.filter(
+        item => item.namaAgen && item.namaAgen.toLowerCase().includes(filterTextGrup.toLowerCase()),
     );
-
-    const subHeaderComponentMemo = useMemo(() => {
+    const subHeaderComponentMemoGrup = useMemo(() => {
         const handleClear = () => {
-            if (filterText) {
-                setResetPaginationToggle(!resetPaginationToggle);
-                setFilterText('');
+            if (filterTextGrup) {
+                setResetPaginationToggleGrup(!resetPaginationToggleGrup);
+                setFilterTextGrup('');
             }
         };
         return (
-            <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} title="Cari Daftar Partner :" placeholder="Masukkan Nama Partner" />
-        );	}, [filterText, resetPaginationToggle]
+            <FilterComponentQrisGrup onFilter={e => setFilterTextGrup(e.target.value)} onClear={handleClear} filterText={filterTextGrup} title="Pencarian :" placeholder="Masukkan nama grup" />
+        );	}, [filterTextGrup, resetPaginationToggleGrup]
     );
 
-    const columns = [
+    const [filterTextBrand, setFilterTextBrand] = React.useState('');
+    const [resetPaginationToggleBrand, setResetPaginationToggleBrand] = React.useState(false);
+    const filteredItemsBrand = agenLists.filter(
+        item => item.namaAgen && item.namaAgen.toLowerCase().includes(filterTextBrand.toLowerCase()),
+    );
+    const subHeaderComponentMemoBrand = useMemo(() => {
+        const handleClear = () => {
+            if (filterTextBrand) {
+                setResetPaginationToggleBrand(!resetPaginationToggleBrand);
+                setFilterTextBrand('');
+            }
+        };
+        return (
+            <FilterComponentQrisBrand onFilter={e => setFilterTextBrand(e.target.value)} onClear={handleClear} filterText={filterTextBrand} title="Pencarian :" placeholder="Masukkan nama brand" />
+        );	}, [filterTextBrand, resetPaginationToggleBrand]
+    );
+
+    const [filterTextOutlet, setFilterTextOutlet] = React.useState('');
+    const [resetPaginationToggleOutlet, setResetPaginationToggleOutlet] = React.useState(false);
+    const filteredItemsOutlet = agenLists.filter(
+        item => item.namaAgen && item.namaAgen.toLowerCase().includes(filterTextOutlet.toLowerCase()),
+    );
+    const subHeaderComponentMemoOutlet = useMemo(() => {
+        const handleClear = () => {
+            if (filterTextOutlet) {
+                setResetPaginationToggleOutlet(!resetPaginationToggleOutlet);
+                setFilterTextOutlet('');
+            }
+        };
+        return (
+            <FilterComponentQrisOutlet onFilter={e => setFilterTextOutlet(e.target.value)} onClear={handleClear} filterText={filterTextOutlet} title="Pencarian :" placeholder="Masukkan nama grup" />
+        );	}, [filterTextOutlet, resetPaginationToggleOutlet]
+    );
+
+    const columnsGrup = [
         {
             name: 'No',
             selector: row => row.id,
             width: '67px'
         },
         {
-            name: 'ID Partner',
+            name: 'ID merchant',
             selector: row => row.IDAgen,
             width: "130px"
         },
         {
-            name: 'Nama Perusahaan',
+            name: 'Waktu bergabung',
+            selector: row => row.IDAgen,
+            width: "170px"
+        },
+        {
+            name: 'Nama merchant', 
             selector: row => row.namaAgen,
             wrap: true,
-            sortable: true,
-            width: "230px"
+            width: "160px"
         },
         {
-            name: 'Email Perusahaan',
+            name: 'Tujuan settlement',
             selector: row => row.email,
             wrap: true,
-            sortable: true
-        },
-        {
-            name: 'No. Telepon',
-            selector: row => row.noHp,
-            sortable: true
+            width: "180px"
         },
         {
             name: 'Status',
             selector: row => row.status,
-            width: "180px",
-            sortable: true
+            width: "150px",
+        },
+        {
+            name: 'Aksi',
+            cell: (row) => (
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
+                    <FontAwesomeIcon icon={faPencilAlt} className="me-2" style={{cursor: "pointer"}} />
+                </OverlayTrigger>
+                // <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lihat</div></Tooltip>}>
+                //     <FontAwesomeIcon icon={faEye} className="mx-2" style={{cursor: "pointer"}} /></OverlayTrigger>
+                // </OverlayTrigger>
+              ),
+        },
+    ];
+
+    const columnsBrand = [
+        {
+            name: 'No',
+            selector: row => row.id,
+            width: '67px'
+        },
+        {
+            name: 'ID merchant',
+            selector: row => row.IDAgen,
+            width: "130px"
+        },
+        {
+            name: 'Waktu bergabung',
+            selector: row => row.IDAgen,
+            width: "170px"
+        },
+        {
+            name: 'Nama grup', 
+            selector: row => row.namaAgen,
+            wrap: true,
+            width: "160px"
+        },
+        {
+            name: 'Nama brand', 
+            selector: row => row.namaAgen,
+            wrap: true,
+            width: "160px"
+        },
+        {
+            name: 'Tujuan settlement',
+            selector: row => row.email,
+            wrap: true,
+            width: "180px"
+        },
+        {
+            name: 'Status',
+            selector: row => row.status,
+            width: "150px",
+        },
+        {
+            name: 'Aksi',
+            cell: (row) => (
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
+                    <FontAwesomeIcon icon={faPencilAlt} className="me-2" style={{cursor: "pointer"}} />
+                </OverlayTrigger>
+                // <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lihat</div></Tooltip>}>
+                //     <FontAwesomeIcon icon={faEye} className="mx-2" style={{cursor: "pointer"}} /></OverlayTrigger>
+                // </OverlayTrigger>
+              ),
         },
     ];
 
@@ -129,28 +227,63 @@ const DaftarMerchantQris = () => {
                 </div>
             </div>
             <hr className='hr-style' style={{marginTop: -2}}/>
-            <div className='base-content positiion-relative'>
-                <div style={{ display: "flex", justifyContent: "end" }}>
-                    <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 201, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
-                        <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah Partner
-                    </button>
-                </div>
-                <div className="div-table" style={{ marginBottom: 500 }}>
-                    <DataTable
-                        columns={columns}
-                        data={filteredItems}
-                        customStyles={customStyles}
-                        pagination
-                        highlightOnHover
-                        // progressPending={pending}
-                        paginationResetDefaultPage={resetPaginationToggle}
-                        progressComponent={<CustomLoader />}
-                        subHeader
-                        subHeaderComponent={subHeaderComponentMemo}
-                        persistTableHead
-                    />
-                </div>
-            </div>
+            {
+                isMerchantQris === "merchantGrup" ? (
+                    <div className='base-content positiion-relative'>
+                        <div className="div-table" style={{ marginBottom: 500 }}>
+                            <DataTable
+                                columns={columnsGrup}
+                                data={filteredItemsGrup}
+                                customStyles={customStyles}
+                                pagination
+                                highlightOnHover
+                                // progressPending={pending}
+                                paginationResetDefaultPage={resetPaginationToggleGrup}
+                                progressComponent={<CustomLoader />}
+                                subHeader
+                                subHeaderComponent={subHeaderComponentMemoGrup}
+                                persistTableHead
+                            />
+                        </div>
+                    </div>
+                ) : isMerchantQris === "merchantBrand" ? (
+                    <div className='base-content positiion-relative'>
+                        <div className="div-table" style={{ marginBottom: 500 }}>
+                            <DataTable
+                                columns={columnsBrand}
+                                data={filteredItemsBrand}
+                                customStyles={customStyles}
+                                pagination
+                                highlightOnHover
+                                // progressPending={pending}
+                                paginationResetDefaultPage={resetPaginationToggleBrand}
+                                progressComponent={<CustomLoader />}
+                                subHeader
+                                subHeaderComponent={subHeaderComponentMemoBrand}
+                                persistTableHead
+                            />
+                        </div>
+                    </div>
+                ) : (
+                    <div className='base-content positiion-relative'>
+                        <div className="div-table" style={{ marginBottom: 500 }}>
+                            <DataTable
+                                columns={columnsGrup}
+                                data={filteredItemsOutlet}
+                                customStyles={customStyles}
+                                pagination
+                                highlightOnHover
+                                // progressPending={pending}
+                                paginationResetDefaultPage={resetPaginationToggleOutlet}
+                                progressComponent={<CustomLoader />}
+                                subHeader
+                                subHeaderComponent={subHeaderComponentMemoOutlet}
+                                persistTableHead
+                            />
+                        </div>
+                    </div>
+                )
+            }
         </div>
     )
 }

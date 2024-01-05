@@ -95,6 +95,7 @@ import TransaksiTopUp from './TopUp/TransaksiTopUp';
 import ReNotifyEwallet from './HelpDesk/ReNotifyEwallet';
 import RiwayatInvoice from './Invoice/RiwayatInvoice';
 import DaftarMerchantQris from './DaftarMerchantQris/DaftarMerchantQris';
+import PilihJenisUsaha from './DaftarMerchantQris/PilihJenisUsaha';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -211,6 +212,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ExcludeSettlementManual.path} component={ExcludeSettlementManual} />
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
     <RouteWithSidebar exact path={Routes.DaftarMerchantQris.path} component={DaftarMerchantQris} />
+    <RouteWithSidebar exact path={Routes.PilihJenisUsahaQris.path} component={PilihJenisUsaha} />
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />

@@ -1610,3 +1610,84 @@ th {
     border: 0.6px solid #2C1919;
     border-radius: 6px;
 }
+
+.text-jenis-usaha {
+    font-family: Exo;
+    font-size: 18px;
+    font-weight: 700;
+    color: #383838
+}
+
+.card-jenis-usaha {
+    border-radius: 6px;
+    border: 1px solid var(--contoh-netral-50, #C4C4C4);
+    background: var(--contoh-netral-10, #FFF);
+    display: flex;
+    padding: 12px;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+
+.card-text-title {
+    color: var(--contoh-netral-70, #383838);
+    font-family: Nunito;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.card-text-subtitle {
+    font-family: Nunito;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--contoh-netral-70, #383838);
+}
+
+.btn-confirm-enable {
+    border-radius: 6px;
+    border: 0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838);
+    background: var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%));
+    display: flex;
+    height: 48px;
+    padding: 12px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+    font-family: Exo;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--palet-utama-neutral-hitam-base, #2C1919);;
+}
+
+.btn-confirm-disable {
+    border-radius: 6px;
+    border: 1px solid var(--palet-pengembangan-shades-hitam-12, #EBEBEB);
+    background: var(--palet-pengembangan-shades-hitam-12, #EBEBEB);
+    display: flex;
+    height: 48px;
+    padding: 12px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+    font-family: Exo;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--palet-pengembangan-shades-hitam-30, #C4C4C4);
+}
+
+.card-when-click {
+    border-radius: 6px;
+    border: 2px solid var(--contoh-secondary-40-warna-utama, #077E86);
+    background: var(--contoh-secondary-10, #ECF5F6);
+    display: flex;
+    padding: 12px;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+    justify-content: flex-start;
+    cursor: pointer;
+}
