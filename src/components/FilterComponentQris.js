@@ -48,7 +48,7 @@ export const FilterComponentQrisBrand = ({ filterText, onFilter, onClear, title,
             </div>
         </div>
         <div className="d-flex justify-content-end align-items-center mb-4">
-            <button style={{ color: "#077E86", fontFamily: "Exo", fontSize: 14, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 280, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", borderRaidus: 8, borderRadius: 6 }}>
+            <button style={{ color: "#077E86", fontFamily: "Exo", fontSize: 14, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 200, height: 48, border: "1px solid var(--contoh-secondary-40-warna-utama, #077E86);", borderRadius: 4 }}>
                     <img
                         src={uploadIcon}
                         // onClick={() => editInTableHandler(row.number)}
