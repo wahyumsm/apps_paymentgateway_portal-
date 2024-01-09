@@ -72,6 +72,9 @@ export const Routes = {
     ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},
     DaftarMerchantQris: {path: "/daftar-merchant-qris"},
     PilihJenisUsahaQris: {path: "/pilih-jenis-usaha"},
+    FormInfoPemilikPerseorangan: {path: "/form-info-pemilik-perseorangan"},
+    FormInfoUsahaPerseorangan: {path: "/form-info-usaha-perseorangan"},
+    PengaturanMerchant: {path: "/pengaturan-merchant"},
 
     // partner
     VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},

@@ -87,7 +87,7 @@ const DaftarMerchantQris = () => {
             }
         };
         return (
-            <FilterComponentQrisOutlet onFilter={e => setFilterTextOutlet(e.target.value)} onClear={handleClear} filterText={filterTextOutlet} title="Pencarian :" placeholder="Masukkan nama grup" />
+            <FilterComponentQrisOutlet onFilter={e => setFilterTextOutlet(e.target.value)} onClear={handleClear} filterText={filterTextOutlet} title="Pencarian :" placeholder="Masukkan nama outlet" />
         );	}, [filterTextOutlet, resetPaginationToggleOutlet]
     );
 
@@ -161,6 +161,52 @@ const DaftarMerchantQris = () => {
         },
         {
             name: 'Nama brand', 
+            selector: row => row.namaAgen,
+            wrap: true,
+            width: "160px"
+        },
+        {
+            name: 'Tujuan settlement',
+            selector: row => row.email,
+            wrap: true,
+            width: "180px"
+        },
+        {
+            name: 'Status',
+            selector: row => row.status,
+            width: "150px",
+        },
+        {
+            name: 'Aksi',
+            cell: (row) => (
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
+                    <FontAwesomeIcon icon={faPencilAlt} className="me-2" style={{cursor: "pointer"}} />
+                </OverlayTrigger>
+                // <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lihat</div></Tooltip>}>
+                //     <FontAwesomeIcon icon={faEye} className="mx-2" style={{cursor: "pointer"}} /></OverlayTrigger>
+                // </OverlayTrigger>
+              ),
+        },
+    ];
+
+    const columnsOutlet = [
+        {
+            name: 'No',
+            selector: row => row.id,
+            width: '67px'
+        },
+        {
+            name: 'ID merchant',
+            selector: row => row.IDAgen,
+            width: "130px"
+        },
+        {
+            name: 'Waktu bergabung',
+            selector: row => row.IDAgen,
+            width: "170px"
+        },
+        {
+            name: 'Nama outlet', 
             selector: row => row.namaAgen,
             wrap: true,
             width: "160px"
@@ -268,7 +314,7 @@ const DaftarMerchantQris = () => {
                     <div className='base-content positiion-relative'>
                         <div className="div-table" style={{ marginBottom: 500 }}>
                             <DataTable
-                                columns={columnsGrup}
+                                columns={columnsOutlet}
                                 data={filteredItemsOutlet}
                                 customStyles={customStyles}
                                 pagination

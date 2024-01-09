@@ -96,6 +96,9 @@ import ReNotifyEwallet from './HelpDesk/ReNotifyEwallet';
 import RiwayatInvoice from './Invoice/RiwayatInvoice';
 import DaftarMerchantQris from './DaftarMerchantQris/DaftarMerchantQris';
 import PilihJenisUsaha from './DaftarMerchantQris/PilihJenisUsaha';
+import FormInfoPemilikPerseorangan from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoPemilikPerseorangan';
+import FormInfoUsahaPerseorangan from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoUsahaPerseorangan';
+import PengaturanMerchant from './DaftarMerchantQris/FormDataMerchantGrup/PengaturanMerchant';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -213,6 +216,9 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
     <RouteWithSidebar exact path={Routes.DaftarMerchantQris.path} component={DaftarMerchantQris} />
     <RouteWithSidebar exact path={Routes.PilihJenisUsahaQris.path} component={PilihJenisUsaha} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseorangan.path} component={FormInfoPemilikPerseorangan} />
+    <RouteWithSidebar exact path={Routes.FormInfoUsahaPerseorangan.path} component={FormInfoUsahaPerseorangan} />
+    <RouteWithSidebar exact path={Routes.PengaturanMerchant.path} component={PengaturanMerchant} />
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
