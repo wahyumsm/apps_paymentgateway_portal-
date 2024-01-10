@@ -66,9 +66,12 @@ export const Routes = {
     DisbursementTimeout: {path: "/transaksi/disbursement-timeout"},
     SettlementManual: {path: "/settlement/settlement-manual"},
     eWalletAdmin: {path: "/transaksi/ewallet"},
+    RiwayatVAUSDAdmin: {path: "/transaksi/vausd"},
     ExcludeSettlementManual: {path: "/settlement/exclude-settlement"},
     ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},
+    SettlementVAUSDAdmin: {path: "/settlement/va-usd"},
     VAUSD: {path: "/VA USD/create-va-usd"},
+    RiwayatFileSFTP: {path: "/VA USD/riwayat-file-sftp"},
 
     // partner
     VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},
@@ -76,6 +79,7 @@ export const Routes = {
     Disbursement: {path: "/riwayat-transaksi/disbursement"},
     SubAccount: {path: "/riwayat-transaksi/sub-account"},
     eWallet: {path: "/riwayat-transaksi/ewallet"},
+    RiwayatVAUSDPartner: {path: "/riwayat-transaksi/va-usd"},
 
 
     // docs
