@@ -55,11 +55,6 @@ const QrisTransaksi = () => {
         setSelectedIdKasirName([])
     }
 
-    console.log(selectedGrupName, "selectedGrupName");
-    console.log(selectedBrandName, "selectedBrandName");
-    console.log(selectedOutletName, "selectedGOutletame");
-    console.log(selectedIdKasirName, "selectedGIdKasirame");
-
     function handleChangeBrand(e) {
         getOutletInQrisTransactionHandler(e.value)
         setDataIdKasirInQris([])
@@ -358,8 +353,6 @@ const QrisTransaksi = () => {
         }
     }
 
-    console.log(dataOutletInQris, "dataOutletInQris");
-
     async function getIdKasirInQrisTransactionHandler(storeNou) {
         try {
             const auth = "Bearer " + access_token
@@ -451,9 +444,6 @@ const QrisTransaksi = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-
-    console.log(dateRangeTransactionReportQris, "dateRangeTransactionReportQris");
-    console.log(inputHandleTransactionReportQrisAdmin.periode, "inputHandleTransactionReportQrisAdmin.periode");
 
     async function filterGetTransactionReportQris(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, page, rowPerPage) {
         try {

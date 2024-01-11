@@ -122,7 +122,6 @@ const QrisSettlement = () => {
             }
         }
     }
-    console.log(selectedOutletNameQrisManualMerchant, "selectedOutletNameQrisManualMerchant");
     
     const [dataGrupInQris, setDataGrupInQris] = useState([])
     const [selectedGrupName, setSelectedGrupName] = useState([])
@@ -133,9 +132,22 @@ const QrisSettlement = () => {
     const [dataOutletInQris, setDataOutletInQris] = useState([])
     const [selectedOutletName, setSelectedOutletName] = useState([])
 
-    function handleChangeGrup(e) {
-        setSelectedGrupName([e])
+    function handleChangeGrupAdmin(e) {
         getBrandInQrisTransactionHandler(e.value)
+        setDataOutletInQris([])
+        setSelectedGrupName([e])
+        setSelectedBrandName([])
+        setSelectedOutletName([])
+    }
+
+    function handleChangeBrandAdmin(e) {
+        getOutletInQrisTransactionHandler(e.value)
+        setSelectedBrandName([e])
+        setSelectedOutletName([])
+    }
+
+    function handleChangeOutletAdmin(e) {
+        setSelectedOutletName([e])
     }
 
     function handleChangeBrand(e) {
@@ -348,6 +360,8 @@ const QrisSettlement = () => {
             setShowDateSettlementQrisManualAdmin("none")
             setDateRangeSettlementQrisManualAdmin([])
             setStateSettlementQrisManualAdmin(null)
+            setDataBrandInQris([])
+            setDataOutletInQris([])
             setSelectedGrupName([])
             setSelectedBrandName([])
             setSelectedOutletName([])
@@ -362,6 +376,8 @@ const QrisSettlement = () => {
             setShowDateSettlementQrisOtomatisAdmin("none")
             setDateRangeSettlementQrisOtomatisAdmin([])
             setStateSettlementQrisOtomatisAdmin(null)
+            setDataBrandInQris([])
+            setDataOutletInQris([])
             setSelectedGrupName([])
             setSelectedBrandName([])
             setSelectedOutletName([])
@@ -2356,7 +2372,7 @@ const QrisSettlement = () => {
                                                     hideSelectedOptions={false}
                                                     options={dataGrupInQris}
                                                     value={selectedGrupName}
-                                                    onChange={(selected) => handleChangeGrup(selected)}
+                                                    onChange={(selected) => handleChangeGrupAdmin(selected)}
                                                     placeholder="Pilih Grup"
                                                     components={{ Option }}
                                                     styles={customStylesSelectedOption}
@@ -2379,7 +2395,7 @@ const QrisSettlement = () => {
                                                     hideSelectedOptions={false}
                                                     options={dataBrandInQris}
                                                     value={selectedBrandName}
-                                                    onChange={(selected) => handleChangeBrand(selected)}
+                                                    onChange={(selected) => handleChangeBrandAdmin(selected)}
                                                     placeholder="Pilih Brand"
                                                     components={{ Option }}
                                                     styles={customStylesSelectedOption}
@@ -2395,7 +2411,7 @@ const QrisSettlement = () => {
                                                     hideSelectedOptions={false}
                                                     options={dataOutletInQris}
                                                     value={selectedOutletName}
-                                                    onChange={(selected) => handleChangeOutlet(selected)}
+                                                    onChange={(selected) => handleChangeOutletAdmin(selected)}
                                                     placeholder="Pilih Outlet"
                                                     components={{ Option }}
                                                     styles={customStylesSelectedOption}
@@ -2497,7 +2513,7 @@ const QrisSettlement = () => {
                                                     hideSelectedOptions={false}
                                                     options={dataGrupInQris}
                                                     value={selectedGrupName}
-                                                    onChange={(selected) => handleChangeGrup(selected)}
+                                                    onChange={(selected) => handleChangeGrupAdmin(selected)}
                                                     placeholder="Pilih Grup"
                                                     components={{ Option }}
                                                     styles={customStylesSelectedOption}
@@ -2520,7 +2536,7 @@ const QrisSettlement = () => {
                                                     hideSelectedOptions={false}
                                                     options={dataBrandInQris}
                                                     value={selectedBrandName}
-                                                    onChange={(selected) => handleChangeBrand(selected)}
+                                                    onChange={(selected) => handleChangeBrandAdmin(selected)}
                                                     placeholder="Pilih Brand"
                                                     components={{ Option }}
                                                     styles={customStylesSelectedOption}
@@ -2536,7 +2552,7 @@ const QrisSettlement = () => {
                                                     hideSelectedOptions={false}
                                                     options={dataOutletInQris}
                                                     value={selectedOutletName}
-                                                    onChange={(selected) => handleChangeOutlet(selected)}
+                                                    onChange={(selected) => handleChangeOutletAdmin(selected)}
                                                     placeholder="Pilih Outlet"
                                                     components={{ Option }}
                                                     styles={customStylesSelectedOption}
