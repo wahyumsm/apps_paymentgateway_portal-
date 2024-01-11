@@ -12,6 +12,7 @@ import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/he
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
+import Pagination from 'react-js-pagination';
 
 const DaftarMerchantQris = () => {
     const history = useHistory()
@@ -44,10 +45,16 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    const [pending, setPending] = useState(true)
+    
+    const [pageNumberDataGrupQris, setPageNumberDataGrupQris] = useState({})
+    const [totalPageDataGrupQris, setTotalPageDataGrupQris] = useState(0)
+    const [activePageDataGrupQris, setActivePageDataGrupQris] = useState(1)
+    const [pendingDataGrupQris, setPendingDataGrupQris] = useState(true)
+    const [isFilterDataGrupQris, setIsFilterDataGrupQris] = useState(false)
+    const [dataMerchantGrupQris, setDataMerchantGrupQris] = useState([])
     const [filterTextGrup, setFilterTextGrup] = React.useState('');
     const [resetPaginationToggleGrup, setResetPaginationToggleGrup] = React.useState(false);
-    const filteredItemsGrup = agenLists.filter(
+    const filteredItemsGrup = dataMerchantGrupQris.filter(
         item => item.namaAgen && item.namaAgen.toLowerCase().includes(filterTextGrup.toLowerCase()),
     );
     const subHeaderComponentMemoGrup = useMemo(() => {
@@ -57,15 +64,25 @@ const DaftarMerchantQris = () => {
                 setFilterTextGrup('');
             }
         };
+        const filterNamaGrup = (e) => {
+            setFilterTextGrup(e.target.value)
+            getListDataGrupQrisHandler(e.target.value)
+        }
         return (
-            <FilterComponentQrisGrup onFilter={e => setFilterTextGrup(e.target.value)} onClear={handleClear} filterText={filterTextGrup} title="Pencarian :" placeholder="Masukkan nama grup" />
+            <FilterComponentQrisGrup onFilter={e => filterNamaGrup(e)} onClear={handleClear} filterText={filterTextGrup} title="Pencarian :" placeholder="Masukkan nama grup" />
         );	}, [filterTextGrup, resetPaginationToggleGrup]
     );
-    const [pageNumberDataGrupQris, setPageNumberDataGrupQris] = useState({})
-    const [totalPageDataGrupQris, setTotalPageDataGrupQris] = useState(0)
-    const [activePageDataGrupQris, setActivePageDataGrupQris] = useState(1)
-    const [pendingDataGrupQris, setPendingDataGrupQris] = useState(true)
-    const [dataMerchantGrupQris, setDataMerchantGrupQris] = useState([])
+
+    function handlePageChangeDataGrupQris(page) {
+        // console.log(isFilterDataGrupQris, 'masuk');
+        if (isFilterDataGrupQris) {
+            setActivePageDataGrupQris(page)
+            // filterRiwayatDanaMasukAdmin(page, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin, inputHandleAdmin.tipePeriodeAdmin)
+        } else {
+            setActivePageDataGrupQris(page)
+            getListDataGrupQrisHandler(page)
+        }
+    }
 
     const [filterTextBrand, setFilterTextBrand] = React.useState('');
     const [resetPaginationToggleBrand, setResetPaginationToggleBrand] = React.useState(false);
@@ -104,23 +121,23 @@ const DaftarMerchantQris = () => {
     async function getListDataGrupQrisHandler(page) {
         try {
             const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"mmerchant_name":"", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": 10}`)
                 const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const datamerchantGrup = await axios.post(BaseURL + "/QRIS/GetListMerchantOnboarding", { data: dataParams }, { headers: headers })
+            const datamerchantGrup = await axios.post(BaseURL + "/QRIS/OnboardingGetListMerchant", { data: dataParams }, { headers: headers })
             // console.log(datamerchantGrup, 'ini user detal funct');
             if (datamerchantGrup.status === 200 && datamerchantGrup.data.response_code === 200 && datamerchantGrup.data.response_new_token.length === 0) {
                 setPageNumberDataGrupQris(datamerchantGrup.data.response_data)
                 setTotalPageDataGrupQris(datamerchantGrup.data.response_data.max_page)
-                setDataMerchantGrupQris(datamerchantGrup.data.response_data.results)
+                setDataMerchantGrupQris(datamerchantGrup.data.response_data.results.list_data)
                 setPendingDataGrupQris(false)
             } else if (datamerchantGrup.status === 200 && datamerchantGrup.data.response_code === 200 && datamerchantGrup.data.response_new_token.length !== 0) {
                 setUserSession(datamerchantGrup.data.response_new_token)
                 setPageNumberDataGrupQris(datamerchantGrup.data.response_data)
                 setTotalPageDataGrupQris(datamerchantGrup.data.response_data.max_page)
-                setDataMerchantGrupQris(datamerchantGrup.data.response_data.results)
+                setDataMerchantGrupQris(datamerchantGrup.data.response_data.results.list_data)
                 setPendingDataGrupQris(false)
             }
     } catch (error) {
@@ -154,34 +171,34 @@ const DaftarMerchantQris = () => {
     const columnsGrup = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.number,
             width: '67px'
         },
         {
             name: 'ID merchant',
-            selector: row => row.IDAgen,
+            selector: row => row.mmerchant_id,
             width: "130px"
         },
         {
             name: 'Waktu bergabung',
-            selector: row => row.IDAgen,
+            selector: row => row.mmerchant_crtdt_format,
             width: "170px"
         },
         {
             name: 'Nama merchant', 
-            selector: row => row.namaAgen,
+            selector: row => row.mmerchant_name,
             wrap: true,
             width: "160px"
         },
         {
             name: 'Tujuan settlement',
-            selector: row => row.email,
+            selector: row => row.mqrissettlegroup_name,
             wrap: true,
             width: "180px"
         },
         {
             name: 'Status',
-            selector: row => row.status,
+            selector: row => row.status_name,
             width: "150px",
         },
         {
@@ -190,9 +207,6 @@ const DaftarMerchantQris = () => {
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
                     <FontAwesomeIcon icon={faPencilAlt} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger>
-                // <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lihat</div></Tooltip>}>
-                //     <FontAwesomeIcon icon={faEye} className="mx-2" style={{cursor: "pointer"}} /></OverlayTrigger>
-                // </OverlayTrigger>
               ),
         },
     ];
@@ -341,33 +355,41 @@ const DaftarMerchantQris = () => {
             {
                 isMerchantQris === "merchantGrup" ? (
                     <div className='base-content positiion-relative'>
-                        <div className="div-table" style={{ marginBottom: 500 }}>
+                        <div className="div-table">
                             <DataTable
                                 columns={columnsGrup}
                                 data={filteredItemsGrup}
                                 customStyles={customStyles}
-                                pagination
                                 highlightOnHover
-                                // progressPending={pending}
-                                paginationResetDefaultPage={resetPaginationToggleGrup}
+                                progressPending={pendingDataGrupQris}
                                 progressComponent={<CustomLoader />}
                                 subHeader
                                 subHeaderComponent={subHeaderComponentMemoGrup}
                                 persistTableHead
                             />
                         </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDataGrupQris}</div>
+                            <Pagination
+                                activePage={activePageDataGrupQris}
+                                itemsCountPerPage={pageNumberDataGrupQris.row_per_page}
+                                totalItemsCount={(pageNumberDataGrupQris.row_per_page*pageNumberDataGrupQris.max_page)}
+                                pageRangeDisplayed={5}
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                onChange={handlePageChangeDataGrupQris}
+                            />
+                        </div>
                     </div>
                 ) : isMerchantQris === "merchantBrand" ? (
                     <div className='base-content positiion-relative'>
-                        <div className="div-table" style={{ marginBottom: 500 }}>
+                        <div className="div-table">
                             <DataTable
                                 columns={columnsBrand}
                                 data={filteredItemsBrand}
                                 customStyles={customStyles}
-                                pagination
                                 highlightOnHover
                                 // progressPending={pending}
-                                paginationResetDefaultPage={resetPaginationToggleBrand}
                                 progressComponent={<CustomLoader />}
                                 subHeader
                                 subHeaderComponent={subHeaderComponentMemoBrand}
@@ -377,15 +399,13 @@ const DaftarMerchantQris = () => {
                     </div>
                 ) : (
                     <div className='base-content positiion-relative'>
-                        <div className="div-table" style={{ marginBottom: 500 }}>
+                        <div className="div-table">
                             <DataTable
                                 columns={columnsOutlet}
                                 data={filteredItemsOutlet}
                                 customStyles={customStyles}
-                                pagination
                                 highlightOnHover
                                 // progressPending={pending}
-                                paginationResetDefaultPage={resetPaginationToggleOutlet}
                                 progressComponent={<CustomLoader />}
                                 subHeader
                                 subHeaderComponent={subHeaderComponentMemoOutlet}
