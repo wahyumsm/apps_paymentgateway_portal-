@@ -873,7 +873,7 @@ const QrisTransaksi = () => {
                 idTransaksi: "",
                 rrn: "",
                 jenisUsaha: 0,
-                statusQris: 0,
+                statusQris: "",
                 periode: 0
             })
             setDataBrandInQris([])
@@ -902,7 +902,7 @@ const QrisTransaksi = () => {
                 idTransaksi: "",
                 rrn: "",
                 jenisUsaha: 0,
-                statusQris: 0,
+                statusQris: "",
                 periode: 0
             })
             setDataBrandInQris([])

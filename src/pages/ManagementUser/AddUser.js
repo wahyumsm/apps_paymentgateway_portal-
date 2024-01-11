@@ -501,20 +501,6 @@ function AddUser() {
                   styles={customStylesSelectedOption}
                 />
               </div>
-              {/* <Form.Select
-                name="partnerId"
-                onChange={handleChange}
-                value={inputHandle.partnerId}
-              >
-                <option defaultValue>--- Choose Partner ---</option>
-                {listPartner.map((item, index) => {
-                  return (
-                    <option key={index} value={item.partner_id}>
-                      {item.nama_perusahaan}
-                    </option>
-                  );
-                })}
-              </Form.Select> */}
             </Form.Group>
 
             <Form.Group
@@ -541,20 +527,6 @@ function AddUser() {
                   styles={customStylesSelectedOption}
                 />
               </div>
-              {/* <Form.Select
-                name="partnerId"
-                onChange={handleChange}
-                value={inputHandle.partnerId}
-              >
-                <option defaultValue>--- Choose Partner ---</option>
-                {listPartner.map((item, index) => {
-                  return (
-                    <option key={index} value={item.partner_id}>
-                      {item.nama_perusahaan}
-                    </option>
-                  );
-                })}
-              </Form.Select> */}
             </Form.Group>
 
             <Form.Group
@@ -581,20 +553,6 @@ function AddUser() {
                   styles={customStylesSelectedOption}
                 />
               </div>
-              {/* <Form.Select
-                name="partnerId"
-                onChange={handleChange}
-                value={inputHandle.partnerId}
-              >
-                <option defaultValue>--- Choose Partner ---</option>
-                {listPartner.map((item, index) => {
-                  return (
-                    <option key={index} value={item.partner_id}>
-                      {item.nama_perusahaan}
-                    </option>
-                  );
-                })}
-              </Form.Select> */}
             </Form.Group>
 
             <Form.Group
