@@ -5,7 +5,6 @@ import badanUsahaQris from '../../assets/icon/badanusaha-qris.svg'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 
 const PilihJenisUsaha = () => {
-    const history = useHistory()
 
     const [tabJenisUsaha, setTabJenisUsaha] = useState("")
 

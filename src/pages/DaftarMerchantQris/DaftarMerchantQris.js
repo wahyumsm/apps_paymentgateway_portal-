@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import $ from 'jquery'
 import DataTable from 'react-data-table-component';
@@ -8,8 +8,13 @@ import { Image, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
 import { agenLists } from '../../data/tables';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { FilterComponentQrisBrand, FilterComponentQrisGrup, FilterComponentQrisOutlet } from '../../components/FilterComponentQris';
+import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import encryptData from '../../function/encryptData';
 
 const DaftarMerchantQris = () => {
+    const history = useHistory()
     const [isMerchantQris, setIsMerchantQris] = useState("merchantGrup")
     function disbursementTabs(isTabs){
         if(isTabs === "merchantGrup"){
@@ -56,6 +61,11 @@ const DaftarMerchantQris = () => {
             <FilterComponentQrisGrup onFilter={e => setFilterTextGrup(e.target.value)} onClear={handleClear} filterText={filterTextGrup} title="Pencarian :" placeholder="Masukkan nama grup" />
         );	}, [filterTextGrup, resetPaginationToggleGrup]
     );
+    const [pageNumberDataGrupQris, setPageNumberDataGrupQris] = useState({})
+    const [totalPageDataGrupQris, setTotalPageDataGrupQris] = useState(0)
+    const [activePageDataGrupQris, setActivePageDataGrupQris] = useState(1)
+    const [pendingDataGrupQris, setPendingDataGrupQris] = useState(true)
+    const [dataMerchantGrupQris, setDataMerchantGrupQris] = useState([])
 
     const [filterTextBrand, setFilterTextBrand] = React.useState('');
     const [resetPaginationToggleBrand, setResetPaginationToggleBrand] = React.useState(false);
@@ -90,6 +100,56 @@ const DaftarMerchantQris = () => {
             <FilterComponentQrisOutlet onFilter={e => setFilterTextOutlet(e.target.value)} onClear={handleClear} filterText={filterTextOutlet} title="Pencarian :" placeholder="Masukkan nama outlet" />
         );	}, [filterTextOutlet, resetPaginationToggleOutlet]
     );
+
+    async function getListDataGrupQrisHandler(page) {
+        try {
+            const auth = "Bearer " + getToken()
+                const dataParams = encryptData(`{"mmerchant_name":"", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": 10}`)
+                const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const datamerchantGrup = await axios.post(BaseURL + "/QRIS/GetListMerchantOnboarding", { data: dataParams }, { headers: headers })
+            // console.log(datamerchantGrup, 'ini user detal funct');
+            if (datamerchantGrup.status === 200 && datamerchantGrup.data.response_code === 200 && datamerchantGrup.data.response_new_token.length === 0) {
+                setPageNumberDataGrupQris(datamerchantGrup.data.response_data)
+                setTotalPageDataGrupQris(datamerchantGrup.data.response_data.max_page)
+                setDataMerchantGrupQris(datamerchantGrup.data.response_data.results)
+                setPendingDataGrupQris(false)
+            } else if (datamerchantGrup.status === 200 && datamerchantGrup.data.response_code === 200 && datamerchantGrup.data.response_new_token.length !== 0) {
+                setUserSession(datamerchantGrup.data.response_new_token)
+                setPageNumberDataGrupQris(datamerchantGrup.data.response_data)
+                setTotalPageDataGrupQris(datamerchantGrup.data.response_data.max_page)
+                setDataMerchantGrupQris(datamerchantGrup.data.response_data.results)
+                setPendingDataGrupQris(false)
+            }
+    } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function filterListDataGrupQrisHandler(merchantName, periode, page, rowPerPage) {
+        try {
+          const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"mmerchant_name":"${merchantName}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const headers = {
+              'Content-Type':'application/json',
+              'Authorization' : auth
+          }
+          const userDetail = await axios.post(BaseURL + "/QRIS/GetListMerchantOnboarding", { data: dataParams }, { headers: headers })
+          // console.log(userDetail, 'ini user detal funct');
+          if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
+
+          } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
+            setUserSession(userDetail.data.response_new_token)
+
+          }
+    } catch (error) {
+          // console.log(error);
+          history.push(errorCatch(error.response.status))
+        }
+    }
 
     const columnsGrup = [
         {
@@ -254,6 +314,11 @@ const DaftarMerchantQris = () => {
           <div>Loading...</div>
         </div>
     );
+
+    useEffect(() => {
+        getListDataGrupQrisHandler(activePageDataGrupQris)
+    }, [])
+    
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>

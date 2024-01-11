@@ -6,21 +6,31 @@ import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import 'filepond/dist/filepond.min.css'
 import { Form } from '@themesberg/react-bootstrap';
+import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
+import encryptData from '../../../function/encryptData';
+import axios from 'axios';
 
 registerPlugin(FilePondPluginFileEncode)
 
 const FormInfoPemilikPerseorangan = () => {
     const history = useHistory()
     const location = useLocation();
-    const dataJenisUsaha = location.state;
+    const dataJenisUsaha = location.pathname;
     console.log(dataJenisUsaha, "dataJenisUsaha");
     console.log(location, "location");
     const [files, setFiles] = useState([])
-
-    const [peranPendaftar, setPeranPendaftar] = useState("0")
-    const handleOnChangeCheckBox = (e) => {
-        setPeranPendaftar(e.target.value);
-    };
+    const [inputHandle, setInputHandle] = useState({
+        numberId: "",
+        userName: "",
+        phoneNumber: "",
+        grupId: 0,
+        brandId: 0,
+        outletId: 0,
+        step: 1,
+        businessType: 1,
+        userId: 0,
+        merchantName: ""
+    })
     
     const [kewarganegaraan, setKewarganegaraan] = useState("1")
     const handleOnChangeCheckBoxKewarganegaraan = (e) => {
@@ -52,7 +62,25 @@ const FormInfoPemilikPerseorangan = () => {
         history.push('/form-info-usaha-perseorangan')
         window.location.reload()
     }
-    
+
+    async function formInfoPemilikPeroranganHandler(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}"}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const editAgen = await axios.post(BaseURL + "/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
+            if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
+            } else if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length !== 0) {
+                setUserSession(editAgen.data.response_new_token)
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
 
     return (
         <>
@@ -76,71 +104,7 @@ const FormInfoPemilikPerseorangan = () => {
                     <div className='ms-2'>Semua data pada setiap form harus diisi</div>
                 </div>
                 <div className='base-content my-4'>
-                <div className='py-1' style={{ fontFamily: "Nunito", fontSize: 14 }}>Peran pendaftar</div>
-                    <div className='d-flex justify-content-start align-items-center py-2'>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                id="pemilikUsaha"
-                                name='peranPendaftar'
-                                value={"1"}
-                                checked={peranPendaftar === "1" && true}
-                                onChange={(e) => handleOnChangeCheckBox(e)}
-                            />
-                            <label
-                                className="form-check-label"
-                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                for="pemilikUsaha"
-                            >
-                                Pemilik usaha/Direktur
-                            </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                id="staffPerwakilan"
-                                name='peranPendaftar'
-                                value={"2"}
-                                checked={peranPendaftar === "2" && true}
-                                onChange={(e) => handleOnChangeCheckBox(e)}
-                            />
-                            <label
-                                className="form-check-label"
-                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                for="staffPerwakilan"
-                            >
-                                Staff perwakilan
-                            </label>
-                        </div>
-                    </div>
-                    {
-                        peranPendaftar === "2" ? (
-                            <>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama perwakilan sesuai eKTP</div>
-                                <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="companyName" className='input-text-form' placeholder='Masukan nama perwakilan' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                                </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838"}} className='pt-3'>Foto eKTP perwakilan</div>
-                                <div className='mt-2'>
-                                    <FilePond
-                                        className="dragdrop"
-                                        files={files}
-                                        // onupdatefiles={(newFile) => fileCSV(newFile, listBank, balanceDetail, feeBank)}
-                                        // onaddfilestart={() => setErrorFound([])}
-                                        // onaddfile={addFile}
-                                        // allowMultiple={true}
-                                        // maxFiles={3}
-                                        server="/api"
-                                        name="files"
-                                        labelIdle={labelUploadSelfie}
-                                    />
-                                </div>
-                            </>
-                        ) : ""
-                    }
-                    <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14, paddingTop: peranPendaftar === "2" ? 60 : 0 }}>Kewarganegaraan pemilik usaha</div>
+                    <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Kewarganegaraan pemilik usaha</div>
                     <div className='d-flex justify-content-start align-items-center py-2'>
                         <div className="form-check form-check-inline">
                             <input
@@ -205,18 +169,48 @@ const FormInfoPemilikPerseorangan = () => {
                                         labelIdle={labelUploadSKitas}
                                     />
                                 </div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Selfie dengan KITAS</div>
+                                <div className='mt-2'>
+                                    <FilePond
+                                        className="dragdrop"
+                                        files={files}
+                                        // onupdatefiles={(newFile) => fileCSV(newFile, listBank, balanceDetail, feeBank)}
+                                        // onaddfilestart={() => setErrorFound([])}
+                                        // onaddfile={addFile}
+                                        // allowMultiple={true}
+                                        // maxFiles={3}
+                                        server="/api"
+                                        name="files"
+                                        labelIdle={labelUploadKtp}
+                                    />
+                                </div>
                             </>
                         ) : (
                             <>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai akta pendirian/perubahan terakhir</div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai eKTP</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                                     <input name="companyName" className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor eKTP pemilik usaha</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                                     <input name="companyName" className='input-text-form' placeholder='Masukan nomor eKTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto eKTP pemilik usaha sesuaI</div>
+                                <div className='mt-2'>
+                                    <FilePond
+                                        className="dragdrop"
+                                        files={files}
+                                        // onupdatefiles={(newFile) => fileCSV(newFile, listBank, balanceDetail, feeBank)}
+                                        // onaddfilestart={() => setErrorFound([])}
+                                        // onaddfile={addFile}
+                                        // allowMultiple={true}
+                                        // maxFiles={3}
+                                        server="/api"
+                                        name="files"
+                                        labelIdle={labelUploadKtp}
+                                    />
+                                </div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Selfie dengan eKTP</div>
                                 <div className='mt-2'>
                                     <FilePond
                                         className="dragdrop"
@@ -234,11 +228,6 @@ const FormInfoPemilikPerseorangan = () => {
                             </>
                         )
                     }
-                    
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838", paddingTop: 60 }}>No telepon pemilik usaha</div>
-                    <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="companyName" className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                    </div>
                     <div className='text-end mt-3'>
                         <button onClick={() => toInfoUsaha()} className='btn-next mb-4'>Selanjutnya</button>
                     </div>
