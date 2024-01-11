@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import alertIconYellow from '../../../assets/icon/note_icon_grey.svg'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -11,6 +11,10 @@ registerPlugin(FilePondPluginFileEncode)
 
 const FormInfoPemilikPerseorangan = () => {
     const history = useHistory()
+    const location = useLocation();
+    const dataJenisUsaha = location.state;
+    console.log(dataJenisUsaha, "dataJenisUsaha");
+    console.log(location, "location");
     const [files, setFiles] = useState([])
 
     const [peranPendaftar, setPeranPendaftar] = useState("0")
@@ -48,6 +52,7 @@ const FormInfoPemilikPerseorangan = () => {
         history.push('/form-info-usaha-perseorangan')
         window.location.reload()
     }
+    
 
     return (
         <>
@@ -235,7 +240,7 @@ const FormInfoPemilikPerseorangan = () => {
                         <input name="companyName" className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     <div className='text-end mt-3'>
-                        <button onClick={() => toInfoUsaha()} className='btn-next'>Selanjutnya</button>
+                        <button onClick={() => toInfoUsaha()} className='btn-next mb-4'>Selanjutnya</button>
                     </div>
                 </div>
                 <div className='pt-3'></div>

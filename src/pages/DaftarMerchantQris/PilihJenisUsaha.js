@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import peroranganQris from '../../assets/icon/perorangan-qris.svg'
 import badanUsahaQris from '../../assets/icon/badanusaha-qris.svg'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
@@ -13,15 +13,7 @@ const PilihJenisUsaha = () => {
         setTabJenisUsaha(param)
     }
 
-    function toForm () {
-        if (tabJenisUsaha === "perorangan") {
-            history.push('/form-individual-business')
-            window.location.reload()
-        } else {
-            history.push('/form-business-entity')
-            window.location.reload()
-        }
-    }
+    console.log(tabJenisUsaha, "tabJenisUsaha");
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar Merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah Merchant</span></span>
@@ -42,7 +34,7 @@ const PilihJenisUsaha = () => {
                     </div>
                 </div>
                 <div className='d-flex justify-content-center align-items-center'>
-                    <button onClick={() => toForm()} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</button>
+                    <Link to={{ pathname: tabJenisUsaha === "perorangan" ? '/form-info-pemilik-perseorangan' : '/form-business-entity', search: "", hash: "", state: {tabJenisUsaha: tabJenisUsaha}}} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</Link>
                 </div>
             </div>
         </div>

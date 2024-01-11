@@ -75,6 +75,9 @@ export const Routes = {
     FormInfoPemilikPerseorangan: {path: "/form-info-pemilik-perseorangan"},
     FormInfoUsahaPerseorangan: {path: "/form-info-usaha-perseorangan"},
     PengaturanMerchant: {path: "/pengaturan-merchant"},
+    FormDaftarSettlement: {path: "/formulir-daftar-settlement"},
+    DetailMerchantGrup: {path: "/detail-merchant"},
+    FormTambahSettlementBrand: {path: "/formulir-tambah-settlement"},
 
     // partner
     VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},

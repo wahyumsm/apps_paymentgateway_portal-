@@ -1719,96 +1719,6 @@ th {
     height: 40px;
 }
 
-.base-content {
-    padding: 24px;
-    gap: 24px;
-    align-self: stretch;
-    border-radius: 8px;
-    background: #FFF;
-    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
-}
-
-.dragdrop .filepond--root {
-    font-family: 'Nunito' !important;
-    max-height: 10em;
-}
-
-.filepond--root .filepond--drop-label {
-    min-height: 12em !important;
-    margin-top: -5px;
-}
-
-.filepond--wrapper {
-    margin-bottom: -60px;
-}
-
-.dragdrop .filepond--panel[data-scalable=true] {
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    background-color: rgba(7, 126, 134, 0.04) !important;
-    border: 1.4px dashed #077E86 !important;
-}
-
-.dragdrop .filepond--panel-root {
-    border-radius: 8px;
-    background-color: unset;
-}
-
-.dragdrop .filepond--panel-top .filepond--panel-root {
-    border-radius: 8px;
-    background-color: unset;
-}
-
-.dragdrop .filepond--panel {
-    min-height: max-content !important;
-    height: 100% !important;
-}
-
-.filepond--root .filepond--credits[style] {
-    display: none !important;
-}
-
-.style-label-drag-drop {
-    font-family: 'Nunito';
-    font-size: 12px !important;
-}
-
-.style-label-drag-drop-error-list {
-    font-family: 'Nunito';
-    font-size: 12px !important;
-    margin-top: 60px !important;
-}
-
-.style-label-drag-drop-error {
-    font-family: 'Nunito';
-    font-size: 12px !important;
-    color: #B9121B;
-}
-
-.style-label-drag-drop-filename {
-    font-family: 'Nunito';
-    font-size: 16px !important;
-    font-weight: 700;
-}
-
-.filepond--label-action {
-    width: 170px;
-    color: #077E86;
-    border: 1px solid #077E86;
-    border-radius: 6px;
-    padding: 12px 24px;
-    background-color: #ffffff;
-    font-family:Exo;
-    font-weight: 700;
-    font-size: 14px !important;
-    text-decoration: none !important;
-}
-
-.filepond--item>.filepond--file-wrapper, .filepond--item>.filepond--panel {
-    transition: opacity .15s ease-out;
-    max-height: -webkit-fill-available;
-}
-
 .btn-next {
     width: 306.67px;
     height: 48px;
@@ -1940,4 +1850,114 @@ th {
     color: var(--palet-pengembangan-shades-hitam-62-grey, #888);
     font-family: "Nunito";
     font-size: 16px;
+}
+
+.card-tujuan-transfer-when-click {
+    border-radius: 4px;
+    border: 2px solid var(--contoh-secondary-40-warna-utama, #077E86);
+    background: var(--Contoh-Netral-10, #FFF);
+    color: var(--contoh-secondary-40-warna-utama, #077E86);
+}
+
+.card-tujuan-transfer-no-click {
+    border-radius: 4px;
+    border: 2px solid var(--Contoh-Netral-50, #C4C4C4);
+    background: var(--Contoh-Netral-10, #FFF);
+    color: var(--Contoh-Netral-70, #383838);
+}
+
+.card-tujuan-transfer-when-click, .card-tujuan-transfer-no-click {
+    text-align: center;
+    font-family: Exo;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    padding: 4px;
+    width: 120px;
+    cursor: pointer;
+}
+
+.modal-daftar-settlement .modal-content {
+    max-width: 555px;
+}
+
+.modal-simpan-data-settlement .modal-content {
+    max-width: 600px;
+}
+
+.waktu-bergabung-detail {
+    color: var(--Grey---7---Ezee, #757575);
+    font-family: Nunito;
+    font-size: 14px;
+}
+
+.nama-merchant-in-detail {
+    color: var(--Black---Ezeelink, #393939);
+    font-family: Nunito;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.sub-title-detail-merchant {
+    color: var(--Grey---7---Ezee, #757575);
+    font-family: Nunito;
+    font-size: 14px;
+}
+
+.isi-content-detail-merchant {
+    color: var(--palet-utama-neutral-hitam-base, #393939);
+    font-family: Nunito;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.title-sub-content-detail-merchant {
+    color: var(--palet-pengembangan-shades-hitam-80, #383838);
+    font-family: Exo;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.button-ubah-info-merchant-detail {
+    border-radius: 6px;
+    border: 0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838);
+    background: var(--Palet-Gradient-Gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%));
+    width: 464px;
+    height: 48px;
+    padding: 12px 24px;
+    font-family: Exo;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--palet-utama-neutral-hitam-base, #2C1919);
+    text-align: center;
+}
+
+/* drag & drop upload dokumen tambah settlement */
+
+.style-label-drag-drop-settlement-qris {
+    font-family: 'Nunito';
+    font-size: 12px !important;
+}
+
+.style-label-drag-drop-settlement-qris-error-list {
+    font-family: 'Nunito';
+    font-size: 12px !important;
+    margin-top: 60px !important;
+}
+
+.style-label-drag-drop-settlement-qris-error {
+    font-family: 'Nunito';
+    font-size: 12px !important;
+    color: #B9121B;
+}
+
+.style-label-drag-drop-settlement-qris-filename {
+    font-family: 'Nunito';
+    font-size: 16px !important;
+    font-weight: 700;
+}
+
+.modal-simpan-data-settlement .filepond--wrapper {
+    margin-bottom: 0px;
 }
