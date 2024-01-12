@@ -3,16 +3,16 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import $ from 'jquery'
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { Image, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
-import { agenLists } from '../../data/tables';
+import { faEye, faPencilAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FormControl, Image, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
-import { FilterComponentQrisBrand, FilterComponentQrisGrup, FilterComponentQrisOutlet } from '../../components/FilterComponentQris';
+import { FilterComponentQrisGrup, FilterComponentQris } from '../../components/FilterComponentQris';
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import Pagination from 'react-js-pagination';
+import search from "../../assets/icon/search_icon.svg"
 
 const DaftarMerchantQris = () => {
     const history = useHistory()
@@ -45,6 +45,7 @@ const DaftarMerchantQris = () => {
         }
     }
 
+    /*DAFTAR MERCHANT GRUP QRIS */
     
     const [pageNumberDataGrupQris, setPageNumberDataGrupQris] = useState({})
     const [totalPageDataGrupQris, setTotalPageDataGrupQris] = useState(0)
@@ -55,7 +56,7 @@ const DaftarMerchantQris = () => {
     const [filterTextGrup, setFilterTextGrup] = React.useState('');
     const [resetPaginationToggleGrup, setResetPaginationToggleGrup] = React.useState(false);
     const filteredItemsGrup = dataMerchantGrupQris.filter(
-        item => item.namaAgen && item.namaAgen.toLowerCase().includes(filterTextGrup.toLowerCase()),
+        item => item.mmerchant_name && item.mmerchant_name.toLowerCase().includes(filterTextGrup.toLowerCase()),
     );
     const subHeaderComponentMemoGrup = useMemo(() => {
         const handleClear = () => {
@@ -64,65 +65,30 @@ const DaftarMerchantQris = () => {
                 setFilterTextGrup('');
             }
         };
-        const filterNamaGrup = (e) => {
+        function handleChangeFilterQris (e) {
             setFilterTextGrup(e.target.value)
-            getListDataGrupQrisHandler(e.target.value)
+            filterListDataGrupQrisHandler(e.target.value, activePageDataGrupQris, 10)
         }
         return (
-            <FilterComponentQrisGrup onFilter={e => filterNamaGrup(e)} onClear={handleClear} filterText={filterTextGrup} title="Pencarian :" placeholder="Masukkan nama grup" />
+            <FilterComponentQrisGrup onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextGrup} title="Pencarian :" placeholder="Masukkan nama grup" onClickAddMerchant={() => history.push("/pilih-jenis-usaha")} />
         );	}, [filterTextGrup, resetPaginationToggleGrup]
     );
 
     function handlePageChangeDataGrupQris(page) {
-        // console.log(isFilterDataGrupQris, 'masuk');
         if (isFilterDataGrupQris) {
             setActivePageDataGrupQris(page)
-            // filterRiwayatDanaMasukAdmin(page, inputHandleAdmin.statusDanaMasukAdmin, inputHandleAdmin.idTransaksiDanaMasukAdmin, selectedPartnerDanaMasukAdmin.length !== 0 ? selectedPartnerDanaMasukAdmin[0].value : "", selectedAgenDanaMasukAdmin.length !== 0 ? selectedAgenDanaMasukAdmin[0].value : "", inputHandleAdmin.periodeDanaMasukAdmin, dateRangeDanaMasukAdmin, 10, inputHandleAdmin.partnerTransIdDanaMasukAdmin, selectedBankDanaMasukAdmin.length !== 0 ? selectedBankDanaMasukAdmin[0].value : "", inputHandleAdmin.fiturDanaMasukAdmin, inputHandleAdmin.tipePeriodeAdmin)
+            filterListDataGrupQrisHandler(filterTextGrup, page, 10)
         } else {
             setActivePageDataGrupQris(page)
             getListDataGrupQrisHandler(page)
         }
     }
 
-    const [filterTextBrand, setFilterTextBrand] = React.useState('');
-    const [resetPaginationToggleBrand, setResetPaginationToggleBrand] = React.useState(false);
-    const filteredItemsBrand = agenLists.filter(
-        item => item.namaAgen && item.namaAgen.toLowerCase().includes(filterTextBrand.toLowerCase()),
-    );
-    const subHeaderComponentMemoBrand = useMemo(() => {
-        const handleClear = () => {
-            if (filterTextBrand) {
-                setResetPaginationToggleBrand(!resetPaginationToggleBrand);
-                setFilterTextBrand('');
-            }
-        };
-        return (
-            <FilterComponentQrisBrand onFilter={e => setFilterTextBrand(e.target.value)} onClear={handleClear} filterText={filterTextBrand} title="Pencarian :" placeholder="Masukkan nama brand" />
-        );	}, [filterTextBrand, resetPaginationToggleBrand]
-    );
-
-    const [filterTextOutlet, setFilterTextOutlet] = React.useState('');
-    const [resetPaginationToggleOutlet, setResetPaginationToggleOutlet] = React.useState(false);
-    const filteredItemsOutlet = agenLists.filter(
-        item => item.namaAgen && item.namaAgen.toLowerCase().includes(filterTextOutlet.toLowerCase()),
-    );
-    const subHeaderComponentMemoOutlet = useMemo(() => {
-        const handleClear = () => {
-            if (filterTextOutlet) {
-                setResetPaginationToggleOutlet(!resetPaginationToggleOutlet);
-                setFilterTextOutlet('');
-            }
-        };
-        return (
-            <FilterComponentQrisOutlet onFilter={e => setFilterTextOutlet(e.target.value)} onClear={handleClear} filterText={filterTextOutlet} title="Pencarian :" placeholder="Masukkan nama outlet" />
-        );	}, [filterTextOutlet, resetPaginationToggleOutlet]
-    );
-
     async function getListDataGrupQrisHandler(page) {
         try {
             const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": 10}`)
-                const headers = {
+            const dataParams = encryptData(`{"mmerchant_name": "", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": 10}`)
+            const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
@@ -146,22 +112,31 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    async function filterListDataGrupQrisHandler(merchantName, periode, page, rowPerPage) {
+    async function filterListDataGrupQrisHandler(merchantName, page, rowPerPage) {
         try {
-          const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"mmerchant_name":"${merchantName}", "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            setPendingDataGrupQris(true)
+            setIsFilterDataGrupQris(true)
+            setActivePageDataGrupQris(page)
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"mmerchant_name":"${merchantName}", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
-              'Content-Type':'application/json',
-              'Authorization' : auth
-          }
-          const userDetail = await axios.post(BaseURL + "/QRIS/GetListMerchantOnboarding", { data: dataParams }, { headers: headers })
-          // console.log(userDetail, 'ini user detal funct');
-          if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length === 0) {
-
-          } else if (userDetail.status === 200 && userDetail.data.response_code === 200 && userDetail.data.response_new_token.length !== 0) {
-            setUserSession(userDetail.data.response_new_token)
-
-          }
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const datamerchantGrup = await axios.post(BaseURL + "/QRIS/OnboardingGetListMerchant", { data: dataParams }, { headers: headers })
+            // console.log(datamerchantGrup, 'ini user detal funct');
+            if (datamerchantGrup.status === 200 && datamerchantGrup.data.response_code === 200 && datamerchantGrup.data.response_new_token.length === 0) {
+                setPageNumberDataGrupQris(datamerchantGrup.data.response_data)
+                setTotalPageDataGrupQris(datamerchantGrup.data.response_data.max_page)
+                setDataMerchantGrupQris(datamerchantGrup.data.response_data.results.list_data)
+                setPendingDataGrupQris(false)
+            } else if (datamerchantGrup.status === 200 && datamerchantGrup.data.response_code === 200 && datamerchantGrup.data.response_new_token.length !== 0) {
+                setUserSession(datamerchantGrup.data.response_new_token)
+                setPageNumberDataGrupQris(datamerchantGrup.data.response_data)
+                setTotalPageDataGrupQris(datamerchantGrup.data.response_data.max_page)
+                setDataMerchantGrupQris(datamerchantGrup.data.response_data.results.list_data)
+                setPendingDataGrupQris(false)
+            }
     } catch (error) {
           // console.log(error);
           history.push(errorCatch(error.response.status))
@@ -204,108 +179,300 @@ const DaftarMerchantQris = () => {
         {
             name: 'Aksi',
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
-                    <FontAwesomeIcon icon={faPencilAlt} className="me-2" style={{cursor: "pointer"}} />
-                </OverlayTrigger>
-              ),
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
+                    <FontAwesomeIcon icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                </OverlayTrigger> 
+            ),
         },
     ];
+
+    /*DAFTAR MERCHANT BRAND QRIS */
+
+    const [pageNumberDataBrandQris, setPageNumberDataBrandQris] = useState({})
+    const [totalPageDataBrandQris, setTotalPageDataBrandQris] = useState(0)
+    const [activePageDataBrandQris, setActivePageDataBrandQris] = useState(1)
+    const [pendingDataBrandQris, setPendingDataBrandQris] = useState(true)
+    const [isFilterDataBrandQris, setIsFilterDataBrandQris] = useState(false)
+    const [dataMerchantBrandQris, setDataMerchantBrandQris] = useState([])
+    const [filterTextBrand, setFilterTextBrand] = React.useState('');
+    const [resetPaginationToggleBrand, setResetPaginationToggleBrand] = React.useState(false);
+    const filteredItemsBrand = dataMerchantBrandQris.filter(
+        item => item.moutlet_name && item.moutlet_name.toLowerCase().includes(filterTextBrand.toLowerCase()),
+    );
+    const subHeaderComponentMemoBrand = useMemo(() => {
+        const handleClear = () => {
+            if (filterTextBrand) {
+                setResetPaginationToggleBrand(!resetPaginationToggleBrand);
+                setFilterTextBrand('');
+            }
+        };
+
+        function handleChangeFilterQris (e) {
+            setFilterTextBrand(e.target.value)
+            filterListDataBrandQrisHandler(e.target.value, activePageDataBrandQris, 10)
+        }
+        return (
+            <FilterComponentQris onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextBrand} title="Pencarian :" placeholder="Masukkan nama brand" onClickAddMerchant={() => history.push("/pilih-jenis-usaha")} addMerchant="Tambah brand" />
+        );	}, [filterTextBrand, resetPaginationToggleBrand]
+    );
+
+    function handlePageChangeDataBrandQris(page) {
+        if (isFilterDataBrandQris) {
+            setActivePageDataBrandQris(page)
+            filterListDataBrandQrisHandler(filterTextBrand, page, 10)
+        } else {
+            setActivePageDataBrandQris(page)
+            getListDataBrandQrisHandler(page)
+        }
+    }
+
+    async function getListDataBrandQrisHandler(page) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"outlet_name": "", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": 10}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const datamerchantBrand = await axios.post(BaseURL + "/QRIS/OnboardingGetListOutlet", { data: dataParams }, { headers: headers })
+            // console.log(datamerchantBrand, 'ini user detal funct');
+            if (datamerchantBrand.status === 200 && datamerchantBrand.data.response_code === 200 && datamerchantBrand.data.response_new_token.length === 0) {
+                setPageNumberDataBrandQris(datamerchantBrand.data.response_data)
+                setTotalPageDataBrandQris(datamerchantBrand.data.response_data.max_page)
+                setDataMerchantBrandQris(datamerchantBrand.data.response_data.results.list_data)
+                setPendingDataBrandQris(false)
+            } else if (datamerchantBrand.status === 200 && datamerchantBrand.data.response_code === 200 && datamerchantBrand.data.response_new_token.length !== 0) {
+                setUserSession(datamerchantBrand.data.response_new_token)
+                setPageNumberDataBrandQris(datamerchantBrand.data.response_data)
+                setTotalPageDataBrandQris(datamerchantBrand.data.response_data.max_page)
+                setDataMerchantBrandQris(datamerchantBrand.data.response_data.results.list_data)
+                setPendingDataBrandQris(false)
+            }
+    } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function filterListDataBrandQrisHandler(merchantName, page, rowPerPage) {
+        try {
+            setPendingDataBrandQris(true)
+            setIsFilterDataBrandQris(true)
+            setActivePageDataBrandQris(page)
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"outlet_name":"${merchantName}", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const datamerchantBrand = await axios.post(BaseURL + "/QRIS/OnboardingGetListOutlet", { data: dataParams }, { headers: headers })
+            // console.log(datamerchantBrand, 'ini user detal funct');
+            if (datamerchantBrand.status === 200 && datamerchantBrand.data.response_code === 200 && datamerchantBrand.data.response_new_token.length === 0) {
+                setPageNumberDataBrandQris(datamerchantBrand.data.response_data)
+                setTotalPageDataBrandQris(datamerchantBrand.data.response_data.max_page)
+                setDataMerchantBrandQris(datamerchantBrand.data.response_data.results.list_data)
+                setPendingDataBrandQris(false)
+            } else if (datamerchantBrand.status === 200 && datamerchantBrand.data.response_code === 200 && datamerchantBrand.data.response_new_token.length !== 0) {
+                setUserSession(datamerchantBrand.data.response_new_token)
+                setPageNumberDataBrandQris(datamerchantBrand.data.response_data)
+                setTotalPageDataBrandQris(datamerchantBrand.data.response_data.max_page)
+                setDataMerchantBrandQris(datamerchantBrand.data.response_data.results.list_data)
+                setPendingDataBrandQris(false)
+            }
+    } catch (error) {
+          // console.log(error);
+          history.push(errorCatch(error.response.status))
+        }
+    }
 
     const columnsBrand = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.number,
             width: '67px'
         },
         {
             name: 'ID merchant',
-            selector: row => row.IDAgen,
+            selector: row => row.mprofile_id,
             width: "130px"
         },
         {
             name: 'Waktu bergabung',
-            selector: row => row.IDAgen,
+            selector: row => row.moutlet_created_date_format,
             width: "170px"
         },
         {
             name: 'Nama grup', 
-            selector: row => row.namaAgen,
+            selector: row => row.mmerchant_name,
             wrap: true,
             width: "160px"
         },
         {
             name: 'Nama brand', 
-            selector: row => row.namaAgen,
+            selector: row => row.moutlet_name,
             wrap: true,
             width: "160px"
         },
         {
             name: 'Tujuan settlement',
-            selector: row => row.email,
+            selector: row => row.mqrissettlegroup_name,
             wrap: true,
             width: "180px"
         },
         {
             name: 'Status',
-            selector: row => row.status,
+            selector: row => row.status_name,
             width: "150px",
         },
         {
             name: 'Aksi',
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
-                    <FontAwesomeIcon icon={faPencilAlt} className="me-2" style={{cursor: "pointer"}} />
-                </OverlayTrigger>
-                // <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lihat</div></Tooltip>}>
-                //     <FontAwesomeIcon icon={faEye} className="mx-2" style={{cursor: "pointer"}} /></OverlayTrigger>
-                // </OverlayTrigger>
-              ),
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{row.step !== 0 ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
+                    <FontAwesomeIcon icon={row.step !== 0 ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                </OverlayTrigger> 
+            ),
         },
     ];
+
+    /*DAFTAR MERCHANT OUTLET QRIS */
+
+    const [pageNumberDataOutletQris, setPageNumberDataOutletQris] = useState({})
+    const [totalPageDataOutletQris, setTotalPageDataOutletQris] = useState(0)
+    const [activePageDataOutletQris, setActivePageDataOutletQris] = useState(1)
+    const [pendingDataOutletQris, setPendingDataOutletQris] = useState(true)
+    const [isFilterDataOutletQris, setIsFilterDataOutletQris] = useState(false)
+    const [dataMerchantOutletQris, setDataMerchantOutletQris] = useState([])
+    const [filterTextOutlet, setFilterTextOutlet] = React.useState('');
+    const [resetPaginationToggleOutlet, setResetPaginationToggleOutlet] = React.useState(false);
+    const filteredItemsOutlet = dataMerchantOutletQris.filter(
+        item => item.mstore_name && item.mstore_name.toLowerCase().includes(filterTextOutlet.toLowerCase()),
+    );
+    const subHeaderComponentMemoOutlet = useMemo(() => {
+        const handleClear = () => {
+            if (filterTextOutlet) {
+                setResetPaginationToggleOutlet(!resetPaginationToggleOutlet);
+                setFilterTextOutlet('');
+            }
+        };
+
+        function handleChangeFilterQris (e) {
+            setFilterTextOutlet(e.target.value)
+            filterListDataOutletQrisHandler(e.target.value, activePageDataOutletQris, 10)
+        }
+        return (
+            <FilterComponentQris onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextOutlet} title="Pencarian :" placeholder="Masukkan nama outlet" onClickAddMerchant={() => history.push("/pilih-jenis-usaha")} addMerchant="Tambah outlet" />
+        );	}, [filterTextOutlet, resetPaginationToggleOutlet]
+    );
+
+    function handlePageChangeDataOutletQris(page) {
+        if (isFilterDataOutletQris) {
+            setActivePageDataOutletQris(page)
+            filterListDataOutletQrisHandler(filterTextOutlet, page, 10)
+        } else {
+            setActivePageDataOutletQris(page)
+            getListDataOutletQrisHandler(page)
+        }
+    }
+
+    async function getListDataOutletQrisHandler(page) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"store_name": "", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": 10}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const datamerchantOutlet = await axios.post(BaseURL + "/QRIS/OnboardingGetListStore", { data: dataParams }, { headers: headers })
+            // console.log(datamerchantOutlet, 'ini user detal funct');
+            if (datamerchantOutlet.status === 200 && datamerchantOutlet.data.response_code === 200 && datamerchantOutlet.data.response_new_token.length === 0) {
+                setPageNumberDataOutletQris(datamerchantOutlet.data.response_data)
+                setTotalPageDataOutletQris(datamerchantOutlet.data.response_data.max_page)
+                setDataMerchantOutletQris(datamerchantOutlet.data.response_data.results.list_data)
+                setPendingDataOutletQris(false)
+            } else if (datamerchantOutlet.status === 200 && datamerchantOutlet.data.response_code === 200 && datamerchantOutlet.data.response_new_token.length !== 0) {
+                setUserSession(datamerchantOutlet.data.response_new_token)
+                setPageNumberDataOutletQris(datamerchantOutlet.data.response_data)
+                setTotalPageDataOutletQris(datamerchantOutlet.data.response_data.max_page)
+                setDataMerchantOutletQris(datamerchantOutlet.data.response_data.results.list_data)
+                setPendingDataOutletQris(false)
+            }
+    } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function filterListDataOutletQrisHandler(merchantName, page, rowPerPage) {
+        try {
+            setPendingDataOutletQris(true)
+            setIsFilterDataOutletQris(true)
+            setActivePageDataOutletQris(page)
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"outlet_name":"${merchantName}", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const datamerchantOutlet = await axios.post(BaseURL + "/QRIS/OnboardingGetListStore", { data: dataParams }, { headers: headers })
+            // console.log(datamerchantOutlet, 'ini user detal funct');
+            if (datamerchantOutlet.status === 200 && datamerchantOutlet.data.response_code === 200 && datamerchantOutlet.data.response_new_token.length === 0) {
+                setPageNumberDataOutletQris(datamerchantOutlet.data.response_data)
+                setTotalPageDataOutletQris(datamerchantOutlet.data.response_data.max_page)
+                setDataMerchantOutletQris(datamerchantOutlet.data.response_data.results.list_data)
+                setPendingDataOutletQris(false)
+            } else if (datamerchantOutlet.status === 200 && datamerchantOutlet.data.response_code === 200 && datamerchantOutlet.data.response_new_token.length !== 0) {
+                setUserSession(datamerchantOutlet.data.response_new_token)
+                setPageNumberDataOutletQris(datamerchantOutlet.data.response_data)
+                setTotalPageDataOutletQris(datamerchantOutlet.data.response_data.max_page)
+                setDataMerchantOutletQris(datamerchantOutlet.data.response_data.results.list_data)
+                setPendingDataOutletQris(false)
+            }
+    } catch (error) {
+          // console.log(error);
+          history.push(errorCatch(error.response.status))
+        }
+    }
 
     const columnsOutlet = [
         {
             name: 'No',
-            selector: row => row.id,
+            selector: row => row.number,
             width: '67px'
         },
         {
             name: 'ID merchant',
-            selector: row => row.IDAgen,
+            selector: row => row.mprofile_id,
             width: "130px"
         },
         {
             name: 'Waktu bergabung',
-            selector: row => row.IDAgen,
+            selector: row => row.mstore_create_date_format,
             width: "170px"
         },
         {
             name: 'Nama outlet', 
-            selector: row => row.namaAgen,
+            selector: row => row.mstore_name,
             wrap: true,
             width: "160px"
         },
         {
             name: 'Tujuan settlement',
-            selector: row => row.email,
+            selector: row => row.mqrissettlegroup_name,
             wrap: true,
             width: "180px"
         },
         {
             name: 'Status',
-            selector: row => row.status,
+            selector: row => row.status_name,
             width: "150px",
         },
         {
             name: 'Aksi',
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
-                    <FontAwesomeIcon icon={faPencilAlt} className="me-2" style={{cursor: "pointer"}} />
-                </OverlayTrigger>
-                // <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lihat</div></Tooltip>}>
-                //     <FontAwesomeIcon icon={faEye} className="mx-2" style={{cursor: "pointer"}} /></OverlayTrigger>
-                // </OverlayTrigger>
-              ),
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{row.step !== 0 ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
+                    <FontAwesomeIcon icon={row.step !== 0 ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                </OverlayTrigger> 
+            ),
         },
     ];
 
@@ -331,6 +498,8 @@ const DaftarMerchantQris = () => {
 
     useEffect(() => {
         getListDataGrupQrisHandler(activePageDataGrupQris)
+        getListDataBrandQrisHandler(activePageDataBrandQris)
+        getListDataOutletQrisHandler(activePageDataOutletQris)
     }, [])
     
 
@@ -389,11 +558,23 @@ const DaftarMerchantQris = () => {
                                 data={filteredItemsBrand}
                                 customStyles={customStyles}
                                 highlightOnHover
-                                // progressPending={pending}
+                                progressPending={pendingDataBrandQris}
                                 progressComponent={<CustomLoader />}
                                 subHeader
                                 subHeaderComponent={subHeaderComponentMemoBrand}
                                 persistTableHead
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDataBrandQris}</div>
+                            <Pagination
+                                activePage={activePageDataBrandQris}
+                                itemsCountPerPage={pageNumberDataBrandQris.row_per_page}
+                                totalItemsCount={(pageNumberDataBrandQris.row_per_page*pageNumberDataBrandQris.max_page)}
+                                pageRangeDisplayed={5}
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                onChange={handlePageChangeDataBrandQris}
                             />
                         </div>
                     </div>
@@ -405,11 +586,23 @@ const DaftarMerchantQris = () => {
                                 data={filteredItemsOutlet}
                                 customStyles={customStyles}
                                 highlightOnHover
-                                // progressPending={pending}
+                                progressPending={pendingDataOutletQris}
                                 progressComponent={<CustomLoader />}
                                 subHeader
                                 subHeaderComponent={subHeaderComponentMemoOutlet}
                                 persistTableHead
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12, borderTop: "groove" }}>
+                            <div style={{ marginRight: 10, marginTop: 10 }}>Total Page: {totalPageDataOutletQris}</div>
+                            <Pagination
+                                activePage={activePageDataOutletQris}
+                                itemsCountPerPage={pageNumberDataOutletQris.row_per_page}
+                                totalItemsCount={(pageNumberDataOutletQris.row_per_page*pageNumberDataOutletQris.max_page)}
+                                pageRangeDisplayed={5}
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                onChange={handlePageChangeDataOutletQris}
                             />
                         </div>
                     </div>

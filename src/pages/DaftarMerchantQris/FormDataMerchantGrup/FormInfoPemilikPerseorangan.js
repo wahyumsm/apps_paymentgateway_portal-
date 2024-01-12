@@ -210,7 +210,7 @@ const FormInfoPemilikPerseorangan = () => {
                                         labelIdle={labelUploadKtp}
                                     />
                                 </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Selfie dengan eKTP</div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-5 pt-5'>Selfie dengan eKTP</div>
                                 <div className='mt-2'>
                                     <FilePond
                                         className="dragdrop"
@@ -228,7 +228,7 @@ const FormInfoPemilikPerseorangan = () => {
                             </>
                         )
                     }
-                    <div className='text-end mt-3'>
+                    <div className='text-end' style={{ marginTop: 80 }}>
                         <button onClick={() => toInfoUsaha()} className='btn-next mb-4'>Selanjutnya</button>
                     </div>
                 </div>
