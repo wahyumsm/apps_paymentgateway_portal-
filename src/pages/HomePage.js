@@ -95,7 +95,7 @@ import TransaksiTopUp from './TopUp/TransaksiTopUp';
 import CreateVAUSD from './VAUSD/CreateVAUSD';
 import RiwayatVAUSD from './RiwayatTransaksi/RiwayatVAUSD';
 import RiwayatFileSFTP from './VAUSD/RiwayatFileSFTP';
-import SettlementVAUSD from './Settlement/SettlementVAUSD';
+import SettlementVAUSDPartner from './Settlement/SettlementVAUSDPartner';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -211,12 +211,13 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
     <RouteWithSidebar exact path={Routes.VAUSD.path} component={CreateVAUSD} />
     <RouteWithSidebar exact path={Routes.RiwayatFileSFTP.path} component={RiwayatFileSFTP} />
-    <RouteWithSidebar exact path={Routes.SettlementVAUSDAdmin.path} component={SettlementVAUSD} />
+    <RouteWithSidebar exact path={Routes.SettlementVAUSDAdmin.path} component={SettlementVAUSDPartner} />
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
+    <RouteWithSidebar exact path={Routes.SettlementVAUSDPartner.path} component={SettlementVAUSDPartner} />
 
     <RouteWithSidebar exact path={Routes.eWalletAdmin.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />

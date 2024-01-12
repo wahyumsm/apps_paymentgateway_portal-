@@ -65,7 +65,11 @@ function RiwayatFileSFTP() {
     }
 
     function downloadFileHandler(source) {
-        window.open(source)
+        window.open(source, '_blank')
+        // const a = document.createElement("a");
+        // a.href = source;
+        // a.setAttribute(`download`, source);
+        // a.click()
     }
 
     async function getListTransaksiSFTPAdmin(page, dateId, dateRange) {

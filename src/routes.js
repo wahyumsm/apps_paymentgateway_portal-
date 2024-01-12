@@ -80,6 +80,7 @@ export const Routes = {
     SubAccount: {path: "/riwayat-transaksi/sub-account"},
     eWallet: {path: "/riwayat-transaksi/ewallet"},
     RiwayatVAUSDPartner: {path: "/riwayat-transaksi/va-usd"},
+    SettlementVAUSDPartner: {path: "/settlement/va-usd"},
 
 
     // docs

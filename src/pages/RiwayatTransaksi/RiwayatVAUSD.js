@@ -260,10 +260,11 @@ function RiwayatVAUSD() {
         },
         {
             name: 'ID Transaksi',
-            selector: row => row.bulkdtl_id,
+            selector: row => row.trans_id,
+            wrap: true,
             width: "150px",
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
-        // sortable: true
+            // sortable: true
         },
         {
             name: 'Partner Trans ID',
@@ -400,10 +401,11 @@ function RiwayatVAUSD() {
         },
         {
             name: 'ID Transaksi',
-            selector: row => row.bulkdtl_id,
+            selector: row => row.trans_id,
             width: "150px",
+            wrap: true,
             // cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} onClick={() => detailListTransferHandler(row.tvatrans_trx_id)}>{row.tvatrans_trx_id}</Link>
-        // sortable: true
+            // sortable: true
         },
         {
             name: 'Partner Trans ID',

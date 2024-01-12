@@ -354,6 +354,15 @@ function EditPartner() {
     // console.log(e.target.name, 'e.target.name');
     if (e.target.name === "Payment Collection") {
       setIsDisableFeeType(false)
+    } else if (e.target.name === "VA USD") {
+      setIsDisableFeeType(true)
+      if (handleBiaya.feeType !== 101) {
+        setBiayaHandle({
+          ...biayaHandle,
+          feeType: 101,
+          fee: ""
+        })
+      }
     } else {
       setIsDisableFeeType(true)
       if (handleBiaya.feeType !== 100) {
