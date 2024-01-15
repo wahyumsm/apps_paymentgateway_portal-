@@ -223,7 +223,7 @@ const TransaksiQrisApi = () => {
                     setDataTransactionQrisApiPartner(getDataQrisReport.data.response_data.results)
                     setPendingTransactionQrisApiPartner(false)
                 }
-            } else if (user_role === "100") {
+            } else {
                 const auth = "Bearer " + access_token
                 const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
@@ -284,7 +284,7 @@ const TransaksiQrisApi = () => {
                     setDataTransactionQrisApiPartner(getDataQrisReport.data.response_data.results)
                     setPendingTransactionQrisApiPartner(false)
                 }
-            } else if (user_role === "100") {
+            } else {
                 setPendingTransactionQrisApiAdmin(true)
                 setIsFilterTransactionQrisApiAdmin(true)
                 setActivePageTransactionQrisApiAdmin(page)
@@ -324,11 +324,11 @@ const TransaksiQrisApi = () => {
             async function dataExportFilter(transId, partnerTransId, partnerId, rrn, partnerNameId, brandNou, outletNou, idKasirNou, statusQris, dateId, periode, lang) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "${role === "102" ? partnerId : ""}", "RRN": "${rrn}", "merchant_nou": ${role === "100" ? partnerNameId : 0}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "${role === "102" ? partnerId : ""}", "RRN": "${rrn}", "merchant_nou": ${role !== "102" ? partnerNameId : 0}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
-                        'Accept-Language' : role === "100" ? "ID" : lang 
+                        'Accept-Language' : role !== "102" ? "ID" : lang 
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/QRIS/QRISTransMerchantReport", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
@@ -379,7 +379,7 @@ const TransaksiQrisApi = () => {
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
-                        'Accept-Language' : role === "100" ? "ID" : lang 
+                        'Accept-Language' : role !== "102" ? "ID" : lang 
                     }
                     const dataExportTransactionQris = await axios.post(BaseURL + "/QRIS/QRISTransMerchantReport", {data: dataParams}, { headers: headers });
                     if (dataExportTransactionQris.status === 200 && dataExportTransactionQris.data.response_code === 200 && dataExportTransactionQris.data.response_new_token === null) {
@@ -897,7 +897,7 @@ const TransaksiQrisApi = () => {
 
     useEffect(() => {
         userDetails()
-        if (user_role === "100") {
+        if (user_role !== "102") {
             getGrupInQrisTransactionHandler()
         } 
     }, [])
