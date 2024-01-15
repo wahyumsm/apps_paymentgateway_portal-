@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 import alertIconYellow from '../../../assets/icon/note_icon_grey.svg'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -15,6 +15,8 @@ registerPlugin(FilePondPluginFileEncode)
 const FormInfoPemilikPerseorangan = () => {
     const history = useHistory()
     const location = useLocation();
+    const { merchantNou } = useParams()
+    console.log(merchantNou);
     const dataJenisUsaha = location.pathname;
     console.log(dataJenisUsaha, "dataJenisUsaha");
     console.log(location, "location");
@@ -63,7 +65,7 @@ const FormInfoPemilikPerseorangan = () => {
         window.location.reload()
     }
 
-    async function formInfoPemilikPeroranganHandler(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
+    async function formDataFirstStepInfoPemilikPerorangan(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}"}`)
@@ -81,6 +83,32 @@ const FormInfoPemilikPerseorangan = () => {
             history.push(errorCatch(error.response.status))
         }
     }
+
+    async function getDataFirstStepInfoPemilikPerorangan(merchantNou) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"agen_id":"${merchantNou}"}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const editAgen = await axios.post(BaseURL + "/QRIS/GetFirstStepData", { data: dataParams }, { headers: headers })
+            if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
+            } else if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length !== 0) {
+                setUserSession(editAgen.data.response_new_token)
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    useEffect(() => {
+        if (merchantNou !== undefined) {
+            getDataFirstStepInfoPemilikPerorangan(merchantNou)
+        }
+    }, [])
+    
 
     return (
         <>

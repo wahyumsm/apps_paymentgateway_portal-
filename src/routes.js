@@ -73,10 +73,11 @@ export const Routes = {
     DaftarMerchantQris: {path: "/daftar-merchant-qris"},
     PilihJenisUsahaQris: {path: "/pilih-jenis-usaha"},
     FormInfoPemilikPerseorangan: {path: "/form-info-pemilik-perseorangan"},
+    FormInfoPemilikPerseoranganFirstStep: {path: "/form-info-pemilik-perseorangan/:idNou"},
     FormInfoUsahaPerseorangan: {path: "/form-info-usaha-perseorangan"},
     PengaturanMerchant: {path: "/pengaturan-merchant"},
     FormDaftarSettlement: {path: "/formulir-daftar-settlement"},
-    DetailMerchantGrup: {path: "/detail-merchant"},
+    DetailMerchantGrup: {path: "/detail-merchant/:id"},
     FormTambahSettlementBrand: {path: "/formulir-tambah-settlement"},
 
     // partner

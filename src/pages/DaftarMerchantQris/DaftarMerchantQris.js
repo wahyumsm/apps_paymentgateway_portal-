@@ -143,6 +143,10 @@ const DaftarMerchantQris = () => {
         }
     }
 
+    function getDetailNotifEwallet (id) {
+        history.push(`/form-info-pemilik-perseorangan/${id}`)
+    }
+
     const columnsGrup = [
         {
             name: 'No',
@@ -191,7 +195,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getDetailNotifEwallet(row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },

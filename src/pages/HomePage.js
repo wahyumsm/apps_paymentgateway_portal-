@@ -220,6 +220,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DaftarMerchantQris.path} component={DaftarMerchantQris} />
     <RouteWithSidebar exact path={Routes.PilihJenisUsahaQris.path} component={PilihJenisUsaha} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseorangan.path} component={FormInfoPemilikPerseorangan} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseoranganFirstStep.path} component={FormInfoPemilikPerseorangan} />
     <RouteWithSidebar exact path={Routes.FormInfoUsahaPerseorangan.path} component={FormInfoUsahaPerseorangan} />
     <RouteWithSidebar exact path={Routes.PengaturanMerchant.path} component={PengaturanMerchant} />
     <RouteWithSidebar exact path={Routes.FormDaftarSettlement.path} component={FormDaftarSettlement} />
