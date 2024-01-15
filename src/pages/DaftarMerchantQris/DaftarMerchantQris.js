@@ -174,10 +174,21 @@ const DaftarMerchantQris = () => {
         {
             name: 'Status',
             selector: row => row.status_name,
-            width: "150px",
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status_id === 105,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                },
+                {
+                    when: row => row.status_id === 106 || row.status_id === 107,
+                    style: { background: "#FEF4E9", color: "#F79421", }
+                }
+            ],
         },
         {
             name: 'Aksi',
+            width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
                     <FontAwesomeIcon icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
@@ -322,13 +333,24 @@ const DaftarMerchantQris = () => {
         {
             name: 'Status',
             selector: row => row.status_name,
-            width: "150px",
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status_id === 105,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                },
+                {
+                    when: row => row.status_id === 106 || row.status_id === 107,
+                    style: { background: "#FEF4E9", color: "#F79421", }
+                }
+            ],
         },
         {
             name: 'Aksi',
+            width: "170px",
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{row.step !== 0 ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon icon={row.step !== 0 ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
+                    <FontAwesomeIcon icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },
@@ -464,13 +486,24 @@ const DaftarMerchantQris = () => {
         {
             name: 'Status',
             selector: row => row.status_name,
-            width: "150px",
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px", borderRadius: 4 },
+            conditionalCellStyles: [
+                {
+                    when: row => row.status_id === 105,
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                },
+                {
+                    when: row => row.status_id === 106 || row.status_id === 107,
+                    style: { background: "#FEF4E9", color: "#F79421", }
+                }
+            ],
         },
         {
             name: 'Aksi',
+            width: "170px",
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{row.step !== 0 ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon icon={row.step !== 0 ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
+                    <FontAwesomeIcon icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },
@@ -483,7 +516,6 @@ const DaftarMerchantQris = () => {
                 border: '12px',
                 fontWeight: 'bold',
                 fontSize: '16px',
-                paddingRight: 'none'
                 
             },
         },

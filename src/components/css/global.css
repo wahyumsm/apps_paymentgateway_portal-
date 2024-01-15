@@ -1961,3 +1961,7 @@ th {
 .modal-simpan-data-settlement .filepond--wrapper {
     margin-bottom: 0px;
 }
+
+.div-table .bnAwAJ {
+    padding: unset;
+}
