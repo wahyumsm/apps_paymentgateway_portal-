@@ -196,7 +196,7 @@ const QrisSettlement = () => {
     function handlePageChangeSettlementQrisOtomatisMerchant(page) {
         if (isFilterSettlementQrisOtomatisMerchant) {
             setActivePageSettlementQrisOtomatisMerchant(page)
-            filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, page, 10)
+            filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0, page, 10)
 
         } else {
             setActivePageSettlementQrisOtomatisMerchant(page)
@@ -238,7 +238,7 @@ const QrisSettlement = () => {
     function handlePageChangeSettlementQrisOtomatisAdmin(page) {
         if (isFilterSettlementQrisOtomatisAdmin) {
             setActivePageSettlementQrisOtomatisAdmin(page)
-            filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris, page, 10)
+            filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0, page, 10)
 
         } else {
             setActivePageSettlementQrisOtomatisAdmin(page)
@@ -1170,7 +1170,7 @@ const QrisSettlement = () => {
         try {
             if (role === "106" || role === "107" || role === "108") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1193,7 +1193,7 @@ const QrisSettlement = () => {
                 }
             } else if (role !== "102" || role !== "104") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1221,14 +1221,14 @@ const QrisSettlement = () => {
         }
     }
 
-    async function filterDataSettlementQrisOtomatisHandler(role, idSettle, dateId, periode, statusQris, page, rowPerPage) {
+    async function filterDataSettlementQrisOtomatisHandler(role, idSettle, dateId, periode, statusQris, grupNou, brandNou, outletNou, page, rowPerPage) {
         try {
             if (role === "106" || role === "107" || role === "108") {
                 setPendingSettlementQrisOtomatisMerchant(true)
                 setIsFilterSettlementQrisOtomatisMerchant(true)
                 setActivePageSettlementQrisOtomatisMerchant(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
+                const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "merchant_nou": ${grupNou}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1254,7 +1254,7 @@ const QrisSettlement = () => {
                 setIsFilterSettlementQrisOtomatisAdmin(true)
                 setActivePageSettlementQrisOtomatisAdmin(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
+                const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "merchant_nou": ${grupNou}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "page": ${(page < 1) ? 1 : page}, "row_per_page": ${rowPerPage}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -1398,13 +1398,13 @@ const QrisSettlement = () => {
         }
     }
 
-    function ExportReportSettlementQrisOtomatisHandler(role, isFilter, idSettle, dateId, periode, statusQris) {
+    function ExportReportSettlementQrisOtomatisHandler(role, isFilter, idSettle, dateId, periode, statusQris, grupNou, brandNou, outletNou) {
         if (role === "106" || role === "107" || role === "108") {
             if (isFilter) {
                 async function dataExportFilter(idSettle, dateId, periode, statusQris) {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "merchant_nou": ${grupNou}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
@@ -1474,7 +1474,7 @@ const QrisSettlement = () => {
                 async function dataExportSettlementQris() {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
@@ -1546,7 +1546,7 @@ const QrisSettlement = () => {
                 async function dataExportFilter(idSettle, dateId, periode, statusQris) {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settle_code": "${idSettle}", "status" : "${statusQris.length !== 0 ? statusQris : "2,4,5,6,8"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "merchant_nou": ${grupNou}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
@@ -1584,7 +1584,7 @@ const QrisSettlement = () => {
                 async function dataExportSettlementQris() {
                     try {
                         const auth = 'Bearer ' + getToken();
-                        const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                        const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "period": 2, "date_from": "", "date_to": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "page": 1, "row_per_page": 1000000}`)
                         const headers = {
                             'Content-Type': 'application/json',
                             'Authorization': auth
@@ -1998,7 +1998,7 @@ const QrisSettlement = () => {
                                                 <CurrencyInput
                                                     className="input-nominal-qris-settlement text-end"
                                                     value={nominalPengajuan}
-                                                     onValueChange={(e) => handleChangeNominal(e, dataAccBankManualQrisSettleMerchant)}
+                                                    onValueChange={(e) => handleChangeNominal(e, dataAccBankManualQrisSettleMerchant)}
                                                     groupSeparator={"."}
                                                     decimalSeparator={','}
                                                     placeholder='0'
@@ -2269,7 +2269,7 @@ const QrisSettlement = () => {
                                                     <button
                                                         className={(inputHandleSettlementQrisOtomatisMerchant.periode !== 0 || dateRangeSettlementQrisOtomatisMerchant.length !== 0 || (dateRangeSettlementQrisOtomatisMerchant.length !== 0 && inputHandleSettlementQrisOtomatisMerchant.idSettlement.length !== 0) || (dateRangeSettlementQrisOtomatisMerchant.length !== 0 && inputHandleSettlementQrisOtomatisMerchant.statusQris.length !== 0)) ? 'btn-ez-on' : 'btn-ez'}
                                                         disabled={inputHandleSettlementQrisOtomatisMerchant.periode === 0 || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisMerchant.periode === 0 && inputHandleSettlementQrisOtomatisMerchant.statusQris.length === 0)}
-                                                        onClick={() => filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, activePageSettlementQrisOtomatisMerchant, 10 )}
+                                                        onClick={() => filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0, activePageSettlementQrisOtomatisMerchant, 10 )}
                                                     >
                                                         Terapkan
                                                     </button>
@@ -2290,7 +2290,7 @@ const QrisSettlement = () => {
                                         <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600, color: "#383838" }}>Daftar pengajuan settlement</div>
                                         {
                                             dataSettlementQrisOtomatisMerchant.length !== 0 && (
-                                                <Link onClick={() => ExportReportSettlementQrisOtomatisHandler(user_role, isFilterSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris)} className="export-span">Export</Link>
+                                                <Link onClick={() => ExportReportSettlementQrisOtomatisHandler(user_role, isFilterSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0)} className="export-span">Export</Link>
                                             )
                                         }
                                     </div>
@@ -2427,7 +2427,7 @@ const QrisSettlement = () => {
                                                     <button
                                                         className={(inputHandleSettlementQrisOtomatisAdmin.periode !== 0 || dateRangeSettlementQrisOtomatisAdmin.length !== 0 || (dateRangeSettlementQrisOtomatisAdmin.length !== 0 && inputHandleSettlementQrisOtomatisAdmin.idSettlement.length !== 0) || (dateRangeSettlementQrisOtomatisAdmin.length !== 0 && inputHandleSettlementQrisOtomatisAdmin.statusQris.length !== 0)) ? 'btn-ez-on' : 'btn-ez'}
                                                         disabled={inputHandleSettlementQrisOtomatisAdmin.periode === 0 || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.idSettlement.length === 0) || (inputHandleSettlementQrisOtomatisAdmin.periode === 0 && inputHandleSettlementQrisOtomatisAdmin.statusQris.length === 0)}
-                                                        onClick={() => filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris, activePageSettlementQrisOtomatisAdmin, 10 )}
+                                                        onClick={() => filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0, activePageSettlementQrisOtomatisAdmin, 10 )}
                                                     >
                                                         Terapkan
                                                     </button>
@@ -2447,7 +2447,7 @@ const QrisSettlement = () => {
                                     {
                                         dataSettlementQrisOtomatisAdmin.length !== 0 && (
                                             <div style={{ marginBottom: 30 }} className='mt-3'>
-                                                <Link onClick={() => ExportReportSettlementQrisOtomatisHandler(user_role, isFilterSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris)} className="export-span">Export</Link>
+                                                <Link onClick={() => ExportReportSettlementQrisOtomatisHandler(user_role, isFilterSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0)} className="export-span">Export</Link>
                                             </div>
                                         )
                                     }
