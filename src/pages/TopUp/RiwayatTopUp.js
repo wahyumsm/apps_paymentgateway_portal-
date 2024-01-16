@@ -1,4 +1,4 @@
-import { Col, Form, Image, Row, Container,
+import { Col, Form, Row, Container,
     ListGroup,
     InputGroup,
     Modal,
@@ -7,8 +7,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
 import Pagination from 'react-js-pagination'
 import { Link, useHistory } from 'react-router-dom'
-import { BaseURL, convertSimpleTimeStamp, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession, language } from '../../function/helpers'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import { BaseURL, convertSimpleTimeStamp, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession, language, CustomLoader } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import axios from 'axios'
 import encryptData from '../../function/encryptData'
@@ -646,13 +645,6 @@ function RiwayatTopUp() {
             dataExportTopUp(lang)
         }
     }
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-            <div>Loading...</div>
-        </div>
-    );
 
     return (
         <>

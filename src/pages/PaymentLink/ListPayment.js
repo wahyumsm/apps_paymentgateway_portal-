@@ -9,12 +9,11 @@ import {
   faSortUp,
   faSortDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { Row, Col, Form, Image, OverlayTrigger, Tooltip } from "@themesberg/react-bootstrap";
+import { Row, Col, Form, OverlayTrigger, Tooltip } from "@themesberg/react-bootstrap";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DataTable from "react-data-table-component";
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, getToken, language, setUserSession, styleStatusPaylink } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, language, setUserSession, styleStatusPaylink, CustomLoader } from "../../function/helpers";
 import encryptData from "../../function/encryptData";
 import axios from "axios";
 import Pagination from "react-js-pagination";
@@ -463,17 +462,6 @@ function ListPayment() {
       language === null ? 'EN' : language.flagName
     );
   }, [access_token]);
-
-  const CustomLoader = () => (
-    <div style={{ padding: "24px" }}>
-      <Image
-        className="loader-element animate__animated animate__jackInTheBox"
-        src={loadingEzeelink}
-        height={80}
-      />
-      <div>Loading...</div>
-    </div>
-  );
 
   return (
     <div

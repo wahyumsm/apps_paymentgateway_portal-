@@ -1,15 +1,14 @@
 import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import { Col, Form, Row, Image} from '@themesberg/react-bootstrap';
+import { Col, Form, Row} from '@themesberg/react-bootstrap';
 import $ from 'jquery'
 import axios from 'axios';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession, CustomLoader } from '../../function/helpers';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import encryptData from '../../function/encryptData';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import edit from '../../assets/icon/edit_icon.svg';
 import deleted from '../../assets/icon/delete_icon.svg'
 import FilterComponent from '../../components/FilterComponent';
@@ -134,7 +133,7 @@ function DetailPartner() {
             // console.log(error)
             history.push(errorCatch(error.response.status))
         }
-    } 
+    }
 
     const columns = [
         {
@@ -193,7 +192,7 @@ function DetailPartner() {
           selector: row => row.status === true ? <div className='active-status-badge'>Aktif</div> : <div className='inactive-status-badge'>Tidak Aktif</div>,
           width: "90px",
           style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px 12px", margin: "6px 0px", width: "50%", borderRadius: 4 },
-          
+
         }
     ]
 
@@ -345,13 +344,6 @@ function DetailPartner() {
         }
     ]
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-            <div>Loading...</div>
-        </div>
-    );
-
     const customStyles = {
         headCells: {
             style: {
@@ -402,9 +394,9 @@ function DetailPartner() {
                 </div>
             </div>
             {
-                isDetailAkun ? 
+                isDetailAkun ?
                 <>
-                <div className='detail-akun-section'>        
+                <div className='detail-akun-section'>
                     <d className='d-style' style={{marginTop: -2}}/>
                     <br/>
                     <span className='head-title'>Profil Perusahaan</span>
@@ -591,7 +583,7 @@ function DetailPartner() {
                                                         )
                                                     })}
                                                 </Row>
-                                                <Row>                                            
+                                                <Row>
                                                     {dataBawahFitur(bawahFitur).map((item) => {
                                                         return (
                                                             <Col key={item.fitur_id} xs={2}>
@@ -616,7 +608,7 @@ function DetailPartner() {
                                                                 </div>
                                                             </Col>
                                                         )
-                                                    })}                                            
+                                                    })}
                                                 </Row>
                                                 <Row>
                                                     {dataBawahEqualFitur(equalFitur).map((item) => {
@@ -635,7 +627,7 @@ function DetailPartner() {
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>                        
+                        </table>
                         {expanded ?
                             <div style={{display: "flex", justifyContent: "end", alignItems: "center", padding: "unset"}}>
                                 <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
@@ -646,9 +638,9 @@ function DetailPartner() {
                                 <button className='mb-4 pb-3 py-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", gap: 8, width: 300, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxes}>
                                     Lihat tabel skema lainnya <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
                                 </button>
-                            </div>                                            
+                            </div>
                         }
-                        {expanded && 
+                        {expanded &&
                             <div className="div-table pb-4 mb-4" ref={myRef}>
                                 <DataTable
                                     columns={columnPayment}
@@ -712,9 +704,9 @@ function DetailPartner() {
                                 <button className='mb-4 pb-3' style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, textAlign: "end", gap: 8, width: 500, height: 48, color: "#077E86", background: "unset", border: "unset"}} onClick={showCheckboxesSubAccount}>
                                     Lihat daftar Sub Account <FontAwesomeIcon icon={faChevronDown} className="mx-2" />
                                 </button>
-                            </div>                                            
+                            </div>
                         }
-                        {expandedSubAcc && 
+                        {expandedSubAcc &&
                             <div className="div-table pb-4 mb-4" ref={myRef}>
                                 <DataTable
                                     columns={columnSubAcc}
@@ -730,16 +722,16 @@ function DetailPartner() {
                         }
                     </div>
                 </div>
-                
+
                 <div className='mb-5 mt-3' style={{ display: "flex", justifyContent: "end"}}>
                     <button onClick={() => editPartner(partnerId)} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 900, alignItems: "center", padding: "12px 24px", gap: 8, width: 136, height: 45, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                         Edit
                     </button>
                 </div>
-                </> : 
-                <> 
+                </> :
+                <>
                     <div className='d-style' style={{marginTop: -2}}/>
-                    <div className='base-content mt-5 mb-5'>  
+                    <div className='base-content mt-5 mb-5'>
                         {
                         listAgen.length === 0 ?
                         <div style={{ display: "flex", justifyContent: "center", paddingBottom: 20, alignItems: "center" }}>There are no records to display</div> :
@@ -759,7 +751,7 @@ function DetailPartner() {
                         }
                     </div>
                 </>
-            }            
+            }
         </div>
     )
 }

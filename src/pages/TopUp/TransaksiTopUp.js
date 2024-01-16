@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
-import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession, CustomLoader } from '../../function/helpers'
+import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import Pagination from 'react-js-pagination'
 import DataTable from 'react-data-table-component'
@@ -360,13 +359,6 @@ function TransaksiTopUp() {
             },
         },
     };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-            <div>Loading...</div>
-        </div>
-    );
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>

@@ -1,13 +1,11 @@
-import { Col, Form, Image, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
+import { Col, Form, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap'
 import React from 'react'
 import DataTable from 'react-data-table-component'
 import { Link, useHistory } from 'react-router-dom'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg";
-// import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import Pagination from 'react-js-pagination'
 import SubAccountComponent from '../../components/SubAccountComponent'
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers'
 import { useState } from 'react'
 import { DateRangePicker } from 'rsuite'
 import "rsuite/dist/rsuite.css";
@@ -41,7 +39,7 @@ const ListRiwayatSubAccount = () => {
                 opacity: 'unset'
             },
             placement: 'bottom',
-            
+
         },
     ]
     const [dateRangeRiwayatTranfer, setDateRangeRiwayatTranfer] = useState([])
@@ -69,7 +67,7 @@ const ListRiwayatSubAccount = () => {
     const currentDate = new Date().toISOString().split('T')[0]
     const oneMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate() + 1).toISOString().split('T')[0]
     const threeMonthAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 3, new Date().getDate() + 1).toISOString().split('T')[0]
-    
+
     const Locale = {
         sunday: 'Min',
         monday: 'Sen',
@@ -372,7 +370,7 @@ const ListRiwayatSubAccount = () => {
     function toDashboard() {
         history.push("/");
     }
-    
+
     function toLaporan() {
         history.push("/laporan");
     }
@@ -590,7 +588,7 @@ const ListRiwayatSubAccount = () => {
             getAkunPartner()
         }
     }, [])
-    
+
 
     const customStyles = {
         headCells: {
@@ -604,13 +602,6 @@ const ListRiwayatSubAccount = () => {
             },
         },
     };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          <div>Loading...</div>
-        </div>
-    );
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px 37px 27px" }}>
@@ -667,9 +658,9 @@ const ListRiwayatSubAccount = () => {
                                         <option value={1}>Transaksi Masuk ( cr )</option>
                                         <option value={2}>Transaksi Keluar ( db )</option>
                                     </Form.Select>
-                                </Col> 
+                                </Col>
                             }
-                            
+
                             <Col
                                 xs={4}
                                 className="d-flex justify-content-between align-items-center"
@@ -694,17 +685,17 @@ const ListRiwayatSubAccount = () => {
                             <Col xs={4}></Col>
                             <Col xs={4}></Col>
                             <Col xs={4} className='d-flex justify-content-end align-items-center mt-4 pe-3' >
-                                <DateRangePicker 
-                                    value={stateRiwayatTransfer} 
-                                    ranges={column} 
-                                    onChange={(e) => pickDateRiwayatTransfer(e)} 
-                                    character=' - ' 
-                                    cleanable={true} 
-                                    placement={'bottomEnd'} 
-                                    size='lg' 
-                                    appearance="default" 
-                                    placeholder="Select Date Range" 
-                                    disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}  
+                                <DateRangePicker
+                                    value={stateRiwayatTransfer}
+                                    ranges={column}
+                                    onChange={(e) => pickDateRiwayatTransfer(e)}
+                                    character=' - '
+                                    cleanable={true}
+                                    placement={'bottomEnd'}
+                                    size='lg'
+                                    appearance="default"
+                                    placeholder="Select Date Range"
+                                    disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
                                     className='datePicker'
                                     locale={Locale}
                                     format="yyyy-MM-dd"
@@ -729,7 +720,7 @@ const ListRiwayatSubAccount = () => {
                             </Col>
                         </Row>
                         {
-                            dataRiwayatTransfer.length !== 0 && 
+                            dataRiwayatTransfer.length !== 0 &&
                             <div className='mt-3 mb-5'>
                                 <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransfer, inputHandle.idTrans, inputHandle.idReffTrans, inputHandle.idReff, inputHandle.fiturTransaksi, inputHandle.namaPartner,orderId, orderField, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer)} className="export-span">Export</Link>
                             </div>
@@ -858,17 +849,17 @@ const ListRiwayatSubAccount = () => {
                             <Col xs={4}></Col>
                             <Col xs={4} className='d-flex justify-content-end align-items-center' >
                                 <div style={{ display: showDateRiwayatTranfer }}>
-                                    <DateRangePicker 
-                                        value={stateRiwayatTransfer} 
-                                        ranges={column} 
-                                        onChange={(e) => pickDateRiwayatTransfer(e)} 
-                                        character=' - ' 
-                                        cleanable={true} 
-                                        placement={'bottomEnd'} 
-                                        size='lg' 
-                                        appearance="default" 
-                                        placeholder="Select Date Range" 
-                                        disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}  
+                                    <DateRangePicker
+                                        value={stateRiwayatTransfer}
+                                        ranges={column}
+                                        onChange={(e) => pickDateRiwayatTransfer(e)}
+                                        character=' - '
+                                        cleanable={true}
+                                        placement={'bottomEnd'}
+                                        size='lg'
+                                        appearance="default"
+                                        placeholder="Select Date Range"
+                                        disabledDate={combine(allowedMaxDays(7), allowedRange(threeMonthAgo, currentDate))}
                                         className='datePicker'
                                         locale={Locale}
                                         format="yyyy-MM-dd"
@@ -881,17 +872,17 @@ const ListRiwayatSubAccount = () => {
                             <Col xs={5}>
                                 <Row>
                                     <Col xs={6} style={{ width: "unset" }}>
-                                        <button 
-                                            className={((inputHandle.periodeRiwayatTransfer === "2") || (inputHandle.periodeRiwayatTransfer === "3") || (inputHandle.periodeRiwayatTransfer === "4") || (inputHandle.periodeRiwayatTransfer !== 0 && dateRangeRiwayatTranfer.length !== 0) ) ? "btn-ez-on" : "btn-ez"} 
-                                            disabled={inputHandle.periodeRiwayatTransfer === 0 || ( inputHandle.periodeRiwayatTransfer === "7" && dateRangeRiwayatTranfer.length === 0) } 
+                                        <button
+                                            className={((inputHandle.periodeRiwayatTransfer === "2") || (inputHandle.periodeRiwayatTransfer === "3") || (inputHandle.periodeRiwayatTransfer === "4") || (inputHandle.periodeRiwayatTransfer !== 0 && dateRangeRiwayatTranfer.length !== 0) ) ? "btn-ez-on" : "btn-ez"}
+                                            disabled={inputHandle.periodeRiwayatTransfer === 0 || ( inputHandle.periodeRiwayatTransfer === "7" && dateRangeRiwayatTranfer.length === 0) }
                                             onClick={() => filterListRiwayatTransaksi(inputHandle.idTrans, inputHandle.idReffTrans, inputHandle.idReff, orderId, orderField, inputHandle.fiturTransaksi, inputHandle.namaPartner, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer, 1, inputHandle.rowPerPage)}
                                         >
                                             Terapkan
                                         </button>
                                     </Col>
                                     <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
-                                        <button className={(inputHandle.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranfer.length !== 0 || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.idReff.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.namaPartner.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.fiturTransaksi !== 0)) ? "btn-reset" : "btn-ez"} 
-                                        disabled={inputHandle.periodeRiwayatTransfer === 0 || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.idReff.length === 0) || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.namaPartner.length === 0)|| (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.fiturTransaksi === 0)} 
+                                        <button className={(inputHandle.periodeRiwayatTransfer !== 0 || dateRangeRiwayatTranfer.length !== 0 || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.idReff.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.namaPartner.length !== 0) || (dateRangeRiwayatTranfer.length !== 0 && inputHandle.fiturTransaksi !== 0)) ? "btn-reset" : "btn-ez"}
+                                        disabled={inputHandle.periodeRiwayatTransfer === 0 || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.idReff.length === 0) || (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.namaPartner.length === 0)|| (inputHandle.periodeRiwayatTransfer === 0 && inputHandle.fiturTransaksi === 0)}
                                         onClick={() => resetButtonHandle()}
                                     >
                                             Atur Ulang
@@ -901,7 +892,7 @@ const ListRiwayatSubAccount = () => {
                             </Col>
                         </Row>
                         {
-                            dataRiwayatTransfer.length !== 0 && 
+                            dataRiwayatTransfer.length !== 0 &&
                             <div className='mt-3 mb-5'>
                                 <Link to={"#"} onClick={() => ExportReportRiwayatTransfer(isFilterRiwayatTransfer, inputHandle.idTrans, inputHandle.idReffTrans, inputHandle.idReff, inputHandle.fiturTransaksi, inputHandle.namaPartner,orderId, orderField, dateRangeRiwayatTranfer, inputHandle.periodeRiwayatTransfer)} className="export-span">Export</Link>
                             </div>
@@ -957,10 +948,10 @@ const ListRiwayatSubAccount = () => {
                                                     </tbody>
                                                 )
                                             }
-                                        </table> 
+                                        </table>
                                         {pendingRiwayatTransfer && (<div className='text-center'><CustomLoader /></div>)}
                                     </>
-                                    
+
                                 ) : (
                                     <div id='table-body' style={{ overflowX: 'auto', maxWidth: 'max-content' }} className='scroll-confirm'>
                                         <>

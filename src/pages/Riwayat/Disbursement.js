@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Image, Modal, Button, Toast} from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
+import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession, CustomLoader } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -502,7 +501,6 @@ function Disbursement() {
 
     async function disbursementReport(dateNow, currentPage, userRole, lang) {
         try {
-            console.log(dateNow, 'dateNow');
             let newDate = ''
             dateNow.split('/').forEach((item, i) => i === 0 ? newDate = item : newDate = `${item}-${newDate}`)
             if (userRole !== "102") {
@@ -1261,12 +1259,6 @@ function Disbursement() {
             $('#detailakunspan').addClass('menu-detail-akun-span-active')
         }
     }
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px" }}>

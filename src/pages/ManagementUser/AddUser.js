@@ -200,8 +200,6 @@ function AddUser() {
     setSelectedGrupName(e)
   }
 
-  console.log(selectedGrupName, "selectedGrupName");
-
   const [dataBrandInQris, setDataBrandInQris] = useState([])
   const [selectedBrandName, setSelectedBrandName] = useState([])
 

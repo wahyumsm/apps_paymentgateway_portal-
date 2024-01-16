@@ -1,15 +1,14 @@
-import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import React, { useCallback } from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import noteIconGrey from "../../assets/icon/note_icon_grey.svg"
 import copy from "../../assets/icon/iconcopy_icon.svg"
 import DataTable from 'react-data-table-component'
 import CopyToClipboard from "react-copy-to-clipboard";
-import { BaseURL, errorCatch, getRole, getToken, language, replaceText, setUserSession } from '../../function/helpers'
+import { BaseURL, errorCatch, getRole, getToken, language, replaceText, setUserSession, CustomLoader } from '../../function/helpers'
 import axios from 'axios'
 import ReactSelect, { components } from 'react-select';
 import encryptData from '../../function/encryptData'
@@ -383,12 +382,6 @@ function DaftarUserDirectDebit() {
             </div>
         );
     };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
 
     // console.log(language, "language");
 

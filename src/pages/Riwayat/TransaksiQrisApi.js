@@ -159,8 +159,6 @@ const TransaksiQrisApi = () => {
         }
     }
 
-    console.log(dataOutletInQris, "dataOutletInQris");
-
     async function getIdKasirInQrisTransactionHandler(storeNou) {
         try {
             const auth = "Bearer " + access_token

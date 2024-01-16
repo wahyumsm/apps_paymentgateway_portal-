@@ -40,14 +40,13 @@ import arrowDown from "../assets/img/icons/arrow_down.svg";
 import arrowUp from "../assets/img/icons/arrow_up.svg";
 import circleInfo from "../assets/icon/circle-info.svg"
 import { useHistory } from "react-router-dom";
-import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero, language } from "../function/helpers";
+import { BaseURL, errorCatch, getRole, convertToRupiah, getToken, removeUserSession, RouteTo, setRoleSession, convertDateTimeStamp, convertFormatNumber, setUserSession, deleteZero, language, CustomLoader } from "../function/helpers";
 import axios from "axios";
 import { GetUserDetail } from "../redux/ActionCreators/UserDetailAction";
 import { useDispatch, useSelector } from "react-redux";
 import DropdownToggle from "@themesberg/react-bootstrap/lib/esm/DropdownToggle";
 import { agenLists } from "../data/tables";
 import DataTable from "react-data-table-component";
-import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 import checklistCircle from '../assets/img/icons/checklist_circle.svg';
 import CopyIcon from '../assets/icon/carbon_copy.svg'
 import Jam from '../assets/icon/jam_icon.svg'
@@ -490,14 +489,6 @@ export default (props) => {
           },
       },
   };
-
-  const CustomLoader = () => (
-    <div style={{ padding: '24px' }}>
-      <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-      <div>Loading...</div>
-    </div>
-  );
-
 
   const Notification = (props) => {
     const { link, sender, image, time, message, read = false } = props;

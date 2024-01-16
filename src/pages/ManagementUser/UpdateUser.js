@@ -74,7 +74,6 @@ function UpdateUser() {
         // })
         setSelectedAgenUpdateUser([])
     }
-    console.log(inputHandle.roleUser, "inputHandle.roleUser");
     
     const [dataGrupInQris, setDataGrupInQris] = useState([])
     const [selectedGrupName, setSelectedGrupName] = useState([])

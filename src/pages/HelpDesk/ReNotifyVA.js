@@ -1,12 +1,11 @@
-import { Button, Col, Form, Image, Modal, Row } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData';
-import { BaseURL, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers';
 import DataTable from 'react-data-table-component';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import JSONPretty from 'react-json-pretty';
 
 function ReNotifyVA() {
@@ -155,13 +154,6 @@ function ReNotifyVA() {
         },
     };
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          <div>Loading...</div>
-        </div>
-      );
-
     useEffect(() => {
         if (!access_token) {
             history.push("/login")
@@ -170,7 +162,7 @@ function ReNotifyVA() {
         //     history.push("/404")
         // }
     }, [access_token, user_role])
-    
+
 
     return (
         <div className="content-page mt-6">
@@ -375,8 +367,8 @@ function ReNotifyVA() {
                         <p style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, marginBottom: "unset" }} className="text-center">Pastikan transaksi tersebut telah berhasil.</p>
                     </div>
                     <p>
-                        
-                    </p>                
+
+                    </p>
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSubmit(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
                         <Button onClick={() => submitReNotify(noVA)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
@@ -406,8 +398,8 @@ function ReNotifyVA() {
                                 <div style={{ fontFamily: "Nunito", fontSize: 16 }} dangerouslySetInnerHTML={{ __html: getDetailNotification.response_data }} />
                             )
                         }
-                    </div>   
-                    <hr />           
+                    </div>
+                    <hr />
                     <div className="d-flex justify-content-center my-3">
                         <Button onClick={() => setShowModalDataNotify(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">OKE</Button>
                     </div>

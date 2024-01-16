@@ -1,4 +1,4 @@
-import { Button, Col, Container, Form, Image, Modal, Row } from '@themesberg/react-bootstrap';
+import { Button, Col, Container, Form, Modal, Row } from '@themesberg/react-bootstrap';
 import axios from 'axios';
 import React, { useEffect } from 'react'
 import { useState } from 'react';
@@ -7,8 +7,7 @@ import ReactSelect, { components } from 'react-select';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import encryptData from '../../function/encryptData';
 import * as XLSX from "xlsx"
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession, CustomLoader } from '../../function/helpers';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import Pagination from 'react-js-pagination';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -995,13 +994,6 @@ const VaDanPaymentLink = () => {
             },
         },
     };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          <div>Loading...</div>
-        </div>
-    );
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {

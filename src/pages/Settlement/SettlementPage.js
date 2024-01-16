@@ -1,15 +1,14 @@
-import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
+import { Col, Form, Row } from '@themesberg/react-bootstrap'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import React, { useEffect, useState } from 'react'
 import Pagination from 'react-js-pagination';
 import { Link, useHistory } from 'react-router-dom';
 import ReactSelect, { components } from 'react-select'
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession, CustomLoader } from '../../function/helpers';
 import * as XLSX from "xlsx"
 import axios from 'axios';
 import encryptData from '../../function/encryptData';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { eng, ind } from '../../components/Language';
 
@@ -1095,12 +1094,6 @@ function SettlementPage() {
         }
     }
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
-
     // console.log(user_role, user_role !== "102" || user_role !== "104",'user_role' );
 
     return (
@@ -1231,8 +1224,8 @@ function SettlementPage() {
                                         <Col xs={6} style={{ width: "unset", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => resetButtonHandle("admin")}
-                                                className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0 || dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0 || dateRangeSettlement.length !== 0 && selectedBankSettlement[0].value !== undefined) ? "btn-reset" : "btn-ez-reset"}
-                                                disabled={inputHandle.periodeSettlement === 0 || inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0 || inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0 || inputHandle.periodeSettlement === 0 && selectedBankSettlement[0].value === undefined}
+                                                className={(inputHandle.periodeSettlement || dateRangeSettlement.length !== 0 || (dateRangeSettlement.length !== 0 && inputHandle.idTransaksiSettlement.length !== 0) || (dateRangeSettlement.length !== 0 && inputHandle.statusSettlement.length !== 0) || (dateRangeSettlement.length !== 0 && inputHandle.fiturSettlement.length !== 0) || (dateRangeSettlement.length !== 0 && selectedBankSettlement[0].value !== undefined)) ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={inputHandle.periodeSettlement === 0 || (inputHandle.periodeSettlement === 0 && inputHandle.idTransaksiSettlement.length === 0) || (inputHandle.periodeSettlement === 0 && inputHandle.statusSettlement.length === 0) || (inputHandle.periodeSettlement === 0 && inputHandle.fiturSettlement.length === 0) || (inputHandle.periodeSettlement === 0 && selectedBankSettlement[0].value === undefined)}
                                             >
                                                 Atur Ulang
                                             </button>
@@ -1343,8 +1336,8 @@ function SettlementPage() {
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => resetButtonHandle("partner")}
-                                                className={(inputHandle.periodeSettlementPartner || dateRangeSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0 || dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0) ? "btn-reset" : "btn-ez-reset"}
-                                                disabled={inputHandle.periodeSettlementPartner === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0 || inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0}
+                                                className={(inputHandle.periodeSettlementPartner || dateRangeSettlementPartner.length !== 0 || (dateRangeSettlementPartner.length !== 0 && inputHandle.idTransaksiSettlementPartner.length !== 0) || (dateRangeSettlementPartner.length !== 0 && inputHandle.statusSettlementPartner.length !== 0) || (dateRangeSettlementPartner.length !== 0 && inputHandle.fiturSettlementPartner.length !== 0)) ? "btn-reset" : "btn-ez-reset"}
+                                                disabled={inputHandle.periodeSettlementPartner === 0 || (inputHandle.periodeSettlementPartner === 0 && inputHandle.idTransaksiSettlementPartner.length === 0) || (inputHandle.periodeSettlementPartner === 0 && inputHandle.statusSettlementPartner.length === 0) || (inputHandle.periodeSettlementPartner === 0 && inputHandle.fiturSettlementPartner.length === 0)}
                                             >
                                                 {language === null ? eng.aturUlang : language.aturUlang}
                                             </button>
