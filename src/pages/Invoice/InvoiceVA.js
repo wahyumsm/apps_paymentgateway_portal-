@@ -30,7 +30,10 @@ function InvoiceVA() {
     const [inputHandle, setInputHandle] = useState({})
     const [totalAmount, setTotalAmount] = useState(0)
     const [taxTotalAmount, setTaxTotalAmount] = useState(0)
+    const [invDpp, setInvDpp] = useState(0)
     const [selectedPartnerInvoiceVA, setSelectedPartnerInvoiceVA] = useState([])
+    const [selectedMonthYear, setSelectedMonthYear] = useState("")
+    const [invoiceType, setInvoiceType] = useState(0)
 
     const Option = (props) => {
         return (
@@ -69,14 +72,14 @@ function InvoiceVA() {
             }
         }
         totalTax = totalBiaya*0.11
-        setTotalAmount(totalBiaya)
-        setTaxTotalAmount(totalTax)
+        // setTotalAmount(totalBiaya)
+        // setTaxTotalAmount(totalTax)
         // console.log(totalBiaya + totalTax);
         setShowModalKonfirmasiInvoiceVA(true)
     }
 
     const SaveAsPDFHandler = () => {
-        generateInvoice(dateRangeSettlement, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, true)
+        generateInvoice(selectedMonthYear, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, invoiceType, true)
         // const dom = document.getElementById('tableInvoice');
         const dom = document.getElementById('tableInvoiceModal');
         toPng(dom)
@@ -94,26 +97,26 @@ function InvoiceVA() {
                         floatPrecision: 16
                     });
                     pdf.setFont('Nunito');
-            
+
                     // Define reused data
                     const imgProps = pdf.getImageProperties(img);
                     const imageType = imgProps.fileType;
                     const pdfWidth = pdf.internal.pageSize.getWidth();
-            
+
                     // Calculate the number of pages.
                     const pxFullHeight = imgProps.height;
                     const pxPageHeight = Math.floor((imgProps.width * 12.5) / 5.5);
                     const nPages = Math.ceil(pxFullHeight / pxPageHeight);
-            
+
                     // Define pageHeight separately so it can be trimmed on the final page.
                     let pageHeight = pdf.internal.pageSize.getHeight();
-            
+
                     // Create a one-page canvas to split up the full image.
                     const pageCanvas = document.createElement('canvas');
                     const pageCtx = pageCanvas.getContext('2d');
                     pageCanvas.width = imgProps.width;
                     pageCanvas.height = pxPageHeight;
-            
+
                     for (let page = 0; page < nPages; page++) {
                         // Trim the final page to reduce file size.
                         if (page === nPages - 1 && pxFullHeight % pxPageHeight !== 0) {
@@ -126,10 +129,10 @@ function InvoiceVA() {
                         pageCtx.fillStyle = 'white';
                         pageCtx.fillRect(0, 0, w, h);
                         pageCtx.drawImage(img, 0, page * pxPageHeight, w, h, 0, 0, w, h);
-            
+
                         // Add the page to the PDF.
                         if (page) pdf.addPage();
-            
+
                         const imgData = pageCanvas.toDataURL(`image/${imageType}`, 1);
                         // data 8
                         // pdf.addImage(imgData, imageType, 45, 55, (pdfWidth*0.8), (pageHeight*0.8));
@@ -151,23 +154,23 @@ function InvoiceVA() {
     };
 
     function resetButtonHandle() {
-        setStateSettlement(null)
-        setDateRangeSettlement([])
+        setSelectedMonthYear("")
         setSelectedPartnerInvoiceVA([])
         setInvoiceDate("")
         setIsIgnoreZeroAmount(false)
+        setInvoiceType(0)
     }
 
     // function handleChangeNamaPartner(e) {
     //     setNamaPartner(e.target.value)
     // }
 
-    function pickDateSettlement(item) {
-        setStateSettlement(item)
-        if (item !== null) {
-            item = item.map(el => el.toLocaleDateString('en-CA'))
-            setDateRangeSettlement(item)
-        }
+    function handleOnChangeMonthPicker(e) {
+        setSelectedMonthYear(e.target.value)
+    }
+
+    function handleOnChangeInvType(e) {
+        setInvoiceType(e.target.value)
     }
 
     // function handleSwitch(e) {
@@ -215,10 +218,10 @@ function InvoiceVA() {
         }
     }
 
-    async function generateInvoice(dateRange, partnerId, dateInv, includeZeroAmount, isSave) {
+    async function generateInvoice(monthYear, partnerId, dateInv, includeZeroAmount, invType, isSave) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"date_from": "${dateRange[0]}", "date_to": "${dateRange[1]}", "subpartner_id" :"${partnerId}", "inv_date": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "is_save": ${isSave}}`);
+            const dataParams = encryptData(`{"year": "${monthYear.split("-")[0]}", "month": "${monthYear.split("-")[1]}", "subpartner_id" :"${partnerId}", "inv_date": "${dateInv}", "include_zero_amount": "${includeZeroAmount}", "inv_type": ${invType}, "is_save": ${isSave}}`);
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -233,8 +236,9 @@ function InvoiceVA() {
                     objQTY[`priceTotal${i+1}`] = e.price_total
                 });
                 setDataInvoice(invoiceData.data.response_data)
-                setTotalAmount(invoiceData.data.response_data.inv_dpp)
+                setTotalAmount(invoiceData.data.response_data.inv_total_price)
                 setTaxTotalAmount(invoiceData.data.response_data.inv_ppn)
+                setInvDpp(invoiceData.data.response_data.inv_dpp)
                 setInvoiceNumber(invoiceData.data.response_data.inv_no)
                 setInputHandle(objQTY)
             } else if (invoiceData.status === 200 && invoiceData.data.response_code === 200 && invoiceData.data.response_new_token !== null) {
@@ -246,8 +250,9 @@ function InvoiceVA() {
                     objQTY[`priceTotal${i+1}`] = e.price_total
                 });
                 setDataInvoice(invoiceData.data.response_data)
-                setTotalAmount(invoiceData.data.response_data.inv_dpp)
+                setTotalAmount(invoiceData.data.response_data.inv_total_price)
                 setTaxTotalAmount(invoiceData.data.response_data.inv_ppn)
+                setInvDpp(invoiceData.data.response_data.inv_dpp)
                 setInvoiceNumber(invoiceData.data.response_data.inv_no)
                 setInputHandle(objQTY)
             }
@@ -280,7 +285,7 @@ function InvoiceVA() {
         }
         listPartner()
     }, [access_token, user_role])
-    
+
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Invoice</span>
@@ -292,19 +297,12 @@ function InvoiceVA() {
                     <div className='base-content mt-3 mb-3'>
                         <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                         <Row className='mt-2 mb-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span className='me-5'>Periode<span style={{ color: "red" }}>*</span></span>
-                                <div>
-                                    <DateRangePicker 
-                                        onChange={pickDateSettlement}
-                                        value={stateSettlement}
-                                        clearIcon={null}
-                                        className='me-3'
-                                    />
-                                </div>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Periode<span style={{ color: "red" }}>*</span></span>
+                                <input onChange={handleOnChangeMonthPicker} value={selectedMonthYear} type='month' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
                             </Col>
-                            <Col xs={6} className="d-flex justify-content-start align-items-center">
-                                <span className='me-5'>Nama Partner <span style={{ color: "red" }}>*</span></span>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Nama Partner <span style={{ color: "red" }}>*</span></span>
                                 <div className="dropdown dropTopupPartner">
                                     <ReactSelect
                                         // isMulti
@@ -319,27 +317,23 @@ function InvoiceVA() {
                                         styles={customStylesSelectedOption}
                                     />
                                 </div>
-                                {/* <Form.Select name='namaPartner' className="input-text-ez" style={{ marginLeft: 65 }} value={namaPartner} onChange={(e) => setNamaPartner(e.target.value)}>
-                                    <option defaultChecked disabled value="">Pilih Nama Partner</option>
-                                    {
-                                        dataListPartner.map((item, index) => {
-                                            return (
-                                                <option key={index} value={item.partner_id}>{item.nama_perusahaan}</option>
-                                            )
-                                        })
-                                    }
-                                </Form.Select> */}
+                            </Col>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Tipe Invoice <span style={{ color: "red" }}>*</span></span>
+                                <Form.Select name="invoiceType" value={invoiceType} onChange={(e) => handleOnChangeInvType(e)} className='input-text-riwayat' style={{ display: "inline" }}>
+                                    <option defaultChecked disabled value={0}>Pilih Tipe Invoice</option>
+                                    <option value={100}>Bank</option>
+                                    <option value={101}>E-Money</option>
+                                </Form.Select>
                             </Col>
                         </Row>
                         <Row className='mt-2 mb-4'>
-                            <Col xs={4} className="d-flex justify-content-start align-items-center me-4">
-                                <span className='me-3'>Tanggal Invoice <span style={{ color: "red" }}>*</span></span>
-                                <div>
-                                    <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
-                                </div>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Tanggal Invoice <span style={{ color: "red" }}>*</span></span>
+                                <input onChange={(e) => setInvoiceDate(e.target.value)} value={invoiceDate} type='date' style={{ width: 205, height: 40, border: '1.5px solid', borderRadius: 8 }} />
                             </Col>
-                            <Col xs={6} className="d-flex justify-content-start align-items-center">
-                                <span className='me-4'>Include Zero Amount</span>
+                            <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                <span>Include Zero Amount</span>
                                 <div>
                                     <Form.Check
                                         type="switch"
@@ -352,18 +346,18 @@ function InvoiceVA() {
                             </Col>
                         </Row>
                         <button
-                            onClick={() => generateInvoice(dateRangeSettlement, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, false)}
-                            className={(stateSettlement === null || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0) ? "btn-off" : "add-button"}
+                            onClick={() => generateInvoice(selectedMonthYear, selectedPartnerInvoiceVA.length !== 0 ? selectedPartnerInvoiceVA[0].value : "", invoiceDate, isIgnoreZeroAmount, invoiceType, false)}
+                            className={(selectedMonthYear.length === 0 || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0 || invoiceType === 0) ? "btn-off" : "add-button"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, marginRight: 20 }}
-                            disabled={(stateSettlement === null || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0) ? true : false}
+                            disabled={(selectedMonthYear.length === 0 || selectedPartnerInvoiceVA.length === 0 || invoiceDate.length === 0 || invoiceType === 0) ? true : false}
                         >
                             Generate
                         </button>
                         <button
                             onClick={() => resetButtonHandle()}
-                            className={(stateSettlement !== null && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0) ? "btn-reset" : "btn-ez-reset"}
+                            className={(selectedMonthYear.length !== 0 && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0 && invoiceType !== 0) ? "btn-reset" : "btn-ez-reset"}
                             style={{ maxWidth: 'fit-content', padding: 7, height: 40, verticalAlign: "middle" }}
-                            disabled={(stateSettlement !== null && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0) ? false : true}
+                            disabled={(selectedMonthYear.length !== 0 && selectedPartnerInvoiceVA.length !== 0 && invoiceDate.length !== 0 && invoiceType !== 0) ? false : true}
                         >
                             Atur Ulang
                         </button>
@@ -434,7 +428,7 @@ function InvoiceVA() {
                                         <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                             <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                             <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                            <td style={{ paddingRight: 366, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                            <td style={{ paddingRight: 281, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456</td>
                                         </tr>
                                     {/* </tbody> */}
                                 </table>
@@ -473,11 +467,11 @@ function InvoiceVA() {
                                                     <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
                                                         <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
                                                         <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
-                                                        <td style={{ padding: 0, textAlign: "end", borderRight: 'hidden' }}>
-                                                            <input name={`QTYTransaksi${idx+1}`} onChange={(e) => handleChange(e, idx, inputHandle[`QTYTransaksi${idx+1}`], inputHandle[`priceUnit${idx+1}`])} value={inputHandle[`QTYTransaksi${idx+1}`] === undefined ? 0 : convertFormatNumber(inputHandle[`QTYTransaksi${idx+1}`])} type='number' style={{ width: 75, height: 40, borderRadius: 8, border: '1px solid #E0E0E0' }} placeholder='0'/>
-                                                            {/* { convertFormatNumber(item.qty_trx) } */}
-                                                        </td>
-                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertToRupiah(inputHandle[`QTYTransaksi${idx+1}`], false, 0) }</td>
+                                                        {/* <td style={{ padding: 0, textAlign: "end", borderRight: 'hidden' }}>
+                                                            <input disabled name={`QTYTransaksi${idx+1}`} onChange={(e) => handleChange(e, idx, inputHandle[`QTYTransaksi${idx+1}`], inputHandle[`priceUnit${idx+1}`])} value={inputHandle[`QTYTransaksi${idx+1}`] === undefined ? 0 : convertFormatNumber(inputHandle[`QTYTransaksi${idx+1}`])} type='number' style={{ width: 75, height: 40, border: 'unset' }} placeholder='0'/>
+                                                        </td> */}
+                                                        <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "-"}</td>
                                                         <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
                                                     </tr>
                                                 )
@@ -516,7 +510,7 @@ function InvoiceVA() {
                                             <td></td>
                                             <td>Harga Jual</td>
                                             <td style={{ textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0,00"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
@@ -524,7 +518,7 @@ function InvoiceVA() {
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0,00</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
@@ -532,7 +526,8 @@ function InvoiceVA() {
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(invDpp !== undefined) ? convertToRupiah(invDpp, true, 2).slice(3) : "0,00"}</td>
+                                            {/* <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td> */}
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
@@ -540,7 +535,7 @@ function InvoiceVA() {
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0,00"}</td>
                                         </tr>
                                         <tr style={{ fontWeight: 700 }}>
                                             <td style={{ border: 'hidden' }}></td>
@@ -548,7 +543,8 @@ function InvoiceVA() {
                                             <td style={{ border: 'hidden' }}></td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
                                             <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_dpp !== undefined || dataInvoice.inv_ppn !== undefined) ? convertToRupiah((totalAmount + taxTotalAmount), true, 2).slice(3) : "0"}</td>
+                                            <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_total !== undefined) ? convertToRupiah(dataInvoice.inv_total, true, 2).slice(3) : "0,00"}</td>
+                                            {/* <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_dpp !== undefined || dataInvoice.inv_ppn !== undefined) ? convertToRupiah((totalAmount + taxTotalAmount), true, 2).slice(3) : "0"}</td> */}
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -556,7 +552,7 @@ function InvoiceVA() {
                             <div style={{ fontSize: 13, fontWeight: 700 }}>
                                 <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                     <tr>
-                                        <td>Terbilang: {(dataInvoice.inv_dpp !== undefined || dataInvoice.inv_ppn !== undefined) ? terbilangDisbursement((totalAmount + taxTotalAmount).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
+                                        <td>Terbilang: {(dataInvoice.inv_total !== undefined) ? terbilangDisbursement((dataInvoice.inv_total).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                     </tr>
                                 </table>
                                 <div>Remark:</div>
@@ -641,7 +637,7 @@ function InvoiceVA() {
                                     <tr style={{ borderBottom: 'solid', borderLeft: 'solid', borderRight: 'solid' }}>
                                         <td style={{ paddingLeft: 50, width: '20%', paddingBottom: 20, borderRight: 'hidden', verticalAlign: 'baseline' }}>Alamat</td>
                                         <td style={{ borderRight: 'hidden', verticalAlign: 'baseline' }}>:</td>
-                                        <td style={{ paddingRight: 366, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456 FAX : (021) 63870457</td>
+                                        <td style={{ paddingRight: 214, paddingBottom: 20, wordBreak: 'break-word', whiteSpace: 'normal', verticalAlign: 'baseline', fontWeight: 700 }}>Jl. AM. SANGAJI NO.24 PETOJO UTARA, GAMBIR, JAKARTA PUSAT - 10130 TELP : (021) 63870456</td>
                                     </tr>
                                 {/* </tbody> */}
                             </table>
@@ -680,8 +676,8 @@ function InvoiceVA() {
                                                 <tr key={idx} style={{ border: 'solid', borderBottom: 'hidden', fontWeight: 700 }}>
                                                     <td style={{ paddingLeft: 16, width: 55, textAlign: "center", borderRight: 'hidden' }}>{ idx + 1 }</td>
                                                     <td style={{ borderRight: 'hidden', wordBreak: 'break-word', whiteSpace: 'normal' }}>{ item.prod_name }</td>
-                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ inputHandle[`QTYTransaksi${idx+1}`] }</td>
-                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "Rp 0"}</td>
+                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{ convertToRupiah(inputHandle[`QTYTransaksi${idx+1}`], false, 0) }</td>
+                                                    <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_unit !== 0) ? convertToRupiah(inputHandle[`priceUnit${idx+1}`], true, 2) : "-"}</td>
                                                     <td style={{ textAlign: "end", borderRight: 'hidden' }}>{(item.price_total !== 0) ? convertToRupiah(inputHandle[`priceTotal${idx+1}`], true, 2) : "Rp 0"}</td>
                                                 </tr>
                                             )
@@ -720,7 +716,7 @@ function InvoiceVA() {
                                         <td></td>
                                         <td>Harga Jual</td>
                                         <td style={{ textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                        <td style={{ textAlign: "end" }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0,00"}</td>
                                         {/* <td style={{ textAlign: "end" }}>{(dataInvoice.inv_dpp !== undefined) ? convertToRupiah(dataInvoice.inv_dpp, true, 2).slice(3) : "0"}</td> */}
                                     </tr>
                                     <tr style={{ fontWeight: 700 }}>
@@ -729,7 +725,7 @@ function InvoiceVA() {
                                         <td style={{ border: 'hidden' }}></td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>Potongan Harga</td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>0,00</td>
                                     </tr>
                                     <tr style={{ fontWeight: 700 }}>
                                         <td style={{ border: 'hidden' }}></td>
@@ -737,7 +733,7 @@ function InvoiceVA() {
                                         <td style={{ border: 'hidden' }}></td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>DPP</td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined) ? convertToRupiah(totalAmount, true, 2).slice(3) : "0"}</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(invDpp !== undefined) ? convertToRupiah(invDpp, true, 2).slice(3) : "0,00"}</td>
                                     </tr>
                                     <tr style={{ fontWeight: 700 }}>
                                         <td style={{ border: 'hidden' }}></td>
@@ -745,7 +741,7 @@ function InvoiceVA() {
                                         <td style={{ border: 'hidden' }}></td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'solid' }}>PPN 11%</td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'solid', textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0"}</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'solid' }}>{(taxTotalAmount !== undefined) ? convertToRupiah(taxTotalAmount, true, 2).slice(3) : "0,00"}</td>
                                     </tr>
                                     <tr style={{ fontWeight: 700 }}>
                                         <td style={{ border: 'hidden' }}></td>
@@ -753,7 +749,8 @@ function InvoiceVA() {
                                         <td style={{ border: 'hidden' }}></td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>Total</td>
                                         <td style={{ borderRight: 'hidden', borderBottom: 'hidden', textAlign: "end" }}>: Rp</td>
-                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined || taxTotalAmount !== undefined) ? convertToRupiah((totalAmount + taxTotalAmount), true, 2).slice(3) : "0"}</td>
+                                        <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(dataInvoice.inv_total !== undefined) ? convertToRupiah(dataInvoice.inv_total, true, 2).slice(3) : "0,00"}</td>
+                                        {/* <td style={{ textAlign: "end", width: 200, borderRight: 'hidden', borderBottom: 'hidden', borderTop: 'solid' }}>{(totalAmount !== undefined || taxTotalAmount !== undefined) ? convertToRupiah((totalAmount + taxTotalAmount), true, 2).slice(3) : "0"}</td> */}
                                     </tr>
                                 </tbody>
                             </Table>
@@ -761,7 +758,7 @@ function InvoiceVA() {
                         <div style={{ fontSize: 13, fontWeight: 700 }}>
                             <table style={{ width: '100%', backgroundColor: 'rgb(242, 242, 242)', fontStyle: 'italic' }}>
                                 <tr>
-                                    <td>Terbilang: {(totalAmount !== undefined || taxTotalAmount !== undefined) ? terbilangDisbursement((totalAmount + taxTotalAmount).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
+                                    <td>Terbilang: {(dataInvoice.inv_total !== undefined) ? terbilangDisbursement((dataInvoice.inv_total).toFixed(2)).toUpperCase() + " RUPIAH" : "NOL RUPIAH"}</td>
                                 </tr>
                             </table>
                             <div>Remark:</div>

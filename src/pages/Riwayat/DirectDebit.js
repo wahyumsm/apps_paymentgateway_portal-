@@ -211,7 +211,7 @@ const RiwayatDirectDebit = () => {
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang
+                'Accept-Language' : user_role !== "102" ? "ID" : lang
             }
             const dataRiwayatDirectDebit = await axios.post(BaseURL + "/Report/GetListTransDirectDebit", { data: dataParams }, { headers: headers })
             if (dataRiwayatDirectDebit.data.response_code === 200 && dataRiwayatDirectDebit.status === 200 && dataRiwayatDirectDebit.data.response_new_token.length === 0) {
@@ -244,7 +244,7 @@ const RiwayatDirectDebit = () => {
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang
+                'Accept-Language' : user_role !== "102" ? "ID" : lang
             }
             const dataRiwayatDirectDebit = await axios.post(BaseURL + "/Report/GetListTransDirectDebit", { data: dataParams }, { headers: headers })
             if (dataRiwayatDirectDebit.data.response_code === 200 && dataRiwayatDirectDebit.status === 200 && dataRiwayatDirectDebit.data.response_new_token.length === 0) {
@@ -607,17 +607,17 @@ const RiwayatDirectDebit = () => {
                 </span>{" "}
                 <img alt="" src={breadcrumbsIcon} /> &nbsp;
                 <span style={{ cursor: "pointer" }}>
-                    {language === null ? eng.transaksi : language.transaksi}
+                    {user_role !== "102" ? "Transaksi" : (language === null ? eng.transaksi : language.transaksi)}
                 </span>{" "} &nbsp;
                 <img alt="" src={breadcrumbsIcon} /> &nbsp;
-                    {language === null ? eng.directDebit : language.directDebit}
+                    {user_role !== "102" ? "Direct Debit" : (language === null ? eng.directDebit : language.directDebit)}
             </span>
             <div className="head-title">
-                <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{language === null ? eng.transaksi : language.transaksi}</h2>
+                <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>{user_role !== "102" ? "Transaksi" : (language === null ? eng.transaksi : language.transaksi)}</h2>
             </div>
-            <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>{user_role === "102" ? (language === null ? eng.transaksiDirectDebitUser : language.transaksiDirectDebitUser) : `Transaksi Direct Debit Partner`}</h2>
+            <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>{user_role === "102" ? (user_role !== "102" ? "Transaksi Direct Debit User" : (language === null ? eng.transaksiDirectDebitUser : language.transaksiDirectDebitUser)) : `Transaksi Direct Debit Partner`}</h2>
             <div className='base-content'>
-                <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>{language === null ? eng.filter : language.filter}</span>
+                <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>{user_role !== "102" ? "Filter" : (language === null ? eng.filter : language.filter)}</span>
                 {
                     user_role === "102" ? (
                         <>
@@ -735,9 +735,12 @@ const RiwayatDirectDebit = () => {
                                     </Row>
                                 </Col>
                             </Row>
-                            <div className='mt-3 mb-5'>
-                                <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >{language === null ? eng.export : language.export}</Link>
-                            </div>
+                            {
+                                dataDirectDebit.length !== 0 &&
+                                <div className='mt-3 mb-5'>
+                                    <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, Number(inputHandle.idTrans), dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >{language === null ? eng.export : language.export}</Link>
+                                </div>
+                            }
                             <div className="div-table mt-3 scroll-direct-debit">
                                 <DataTable
                                     columns={columnPartner}
@@ -915,9 +918,12 @@ const RiwayatDirectDebit = () => {
                                     </button>
                                 </Col>
                             </Row>
-                            <div className='mt-3 mb-5'>
-                                <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >Export</Link>
-                            </div>
+                            {
+                                dataDirectDebit.length !== 0 &&
+                                <div className='mt-3 mb-5'>
+                                    <Link onClick={() => ExportDataDirectDebit(isFilterDirectDebit, inputHandle.idTrans, dateRangeDirectDebit, inputHandle.periode, selectedPartnerDirectDebit.length !== 0 ? selectedPartnerDirectDebit[0].value : "", selectedNamaUserDirectDebit.length !== 0 ? selectedNamaUserDirectDebit[0].value : "", inputHandle.partnerTransId, inputHandle.fiturId, inputHandle.statusId)} className='export-span' style={{ textDecoration: "underline", color: "#077E86" }} >Export</Link>
+                                </div>
+                            }
                             <div className="div-table mt-3 scroll-direct-debit">
                                 <DataTable
                                     columns={columnAdmin}

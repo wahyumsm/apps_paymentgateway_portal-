@@ -8,7 +8,7 @@ import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setU
 import { Button, Col, Form, FormControl, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap'
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCircle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import edit from "../../assets/icon/edit_icon.svg";
 import deleted from "../../assets/icon/delete_icon.svg";
 import noteIconGrey from "../../assets/icon/note_icon_grey.svg";
@@ -88,6 +88,7 @@ function DisbursementPage() {
     const [dataFromUpload, setDataFromUpload] = useState([])
     const [dataOriginFromUpload, setDataOriginFromUpload] = useState([])
     const [dataFromUploadExcel, setDataFromUploadExcel] = useState([])
+    const [fileNameDisbursementBulk, setFileNameDisbursementBulk] = useState("")
     const [errorFound, setErrorFound] = useState([])
     const [errorLoadPagination, setErrorLoadPagination] = useState([])
     const [errorFoundPagination, setErrorFoundPagination] = useState([])
@@ -116,6 +117,8 @@ function DisbursementPage() {
         dana: false
     })
     const [totalHoldBalance, setTotalHoldBalance] = useState(0)
+    const [isLoadingDisburseMentConfirm, setIsLoadingDisburseMentConfirm] = useState(false)
+    const [isDisableChecked, setIsDisableChecked] = useState(false)
 
     // console.log(dataDisburse, "dataDisburse");
     // console.log(minMaxDisbursement.minDisbursement, "minMaxDisbursement.minDisbursement");
@@ -214,7 +217,10 @@ function DisbursementPage() {
                         const wb = XLSX.read(pond, {type: "base64"})
                         const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
                         let dataTemp = XLSX.utils.sheet_to_json(ws); // generate objects
+                        // console.log(pond, "pond");
+                        // console.log(wb, "wb");
                         // console.log(ws, "ws");
+                        // console.log(dataTemp, "dataTemp");
                         if (wb.SheetNames.length !== 1) {
                             setDataFromUploadExcel([])
                             setErrorFound([])
@@ -540,18 +546,22 @@ function DisbursementPage() {
                                     const codeBank = el !== undefined && el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)] !== undefined ? el[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)].slice(0, 3) : undefined
                                     const filteredListBank = bankLists.filter(item => item.is_enabled === true) //bank yg aktif
                                     const sameBankName = filteredListBank.find(list => list.mbank_code === codeBank) //bank yg sama
+                                    // console.log(codeBank, 'codeBank');
+                                    // console.log(filteredListBank, 'filteredListBank');
                                     // console.log(sameBankName, 'sameBankName');
                                     const balanceBank = filteredBallanceBank.find((item) => { //ballance bank
                                         // console.log(item.channel_id, "balance detail");
-                                        if (codeBank === "011") {
+                                        if (codeBank === item.channel_id) {
                                             return item.channel_id === codeBank
                                         } else {
                                             // el.bankCode = "BIF"
                                             return item.channel_id === "BIF"
                                         }
                                     })
+                                    // console.log(balanceBank, 'balanceBank');
+                                    // console.log(bankFee, 'bankFee');
                                     const resultBankFee = bankFee.find((item) => { //filter fee bank
-                                        if (sameBankName.mbank_code === "011") {
+                                        if (sameBankName.mbank_code === item.mpaytype_bank_code) {
                                             return item.mpaytype_bank_code === sameBankName.mbank_code
                                         } else {
                                             // sameBankName.mbank_code = "BIF"
@@ -1026,6 +1036,7 @@ function DisbursementPage() {
                                                         totalNominalDisburse += el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]
                                                         sisaAllSaldoTemp = (sisaAllSaldoTemp !== 0 ? sisaAllSaldoTemp : allBalance - allHoldBalance) - (nominalDisbursementNumber + resultBankFee.fee_total)
                                                     }
+                                                    // console.log('masuk return');
                                                     return {
                                                         ...el,
                                                         [(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]: el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]
@@ -1161,6 +1172,7 @@ function DisbursementPage() {
                                 }, 2500);
                                 setTimeout(() => {
                                     // console.log(data, 'masuk usestate');
+                                    setFileNameDisbursementBulk(newValue[0].file.name)
                                     setDataFromUploadExcel(data)
                                 }, 2500);
                             }
@@ -1941,6 +1953,7 @@ function DisbursementPage() {
         {
             name: `${language === null ? eng.bankTujuan : language.bankTujuan}*`,
             selector: row => row[(language === null ? eng.bankTujuanStar : language.bankTujuanStar)],
+            wrap: true,
             width: "180px"
         },
         {
@@ -2281,6 +2294,7 @@ function DisbursementPage() {
         allHoldBalance,
         bankFee
     ) {
+        // console.log(bankCodeTujuan, "bankCodeTujuan");
         let alertCount = 0
         if (bankNameTujuan.length === 0 && bankCodeTujuan.length === 0) {
             setAlertSaldo(false)
@@ -2384,14 +2398,18 @@ function DisbursementPage() {
         // } else {
         //     setAlertNotValid(false)
         // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
-            }
-        })
+        // const balanceBank = balanceDetail.find((item) => {
+        //     console.log(bankCodeTujuan, "bankCodeTujuan");
+        //     console.log(item.channel_id, "item.channel_id");
+        //     if (bankCodeTujuan === "011") {
+        //         console.log("masuk balance 1");
+        //         return item.channel_id === bankCodeTujuan
+        //     } else {
+        //         console.log("masuk balance 2");
+        //         bankCodeTujuan = "BIF"
+        //         return item.channel_id === bankCodeTujuan
+        //     }
+        // })
         // let sisaAllSaldoTemp = 0
         // console.log(nominal <= balanceBank.mpartballchannel_balance, 'masuk0');
         if (alertCount === 0) {
@@ -2408,13 +2426,26 @@ function DisbursementPage() {
                     // console.log('masuk2');
                     setShowModalDuplikasi(false)
                     const result = feeBank.find((item) => {
-                        if (bankCodeTujuan === "011") {
+                        // console.log(bankCodeTujuan, "bankCodeTujuan");
+                        // console.log(item.mpaytype_bank_code, "item.mpaytype_bank_code");
+                        if (bankCodeTujuan === item.mpaytype_bank_code) {
+                            // console.log("masuk 1");
                             return item.mpaytype_bank_code === bankCodeTujuan
                         } else {
+                            // console.log("masuk 2");
                             bankCodeTujuan = "BIF"
                             return item.mpaytype_bank_code === bankCodeTujuan
                         }
+                        // if (bankCodeTujuan === "011") {
+                        //     console.log("masuk 1");
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
+                        // } else {
+                        //     console.log("masuk 2");
+                        //         bankCodeTujuan = "BIF"
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
+                        // }
                     })
+                    // console.log(result, "result");
                     if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
                         setAlertSaldo(true)
                     } else {
@@ -2714,26 +2745,34 @@ function DisbursementPage() {
         // } else {
         //     setAlertNotValid(false)
         // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
+        // const balanceBank = balanceDetail.find((item) => {
+        //     if (bankCodeTujuan === "011") {
+        //         return item.channel_id === bankCodeTujuan
+        //     } else {
+        //         bankCodeTujuan = "BIF"
+        //         return item.channel_id === bankCodeTujuan
 
-            }
-        })
+        //     }
+        // })
         // let sisaAllSaldoTemp = 0
         if (alertCount === 0) {
             if (nominal <= allBalance) {
                 setAlertSaldo(false)
                 const result = feeBank.find((item) => {
-                    if (bankCodeTujuan === "011") {
+                    if (bankCodeTujuan === item.mpaytype_bank_code) {
+                        // console.log("masuk 1");
                         return item.mpaytype_bank_code === bankCodeTujuan
                     } else {
+                        // console.log("masuk 2");
                         bankCodeTujuan = "BIF"
                         return item.mpaytype_bank_code === bankCodeTujuan
                     }
+                    // if (bankCodeTujuan === "011") {
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
+                    // } else {
+                    //     bankCodeTujuan = "BIF"
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
+                    // }
                 })
                 if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
                     setAlertSaldo(true)
@@ -3048,14 +3087,14 @@ function DisbursementPage() {
         // } else {
         //     setAlertNotValid(false)
         // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
-            }
-        })
+        // const balanceBank = balanceDetail.find((item) => {
+        //     if (bankCodeTujuan === "011") {
+        //         return item.channel_id === bankCodeTujuan
+        //     } else {
+        //         bankCodeTujuan = "BIF"
+        //         return item.channel_id === bankCodeTujuan
+        //     }
+        // })
         // let sisaAllSaldoTemp = 0
         if (alertCount === 0) {
             if (nominal <= allBalance) {
@@ -3073,15 +3112,20 @@ function DisbursementPage() {
                         return object.number === number
                     })
                     const result = feeBank.find((item) => {
-                        if (bankCodeTujuan === "011") {
+                        if (bankCodeTujuan === item.mpaytype_bank_code) {
                             return item.mpaytype_bank_code === bankCodeTujuan
                         } else {
                             bankCodeTujuan = "BIF"
                             return item.mpaytype_bank_code === bankCodeTujuan
                         }
+                        // if (bankCodeTujuan === "011") {
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
+                        // } else {
+                        //     bankCodeTujuan = "BIF"
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
+                        // }
                     })
                     const dataLama = dataDisburse.find((item) => item.number === number);
-
                     if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
                         if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
                             setAlertSaldo(true)
@@ -3129,7 +3173,7 @@ function DisbursementPage() {
                         //     }
                         // }
                     } else {
-                        if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                        if ((sisaAllSaldoTempManual !== 0 ? (sisaAllSaldoTempManual + Number(dataLama.nominal + dataLama.feeTotal)) : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
                             setAlertSaldo(true)
                             return
                         } else {
@@ -3389,14 +3433,14 @@ function DisbursementPage() {
         // } else {
         //     setAlertNotValid(false)
         // }
-        const balanceBank = balanceDetail.find((item) => {
-            if (bankCodeTujuan === "011") {
-                return item.channel_id === bankCodeTujuan
-            } else {
-                bankCodeTujuan = "BIF"
-                return item.channel_id === bankCodeTujuan
-            }
-        })
+        // const balanceBank = balanceDetail.find((item) => {
+        //     if (bankCodeTujuan === "011") {
+        //         return item.channel_id === bankCodeTujuan
+        //     } else {
+        //         bankCodeTujuan = "BIF"
+        //         return item.channel_id === bankCodeTujuan
+        //     }
+        // })
         // let sisaAllSaldoTemp = 0
         if (alertCount === 0) {
             if (nominal <= allBalance) {
@@ -3406,12 +3450,18 @@ function DisbursementPage() {
                     return object.number === number
                 })
                 const result = feeBank.find((item) => {
-                    if (bankCodeTujuan === "011") {
+                    if (bankCodeTujuan === item.mpaytype_bank_code) {
                         return item.mpaytype_bank_code === bankCodeTujuan
                     } else {
                         bankCodeTujuan = "BIF"
                         return item.mpaytype_bank_code === bankCodeTujuan
                     }
+                    // if (bankCodeTujuan === "011") {
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
+                    // } else {
+                    //     bankCodeTujuan = "BIF"
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
+                    // }
                 })
                 const dataLama = dataDisburse.find((item) => item.number === number);
 
@@ -3463,7 +3513,7 @@ function DisbursementPage() {
                     //     }
                     // }
                 } else {
-                    if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                    if ((sisaAllSaldoTempManual !== 0 ? (sisaAllSaldoTempManual + Number(dataLama.nominal + dataLama.feeTotal)) : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
                         setAlertSaldo(true)
                         return
                     } else {
@@ -3660,7 +3710,7 @@ function DisbursementPage() {
         let dataExcel = []
         for (let i = 0; i < dataDisburse.length; i++) {
             // dataExcel.push({"bank_code": (isDisburseManual === true ? dataDisburse[i].bankCodeTujuan : dataDisburse[i].bankCode), "branch_name": (isDisburseManual === true ? dataDisburse[i].cabang : dataDisburse[i].cabangBank), "account_number": (isDisburseManual === true ? dataDisburse[i].noRek : dataDisburse[i].noRekening), "account_name": (isDisburseManual === true ? dataDisburse[i].nameRek : dataDisburse[i].ownerName), "amount": (isDisburseManual === true ? dataDisburse[i].nominal : dataDisburse[i].nominalDisbursement), "email": (isDisburseManual === true ? dataDisburse[i].emailPenerima : dataDisburse[i].email), "description": (isDisburseManual === true ? dataDisburse[i].catatan : dataDisburse[i].note), "save_account_number": (isDisburseManual === true ? dataDisburse[i].saveAcc : false)}) //untuk csv
-            dataExcel.push({"bank_code": (isDisburseManual === true ? dataDisburse[i].bankCodeTujuan : dataDisburse[i][(language === null ? eng.bankTujuanStar : language.bankTujuanStar)].slice(0, 3)), "branch_name": (isDisburseManual === true ? dataDisburse[i].cabang : dataDisburse[i][(language === null ? eng.cabangStar : language.cabangStar)]), "account_number": (isDisburseManual === true ? dataDisburse[i].noRek : dataDisburse[i][(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]), "account_name": (isDisburseManual === true ? dataDisburse[i].nameRek : dataDisburse[i][(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)]), "amount": (isDisburseManual === true ? dataDisburse[i].nominal : dataDisburse[i][(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]), "email": (isDisburseManual === true ? dataDisburse[i].emailPenerima : dataDisburse[i][(language === null ? eng.emailPenerima : language.emailPenerima)]), "description": (isDisburseManual === true ? dataDisburse[i].catatan : dataDisburse[i][(language === null ? eng.catatan : language.catatan)]), "save_account_number": (isDisburseManual === true ? dataDisburse[i].saveAcc : false)})
+            dataExcel.push({"bank_code": (isDisburseManual === true ? dataDisburse[i].bankCodeTujuan : dataDisburse[i][(language === null ? eng.bankTujuanStar : language.bankTujuanStar)].slice(0, 3)), "branch_name": (isDisburseManual === true ? dataDisburse[i].cabang : dataDisburse[i][(language === null ? eng.cabangStar : language.cabangStar)]), "account_number": (isDisburseManual === true ? dataDisburse[i].noRek : dataDisburse[i][(language === null ? eng.noRekTujuanStar : language.noRekTujuanStar)]), "account_name": (isDisburseManual === true ? dataDisburse[i].nameRek : dataDisburse[i][(language === null ? eng.namaPemilikRekStar : language.namaPemilikRekStar)]), "amount": (isDisburseManual === true ? dataDisburse[i].nominal : dataDisburse[i][(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)]), "email": (isDisburseManual === true ? dataDisburse[i].emailPenerima : dataDisburse[i][(language === null ? eng.emailPenerima : language.emailPenerima)]), "description": (isDisburseManual === true ? dataDisburse[i].catatan : dataDisburse[i][(language === null ? eng.catatan : language.catatan)]), "save_account_number": (isDisburseManual === true ? dataDisburse[i].saveAcc : false), invalid_account_id: 0})
         }
         let workSheet = XLSX.utils.json_to_sheet(dataExcel)
         let workBook = XLSX.utils.book_new();
@@ -3683,46 +3733,62 @@ function DisbursementPage() {
         setShowModalConfirm(true)
     }
 
-    async function sendDataDisburse (data, dataOrigin, isDisburseManual) {
+    async function sendDataDisburse (data, dataOrigin, isDisburseManual, fileNameBulk) {
         try {
             // console.log(data, "data");
             // console.log(dataOrigin, "dataOrigin");
+            setIsLoadingDisburseMentConfirm(true)
+            setIsDisableChecked(true)
+            setIsCheckedConfirm(false)
             const auth = "Bearer " + getToken()
             var formData = new FormData()
-            formData.append('file_excel', data, 'file_data_karyawan.xlsx')
-
-            // var formDataOrigin = new FormData()
-            formData.append('file_excel', (isDisburseManual ? data : dataOrigin), 'file_data_karyawan_original_upload.xlsx')
+            formData.append('file_excel', data, isDisburseManual ? "--.xlsx" : fileNameBulk)
+            formData.append('file_excel', (isDisburseManual ? data : dataOrigin),  isDisburseManual ? "--.xlsx" : `data_ori_${fileNameBulk}`)
+            formData.append('file_ID', isDisburseManual ? 1 : 2)
             const headers = {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
             }
-            // console.log(formData, 'formData');
-            // console.log(formDataOrigin, 'formDataOrigin');
             const dataSendHandler = await axios.post(BaseURL + "/Partner/UploadDisbursementFile", formData, {headers: headers})
             // console.log(dataSendHandler, 'dataSendHandler');
             if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length === 0) {
                 setShowModalConfirm(false)
-                // history.push("/disbursement/disbursementpage")
                 setDataDisburse([])
                 setDataFromUploadExcel([])
                 setAllNominal([])
                 setAllFee([])
+                setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
+                <div className='pb-4'>
+                    <span class="filepond--label-action">
+                        ${language === null ? eng.unggahFile : language.unggahFile}
+                    </span>
+                </div>`)
+                setIsLoadingDisburseMentConfirm(false)
                 setShowModalStatusDisburse(true)
                 setResponMsg(dataSendHandler.data.response_data.status_id)
+                setIsLoadingDisburseMentConfirm(false)
+                setIsDisableChecked(false)
                 setTimeout(() => {
                     setShowModalStatusDisburse(false)
                 }, 10000);
             } else if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length !== 0) {
                 sessionStorage(dataSendHandler.data.response_new_token)
                 setShowModalConfirm(false)
-                // history.push("/disbursement/disbursementpage")
                 setDataDisburse([])
                 setDataFromUploadExcel([])
                 setAllNominal([])
                 setAllFee([])
+                setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
+                <div className='pb-4'>
+                    <span class="filepond--label-action">
+                        ${language === null ? eng.unggahFile : language.unggahFile}
+                    </span>
+                </div>`)
+                setIsLoadingDisburseMentConfirm(false)
                 setShowModalStatusDisburse(true)
                 setResponMsg(dataSendHandler.data.response_data.status_id)
+                setIsLoadingDisburseMentConfirm(false)
+                setIsDisableChecked(false)
                 setTimeout(() => {
                     setShowModalStatusDisburse(false)
                 }, 10000);
@@ -5091,6 +5157,7 @@ function DisbursementPage() {
                                     id="statusId"
                                     onChange={handleChangeCheckBoxConfirm}
                                     checked={isCheckedConfirm}
+                                    disabled={isDisableChecked}
                                 />
                             </div>
                         </div>
@@ -5114,12 +5181,12 @@ function DisbursementPage() {
                                 {language === null ? eng.batal : language.batal}
                             </button>
                             <button
-                                onClick={() => sendDataDisburse(dataExcelDisburse, dataExcelOriginDisburse, isDisbursementManual)}
+                                onClick={() => sendDataDisburse(dataExcelDisburse, dataExcelOriginDisburse, isDisbursementManual, fileNameDisbursementBulk)}
                                 className={isCheckedConfirm === true ? 'btn-ez-transfer ms-3' : 'btn-noez-transfer ms-3'}
                                 disabled={isCheckedConfirm === false}
                                 style={{ width: '25%' }}
                             >
-                                {language === null ? eng.lakukanDisburse : language.lakukanDisburse}
+                                {isLoadingDisburseMentConfirm ? (<>{(language === null ? eng.mohonTunggu : language.mohonTunggu)}... <FontAwesomeIcon icon={faSpinner} spin /></>) : (language === null ? eng.lakukanDisburse : language.lakukanDisburse)}
                             </button>
                         </div>
                     </Modal.Body>
@@ -5134,7 +5201,7 @@ function DisbursementPage() {
                         {
                             duplicateData.length === 0 ?
                             <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.dataInginDitambahkanTelahTersedia : language.dataInginDitambahkanTelahTersedia}</div> :
-                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} <b style={{ wordBreak: 'break-word', color: 'red' }}>{duplicateData.join(", ")}</b> {language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} : Terindikasi data duplikasi</div>
+                            <div className='text-center px-4' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>{language === null ? eng.dataPadaBarisKe : language.dataPadaBarisKe} <b style={{ wordBreak: 'break-word', color: 'red' }}>{duplicateData.join(", ")}</b> {language === null ? eng.barisKe : language.barisKe} : {language === null ? eng.terindikasiDataDuplikasi : language.terindikasiDataDuplikasi}</div>
                         }
                         <div className='d-flex justify-content-center align-items-center mt-3'>
                             {

@@ -207,7 +207,7 @@ export default () => {
     if (token === null || role === null) {
       history.push("/login")
     } else if (token !== null) {
-      userAccessMenu("/Account/GetUserAccess", token, language === null ? 'EN' : language.flagName)
+      userAccessMenu("/Account/GetUserAccess", token, user_role === "100" ? "EN" : (language === null ? 'EN' : language.flagName))
     }
   }
 

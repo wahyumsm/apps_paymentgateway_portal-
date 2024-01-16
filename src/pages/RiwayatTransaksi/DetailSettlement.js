@@ -35,7 +35,7 @@ function DetailSettlement() {
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
-                'Accept-Language' : lang
+                'Accept-Language' : user_role === "102" ? lang : "ID"
             }
             const detailsettlement = await axios.post(BaseURL + "/Report/GetSettlementTransactionByID", { data: dataParams }, { headers: headers })
             // console.log(detailsettlement, 'detailsettlement');
@@ -105,7 +105,7 @@ function DetailSettlement() {
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Detail Settlement.xlsx");
+                XLSX.writeFile(workBook, `${user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : "Detail Settlement"}.xlsx`);
             } else if (dataDetailSettlement.status === 200 && dataDetailSettlement.data.response_code === 200 && dataDetailSettlement.data.response_new_token.length !== 0) {
                 setUserSession(dataDetailSettlement.data.response_new_token)
                 const data = dataDetailSettlement.data.response_data.results
@@ -128,7 +128,7 @@ function DetailSettlement() {
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-                XLSX.writeFile(workBook, "Detail Settlement.xlsx");
+                XLSX.writeFile(workBook, `${user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : "Detail Settlement"}.xlsx`);
             }
         } catch (error) {
             // console.log(error);
@@ -560,7 +560,7 @@ function DetailSettlement() {
                     {
                         dataSettlement.length !== 0 &&
                         <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)} className="export-span">{language === null ? eng.export : language.export}</Link>
+                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)} className="export-span">{user_role === "102" ? (language === null ? eng.export : language.export) : "Export"}</Link>
                         </div>
                     }
                     <div className="div-table mt-4 pb-4">
@@ -576,7 +576,7 @@ function DetailSettlement() {
                         />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                    <div style={{ marginRight: 10, marginTop: 10 }}>{language === null ? eng.totalHalaman : language.totalHalaman} : {totalPageDetailSettlement}</div>
+                    <div style={{ marginRight: 10, marginTop: 10 }}>{user_role === "102" ? (language === null ? eng.totalHalaman : language.totalHalaman) : "Total Page"} : {totalPageDetailSettlement}</div>
                         <Pagination
                             activePage={activePageDetailSettlement}
                             itemsCountPerPage={pageNumberDetailSettlement.row_per_page}

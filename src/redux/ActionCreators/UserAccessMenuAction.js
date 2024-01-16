@@ -1,11 +1,12 @@
 import { FETCH_GETUSERACCESSMENU } from "../ActionType/ActionTypes";
 import axios from "axios";
-import { BaseURL, errorCatch, getToken, RouteTo, setUserSession } from "../../function/helpers";
+import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from "../../function/helpers";
 import { useHistory } from "react-router-dom";
 
 
 export const GetUserAccessMenu = (url, lang) => {
 
+    const user_role = getRole()
     // const history = useHistory()
     return async (dispatch) => {
         try {
@@ -13,7 +14,7 @@ export const GetUserAccessMenu = (url, lang) => {
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
-                'Accept-Language' : lang
+                'Accept-Language' : user_role !== "102" ? "ID" : lang
             }
             const userAccessMenu = await axios.post(BaseURL + url, { data: "" }, { headers: headers })
             if (userAccessMenu.status === 200 && userAccessMenu.data.response_code === 200 && userAccessMenu.data.response_new_token.length === 0) {

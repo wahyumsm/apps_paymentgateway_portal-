@@ -299,26 +299,26 @@ function CreateVAUSD() {
             const fileNameAndStockVa = await axios.post(BaseURL + "/VirtualAccountUSD/GetFileandStockforVAUSD", {data: ""}, {headers: headers})
             // console.log(fileNameAndStockVa, 'fileNameAndStockVa');
             if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token === null) {
-                setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
-                setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
-                setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
-                setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
-                setActivePageVABaru(1)
-                getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id, 1)
-                setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
+                // setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
+                // setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                // setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
+                // setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
+                // setActivePageVABaru(1)
+                // getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0]?.id, 1)
+                // setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
             } else if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token !== null) {
                 setUserSession(fileNameAndStockVa.data.response_new_token)
-                setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
-                setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
-                setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
-                setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
-                setActivePageVABaru(1)
-                getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id, 1)
+                // setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
+                // setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                // setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
+                // setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
+                // setActivePageVABaru(1)
+                // getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id, 1)
                 setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
             }
         } catch (error) {
-            // console.log(error);
-            history.push(errorCatch(error.response.status))
+            console.log(error);
+            // history.push(errorCatch(error.response.status))
         }
     }
 

@@ -9,7 +9,7 @@ import axios from "axios";
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 import encryptData from "../../function/encryptData";
-import { authorization, BaseURL, language, setRoleSession, setUserSession } from "../../function/helpers";
+import { authorization, BaseURL, getRole, language, setRoleSession, setUserSession } from "../../function/helpers";
 import validator from "validator";
 import $ from 'jquery'
 import { chn, eng, ind } from "../../components/Language";
@@ -17,6 +17,7 @@ import { chn, eng, ind } from "../../components/Language";
 export default () => {
 
   const history = useHistory()
+  const user_role = getRole()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
@@ -239,34 +240,35 @@ export default () => {
       const userDetail = await axios.post(BaseURL + "/Account/GetUserProfile", { data: "" }, { headers: headers })
       if (userDetail.status === 200 && userDetail.data.response_code === 200) {
         setRoleSession(userDetail.data.response_data.muser_role_id)
-        userAccessMenu("/Account/GetUserAccess", token, language === null ? 'EN' : language.flagName)
+        userAccessMenu("/Account/GetUserAccess", token, user_role === "100" ? "EN" : (language === null ? 'EN' : language.flagName))
       }
     } catch (error) {
       // console.log(error)
     }
   }
 
-  async function signingInHandler(e, username, password) {
+  async function signingInHandler(e, username, password, lang) {
     try {
       e.preventDefault()
       if (username.length === 0 && password.length === 0) {
-        setErrorMessage("Silahkan masukkan alamat email & password")
+        setErrorMessage(language === null ? eng.silahkanMasukkanEmailAndPass : language.silahkanMasukkanEmailAndPass)
         return
       } else if (username.length !== 0 && validator.isEmail(username) === true && password.length === 0) {
-        setErrorMessage("Silahkan masukkan password")
+        setErrorMessage(language === null ? eng.silahkanMasukkanPassword : language.silahkanMasukkanPassword)
         return
       } else if (username.length !== 0 && validator.isEmail(username) === false && password.length === 0) {
-        setErrorMessage("Format email yang dimasukkan salah")
+        setErrorMessage(language === null ? eng.formatEmailSalah : language.formatEmailSalah)
         return
       } else if (username.length === 0 && password.length !== 0) {
-        setErrorMessage("Silahkan masukkan alamat email")
+        setErrorMessage(language === null ? eng.silahkanMasukkanEmail : language.silahkanMasukkanEmail)
         return
       }
       const auth = authorization
       const dataParams = encryptData(`{"username" : "${username}", "password" : "${password}"}`)
       const headers = {
         'Content-Type':'application/json',
-        'Authorization' : auth
+        'Authorization' : auth,
+        'Accept-Language' : lang
       }
       const dataLogin = await axios.post(BaseURL + "/Account/Login", { data: dataParams }, { headers: headers })
       if (dataLogin.status === 200 && dataLogin.data.response_code === 200) {
@@ -324,7 +326,7 @@ export default () => {
                       <Card.Link className="small text-end">Lost password?</Card.Link>
                     </div> */}
                   </Form.Group>
-                  <Button onClick={(e) => signingInHandler(e, username, password)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
+                  <Button onClick={(e) => signingInHandler(e, username, password, language === null ? 'EN' : language.flagName)} style={{ fontFamily: "Exo", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #383838;", color: "#2C1919" }} variant="primary" type="submit" className="w-100">
                     {language === null ? eng.login : language.login}
                   </Button>
                 </Form>

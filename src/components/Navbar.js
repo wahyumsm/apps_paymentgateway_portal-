@@ -551,15 +551,15 @@ export default (props) => {
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement') ||
 
-                // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
+                // || (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/alokasisaldo') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayat-transaksi/disbursement')
 
-                || (window.location.href === 'http://reactdev/dev2/#/dev2/disbursement') ||
-                (window.location.href === 'http://reactdev/dev2/#/dev2/riwayattopup') ||
-                (window.location.href === 'http://reactdev/dev2/#/dev2/alokasisaldo') ||
-                (window.location.href === 'http://reactdev/dev2/#/dev2/riwayat-transaksi/disbursement')
+                // || (window.location.href === 'http://reactdev/dev1/#/dev1/disbursement') ||
+                // (window.location.href === 'http://reactdev/dev1/#/dev1/riwayattopup') ||
+                // (window.location.href === 'http://reactdev/dev1/#/dev1/alokasisaldo') ||
+                // (window.location.href === 'http://reactdev/dev1/#/dev1/riwayat-transaksi/disbursement')
 
                 // (window.location.href === 'https://localhost:3000/dev3#/dev3/disbursement') ||
                 // (window.location.href === 'https://localhost:3000/dev3#/dev3/riwayattopup') ||
@@ -584,7 +584,7 @@ export default (props) => {
                 <Dropdown as={Nav.Item}>
                   <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0 me-lg-3">
                     <div className="media-body ms-2 text-dark align-items-center d-block d-lg-block">
-                      <span className="mb-0 font-small">{language === null ? eng.saldoTersedia : language.saldoTersedia}</span>
+                      <span className="mb-0 font-small">{user_role !== "102" ? "Saldo Tersedia" : (language === null ? eng.saldoTersedia : language.saldoTersedia)}</span>
                       <span className="mb-0 font-small fw-bold">{(getBalance.balance !== undefined) ? convertToRupiah(getBalance.balance) : convertToRupiah(0)}</span>
                       <img
                         src={arrowDown}
@@ -621,7 +621,7 @@ export default (props) => {
                         style={{width: 160}}
                       >
                         <div className="pe-2">
-                          <img alt="" src={topUpSaldoIcon} /> {language === null ? eng.topUpSaldo : language.topUpSaldo}
+                          <img alt="" src={topUpSaldoIcon} /> {user_role !== "102" ? "Top Up Saldo" : (language === null ? eng.topUpSaldo : language.topUpSaldo)}
                         </div>
                       </Dropdown.Item>
                       <Dropdown.Item
@@ -629,7 +629,7 @@ export default (props) => {
                         className="fw-bold"
                       >
                         <div className="pe-2">
-                          <img alt="" src={riwayatSaldoIcon} /> {language === null ? eng.riwayatTopUp : language.riwayatTopUp}
+                          <img alt="" src={riwayatSaldoIcon} /> {user_role !== "102" ? "Riwayat Top Up" : (language === null ? eng.riwayatTopUp : language.riwayatTopUp)}
                         </div>
                       </Dropdown.Item>
                       {/* <Dropdown.Item
@@ -708,7 +708,7 @@ export default (props) => {
                 {
                   (user_role === "102") &&
                   <Dropdown.Item className="fw-bold" onClick={() => navToDetailAccount()}>
-                    <img alt="" src={iconDetailAkun}/> {language === null ? eng.detailAkun : language.detailAkun}
+                    <img alt="" src={iconDetailAkun}/> {user_role !== "102" ? "Detail Akun" : (language === null ? eng.detailAkun : language.detailAkun)}
                   </Dropdown.Item>
                 }
                 <Dropdown.Divider />
@@ -717,7 +717,7 @@ export default (props) => {
                   onClick={() => logoutHandler()}
                   className="fw-bold"
                 >
-                  <img alt="" src={logoutIcon} /> {language === null ? eng.logout : language.logout}
+                  <img alt="" src={logoutIcon} /> {user_role !== "102" ? "Keluar" : (language === null ? eng.logout : language.logout)}
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -778,14 +778,14 @@ export default (props) => {
                 onClick={handleCloseModalTopUp}
               />
               <Modal.Title className="text-center fw-bold mt-3">
-                {language === null ? eng.topUpSaldo : language.topUpSaldo}
+                {user_role !== "102" ? "Top Up Saldo" : (language === null ? eng.topUpSaldo : language.topUpSaldo)}
               </Modal.Title>
             </Col>
           </Modal.Header>
           <Modal.Body>
             <Form action="#">
               <Form.Group className="mb-3">
-                <Form.Label>{language === null ? eng.nominalTopUpSaldo : language.nominalTopUpSaldo}</Form.Label>
+                <Form.Label>{user_role !== "102" ? "Nominal Top Up Saldo" : (language === null ? eng.nominalTopUpSaldo : language.nominalTopUpSaldo)}</Form.Label>
                 <CurrencyInput
                   className="input-text-user"
                   value={inputHandle.amounts === undefined ? 0 : inputHandle.amounts}
@@ -793,7 +793,7 @@ export default (props) => {
                   placeholder="Masukkan Nominal To Up Saldo"
                   groupSeparator={"."}
                   decimalSeparator={','}
-                  prefix={`${language === null ? eng.rp : language.rp} `}
+                  prefix={`${user_role !== "102" ? "Rp" : (language === null ? eng.rp : language.rp)} `}
                   allowDecimals={false}
                 />
                 {/* {nominalTopup ?
@@ -838,7 +838,7 @@ export default (props) => {
                 }}
                 onClick={() => topUpConfirmation(inputHandle.amounts)}
               >
-                <FontAwesomeIcon style={{ marginRight: 10 }} /> {language === null ? eng.topUp : language.topUp}
+                <FontAwesomeIcon style={{ marginRight: 10 }} /> {user_role !== "102" ? "TOP UP" : (language === null ? eng.topUp : language.topUp)}
               </button>
             </div>
           </Modal.Body>
@@ -855,29 +855,29 @@ export default (props) => {
                 onClick={() => setShowModalKonfirmasiTopUp(false)}
               />
               <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
-                {language === null ? eng.selesaikanProsesTopUp : language.selesaikanProsesTopUp}
+                {user_role !== "102" ? "Selesaikan Proses Top Up" : (language === null ? eng.selesaikanProsesTopUp : language.selesaikanProsesTopUp)}
               </Modal.Title>
             </Col>
           </Modal.Header>
           <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
-              <div className="text-center" style={{fontSize: "14px"}}>{language === null ? eng.selesaikanPembayaran : language.selesaikanPembayaran}</div>
+              <div className="text-center" style={{fontSize: "14px"}}>{user_role !== "102" ? "Selesaikan Pembayaran Dalam" : (language === null ? eng.selesaikanPembayaran : language.selesaikanPembayaran)}</div>
               <div className="text-center mt-2">
                 <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={dateNow + countDown} daysInHours={true} /></span>
               </div>
               <div style={{fontSize: "14px"}} className="d-flex justify-content-center align-items-start mt-2">
-                <div style={{ width: 90 }}>{language === null ? eng.batasAkhir : language.batasAkhir} :</div>
+                <div style={{ width: 90 }}>{user_role !== "102" ? "Batas Akhir" : (language === null ? eng.batasAkhir : language.batasAkhir)} :</div>
                 <div className="mx-2 fw-bold">{(topUpBalance.exp_date !== undefined) ? convertDateTimeStamp(topUpBalance.exp_date) + " WIB" : null}</div>
               </div>
               <div className="mt-4" style={{border: "1px solid #EBEBEB", borderRadius: "8px", padding: "10px"}}>
                 <Table className='detailSave'>
                   <div className="d-flex justify-content-between align-items-center">
-                    <div>{language === null ? eng.idTransaksi : language.idTransaksi}</div>
+                    <div>{user_role !== "102" ? "ID Transaksi" : (language === null ? eng.idTransaksi : language.idTransaksi)}</div>
                     <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>{topUpBalance.id_transaksi}</div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
-                      <div style={{padding:"unset"}}>{language === null ? eng.metodePembayaran : language.metodePembayaran}</div>
-                      <div style={{padding:"unset"}} className="fw-bold mt-1">{language === null ? eng.transferBank : language.transferBank}</div>
+                      <div style={{padding:"unset"}}>{user_role !== "102" ? "Metode Pembayaran" : (language === null ? eng.metodePembayaran : language.metodePembayaran)}</div>
+                      <div style={{padding:"unset"}} className="fw-bold mt-1">{user_role !== "102" ? "Transfer Bank" : (language === null ? eng.transferBank : language.transferBank)}</div>
                     </div>
                     <div className="d-flex flex-column">
                       <div style={{padding:"unset"}} className="text-end"><img src={topUpBalance.metode_pembayaran} alt="bca" style={{width: "135px", height: "37px"}} /></div>
@@ -886,30 +886,30 @@ export default (props) => {
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
-                      <div style={{padding:"unset"}}>{language === null ? eng.noRek : language.noRek}</div>
+                      <div style={{padding:"unset"}}>{user_role !== "102" ? "No Rekening" : (language === null ? eng.noRek : language.noRek)}</div>
                       <div id="noRek" style={{padding:"unset"}} className="fw-bold mt-1">{topUpBalance.no_rek}</div>
                     </div>
                     <div className="d-flex flex-column mt-3">
-                      <CopyToClipboard onCopy={onCopyRek} text={topUpBalance.no_rek}><div onClick={onClickRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div></CopyToClipboard>
+                      <CopyToClipboard onCopy={onCopyRek} text={topUpBalance.no_rek}><div onClick={onClickRek} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{user_role !== "102" ? "Salin" : (language === null ? eng.salin : language.salin)}</span></div></CopyToClipboard>
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex flex-column text-left">
-                      <div style={{padding:"unset"}}>{language === null ? eng.nominalTransfer : language.nominalTransfer}</div>
+                      <div style={{padding:"unset"}}>{user_role !== "102" ? "Nominal Transfer" : (language === null ? eng.nominalTransfer : language.nominalTransfer)}</div>
                       <div id="pricing" style={{padding:"unset"}} className="fw-bold mt-1">{startColorNumber(topUpBalance.amount_transfer)}<span style={{color: "#DF9C43"}}>{endColorNumber(topUpBalance.amount_transfer)}</span></div>
                     </div>
                     <div className="d-flex flex-column mt-3">
-                      <CopyToClipboard onCopy={onCopyPrice} text={topUpBalance.amount_transfer}><div onClick={onClickPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{language === null ? eng.salin : language.salin}</span></div></CopyToClipboard>
+                      <CopyToClipboard onCopy={onCopyPrice} text={topUpBalance.amount_transfer}><div onClick={onClickPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>{user_role !== "102" ? "Salin" : (language === null ? eng.salin : language.salin)}</span></div></CopyToClipboard>
                     </div>
                   </div>
                 </Table>
               </div>
               <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
                 <img src={noticeIcon} alt="notice" />
-                <div className="mx-2 text-left">{language === null ? eng.lakukanTransfer : language.lakukanTransfer} </div>
+                <div className="mx-2 text-left">{user_role !== "102" ? "Lakukan transfer sesuai dengan nominal yang tertera hingga 3 digit terakhir." : (language === null ? eng.lakukanTransfer : language.lakukanTransfer)} </div>
               </Table>
               <div className="mb-3" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>{language === null ? eng.mohonTunggu : language.mohonTunggu}... <FontAwesomeIcon icon={faSpinner} spin /></>) : language === null ? eng.sayaSudahTransfer : language.sayaSudahTransfer}</Button>
+                  <Button variant="primary" onClick={() => topUpHandleConfirm()} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: "100%", maxHeight: 45, width: "100%", height: "100%" }}>{isLoadingTopUpConfirm ? (<>{user_role !== "102" ? "Mohon tunggu" : (language === null ? eng.mohonTunggu : language.mohonTunggu)}... <FontAwesomeIcon icon={faSpinner} spin /></>) : user_role !== "102" ? "SAYA SUDAH TRANSFER" : (language === null ? eng.sayaSudahTransfer : language.sayaSudahTransfer)}</Button>
               </div>
           </Modal.Body>
         </Modal>
@@ -1020,7 +1020,7 @@ export default (props) => {
     {topUpResult.is_update === false ?
       <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
         <Toast style={{width: "900px", backgroundColor: "#077E86"}} onClose={() => setShowStatusTopup(false)} show={showStatusTopup} className="text-center" position="bottom-center" delay={3000} autohide>
-          <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>{language === null ? eng.topUpSaldo : language.topUpSaldo} {convertToRupiah(inputHandle.amounts)} {language === null ? eng.berhasil : language.berhasil}</Toast.Body>
+          <Toast.Body  className="text-center text-white"><span className="mx-2"><img src={Checklist} alt="checklist" /></span>{user_role !== "102" ? "Top Up Saldo" : (language === null ? eng.topUpSaldo : language.topUpSaldo)} {convertToRupiah(inputHandle.amounts)} {user_role !== "102" ? "Berhasil" : (language === null ? eng.berhasil : language.berhasil)}</Toast.Body>
         </Toast>
       </div> :
       ""

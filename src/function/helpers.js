@@ -11,12 +11,12 @@ export const CustomLoader = () => (
 
 // export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile1"
+// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile9"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile11/"
-export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile13"
+// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile13"
 // export const BaseURL = "https://apid.ezeelink.co.id/snap/api2"
 // export const BaseURL = "https://apid.ezeelink.co.id/ezpaygateway/portal/"
-// export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
+export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
 
 export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms=";
 
@@ -380,3 +380,11 @@ export function replaceText (text) {
 		return text.replace("Direct Debit", "")
 	}
 }
+
+export const currentDate = new Date().toISOString().split('T')[0]
+export const yesterdayDate = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0]
+export const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]
+export const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 2).toISOString().split('T')[0]
+export const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1).toISOString().split('T')[0]
+export const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 2).toISOString().split('T')[0]
+export const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth()).toISOString().split('T')[0]
