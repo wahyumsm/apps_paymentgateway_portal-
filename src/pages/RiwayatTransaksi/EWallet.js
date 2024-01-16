@@ -700,6 +700,7 @@ function EWallet() {
                                         <option value={1}>DANA</option>
                                         <option value={2}>OVO</option>
                                         <option value={3}>GOPAY</option>
+                                        <option value={4}>SHOPEEPAY</option>
                                     </Form.Select>
                                 </Col>
                             }
@@ -740,6 +741,7 @@ function EWallet() {
                                         <option value={1}>DANA</option>
                                         <option value={2}>OVO</option>
                                         <option value={3}>GOPAY</option>
+                                        <option value={4}>SHOPEEPAY</option>
                                     </Form.Select>
                                 </Col>
                             }
