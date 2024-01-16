@@ -33,7 +33,7 @@ const PilihJenisUsaha = () => {
                     </div>
                 </div>
                 <div className='d-flex justify-content-center align-items-center'>
-                    <Link to={{ pathname: tabJenisUsaha === "perorangan" ? '/form-info-pemilik-perseorangan' : '/form-business-entity', search: "", hash: "", state: {tabJenisUsaha: tabJenisUsaha}}} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</Link>
+                    <Link to={{ pathname: tabJenisUsaha === "perorangan" ? '/form-info-pemilik-perorangan' : '/form-business-entity', search: "", hash: "", state: {tabJenisUsaha: tabJenisUsaha}}} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</Link>
                 </div>
             </div>
         </div>

@@ -1,27 +1,50 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import alertIconYellow from '../../../assets/icon/note_icon_grey.svg'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
-import { FilePond, registerPlugin } from 'react-filepond'
-import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import 'filepond/dist/filepond.min.css'
 import { Form } from '@themesberg/react-bootstrap';
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
 import encryptData from '../../../function/encryptData';
 import axios from 'axios';
-
-registerPlugin(FilePondPluginFileEncode)
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 const FormInfoPemilikPerseorangan = () => {
     const history = useHistory()
     const location = useLocation();
-    const { merchantNou } = useParams()
-    console.log(merchantNou);
+    const { idNou } = useParams()
+
+    const hiddenFileInputKtp = useRef(null)
+    const [imageFileKtp, setImageFileKtp] = useState(null)
+    const [imageKtp, setImageKtp] = useState(null)
+    const [nameImageKtp, setNameImageKtp] = useState("")
+    const [uploadKtp, setUploadKtp] = useState(false)
+
+    const hiddenFileInputSelfieKtp = useRef(null)
+    const [imageFileSelfieKtp, setImageFileSelfieKtp] = useState(null)
+    const [imageSelfieKtp, setImageSelfieKtp] = useState(null)
+    const [nameImageSelfieKtp, setNameImageSelfieKtp] = useState("")
+    const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
     const dataJenisUsaha = location.pathname;
+    console.log(imageKtp, "imageKtp");
+    console.log(imageFileKtp, "imageFileKtp");
+    console.log(uploadKtp, "uploadKtp");
     console.log(dataJenisUsaha, "dataJenisUsaha");
-    console.log(location, "location");
-    const [files, setFiles] = useState([])
-    const [inputHandle, setInputHandle] = useState({
+    const [getDataListFirstStep, setGetDataListFirstStep] = useState({})
+    const [inputHandleWni, setInputHandleWni] = useState({
+        numberId: "",
+        userName: "",
+        phoneNumber: "",
+        grupId: 0,
+        brandId: 0,
+        outletId: 0,
+        step: 1,
+        businessType: 1,
+        userId: 0,
+        merchantName: ""
+    })
+    const [inputHandleWna, setInputHandleWna] = useState({
         numberId: "",
         userName: "",
         phoneNumber: "",
@@ -34,49 +57,97 @@ const FormInfoPemilikPerseorangan = () => {
         merchantName: ""
     })
     
-    const [kewarganegaraan, setKewarganegaraan] = useState("1")
+    const [kewarganegaraan, setKewarganegaraan] = useState(100)
     const handleOnChangeCheckBoxKewarganegaraan = (e) => {
-        setKewarganegaraan(e.target.value);
+        setKewarganegaraan(Number(e.target.value));
     };
 
-    const [labelUploadKtp, setLabelUploadKtp] = useState(`<div class='pt-1 pb-3 mb-2 style-label-drag-drop text-center'>Masukan foto eKTP pemilik. <br/><br/> Maks ukuran satu file: 500kb, Format: .jpg</div>
-    <div className='pb-4'>
-        <span class="filepond--label-action">
-            Upload File
-        </span>
-    </div>`)
-
-    const [labelUploadSelfie, setLabelUploadSelfie] = useState(`<div class='pt-1 pb-3 mb-2 style-label-drag-drop text-center'>Masukan foto eKTP perwakilan. <br/><br/> Maks ukuran satu file: 500kb, Format: .jpg</div>
-    <div className='pb-4'>
-        <span class="filepond--label-action">
-            Upload File
-        </span>
-    </div>`)
-
-    const [labelUploadSKitas, setLabelUploadSKitas] = useState(`<div class='pt-1 pb-3 mb-2 style-label-drag-drop text-center'>Masukan foto KITAS pemilik. <br/><br/> Maks ukuran satu file: 500kb, Format: .jpg</div>
-    <div className='pb-4'>
-        <span class="filepond--label-action">
-            Upload File
-        </span>
-    </div>`)
-
-    function toInfoUsaha () {
-        history.push('/form-info-usaha-perseorangan')
-        window.location.reload()
+    function handleChange(e, param) {
+        if (param === 100) {
+            setInputHandleWni({
+                ...inputHandleWni,
+                [e.target.name] : e.target.value
+            })
+        } else {
+            setInputHandleWna({
+                ...inputHandleWna,
+                [e.target.name] : e.target.value
+            })
+        }
     }
 
-    async function formDataFirstStepInfoPemilikPerorangan(id, namaAgen, emailAgen, phoneNumber, bankName, akunBank, rekeningOwner, active, nominal) {
+    const handleClickKtp = () => {
+        hiddenFileInputKtp.current.click();
+    };
+
+    const handleFileChangeKtp = (event) => {
+        if(event.target.files[0]) {
+            setImageKtp(event.target.files[0])
+            setNameImageKtp(event.target.files[0].name)
+            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                setUploadKtp(true)
+                setImageFileKtp(imageFileKtp)
+            }
+            else {
+                setUploadKtp(false)
+                const reader = new FileReader()
+                reader.addEventListener("load", () => {
+                    setImageFileKtp(reader.result)
+                })
+                reader.readAsDataURL(event.target.files[0])
+            }
+        }
+    }
+
+    const handleClickSelfieKtp = () => {
+        hiddenFileInputSelfieKtp.current.click();
+    };
+
+    const handleFileChangeSelfieKtp = (event) => {
+        if(event.target.files[0]) {
+            setImageSelfieKtp(event.target.files[0])
+            setNameImageSelfieKtp(event.target.files[0].name)
+            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                setUploadSelfieKtp(true)
+                setImageFileSelfieKtp(imageFileSelfieKtp)
+            }
+            else {
+                setUploadSelfieKtp(false)
+                const reader = new FileReader()
+                reader.addEventListener("load", () => {
+                    setImageFileSelfieKtp(reader.result)
+                })
+                reader.readAsDataURL(event.target.files[0])
+            }
+        }
+    }
+
+    async function formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, numberKtp, nameUser, imageKtp, imageSelfieKtp, step, businessType, merchantName) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_id":"${id}", "agen_name":"${namaAgen}", "agen_email":"${emailAgen}", "agen_mobile":"${phoneNumber}", "agen_bank_id":"${bankName}", "agen_bank_number":"${akunBank}", "agen_bank_name":"${rekeningOwner}", "status":"${active}"}`)
+            const formData = new FormData()
+            const dataParams = encryptData(`{"user_role": 0, "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+            formData.append('ktpUrl', imageKtp)
+            formData.append('SelfieKtpUrl', imageSelfieKtp)
+            formData.append('Data', dataParams)
             const headers = {
-                'Content-Type':'application/json',
+                'Content-Type':'multipart/form-data',
                 'Authorization' : auth
             }
-            const editAgen = await axios.post(BaseURL + "/Agen/UpdateAgen", { data: dataParams }, { headers: headers })
-            if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
-            } else if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length !== 0) {
-                setUserSession(editAgen.data.response_new_token)
+            const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
+            if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
+                if (step === 2) {
+                    history.push('/form-info-usaha-perorangan')
+                } else if (step === 1) {
+                    history.push('/daftar-merchant-qris')
+                }
+            } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
+                setUserSession(saveFirstStep.data.response_new_token)
+                if (step === 2) {
+                    history.push('/form-info-usaha-perorangan')
+                } else if (step === 1) {
+                    history.push('/daftar-merchant-qris')
+                }
             }
         } catch (error) {
             // console.log(error)
@@ -87,15 +158,37 @@ const FormInfoPemilikPerseorangan = () => {
     async function getDataFirstStepInfoPemilikPerorangan(merchantNou) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"agen_id":"${merchantNou}"}`)
+            const dataParams = encryptData(`{"merchant_nou":"${merchantNou}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const editAgen = await axios.post(BaseURL + "/QRIS/GetFirstStepData", { data: dataParams }, { headers: headers })
-            if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length === 0) {
-            } else if (editAgen.status === 200 && editAgen.data.response_code === 200 && editAgen.data.response_new_token.length !== 0) {
-                setUserSession(editAgen.data.response_new_token)
+            const getData = await axios.post(BaseURL + "/QRIS/GetFirstStepData", { data: dataParams }, { headers: headers })
+            if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
+                if (getData.data.response_data.results.mprofdtl_identity_type_id === 100) {
+                    setInputHandleWni({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
+                } else {
+                    setInputHandleWna({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
+                }
+                setGetDataListFirstStep(getData.data.response_data.results)
+                setKewarganegaraan(getData.data.response_data.results.mprofdtl_identity_type_id)
+                setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
+                setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
+                setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
+            } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
+                setUserSession(getData.data.response_new_token)
+                if (getData.data.response_data.results.mprofdtl_identity_type_id === 100) {
+                    setInputHandleWni({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
+                } else {
+                    setInputHandleWna({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
+                }
+                setGetDataListFirstStep(getData.data.response_data.results)
+                setKewarganegaraan(getData.data.response_data.results.mprofdtl_identity_type_id)
+                setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
+                setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
+                setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
             }
         } catch (error) {
             // console.log(error)
@@ -104,8 +197,8 @@ const FormInfoPemilikPerseorangan = () => {
     }
 
     useEffect(() => {
-        if (merchantNou !== undefined) {
-            getDataFirstStepInfoPemilikPerorangan(merchantNou)
+        if (idNou !== undefined) {
+            getDataFirstStepInfoPemilikPerorangan(idNou)
         }
     }, [])
     
@@ -114,7 +207,8 @@ const FormInfoPemilikPerseorangan = () => {
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
                 <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
-                <div className="head-title"> 
+                <div className="d-flex justify-content-start align-items-center head-title"> 
+                    <FontAwesomeIcon onClick={() => formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, kewarganegaraan === 100 ? inputHandleWni.numberId : inputHandleWna.numberId, kewarganegaraan === 100 ? inputHandleWni.userName : inputHandleWna.userName, imageKtp, imageSelfieKtp, 1, (dataJenisUsaha === "/form-info-pemilik-perorangan" || dataJenisUsaha === `/form-info-pemilik-perorangan/${idNou}`) ? 2 : 1, "")} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
                 </div>
                 <div className='pb-4 pt-3'>
@@ -140,8 +234,8 @@ const FormInfoPemilikPerseorangan = () => {
                                 type="radio"
                                 id="wni"
                                 name='kewarganegaraan'
-                                value={"1"}
-                                checked={kewarganegaraan === "1" && true}
+                                value={100}
+                                checked={kewarganegaraan === 100 && true}
                                 onChange={(e) => handleOnChangeCheckBoxKewarganegaraan(e)}
                             />
                             <label
@@ -158,8 +252,8 @@ const FormInfoPemilikPerseorangan = () => {
                                 type="radio"
                                 id="wna"
                                 name='kewarganegaraan'
-                                value={"2"}
-                                checked={kewarganegaraan === "2" && true}
+                                value={101}
+                                checked={kewarganegaraan === 101 && true}
                                 onChange={(e) => handleOnChangeCheckBoxKewarganegaraan(e)}
                             />
                             <label
@@ -172,92 +266,174 @@ const FormInfoPemilikPerseorangan = () => {
                         </div>
                     </div>
                     {
-                        kewarganegaraan === "2" ? (
+                        kewarganegaraan === 101 ? (
                             <>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai KITAS</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="companyName" className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                    <input name="userName" value={inputHandleWna.userName} onChange={(e) => handleChange(e, 101)} className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor KITAS pemilik usaha</div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor eKTP pemilik usaha</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="companyName" className='input-text-form' placeholder='Masukan nomor KTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                    <input name="numberId" value={inputHandleWna.numberId} onChange={(e) => handleChange(e, 101)} className='input-text-form' placeholder='Masukan nomor eKTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto KITAS pemilik usaha</div>
-                                <div className='mt-2'>
-                                    <FilePond
-                                        className="dragdrop"
-                                        files={files}
-                                        // onupdatefiles={(newFile) => fileCSV(newFile, listBank, balanceDetail, feeBank)}
-                                        // onaddfilestart={() => setErrorFound([])}
-                                        // onaddfile={addFile}
-                                        // allowMultiple={true}
-                                        // maxFiles={3}
-                                        server="/api"
-                                        name="files"
-                                        labelIdle={labelUploadSKitas}
-                                    />
+                                <div className='viewDragDrop  mt-2' onClick={handleClickKtp} style={{cursor: "pointer"}}>
+                                    {
+                                        !imageFileKtp ?
+                                        <>
+                                            <div className='pt-4 text-center'>Masukkan foto eKTP.</div>
+                                            <input
+                                                type="file"
+                                                onChange={handleFileChangeKtp}
+                                                accept=".jpg"
+                                                style={{ display: "none" }}
+                                                ref={hiddenFileInputKtp}
+                                                id="image"
+                                                name="image"
+                                            />
+                                        </>
+                                         :
+                                        <>
+                                            <img src={imageFileKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                            <input
+                                                type="file"
+                                                onChange={handleFileChangeKtp}
+                                                accept=".jpg"
+                                                style={{ display: "none" }}
+                                                ref={hiddenFileInputKtp}
+                                                id="image"
+                                                name="image"
+                                            />
+                                            <div className='mt-2 ms-3'>{nameImageKtp}</div>
+                                        </>
+                                    }
+                                    <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
+                                    <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                                 </div>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Selfie dengan KITAS</div>
-                                <div className='mt-2'>
-                                    <FilePond
-                                        className="dragdrop"
-                                        files={files}
-                                        // onupdatefiles={(newFile) => fileCSV(newFile, listBank, balanceDetail, feeBank)}
-                                        // onaddfilestart={() => setErrorFound([])}
-                                        // onaddfile={addFile}
-                                        // allowMultiple={true}
-                                        // maxFiles={3}
-                                        server="/api"
-                                        name="files"
-                                        labelIdle={labelUploadKtp}
-                                    />
+                                <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
+                                    {
+                                        !imageFileSelfieKtp ?
+                                        <>
+                                            <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
+                                            <input
+                                                type="file"
+                                                onChange={handleFileChangeSelfieKtp}
+                                                accept=".jpg"
+                                                style={{ display: "none" }}
+                                                ref={hiddenFileInputSelfieKtp}
+                                                id="image"
+                                                name="image"
+                                            />
+                                        </>
+                                         :
+                                        <>
+                                            <img src={imageFileSelfieKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                            <input
+                                                type="file"
+                                                onChange={handleFileChangeSelfieKtp}
+                                                accept=".jpg"
+                                                style={{ display: "none" }}
+                                                ref={hiddenFileInputSelfieKtp}
+                                                id="image"
+                                                name="image"
+                                            />
+                                            <div className='mt-2 ms-3'>{nameImageSelfieKtp}</div>
+                                        </>
+                                    }
+                                    <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
+                                    <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                                 </div>
                             </>
                         ) : (
                             <>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai eKTP</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="companyName" className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                    <input name="userName" value={inputHandleWni.userName} onChange={(e) => handleChange(e, 100)} className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor eKTP pemilik usaha</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="companyName" className='input-text-form' placeholder='Masukan nomor eKTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                    <input name="numberId" value={inputHandleWni.numberId} onChange={(e) => handleChange(e, 100)} className='input-text-form' placeholder='Masukan nomor eKTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto eKTP pemilik usaha sesuaI</div>
-                                <div className='mt-2'>
-                                    <FilePond
-                                        className="dragdrop"
-                                        files={files}
-                                        // onupdatefiles={(newFile) => fileCSV(newFile, listBank, balanceDetail, feeBank)}
-                                        // onaddfilestart={() => setErrorFound([])}
-                                        // onaddfile={addFile}
-                                        // allowMultiple={true}
-                                        // maxFiles={3}
-                                        server="/api"
-                                        name="files"
-                                        labelIdle={labelUploadKtp}
-                                    />
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto eKTP pemilik usaha sesuai</div>
+                                <div className='viewDragDrop  mt-2' onClick={handleClickKtp} style={{cursor: "pointer"}}>
+                                    {
+                                        !imageFileKtp ?
+                                        <>
+                                            <div className='pt-4 text-center'>Masukkan foto eKTP.</div>
+                                            <input
+                                                type="file"
+                                                onChange={handleFileChangeKtp}
+                                                accept=".jpg"
+                                                style={{ display: "none" }}
+                                                ref={hiddenFileInputKtp}
+                                                id="image"
+                                                name="image"
+                                            />
+                                        </>
+                                         :
+                                        <>
+                                            <img src={imageFileKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                            <input
+                                                type="file"
+                                                onChange={handleFileChangeKtp}
+                                                accept=".jpg"
+                                                style={{ display: "none" }}
+                                                ref={hiddenFileInputKtp}
+                                                id="image"
+                                                name="image"
+                                            />
+                                            <div className='mt-2 ms-3'>{nameImageKtp}</div>
+                                        </>
+                                    }
+                                    <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
+                                    <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                                 </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-5 pt-5'>Selfie dengan eKTP</div>
-                                <div className='mt-2'>
-                                    <FilePond
-                                        className="dragdrop"
-                                        files={files}
-                                        // onupdatefiles={(newFile) => fileCSV(newFile, listBank, balanceDetail, feeBank)}
-                                        // onaddfilestart={() => setErrorFound([])}
-                                        // onaddfile={addFile}
-                                        // allowMultiple={true}
-                                        // maxFiles={3}
-                                        server="/api"
-                                        name="files"
-                                        labelIdle={labelUploadKtp}
-                                    />
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan eKTP</div>
+                                <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
+                                    {
+                                        !imageFileSelfieKtp ?
+                                        <>
+                                            <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
+                                            <input
+                                                type="file"
+                                                onChange={handleFileChangeSelfieKtp}
+                                                accept=".jpg"
+                                                style={{ display: "none" }}
+                                                ref={hiddenFileInputSelfieKtp}
+                                                id="image"
+                                                name="image"
+                                            />
+                                        </>
+                                         :
+                                        <>
+                                            <img src={imageFileSelfieKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                            <input
+                                                type="file"
+                                                onChange={handleFileChangeSelfieKtp}
+                                                accept=".jpg"
+                                                style={{ display: "none" }}
+                                                ref={hiddenFileInputSelfieKtp}
+                                                id="image"
+                                                name="image"
+                                            />
+                                            <div className='mt-2 ms-3'>{nameImageSelfieKtp}</div>
+                                        </>
+                                    }
+                                    <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
+                                    <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                                 </div>
                             </>
                         )
                     }
-                    <div className='text-end' style={{ marginTop: 80 }}>
-                        <button onClick={() => toInfoUsaha()} className='btn-next mb-4'>Selanjutnya</button>
+                    <div className='text-end mt-4'>
+                        <button 
+                            onClick={() => formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, kewarganegaraan === 100 ? inputHandleWni.numberId : inputHandleWna.numberId, kewarganegaraan === 100 ? inputHandleWni.userName : inputHandleWna.userName, imageKtp, imageSelfieKtp, 2, (dataJenisUsaha === "/form-info-pemilik-perorangan" || dataJenisUsaha === `/form-info-pemilik-perorangan/${idNou}`) ? 2 : 1, "")} 
+                            className={((inputHandleWni.userName.length !== 0 && inputHandleWni.numberId.length !== 0 && imageFileKtp !== null && imageFileSelfieKtp !== null) || (inputHandleWna.userName.length !== 0 && inputHandleWna.numberId.length !== 0 && imageFileKtp !== null && imageFileSelfieKtp !== null)) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={((inputHandleWni.userName.length === 0 || inputHandleWni.numberId.length === 0 || imageFileKtp === null || imageFileSelfieKtp === null) && (inputHandleWna.userName.length === 0 || inputHandleWna.numberId.length === 0 || imageFileKtp === null || imageFileSelfieKtp === null))}
+                        >
+                            Selanjutnya
+                        </button>
                     </div>
                 </div>
                 <div className='pt-3'></div>

@@ -1719,7 +1719,7 @@ th {
     height: 40px;
 }
 
-.btn-next {
+.btn-next-active {
     width: 306.67px;
     height: 48px;
     max-width: 468px;
@@ -1730,6 +1730,23 @@ th {
     border: 0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838);
     background: var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%));
     color: var(--palet-utama-neutral-hitam-base, #2C1919);
+    text-align: center;
+    font-family: Exo;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.btn-next-inactive {
+    width: 306.67px;
+    height: 48px;
+    max-width: 468px;
+    padding: 12px 24px;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+    border: unset !important;
+    background: #EBEBEB;
+    color: #C4C4C4;
     text-align: center;
     font-family: Exo;
     font-size: 16px;
@@ -1964,4 +1981,31 @@ th {
 
 .div-table .bnAwAJ {
     padding: unset;
+}
+
+.viewDragDrop {
+    font-family: 'Nunito' !important;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    background-color: rgba(7, 126, 134, 0.04) !important;
+    border: 1.4px dashed #077E86 !important;
+    border-radius: 8px;
+    background-color: unset;
+    min-height: max-content !important;
+    height: 100% !important;
+    font-size: 12px;
+    color: #383838;
+}
+
+.upload-file-qris {
+    border-radius: 6px;
+    border: 1px solid var(--Palet-Sekunder-Hijau-Toska, #077E86);
+    height: 44px;
+    padding: 12px 24px;
+    width: 15%;
+    color: #077E86;
+    font-size: 14px;
+    font-family: 'Exo';
+    font-weight: 700;
+
 }
