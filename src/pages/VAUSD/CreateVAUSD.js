@@ -68,14 +68,6 @@ function CreateVAUSD() {
 
     // STATE UPDATE VA END
 
-    console.log(isVAUSD, 'isVAUSD');
-    console.log(stockVABaru, 'stockVABaru');
-    console.log(isTabFileIdVABaru, 'isTabFileIdVABaru');
-    console.log(dataVABaru, 'dataVABaru');
-    console.log(selectedFileUpdateUpdateVA, 'selectedFileUpdateUpdateVA');
-    console.log(dataListFileAPIUpdateVA, 'dataListFileAPIUpdateVA');
-    console.log(totalDataConfirmationUpdateVA, 'totalDataConfirmationUpdateVA');
-
     // STATE RIWAYAT VA
 
     const [dataRiwayatVAUSD, setDataRiwayatVAUSD] = useState([])
@@ -102,21 +94,15 @@ function CreateVAUSD() {
     const lastDayNextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 2, -0).toLocaleString('id-ID').split(',')[0]
 
     // STATE RIWAYAT VA END
-    console.log(inputHandleRiwayatVA.kodeVARiwayatVA, 'inputHandleRiwayatVA.kodeVARiwayatVA');
-    console.log(inputHandleRiwayatVA.namaFileRiwayatVA, 'inputHandleRiwayatVA.namaFileRiwayatVA');
-    console.log(inputHandleRiwayatVA.statusRiwayatVA, 'inputHandleRiwayatVA.statusRiwayatVA');
-    console.log(inputHandleRiwayatVA.periodeRiwayatVA, 'inputHandleRiwayatVA.periodeRiwayatVA');
 
     // FUNCTION SECTION TAB CREATE NEW VA
 
     function handlePageChangeCreate(page, bulkId) {
-        console.log(page, 'getVAUSD changePage');
         setActivePageVABaru(page)
         getVAUSD(bulkId, page)
     }
 
     function handleChangeVABaru(e) {
-        console.log(e, 'e');
         if (e === undefined || e === "") {
             setDataVABaru("0")
         } else if (e.length === 4 && e !== "1000") {
@@ -127,7 +113,6 @@ function CreateVAUSD() {
     }
 
     function pindahFileTabCreate(item) {
-        console.log(item.id, 'item.id');
         setIsTabFileIdVABaru(item.id)
         setSelectedFileNameVAUSDBaru(item.name)
         setUnAvailableVAUSDBaru(item.total_unavailable)
@@ -142,7 +127,6 @@ function CreateVAUSD() {
                 isAvailable++
             }
         })
-        console.log(isAvailable, 'isAvailable');
         if (isAvailable !== 0) {
             setSuccessAvailableUpdateMessageVABaru("Semua Data VA Sudah Tersedia")
             setShowModalPerbaruiDataVABaru(false)
@@ -163,9 +147,9 @@ function CreateVAUSD() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            console.log(dataParams, 'dataParams');
+            // console.log(dataParams, 'dataParams');
             const newData = await axios.post(BaseURL + "/VirtualAccountUSD/UpdateUnvailabletoAvailableVA", {data: dataParams}, {headers: headers})
-            console.log(newData, 'newData');
+            // console.log(newData, 'newData');
             if (newData.status === 200 && newData.data.response_code === 200 && newData.data.response_new_token === null) {
                 setActivePageVABaru(1)
                 getVAUSD(bulkId, 1)
@@ -196,10 +180,8 @@ function CreateVAUSD() {
 
     async function generateFileCSV(bulkId, fileName, listVA) {
         try {
-            console.log(listVA, 'listVA');
-            console.log(fileName, 'fileName');
             if (listVA.length === 0 || listVA[0].status_id === 11) {
-                console.log("Data Kosong");
+                // console.log("Data Kosong");
             } else {
                 const auth = 'Bearer ' + getToken();
                 const dataParams = encryptData(`{"bulk_id": ${bulkId}, "username": ""}`)
@@ -208,7 +190,7 @@ function CreateVAUSD() {
                     'Authorization': auth
                 }
                 const dataFileCSV = await axios.post(BaseURL + "/VirtualAccountUSD/GetUnavailableVAUSD", {data: dataParams}, {headers: headers})
-                console.log(dataFileCSV, 'dataFileCSV');
+                // console.log(dataFileCSV, 'dataFileCSV');
                 if (dataFileCSV.status === 200 && dataFileCSV.data.response_code === 200 && dataFileCSV.data.response_new_token === null) {
                     let data = []
                     dataFileCSV.data.response_data.results.forEach(item => {
@@ -221,12 +203,12 @@ function CreateVAUSD() {
                         obj.member_status = ""
                         data.push(obj)
                     })
-                    console.log(data, 'data new');
+                    // console.log(data, 'data new');
                     const arrayOfArraysNextIndex = data.map(obj => {
                         const values = Object.values(obj);
                         return values;
                     });
-                    console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
+                    // console.log(arrayOfArraysNextIndex, 'arrayOfArraysNextIndex');
                     const ws = XLSX.utils.aoa_to_sheet(arrayOfArraysNextIndex)
                     const csv = XLSX.utils.sheet_to_csv(ws)
                     const zip = require('jszip')()
@@ -286,7 +268,7 @@ function CreateVAUSD() {
             }
             // console.log(dataParams, 'dataParams');
             const dataListVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/GetVirtualAccountUSD", {data: dataParams}, {headers: headers})
-            console.log(dataListVAUSD, 'dataListVAUSD');
+            // console.log(dataListVAUSD, 'dataListVAUSD');
             if (dataListVAUSD.status === 200 && dataListVAUSD.data.response_code === 200 && dataListVAUSD.data.response_new_token === null) {
                 dataListVAUSD.data.response_data.results = dataListVAUSD.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberVABaru(dataListVAUSD.data.response_data)
@@ -315,7 +297,7 @@ function CreateVAUSD() {
                 'Authorization': auth
             }
             const fileNameAndStockVa = await axios.post(BaseURL + "/VirtualAccountUSD/GetFileandStockforVAUSD", {data: ""}, {headers: headers})
-            console.log(fileNameAndStockVa, 'fileNameAndStockVa');
+            // console.log(fileNameAndStockVa, 'fileNameAndStockVa');
             if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token === null) {
                 setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
                 setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
@@ -350,7 +332,7 @@ function CreateVAUSD() {
             }
             // console.log(dataParams, 'dataParams');
             const generateVA = await axios.post(BaseURL + "/VirtualAccountUSD/GenerateVirtualAccount", {data: dataParams}, {headers: headers})
-            console.log(generateVA, 'generateVA');
+            // console.log(generateVA, 'generateVA');
             if (generateVA.status === 200 && generateVA.data.response_code === 200 && generateVA.data.response_new_token === null) {
                 getFileNameAndStockVA(generateVA.data.response_data.results)
                 setDataVABaru(0)
@@ -370,8 +352,6 @@ function CreateVAUSD() {
     // FUNCTION SECTION TAB UPDATE VA
 
     function downloadFileVABulk(selectedFile, listVA) {
-        console.log(selectedFile, 'selectedFile');
-        console.log(listVA, 'listVA');
         const foundedList = listVA.find(item => item.id === selectedFile.value)
         window.open(foundedList.source)
         // if (selectedFile.length === 0) {
@@ -396,10 +376,7 @@ function CreateVAUSD() {
     }
 
     function handleChangeFile(selected, listFile) {
-        console.log(selected, 'selected');
-        console.log(listFile, 'listFile');
         const foundFile = listFile.find(found => found.id === selected.value)
-        console.log(foundFile, 'foundFile');
         setTotalDataConfirmationUpdateVA(foundFile.total_data)
         // if (selected.length === 1) {
         //     console.log('masuk 1');
@@ -426,7 +403,6 @@ function CreateVAUSD() {
 
     async function confirmUpdatedVAUSD(listFile) {
         try {
-            console.log(listFile, 'listFile');
             // let idLists = []
             // listFile.forEach(item => {
             //     idLists.push(item.value)
@@ -437,9 +413,9 @@ function CreateVAUSD() {
                 'Content-Type': 'application/json',
                 'Authorization': auth
             }
-            console.log(dataParams, 'dataParams');
+            // console.log(dataParams, 'dataParams');
             const confirmedVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/ConfirmVAUSDFileUpdated", {data: dataParams}, {headers: headers})
-            console.log(confirmedVAUSD, 'confirmedVAUSD');
+            // console.log(confirmedVAUSD, 'confirmedVAUSD');
             if (confirmedVAUSD.status === 200 && confirmedVAUSD.data.response_code === 200 && confirmedVAUSD.data.response_new_token === null) {
                 setShowModalKonfirmasiUpdateVA(false)
                 getListUpdateVA(1)
@@ -464,7 +440,7 @@ function CreateVAUSD() {
                 'Authorization': auth
             }
             const downloadUpdatedVA = await axios.post(BaseURL + "/VirtualAccountUSD/UpdateVAPagingGenerateCSV", {data: ""}, {headers: headers})
-            console.log(downloadUpdatedVA, 'downloadUpdatedVA');
+            // console.log(downloadUpdatedVA, 'downloadUpdatedVA');
             if (downloadUpdatedVA.status === 200 && downloadUpdatedVA.data.response_code === 200 && downloadUpdatedVA.data.response_new_token === null) {
                 getListUpdateVA(1)
                 getDataNameFile()
@@ -489,7 +465,7 @@ function CreateVAUSD() {
                 'Authorization': auth
             }
             const dataListFileName = await axios.post(BaseURL + "/VirtualAccountUSD/GetFileVAUSDUpdated", {data: ""}, {headers: headers})
-            console.log(dataListFileName, 'dataListFileName');
+            // console.log(dataListFileName, 'dataListFileName');
             if (dataListFileName.status === 200 && dataListFileName.data.response_code === 200 && dataListFileName.data.response_new_token === null) {
                 let newArr = []
                 dataListFileName.data.response_data.results.forEach(e => {
@@ -568,7 +544,7 @@ function CreateVAUSD() {
                 'Authorization': auth
             }
             const dataRiwayatVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/GetTransactionVAUSDBasedOnBulk", {data: dataParams}, {headers: headers})
-            console.log(dataRiwayatVAUSD, 'dataRiwayatVAUSD');
+            // console.log(dataRiwayatVAUSD, 'dataRiwayatVAUSD');
             if (dataRiwayatVAUSD.status === 200 && dataRiwayatVAUSD.data.response_code === 200 && dataRiwayatVAUSD.data.response_new_token === null) {
                 setPageNumberRiwayatVA(dataRiwayatVAUSD.data.response_data)
                 setTotalPageRiwayatVA(dataRiwayatVAUSD.data.response_data.max_page)

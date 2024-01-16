@@ -112,14 +112,6 @@ function RiwayatVAUSD() {
 
     async function getListTransaksiVAUSDAdmin(page, idTransaksi, partnerTransId, noVa, dateId, dateRange, merchantName, payerName) {
         try {
-            console.log(page, 'page');
-            console.log(idTransaksi, 'idTransaksi');
-            console.log(partnerTransId, 'partnerTransId');
-            console.log(noVa, 'noVa');
-            console.log(dateId, 'dateId');
-            console.log(dateRange, 'dateRange');
-            console.log(merchantName, 'merchantName');
-            console.log(payerName, 'payerName');
             setPendingTransaksiVAUSDAdmin(true)
             setActivePageVAUSDAdmin(page)
             const auth = "Bearer " + getToken()
@@ -129,9 +121,9 @@ function RiwayatVAUSD() {
                 'Authorization' : auth,
                 'Accept-Language' : "ID"
             }
-            console.log(dataParams, 'dataParams');
+            // console.log(dataParams, 'dataParams');
             const dataListTransaksiVAUSD = await axios.post(BaseURL + "/VirtualAccountUSD/GetTransactionHistoryVAUSD", {data: dataParams}, {headers: headers})
-            console.log(dataListTransaksiVAUSD, 'dataListTransaksiVAUSD');
+            // console.log(dataListTransaksiVAUSD, 'dataListTransaksiVAUSD');
             if (dataListTransaksiVAUSD.status === 200 && dataListTransaksiVAUSD.data.response_code === 200 && dataListTransaksiVAUSD.data.response_new_token === null) {
                 dataListTransaksiVAUSD.data.response_data.results = dataListTransaksiVAUSD.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberVAUSDAdmin(dataListTransaksiVAUSD.data.response_data)
@@ -217,9 +209,9 @@ function RiwayatVAUSD() {
                 'Authorization' : auth,
                 'Accept-Language' : lang
             }
-            console.log(dataParams, 'dataParams');
+            // console.log(dataParams, 'dataParams');
             const dataListTransaksiVAUSDPartner = await axios.post(BaseURL + "/VirtualAccountUSD/GetTransactionHistoryVaUSDPartner", {data: dataParams}, {headers: headers})
-            console.log(dataListTransaksiVAUSDPartner, 'dataListTransaksiVAUSDPartner');
+            // console.log(dataListTransaksiVAUSDPartner, 'dataListTransaksiVAUSDPartner');
             if (dataListTransaksiVAUSDPartner.status === 200 && dataListTransaksiVAUSDPartner.data.response_code === 200 && dataListTransaksiVAUSDPartner.data.response_new_token === null) {
                 dataListTransaksiVAUSDPartner.data.response_data.results = dataListTransaksiVAUSDPartner.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberVAUSDPartner(dataListTransaksiVAUSDPartner.data.response_data)

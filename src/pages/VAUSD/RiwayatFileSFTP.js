@@ -82,9 +82,9 @@ function RiwayatFileSFTP() {
                 'Authorization' : auth,
                 'Accept-Language' : "ID"
             }
-            console.log(dataParams, 'dataParams');
+            // console.log(dataParams, 'dataParams');
             const dataListtransaksiSFTP = await axios.post(BaseURL + "/VirtualAccountUSD/GetRiwayatFileSFTP", {data: dataParams}, {headers: headers})
-            console.log(dataListtransaksiSFTP, 'dataListtransaksiSFTP');
+            // console.log(dataListtransaksiSFTP, 'dataListtransaksiSFTP');
             if (dataListtransaksiSFTP.status === 200 && dataListtransaksiSFTP.data.response_code === 200 && dataListtransaksiSFTP.data.response_new_token === null) {
                 dataListtransaksiSFTP.data.response_data.results = dataListtransaksiSFTP.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page-1)*10) : idx + 1}))
                 setPageNumberSFTPAdmin(dataListtransaksiSFTP.data.response_data)
