@@ -501,7 +501,6 @@ function Disbursement() {
 
     async function disbursementReport(dateNow, currentPage, userRole, lang) {
         try {
-            console.log(dateNow, 'dateNow');
             let newDate = ''
             dateNow.split('/').forEach((item, i) => i === 0 ? newDate = item : newDate = `${item}-${newDate}`)
             if (userRole !== "102") {

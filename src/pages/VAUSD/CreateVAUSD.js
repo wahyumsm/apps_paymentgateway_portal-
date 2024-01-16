@@ -85,13 +85,13 @@ function CreateVAUSD() {
     const [stateRiwayatVA, setStateRiwayatVA] = useState(null)
     const [dateRangeRiwayatVA, setDateRangeRiwayatVA] = useState([])
 
-    const currentDate = new Date().toLocaleString('id-ID').split(',')[0]
-    const tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleString('id-ID').split(',')[0]
-    const sevenDaysLater = new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleString('id-ID').split(',')[0]
-    const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleString('id-ID').split(',')[0]
-    const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, -0).toLocaleString('id-ID').split(',')[0]
-    const firstDayNextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toLocaleString('id-ID').split(',')[0]
-    const lastDayNextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 2, -0).toLocaleString('id-ID').split(',')[0]
+    const currentDate = new Date().toLocaleString('en-US').split(',')[0]
+    const tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleDateString('en-US').split(',')[0]
+    const sevenDaysLater = new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString('en-US').split(',')[0]
+    const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleString('en-US').split(',')[0]
+    const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, -0).toLocaleString('en-US').split(',')[0]
+    const firstDayNextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toLocaleDateString('en-US').split(',')[0]
+    const lastDayNextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 2, -0).toLocaleDateString('en-US').split(',')[0]
 
     // STATE RIWAYAT VA END
 
@@ -299,26 +299,36 @@ function CreateVAUSD() {
             const fileNameAndStockVa = await axios.post(BaseURL + "/VirtualAccountUSD/GetFileandStockforVAUSD", {data: ""}, {headers: headers})
             // console.log(fileNameAndStockVa, 'fileNameAndStockVa');
             if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token === null) {
-                // setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
-                // setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
-                // setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
-                // setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
-                // setActivePageVABaru(1)
-                // getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0]?.id, 1)
-                // setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
+                if (fileNameAndStockVa.data.response_data.results.bulk === null) {
+                    fileNameAndStockVa.data.response_data.results.bulk = []
+                    setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
+                } else if (fileNameAndStockVa.data.response_data.results.bulk?.length !== 0) {
+                    setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
+                    setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                    setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
+                    setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
+                    setActivePageVABaru(1)
+                    getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0]?.id, 1)
+                    setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
+                }
             } else if (fileNameAndStockVa.status === 200 && fileNameAndStockVa.data.response_code === 200 && fileNameAndStockVa.data.response_new_token !== null) {
                 setUserSession(fileNameAndStockVa.data.response_new_token)
-                // setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
-                // setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
-                // setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
-                // setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
-                // setActivePageVABaru(1)
-                // getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0].id, 1)
-                setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
+                if (fileNameAndStockVa.data.response_data.results.bulk === null) {
+                    fileNameAndStockVa.data.response_data.results.bulk = []
+                    setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
+                } else if (fileNameAndStockVa.data.response_data.results.bulk?.length !== 0) {
+                    setFileTabsVABaru(fileNameAndStockVa.data.response_data.results.bulk)
+                    setIsTabFileIdVABaru(fileNameAndStockVa.data.response_data.results.bulk[0].id)
+                    setSelectedFileNameVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].name)
+                    setUnAvailableVAUSDBaru(fileNameAndStockVa.data.response_data.results.bulk[0].total_unavailable)
+                    setActivePageVABaru(1)
+                    getVAUSD(fileNameAndStockVa.data.response_data.results.bulk[0]?.id, 1)
+                    setStockVABaru(fileNameAndStockVa.data.response_data.results.stock)
+                }
             }
         } catch (error) {
-            console.log(error);
-            // history.push(errorCatch(error.response.status))
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -1003,6 +1013,7 @@ function CreateVAUSD() {
                                         <Row className='d-flex justify-content-end'>
                                             <Col xs={3} className="card-information mt-3" style={{border: '1px solid #077E86', height: 44, padding: '8px 24px'}}>
                                                 <Link
+                                                    to={"#"}
                                                     className='d-flex'
                                                     style={{ cursor: listVAUSDBaru[0]?.status_id === 11 ? "not-allowed" : "pointer" }}
                                                     disabled={listVAUSDBaru[0]?.status_id === 11}
