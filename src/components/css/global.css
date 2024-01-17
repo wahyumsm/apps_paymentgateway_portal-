@@ -903,6 +903,12 @@ width: 150px;
     width: max-content;
 }
 
+.dropDisbursePartner .css-b62m3t-container {
+    min-width: 260px;
+    max-width: 265px;
+    width: max-content;
+}
+
 .dropVAUSD .css-g1d714-ValueContainer, .dropVAUSD .css-1hwfws3 {
     overflow-y: auto !important;
     max-height: 43px !important;
