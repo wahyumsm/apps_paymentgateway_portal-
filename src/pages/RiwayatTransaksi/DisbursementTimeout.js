@@ -603,8 +603,8 @@ const DisbursementTimeout = () => {
             ...provided,
             backgroundColor: "none",
             color: "#888888",
-            width: "57%",
-            height: "40px",
+            // width: "57%",
+            // height: "40px",
         }),
         control: (provided, state) => ({
             ...provided,
@@ -706,7 +706,7 @@ const DisbursementTimeout = () => {
                             </Col>
                             <Col xs={4} className="d-flex justify-content-start align-items-center">
                                 <span className='me-4'>Nama Partner</span>
-                                <div className="dropdown dropDisbursePartner" style={{ width: "12rem" }}>
+                                <div className="dropdown dropVAUSD" style={{ width: "12rem" }}>
                                     <ReactSelect
                                         // isMulti
                                         closeMenuOnSelect={true}
