@@ -1247,6 +1247,40 @@ header.sc-dIouRR.evxAbm {
 }
 
 /* drag & drop package */
+.dragdropSettlementVAUSD .filepond--root {
+    font-family: 'Nunito' !important;
+    max-height: 10em;
+}
+
+.dragdropSettlementVAUSD .filepond--root .filepond--drop-label {
+    min-height: 22em !important;
+    margin-top: -5px;
+}
+
+.dragdropSettlementVAUSD .filepond--panel[data-scalable=true] {
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    background-color: rgba(7, 126, 134, 0.04) !important;
+    border: 1.4px dashed #077E86 !important;
+}
+
+.dragdropSettlementVAUSD .filepond--panel-root {
+    border-radius: 8px;
+    background-color: unset;
+}
+
+.dragdropSettlementVAUSD .filepond--panel-top .filepond--panel-root {
+    border-radius: 8px;
+    background-color: unset;
+}
+
+.dragdropSettlementVAUSD .filepond--panel {
+    min-height: max-content !important;
+    height: 100% !important;
+}
+
+/* DISBURSEMENT */
+
 .dragdrop .filepond--root {
     font-family: 'Nunito' !important;
     max-height: 10em;

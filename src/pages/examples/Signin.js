@@ -117,11 +117,11 @@ export default () => {
             case 1105:
               history.push("/riwayat-transaksi/sub-account")
             break;
-            case 1105:
-              history.push("/riwayat-transaksi/sub-account")
-            break;
             case 1106:
               history.push("/riwayat-transaksi/transaksi-qris")
+            break;
+            case 1108:
+              history.push("/riwayat-transaksi/va-usd")
             break;
             case 1601:
               history.push("/Transaksi/va-dan-paylink")

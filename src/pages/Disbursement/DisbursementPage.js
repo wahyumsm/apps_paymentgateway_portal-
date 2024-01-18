@@ -3735,8 +3735,8 @@ function DisbursementPage() {
 
     async function sendDataDisburse (data, dataOrigin, isDisburseManual, fileNameBulk) {
         try {
-            // console.log(data, "data");
-            // console.log(dataOrigin, "dataOrigin");
+            console.log(data, "data");
+            console.log(dataOrigin, "dataOrigin");
             setIsLoadingDisburseMentConfirm(true)
             setIsDisableChecked(true)
             setIsCheckedConfirm(false)
@@ -3749,50 +3749,51 @@ function DisbursementPage() {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
             }
-            const dataSendHandler = await axios.post(BaseURL + "/Partner/UploadDisbursementFile", formData, {headers: headers})
-            // console.log(dataSendHandler, 'dataSendHandler');
-            if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length === 0) {
-                setShowModalConfirm(false)
-                setDataDisburse([])
-                setDataFromUploadExcel([])
-                setAllNominal([])
-                setAllFee([])
-                setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
-                <div className='pb-4'>
-                    <span class="filepond--label-action">
-                        ${language === null ? eng.unggahFile : language.unggahFile}
-                    </span>
-                </div>`)
-                setIsLoadingDisburseMentConfirm(false)
-                setShowModalStatusDisburse(true)
-                setResponMsg(dataSendHandler.data.response_data.status_id)
-                setIsLoadingDisburseMentConfirm(false)
-                setIsDisableChecked(false)
-                setTimeout(() => {
-                    setShowModalStatusDisburse(false)
-                }, 10000);
-            } else if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length !== 0) {
-                sessionStorage(dataSendHandler.data.response_new_token)
-                setShowModalConfirm(false)
-                setDataDisburse([])
-                setDataFromUploadExcel([])
-                setAllNominal([])
-                setAllFee([])
-                setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
-                <div className='pb-4'>
-                    <span class="filepond--label-action">
-                        ${language === null ? eng.unggahFile : language.unggahFile}
-                    </span>
-                </div>`)
-                setIsLoadingDisburseMentConfirm(false)
-                setShowModalStatusDisburse(true)
-                setResponMsg(dataSendHandler.data.response_data.status_id)
-                setIsLoadingDisburseMentConfirm(false)
-                setIsDisableChecked(false)
-                setTimeout(() => {
-                    setShowModalStatusDisburse(false)
-                }, 10000);
-            }
+            console.log(formData, 'formData');
+            // const dataSendHandler = await axios.post(BaseURL + "/Partner/UploadDisbursementFile", formData, {headers: headers})
+            // // console.log(dataSendHandler, 'dataSendHandler');
+            // if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length === 0) {
+            //     setShowModalConfirm(false)
+            //     setDataDisburse([])
+            //     setDataFromUploadExcel([])
+            //     setAllNominal([])
+            //     setAllFee([])
+            //     setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
+            //     <div className='pb-4'>
+            //         <span class="filepond--label-action">
+            //             ${language === null ? eng.unggahFile : language.unggahFile}
+            //         </span>
+            //     </div>`)
+            //     setIsLoadingDisburseMentConfirm(false)
+            //     setShowModalStatusDisburse(true)
+            //     setResponMsg(dataSendHandler.data.response_data.status_id)
+            //     setIsLoadingDisburseMentConfirm(false)
+            //     setIsDisableChecked(false)
+            //     setTimeout(() => {
+            //         setShowModalStatusDisburse(false)
+            //     }, 10000);
+            // } else if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length !== 0) {
+            //     sessionStorage(dataSendHandler.data.response_new_token)
+            //     setShowModalConfirm(false)
+            //     setDataDisburse([])
+            //     setDataFromUploadExcel([])
+            //     setAllNominal([])
+            //     setAllFee([])
+            //     setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>${language === null ? eng.letakkanFile : language.letakkanFile}</div>
+            //     <div className='pb-4'>
+            //         <span class="filepond--label-action">
+            //             ${language === null ? eng.unggahFile : language.unggahFile}
+            //         </span>
+            //     </div>`)
+            //     setIsLoadingDisburseMentConfirm(false)
+            //     setShowModalStatusDisburse(true)
+            //     setResponMsg(dataSendHandler.data.response_data.status_id)
+            //     setIsLoadingDisburseMentConfirm(false)
+            //     setIsDisableChecked(false)
+            //     setTimeout(() => {
+            //         setShowModalStatusDisburse(false)
+            //     }, 10000);
+            // }
         } catch (e) {
             if (e.response.data.response_message === "Failed") {
                 alert(e.response.data.response_message)
