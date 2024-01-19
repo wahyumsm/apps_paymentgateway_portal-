@@ -134,7 +134,7 @@ function SettlementVAUSDPartner() {
     // ADMIN PENGAJUAN FUNCTION
 
     async function fileUpload(newValue) {
-        if (newValue.lenght === 0) {
+        if (newValue.length === 0) {
             setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Masukan foto bukti transfer :</div>
             <div className='pb-4'>
                 <span class="filepond--label-action">
@@ -228,7 +228,7 @@ function SettlementVAUSDPartner() {
 
     function handlePageChangePengajuanSettlementVAUSDAdmin(page) {
         setActivePagePengajuanSettlementVAUSDAdmin(page)
-        getListPengajuanSettlementVAUSDAdmin(page, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)
+        getListPengajuanSettlementVAUSDAdmin(page, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.length !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)
     }
 
     function resetButtonPengajuanSettlementVAUSDAdminHandle() {
@@ -959,7 +959,7 @@ function SettlementVAUSDPartner() {
             name: 'Saldo merchant',
             selector: row => row.balance_before,
             // sortable: true,
-            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ `${row.currency} ${convertToRupiah(row.balance_before, false, 2)}` }</div>,
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ `USD ${convertToRupiah(row.balance_before, false, 2)}` }</div>,
             width: "175px"
         },
         {
@@ -990,7 +990,7 @@ function SettlementVAUSDPartner() {
             selector: row => row.balance_after,
             width: "170px",
             // sortable: true
-            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ `${row.currency} ${convertToRupiah(row.balance_after, false, 2)}` }</div>,
+            cell: row => <div style={{ display: "flex", flexDirection: "row", justifyContent: "right", alignItem: "right" }}>{ `USD ${convertToRupiah(row.balance_after, false, 2)}` }</div>,
             style: { display: "flex", flexDirection: "row", justifyContent: "right", }
         },
         {
@@ -1357,7 +1357,7 @@ function SettlementVAUSDPartner() {
                                             <Row>
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
-                                                        onClick={() => getListPengajuanSettlementVAUSDAdmin(1, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)}
+                                                        onClick={() => getListPengajuanSettlementVAUSDAdmin(1, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.length !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)}
                                                         className={(inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin === 0 || (inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin === 7 && dateRangePengajuanSettlementVAUSDAdmin.length === 0)) ? "btn-ez" : "btn-ez-on"}
                                                         disabled={(inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin === 0 || (inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin === 7 && dateRangePengajuanSettlementVAUSDAdmin.length === 0))}
                                                     >
@@ -1379,7 +1379,7 @@ function SettlementVAUSDPartner() {
                                     {
                                         listPengajuanSettlementVAUSDAdmin.length !== 0 &&
                                         <div style={{ marginBottom: 30 }}>
-                                            <Link to={"#"} onClick={() => exportReportPengajuanSettlementVAUSDAdminHandler(inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)} className="export-span">Export</Link>
+                                            <Link to={"#"} onClick={() => exportReportPengajuanSettlementVAUSDAdminHandler(inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.length !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)} className="export-span">Export</Link>
                                         </div>
                                     }
                                     <div className="div-table mt-4 pb-4">
