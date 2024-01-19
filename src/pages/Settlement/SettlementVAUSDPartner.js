@@ -142,7 +142,7 @@ function SettlementVAUSDPartner() {
 
     function handlePageChangePengajuanSettlementVAUSDAdmin(page) {
         setActivePagePengajuanSettlementVAUSDAdmin(page)
-        getListPengajuanSettlementVAUSDAdmin(page, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)
+        getListPengajuanSettlementVAUSDAdmin(page, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)
     }
 
     function resetButtonPengajuanSettlementVAUSDAdminHandle() {
@@ -163,7 +163,7 @@ function SettlementVAUSDPartner() {
             setPendingPengajuanSettlementVAUSDAdmin(true)
             setActivePagePengajuanSettlementVAUSDAdmin(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "code":"${idSettlement}", "date_from": "${Number(dateId) === 7 ? dateRange[0] : ""}", "date_to": "${Number(dateId) === 7 ? dateRange[1] : ""}", "page" : ${page}, "period": ${Number(dateId) !== 0 ? Number(dateId) : 2}, "partner_id": "${namaMerchant.lenght !== 0 ? namaMerchant[0]?.value : ""}", "row_per_page": 10 }`)
+            const dataParams = encryptData(`{ "code":"${idSettlement}", "date_from": "${Number(dateId) === 7 ? dateRange[0] : ""}", "date_to": "${Number(dateId) === 7 ? dateRange[1] : ""}", "page" : ${page}, "period": ${Number(dateId) !== 0 ? Number(dateId) : 2}, "partner_id": "${namaMerchant}", "row_per_page": 10 }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
@@ -326,7 +326,7 @@ function SettlementVAUSDPartner() {
 
     function handlePageChangeRiwayatSettlementVAUSDAdmin(page) {
         setActivePageRiwayatSettlementVAUSDAdmin(page)
-        getListRiwayatSettlementVAUSDAdmin(page, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.namaMerchantRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)
+        getListRiwayatSettlementVAUSDAdmin(page, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)
     }
 
     function resetButtonRiwayatSettlementVAUSDAdminHandle() {
@@ -724,7 +724,7 @@ function SettlementVAUSDPartner() {
     useEffect(() => {
         if (user_role !== "102") {
             getListMerchant()
-            getListPengajuanSettlementVAUSDAdmin(activePagePengajuanSettlementVAUSDAdmin, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin, inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)
+            getListPengajuanSettlementVAUSDAdmin(activePagePengajuanSettlementVAUSDAdmin, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.length !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)
         } else{
             getUserDataSettlementPartner(language === null ? 'EN' : language.flagName)
             getListSettlementRequestVAUSDPartner(activePageSettlementVAUSDPartner, inputHandleSettlementVAUSDPartner.idSettlementVAUSDPartner, inputHandleSettlementVAUSDPartner.periodeRequestSettlementVAUSDPartner, dateRangeRequestSettlementVAUSDPartner, inputHandleSettlementVAUSDPartner.periodeTerimaSettlementVAUSDPartner, dateRangeTerimaSettlementVAUSDPartner, inputHandleSettlementVAUSDPartner.statusSettlementVAUSDPartner)
@@ -733,10 +733,10 @@ function SettlementVAUSDPartner() {
 
     function pindahHalaman(param) {
         if (param === "pengajuan") {
-            getListPengajuanSettlementVAUSDAdmin(activePagePengajuanSettlementVAUSDAdmin, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)
+            getListPengajuanSettlementVAUSDAdmin(activePagePengajuanSettlementVAUSDAdmin, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)
             settlementVAUSDTabs(100)
         } else if (param === "riwayat") {
-            getListRiwayatSettlementVAUSDAdmin(1, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.namaMerchantRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)
+            getListRiwayatSettlementVAUSDAdmin(1, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)
             settlementVAUSDTabs(101)
         }
     }
@@ -1206,7 +1206,7 @@ function SettlementVAUSDPartner() {
                                             <Row>
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
-                                                        onClick={() => getListPengajuanSettlementVAUSDAdmin(1, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)}
+                                                        onClick={() => getListPengajuanSettlementVAUSDAdmin(1, inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)}
                                                         className={(inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin === 0 || (inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin === 7 && dateRangePengajuanSettlementVAUSDAdmin.length === 0)) ? "btn-ez" : "btn-ez-on"}
                                                         disabled={(inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin === 0 || (inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin === 7 && dateRangePengajuanSettlementVAUSDAdmin.length === 0))}
                                                     >
@@ -1228,7 +1228,7 @@ function SettlementVAUSDPartner() {
                                     {
                                         listPengajuanSettlementVAUSDAdmin.length !== 0 &&
                                         <div style={{ marginBottom: 30 }}>
-                                            <Link to={"#"} onClick={() => exportReportPengajuanSettlementVAUSDAdminHandler(inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, inputHandlePengajuanSettlementVAUSDAdmin.namaMerchantPengajuanSettlementVAUSDAdmin, inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)} className="export-span">Export</Link>
+                                            <Link to={"#"} onClick={() => exportReportPengajuanSettlementVAUSDAdminHandler(inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin, selectedPengajuanMerchantVAUSDAdmin.lenght !== 0 ? selectedPengajuanMerchantVAUSDAdmin[0].value : "", inputHandlePengajuanSettlementVAUSDAdmin.periodePengajuanSettlementVAUSDAdmin, dateRangePengajuanSettlementVAUSDAdmin)} className="export-span">Export</Link>
                                         </div>
                                     }
                                     <div className="div-table mt-4 pb-4">
@@ -1315,7 +1315,7 @@ function SettlementVAUSDPartner() {
                                     <Row className='mt-4'>
                                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                                             <span style={{ marginRight: 64 }}>ID Settlement</span>
-                                            <input onChange={(e) => setInputHandleRiwayatSettlementVAUSDAdmin({ ...inputHandleRiwayatSettlementVAUSDAdmin, [e.target.name]: e.target.value })} value={inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin} name="idSettlementPengajuanSettlementVAUSDAdmin" type='text' className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
+                                            <input onChange={(e) => setInputHandleRiwayatSettlementVAUSDAdmin({ ...inputHandleRiwayatSettlementVAUSDAdmin, [e.target.name]: e.target.value })} value={inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin} name="idSettlementRiwayatSettlementVAUSDAdmin" type='text' className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
                                         </Col>
                                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                                             <span style={{ marginRight: 32 }}>Nama Merchant</span>
@@ -1390,7 +1390,7 @@ function SettlementVAUSDPartner() {
                                             <Row>
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
-                                                        onClick={() => getListRiwayatSettlementVAUSDAdmin(1, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.namaMerchantRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)}
+                                                        onClick={() => getListRiwayatSettlementVAUSDAdmin(1, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)}
                                                         className={
                                                             ((inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin === 0 || (inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin === 7 && dateRangePengajuanRiwayatSettlementVAUSDAdmin.length === 0)) && (inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin === 0 || (inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin === 7 && dateRangeTerimaRiwayatSettlementVAUSDAdmin.length !== 0))) ||
                                                             ((inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin === 0 || (inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin === 7 && dateRangePengajuanRiwayatSettlementVAUSDAdmin.length !== 0)) && (inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin === 0 || (inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin === 7 && dateRangeTerimaRiwayatSettlementVAUSDAdmin.length === 0)))
@@ -1626,7 +1626,7 @@ function SettlementVAUSDPartner() {
                                     <tr>
                                         <td>Biaya Settlement</td>
                                         <td>
-                                            <div style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, color: "#B9121B" }}>- {isCurrencySettlementVAUSDPartner} {isCurrencySettlementVAUSDPartner !== "USD" ? ballanceSettlementVAUSDPartner?.IDR?.fee : ballanceSettlementVAUSDPartner?.USD?.fee}</div>
+                                            <div style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400, color: "#B9121B" }}>- {isCurrencySettlementVAUSDPartner} {isCurrencySettlementVAUSDPartner !== "USD" ? convertToRupiah(ballanceSettlementVAUSDPartner?.IDR?.fee, false, 2) : ballanceSettlementVAUSDPartner?.USD?.fee}</div>
                                         </td>
                                     </tr>
                                     <br />
