@@ -54,6 +54,9 @@ function CustomDesignPayment () {
         }
     }
 
+    console.log(image, "image");
+    console.log(imageFile, "imageFile");
+
     // console.log(parseFloat(image.size / 1024).toFixed(2), "ini image");
     // console.log(String(imageFile).slice(27), "ini image file");
 

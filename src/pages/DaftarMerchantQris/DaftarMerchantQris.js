@@ -143,11 +143,19 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    function getDetailNotifEwallet (id, step) {
+    function getDetailNotifEwallet (id, step, businessTypeId) {
         if (step === 1) {
-            history.push(`/form-info-pemilik-perorangan/${id}`)
+            if (businessTypeId === 2) {
+                history.push(`/form-info-pemilik-perorangan/${id}`)
+            } else if (businessTypeId === 3) {
+                history.push(`/form-tidak-berbadan-hukum/${id}`)
+            } 
         } else if (step === 2) {
-            history.push(`/form-info-usaha-perorangan`)
+            if (businessTypeId === 2) {
+                history.push(`/form-info-usaha-perorangan/${id}`)
+            } else if (businessTypeId === 3) {
+                history.push(`/formulir-tambah-settlement`)
+            }
         }
     }
 
@@ -199,7 +207,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon onClick={() => getDetailNotifEwallet(row.merchant_nou, row.step)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getDetailNotifEwallet(row.mprofile_id, row.step, row.business_type_id)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },

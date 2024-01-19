@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import alertIconYellow from '../../../assets/icon/note_icon_grey.svg'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import 'filepond/dist/filepond.min.css'
-import { Form } from '@themesberg/react-bootstrap';
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
 import encryptData from '../../../function/encryptData';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { Button, Modal } from '@themesberg/react-bootstrap';
 
 const FormInfoPemilikPerseorangan = () => {
     const history = useHistory()
-    const location = useLocation();
-    const { idNou } = useParams()
+    const { profileId } = useParams()
+    const [showModalSimpanData, setShowModalSimpanData] = useState(false)
+    const [getDataFirstStep, setGetDataFirstStep] = useState({})
 
     const hiddenFileInputKtp = useRef(null)
     const [imageFileKtp, setImageFileKtp] = useState(null)
@@ -26,12 +27,13 @@ const FormInfoPemilikPerseorangan = () => {
     const [imageSelfieKtp, setImageSelfieKtp] = useState(null)
     const [nameImageSelfieKtp, setNameImageSelfieKtp] = useState("")
     const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
-    const dataJenisUsaha = location.pathname;
     console.log(imageKtp, "imageKtp");
+    console.log(nameImageKtp, "nameImageKtp");
     console.log(imageFileKtp, "imageFileKtp");
+    console.log(imageSelfieKtp, "imageSelfieKtp");
+    console.log(nameImageSelfieKtp, "nameImageSelfieKtp");
+    console.log(imageFileSelfieKtp, "imageFileSelfieKtp");
     console.log(uploadKtp, "uploadKtp");
-    console.log(dataJenisUsaha, "dataJenisUsaha");
-    const [getDataListFirstStep, setGetDataListFirstStep] = useState({})
     const [inputHandleWni, setInputHandleWni] = useState({
         numberId: "",
         userName: "",
@@ -115,6 +117,7 @@ const FormInfoPemilikPerseorangan = () => {
                 setUploadSelfieKtp(false)
                 const reader = new FileReader()
                 reader.addEventListener("load", () => {
+                    console.log(reader.result, "reader.result");
                     setImageFileSelfieKtp(reader.result)
                 })
                 reader.readAsDataURL(event.target.files[0])
@@ -122,43 +125,10 @@ const FormInfoPemilikPerseorangan = () => {
         }
     }
 
-    async function formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, numberKtp, nameUser, imageKtp, imageSelfieKtp, step, businessType, merchantName) {
+    async function getDataFirstStepInfoPemilikPerorangan(profileId) {
         try {
             const auth = "Bearer " + getToken()
-            const formData = new FormData()
-            const dataParams = encryptData(`{"user_role": 0, "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
-            formData.append('ktpUrl', imageKtp)
-            formData.append('SelfieKtpUrl', imageSelfieKtp)
-            formData.append('Data', dataParams)
-            const headers = {
-                'Content-Type':'multipart/form-data',
-                'Authorization' : auth
-            }
-            const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
-            if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
-                if (step === 2) {
-                    history.push('/form-info-usaha-perorangan')
-                } else if (step === 1) {
-                    history.push('/daftar-merchant-qris')
-                }
-            } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
-                setUserSession(saveFirstStep.data.response_new_token)
-                if (step === 2) {
-                    history.push('/form-info-usaha-perorangan')
-                } else if (step === 1) {
-                    history.push('/daftar-merchant-qris')
-                }
-            }
-        } catch (error) {
-            // console.log(error)
-            history.push(errorCatch(error.response.status))
-        }
-    }
-
-    async function getDataFirstStepInfoPemilikPerorangan(merchantNou) {
-        try {
-            const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"merchant_nou":"${merchantNou}"}`)
+            const dataParams = encryptData(`{"profile_id":"${profileId}"}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -170,12 +140,12 @@ const FormInfoPemilikPerseorangan = () => {
                 } else {
                     setInputHandleWna({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
                 }
-                setGetDataListFirstStep(getData.data.response_data.results)
                 setKewarganegaraan(getData.data.response_data.results.mprofdtl_identity_type_id)
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
                 setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
                 setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
+                setGetDataFirstStep(getData.data.response_data.results)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 if (getData.data.response_data.results.mprofdtl_identity_type_id === 100) {
@@ -183,12 +153,12 @@ const FormInfoPemilikPerseorangan = () => {
                 } else {
                     setInputHandleWna({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
                 }
-                setGetDataListFirstStep(getData.data.response_data.results)
                 setKewarganegaraan(getData.data.response_data.results.mprofdtl_identity_type_id)
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
                 setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
                 setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
+                setGetDataFirstStep(getData.data.response_data.results)
             }
         } catch (error) {
             // console.log(error)
@@ -196,9 +166,205 @@ const FormInfoPemilikPerseorangan = () => {
         }
     }
 
+    console.log(getDataFirstStep, "getDataFirstStep");
+
+    async function formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, profileId, numberKtp, nameUser, imageKtp, imageFileKtp, nameImageKtp, imageSelfieKtp, imageFileSelfieKtp, nameImageSelfieKtp, step, businessType, merchantName, position) {
+        try {
+            console.log(imageFileKtp, "imageFileKtp");
+            console.log(nameImageKtp, "nameImageKtp");
+            console.log(imageSelfieKtp, "imageSelfieKtp");
+            if (imageKtp === null) {
+                console.log("masuk1");
+                if (imageSelfieKtp === null) {
+                    console.log("masuk11");
+                    const auth = "Bearer " + getToken()
+                    const formData = new FormData()
+                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+                    formData.append('ktpUrl', null)
+                    formData.append('SelfieKtpUrl', null)
+                    formData.append('Data', dataParams)
+                    const headers = {
+                        'Content-Type':'multipart/form-data',
+                        'Authorization' : auth
+                    }
+                    const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
+                    if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
+                        if (profileId === 0) {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        } else {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan/${profileId}`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        }
+                    } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
+                        setUserSession(saveFirstStep.data.response_new_token)
+                        if (profileId === 0) {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        } else {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan/${profileId}`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        }
+                    }
+                } else {
+                    console.log("masuk12");
+                    const auth = "Bearer " + getToken()
+                    const formData = new FormData()
+                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+                    formData.append('ktpUrl', null)
+                    formData.append('SelfieKtpUrl', imageSelfieKtp)
+                    formData.append('Data', dataParams)
+                    const headers = {
+                        'Content-Type':'multipart/form-data',
+                        'Authorization' : auth
+                    }
+                    const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
+                    if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
+                        if (profileId === 0) {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        } else {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan/${profileId}`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        }
+                    } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
+                        setUserSession(saveFirstStep.data.response_new_token)
+                        if (profileId === 0) {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        } else {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan/${profileId}`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        }
+                    }
+                }
+            } else {
+                console.log("masuk2");
+                if (imageSelfieKtp === null) {
+                    console.log("masuk21");
+                    const auth = "Bearer " + getToken()
+                    const formData = new FormData()
+                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+                    formData.append('ktpUrl', imageKtp)
+                    formData.append('SelfieKtpUrl', null)
+                    formData.append('Data', dataParams)
+                    const headers = {
+                        'Content-Type':'multipart/form-data',
+                        'Authorization' : auth
+                    }
+                    const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
+                    if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
+                        if (profileId === 0) {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        } else {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan/${profileId}`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        }
+                    } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
+                        setUserSession(saveFirstStep.data.response_new_token)
+                        if (profileId === 0) {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        } else {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan/${profileId}`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        }
+                    }
+                } else {
+                    console.log("masuk22");
+                    const auth = "Bearer " + getToken()
+                    const formData = new FormData()
+                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+                    formData.append('ktpUrl', imageKtp)
+                    formData.append('SelfieKtpUrl', imageSelfieKtp)
+                    formData.append('Data', dataParams)
+                    const headers = {
+                        'Content-Type':'multipart/form-data',
+                        'Authorization' : auth
+                    }
+                    const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
+                    if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
+                        if (profileId === 0) {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        } else {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan/${profileId}`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        }
+                    } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
+                        setUserSession(saveFirstStep.data.response_new_token)
+                        if (profileId === 0) {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        } else {
+                            if (position === "next") {
+                                history.push(`/form-info-usaha-perorangan/${profileId}`)
+                            } else if (position === "back") {
+                                history.push('/daftar-merchant-qris')
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    function backPage () {
+        setShowModalSimpanData(true)
+    }
+
     useEffect(() => {
-        if (idNou !== undefined) {
-            getDataFirstStepInfoPemilikPerorangan(idNou)
+        if (profileId !== undefined) {
+            getDataFirstStepInfoPemilikPerorangan(profileId)
         }
     }, [])
     
@@ -208,7 +374,7 @@ const FormInfoPemilikPerseorangan = () => {
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
                 <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
-                    <FontAwesomeIcon onClick={() => formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, kewarganegaraan === 100 ? inputHandleWni.numberId : inputHandleWna.numberId, kewarganegaraan === 100 ? inputHandleWni.userName : inputHandleWna.userName, imageKtp, imageSelfieKtp, 1, (dataJenisUsaha === "/form-info-pemilik-perorangan" || dataJenisUsaha === `/form-info-pemilik-perorangan/${idNou}`) ? 2 : 1, "")} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
                 </div>
                 <div className='pb-4 pt-3'>
@@ -428,9 +594,9 @@ const FormInfoPemilikPerseorangan = () => {
                     }
                     <div className='text-end mt-4'>
                         <button 
-                            onClick={() => formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, kewarganegaraan === 100 ? inputHandleWni.numberId : inputHandleWna.numberId, kewarganegaraan === 100 ? inputHandleWni.userName : inputHandleWna.userName, imageKtp, imageSelfieKtp, 2, (dataJenisUsaha === "/form-info-pemilik-perorangan" || dataJenisUsaha === `/form-info-pemilik-perorangan/${idNou}`) ? 2 : 1, "")} 
-                            className={((inputHandleWni.userName.length !== 0 && inputHandleWni.numberId.length !== 0 && imageFileKtp !== null && imageFileSelfieKtp !== null) || (inputHandleWna.userName.length !== 0 && inputHandleWna.numberId.length !== 0 && imageFileKtp !== null && imageFileSelfieKtp !== null)) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
-                            disabled={((inputHandleWni.userName.length === 0 || inputHandleWni.numberId.length === 0 || imageFileKtp === null || imageFileSelfieKtp === null) && (inputHandleWna.userName.length === 0 || inputHandleWna.numberId.length === 0 || imageFileKtp === null || imageFileSelfieKtp === null))}
+                            onClick={() => formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id, kewarganegaraan === 100 ? inputHandleWni.numberId : inputHandleWna.numberId, kewarganegaraan === 100 ? inputHandleWni.userName : inputHandleWna.userName, imageKtp, imageFileKtp === null ? "" : imageFileKtp, nameImageKtp, imageSelfieKtp, imageFileSelfieKtp, nameImageSelfieKtp, 2, 2, "", "next")} 
+                            className={((inputHandleWni.userName.length !== 0 && inputHandleWni.numberId.length !== 0 && imageFileKtp !== null && imageFileSelfieKtp !== null && imageFileKtp.length !== 0 && imageFileSelfieKtp.length !== 0) || (inputHandleWna.userName.length !== 0 && inputHandleWna.numberId.length !== 0 && imageFileKtp !== null && imageFileSelfieKtp !== null && imageFileKtp.length !== 0 && imageFileSelfieKtp.length !== 0)) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={((inputHandleWni.userName.length === 0 || inputHandleWni.numberId.length === 0 || imageFileKtp === null || imageFileSelfieKtp === null || imageFileKtp.length === 0 || imageFileSelfieKtp.length === 0) && (inputHandleWna.userName.length === 0 || inputHandleWna.numberId.length === 0 || imageFileKtp === null || imageFileSelfieKtp === null || imageFileKtp.length === 0 || imageFileSelfieKtp.length === 0))}
                         >
                             Selanjutnya
                         </button>
@@ -438,6 +604,28 @@ const FormInfoPemilikPerseorangan = () => {
                 </div>
                 <div className='pt-3'></div>
             </div>
+
+            <Modal
+                size="lg"
+                centered
+                show={showModalSimpanData}
+                onHide={() => setShowModalSimpanData(false)}
+                style={{ display: "flex", borderRadius: 8, justifyContent: "center" }}
+                className='modal-simpan-data-settlement'
+            >
+                <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
+                    <div style={{ display: "flex", justifyContent: "center", marginTop: 10, marginBottom: 16 }}>
+                        <p style={{ fontFamily: "Exo", fontSize: 26, fontWeight: 700, marginBottom: "unset" }} className="text-center">Harap simpan data anda</p>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "center", marginTop: 15, marginBottom: 16 }}>
+                        <p style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 400, marginBottom: "unset", color: "var(--palet-pengembangan-shades-hitam-62-grey, #888)" }} className="text-center">Data anda akan terhapus apabila anda keluar tanpa menyimpan data anda</p>
+                    </div>             
+                    <div className="d-flex justify-content-center mt-2 mb-3">
+                        <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
+                        <Button onClick={() => formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id, kewarganegaraan === 100 ? inputHandleWni.numberId : inputHandleWna.numberId, kewarganegaraan === 100 ? inputHandleWni.userName : inputHandleWna.userName, imageKtp, imageFileKtp, nameImageKtp, imageSelfieKtp, imageFileSelfieKtp, nameImageSelfieKtp, 1, 2, "", "back")} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </>
     )
 }

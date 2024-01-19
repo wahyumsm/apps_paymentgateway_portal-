@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import peroranganQris from '../../assets/icon/perorangan-qris.svg'
 import badanUsahaQris from '../../assets/icon/badanusaha-qris.svg'
+import tidakBerbadanHukumQris from '../../assets/icon/tidakberbadanhukum-qris.svg'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 
 const PilihJenisUsaha = () => {
@@ -32,8 +33,15 @@ const PilihJenisUsaha = () => {
                         <div className='card-text-subtitle'>untuk perusahaan dengan izin usaha yang ingin melakukan atau mengelola usaha yang dijalankan</div>
                     </div>
                 </div>
+                <div className={tabJenisUsaha === "tidakBerbadanHukum" ? 'card-when-click mb-3' : 'card-jenis-usaha mb-3'} onClick={() => buttonColor("tidakBerbadanHukum")} id='tidakBerbadanHukum'>
+                    <img src={tidakBerbadanHukumQris} alt='qris' />
+                    <div className='text-start'>
+                        <div className='card-text-title'>Tidak Berbadan Hukum</div>
+                        <div className='card-text-subtitle'>Untuk perusahaan dengan izin usaha yang belum memiliki dokumen legalitas. <br/> Pastikan sebuah brand yang dimiliki sudah memiliki surat izin usaha (E-KTP/NPWP, SK Kementerian Kehakiman, NIB perusahaan, dan Akta pendirian).</div>
+                    </div>
+                </div>
                 <div className='d-flex justify-content-center align-items-center'>
-                    <Link to={{ pathname: tabJenisUsaha === "perorangan" ? '/form-info-pemilik-perorangan' : '/form-business-entity', search: "", hash: "", state: {tabJenisUsaha: tabJenisUsaha}}} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</Link>
+                    <Link to={{ pathname: tabJenisUsaha === "perorangan" ? '/form-info-pemilik-perorangan' : tabJenisUsaha === "badanUsaha" ? '/form-info-pemilik-badan-usaha' : '/form-tidak-berbadan-hukum', search: "", hash: "", state: {tabJenisUsaha: tabJenisUsaha}}} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</Link>
                 </div>
             </div>
         </div>

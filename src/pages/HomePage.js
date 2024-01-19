@@ -102,6 +102,8 @@ import PengaturanMerchant from './DaftarMerchantQris/FormDataMerchantGrup/Pengat
 import FormDaftarSettlement from './DaftarMerchantQris/FormDataMerchantGrup/FormDaftarSettlement';
 import DetailMerchantGrup from './DaftarMerchantQris/FormDataMerchantGrup/DetailMerchantGrup';
 import FormTambahSettlementBrand from './DaftarMerchantQris/FormDataMerchantGrup/FormTambahSettlementBrand';
+import FormTidakBerbadanHukum from './DaftarMerchantQris/FormDataMerchantGrup/FormTidakBerbadanHukum';
+import FormInfoPemilikBadanUsaha from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoPemilikBadanUsaha';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -222,6 +224,10 @@ export default () => (
     <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseorangan.path} component={FormInfoPemilikPerseorangan} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseoranganFirstStep.path} component={FormInfoPemilikPerseorangan} />
     <RouteWithSidebar exact path={Routes.FormInfoUsahaPerseorangan.path} component={FormInfoUsahaPerseorangan} />
+    <RouteWithSidebar exact path={Routes.FormInfoUsahaPerseoranganSecondStep.path} component={FormInfoUsahaPerseorangan} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikBadanUsaha.path} component={FormInfoPemilikBadanUsaha} />
+    <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukum.path} component={FormTidakBerbadanHukum} />
+    <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukumFirstStep.path} component={FormTidakBerbadanHukum} />
     <RouteWithSidebar exact path={Routes.PengaturanMerchant.path} component={PengaturanMerchant} />
     <RouteWithSidebar exact path={Routes.FormDaftarSettlement.path} component={FormDaftarSettlement} />
     <RouteWithSidebar exact path={Routes.DetailMerchantGrup.path} component={DetailMerchantGrup} />
