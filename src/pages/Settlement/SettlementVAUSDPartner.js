@@ -10,7 +10,7 @@ import DataTable, { defaultThemes } from 'react-data-table-component';
 import Pagination from 'react-js-pagination'
 import encryptData from '../../function/encryptData'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import $ from 'jquery'
+import $, { error } from 'jquery'
 import ReactSelect, { components } from 'react-select';
 import * as XLSX from "xlsx"
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -20,7 +20,7 @@ import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
-registerPlugin(FilePondPluginFileEncode, FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
 function SettlementVAUSDPartner() {
 
@@ -30,6 +30,7 @@ function SettlementVAUSDPartner() {
     const [listMerchant, setListMerchant] = useState([])
     const [selectedPengajuanMerchantVAUSDAdmin, setSelectedPengajuanMerchantVAUSDAdmin] = useState([])
     const [selectedRiwayatMerchantVAUSDAdmin, setSelectedRiwayatMerchantVAUSDAdmin] = useState([])
+    const [errorFound, setErrorFound] = useState([])
 
     async function getListMerchant() {
         try {
@@ -142,7 +143,8 @@ function SettlementVAUSDPartner() {
                 </span>
             </div>`)
         } else if (newValue.length !== 0 && newValue[0].file.type === "image/jpeg" && newValue[0].file.size > 500000) {
-            console.log('masuk file jpg oversize');
+            // console.log('masuk file jpg oversize');
+            setFiles([])
             setLabelUpload("")
             setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Ukuran file melebihi kapasitas maksimal</div>
             <div className='pb-4'>
@@ -151,7 +153,8 @@ function SettlementVAUSDPartner() {
                 </span>
             </div>`)
         } else if (newValue.length !== 0 && newValue[0].file.type === "image/png" && newValue[0].file.size > 500000) {
-            console.log('masuk png oversize');
+            // console.log('masuk png oversize');
+            setFiles([])
             setLabelUpload("")
             setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Ukuran file melebihi kapasitas maksimal</div>
             <div className='pb-4'>
@@ -160,7 +163,8 @@ function SettlementVAUSDPartner() {
                 </span>
             </div>`)
         } else if (newValue.length !== 0 && newValue[0].file.type === "application/pdf" && newValue[0].file.size > 500000) {
-            console.log('masuk pdf oversize');
+            // console.log('masuk pdf oversize');
+            setFiles([])
             setLabelUpload("")
             setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />Ukuran file melebihi kapasitas maksimal</div>
             <div className='pb-4'>
@@ -169,7 +173,8 @@ function SettlementVAUSDPartner() {
                 </span>
             </div>`)
         } else if ((newValue.length !== 0 && newValue[0].file.type !== "image/jpeg") && (newValue.length !== 0 && newValue[0].file.type !== "image/png") && (newValue.length !== 0 && newValue[0].file.type !== "application/pdf")) {
-            console.log('masuk file salah jpg');
+            // console.log('masuk file salah jpg');
+            setFiles([])
             setLabelUpload("")
             setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'><img class="me-2" src="${noteIconRed}" width="20px" height="20px" />File yang digunakan harus berformat .jpg, .png atau .pdf</div>
             <div className='pb-4'>
@@ -178,9 +183,9 @@ function SettlementVAUSDPartner() {
                 </span>
             </div>`)
         } else {
-            console.log('masuk file bener');
-            console.log(newValue, 'newValue');
-            // var data = new Blob([newValue], {type: newValue[0].file.type})
+            // console.log('masuk file bener');
+            // console.log(newValue, 'newValue');
+            // var data = new Blob([newValue], {type: newValue[0]?.file.type})
             const response = await fetch(newValue);
             // here image is url/location of image
             const blob = await response.blob();
@@ -194,7 +199,7 @@ function SettlementVAUSDPartner() {
             //     canvas.getContext('2d').drawImage(img,0,0);
             //     canvas.toBlob(setLink,'image/png',1)
             // }
-            console.log(file, 'file');
+            // console.log(file, 'file');
             setDataImageUploadPengajuanSettlementVAUSDAdmin(file)
             setFiles(newValue)
             // console.log(file, 'file');
@@ -277,11 +282,11 @@ function SettlementVAUSDPartner() {
 
     async function uploadReceiptSettlement(idSettlement, image, newValue, noReferensiBank) {
         try {
-            console.log(newValue, 'newValue');
+            // console.log(newValue, 'newValue');
             if (newValue.length === 0) {
-                image = {}
+                image = null
             }
-            console.log(image, 'image');
+            // console.log(image, 'image');
             const auth = "Bearer " + getToken()
             var formData = new FormData()
             formData.append("image", image)
@@ -291,9 +296,9 @@ function SettlementVAUSDPartner() {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth,
             }
-            console.log(formData, 'formData');
+            // console.log(formData, 'formData');
             const sendDataUpload = await axios.post(BaseURL + "/VirtualAccountUSD/UploadWithdrawReceipt", formData, {headers: headers})
-            console.log(sendDataUpload, 'sendDataUpload');
+            // console.log(sendDataUpload, 'sendDataUpload');
             if (sendDataUpload.status === 200 && sendDataUpload.data.response_code === 200 && sendDataUpload.data.response_new_token === null) {
                 setLabelUpload("")
                 setFiles([])
@@ -399,7 +404,7 @@ function SettlementVAUSDPartner() {
         periodeTerimaRiwayatSettlementVAUSDAdmin: 0,
         idSettlementRiwayatSettlementVAUSDAdmin: "",
         namaMerchantRiwayatSettlementVAUSDAdmin: "",
-        statusRiwayatSettlementVAUSDAdmin: 0,
+        statusRiwayatSettlementVAUSDAdmin: "",
     })
     const [totalPageRiwayatSettlementVAUSDAdmin, setTotalPageRiwayatSettlementVAUSDAdmin] = useState(0)
     const [activePageRiwayatSettlementVAUSDAdmin, setActivePageRiwayatSettlementVAUSDAdmin] = useState(1)
@@ -461,7 +466,7 @@ function SettlementVAUSDPartner() {
 
     function handlePageChangeRiwayatSettlementVAUSDAdmin(page) {
         setActivePageRiwayatSettlementVAUSDAdmin(page)
-        getListRiwayatSettlementVAUSDAdmin(page, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)
+        getListRiwayatSettlementVAUSDAdmin(page, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.statusRiwayatSettlementVAUSDAdmin)
     }
 
     function resetButtonRiwayatSettlementVAUSDAdminHandle() {
@@ -473,18 +478,18 @@ function SettlementVAUSDPartner() {
             periodeTerimaRiwayatSettlementVAUSDAdmin: 0,
             idSettlementRiwayatSettlementVAUSDAdmin: "",
             namaMerchantRiwayatSettlementVAUSDAdmin: "",
-            statusRiwayatSettlementVAUSDAdmin: 0,
+            statusRiwayatSettlementVAUSDAdmin: "",
         })
         setSelectedPengajuanMerchantVAUSDAdmin([])
         setSelectedRiwayatMerchantVAUSDAdmin([])
     }
 
-    async function getListRiwayatSettlementVAUSDAdmin(page, idSettlement, namaMerchant, dateIdPengajuan, dateRangePengajuan, dateIdRiwayat, dateRangeRiwayat) {
+    async function getListRiwayatSettlementVAUSDAdmin(page, idSettlement, namaMerchant, dateIdPengajuan, dateRangePengajuan, dateIdRiwayat, dateRangeRiwayat, statusVAUSD) {
         try {
             setPendingRiwayatSettlementVAUSDAdmin(true)
             setActivePageRiwayatSettlementVAUSDAdmin(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "code": "${idSettlement}", "partner_id": "${namaMerchant}", "csv_status_id": "1,2,3", "page": ${page}, "row_per_page": 10, "date_from": "${Number(dateIdPengajuan) === 7 ? dateRangePengajuan[0] : ""}", "date_to": "${Number(dateIdPengajuan) === 7 ? dateRangePengajuan[1] : ""}", "period": ${Number(dateIdPengajuan) !== 0 ? Number(dateIdPengajuan) : 2}, "acc_date_from": "${Number(dateIdRiwayat) === 7 ? dateRangeRiwayat[0] : ""}", "acc_date_to": "${Number(dateIdRiwayat) === 7 ? dateRangeRiwayat[1] : ""}", "acc_period": ${Number(dateIdRiwayat) !== 0 ? Number(dateIdRiwayat) : 0} }`)
+            const dataParams = encryptData(`{ "code": "${idSettlement}", "partner_id": "${namaMerchant}", "csv_status_id": "${statusVAUSD.length !== 0 ? statusVAUSD : "2,3"}", "page": ${page}, "row_per_page": 10, "date_from": "${Number(dateIdPengajuan) === 7 ? dateRangePengajuan[0] : ""}", "date_to": "${Number(dateIdPengajuan) === 7 ? dateRangePengajuan[1] : ""}", "period": ${Number(dateIdPengajuan) !== 0 ? Number(dateIdPengajuan) : 2}, "acc_date_from": "${Number(dateIdRiwayat) === 7 ? dateRangeRiwayat[0] : ""}", "acc_date_to": "${Number(dateIdRiwayat) === 7 ? dateRangeRiwayat[1] : ""}", "acc_period": ${Number(dateIdRiwayat) !== 0 ? Number(dateIdRiwayat) : 0} }`)
             // const dataParams = encryptData(`{ "code": "${idSettlement}", "username": "", "merchant_name": "${namaMerchant}", "page": ${page}, "row_per_page": 10, "date_from": "${Number(dateIdPengajuan) === 7 ? dateRangePengajuan[0] : ""}", "date_to": "${Number(dateIdPengajuan) === 7 ? dateRangePengajuan[1] : ""}", "period": ${Number(dateIdPengajuan) !== 0 ? Number(dateIdPengajuan) : 2} }`)
             const headers = {
                 'Content-Type':'application/json',
@@ -673,6 +678,27 @@ function SettlementVAUSDPartner() {
         setShowDateTerimaSettlementVAUSDPartner("none")
         setStateTerimaSettlementVAUSDPartner(null)
         setDateRangeTerimaSettlementVAUSDPartner([])
+    }
+
+    function onHideModalLakukanSettlement () {
+        setShowModalPengajuanSettlementVAUSDAdmin(false)
+        setDataImageUploadPengajuanSettlementVAUSDAdmin({})
+        setFiles([])
+        setLabelUpload(`<div class='py-4 mb-2 style-label-drag-drop text-center'>Masukan foto bukti transfer :</div>
+            <div className='pb-4'>
+                <span class="filepond--label-action">
+                    Upload foto
+                </span>
+            </div>`
+        )
+        setDataModalPengajuanSettlementVAUSDAdmin({
+            ...dataModalPengajuanSettlementVAUSDAdmin,
+            idSettlementModal: "",
+            namaMerchantModal: "",
+            currencyModal: "",
+            totalSettleModal: 0,
+            nomorReferensiBank: "",
+        })
     }
 
     async function getUserDataSettlementPartner(lang) {
@@ -875,7 +901,7 @@ function SettlementVAUSDPartner() {
         } else if (param === "riwayat") {
             resetButtonPengajuanSettlementVAUSDAdminHandle()
             resetButtonRiwayatSettlementVAUSDAdminHandle()
-            getListRiwayatSettlementVAUSDAdmin(1, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)
+            getListRiwayatSettlementVAUSDAdmin(1, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.statusRiwayatSettlementVAUSDAdmin)
             settlementVAUSDTabs(101)
         }
     }
@@ -1406,13 +1432,13 @@ function SettlementVAUSDPartner() {
                                         />
                                     </div>
                                     {/* Modal Lakukan Settlement data VA */}
-                                    <Modal size="xs" className='py-3' centered show={showModalPengajuanSettlementVAUSDAdmin} onHide={() => setShowModalPengajuanSettlementVAUSDAdmin(false)}>
+                                    <Modal size="xs" className='py-3' centered show={showModalPengajuanSettlementVAUSDAdmin} onHide={() => onHideModalLakukanSettlement()}>
                                         <Modal.Title className='text-center mt-4 px-3' style={{ fontFamily: 'Exo', fontWeight: 700, fontSize: 20, color: "#393939" }}>
                                             {`Lakukan Settlement ${dataModalPengajuanSettlementVAUSDAdmin.idSettlementModal} ke ${dataModalPengajuanSettlementVAUSDAdmin.namaMerchantModal} ?`}
                                         </Modal.Title>
                                         <Modal.Body >
                                             <div className='text-center px-2' style={{ fontFamily: 'Nunito', color: "#848484", fontSize: 14 }}>
-                                                {`Nominal Sebesar ${dataModalPengajuanSettlementVAUSDAdmin.currencyModal} ${dataModalPengajuanSettlementVAUSDAdmin.totalSettleModal} akan disettle kepada merchant dan mengurangi sisa saldo merchant`}
+                                                {`Nominal Sebesar ${dataModalPengajuanSettlementVAUSDAdmin.currencyModal} ${convertToRupiah(dataModalPengajuanSettlementVAUSDAdmin.totalSettleModal, false, 2)} akan disettle kepada merchant dan mengurangi sisa saldo merchant`}
                                             </div>
                                             <div className='mt-3' style={{ fontSize: 14, fontWeight: 400 }}>
                                                 Upload bukti transfer (maks: 500kb)
@@ -1425,7 +1451,18 @@ function SettlementVAUSDPartner() {
                                                     // onaddfile={addFile}
                                                     // allowMultiple={true}
                                                     // maxFiles={3}
-                                                    server="/api"
+                                                    // onaddfilestart={() => setErrorFound([])}
+                                                    // server="/api"
+                                                    server={{
+                                                        load: (source, load, error, progress, abort, headers) => {
+                                                          var myRequest = new Request(source);
+                                                          fetch(myRequest).then(function(response) {
+                                                            response.blob().then(function(myBlob) {
+                                                              load(myBlob);
+                                                            });
+                                                          });
+                                                        }
+                                                    }}
                                                     name="files"
                                                     labelIdle={labelUpload}
                                                 />
@@ -1439,7 +1476,7 @@ function SettlementVAUSDPartner() {
                                             <div className='d-flex justify-content-center align-items-center mt-3'>
                                                 <div className='me-1'>
                                                     <button
-                                                        onClick={() => setShowModalPengajuanSettlementVAUSDAdmin(false)}
+                                                        onClick={() => onHideModalLakukanSettlement()}
                                                         style={{
                                                             fontFamily: "Exo",
                                                             fontSize: 16,
@@ -1461,19 +1498,8 @@ function SettlementVAUSDPartner() {
                                                 <div className="ms-1">
                                                     <button
                                                         onClick={() => uploadReceiptSettlement(dataModalPengajuanSettlementVAUSDAdmin.idSettlementModal, dataImageUploadPengajuanSettlementVAUSDAdmin, files, dataModalPengajuanSettlementVAUSDAdmin.nomorReferensiBank)}
-                                                        style={{
-                                                            fontFamily: "Exo",
-                                                            fontSize: 16,
-                                                            fontWeight: 900,
-                                                            alignItems: "center",
-                                                            padding: "12px 24px",
-                                                            gap: 8,
-                                                            width: 136,
-                                                            height: 45,
-                                                            background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)",
-                                                            border: "0.6px solid #2C1919",
-                                                            borderRadius: 6,
-                                                        }}
+                                                        className={(dataModalPengajuanSettlementVAUSDAdmin.nomorReferensiBank.length !== 0 || files.length !== 0) ? 'btn-settle-va-usd' : 'btn-settle-va-usd-disable'}
+                                                        disabled={dataModalPengajuanSettlementVAUSDAdmin.nomorReferensiBank.length === 0 && files.length === 0}
                                                     >
                                                         Settle
                                                     </button>
@@ -1510,9 +1536,9 @@ function SettlementVAUSDPartner() {
                                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                                             <span style={{ marginRight: 32 }}>Status</span>
                                             <Form.Select name="statusRiwayatSettlementVAUSDAdmin" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={inputHandleRiwayatSettlementVAUSDAdmin.statusRiwayatSettlementVAUSDAdmin} onChange={(e) => setInputHandleRiwayatSettlementVAUSDAdmin({ ...inputHandleRiwayatSettlementVAUSDAdmin, [e.target.name]: e.target.value })}>
-                                                <option defaultChecked disabled value={0}>Pilih Status</option>
-                                                <option value={2}>Ditransfer</option>
-                                                <option value={3}>Diterima</option>
+                                                <option defaultChecked disabled value={""}>Pilih Status</option>
+                                                <option value={"2"}>Ditransfer</option>
+                                                <option value={"3"}>Diterima</option>
                                             </Form.Select>
                                         </Col>
                                     </Row>
@@ -1558,12 +1584,12 @@ function SettlementVAUSDPartner() {
                                             />
                                         </Col>
                                     </Row>
-                                    <Row className='mt-4'>
+                                    <Row className='mt-3'>
                                         <Col xs={5}>
                                             <Row>
                                                 <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                                     <button
-                                                        onClick={() => getListRiwayatSettlementVAUSDAdmin(1, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)}
+                                                        onClick={() => getListRiwayatSettlementVAUSDAdmin(1, inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, selectedRiwayatMerchantVAUSDAdmin.length !== 0 ? selectedRiwayatMerchantVAUSDAdmin[0].value : "", inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.statusRiwayatSettlementVAUSDAdmin)}
                                                         className={
                                                             ((inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin === 0 || (inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin === 7 && dateRangePengajuanRiwayatSettlementVAUSDAdmin.length === 0)) && (inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin === 0 || (inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin === 7 && dateRangeTerimaRiwayatSettlementVAUSDAdmin.length !== 0))) ||
                                                             ((inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin === 0 || (inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin === 7 && dateRangePengajuanRiwayatSettlementVAUSDAdmin.length !== 0)) && (inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin === 0 || (inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin === 7 && dateRangeTerimaRiwayatSettlementVAUSDAdmin.length === 0)))
@@ -1607,7 +1633,7 @@ function SettlementVAUSDPartner() {
                                     {
                                         listRiwayatSettlementVAUSDAdmin.length !== 0 &&
                                         <div style={{ marginBottom: 30 }}>
-                                            <Link to={"#"} onClick={() => exportReportRiwayatSettlementVAUSDAdminHandler(inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.namaMerchantRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)} className="export-span">{language === null ? eng.export : language.export}</Link>
+                                            <Link to={"#"} onClick={() => exportReportRiwayatSettlementVAUSDAdminHandler(inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.namaMerchantRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin, dateRangePengajuanRiwayatSettlementVAUSDAdmin, inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin, dateRangeTerimaRiwayatSettlementVAUSDAdmin)} className="export-span">Export</Link>
                                         </div>
                                     }
                                     <div className="div-table mt-4 pb-4">

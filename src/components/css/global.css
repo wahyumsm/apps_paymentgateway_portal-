@@ -1740,3 +1740,32 @@ th {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.btn-settle-va-usd {
+    font-family: "Exo";
+    font-size: 16px;
+    font-weight: 900;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+    width: 136px;
+    height: 45px;
+    background: linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%);
+    border: 0.6px solid #2C1919;
+    border-radius: 6px;
+}
+
+.btn-settle-va-usd-disable {
+    height: 45px;
+    width: 136px;
+    font-family: 'Exo';
+    font-weight: 900;
+    font-size: 16px;
+    color: #C4C4C4;
+    background: transparent;
+    border: 0.6px solid #EBEBEB;
+    border-radius: 6px;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+}
