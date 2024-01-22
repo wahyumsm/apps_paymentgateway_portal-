@@ -70,7 +70,7 @@ const FormInfoUsahaPerseorangan = () => {
     async function getDataSecondStepInfoUsahaPerorangan(profileId) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"profile_id":"${profileId}"}`)
+            const dataParams = encryptData(`{"profile_id": ${profileId}, "business_level": 101}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
