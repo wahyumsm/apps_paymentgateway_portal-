@@ -30,7 +30,6 @@ function SettlementVAUSDPartner() {
     const [listMerchant, setListMerchant] = useState([])
     const [selectedPengajuanMerchantVAUSDAdmin, setSelectedPengajuanMerchantVAUSDAdmin] = useState([])
     const [selectedRiwayatMerchantVAUSDAdmin, setSelectedRiwayatMerchantVAUSDAdmin] = useState([])
-    const [errorFound, setErrorFound] = useState([])
 
     async function getListMerchant() {
         try {
@@ -360,7 +359,7 @@ function SettlementVAUSDPartner() {
                 const data = exportPengajuanSettlementVAUSDAdmin.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].code, "Nama merchant": data[i].partner_name, "Tanggal pengajuan": data[i].request_date !== undefined ? data[i].request_date : "-", "Bank Tujuan": data[i].destination_bank, "Nomor rekening": data[i].account_number, "Nama pemilik rekening": data[i].account_name, "Saldo merchant": data[i].balance_before, "Nominal pengajuan": data[i].request, "Biaya": data[i].fee, "Total settlement": data[i].total, "Sisa saldo": data[i].balance_after })
+                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].code, "Nama merchant": data[i].partner_name, "Tanggal pengajuan": data[i].request_date !== undefined ? data[i].request_date : "-", "Bank Tujuan": data[i].destination_bank, "Nomor rekening": data[i].account_number, "Nama pemilik rekening": data[i].account_name, "Saldo merchant": `USD ${convertToRupiah(data[i].balance_before, false, 2)}`, "Nominal pengajuan": `${data[i].currency} ${convertToRupiah(data[i].request, false, 2)}`, "Biaya": `${data[i].currency} ${convertToRupiah(data[i].fee, false, 2)}`, "Total settlement": `${data[i].currency} ${convertToRupiah(data[i].total, false, 2)}`, "Sisa saldo": `USD ${convertToRupiah(data[i].balance_after, false, 2)}` })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -371,7 +370,7 @@ function SettlementVAUSDPartner() {
                 const data = exportPengajuanSettlementVAUSDAdmin.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].code, "Nama merchant": data[i].partner_name, "Tanggal pengajuan": data[i].request_date !== undefined ? data[i].request_date : "-", "Bank Tujuan": data[i].destination_bank, "Nomor rekening": data[i].account_number, "Nama pemilik rekening": data[i].account_name, "Saldo merchant": data[i].balance_before, "Nominal pengajuan": data[i].request, "Biaya": data[i].fee, "Total settlement": data[i].total, "Sisa saldo": data[i].balance_after })
+                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].code, "Nama merchant": data[i].partner_name, "Tanggal pengajuan": data[i].request_date !== undefined ? data[i].request_date : "-", "Bank Tujuan": data[i].destination_bank, "Nomor rekening": data[i].account_number, "Nama pemilik rekening": data[i].account_name, "Saldo merchant": `USD ${convertToRupiah(data[i].balance_before, false, 2)}`, "Nominal pengajuan": `${data[i].currency} ${convertToRupiah(data[i].request, false, 2)}`, "Biaya": `${data[i].currency} ${convertToRupiah(data[i].fee, false, 2)}`, "Total settlement": `${data[i].currency} ${convertToRupiah(data[i].total, false, 2)}`, "Sisa saldo": `USD ${convertToRupiah(data[i].balance_after, false, 2)}` })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
