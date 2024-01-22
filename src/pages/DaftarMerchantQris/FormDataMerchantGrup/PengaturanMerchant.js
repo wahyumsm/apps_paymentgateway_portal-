@@ -67,19 +67,171 @@ const PengaturanMerchant = () => {
                                 <div className='card-text-subtitle'>Settlement baru akan dilakukan saat merchant melakukan request melalui aplikasi / dashboard.</div>
                             </div>
                         </div>
+                        <div className={tabJenisUsaha === "requestSameDay" ? 'card-when-click mb-3 ms-1' : 'card-jenis-usaha mb-3 ms-1'} onClick={() => buttonColor("requestManual")} id='badanUsaha'>
+                            <img src={requestManual} alt='qris' />
+                            <div className='text-start'>
+                                <div className='card-text-title'>Request Same Day</div>
+                                <div className='card-text-subtitle'>Settlement dilakukan secara otomatis dan akan langsung diproses dihari yang sama.</div>
+                            </div>
+                        </div>
                     </div>
-                    <div className='text-setting '>Tujuan transfer settlement</div>
+                    <div className='desc-setting'>
+                        <div><img src={alertIconGrey} alt="alert" /></div>
+                        <div className='ms-2'>
+                            • Settlement dilakukan dengan pendapatan transaksi minimal Rp 50.000 <br/>
+                            • Settlement otomatis reguler dan Settlement manual dikenakan baiya admin sebesar <b> Rp 5.000. </b> <br/>
+                            • Settlement otomatis reguler dan Settlement manual hanya dilakukan tiap hari dan jam kerja, <b> Senin - Jum'at </b> pukul <b> 08.00 WIB - 15.00 WIB. </b> <br/>
+                            • Settlement otomatis same day akan dilakukan setiap hari dan jam kerja, pukul <b> 13.00 WIB. </b> <br/>
+                            • Settlement otomatis same day akan memproses setiap transaksi yang dilakukan dibawah pukul <b> 12.00 WIB, </b> Jika melewati itu akan diproses di esok <br/> <span className='ms-2'>harinya.</span>
+                        </div>
+                    </div>
+                    <div className='text-setting mt-3'>Jenis fee</div>
+                    <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
+                        <div className="form-check form-check-inline">
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                id="inlineCheckbox1"
+                                // checked={
+                                //     edited === true
+                                //     ? fitur[0] &&
+                                //         fitur.includes(item.fitur_name)
+                                //     : fitur.includes(item.fitur_name)
+                                // }
+                            />
+                            <label
+                                className="form-check-label"
+                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                for="inlineCheckbox1"
+                            >
+                                Fixed
+                            </label>
+                        </div>
+                        <div className="form-check form-check-inline ms-4">
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                id="inlineCheckbox1"
+                                // checked={
+                                //     edited === true
+                                //     ? fitur[0] &&
+                                //         fitur.includes(item.fitur_name)
+                                //     : fitur.includes(item.fitur_name)
+                                // }
+                            />
+                            <label
+                                className="form-check-label"
+                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                for="inlineCheckbox1"
+                            >
+                                Persentase
+                            </label>
+                        </div>
+                    </div>
+                    <div className='text-setting mt-2'>Tujuan transfer settlement</div>
                     <div className='d-flex justify-content-start align-items-center mt-2'>
                         <div className={tabTujuanTransfer === "rekeningGrup" ? 'card-tujuan-transfer-when-click me-1' : 'card-tujuan-transfer-no-click me-1'} onClick={() => buttonColorPilihTujuanTf("rekeningGrup")}>Rekening grup</div>
                         <div className={tabTujuanTransfer === "rekeningBrand" ? 'card-tujuan-transfer-when-click me-1' : 'card-tujuan-transfer-no-click me-1'} onClick={() => buttonColorPilihTujuanTf("rekeningBrand")}>Rekening brand</div>
                         <div className={tabTujuanTransfer === "rekeningOutlet" ? 'card-tujuan-transfer-when-click' : 'card-tujuan-transfer-no-click'} onClick={() => buttonColorPilihTujuanTf("rekeningOutlet")}>Rekening outlet</div>
                     </div>
-                    <div className='desc-setting mt-4'>
-                        <div><img src={alertIconGrey} alt="alert" /></div>
-                        <div className='ms-2'>
-                            • Settlement dilakukan dengan pendapatan transaksi minimal Rp 50.000 <br/>
-                            • Settlement hanya dilakukan tiap hari dan jam kerja, Senin - Jum’at pukul 08.00 WIB - 15.00 WIB <br/>
-                            • Tiap Settlement dikenakan biaya admin sebesar Rp 5.000
+                    <div className='text-setting mt-3'>Komisi agen (Afiliator)</div>
+                    <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
+                        <Form.Select name='periodeFeeChart' className='input-text-form' placeholder='Nama agen 1'>
+                            <option defaultChecked value={0} >Nama agen 1</option>
+                            <option value={0}>Makanan dan minuman</option>
+                            <option value={0}>Obat-obatan</option>
+                            <option value={0}>Supermarket/minimarket</option>
+                            <option value={0}>Toko serba ada (toserba)</option>
+                            <option value={0}>Retail</option>
+                            <option value={0}>Department Store</option>
+                            <option value={0}>Buku dan alat tulis</option>
+                            <option value={0}>Lainnya </option>
+                        </Form.Select>
+                    </div>
+                    <div className='text-setting mt-3'>Jenis komisi</div>
+                    <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
+                        <div className="form-check form-check-inline">
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                id="inlineCheckbox1"
+                                // checked={
+                                //     edited === true
+                                //     ? fitur[0] &&
+                                //         fitur.includes(item.fitur_name)
+                                //     : fitur.includes(item.fitur_name)
+                                // }
+                            />
+                            <label
+                                className="form-check-label"
+                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                for="inlineCheckbox1"
+                            >
+                                Fixed
+                            </label>
+                        </div>
+                        <div className="form-check form-check-inline ms-4">
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                id="inlineCheckbox1"
+                                // checked={
+                                //     edited === true
+                                //     ? fitur[0] &&
+                                //         fitur.includes(item.fitur_name)
+                                //     : fitur.includes(item.fitur_name)
+                                // }
+                            />
+                            <label
+                                className="form-check-label"
+                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                for="inlineCheckbox1"
+                            >
+                                Persentase
+                            </label>
+                        </div>
+                    </div>
+                    <div className='text-setting mt-3'>Apakah ingin</div>
+                    <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
+                        <div className="form-check form-check-inline">
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                id="inlineCheckbox1"
+                                // checked={
+                                //     edited === true
+                                //     ? fitur[0] &&
+                                //         fitur.includes(item.fitur_name)
+                                //     : fitur.includes(item.fitur_name)
+                                // }
+                            />
+                            <label
+                                className="form-check-label"
+                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                for="inlineCheckbox1"
+                            >
+                                Ya
+                            </label>
+                        </div>
+                        <div className="form-check form-check-inline ms-4">
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                id="inlineCheckbox1"
+                                // checked={
+                                //     edited === true
+                                //     ? fitur[0] &&
+                                //         fitur.includes(item.fitur_name)
+                                //     : fitur.includes(item.fitur_name)
+                                // }
+                            />
+                            <label
+                                className="form-check-label"
+                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                for="inlineCheckbox1"
+                            >
+                                Tidak
+                            </label>
                         </div>
                     </div>
                     <div className='text-setting mt-3'>QRIS anda mau menerima pembayaran dari Alipay dan WeChatPay ?</div>
