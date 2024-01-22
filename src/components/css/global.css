@@ -877,6 +877,10 @@ width: 150px;
     border-radius: 8px;
 } */
 
+.dropSettlementVausd .css-1domo0x-control {
+    width: 188px;
+}
+
 .css-14el2xx-placeholder {
     font-size: 14px;
 }
@@ -889,7 +893,8 @@ width: 150px;
 .dropLaporanPartnerBank .css-qqcyw1-option:hover,
 .dropTopupPartner .css-qqcyw1-option:hover,
 .dropDirectDebit .css-qqcyw1-option:hover,
-.dropVAUSD .css-qqcyw1-option:hover {
+.dropVAUSD .css-qqcyw1-option:hover,
+.dropSettlementVausd .css-qqcyw1-option:hover {
     background-color: #3b8aff;
 }
 
@@ -904,6 +909,12 @@ width: 150px;
 }
 
 .dropDisbursePartner .css-b62m3t-container {
+    min-width: 260px;
+    max-width: 265px;
+    width: max-content;
+}
+
+.dropSettlementVausd .css-b62m3t-container {
     min-width: 260px;
     max-width: 265px;
     width: max-content;

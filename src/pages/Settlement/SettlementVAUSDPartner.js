@@ -317,6 +317,7 @@ function SettlementVAUSDPartner() {
                     </span>
                 </div>`)
                 setShowModalPengajuanSettlementVAUSDAdmin(false)
+                window.location.reload()
             } else if (sendDataUpload.status === 200 && sendDataUpload.data.response_code === 200 && sendDataUpload.data.response_new_token !== null) {
                 setUserSession(sendDataUpload.data.response_new_token)
                 setLabelUpload("")
@@ -337,6 +338,7 @@ function SettlementVAUSDPartner() {
                     </span>
                 </div>`)
                 setShowModalPengajuanSettlementVAUSDAdmin(false)
+                window.location.reload()
             }
         } catch (error) {
             // console.log(error);
@@ -530,7 +532,7 @@ function SettlementVAUSDPartner() {
                 const data = exportDataRiwayatSettlementVAUSDAdmin.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].code, "Nama merchant": data[i].partner_name, "Tanggal pengajuan": data[i].request_date !== undefined ? data[i].request_date : "-", "Tanggal terima": data[i].accept_date, "Bank Tujuan": data[i].destination_bank, "Nomor rekening": data[i].account_number, "Nama pemilik rekening": data[i].account_name, "Nominal pengajuan": data[i].request, "Biaya": data[i].fee, "Total settlement": data[i].total, "Status": data[i].status_name })
+                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].code, "Nama merchant": data[i].partner_name, "Tanggal pengajuan": data[i].request_date !== undefined ? data[i].request_date : "-", "Tanggal terima": data[i].accept_date, "Bank Tujuan": data[i].destination_bank, "Nomor rekening": data[i].account_number, "Nama pemilik rekening": data[i].account_name, "Nominal pengajuan": `${data[i].currency} ${convertToRupiah(data[i].request, false, 2)}`, "Biaya": `${data[i].currency} ${convertToRupiah(data[i].fee, false, 2)}`, "Total settlement": `${data[i].currency} ${convertToRupiah(data[i].total, false, 2)}`, "Status": data[i].status_name })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -541,7 +543,7 @@ function SettlementVAUSDPartner() {
                 const data = exportDataRiwayatSettlementVAUSDAdmin.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].code, "Nama merchant": data[i].partner_name, "Tanggal pengajuan": data[i].request_date !== undefined ? data[i].request_date : "-", "Tanggal terima": data[i].accept_date, "Bank Tujuan": data[i].destination_bank, "Nomor rekening": data[i].account_number, "Nama pemilik rekening": data[i].account_name, "Nominal pengajuan": data[i].request, "Biaya": data[i].fee, "Total settlement": data[i].total, "Status": data[i].status_name })
+                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].code, "Nama merchant": data[i].partner_name, "Tanggal pengajuan": data[i].request_date !== undefined ? data[i].request_date : "-", "Tanggal terima": data[i].accept_date, "Bank Tujuan": data[i].destination_bank, "Nomor rekening": data[i].account_number, "Nama pemilik rekening": data[i].account_name, "Nominal pengajuan": `${data[i].currency} ${convertToRupiah(data[i].request, false, 2)}`, "Biaya": `${data[i].currency} ${convertToRupiah(data[i].fee, false, 2)}`, "Total settlement": `${data[i].currency} ${convertToRupiah(data[i].total, false, 2)}`, "Status": data[i].status_name })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -795,7 +797,7 @@ function SettlementVAUSDPartner() {
                 const data = exportedDataListSettlementRequest.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].withdraw_code, "Tanggal pengajuan": data[i].withdraw_trans_date !== undefined ? data[i].withdraw_trans_date : "-", "Tanggal terima": data[i].withdraw_accept_date, "Bank Tujuan": data[i].bank_name, "Nomor rekening": data[i].acc_number, "Nama pemilik rekening": data[i].acc_name, "Nominal pengajuan": data[i].amount, "Biaya": data[i].settlement_fee, "Total settlement": data[i].total_amount, "Status": data[i].status_name })
+                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].withdraw_code, "Tanggal pengajuan": data[i].withdraw_trans_date !== undefined ? data[i].withdraw_trans_date : "-", "Tanggal terima": data[i].withdraw_accept_date, "Bank Tujuan": data[i].bank_name, "Nomor rekening": data[i].acc_number, "Nama pemilik rekening": data[i].acc_name, "Nominal pengajuan": `${data[i].currency} ${convertToRupiah(data[i].amount, false, 2)}`, "Biaya": `${data[i].currency} ${convertToRupiah(data[i].settlement_fee, false, 2)}`, "Total settlement": `${data[i].currency} ${convertToRupiah(data[i].total_amount, false, 2)}`, "Status": data[i].status_name })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -806,7 +808,7 @@ function SettlementVAUSDPartner() {
                 const data = exportedDataListSettlementRequest.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].withdraw_code, "Tanggal pengajuan": data[i].withdraw_trans_date !== undefined ? data[i].withdraw_trans_date : "-", "Tanggal terima": data[i].withdraw_accept_date, "Bank Tujuan": data[i].bank_name, "Nomor rekening": data[i].acc_number, "Nama pemilik rekening": data[i].acc_name, "Nominal pengajuan": data[i].amount, "Biaya": data[i].settlement_fee, "Total settlement": data[i].total_amount, "Status": data[i].status_name })
+                    dataExcel.push({ "No": i + 1, "ID Settlement": data[i].withdraw_code, "Tanggal pengajuan": data[i].withdraw_trans_date !== undefined ? data[i].withdraw_trans_date : "-", "Tanggal terima": data[i].withdraw_accept_date, "Bank Tujuan": data[i].bank_name, "Nomor rekening": data[i].acc_number, "Nama pemilik rekening": data[i].acc_name, "Nominal pengajuan": `${data[i].currency} ${convertToRupiah(data[i].amount, false, 2)}`, "Biaya": `${data[i].currency} ${convertToRupiah(data[i].settlement_fee, false, 2)}`, "Total settlement": `${data[i].currency} ${convertToRupiah(data[i].total_amount, false, 2)}`, "Status": data[i].status_name })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -1511,13 +1513,13 @@ function SettlementVAUSDPartner() {
                                 <>
                                     <span className='font-weight-bold mb-4' style={{fontWeight: 600, fontFamily: "Exo", fontSize: 16}}>Filter</span>
                                     <Row className='mt-4'>
-                                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                            <span style={{ marginRight: 64 }}>ID Settlement</span>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                            <span>ID Settlement</span>
                                             <input onChange={(e) => setInputHandleRiwayatSettlementVAUSDAdmin({ ...inputHandleRiwayatSettlementVAUSDAdmin, [e.target.name]: e.target.value })} value={inputHandleRiwayatSettlementVAUSDAdmin.idSettlementRiwayatSettlementVAUSDAdmin} name="idSettlementRiwayatSettlementVAUSDAdmin" type='text' className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                            <span style={{ marginRight: 32 }}>Nama Merchant</span>
-                                            <div className="dropdown dropDisbursePartner" style={{ width: "12rem" }}>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                            <span>Nama Merchant</span>
+                                            <div className="dropdown dropSettlementVausd">
                                                 <ReactSelect
                                                     // isMulti
                                                     closeMenuOnSelect={true}
@@ -1532,9 +1534,9 @@ function SettlementVAUSDPartner() {
                                                 />
                                             </div>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                            <span style={{ marginRight: 32 }}>Status</span>
-                                            <Form.Select name="statusRiwayatSettlementVAUSDAdmin" className='input-text-riwayat ms-5' style={{ display: "inline" }} value={inputHandleRiwayatSettlementVAUSDAdmin.statusRiwayatSettlementVAUSDAdmin} onChange={(e) => setInputHandleRiwayatSettlementVAUSDAdmin({ ...inputHandleRiwayatSettlementVAUSDAdmin, [e.target.name]: e.target.value })}>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                            <span>Status</span>
+                                            <Form.Select name="statusRiwayatSettlementVAUSDAdmin" className='input-text-riwayat' style={{ display: "inline" }} value={inputHandleRiwayatSettlementVAUSDAdmin.statusRiwayatSettlementVAUSDAdmin} onChange={(e) => setInputHandleRiwayatSettlementVAUSDAdmin({ ...inputHandleRiwayatSettlementVAUSDAdmin, [e.target.name]: e.target.value })}>
                                                 <option defaultChecked disabled value={""}>Pilih Status</option>
                                                 <option value={"2"}>Ditransfer</option>
                                                 <option value={"3"}>Diterima</option>
@@ -1543,8 +1545,8 @@ function SettlementVAUSDPartner() {
                                     </Row>
                                     <Row className='mt-4'>
                                         <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: (showDatePengajuanRiwayatSettlementVAUSDAdmin === "none") ? "33%" : "33%" }}>
-                                            <span className="me-3">Periode Pengajuan <span style={{ color: "red" }}>*</span></span>
-                                            <Form.Select name='periodePengajuanRiwayatSettlementVAUSDAdmin' className="input-text-riwayat ms-4" value={inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin} onChange={handleChangePeriodePengajuanRiwayatSettlementVAUSDAdmin}>
+                                            <span>Periode Pengajuan <span style={{ color: "red" }}>*</span></span>
+                                            <Form.Select name='periodePengajuanRiwayatSettlementVAUSDAdmin' className="input-text-riwayat" value={inputHandleRiwayatSettlementVAUSDAdmin.periodePengajuanRiwayatSettlementVAUSDAdmin} onChange={handleChangePeriodePengajuanRiwayatSettlementVAUSDAdmin}>
                                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                                 <option value={2}>Hari Ini</option>
                                                 <option value={3}>Kemarin</option>
@@ -1555,8 +1557,8 @@ function SettlementVAUSDPartner() {
                                             </Form.Select>
                                         </Col>
                                         <Col xs={4} className="d-flex justify-content-between align-items-center" style={{ width: (showDateTerimaRiwayatSettlementVAUSDAdmin === "none") ? "33%" : "33%" }}>
-                                            <span className="me-3">Periode Terima <span style={{ color: "red" }}>*</span></span>
-                                            <Form.Select name='periodeTerimaRiwayatSettlementVAUSDAdmin' className="input-text-riwayat ms-4" value={inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin} onChange={handleChangePeriodeTerimaRiwayatSettlementVAUSDAdmin}>
+                                            <span>Periode Terima <span style={{ color: "red" }}>*</span></span>
+                                            <Form.Select name='periodeTerimaRiwayatSettlementVAUSDAdmin' className="input-text-riwayat" value={inputHandleRiwayatSettlementVAUSDAdmin.periodeTerimaRiwayatSettlementVAUSDAdmin} onChange={handleChangePeriodeTerimaRiwayatSettlementVAUSDAdmin}>
                                                 <option defaultChecked disabled value={0}>Pilih Periode</option>
                                                 <option value={2}>Hari Ini</option>
                                                 <option value={3}>Kemarin</option>

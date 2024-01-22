@@ -382,7 +382,7 @@ export function replaceText (text) {
 }
 
 export const customFilter = (option, searchText) => {
-	console.log(option.data.label.toLowerCase().includes(searchText.toLowerCase()), "option");
+	// console.log(option.data.label.toLowerCase().includes(searchText.toLowerCase()), "option");
 	if (
 		option.data.label.toLowerCase().includes(searchText.toLowerCase())
 	) {

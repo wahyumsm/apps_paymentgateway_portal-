@@ -3735,8 +3735,8 @@ function DisbursementPage() {
 
     async function sendDataDisburse (data, dataOrigin, isDisburseManual, fileNameBulk) {
         try {
-            console.log(data, "data");
-            console.log(dataOrigin, "dataOrigin");
+            // console.log(data, "data");
+            // console.log(dataOrigin, "dataOrigin");
             setIsLoadingDisburseMentConfirm(true)
             setIsDisableChecked(true)
             setIsCheckedConfirm(false)
@@ -3749,7 +3749,7 @@ function DisbursementPage() {
                 'Content-Type':'multipart/form-data',
                 'Authorization' : auth
             }
-            console.log(formData, 'formData');
+            // console.log(formData, 'formData');
             // const dataSendHandler = await axios.post(BaseURL + "/Partner/UploadDisbursementFile", formData, {headers: headers})
             // // console.log(dataSendHandler, 'dataSendHandler');
             // if (dataSendHandler.data.response_code === 200 && dataSendHandler.status === 200 && dataSendHandler.data.response_new_token.length === 0) {
