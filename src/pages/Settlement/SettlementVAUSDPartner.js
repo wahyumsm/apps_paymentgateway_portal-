@@ -1353,8 +1353,8 @@ function SettlementVAUSDPartner() {
                                             <input onChange={(e) => setInputHandlePengajuanSettlementVAUSDAdmin({ ...inputHandlePengajuanSettlementVAUSDAdmin, [e.target.name]: e.target.value })} value={inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin} name="idSettlementPengajuanSettlementVAUSDAdmin" type='text' className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
                                         </Col>
                                         <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                            <span style={{ marginRight: 32 }}>Nama Merchant</span>
-                                            <div className="dropdown dropDisbursePartner" style={{ width: "12rem" }}>
+                                            <span style={{ marginRight: 64 }}>Nama Merchant</span>
+                                            <div className="dropdown dropSettlementVausd" >
                                                 <ReactSelect
                                                     // isMulti
                                                     closeMenuOnSelect={true}

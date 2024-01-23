@@ -839,7 +839,7 @@ width: 150px;
 }
 
 /* select option in riwayat Top up admin and disburse report*/
-.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control, .dropVAUSD .css-1s2u09g-control  {
+.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control, .dropVAUSD .css-1s2u09g-control, .dropSettlementVausd .css-1s2u09g-control {
     min-height: 40px;
     min-width: 188px;
     border-radius: 8px;
@@ -881,6 +881,33 @@ width: 150px;
     width: 188px;
 }
 
+.dropSettlementVausd .css-261x2u-control {
+    width: 188px;
+}
+
+.dropSettlementVausd .css-319lph-ValueContainer {
+    max-height: 43px !important;
+    max-width: 188px !important;
+}
+
+.dropSettlementVausd .css-261x2u-control {
+    min-height: 43px;
+    border-radius: 8px;
+}
+
+.dropSettlementVausd .css-qqcyw1-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropSettlementVausd .css-17rpq10-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropSettlementVausd .css-1s2u09g-control {
+    min-height: 43px;
+    border-radius: 8px;
+}
+
 .css-14el2xx-placeholder {
     font-size: 14px;
 }
@@ -889,6 +916,7 @@ width: 150px;
 .dropPartner .css-qqcyw1-option:hover,
 .dropDisbursePartner .css-qqcyw1-option:hover,
 .dropSaldoPartner .css-qqcyw1-option:hover,
+.dropSettlementVausd .css-qqcyw1-option:hover,
 .dropLaporanPartner .css-qqcyw1-option:hover,
 .dropLaporanPartnerBank .css-qqcyw1-option:hover,
 .dropTopupPartner .css-qqcyw1-option:hover,
@@ -902,19 +930,7 @@ width: 150px;
     background-color: #3b8aff;
 }
 
-.dropVAUSD .css-b62m3t-container {
-    min-width: 260px;
-    max-width: 265px;
-    width: max-content;
-}
-
-.dropDisbursePartner .css-b62m3t-container {
-    min-width: 260px;
-    max-width: 265px;
-    width: max-content;
-}
-
-.dropSettlementVausd .css-b62m3t-container {
+.dropVAUSD .css-b62m3t-container, .dropDisbursePartner .css-b62m3t-container {
     min-width: 260px;
     max-width: 265px;
     width: max-content;
