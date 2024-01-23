@@ -839,9 +839,15 @@ width: 150px;
 }
 
 /* select option in riwayat Top up admin and disburse report*/
-.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control, .dropVAUSD .css-1s2u09g-control, .dropSettlementVausd .css-1s2u09g-control {
+.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control, .dropVAUSD .css-1s2u09g-control {
     min-height: 40px;
     min-width: 188px;
+    border-radius: 8px;
+}
+
+.dropSettlementVausd .css-1s2u09g-control {
+    min-height: 40px;
+    min-width: 198px;
     border-radius: 8px;
 }
 
@@ -878,16 +884,16 @@ width: 150px;
 } */
 
 .dropSettlementVausd .css-1domo0x-control {
-    width: 188px;
+    width: 198px;
 }
 
 .dropSettlementVausd .css-261x2u-control {
-    width: 188px;
+    width: 198px;
 }
 
 .dropSettlementVausd .css-319lph-ValueContainer {
     max-height: 43px !important;
-    max-width: 188px !important;
+    max-width: 198px !important;
 }
 
 .dropSettlementVausd .css-261x2u-control {
