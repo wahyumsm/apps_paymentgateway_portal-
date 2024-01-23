@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, Modal, OverlayTrigger, Popover, Row } from '@themesberg/react-bootstrap'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 import flagIdRoundIcon from '../../../assets/icon/flag_id_round.svg'
 import flagEnRoundIcon from '../../../assets/icon/flag_en_round.svg'
 import flagRrtRoundIcon from '../../../assets/icon/flag_rrt_round.svg'
@@ -17,6 +17,7 @@ import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 registerPlugin(FilePondPluginFileEncode)
 
 const PengaturanMerchant = () => {
+    const { idProfile } = useParams()
     const [tabJenisUsaha, setTabJenisUsaha] = useState("settlementOtomatis")
     const [tabTujuanTransfer, setTabTujuanTransfer] = useState("rekeningGrup")
     const history = useHistory()
@@ -42,6 +43,13 @@ const PengaturanMerchant = () => {
     function showModalSubmit () {
         setShowModalSyaratKetentuan(true)
     }
+
+    useEffect(() => {
+        if (idProfile !== undefined) {
+            // getDataAddBrandStepFormTidakBerbadanHukum(idProfile)
+        }
+    }, [])
+    
 
     return (
         <>

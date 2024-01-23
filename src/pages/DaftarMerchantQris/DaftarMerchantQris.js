@@ -154,7 +154,7 @@ const DaftarMerchantQris = () => {
             if (businessTypeId === 2) {
                 history.push(`/form-info-usaha-perorangan/${id}`)
             } else if (businessTypeId === 3) {
-                history.push(`/formulir-tambah-settlement`)
+                history.push(`/pengaturan-merchant/${id}`)
             }
         }
     }

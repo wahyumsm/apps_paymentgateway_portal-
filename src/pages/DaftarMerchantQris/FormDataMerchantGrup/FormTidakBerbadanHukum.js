@@ -11,7 +11,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 const FormTidakBerbadanHukum = () => {
     const history = useHistory()
-    const { idNou } = useParams()
+    const { idProfile } = useParams()
     const [isCheckedConfirm, setIsCheckedConfirm] = useState(false)
     const [isDisableChecked, setIsDisableChecked] = useState(false)
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
@@ -61,6 +61,8 @@ const FormTidakBerbadanHukum = () => {
         const auth = "Bearer " + getToken()
         const formData = new FormData()
         const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "${email}", "identity_id": 100, "identity_number": "${nomorKtp}", "user_name": "${namaUser}", "phone_number": "${noTelp}", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${namaGrup}"}`)
+        formData.append('ktpUrl', null)
+        formData.append('SelfieKtpUrl', null)
         formData.append('Data', dataParams)
         const headers = {
             'Content-Type':'application/json',
@@ -88,8 +90,8 @@ const FormTidakBerbadanHukum = () => {
     }
 
     useEffect(() => {
-        if (idNou !== undefined) {
-            getDataFirstStepFormTidakBerbadanHukum(idNou)
+        if (idProfile !== undefined) {
+            getDataFirstStepFormTidakBerbadanHukum(idProfile)
         }
     }, [])
     
@@ -140,7 +142,7 @@ const FormTidakBerbadanHukum = () => {
                     <div className='text-end mt-4'>
                         <button 
                             className="btn-next-active mb-4"
-                            onClick={() => formDataFirstStepDataTidakBebadanHukum(inputHandle.namaGrup, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.email, inputHandle.noTelp, 2, 3, "next", getDataFirstStep.mprofile_id)}
+                            onClick={() => formDataFirstStepDataTidakBebadanHukum(inputHandle.namaGrup, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.email, inputHandle.noTelp, 2, 3, "next", getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id)}
                         >
                             Selanjutnya
                         </button>
@@ -165,7 +167,7 @@ const FormTidakBerbadanHukum = () => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => formDataFirstStepDataTidakBebadanHukum(inputHandle.namaGrup, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.email, inputHandle.noTelp, 1, 3, "back", getDataFirstStep.mprofile_id)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                        <Button onClick={() => formDataFirstStepDataTidakBebadanHukum(inputHandle.namaGrup, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.email, inputHandle.noTelp, 1, 3, "back", getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
                     </div>
                 </Modal.Body>
             </Modal>

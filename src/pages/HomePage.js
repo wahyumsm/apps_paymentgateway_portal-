@@ -229,6 +229,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukum.path} component={FormTidakBerbadanHukum} />
     <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukumFirstStep.path} component={FormTidakBerbadanHukum} />
     <RouteWithSidebar exact path={Routes.PengaturanMerchant.path} component={PengaturanMerchant} />
+    <RouteWithSidebar exact path={Routes.PengaturanMerchantEdit.path} component={PengaturanMerchant} />
     <RouteWithSidebar exact path={Routes.FormDaftarSettlement.path} component={FormDaftarSettlement} />
     <RouteWithSidebar exact path={Routes.DetailMerchantGrup.path} component={DetailMerchantGrup} />
     <RouteWithSidebar exact path={Routes.FormTambahSettlementBrand.path} component={FormTambahSettlementBrand} />
