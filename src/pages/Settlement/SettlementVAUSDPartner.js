@@ -566,7 +566,7 @@ function SettlementVAUSDPartner() {
     const [isCurrencySettlementVAUSDPartner, setIsCurrencySettlementVAUSDPartner] = useState("USD")
     const [nomorRekeningSettlementVAUSDPartner, setNomorRekeningSettlementVAUSDPartner] = useState("")
     const [namaPemilikRekeningSettlementVAUSDPartner, setNamaPemilikRekeningSettlementVAUSDPartner] = useState("")
-    const [nominalPengajuanSettlementVAUSDPartner, setNominalPengajuanSettlementVAUSDPartner] = useState("0")
+    const [nominalPengajuanSettlementVAUSDPartner, setNominalPengajuanSettlementVAUSDPartner] = useState("")
     const [totalSettlementVAUSDPartner, setTotalSettlementVAUSDPartner] = useState(0)
     const [sisaSaldoSettlementVAUSDPartner, setSisaSaldoSettlementVAUSDPartner] = useState(0)
     const [listSettlementVAUSDPartner, setListSettlementVAUSDPartner] = useState([])
@@ -1348,12 +1348,12 @@ function SettlementVAUSDPartner() {
                                                 <option value={7}>Pilih Range Tanggal</option>
                                             </Form.Select>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                            <span style={{ marginRight: 64 }}>ID Settlement</span>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                            <span>ID Settlement</span>
                                             <input onChange={(e) => setInputHandlePengajuanSettlementVAUSDAdmin({ ...inputHandlePengajuanSettlementVAUSDAdmin, [e.target.name]: e.target.value })} value={inputHandlePengajuanSettlementVAUSDAdmin.idSettlementPengajuanSettlementVAUSDAdmin} name="idSettlementPengajuanSettlementVAUSDAdmin" type='text' className='input-text-riwayat ms-3' placeholder='Masukkan ID Settlement'/>
                                         </Col>
-                                        <Col xs={4} className="d-flex justify-content-start align-items-center">
-                                            <span style={{ marginRight: 64 }}>Nama Merchant</span>
+                                        <Col xs={4} className="d-flex justify-content-between align-items-center">
+                                            <span>Nama Merchant</span>
                                             <div className="dropdown dropSettlementVausd" >
                                                 <ReactSelect
                                                     // isMulti
@@ -1775,11 +1775,11 @@ function SettlementVAUSDPartner() {
                                         </td>
                                     </tr>
                                     <br />
-                                    <tr>
+                                    <tr className='no-rek-va-usd'>
                                         <td>Nomor Rekening</td>
                                         <td>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="input-text-ez"
                                                 value={nomorRekeningSettlementVAUSDPartner}
                                                 placeholder='Masukan no rekening'
@@ -1807,16 +1807,17 @@ function SettlementVAUSDPartner() {
                                     <br />
                                     <tr>
                                         <td>Nominal Pengajuan</td>
-                                        <td>
+                                        <td className='d-flex justify-content-start align-items-center position-relative '>
+                                            <div className='position-absolute ms-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600, color: "#383838", paddingTop: 3 }}>{isCurrencySettlementVAUSDPartner}</div>
                                             <CurrencyInput
                                                 className="input-text-user"
                                                 value={nominalPengajuanSettlementVAUSDPartner}
                                                 onValueChange={(e) => nominalPengajuanHandle(e)}
-                                                placeholder="0"
-                                                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600, color: "#383838" }}
+                                                placeholder=""
+                                                style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600, color: "#383838", paddingLeft: 43 }}
                                                 groupSeparator={"."}
                                                 decimalSeparator={','}
-                                                prefix={`${isCurrencySettlementVAUSDPartner} `}
+                                                // prefix={`${isCurrencySettlementVAUSDPartner} `}
                                                 // maxLength={biayaHandle.feeType === 101 ? 3 : false}
                                                 // suffix={biayaHandle.feeType === 0 || biayaHandle.feeType === 100 ? "" : "%"}
                                             />
