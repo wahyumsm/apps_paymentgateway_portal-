@@ -1221,6 +1221,7 @@ header.sc-dIouRR.evxAbm {
     font-size: 14px;
     color: #888888;
 }
+
 .form-confirm label.form-check-label {
     font-family: 'Nunito';
     font-size: 16px;
@@ -1780,12 +1781,6 @@ th {
     outline: 1.4px solid #077E86;
 }
 
-.form-confirm {
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: 700;
-}
-
 .btn-next-info-usaha {
     width: 100%;
     height: 48px;
@@ -2014,4 +2009,10 @@ th {
     font-family: 'Nunito';
     font-size: 14px;
     color: #383838;
+}
+
+.form-jenis-toko-qris label.form-check-label {
+    font-family: 'Nunito';
+    font-size: 14px;
+    font-weight: 400;
 }
