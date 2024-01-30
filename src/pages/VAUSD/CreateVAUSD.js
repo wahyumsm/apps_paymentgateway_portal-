@@ -1301,7 +1301,7 @@ function CreateVAUSD() {
                                     <option defaultChecked disabled value={0}>Pilih Periode</option>
                                     <option value={([`${currentDate}`, `${currentDate}`])}>Hari Ini</option>
                                     <option value={([`${tomorrowDate}`, `${tomorrowDate}`])}>Besok</option>
-                                    <option value={([`${sevenDaysLater}`, `${tomorrowDate}`])}>7 Hari Kedepan</option>
+                                    <option value={([`${tomorrowDate}`, `${sevenDaysLater}`])}>7 Hari Kedepan</option>
                                     <option value={([`${firstDayThisMonth}`, `${lastDayThisMonth}`])}>Bulan Ini</option>
                                     <option value={([`${firstDayNextMonth}`, `${lastDayNextMonth}`])}>Bulan Depan</option>
                                     <option value={7}>Pilih Range Tanggal</option>
