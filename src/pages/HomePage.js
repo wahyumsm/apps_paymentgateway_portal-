@@ -102,6 +102,7 @@ import RiwayatFileSFTP from './VAUSD/RiwayatFileSFTP';
 import SettlementVAUSDPartner from './Settlement/SettlementVAUSDPartner';
 import TransaksiQrisApi from './Riwayat/TransaksiQrisApi';
 import ReNotifyQris from './HelpDesk/ReNotifyQris';
+import UnSettledTransaction from './Settlement/UnSettledTransaction';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -223,6 +224,8 @@ export default () => (
     <RouteWithSidebar exact path={Routes.VAUSD.path} component={CreateVAUSD} />
     <RouteWithSidebar exact path={Routes.RiwayatFileSFTP.path} component={RiwayatFileSFTP} />
     <RouteWithSidebar exact path={Routes.SettlementVAUSDAdmin.path} component={SettlementVAUSDPartner} />
+    <RouteWithSidebar exact path={Routes.UnsettledTransaction.path} component={UnSettledTransaction} />
+
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
