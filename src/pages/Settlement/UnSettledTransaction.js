@@ -115,7 +115,7 @@ function UnSettledTransaction() {
                 const data = listUnsettled.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "Waktu": new Date(data[i].settle_date).toLocaleString("en-GB"), "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_name, "Nominal Settlement": data[i].settle_amount, "Nominal Transaksi": data[i].sum_trx, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].fee_partner, "PPN atas Jasa Layanan": data[i].fee_partner_tax, "Reimbursement by VA": data[i].fee_payment_type })
+                    dataExcel.push({ No: i + 1, "Waktu": new Date(data[i].settle_date).toLocaleString("en-GB"), "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].payment_type, "Nominal Settlement": data[i].settle_amount, "Nominal Transaksi": data[i].sum_trx, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].fee_partner, "PPN atas Jasa Layanan": data[i].fee_partner_tax, "Reimbursement by VA": data[i].fee_payment_type })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -127,7 +127,7 @@ function UnSettledTransaction() {
                 const data = listUnsettled.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "Waktu": new Date(data[i].settle_date).toLocaleString("en-GB"), "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].mfitur_name, "Nominal Settlement": data[i].settle_amount, "Nominal Transaksi": data[i].sum_trx, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].fee_partner, "PPN atas Jasa Layanan": data[i].fee_partner_tax, "Reimbursement by VA": data[i].fee_payment_type })
+                    dataExcel.push({ No: i + 1, "Waktu": new Date(data[i].settle_date).toLocaleString("en-GB"), "Nama Partner": data[i].mpartner_name, "Jenis Transaksi": data[i].payment_type, "Nominal Settlement": data[i].settle_amount, "Nominal Transaksi": data[i].sum_trx, "Total Transaksi": data[i].total_trx, "Jasa Layanan": data[i].fee_partner, "PPN atas Jasa Layanan": data[i].fee_partner_tax, "Reimbursement by VA": data[i].fee_payment_type })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
