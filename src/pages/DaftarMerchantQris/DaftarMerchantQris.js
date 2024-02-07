@@ -70,7 +70,7 @@ const DaftarMerchantQris = () => {
             filterListDataGrupQrisHandler(e.target.value, activePageDataGrupQris, 10)
         }
         return (
-            <FilterComponentQrisGrup onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextGrup} title="Pencarian :" placeholder="Masukkan nama grup" onClickAddMerchant={() => history.push("/pilih-jenis-usaha")} />
+            <FilterComponentQrisGrup onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextGrup} title="Pencarian :" placeholder="Masukkan nama grup" onClickAddMerchant={() => history.push(`/pilih-jenis-usaha`)} />
         );	}, [filterTextGrup, resetPaginationToggleGrup]
     );
 
@@ -143,19 +143,41 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    function getDetailNotifEwallet (id, step, businessTypeId) {
+    function getPageRegisterQris (id, step, businessTypeId, settleId, merchantNou, userNou) {
+        console.log(settleId, "settleId");
+        console.log(merchantNou, "merchantNou");
+        console.log(userNou, "userNou");
         if (step === 1) {
             if (businessTypeId === 2) {
                 history.push(`/form-info-pemilik-perorangan/${id}`)
             } else if (businessTypeId === 3) {
                 history.push(`/form-tidak-berbadan-hukum/${id}`)
-            } 
-        } else if (step === 2) {
+            } else if (businessTypeId === 1) {
+                console.log("masukbadanusaha");
+                history.push(`/form-info-pemilik-badan-usaha/${id}`)
+            }
+        } 
+        
+        if (step === 2) {
             if (businessTypeId === 2) {
                 history.push(`/form-info-usaha-perorangan/${id}`)
-            } else if (businessTypeId === 3) {
-                history.push(`/pengaturan-merchant/${id}`)
+            } else if (businessTypeId === 1) {
+                history.push(`/form-info-usaha-badan-usaha/${id}`)
             }
+        } 
+        
+        if (step === 3) {
+            if (businessTypeId === 1) {
+                history.push(`/form-dokumen-usaha-badan-usaha/${id}`)
+            }
+        } 
+        
+        if (step === 200) {
+            history.push(`/pengaturan-merchant/${id}/101`)
+        }
+
+        if (step === 201) {
+            history.push(`/formulir-daftar-settlement/${settleId}/${merchantNou}/${userNou}/${id}`)
         }
     }
 
@@ -206,8 +228,8 @@ const DaftarMerchantQris = () => {
             name: 'Aksi',
             width: "170px",
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon onClick={() => getDetailNotifEwallet(row.mprofile_id, row.step, row.business_type_id)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id  === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
+                    <FontAwesomeIcon onClick={() => getPageRegisterQris(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },
@@ -239,7 +261,7 @@ const DaftarMerchantQris = () => {
             filterListDataBrandQrisHandler(e.target.value, activePageDataBrandQris, 10)
         }
         return (
-            <FilterComponentQris onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextBrand} title="Pencarian :" placeholder="Masukkan nama brand" onClickAddMerchant={() => history.push("/pilih-jenis-usaha")} addMerchant="Tambah brand" />
+            <FilterComponentQris onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextBrand} title="Pencarian :" placeholder="Masukkan nama brand" onClickAddMerchant={() => history.push(`/formulir-info-pemilik-brand`)} addMerchant="Tambah brand" />
         );	}, [filterTextBrand, resetPaginationToggleBrand]
     );
 
@@ -312,6 +334,23 @@ const DaftarMerchantQris = () => {
         }
     }
 
+    function getPageRegisterQrisBrand (id, step, settleId, merchantNou, userNou) {
+        console.log(settleId, "settleId");
+        console.log(merchantNou, "merchantNou");
+        console.log(userNou, "userNou");
+        if (step === 1) {
+            history.push(`/formulir-info-pemilik-brand/${id}`)
+        } else if (step === 2) {
+            history.push(`/formulir-info-usaha-brand/${id}`)
+        } else if (step === 3) {
+            history.push(`/form-dokumen-usaha-brand-badan-usaha/${id}`)
+        } else if (step === 200) {
+            history.push(`/pengaturan-merchant/${id}/102`)
+        } else if (step === 300) {
+            history.push(`/detail-merchant-brand`)
+        }
+    }
+
     const columnsBrand = [
         {
             name: 'No',
@@ -320,7 +359,7 @@ const DaftarMerchantQris = () => {
         },
         {
             name: 'ID merchant',
-            selector: row => row.mprofile_id,
+            selector: row => row.merchant_id,
             width: "130px"
         },
         {
@@ -366,7 +405,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getPageRegisterQrisBrand(row.mprofile_id, row.step, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },
@@ -398,7 +437,7 @@ const DaftarMerchantQris = () => {
             filterListDataOutletQrisHandler(e.target.value, activePageDataOutletQris, 10)
         }
         return (
-            <FilterComponentQris onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextOutlet} title="Pencarian :" placeholder="Masukkan nama outlet" onClickAddMerchant={() => history.push("/pilih-jenis-usaha")} addMerchant="Tambah outlet" />
+            <FilterComponentQris onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextOutlet} title="Pencarian :" placeholder="Masukkan nama outlet" onClickAddMerchant={() => history.push(`/formulir-info-pemilik-outlet`)} addMerchant="Tambah outlet" />
         );	}, [filterTextOutlet, resetPaginationToggleOutlet]
     );
 
@@ -471,6 +510,25 @@ const DaftarMerchantQris = () => {
         }
     }
 
+    function getPageRegisterQrisOutlet (id, step, settleId, merchantNou, userNou) {
+        console.log(settleId, "settleId");
+        console.log(merchantNou, "merchantNou");
+        console.log(userNou, "userNou");
+        if (step === 1) {
+            history.push(`/formulir-info-pemilik-outlet/${id}`)
+        } else if (step === 2) {
+            history.push(`/formulir-info-usaha-outlet/${id}`)
+        } else if (step === 3) {
+            history.push(`/form-dokumen-usaha-outlet/${id}`)
+        } else if (step === 200) {
+            history.push(`/pengaturan-merchant/${id}/103`)
+        } else if (step === 201) {
+            history.push(`/form-info-rekening-outlet/${settleId}/${merchantNou}/${userNou}/${id}`)
+        } else if (step === 300) {
+            history.push(`/detail-merchant-outlet`)
+        }
+    }
+
     const columnsOutlet = [
         {
             name: 'No',
@@ -479,7 +537,7 @@ const DaftarMerchantQris = () => {
         },
         {
             name: 'ID merchant',
-            selector: row => row.mprofile_id,
+            selector: row => row.merchant_id,
             width: "130px"
         },
         {
@@ -519,7 +577,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getPageRegisterQrisOutlet(row.mprofile_id, row.step, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },

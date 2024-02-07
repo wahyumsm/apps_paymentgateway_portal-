@@ -179,7 +179,7 @@ const FormInfoPemilikPerseorangan = () => {
                     console.log("masuk11");
                     const auth = "Bearer " + getToken()
                     const formData = new FormData()
-                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
                     formData.append('ktpUrl', null)
                     formData.append('SelfieKtpUrl', null)
                     formData.append('Data', dataParams)
@@ -222,7 +222,7 @@ const FormInfoPemilikPerseorangan = () => {
                     console.log("masuk12");
                     const auth = "Bearer " + getToken()
                     const formData = new FormData()
-                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
                     formData.append('ktpUrl', null)
                     formData.append('SelfieKtpUrl', imageSelfieKtp)
                     formData.append('Data', dataParams)
@@ -268,7 +268,7 @@ const FormInfoPemilikPerseorangan = () => {
                     console.log("masuk21");
                     const auth = "Bearer " + getToken()
                     const formData = new FormData()
-                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
                     formData.append('ktpUrl', imageKtp)
                     formData.append('SelfieKtpUrl', null)
                     formData.append('Data', dataParams)
@@ -311,7 +311,7 @@ const FormInfoPemilikPerseorangan = () => {
                     console.log("masuk22");
                     const auth = "Bearer " + getToken()
                     const formData = new FormData()
-                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
+                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
                     formData.append('ktpUrl', imageKtp)
                     formData.append('SelfieKtpUrl', imageSelfieKtp)
                     formData.append('Data', dataParams)

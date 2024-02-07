@@ -65,20 +65,20 @@ const FormTidakBerbadanHukum = () => {
         formData.append('SelfieKtpUrl', null)
         formData.append('Data', dataParams)
         const headers = {
-            'Content-Type':'application/json',
+            'Content-Type':'multipart/form-data',
             'Authorization' : auth
         }
         const getData = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
         if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
             if (position === "next") {
-                history.push('/pengaturan-merchant')
+                history.push(`/pengaturan-merchant/${profileId}/101`)
             } else if (position === "back") {
                 history.push('/daftar-merchant-qris')
             }
         } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
             setUserSession(getData.data.response_new_token)
             if (position === "next") {
-                history.push('/pengaturan-merchant')
+                history.push(`/pengaturan-merchant/${profileId}/101`)
             } else if (position === "back") {
                 history.push('/daftar-merchant-qris')
             }

@@ -5,11 +5,12 @@ import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function
 import encryptData from '../../../function/encryptData';
 import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
-import { Button, Modal } from '@themesberg/react-bootstrap';
+import { Button, Form, Modal } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import ReactSelect, { components } from 'react-select';
 
-const FormInfoPemilikBadanUsaha = (props) => {
+const FormInfoPemilik = (props) => {
     const history = useHistory()
     const { profileId } = useParams()
     const hiddenFileInputKtp = useRef(null)
@@ -17,13 +18,20 @@ const FormInfoPemilikBadanUsaha = (props) => {
     const [imageKtp, setImageKtp] = useState(null)
     const [nameImageKtp, setNameImageKtp] = useState("")
     const [uploadKtp, setUploadKtp] = useState(false)
+
+    const hiddenFileInputSelfieKtp = useRef(null)
+    const [imageFileSelfieKtp, setImageFileSelfieKtp] = useState(null)
+    const [imageSelfieKtp, setImageSelfieKtp] = useState(null)
+    const [nameImageSelfieKtp, setNameImageSelfieKtp] = useState("")
+    const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
+
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [getDataFirstStep, setGetDataFirstStep] = useState({})
-    const searchParams = new URLSearchParams(props.location.search);
-    const type = searchParams.get('type');
+    const [dataList, setDataList] = useState([])
+    const [selectedDataGrup, setSelectedDataGrup] = useState([])
 
     const [inputHandle, setInputHandle] = useState({
-        merchantNou: 0,
+        jenisUsaha: 1,
         peranPendaftar: 0,
         namaUser: "",
         nomorKtp: "",
@@ -34,7 +42,7 @@ const FormInfoPemilikBadanUsaha = (props) => {
     function handleChange(e) {
         setInputHandle({
             ...inputHandle,
-            [e.target.name]: (e.target.name === "peranPendaftar" || e.target.name === "kewarganegaraan") ? Number(e.target.value) : e.target.value
+            [e.target.name]: (e.target.name === "peranPendaftar" || e.target.name === "kewarganegaraan" || e.target.name === "jenisUsaha") ? Number(e.target.value) : e.target.value
         })
     }
 
@@ -42,6 +50,10 @@ const FormInfoPemilikBadanUsaha = (props) => {
 
     const handleClickKtp = () => {
         hiddenFileInputKtp.current.click();
+    };
+
+    const handleClickSelfieKtp = () => {
+        hiddenFileInputSelfieKtp.current.click();
     };
 
     const handleFileChangeKtp = (event) => {
@@ -63,7 +75,61 @@ const FormInfoPemilikBadanUsaha = (props) => {
         }
     }
 
-    async function getDataFirstStepInfoPemilikBadanUsaha(profileId) {
+    const handleFileChangeSelfieKtp = (event) => {
+        if(event.target.files[0]) {
+            setImageSelfieKtp(event.target.files[0])
+            setNameImageSelfieKtp(event.target.files[0].name)
+            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                setUploadSelfieKtp(true)
+                setImageFileSelfieKtp(imageFileSelfieKtp)
+            }
+            else {
+                setUploadSelfieKtp(false)
+                const reader = new FileReader()
+                reader.addEventListener("load", () => {
+                    console.log(reader.result, "reader.result");
+                    setImageFileSelfieKtp(reader.result)
+                })
+                reader.readAsDataURL(event.target.files[0])
+            }
+        }
+    }
+
+    async function getDataGrupHandler() {
+        try {
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const getData = await axios.post(BaseURL + "/QRIS/GetListMerchant", { data: "" }, { headers: headers })
+            if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
+                let newArr = []
+                getData.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.mmerchant_nou
+                    obj.label = e.mmerchant_name
+                    newArr.push(obj)
+                })
+                setDataList(newArr)
+            } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
+                setUserSession(getData.data.response_new_token)
+                let newArr = []
+                getData.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.mmerchant_nou
+                    obj.label = e.mmerchant_name
+                    newArr.push(obj)
+                })
+                setDataList(newArr)
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
+    async function getDataFirstStepInfoPemilik(profileId) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"profile_id": ${profileId}}`)
@@ -75,7 +141,7 @@ const FormInfoPemilikBadanUsaha = (props) => {
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 setInputHandle({
                     ...getData.data.response_data.results, 
-                    merchantNou: getData.data.response_data.results.mmerchant_nou,
+                    jenisUsaha: getData.data.response_data.results.mprofdtl_register_role,
                     peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role, 
                     namaUser: getData.data.response_data.results.mprofdtl_name, 
                     nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, 
@@ -83,11 +149,17 @@ const FormInfoPemilikBadanUsaha = (props) => {
                     noTelp: getData.data.response_data.results.mprofdtl_mobile
                 })
                 setGetDataFirstStep(getData.data.response_data.results)
+                let newArrDataGrup = []
+                let objDataGrup = {}
+                objDataGrup.value = getData.data.response_data.results.mmerchant_nou
+                objDataGrup.label = getData.data.response_data.results.mmerchant_name
+                newArrDataGrup.push(objDataGrup)
+                setSelectedDataGrup(objDataGrup.value === null ? [] : newArrDataGrup)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 setInputHandle({
                     ...getData.data.response_data.results, 
-                    merchantNou: getData.data.response_data.results.mmerchant_nou,
+                    jenisUsaha: getData.data.response_data.results.mprofdtl_register_role,
                     peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role, 
                     namaUser: getData.data.response_data.results.mprofdtl_name, 
                     nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, 
@@ -95,6 +167,12 @@ const FormInfoPemilikBadanUsaha = (props) => {
                     noTelp: getData.data.response_data.results.mprofdtl_mobile
                 })
                 setGetDataFirstStep(getData.data.response_data.results)
+                let newArrDataGrup = []
+                let objDataGrup = {}
+                objDataGrup.value = getData.data.response_data.results.mmerchant_nou
+                objDataGrup.label = getData.data.response_data.results.mmerchant_name
+                newArrDataGrup.push(objDataGrup)
+                setSelectedDataGrup(objDataGrup.value === null ? [] : newArrDataGrup)
             }
         } catch (error) {
             // console.log(error)
@@ -102,14 +180,14 @@ const FormInfoPemilikBadanUsaha = (props) => {
         }
     }
 
-    async function formDataFirstStepInfoPemilikBadanUsaha(merchantNou, peranPendaftar, namaUser, nomorKtp, kewarganegaraan, noTelp, imageKtp, step, businessType, position, profileId) {
+    async function formDataFirstStepInfoPemilikBadanUsaha(peranPendaftar, namaUser, nomorKtp, kewarganegaraan, noTelp, imageKtp, imageSelfieKtp, step, businessType, merchantNou, position, profileId) {
         try {
         console.log(profileId, "profileId");
         const auth = "Bearer " + getToken()
         const formData = new FormData()
-        const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "register_type": 101, "user_role": ${peranPendaftar}, "profile_id": ${profileId === undefined ? 0 : profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${nomorKtp}", "user_name": "${namaUser}", "phone_number": "${noTelp}", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": ""}`)
+        const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "register_type": 102, "user_role": ${peranPendaftar}, "profile_id": ${profileId === undefined ? 0 : profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${nomorKtp}", "user_name": "${namaUser}", "phone_number": "${noTelp}", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": ""}`)
         formData.append('ktpUrl', imageKtp)
-        formData.append('SelfieKtpUrl', null)
+        formData.append('SelfieKtpUrl', imageSelfieKtp)
         formData.append('Data', dataParams)
         const headers = {
             'Content-Type':'multipart/form-data',
@@ -119,7 +197,7 @@ const FormInfoPemilikBadanUsaha = (props) => {
         if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
             if (position === "next") {
                 console.log("masuk1");
-                history.push(`/form-info-usaha-badan-usaha/${getData.data.response_data.mprof_id}`)
+                history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}?type=${businessType}`)
             } else {
                 console.log("masuk2");
                 history.push('/daftar-merchant-qris')
@@ -128,7 +206,7 @@ const FormInfoPemilikBadanUsaha = (props) => {
             setUserSession(getData.data.response_new_token)
             if (position === "next") {
                 console.log("masuk1");
-                history.push(`/form-info-usaha-badan-usaha/${getData.data.response_data.mprof_id}`)
+                history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}?type=${businessType}`)
             } else {
                 console.log("masuk2");
                 history.push('/daftar-merchant-qris')
@@ -146,10 +224,29 @@ const FormInfoPemilikBadanUsaha = (props) => {
         setShowModalSimpanData(true)
     }
 
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
+  
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "black"
+        })
+    }
+
     useEffect(() => {
         if (profileId !== undefined) {
-            getDataFirstStepInfoPemilikBadanUsaha(profileId)
+            getDataFirstStepInfoPemilik(profileId)
         }
+        getDataGrupHandler()
     }, [])
     
 
@@ -163,7 +260,7 @@ const FormInfoPemilikBadanUsaha = (props) => {
                             <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                         )
                     }
-                    <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
+                    <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Tambah Brand</h2>
                 </div>
                 <div className='pb-4 pt-3'>
                     <div className='d-flex justify-content-start align-items-center' style={{ marginLeft: 25, marginRight: 25 }}>
@@ -173,54 +270,109 @@ const FormInfoPemilikBadanUsaha = (props) => {
                     <div className='d-flex justify-content-between align-items-center mt-2' style={{ fontSize: 12, color: "#383838", fontFamily: "Nunito" }}>
                         <div>Info pemilik</div>
                         <div>Info usaha</div>
-                        <div>Dokumen usaha</div>
+                        {
+                            inputHandle.jenisUsaha === 1 && <div>Dokumen usaha</div>
+                        }
                     </div>
                 </div>
-                <div className='alert-form-info-pemilik py-4'>
-                    <img src={alertIconYellow} alt="icon" />
-                    <div className='ms-2'>Semua data pada setiap form harus diisi</div>
-                </div>
-                <div className='base-content my-4'>
-                    <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Peran pendaftar</div>
+                <div className='base-content my-2'>
+                <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Apa Jenis Usaha Merchant? </div>
                     <div className='d-flex justify-content-start align-items-center py-2'>
                         <div className="form-check form-check-inline">
                             <input
                                 className="form-check-input"
                                 type="radio"
-                                id="direktur"
-                                name='peranPendaftar'
+                                id="badanUsaha"
+                                name='jenisUsaha'
                                 value={1}
-                                checked={inputHandle.peranPendaftar === 1 && true}
+                                checked={inputHandle.jenisUsaha === 1 && true}
                                 onChange={(e) => handleChange(e)}
                             />
                             <label
                                 className="form-check-label"
                                 style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                for="direktur"
+                                for="badanUsaha"
                             >
-                                Pemilik usaha / Direktur
+                                Badan Usaha
                             </label>
                         </div>
                         <div className="form-check form-check-inline">
                             <input
                                 className="form-check-input"
                                 type="radio"
-                                id="staff"
-                                name='peranPendaftar'
+                                id="perorangan"
+                                name='jenisUsaha'
                                 value={2}
-                                checked={inputHandle.peranPendaftar === 2 && true}
+                                checked={inputHandle.jenisUsaha === 2 && true}
                                 onChange={(e) => handleChange(e)}
                             />
                             <label
                                 className="form-check-label"
                                 style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                for="staff"
+                                for="perorangan"
                             >
-                                Staff perwakilan
+                                Perorangan
                             </label>
                         </div>
                     </div>
-                    <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Kewarganegaraan pemilik usaha</div>
+                    <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Grup</div>
+                    <div className="dropdown dropDisbursePartner mt-2">
+                        <ReactSelect
+                            closeMenuOnSelect={true}
+                            hideSelectedOptions={false}
+                            options={dataList}
+                            value={selectedDataGrup}
+                            onChange={(selected) => setSelectedDataGrup([selected])}
+                            placeholder="Pilih Nama Grup"
+                            components={{ Option }}
+                            styles={customStylesSelectedOption}
+                        />
+                    </div>
+                    {
+                        inputHandle.jenisUsaha === 1 && 
+                        <>
+                            <div className='mt-3 mb-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Peran pendaftar</div>
+                            <div className='d-flex justify-content-start align-items-center py-2'>
+                                <div className="form-check form-check-inline">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        id="direktur"
+                                        name='peranPendaftar'
+                                        value={1}
+                                        checked={inputHandle.peranPendaftar === 1 && true}
+                                        onChange={(e) => handleChange(e)}
+                                    />
+                                    <label
+                                        className="form-check-label"
+                                        style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                        for="direktur"
+                                    >
+                                        Pemilik usaha / Direktur
+                                    </label>
+                                </div>
+                                <div className="form-check form-check-inline">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        id="staff"
+                                        name='peranPendaftar'
+                                        value={2}
+                                        checked={inputHandle.peranPendaftar === 2 && true}
+                                        onChange={(e) => handleChange(e)}
+                                    />
+                                    <label
+                                        className="form-check-label"
+                                        style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                        for="staff"
+                                    >
+                                        Staff perwakilan
+                                    </label>
+                                </div>
+                            </div>
+                        </>
+                    }
+                    <div className={inputHandle.jenisUsaha === 2 ? 'mt-3 mb-1' : 'my-1'} style={{ fontFamily: "Nunito", fontSize: 14}}>Kewarganegaraan pemilik usaha</div>
                     <div className='d-flex justify-content-start align-items-center py-2'>
                         <div className="form-check form-check-inline">
                             <input
@@ -301,6 +453,45 @@ const FormInfoPemilikBadanUsaha = (props) => {
                         <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
+                    {
+                        inputHandle.jenisUsaha === 2 && 
+                        <>
+                            <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan eKTP</div>
+                            <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
+                                {
+                                    !imageFileSelfieKtp ?
+                                    <>
+                                        <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
+                                        <input
+                                            type="file"
+                                            onChange={handleFileChangeSelfieKtp}
+                                            accept=".jpg"
+                                            style={{ display: "none" }}
+                                            ref={hiddenFileInputSelfieKtp}
+                                            id="image"
+                                            name="image"
+                                        />
+                                    </>
+                                        :
+                                    <>
+                                        <img src={imageFileSelfieKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                        <input
+                                            type="file"
+                                            onChange={handleFileChangeSelfieKtp}
+                                            accept=".jpg"
+                                            style={{ display: "none" }}
+                                            ref={hiddenFileInputSelfieKtp}
+                                            id="image"
+                                            name="image"
+                                        />
+                                        <div className='mt-2 ms-3'>{nameImageSelfieKtp}</div>
+                                    </>
+                                }
+                                <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
+                                <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
+                            </div>
+                        </>
+                    }
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>No telepon pemilik usaha</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                         <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
@@ -309,7 +500,7 @@ const FormInfoPemilikBadanUsaha = (props) => {
                         <button 
                             className={((inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && imageKtp !== null && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
                             disabled={(inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || imageKtp === null || inputHandle.noTelp.length === 0}
-                            onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.merchantNou, inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, 2, 1, "next", profileId === undefined ? 0 : profileId)}
+                            onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, imageSelfieKtp, 2, inputHandle.jenisUsaha, selectedDataGrup.length !== 0 ? selectedDataGrup[0].value : 0, "next", profileId === undefined ? 0 : profileId)}
                         >
                             Selanjutnya
                         </button>
@@ -334,7 +525,7 @@ const FormInfoPemilikBadanUsaha = (props) => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.merchantNou, inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, 1, 1, "back", profileId === undefined ? 0 : profileId)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                        <Button onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, imageSelfieKtp, 1, inputHandle.jenisUsaha, selectedDataGrup.length !== 0 ? selectedDataGrup[0].value : 0, "back", profileId === undefined ? 0 : profileId)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -342,4 +533,4 @@ const FormInfoPemilikBadanUsaha = (props) => {
     )
 }
 
-export default FormInfoPemilikBadanUsaha
+export default FormInfoPemilik

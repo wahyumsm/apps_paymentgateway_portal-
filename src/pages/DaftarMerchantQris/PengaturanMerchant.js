@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Modal } from '@themesberg/react-bootstrap'
 import { useHistory, useParams } from 'react-router-dom'
-import alertIconGrey from '../../../assets/icon/alert_icon_grey.svg'
-import settlementOtomatis from '../../../assets/icon/settlement-otomatis.svg'
-import noteIconRed from "../../../assets/icon/note_icon_red.svg";
-import noteIconGreen from "../../../assets/icon/note_icon_green.svg"
-import requestManual from '../../../assets/icon/request-manual.svg'
-import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
-import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers'
-import encryptData from '../../../function/encryptData'
+import alertIconGrey from '../../assets/icon/alert_icon_grey.svg'
+import settlementOtomatis from '../../assets/icon/settlement-otomatis.svg'
+import noteIconRed from "../../assets/icon/note_icon_red.svg";
+import noteIconGreen from "../../assets/icon/note_icon_green.svg"
+import requestManual from '../../assets/icon/request-manual.svg'
+import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
+import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers'
+import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronLeft, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import ReactSelect, { components } from 'react-select';
 
 const PengaturanMerchant = () => {
-    const { idProfile } = useParams()
+    const { idProfile, level } = useParams()
     const history = useHistory()
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [expandedProgramAffiliator, setExpandedProgramAffiliator] = useState()
@@ -30,6 +30,7 @@ const PengaturanMerchant = () => {
     const [getDataListPartner, setGetDataListPartner] = useState([])
     const [selectedDataListPartner, setSelectedDataListPartner] = useState([])
     const [inputHandle, setInputHandle] = useState({
+        merchantId: 0,
         merchantCode: "",
         subPartnerId: "",
         jenisSettlement: 1,
@@ -186,6 +187,8 @@ const PengaturanMerchant = () => {
         }
     }
 
+    console.log(selectedDataListPartner, "selectedDataListPartner");
+
     async function getDataAddBrandStepFormTidakBerbadanHukum(profileId) {
         try {
             const auth = "Bearer " + getToken()
@@ -199,6 +202,7 @@ const PengaturanMerchant = () => {
                 const getDataConfig = getData.data.response_data.results;
                 setInputHandle({
                     ...getDataConfig,
+                    merchantId: getDataConfig.mprofile_merchant_id,
                     merchantCode: getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id,
                     jenisSettlement: getDataConfig.mprofdtl_is_auto_settlle === null ? 1 : getDataConfig.mprofdtl_is_auto_settlle, 
                     settlementDikirimkan: getDataConfig.mmerchant_settle_group_id === null ? 0 : getDataConfig.mmerchant_settle_group_id, 
@@ -234,6 +238,7 @@ const PengaturanMerchant = () => {
                 const getDataConfig = getData.data.response_data.results;
                 setInputHandle({
                     ...getDataConfig,
+                    merchantId: getDataConfig.mprofile_merchant_id,
                     merchantCode: getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id,
                     jenisSettlement: getDataConfig.mprofdtl_is_auto_settlle === null ? 1 : getDataConfig.mprofdtl_is_auto_settlle, 
                     settlementDikirimkan: getDataConfig.mmerchant_settle_group_id === null ? 0 : getDataConfig.mmerchant_settle_group_id, 
@@ -271,7 +276,7 @@ const PengaturanMerchant = () => {
         }
     }
 
-    async function savePengaturanTambahMerchantBrandHandler(settleTypeId, settleDikirmKemana, menerimaPembayaran, integrasiApi, subPartnerId, idProfile, merchantCode, additionalFee, additionalFeeType, adakanAdditionalFee, affiliationFee, affiliationFeeType, komisiAgen, cashBackFee, cashBackFeeType, adakanCashback, settleFee, settleFeeType, refferalCode, step, position) {
+    async function savePengaturanTambahMerchantBrandHandler(businesLevel, merchantId, settleTypeId, settleDikirmKemana, menerimaPembayaran, integrasiApi, subPartnerId, idProfile, merchantCode, additionalFee, additionalFeeType, adakanAdditionalFee, affiliationFee, affiliationFeeType, komisiAgen, cashBackFee, cashBackFeeType, adakanCashback, settleFee, settleFeeType, refferalCode, step, position) {
         const auth = "Bearer " + getToken()
         const dataParams = encryptData(`{"settle_type_id": ${settleTypeId}, "settle_group_id": ${settleDikirmKemana}, "alipay_wechat": ${menerimaPembayaran}, "api_integrated": ${integrasiApi}, "subpartner_id": "${subPartnerId}", "profile_id": ${idProfile}, "merchant_code": "${merchantCode}", "additional_fee": ${additionalFee}, "additional_fee_type": ${additionalFeeType}, "additional_isactive": ${adakanAdditionalFee}, "affiliation_fee": ${affiliationFee}, "affiliation_fee_type": ${affiliationFeeType}, "aff_id": "${komisiAgen}", "cashback_fee": ${cashBackFee}, "cashback_fee_type": ${cashBackFeeType}, "cashback_isactive": ${adakanCashback}, "settle_fee": ${settleFee}, "settle_type_fee": ${settleFeeType}, "partner_refferal_code": "${refferalCode}", "step": ${step}}`)
         const headers = {
@@ -281,18 +286,46 @@ const PengaturanMerchant = () => {
         const getData = await axios.post(BaseURL + "/QRIS/MerchantConfig", {data: dataParams}, { headers: headers })
         if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
             if (position === "next") {
-                if (settleDikirmKemana === 101) {
-                    history.push('/formulir-daftar-settlement')
-                } 
+                if (businesLevel === 101) {
+                    if (settleDikirmKemana === 101) {
+                        history.push(`/formulir-daftar-settlement/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+                    } else {
+                        history.push(`detail-merchant-grup`)
+                    }
+                } else if (businesLevel === 102) {
+                    if (settleDikirmKemana === 102) {
+                        history.push(`/form-info-rekening-brand/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+                    } else {
+                        history.push(`detail-merchant-brand`)
+                    }
+                } else {
+                    if (settleDikirmKemana === 103) {
+                        history.push(`/form-info-rekening-outlet/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+                    } 
+                }
             } else {
                 history.push('/daftar-merchant-qris')
             }
         } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
             setUserSession(getData.data.response_new_token)
             if (position === "next") {
-                if (settleDikirmKemana === 101) {
-                    history.push('/formulir-daftar-settlement')
-                } 
+                if (businesLevel === 101) {
+                    if (settleDikirmKemana === 101) {
+                        history.push(`/formulir-daftar-settlement/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+                    } else {
+                        history.push(`detail-merchant-grup`)
+                    }
+                } else if (businesLevel === 102) {
+                    if (settleDikirmKemana === 102) {
+                        history.push(`/form-info-rekening-brand/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+                    } else {
+                        history.push(`detail-merchant-brand`)
+                    }
+                } else {
+                    if (settleDikirmKemana === 103) {
+                        history.push(`/form-info-rekening-outlet/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+                    } 
+                }
             } else {
                 history.push('/daftar-merchant-qris')
             }
@@ -356,6 +389,8 @@ const PengaturanMerchant = () => {
         getDataListPartnerHandler ()
         if (idProfile !== undefined) {
             getDataAddBrandStepFormTidakBerbadanHukum(idProfile)
+        } else {
+            getDataAgenHandler(inputHandle.merchantCode)
         }
     }, [])
     
@@ -458,43 +493,51 @@ const PengaturanMerchant = () => {
                     }
                     <div className='text-setting mt-3'>Kemana settlement akan dikirimkan ?</div>
                     <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 600 }}>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                id="RekeningGrup"
-                                name='settlementDikirimkan'
-                                value={101}
-                                checked={inputHandle.settlementDikirimkan === 101 && true}
-                                onChange={(e) => handleChange(e)}
-                            />
-                            <label
-                                className="form-check-label"
-                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                for="RekeningGrup"
-                            >
-                                Rekening Grup
-                            </label>
-                        </div>
-                        <div className="form-check form-check-inline ms-4">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                id="RekeningBrand"
-                                name='settlementDikirimkan'
-                                value={102}
-                                checked={inputHandle.settlementDikirimkan === 102 && true}
-                                onChange={(e) => handleChange(e)}
-                            />
-                            <label
-                                className="form-check-label"
-                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                for="RekeningBrand"
-                            >
-                                Rekening Brand
-                            </label>
-                        </div>
-                        <div className="form-check form-check-inline ms-4">
+                        {
+                            level === 101 && (
+                                <div className="form-check form-check-inline">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        id="RekeningGrup"
+                                        name='settlementDikirimkan'
+                                        value={101}
+                                        checked={inputHandle.settlementDikirimkan === 101 && true}
+                                        onChange={(e) => handleChange(e)}
+                                    />
+                                    <label
+                                        className="form-check-label"
+                                        style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                        for="RekeningGrup"
+                                    >
+                                        Rekening Grup
+                                    </label>
+                                </div>
+                            )
+                        }
+                        {
+                            (level === 101 || level === 102) && (
+                                <div className="form-check form-check-inline ms-4">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        id="RekeningBrand"
+                                        name='settlementDikirimkan'
+                                        value={102}
+                                        checked={inputHandle.settlementDikirimkan === 102 && true}
+                                        onChange={(e) => handleChange(e)}
+                                    />
+                                    <label
+                                        className="form-check-label"
+                                        style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                        for="RekeningBrand"
+                                    >
+                                        Rekening Brand
+                                    </label>
+                                </div>
+                            )
+                        }
+                        <div className={level === 103 ? "form-check form-check-inline ms-4" : "form-check form-check-inline"}>
                             <input
                                 className="form-check-input"
                                 type="radio"
@@ -904,12 +947,14 @@ const PengaturanMerchant = () => {
                             className='btn-next-info-usaha ms-2' 
                             onClick={() => 
                                 savePengaturanTambahMerchantBrandHandler(
+                                    level,
+                                    inputHandle.merchantId,
                                     inputHandle.jenisSettlement, 
                                     inputHandle.settlementDikirimkan, 
                                     inputHandle.menerimaPembayaran, 
                                     inputHandle.integrasiApi, 
                                     selectedDataListPartner.length !== 0 ? selectedDataListPartner[0].value : "",
-                                    idProfile, 
+                                    idProfile === undefined ? 0 : idProfile, 
                                     inputHandle.merchantCode, 
                                     inputHandle.jumlahAdditionalFee, 
                                     inputHandle.jenisAdditionalFee, 
@@ -923,7 +968,7 @@ const PengaturanMerchant = () => {
                                     inputHandle.jumlahFeeSettlement, 
                                     inputHandle.jenisFeeSettlement, 
                                     inputHandle.kodeRefferal,
-                                    200,
+                                    201,
                                     "next"
                                 )
                             }
@@ -955,12 +1000,14 @@ const PengaturanMerchant = () => {
                             style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}
                             onClick={() => 
                                 savePengaturanTambahMerchantBrandHandler(
+                                    level,
+                                    inputHandle.merchantId,
                                     inputHandle.jenisSettlement, 
                                     inputHandle.settlementDikirimkan, 
                                     inputHandle.menerimaPembayaran, 
                                     inputHandle.integrasiApi, 
                                     selectedDataListPartner.length !== 0 ? selectedDataListPartner[0].value : "",
-                                    idProfile, 
+                                    idProfile === undefined ? 0 : idProfile, 
                                     inputHandle.merchantCode, 
                                     inputHandle.jumlahAdditionalFee, 
                                     inputHandle.jenisAdditionalFee, 
@@ -974,7 +1021,7 @@ const PengaturanMerchant = () => {
                                     inputHandle.jumlahFeeSettlement, 
                                     inputHandle.jenisFeeSettlement, 
                                     inputHandle.kodeRefferal,
-                                    2,
+                                    200,
                                     "back"
                                 )
                             }

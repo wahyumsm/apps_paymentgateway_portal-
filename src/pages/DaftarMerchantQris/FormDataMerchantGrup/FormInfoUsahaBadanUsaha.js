@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Col, Modal, Row } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import { useHistory, useParams } from 'react-router-dom'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
@@ -10,7 +10,7 @@ import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect, { components } from 'react-select';
 import noteIconRed from "../../../assets/icon/note_icon_red.svg";
 
-const FormInfoUsahaPerseorangan = () => {
+const FormInfoUsahaBadanUsaha = () => {
     const history = useHistory()
     const { profileId } = useParams()
     const [dataKategoriUsaha, setDataKategoriUsaha] = useState([])
@@ -21,6 +21,9 @@ const FormInfoUsahaPerseorangan = () => {
     const [alertMaxFile, setAlertMaxFile] = useState(false)
     const [inputHandle, setInputHandle] = useState({
         namaPerusahaan: "",
+        bentukPerusahaan: 0,
+        bentukPerusahaanLainnya: "",
+        emailPerusahaan: "",
         namaBrand: "",
         jumlahKasir: 0,
         pendapatanPertahun: 0,
@@ -37,7 +40,7 @@ const FormInfoUsahaPerseorangan = () => {
     const [imageTempatUsaha, setImageTempatUsaha] = useState(null)
     const [nameImageTempatUsaha, setNameImageTempatUsaha] = useState("")
     const [uploadTempatUsaha, setUploadTempatUsaha] = useState(false)
-    console.log(inputHandle.kepunyaanQris, 'inputHandle.kepunyaanQris');
+    console.log(imageFileTempatUsaha, 'imageFileTempatUsaha');
 
     const handleClickTempatUsaha = () => {
         hiddenFileInputTempatUsaha.current.click();
@@ -75,7 +78,7 @@ const FormInfoUsahaPerseorangan = () => {
         } else {
             setInputHandle({
                 ...inputHandle,
-                [e.target.name]: e.target.name === "kepunyaanQris" ? Number(e.target.value) : e.target.value
+                [e.target.name]: (e.target.name === "kepunyaanQris" || e.target.name === "bentukPerusahaan") ? Number(e.target.value) : e.target.value
             })
         }
     }
@@ -89,9 +92,6 @@ const FormInfoUsahaPerseorangan = () => {
             setJenisToko(jenisToko.filter(item => item !== e.target.value))
         }
     }
-
-    console.log(imageTempatUsaha, "imageTempatUsaha");
-    console.log(inputHandle.onlineShopUrl, "inputHandle.onlineShopUrl");
 
     const handleFileChangeTempatUsaha = (event) => {
         if(event.target.files[0]) {
@@ -111,6 +111,7 @@ const FormInfoUsahaPerseorangan = () => {
                     const tempArr = [];
 
                     [...event.target.files].forEach(file => {
+                        console.log(file, "file");
 
                         tempArr.push({
                             data: file,
@@ -123,6 +124,8 @@ const FormInfoUsahaPerseorangan = () => {
             }
         }
     }
+
+    console.log(jenisToko, "jenisToko");
 
     async function getDataKategoriUsaha(businessCategory) {
         try {
@@ -188,7 +191,7 @@ const FormInfoUsahaPerseorangan = () => {
         }
     }
 
-    async function getDataSecondStepInfoUsahaPerorangan(profileId) {
+    async function getDataSecondStepInfoUsahaBadanUsaha(profileId) {
         try {
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"profile_id": ${profileId}, "business_level": 101}`)
@@ -202,6 +205,9 @@ const FormInfoUsahaPerseorangan = () => {
                 setInputHandle({
                     ...getDataSecStep,
                     namaPerusahaan: getDataSecStep.mprofbus_name === null ? "" : getDataSecStep.mprofbus_name,
+                    bentukPerusahaan: getDataSecStep.mprofbus_company_type === null ? 0 : getDataSecStep.mprofbus_company_type,
+                    bentukPerusahaanLainnya: getDataSecStep.mprofbus_company_desc === null ? "" : getDataSecStep.mprofbus_company_desc,
+                    emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email, 
                     namaBrand: getDataSecStep.mprofbus_brand === null ? "" : getDataSecStep.mprofbus_brand,
                     jumlahKasir: getDataSecStep.mprofbus_cashier_count,
                     pendapatanPertahun: getDataSecStep.mprofbus_mbusinc_id,
@@ -249,6 +255,9 @@ const FormInfoUsahaPerseorangan = () => {
                 setInputHandle({
                     ...getDataSecStep,
                     namaPerusahaan: getDataSecStep.mprofbus_name === null ? "" : getDataSecStep.mprofbus_name,
+                    bentukPerusahaan: getDataSecStep.mprofbus_company_type === null ? 0 : getDataSecStep.mprofbus_company_type,
+                    bentukPerusahaanLainnya: getDataSecStep.mprofbus_company_desc === null ? "" : getDataSecStep.mprofbus_company_desc,
+                    emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email, 
                     namaBrand: getDataSecStep.mprofbus_brand === null ? "" : getDataSecStep.mprofbus_brand,
                     jumlahKasir: getDataSecStep.mprofbus_cashier_count,
                     pendapatanPertahun: getDataSecStep.mprofbus_mbusinc_id,
@@ -296,15 +305,14 @@ const FormInfoUsahaPerseorangan = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-    // console.log(imageFileTempatUsaha.map((item, id) => item.data), "imageFileTempatUsaha");
-    console.log(selectedDataKategoriUsaha.length, "selectedDataKategoriUsaha");
 
-    async function formDataSecondStepInfoUsahaPerorangan(businessLevel, profileId, namaPerusahaan, namaBrand, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, step) {
+    async function formDataSecondStepInfoUsahaBadanUsaha(businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, step) {
         try {
+            console.log(imageOnlineShop, "imageOnlineShop");
             const auth = "Bearer " + getToken()
             const formData = new FormData()
-            const dataParams = encryptData(`{"business_level": ${businessLevel}, "mprofbus_mprofile_id":${profileId}, "mprofbus_name":"${namaPerusahaan}", "mprofbus_company_type": 0, "mprofbus_company_desc": "", "mprofdtl_email": "", "mprofbus_brand":"${namaBrand}", "mprofbus_buscat_id": ${kategoriUsaha}, "mprofbus_cashier_count": ${jumlahKasir}, "mprofbus_mbusinc_id": ${pendapatanPerTahun}, "mprofbus_address": "${alamat}", "mprofbus_postal_code": "${kodePos}", "mprofbus_province": "${provinsi}", "mprofbus_city": "${kota}", "mprofbus_district": "${kecamatan}", "mprofbus_village": "${kelurahan}", "mprofbus_shop_type": "${jenisToko}", "mprofbus_is_have_QRIS": ${kepunyaanQris}, "mprofbus_NMID_QRIS": "${nmid}", "mprofbus_online_shop_url": "${onlineShopUrl}", "step": "${step}"}`)
-            imageOnlineShop.forEach((item, id) => {
+            const dataParams = encryptData(`{"business_level": ${businessLevel}, "mprofbus_mprofile_id":${profileId}, "mprofbus_name":"${namaPerusahaan}", "mprofbus_company_type": ${bentukperusahaan}, "mprofbus_company_desc": "${descBentukPerusahaan}", "mprofdtl_email": "${emailPerusahaan}", "mprofbus_brand":"${namaBrand}", "mprofbus_buscat_id": ${kategoriUsaha}, "mprofbus_cashier_count": ${jumlahKasir}, "mprofbus_mbusinc_id": ${pendapatanPerTahun}, "mprofbus_address": "${alamat}", "mprofbus_postal_code": "${kodePos}", "mprofbus_province": "${provinsi}", "mprofbus_city": "${kota}", "mprofbus_district": "${kecamatan}", "mprofbus_village": "${kelurahan}", "mprofbus_shop_type": "${jenisToko}", "mprofbus_is_have_QRIS": ${kepunyaanQris}, "mprofbus_NMID_QRIS": "${nmid}", "mprofbus_online_shop_url": "${onlineShopUrl}", "step": "${step}"}`)
+            imageOnlineShop.map((item, id) => {
                 formData.append(`toko${id+1}_url`, item.data)
             })
             formData.append('Data', dataParams)
@@ -314,41 +322,33 @@ const FormInfoUsahaPerseorangan = () => {
             }
             const getData = await axios.post(BaseURL + "/QRIS/SecondStepAddMerchantQRISOnboarding", formData, { headers: headers })
             console.log(getData, "getData");
+            console.log("lolosAPI");
             if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token === null) {
-                console.log("lolos");
-                if (profileId === 0) {
+                if (getData.data.response_data.results !== null) {
+                    console.log("masuk1");
                     if (step === 3) {
-                        history.push(`/pengaturan-merchant`)
+                        history.push(`/form-dokumen-usaha-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                     } else if (step === 2) {
                         history.push('/daftar-merchant-qris')
                     }
                 } else {
                     console.log("masuk2");
-                    if (step === 3) {
-                        history.push(`/pengaturan-merchant/${profileId}/101`)
-                    } else if (step === 2) {
-                        history.push('/daftar-merchant-qris')
-                    }
+                    alert(`${getData.data.response_data.error_text}`)
                 }
             } else if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
-                if (profileId === 0) {
+                if (getData.data.response_data.results !== null) {
                     if (step === 3) {
-                        history.push(`/pengaturan-merchant`)
+                        history.push(`/form-dokumen-usaha-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                     } else if (step === 2) {
                         history.push('/daftar-merchant-qris')
                     }
                 } else {
-                    console.log("masuk2");
-                    if (step === 3) {
-                        history.push(`/pengaturan-merchant/${profileId}/101`)
-                    } else if (step === 2) {
-                        history.push('/daftar-merchant-qris')
-                    }
+                    alert(`${getData.data.response_data.error_text}`)
                 }
             }
         } catch (error) {
-            // console.log(error)
+            console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
@@ -358,7 +358,7 @@ const FormInfoUsahaPerseorangan = () => {
     }
 
     function saveAndGoBack () {
-        formDataSecondStepInfoUsahaPerorangan(101, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 2)
+        formDataSecondStepInfoUsahaBadanUsaha(101, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : "", inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 2)
         history.push('/daftar-merchant-qris')
     }
 
@@ -382,7 +382,7 @@ const FormInfoUsahaPerseorangan = () => {
 
     useEffect(() => {
         if (profileId !== undefined) {
-            getDataSecondStepInfoUsahaPerorangan(profileId)
+            getDataSecondStepInfoUsahaBadanUsaha(profileId)
         }
     }, [])
 
@@ -395,13 +395,15 @@ const FormInfoUsahaPerseorangan = () => {
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
                 </div>
                 <div className='pb-4 pt-3'>
-                    <div className='d-flex justify-content-start align-items-center' style={{ marginLeft: 25, marginRight: 25 }}>
+                    <div className='d-flex justify-content-start align-items-center' style={{ marginLeft: 35, marginRight: 35 }}>
                         <div style={{ width: "100%", height: 4, background: "linear-gradient(90deg, #80D8DE 30.14%, #229299 67.94%, #077E86 100%)" }}></div>
-                        <div style={{ borderRadius: "50%", width: 15, height: 15, background: "#077E86" }}></div>
+                        <div style={{ borderRadius: "50%", width: 20, height: 10, background: "#077E86" }}></div>
+                        <div style={{ width: "100%", height: 4, background: "#F0F0F0" }}></div>
                     </div>
                     <div className='d-flex justify-content-between align-items-center mt-2' style={{ fontSize: 12, color: "#383838", fontFamily: "Nunito" }}>
                         <div>Info pemilik</div>
-                        <div>Info usaha</div>
+                        <div className='ms-3'>Info usaha</div>
+                        <div>Dokumen usaha</div>
                     </div>
                 </div>
                 <div className='base-content mt-3'>
@@ -409,9 +411,75 @@ const FormInfoUsahaPerseorangan = () => {
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                         <input name="namaPerusahaan" value={inputHandle.namaPerusahaan} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan nama perusahaan' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Bentuk perusahaan</div>
+                    <Row className='py-2' style={{ marginLeft: "unset", marginRight: "unset" }}>
+                        <Col xs={3} className='form-check form-check-inline'>
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                id="pt"
+                                name='bentukPerusahaan'
+                                value={1}
+                                checked={inputHandle.bentukPerusahaan === 1 && true}
+                                onChange={(e) => handleChange(e)}
+                            />
+                            <label
+                                className="form-check-label"
+                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                for="pt"
+                            >
+                                Perseroan terbatas (PT.)
+                            </label>
+                        </Col>
+                        <Col xs={3} className='form-check form-check-inline'>
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                id="cv"
+                                name='bentukPerusahaan'
+                                value={2}
+                                checked={inputHandle.bentukPerusahaan === 2 && true}
+                                onChange={(e) => handleChange(e)}
+                            />
+                            <label
+                                className="form-check-label"
+                                style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                for="cv"
+                            >
+                                Persekutuan Komanditer (CV.)
+                            </label>
+                        </Col>
+                    </Row>
+                    <Row className='py-2'>
+                        <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ marginLeft: "unset", marginRight: "unset" }}>
+                            <div className="form-check form-check-inline ">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="lainnya"
+                                    name='bentukPerusahaan'
+                                    value={3}
+                                    checked={inputHandle.bentukPerusahaan === 3 && true}
+                                    onChange={(e) => handleChange(e)}
+                                />
+                                <label
+                                    className="form-check-label"
+                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                    for="lainnya"
+                                >
+                                    Lainnya
+                                </label>
+                            </div>
+                            <input placeholder='Masukkan bentuk usaha' disabled={inputHandle.bentukPerusahaan !== 3} className='input-text-user' />
+                        </Col>
+                    </Row>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>E-mail perusahaan</div>
+                    <div className='pt-2 d-flex justify-content-end align-items-center'>
+                        <input name="emailPerusahaan" value={inputHandle.emailPerusahaan} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukkan e-mail perusahaan' type='text' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                    </div>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama brand/toko</div>
-                    <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="namaBrand" value={inputHandle.namaBrand} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan nama brand/toko' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                    <div className='pt-2 d-flex justify-content-end align-items-center'>
+                        <input name="namaBrand" value={inputHandle.namaBrand} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukkan nama brand / toko' type='text' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Jumlah kasir (counter pembayaran)</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center' style={{ width:"7%" }}>
@@ -686,13 +754,7 @@ const FormInfoUsahaPerseorangan = () => {
                    <div>
                    <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button className='btn-prev-info-usaha me-2'>Sebelumnya</button>
-                        <button 
-                            onClick={() => formDataSecondStepInfoUsahaPerorangan(101, profileId, inputHandle.namaPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 3)}
-                            className={(inputHandle.namaPerusahaan.length !== 0 && inputHandle.namaBrand.length !== 0 && inputHandle.jumlahKasir !== 0 && inputHandle.pendapatanPertahun !== 0 && inputHandle.alamatUsaha.length !== 0 && inputHandle.kodePos.length !== 0 && inputHandle.onlineShopUrl.length !== 0 && ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length >= 13)) || inputHandle.kepunyaanQris === 0) && jenisToko.length !== 0) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
-                            disabled={inputHandle.namaPerusahaan.length === 0 || inputHandle.namaBrand.length === 0 || inputHandle.jumlahKasir === 0 || inputHandle.pendapatanPertahun === 0 || inputHandle.alamatUsaha.length === 0 || inputHandle.kodePos.length === 0 || inputHandle.onlineShopUrl.length === 0 || (inputHandle.kepunyaanQris !== 1 && inputHandle.kepunyaanQris !== 0) || (inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length === 0 && inputHandle.nmid.length < 13))  || jenisToko.length === 0}
-                        >
-                            Selanjutnya
-                        </button>
+                        <button className='btn-next-info-usaha ms-2' onClick={() => formDataSecondStepInfoUsahaBadanUsaha(101, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : "", inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 3)}>Selanjutnya</button>
                     </div>
                    </div>
                 </div>
@@ -724,4 +786,4 @@ const FormInfoUsahaPerseorangan = () => {
     )
 }
 
-export default FormInfoUsahaPerseorangan
+export default FormInfoUsahaBadanUsaha

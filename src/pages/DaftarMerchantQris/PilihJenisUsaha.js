@@ -1,19 +1,33 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import peroranganQris from '../../assets/icon/perorangan-qris.svg'
 import badanUsahaQris from '../../assets/icon/badanusaha-qris.svg'
 import tidakBerbadanHukumQris from '../../assets/icon/tidakberbadanhukum-qris.svg'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 
-const PilihJenisUsaha = () => {
-
+const PilihJenisUsaha = (props) => {
+    const history = useHistory()
     const [tabJenisUsaha, setTabJenisUsaha] = useState("")
 
     function buttonColor (param) {
         setTabJenisUsaha(param)
     }
 
-    console.log(tabJenisUsaha, "tabJenisUsaha");
+    function nextPage (tabUsaha) {
+        if (tabUsaha === "perorangan") {
+            history.push(`/form-info-pemilik-perorangan`)
+        } else if (tabUsaha === "badanUsaha") {
+            history.push(`/form-info-pemilik-badan-usaha`)
+        } else {
+            history.push(`/form-tidak-berbadan-hukum`)
+        }
+    }
+
+    useEffect(() => {
+        
+    }, [])
+    
+
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar Merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah Merchant</span></span>
@@ -41,7 +55,7 @@ const PilihJenisUsaha = () => {
                     </div>
                 </div>
                 <div className='d-flex justify-content-center align-items-center'>
-                    <Link to={{ pathname: tabJenisUsaha === "perorangan" ? '/form-info-pemilik-perorangan' : tabJenisUsaha === "badanUsaha" ? '/form-info-pemilik-badan-usaha' : '/form-tidak-berbadan-hukum', search: "", hash: "", state: {tabJenisUsaha: tabJenisUsaha}}} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</Link>
+                    <button onClick={() => nextPage(tabJenisUsaha)} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</button>
                 </div>
             </div>
         </div>
