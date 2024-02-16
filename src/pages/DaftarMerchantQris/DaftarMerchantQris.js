@@ -173,7 +173,7 @@ const DaftarMerchantQris = () => {
         } 
         
         if (step === 200) {
-            history.push(`/pengaturan-merchant/${id}/101`)
+            history.push(`/pengaturan-merchant/${id}/101/${businessTypeId}`)
         }
 
         if (step === 201) {
@@ -334,7 +334,7 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    function getPageRegisterQrisBrand (id, step, settleId, merchantNou, userNou) {
+    function getPageRegisterQrisBrand (id, step, businessTypeId, settleId, merchantNou, userNou) {
         console.log(settleId, "settleId");
         console.log(merchantNou, "merchantNou");
         console.log(userNou, "userNou");
@@ -345,7 +345,7 @@ const DaftarMerchantQris = () => {
         } else if (step === 3) {
             history.push(`/form-dokumen-usaha-brand-badan-usaha/${id}`)
         } else if (step === 200) {
-            history.push(`/pengaturan-merchant/${id}/102`)
+            history.push(`/pengaturan-merchant/${id}/102/${businessTypeId}`)
         } else if (step === 300) {
             history.push(`/detail-merchant-brand`)
         }
@@ -405,7 +405,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon onClick={() => getPageRegisterQrisBrand(row.mprofile_id, row.step, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getPageRegisterQrisBrand(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },
@@ -510,7 +510,7 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    function getPageRegisterQrisOutlet (id, step, settleId, merchantNou, userNou) {
+    function getPageRegisterQrisOutlet (id, step, businessTypeId, settleId, merchantNou, userNou) {
         console.log(settleId, "settleId");
         console.log(merchantNou, "merchantNou");
         console.log(userNou, "userNou");
@@ -521,7 +521,7 @@ const DaftarMerchantQris = () => {
         } else if (step === 3) {
             history.push(`/form-dokumen-usaha-outlet/${id}`)
         } else if (step === 200) {
-            history.push(`/pengaturan-merchant/${id}/103`)
+            history.push(`/pengaturan-merchant/${id}/103/${businessTypeId}`)
         } else if (step === 201) {
             history.push(`/form-info-rekening-outlet/${settleId}/${merchantNou}/${userNou}/${id}`)
         } else if (step === 300) {
@@ -577,7 +577,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon onClick={() => getPageRegisterQrisOutlet(row.mprofile_id, row.step, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getPageRegisterQrisOutlet(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },

@@ -2032,3 +2032,9 @@ th {
     font-size: 14px;
     font-weight: 400;
 }
+
+.jumlahKasir input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

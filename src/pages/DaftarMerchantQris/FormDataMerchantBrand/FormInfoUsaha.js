@@ -19,6 +19,7 @@ const FormInfoUsaha = (props) => {
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [alertMinNmid, setAlertMinNmid] = useState(false)
     const [alertMaxFile, setAlertMaxFile] = useState(false)
+    const [alertMaxJumlahKasir, setAlertMaxJumlahKasir] = useState(false)
     const [inputHandle, setInputHandle] = useState({
         businessType: 0,
         namaPerusahaan: "",
@@ -39,6 +40,7 @@ const FormInfoUsaha = (props) => {
     const searchParams = new URLSearchParams(props.location.search);
     const type = searchParams.get('type');
     console.log(type, "type");
+    console.log(inputHandle.jumlahKasir, "inputHandle.jumlahKasir");
 
     const hiddenFileInputTempatUsaha = useRef(null)
     const [imageFileTempatUsaha, setImageFileTempatUsaha] = useState([])
@@ -81,6 +83,17 @@ const FormInfoUsaha = (props) => {
                     [e.target.name]: e.target.value
                 })
             }
+        } else if (e.target.name === "jumlahKasir") {
+            console.log("masuksini");
+            if (Number(e.target.value) > 1500) {
+                setAlertMaxJumlahKasir(true)
+            } else {
+                setAlertMaxJumlahKasir(false)
+            }
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name]: e.target.value
+            })
         } else if (e.target.name === "kepunyaanQris") {
             if (Number(e.target.value) === 0) {
                 setInputHandle({
@@ -113,34 +126,34 @@ const FormInfoUsaha = (props) => {
     }
 
     const handleFileChangeTempatUsaha = (event) => {
-        if(event.target.files[0]) {
-            setImageTempatUsaha(event.target.files)
-            setNameImageTempatUsaha(event.target.files[0].name)
-            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                setUploadTempatUsaha(true)
-                setImageFileTempatUsaha(imageFileTempatUsaha)
-            }
-            else {
-                setUploadTempatUsaha(false)
-                console.log("file >>> ", event.target.files.length);
-                if (event.target.files.length > 3) {
-                    setAlertMaxFile(true)
-                } else {
-                    setAlertMaxFile(false)
-                    const tempArr = [];
+        setImageTempatUsaha(event.target.files)
+        if (event.target.files.length > 3) {
+            setAlertMaxFile(true)
+        } else {
+            setAlertMaxFile(false)
+            const tempArr = [];
 
-                    [...event.target.files].forEach(file => {
-                        console.log(file, "file");
+            [...event.target.files].forEach(file => {
+                console.log(file.size, "file.size");
 
-                        tempArr.push({
-                            data: file,
-                            url: URL.createObjectURL(file)
-                        });
+                if (parseFloat(file.size / 1024).toFixed(2) > 500) {
+                    setUploadTempatUsaha(true)
+                    tempArr.push({
+                        data: file,
+                        url: URL.createObjectURL(file),
+                        name: file.name
                     });
-
-                    setImageFileTempatUsaha(tempArr);
+                } else {
+                    setUploadTempatUsaha(false)
+                    tempArr.push({
+                        data: file,
+                        url: URL.createObjectURL(file),
+                        name: file.name
+                    });
                 }
-            }
+            });
+            
+            setImageFileTempatUsaha(tempArr);
         }
     }
 
@@ -229,6 +242,7 @@ const FormInfoUsaha = (props) => {
                     bentukPerusahaanLainnya: getDataSecStep.mprofbus_company_desc === null ? "" : getDataSecStep.mprofbus_company_desc,
                     emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email, 
                     namaBrand: getDataSecStep.mprofbus_brand === null ? "" : getDataSecStep.mprofbus_brand,
+                    namaYangDicetakQris: getDataSecStep.mprofbus_name_in_Qris === null ? "" : getDataSecStep.mprofbus_name_in_Qris,
                     jumlahKasir: getDataSecStep.mprofbus_cashier_count === null ? 0 : getDataSecStep.mprofbus_cashier_count,
                     pendapatanPertahun: getDataSecStep.mprofbus_mbusinc_id === null ? 0 : getDataSecStep.mprofbus_mbusinc_id,
                     alamatUsaha: getDataSecStep.mprofbus_address === null ? "" : getDataSecStep.mprofbus_address,
@@ -238,7 +252,7 @@ const FormInfoUsaha = (props) => {
                     nmid: getDataSecStep.mprofbus_NMID_QRIS === null ? "" : getDataSecStep.mprofbus_NMID_QRIS
                 })
                 getDataPostalCodeHandler(getDataSecStep.mprofbus_postal_code)
-                getDataKategoriUsaha(getDataSecStep.mprofbus_mbusinc_id === null ? 0 : getDataSecStep.mprofbus_mbusinc_id)
+                getDataKategoriUsaha(getDataSecStep.mprofbus_mbusinc_id)
                 let newArrKategoriUsaha = []
                 let objKategoriUsaha = {}
                 objKategoriUsaha.value = getDataSecStep.mprofbus_buscat_id
@@ -280,6 +294,7 @@ const FormInfoUsaha = (props) => {
                     bentukPerusahaanLainnya: getDataSecStep.mprofbus_company_desc === null ? "" : getDataSecStep.mprofbus_company_desc,
                     emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email, 
                     namaBrand: getDataSecStep.mprofbus_brand === null ? "" : getDataSecStep.mprofbus_brand,
+                    namaYangDicetakQris: getDataSecStep.mprofbus_name_in_Qris === null ? "" : getDataSecStep.mprofbus_name_in_Qris,
                     jumlahKasir: getDataSecStep.mprofbus_cashier_count === null ? 0 : getDataSecStep.mprofbus_cashier_count,
                     pendapatanPertahun: getDataSecStep.mprofbus_mbusinc_id === null ? 0 : getDataSecStep.mprofbus_mbusinc_id,
                     alamatUsaha: getDataSecStep.mprofbus_address === null ? "" : getDataSecStep.mprofbus_address,
@@ -289,7 +304,7 @@ const FormInfoUsaha = (props) => {
                     nmid: getDataSecStep.mprofbus_NMID_QRIS === null ? "" : getDataSecStep.mprofbus_NMID_QRIS
                 })
                 getDataPostalCodeHandler(getDataSecStep.mprofbus_postal_code)
-                getDataKategoriUsaha(getDataSecStep.mprofbus_mbusinc_id === null ? 0 : getDataSecStep.mprofbus_mbusinc_id)
+                getDataKategoriUsaha(getDataSecStep.mprofbus_mbusinc_id)
                 let newArrKategoriUsaha = []
                 let objKategoriUsaha = {}
                 objKategoriUsaha.value = getDataSecStep.mprofbus_buscat_id
@@ -351,7 +366,7 @@ const FormInfoUsaha = (props) => {
                         if (Number(businessType) === 1) {
                             history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                         } else {
-                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102`)
+                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
                         }
                     } else if (step === 2) {
                         history.push('/daftar-merchant-qris')
@@ -366,7 +381,7 @@ const FormInfoUsaha = (props) => {
                         if (Number(businessType) === 1) {
                             history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                         } else {
-                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102`)
+                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
                         }
                     } else if (step === 2) {
                         history.push('/daftar-merchant-qris')
@@ -386,7 +401,7 @@ const FormInfoUsaha = (props) => {
     }
 
     function saveAndGoBack () {
-        formDataSecondStepInfoUsahaBadanUsaha(type !== null ? type : inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 2)
+        formDataSecondStepInfoUsahaBadanUsaha(type !== null ? type : inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 2)
         history.push('/daftar-merchant-qris')
     }
 
@@ -417,7 +432,7 @@ const FormInfoUsaha = (props) => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
@@ -539,6 +554,13 @@ const FormInfoUsaha = (props) => {
                     <div className='pt-2 d-flex justify-content-end align-items-center' style={{ width:"7%" }}>
                         <input name="jumlahKasir" value={inputHandle.jumlahKasir} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='0' type='number' min={0} max={2500} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
+                    {
+                        alertMaxJumlahKasir ? 
+                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                            <img src={noteIconRed} className="me-2" alt="icon notice" />
+                            <div>Jumlah kasir tidak boleh lebih dari 1500</div>
+                        </div> : ""
+                    }
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Pendapatan pertahun</div>
                     <Row className='py-2' style={{ marginLeft: "unset", marginRight: "unset" }}>
                         <Col xs={3} className="form-check form-check-inline">
@@ -624,7 +646,7 @@ const FormInfoUsaha = (props) => {
                             options={dataKategoriUsaha}
                             value={selectedDataKategoriUsaha}
                             onChange={(selected) => setSelectedDataKategoriUsaha([selected])}
-                            placeholder="Pilih Partner Merchant"
+                            placeholder="Pilih Partner Brand"
                             components={{ Option }}
                             styles={customStylesSelectedOption}
                         />
@@ -726,6 +748,14 @@ const FormInfoUsaha = (props) => {
                                     }
                                 </div>
                                 {
+                                    uploadTempatUsaha === true ? (
+                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                            <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                            <div>Salah satu file lebih dari 500kb</div>
+                                        </div>
+                                    ) : ""
+                                }
+                                {
                                     alertMaxFile === true ? (
                                         <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
                                             <img src={noteIconRed} className="me-2" alt="icon notice" />
@@ -807,10 +837,51 @@ const FormInfoUsaha = (props) => {
                     }
                    <div>
                    <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
-                        <button className='btn-prev-info-usaha me-2'>Sebelumnya</button>
                         <button 
-                            className='btn-next-info-usaha ms-2' 
-                            onClick={() => formDataSecondStepInfoUsahaBadanUsaha(type !== null ? type : inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 3)}
+                            className='btn-prev-info-usaha me-2'
+                            onClick={() => history.push(`/formulir-info-pemilik-outlet/${profileId === undefined ? 0 : profileId}`)}
+                        >
+                            Sebelumnya
+                        </button>
+                        <button 
+                            className={(
+                                inputHandle.namaPerusahaan.length !== 0 && 
+                                (inputHandle.bentukPerusahaan !== 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0)) && 
+                                inputHandle.emailPerusahaan.length !== 0 && 
+                                inputHandle.namaBrand.length !== 0 && 
+                                inputHandle.namaYangDicetakQris.length !== 0 && 
+                                Number(inputHandle.jumlahKasir) !== 0 &&
+                                inputHandle.jumlahKasir !== undefined && 
+                                Number(inputHandle.jumlahKasir) <= 1500 &&
+                                inputHandle.pendapatanPertahun !== 0 && 
+                                selectedDataKategoriUsaha.length !== 0 &&
+                                inputHandle.alamatUsaha.length !== 0 && 
+                                inputHandle.kodePos.length !== 0 && 
+                                (jenisToko.length !== 0 && (((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length !== 0 && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false))) || (jenisToko.join() === "1" && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false)) || (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length !== 0))) && 
+                                (inputHandle.kepunyaanQris !== 2 && ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length >= 13)) || (inputHandle.kepunyaanQris === 0)))
+                                ) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'
+                            }
+                            disabled={(
+                                inputHandle.namaPerusahaan.length === 0 || 
+                                (inputHandle.bentukPerusahaan === 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0)) || 
+                                inputHandle.emailPerusahaan.length === 0 || 
+                                inputHandle.namaBrand.length === 0 || 
+                                inputHandle.namaYangDicetakQris.length === 0 || 
+                                Number(inputHandle.jumlahKasir) === 0 || 
+                                inputHandle.jumlahKasir === undefined ||
+                                Number(inputHandle.jumlahKasir) > 1500 ||
+                                inputHandle.pendapatanPertahun === 0 || 
+                                selectedDataKategoriUsaha.length === 0 ||
+                                inputHandle.alamatUsaha.length === 0 || 
+                                inputHandle.kodePos.length === 0 || 
+                                jenisToko.length === 0 ||
+                                (jenisToko.length !== 0 && ((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length === 0 || imageFileTempatUsaha.length === 0))) ||
+                                (jenisToko.length !== 0 && (jenisToko.join() === "1" && imageFileTempatUsaha.length === 0)) ||
+                                (jenisToko.length !== 0 && (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length === 0)) || 
+                                uploadTempatUsaha === true ||
+                                inputHandle.kepunyaanQris === 2 || ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length === 0)) || (inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length < 13)))   
+                            )}
+                            onClick={() => formDataSecondStepInfoUsahaBadanUsaha(type !== null ? type : inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 3)}
                         >
                             Selanjutnya
                         </button>

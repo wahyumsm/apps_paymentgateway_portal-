@@ -71,14 +71,14 @@ const FormTidakBerbadanHukum = () => {
         const getData = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
         if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
             if (position === "next") {
-                history.push(`/pengaturan-merchant/${profileId}/101`)
+                history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
             } else if (position === "back") {
                 history.push('/daftar-merchant-qris')
             }
         } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
             setUserSession(getData.data.response_new_token)
             if (position === "next") {
-                history.push(`/pengaturan-merchant/${profileId}/101`)
+                history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
             } else if (position === "back") {
                 history.push('/daftar-merchant-qris')
             }
@@ -99,7 +99,7 @@ const FormTidakBerbadanHukum = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>

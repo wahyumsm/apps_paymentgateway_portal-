@@ -23,7 +23,7 @@ export const FilterComponentQrisGrup = ({ filterText, onFilter, onClear, title, 
             </div>
         </div>
         <div className="mb-4">
-            <button onClick={onClickAddMerchant} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 253, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+            <button onClick={onClickAddMerchant} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 254, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                 <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah merchant grup
             </button>
         </div>

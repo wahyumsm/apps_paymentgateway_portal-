@@ -85,7 +85,7 @@ export const Routes = {
     FormTidakBerbadanHukum: {path: "/form-tidak-berbadan-hukum"},
     FormTidakBerbadanHukumFirstStep: {path: "/form-tidak-berbadan-hukum/:idProfile"},
     PengaturanMerchant: {path: "/pengaturan-merchant"},
-    PengaturanMerchantEdit: {path: "/pengaturan-merchant/:idProfile/:level"},
+    PengaturanMerchantEdit: {path: "/pengaturan-merchant/:idProfile/:level/:type"},
     FormDaftarSettlement: {path: "/formulir-daftar-settlement"},
     FormDaftarSettlementEditData: {path: "/formulir-daftar-settlement/:settleGroup/:merchantNou/:userNou/:id"},
     DetailMerchantGrup: {path: "/detail-merchant-grup"},

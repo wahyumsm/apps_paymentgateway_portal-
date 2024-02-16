@@ -103,10 +103,10 @@ const FormInfoRekeningOutlet = () => {
 
     console.log(selectedDataBank, "selectedDataBank");
 
-    async function addFormDaftarSettlementHandler(settleGroupId, merchantNou, userNou, bankId, noRek, namaPemilikRek, email, merchSettleId, step) {
+    async function addFormDaftarSettlementHandler(profileId, settleGroupId, merchantNou, userNou, bankId, noRek, namaPemilikRek, email, merchSettleId, step) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "settle_group_id": ${settleGroupId}, "reff_id": ${userNou}, "bank_id": ${bankId}, "account_number": "${noRek}", "account_name": "${namaPemilikRek}", "email": "${email}", "fee": 0, "merch_settle_id": ${merchSettleId}, "step": ${step}}`)
+            const dataParams = encryptData(`{"profile_id": ${profileId}, "merchant_nou": ${merchantNou}, "settle_group_id": ${settleGroupId}, "reff_id": ${userNou}, "bank_id": ${bankId}, "account_number": "${noRek}", "account_name": "${namaPemilikRek}", "email": "${email}", "fee": 0, "merch_settle_id": ${merchSettleId}, "step": ${step}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -165,7 +165,7 @@ const FormInfoRekeningOutlet = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Merchant Brand</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Merchant Brand</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Tambah Outlet</h2>
@@ -195,7 +195,7 @@ const FormInfoRekeningOutlet = () => {
                     </div>
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button className='btn-prev-info-usaha me-2'>Sebelumnya</button>
-                        <button onClick={() => addFormDaftarSettlementHandler(settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : "", inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 300)} className='btn-next-info-usaha ms-2'>Konfirmasi</button>
+                        <button onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : "", inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 300)} className='btn-next-info-usaha ms-2'>Konfirmasi</button>
                     </div>
                 </div>
             </div>
@@ -261,7 +261,7 @@ const FormInfoRekeningOutlet = () => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => addFormDaftarSettlementHandler(settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : "", inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 201)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                        <Button onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : "", inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 201)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
                     </div>
                 </Modal.Body>
             </Modal>

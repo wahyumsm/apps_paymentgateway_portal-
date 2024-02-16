@@ -8,6 +8,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Button, Form, Modal } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import noteIconRed from "../../../assets/icon/note_icon_red.svg"
 import ReactSelect, { components } from 'react-select';
 
 const FormInfoPemilikOutlet = (props) => {
@@ -18,12 +19,14 @@ const FormInfoPemilikOutlet = (props) => {
     const [imageKtp, setImageKtp] = useState(null)
     const [nameImageKtp, setNameImageKtp] = useState("")
     const [uploadKtp, setUploadKtp] = useState(false)
+    const [formatKtp, setFormatKtp] = useState(false)
 
     const hiddenFileInputSelfieKtp = useRef(null)
     const [imageFileSelfieKtp, setImageFileSelfieKtp] = useState(null)
     const [imageSelfieKtp, setImageSelfieKtp] = useState(null)
     const [nameImageSelfieKtp, setNameImageSelfieKtp] = useState("")
     const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
+    const [formatSelfieKtp, setFormatSelfieKtp] = useState(false)
 
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [getDataFirstStep, setGetDataFirstStep] = useState({})
@@ -59,41 +62,58 @@ const FormInfoPemilikOutlet = (props) => {
     };
 
     const handleFileChangeKtp = (event) => {
-        if(event.target.files[0]) {
-            setImageKtp(event.target.files[0])
-            setNameImageKtp(event.target.files[0].name)
-            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                setUploadKtp(true)
-                setImageFileKtp(imageFileKtp)
+        if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+            setFormatKtp(false)
+            if(event.target.files[0]) {
+                setImageKtp(event.target.files[0])
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setUploadKtp(true)
+                    setImageFileKtp(null)
+                    setNameImageKtp("")
+                }
+                else {
+                    setNameImageKtp(event.target.files[0].name)
+                    setUploadKtp(false)
+                    const reader = new FileReader()
+                    reader.addEventListener("load", () => {
+                        setImageFileKtp(reader.result)
+                    })
+                    reader.readAsDataURL(event.target.files[0])
+                }
             }
-            else {
-                setUploadKtp(false)
-                const reader = new FileReader()
-                reader.addEventListener("load", () => {
-                    setImageFileKtp(reader.result)
-                })
-                reader.readAsDataURL(event.target.files[0])
-            }
+        } else {
+            setFormatKtp(true)
+            setUploadKtp(false)
+            setNameImageKtp("")
+            setImageFileKtp(null)
         }
     }
 
     const handleFileChangeSelfieKtp = (event) => {
-        if(event.target.files[0]) {
-            setImageSelfieKtp(event.target.files[0])
-            setNameImageSelfieKtp(event.target.files[0].name)
-            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                setUploadSelfieKtp(true)
-                setImageFileSelfieKtp(imageFileSelfieKtp)
+        if ((event.target.files[0].name).slice(-3) === "jpg") {
+            setFormatSelfieKtp(false)
+            if(event.target.files[0]) {
+                setImageSelfieKtp(event.target.files[0])
+                setNameImageSelfieKtp(event.target.files[0].name)
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setUploadSelfieKtp(true)
+                    setImageFileSelfieKtp(imageFileSelfieKtp)
+                }
+                else {
+                    setUploadSelfieKtp(false)
+                    const reader = new FileReader()
+                    reader.addEventListener("load", () => {
+                        console.log(reader.result, "reader.result");
+                        setImageFileSelfieKtp(reader.result)
+                    })
+                    reader.readAsDataURL(event.target.files[0])
+                }
             }
-            else {
-                setUploadSelfieKtp(false)
-                const reader = new FileReader()
-                reader.addEventListener("load", () => {
-                    console.log(reader.result, "reader.result");
-                    setImageFileSelfieKtp(reader.result)
-                })
-                reader.readAsDataURL(event.target.files[0])
-            }
+        } else {
+            setFormatSelfieKtp(true)
+            setImageFileSelfieKtp(null)
+            setNameImageSelfieKtp(null)
+            setImageSelfieKtp(null)
         }
     }
 
@@ -194,6 +214,8 @@ const FormInfoPemilikOutlet = (props) => {
                     kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id, 
                     noTelp: getData.data.response_data.results.mprofdtl_mobile
                 })
+                setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
+                setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
                 setGetDataFirstStep(getData.data.response_data.results)
                 let newArrDataGrup = []
                 let objDataGrup = {}
@@ -212,6 +234,8 @@ const FormInfoPemilikOutlet = (props) => {
                     kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id, 
                     noTelp: getData.data.response_data.results.mprofdtl_mobile
                 })
+                setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
+                setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
                 setGetDataFirstStep(getData.data.response_data.results)
                 let newArrDataGrup = []
                 let objDataGrup = {}
@@ -300,14 +324,14 @@ const FormInfoPemilikOutlet = (props) => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     {
                         inputHandle.namaUser.length !== 0 && (
                             <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                         )
                     }
-                    <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Tambah Brand</h2>
+                    <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Tambah Outlet</h2>
                 </div>
                 <div className='pb-4 pt-3'>
                     <div className='d-flex justify-content-start align-items-center' style={{ marginLeft: 25, marginRight: 25 }}>
@@ -484,7 +508,11 @@ const FormInfoPemilikOutlet = (props) => {
                         {
                             !imageFileKtp ?
                             <>
-                                <div className='pt-4 text-center'>Masukkan foto eKTP.</div>
+                                {
+                                    formatKtp === true ?
+                                    <div className='pt-4 text-center' style={{ color: "#B9121B" }}><span className='me-1'><img src={noteIconRed} alt="" /></span> Format harus .jpg</div> :
+                                    <div className='pt-4 text-center'>Masukkan foto eKTP.</div>
+                                }
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
@@ -514,6 +542,9 @@ const FormInfoPemilikOutlet = (props) => {
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     {
+                        uploadKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
+                    }
+                    {
                         inputHandle.jenisUsaha === 2 && 
                         <>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan eKTP</div>
@@ -521,7 +552,11 @@ const FormInfoPemilikOutlet = (props) => {
                                 {
                                     !imageFileSelfieKtp ?
                                     <>
-                                        <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
+                                        {
+                                            formatSelfieKtp === true ?
+                                            <div className='pt-4 text-center' style={{ color: "#B9121B" }}><span className='me-1'><img src={noteIconRed} alt="" /></span> Format harus .jpg</div> :
+                                            <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
+                                        }
                                         <input
                                             type="file"
                                             onChange={handleFileChangeSelfieKtp}
@@ -554,12 +589,12 @@ const FormInfoPemilikOutlet = (props) => {
                     }
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>No telepon pemilik usaha</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                        <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e)} type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     <div className='text-end mt-4'>
                         <button 
-                            className={((inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && imageKtp !== null && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
-                            disabled={(inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || imageKtp === null || inputHandle.noTelp.length === 0}
+                            className={((inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={(inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (imageKtp === null && imageFileKtp === null) || inputHandle.noTelp.length === 0}
                             onClick={() => formDataFirstStepInfoPemilikBadanUsaha(selectedDataBrand.length !== 0 ? selectedDataBrand[0].value : 0, inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, imageSelfieKtp, 2, inputHandle.jenisUsaha, selectedDataGrup.length !== 0 ? selectedDataGrup[0].value : 0, "next", profileId === undefined ? 0 : profileId)}
                         >
                             Selanjutnya

@@ -3,6 +3,7 @@ import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import filePdfQris from "../../../assets/icon/file_pdf_qris.svg";
+import noteIconRed from "../../../assets/icon/note_icon_red.svg";
 import { useHistory, useParams } from 'react-router-dom';
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
 import encryptData from '../../../function/encryptData';
@@ -18,21 +19,25 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
     const [imageFileNpwp, setImageFileNpwp] = useState(null)
     const [imageNpwp, setImageNpwp] = useState(null)
     const [uploadPdfNpwp, setUploadPdfNpwp] = useState(false)
+    const [fileSizeNpwp, setFileSizeNpwp] = useState(false)
 
     const hiddenFileInputNib = useRef(null)
     const [imageFileNib, setImageFileNib] = useState(null)
     const [imageNib, setImageNib] = useState(null)
     const [uploadPdfNib, setUploadPdfNib] = useState(false)
+    const [fileSizeNib, setFileSizeNib] = useState(false)
 
     const hiddenFileInputAktaPerusahaan = useRef(null)
     const [imageFileAktaPerusahaan, setImageFileAktaPerusahaan] = useState(null)
     const [imageAktaPerusahaan, setImageAktaPerusahaan] = useState(null)
     const [uploadPdfAktaPerusahaan, setUploadPdfAktaPerusahaan] = useState(false)
+    const [fileSizeAktaPerusahaan, setFileSizeAktaPerusahaan] = useState(false)
 
     const hiddenFileInputSkKementrian = useRef(null)
     const [imageFileSkKementrian, setImageFileSkKementrian] = useState(null)
     const [imageSkKementrian, setImageSkKementrian] = useState(null)
     const [uploadPdfSkKementrian, setUploadPdfSkKementrian] = useState(false)
+    const [fileSizeSkKementrian, setFileSizeSkKementrian] = useState(false)
 
     const handleClick = (param) => {
         if (param === "npwp") {
@@ -46,20 +51,29 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
         }
     };
 
+    console.log(imageNpwp, "imageNpwp");
+
     const handleFileChange = (event, param) => {
         if (param === "npwp") {
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageNpwp(event.target.files[0])
                 setImageFileNpwp(null)
-                setUploadPdfNpwp(true)
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setFileSizeNpwp(true)
+                    setUploadPdfNpwp(false)
+                } else {
+                    setFileSizeNpwp(false)
+                    setUploadPdfNpwp(true)
+                }
             } else {
                 setUploadPdfNpwp(false)
                 if(event.target.files[0]) {
                     setImageNpwp(event.target.files[0])
                     if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                        setImageFileNpwp(imageFileNpwp)
+                        setFileSizeNpwp(true)
                     }
                     else {
+                        setFileSizeNpwp(false)
                         const reader = new FileReader()
                         reader.addEventListener("load", () => {
                             console.log(reader.result, "reader.result");
@@ -73,7 +87,13 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageNib(event.target.files[0])
                 setImageFileNib(null)
-                setUploadPdfNib(true)
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setFileSizeNib(true)
+                    setUploadPdfNib(false)
+                } else {
+                    setFileSizeNib(false)
+                    setUploadPdfNib(true)
+                }
             } else {
                 setUploadPdfNib(false)
                 if(event.target.files[0]) {
@@ -95,7 +115,13 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageAktaPerusahaan(event.target.files[0])
                 setImageFileAktaPerusahaan(null)
-                setUploadPdfAktaPerusahaan(true)
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setFileSizeAktaPerusahaan(true)
+                    setUploadPdfAktaPerusahaan(false)
+                } else {
+                    setFileSizeAktaPerusahaan(false)
+                    setUploadPdfAktaPerusahaan(true)
+                }
             } else {
                 setUploadPdfAktaPerusahaan(false)
                 if(event.target.files[0]) {
@@ -117,7 +143,13 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageSkKementrian(event.target.files[0])
                 setImageFileSkKementrian(null)
-                setUploadPdfSkKementrian(true)
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setFileSizeSkKementrian(true)
+                    setUploadPdfSkKementrian(false)
+                } else {
+                    setFileSizeSkKementrian(false)
+                    setUploadPdfSkKementrian(true)
+                }
             } else {
                 setUploadPdfSkKementrian(false)
                 if(event.target.files[0]) {
@@ -244,7 +276,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 if (step === 3) {
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 200) {
-                    history.push(`/pengaturan-merchant/${profileId}/${businesLevel}`)
+                    history.push(`/pengaturan-merchant/${profileId}/${businesLevel}/${businessType}`)
                 } else if (step === 201) {
                     history.push(`/form-info-rekening-outlet/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
                 } else {
@@ -255,7 +287,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 if (step === 3) {
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 200) {
-                    history.push(`/pengaturan-merchant/${profileId}/${businesLevel}`)
+                    history.push(`/pengaturan-merchant/${profileId}/${businesLevel}/${businessType}`)
                 } else if (step === 201) {
                     history.push(`/form-info-rekening-outlet/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
                 } else {
@@ -319,7 +351,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
@@ -339,7 +371,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className=''>Dokumen NPWP perusahaan</div>
                     <div className='viewDragDrop mt-2' style={{cursor: "pointer"}} onClick={() => handleClick("npwp")}>
                         {
-                            (!imageFileNpwp && uploadPdfNpwp === false) ? 
+                            (!imageFileNpwp && uploadPdfNpwp === false && fileSizeNpwp === false) ? 
                             <>
                                 <div className='pt-4 text-center'>Masukkan dokumen npwp perusahaan.</div>
                                 <input
@@ -365,9 +397,25 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     name="image"
                                     multiple
                                 />
-                            </> : (uploadPdfNpwp === true) &&
+                            </> : (uploadPdfNpwp === true) ?
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "npwp")}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputNpwp}
+                                    id="image"
+                                    name="image"
+                                    multiple
+                                />
+                            </> : (fileSizeNpwp === true) &&
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>File lebih dari 500kb</div>
+                                </div>
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "npwp")}
@@ -386,7 +434,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Dokumen NIB perusahaan</div>
                     <div className='viewDragDrop mt-2' style={{cursor: "pointer"}} onClick={() => handleClick("nib")}>
                         {
-                            (!imageFileNib && uploadPdfNib === false) ? 
+                            (!imageFileNib && uploadPdfNib === false && fileSizeNib === false) ? 
                             <>
                                 <div className='pt-4 text-center'>Masukkan dokumen nib perusahaan.</div>
                                 <input
@@ -412,9 +460,25 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     name="image"
                                     multiple
                                 />
-                            </> : (uploadPdfNib === true) &&
+                            </> : (uploadPdfNib === true) ?
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "nib")}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputNib}
+                                    id="image"
+                                    name="image"
+                                    multiple
+                                />
+                            </> : (fileSizeNib === true) &&
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>File lebih dari 500kb</div>
+                                </div>
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "nib")}
@@ -525,8 +589,19 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
-                        <button className='btn-prev-info-usaha me-2'>Sebelumnya</button>
-                        <button className='btn-next-info-usaha ms-2' onClick={() => checkPageSettlementHandler(profileId === undefined ? 0 : profileId, 1, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)}>Selanjutnya</button>
+                        <button 
+                            className='btn-prev-info-usaha me-2'
+                            onClick={() => history.push(`/formulir-info-usaha-outlet/${profileId === undefined ? 0 : profileId}`)}
+                        >
+                            Sebelumnya
+                        </button>
+                        <button 
+                            className={(imageNpwp !== null && imageNib !== null && imageFileAktaPerusahaan !== null && imageSkKementrian !== null) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
+                            disabled={imageNpwp === null || imageNib === null || imageFileAktaPerusahaan === null || imageSkKementrian === null}
+                            onClick={() => checkPageSettlementHandler(profileId === undefined ? 0 : profileId, 1, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)}
+                        >
+                            Selanjutnya
+                        </button>
                     </div>
                 </div>
             </div>

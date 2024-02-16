@@ -372,7 +372,7 @@ const FormInfoPemilikPerseorangan = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
@@ -438,16 +438,16 @@ const FormInfoPemilikPerseorangan = () => {
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                                     <input name="userName" value={inputHandleWna.userName} onChange={(e) => handleChange(e, 101)} className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor eKTP pemilik usaha</div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor KITAS pemilik usaha</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="numberId" value={inputHandleWna.numberId} onChange={(e) => handleChange(e, 101)} className='input-text-form' placeholder='Masukan nomor eKTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                    <input name="numberId" value={inputHandleWna.numberId} onChange={(e) => handleChange(e, 101)} className='input-text-form' placeholder='Masukan nomor KITAS pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto KITAS pemilik usaha</div>
                                 <div className='viewDragDrop  mt-2' onClick={handleClickKtp} style={{cursor: "pointer"}}>
                                     {
                                         !imageFileKtp ?
                                         <>
-                                            <div className='pt-4 text-center'>Masukkan foto eKTP.</div>
+                                            <div className='pt-4 text-center'>Masukkan foto KITAS.</div>
                                             <input
                                                 type="file"
                                                 onChange={handleFileChangeKtp}
@@ -481,7 +481,7 @@ const FormInfoPemilikPerseorangan = () => {
                                     {
                                         !imageFileSelfieKtp ?
                                         <>
-                                            <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
+                                            <div className='pt-4 text-center'>Masukan foto selfie dengan KITAS.</div>
                                             <input
                                                 type="file"
                                                 onChange={handleFileChangeSelfieKtp}

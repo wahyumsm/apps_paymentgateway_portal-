@@ -16,21 +16,25 @@ const FormDokumenUsahaBadanUsaha = () => {
 
     const hiddenFileInputNpwp = useRef(null)
     const [imageFileNpwp, setImageFileNpwp] = useState(null)
+    const [nameNpwp, setNameNpwp] = useState(null)
     const [imageNpwp, setImageNpwp] = useState(null)
     const [uploadPdfNpwp, setUploadPdfNpwp] = useState(false)
 
     const hiddenFileInputNib = useRef(null)
     const [imageFileNib, setImageFileNib] = useState(null)
+    const [nameNib, setNameNib] = useState(null)
     const [imageNib, setImageNib] = useState(null)
     const [uploadPdfNib, setUploadPdfNib] = useState(false)
 
     const hiddenFileInputAktaPerusahaan = useRef(null)
     const [imageFileAktaPerusahaan, setImageFileAktaPerusahaan] = useState(null)
+    const [nameAktaPerusahaan, setNameAktaPerusahaan] = useState(null)
     const [imageAktaPerusahaan, setImageAktaPerusahaan] = useState(null)
     const [uploadPdfAktaPerusahaan, setUploadPdfAktaPerusahaan] = useState(false)
 
     const hiddenFileInputSkKementrian = useRef(null)
     const [imageFileSkKementrian, setImageFileSkKementrian] = useState(null)
+    const [nameSkKementrian, setNameSkKementrian] = useState(null)
     const [imageSkKementrian, setImageSkKementrian] = useState(null)
     const [uploadPdfSkKementrian, setUploadPdfSkKementrian] = useState(false)
 
@@ -48,6 +52,7 @@ const FormDokumenUsahaBadanUsaha = () => {
 
     const handleFileChange = (event, param) => {
         if (param === "npwp") {
+            setNameNpwp(event.target.files[0].name)
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageNpwp(event.target.files[0])
                 setImageFileNpwp(null)
@@ -70,6 +75,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                 }
             }
         } else if (param === "nib") {
+            setNameNib(event.target.files[0].name)
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageNib(event.target.files[0])
                 setImageFileNib(null)
@@ -92,6 +98,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                 }
             }
         } else if (param === "aktaPerusahaan") {
+            setNameAktaPerusahaan(event.target.files[0].name)
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageAktaPerusahaan(event.target.files[0])
                 setImageFileAktaPerusahaan(null)
@@ -114,6 +121,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                 }
             }
         } else {
+            setNameSkKementrian(event.target.files[0].name)
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageSkKementrian(event.target.files[0])
                 setImageFileSkKementrian(null)
@@ -249,7 +257,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                     }
                 } else {
                     if (step === 200) {
-                        history.push(`/pengaturan-merchant/${profileId}/101`)
+                        history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
                     } else {
                         history.push(`/daftar-merchant-qris`)
                     }
@@ -264,7 +272,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                     }
                 } else {
                     if (step === 200) {
-                        history.push(`/pengaturan-merchant/${profileId}/101`)
+                        history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
                     } else {
                         history.push(`/daftar-merchant-qris`)
                     }
@@ -290,7 +298,7 @@ const FormDokumenUsahaBadanUsaha = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
@@ -321,7 +329,6 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputNpwp}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
                             </> : (imageFileNpwp) ?
                             <>
@@ -334,8 +341,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputNpwp}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameNpwp}</div>
                             </> : (uploadPdfNpwp === true) &&
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
@@ -347,8 +354,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputNpwp}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameNpwp}</div>
                             </>
                         }
                         <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>
@@ -368,7 +375,6 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputNib}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
                             </> : (imageFileNib) ?
                             <>
@@ -381,8 +387,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputNib}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameNib}</div>
                             </> : (uploadPdfNib === true) &&
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
@@ -394,8 +400,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputNib}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameNib}</div>
                             </>
                         }
                         <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>
@@ -415,7 +421,6 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
                             </> : (imageFileAktaPerusahaan) ?
                             <>
@@ -428,8 +433,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameAktaPerusahaan}</div>
                             </> : (uploadPdfAktaPerusahaan === true) &&
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
@@ -441,8 +446,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameAktaPerusahaan}</div>
                             </>
                         }
                         <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>
@@ -462,7 +467,6 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
                             </> : (imageFileSkKementrian) ?
                             <>
@@ -475,8 +479,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameSkKementrian}</div>
                             </> : (uploadPdfSkKementrian === true) &&
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
@@ -488,8 +492,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameSkKementrian}</div>
                             </>
                         }
                         <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>

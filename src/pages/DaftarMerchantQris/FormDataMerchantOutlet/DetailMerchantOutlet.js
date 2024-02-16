@@ -1,9 +1,9 @@
 import React from 'react'
 
-const DetailMerchantBrand = () => {
+const DetailMerchantOutlet = () => {
     return (
-        <div>DetailMerchantBrand</div>
+        <div>DetailMerchantOutlet</div>
     )
 }
 
-export default DetailMerchantBrand
+export default DetailMerchantOutlet

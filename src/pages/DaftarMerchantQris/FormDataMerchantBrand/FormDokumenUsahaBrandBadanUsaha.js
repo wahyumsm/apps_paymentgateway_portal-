@@ -244,7 +244,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 if (step === 3) {
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 200) {
-                    history.push(`/pengaturan-merchant/${profileId}/${businesLevel}`)
+                    history.push(`/pengaturan-merchant/${profileId}/${businesLevel}/${businessType}`)
                 } else if (step === 201) {
                     history.push(`/form-info-rekening-brand/${profileId}`)
                 } else {
@@ -255,7 +255,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 if (step === 3) {
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 200) {
-                    history.push(`/pengaturan-merchant/${profileId}/${businesLevel}`)
+                    history.push(`/pengaturan-merchant/${profileId}/${businesLevel}/${businessType}`)
                 } else if (step === 201) {
                     history.push(`/form-info-rekening-brand/${profileId}`)
                 } else {
@@ -319,7 +319,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
@@ -525,8 +525,19 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
-                        <button className='btn-prev-info-usaha me-2'>Sebelumnya</button>
-                        <button className='btn-next-info-usaha ms-2' onClick={() => checkPageSettlementHandler(profileId === undefined ? 0 : profileId, 1, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)}>Selanjutnya</button>
+                        <button 
+                            className='btn-prev-info-usaha me-2'
+                            onClick={() => history.push(`/formulir-info-usaha-brand/${profileId === undefined ? 0 : profileId}`)}
+                        >
+                            Sebelumnya
+                        </button>
+                        <button 
+                            className={(imageNpwp !== null && imageNib !== null && imageFileAktaPerusahaan !== null && imageSkKementrian !== null) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
+                            disabled={imageNpwp === null || imageNib === null || imageFileAktaPerusahaan === null || imageSkKementrian === null} 
+                            onClick={() => checkPageSettlementHandler(profileId === undefined ? 0 : profileId, 1, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)}
+                        >
+                            Selanjutnya
+                        </button>
                     </div>
                 </div>
             </div>

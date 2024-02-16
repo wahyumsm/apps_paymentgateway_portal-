@@ -13,9 +13,10 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronLeft, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import ReactSelect, { components } from 'react-select';
+import CurrencyInput from 'react-currency-input-field'
 
 const PengaturanMerchant = () => {
-    const { idProfile, level } = useParams()
+    const { idProfile, level, type } = useParams()
     const history = useHistory()
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [expandedProgramAffiliator, setExpandedProgramAffiliator] = useState()
@@ -110,11 +111,131 @@ const PengaturanMerchant = () => {
                 ...inputHandle,
                 [e.target.name]: e.target.value
             })
+        } else if (e.target.name === "jenisKomisi") {
+            setInputHandle({
+                ...inputHandle,
+                jenisKomisi: Number(e.target.value),
+                jumlahKomisi: 0,
+            })
+        } else if (e.target.name === "jenisCashback") {
+            setInputHandle({
+                ...inputHandle,
+                jenisCashback: Number(e.target.value),
+                jumlahCashback: 0,
+            })
+        } else if (e.target.name === "jenisAdditionalFee") {
+            setInputHandle({
+                ...inputHandle,
+                jenisAdditionalFee: Number(e.target.value),
+                jumlahAdditionalFee: 0,
+            })
         } else {
             setInputHandle({
                 ...inputHandle,
                 [e.target.name]: e.target.name === "komisiAgen" ? e.target.value : Number(e.target.value)
             })
+        }
+    }
+
+    function handleChangejumlahKomisi (e, jenisKomisi) {
+        console.log(e, "e");
+        if (jenisKomisi === 1) {
+            if (e === undefined || e === "") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahKomisi: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahKomisi: e
+                })
+            }
+        } else {
+            if (Number(e) > 100) {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahKomisi: 100
+                })
+            } else if (e === undefined || e === "") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahKomisi: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahKomisi: e
+                })
+            }
+        }
+    }
+
+    function handleChangeJumlahCashback (e, jenisCashback) {
+        console.log(e, "e");
+        if (jenisCashback === 1) {
+            if (e === undefined || e === "") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: e
+                })
+            }
+        } else {
+            if (Number(e) > 100) {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: 100
+                })
+            } else if (e === undefined || e === "") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: e
+                })
+            }
+        }
+    }
+
+    function handleChangeJumlahAdditionalFee (e, jenisCashback) {
+        console.log(e, "e");
+        if (jenisCashback === 1) {
+            if (e === undefined || e === "") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: e
+                })
+            }
+        } else {
+            if (Number(e) > 100) {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: 100
+                })
+            } else if (e === undefined || e === "") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: e
+                })
+            }
         }
     }
 
@@ -187,7 +308,7 @@ const PengaturanMerchant = () => {
         }
     }
 
-    console.log(selectedDataListPartner, "selectedDataListPartner");
+    console.log(selectedDataKomisiAgen, "selectedDataKomisiAgen");
 
     async function getDataAddBrandStepFormTidakBerbadanHukum(profileId) {
         try {
@@ -231,7 +352,7 @@ const PengaturanMerchant = () => {
                 objAgenKomisi.value = getDataConfig.mmerchant_mmerchantcode_aff_id
                 objAgenKomisi.label = getDataConfig.mmerchant_name
                 newArrAgenKomisi.push(objAgenKomisi)
-                setSelectedDataKomisiAgen(objAgenKomisi.value === null ? [] : newArrAgenKomisi)
+                setSelectedDataKomisiAgen((objAgenKomisi.value === null || objAgenKomisi.value === "") ? [] : newArrAgenKomisi)
                 getDataAgenHandler (getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
@@ -267,7 +388,7 @@ const PengaturanMerchant = () => {
                 objAgenKomisi.value = getDataConfig.mmerchant_mmerchantcode_aff_id
                 objAgenKomisi.label = getDataConfig.mmerchant_name
                 newArrAgenKomisi.push(objAgenKomisi)
-                setSelectedDataKomisiAgen((objAgenKomisi.value === null || objAgenKomisi.value === "") ? [] : newArrAgenKomisi)
+                setSelectedDataKomisiAgen(((objAgenKomisi.value === null || objAgenKomisi.value === "") || objAgenKomisi.value === "") ? [] : newArrAgenKomisi)
                 getDataAgenHandler (getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id)
             }
         } catch (error) {
@@ -360,8 +481,6 @@ const PengaturanMerchant = () => {
             history.push(errorCatch(error.response.status))
         }
     }
-
-    console.log(getCheckKodeReferral, "getCheckKodeReferral");
 
     function backPage () {
         setShowModalSimpanData(true)
@@ -494,7 +613,7 @@ const PengaturanMerchant = () => {
                     <div className='text-setting mt-3'>Kemana settlement akan dikirimkan ?</div>
                     <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 600 }}>
                         {
-                            level === 101 && (
+                            level === "101" && (
                                 <div className="form-check form-check-inline">
                                     <input
                                         className="form-check-input"
@@ -516,7 +635,7 @@ const PengaturanMerchant = () => {
                             )
                         }
                         {
-                            (level === 101 || level === 102) && (
+                            (level === "101" || level === "102") && (
                                 <div className="form-check form-check-inline ms-4">
                                     <input
                                         className="form-check-input"
@@ -537,7 +656,7 @@ const PengaturanMerchant = () => {
                                 </div>
                             )
                         }
-                        <div className={level === 103 ? "form-check form-check-inline ms-4" : "form-check form-check-inline"}>
+                        <div className={level === "103" ? "form-check form-check-inline" : "form-check form-check-inline ms-4"}>
                             <input
                                 className="form-check-input"
                                 type="radio"
@@ -724,7 +843,18 @@ const PengaturanMerchant = () => {
                                 </div>
                                 <div className='text-setting mt-3'>Jumlah komisi</div>
                                 <div className='d-flex justify-content-start align-items-center mt-2'>
-                                    <input name='jumlahKomisi' value={inputHandle.jumlahKomisi} onChange={(e) => handleChange(e)} className='input-text-user' style={{ width: "20%" }} placeholder='Rp 1.000' />
+                                    <CurrencyInput
+                                        className='input-text-user' 
+                                        style={{ width: "20%" }}
+                                        value={inputHandle.jumlahKomisi} 
+                                        onValueChange={(e) => handleChangejumlahKomisi(e, inputHandle.jenisKomisi)}
+                                        placeholder='Rp 0'
+                                        groupSeparator={"."}
+                                        decimalSeparator={','}
+                                        allowDecimals={inputHandle.jenisKomisi === 1 ? true : false}
+                                        prefix={inputHandle.jenisKomisi === 1 ? "Rp " : ""}
+                                        suffix={inputHandle.jenisKomisi === 2 ? " %" : ""}
+                                    />
                                     <div className='ms-3 text-setting'>Per Transaksi</div>
                                 </div>
                             </>
@@ -824,7 +954,18 @@ const PengaturanMerchant = () => {
                                 </div>
                                 <div className='text-setting mt-3'>Jumlah cashback</div>
                                 <div className='d-flex justify-content-start align-items-center mt-2'>
-                                    <input name="jumlahCashback" value={inputHandle.jumlahCashback} onChange={(e) => handleChange(e)} className='input-text-user' style={{ width: "20%" }} placeholder='Rp 0' />
+                                    <CurrencyInput
+                                        className='input-text-user' 
+                                        style={{ width: "20%" }}
+                                        value={inputHandle.jumlahCashback} 
+                                        onValueChange={(e) => handleChangeJumlahCashback(e, inputHandle.jenisCashback)}
+                                        placeholder='Rp 0'
+                                        groupSeparator={"."}
+                                        decimalSeparator={','}
+                                        allowDecimals={inputHandle.jenisCashback === 1 ? true : false}
+                                        prefix={inputHandle.jenisCashback === 1 ? "Rp " : ""}
+                                        suffix={inputHandle.jenisCashback === 2 ? " %" : ""}
+                                    />
                                     <div className='ms-3 text-setting'>Per Transaksi</div>
                                 </div>
                             </>
@@ -924,7 +1065,18 @@ const PengaturanMerchant = () => {
                                 </div>
                                 <div className='text-setting mt-3'>Jumlah additional fee</div>
                                 <div className='d-flex justify-content-start align-items-center mt-2'>
-                                    <input name="jumlahAdditionalFee" value={inputHandle.jumlahAdditionalFee} onChange={(e) => handleChange(e)} className='input-text-user' style={{ width: "20%" }} placeholder='Rp 0' />
+                                    <CurrencyInput
+                                        className='input-text-user' 
+                                        style={{ width: "20%" }}
+                                        value={inputHandle.jumlahAdditionalFee} 
+                                        onValueChange={(e) => handleChangeJumlahAdditionalFee(e, inputHandle.jenisAdditionalFee)}
+                                        placeholder='Rp 0'
+                                        groupSeparator={"."}
+                                        decimalSeparator={','}
+                                        allowDecimals={inputHandle.jenisAdditionalFee === 1 ? true : false}
+                                        prefix={inputHandle.jenisAdditionalFee === 1 ? "Rp " : ""}
+                                        suffix={inputHandle.jenisAdditionalFee === 2 ? " %" : ""}
+                                    />
                                     <div className='ms-3 text-setting'>Per Transaksi</div>
                                 </div>
                             </>
@@ -942,12 +1094,19 @@ const PengaturanMerchant = () => {
                     }
 
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
-                        <button className='btn-prev-info-usaha me-2'>Sebelumnya</button>
+                        <button 
+                            className='btn-prev-info-usaha me-2'
+                            onClick={
+                                level === "101" ? (type === "1" ? () => history.push(`/form-dokumen-usaha-badan-usaha/${idProfile === undefined ? 0 : idProfile}`) : type === "2" ? () => history.push(`/form-info-usaha-perorangan/${idProfile === undefined ? 0 : idProfile}`) : () => history.push(`/form-tidak-berbadan-hukum/${idProfile === undefined ? 0 : idProfile}`)) : Number(level) === "102" ? ((type === "1" ? () => history.push(`/form-dokumen-usaha-brand-badan-usaha/${idProfile === undefined ? 0 : idProfile}`) : () => history.push(`/formulir-info-usaha-brand/${idProfile === undefined ? 0 : idProfile}`) )) : ((type === "1" ? () => history.push(`/form-dokumen-usaha-outlet/${idProfile === undefined ? 0 : idProfile}`) : () => history.push(`/formulir-info-usaha-outlet/${idProfile === undefined ? 0 : idProfile}`) ))
+                            }
+                        >
+                            Sebelumnya
+                        </button>
                         <button 
                             className='btn-next-info-usaha ms-2' 
                             onClick={() => 
                                 savePengaturanTambahMerchantBrandHandler(
-                                    level,
+                                    Number(Number(level)),
                                     inputHandle.merchantId,
                                     inputHandle.jenisSettlement, 
                                     inputHandle.settlementDikirimkan, 
@@ -956,13 +1115,13 @@ const PengaturanMerchant = () => {
                                     selectedDataListPartner.length !== 0 ? selectedDataListPartner[0].value : "",
                                     idProfile === undefined ? 0 : idProfile, 
                                     inputHandle.merchantCode, 
-                                    inputHandle.jumlahAdditionalFee, 
+                                    Number((inputHandle.jumlahAdditionalFee).replaceAll(',','.')), 
                                     inputHandle.jenisAdditionalFee, 
                                     inputHandle.adakanAdditionalFee === 2 ? 0 : inputHandle.adakanAdditionalFee, 
-                                    inputHandle.jumlahKomisi, 
+                                    Number((inputHandle.jumlahKomisi).replaceAll(',','.')), 
                                     inputHandle.jenisKomisi, 
                                     selectedDataKomisiAgen.length !== 0 ? selectedDataKomisiAgen[0].value : "",
-                                    inputHandle.jumlahCashback, 
+                                    Number((inputHandle.jumlahCashback).replaceAll(',','.')), 
                                     inputHandle.jenisCashback, 
                                     inputHandle.adakanProgramCashbackMdr === 2 ? 0 : inputHandle.adakanProgramCashbackMdr, 
                                     inputHandle.jumlahFeeSettlement, 
@@ -1000,7 +1159,7 @@ const PengaturanMerchant = () => {
                             style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}
                             onClick={() => 
                                 savePengaturanTambahMerchantBrandHandler(
-                                    level,
+                                    Number(level),
                                     inputHandle.merchantId,
                                     inputHandle.jenisSettlement, 
                                     inputHandle.settlementDikirimkan, 
@@ -1009,13 +1168,13 @@ const PengaturanMerchant = () => {
                                     selectedDataListPartner.length !== 0 ? selectedDataListPartner[0].value : "",
                                     idProfile === undefined ? 0 : idProfile, 
                                     inputHandle.merchantCode, 
-                                    inputHandle.jumlahAdditionalFee, 
+                                    Number((inputHandle.jumlahAdditionalFee).replaceAll(',','.')), 
                                     inputHandle.jenisAdditionalFee, 
                                     inputHandle.adakanAdditionalFee === 2 ? 0 : inputHandle.adakanAdditionalFee, 
-                                    inputHandle.jumlahKomisi, 
+                                    Number((inputHandle.jumlahKomisi).replaceAll(',','.')), 
                                     inputHandle.jenisKomisi, 
                                     selectedDataKomisiAgen.length !== 0 ? selectedDataKomisiAgen[0].value : "",
-                                    inputHandle.jumlahCashback, 
+                                    Number((inputHandle.jumlahCashback).replaceAll(',','.')), 
                                     inputHandle.jenisCashback, 
                                     inputHandle.adakanProgramCashbackMdr === 2 ? 0 : inputHandle.adakanProgramCashbackMdr, 
                                     inputHandle.jumlahFeeSettlement, 

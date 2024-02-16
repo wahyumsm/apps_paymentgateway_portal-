@@ -37,14 +37,14 @@ const PilihJenisUsaha = (props) => {
                     <img src={peroranganQris} alt='qris' />
                     <div className='text-start'>
                         <div className='card-text-title'>Perorangan</div>
-                        <div className='card-text-subtitle'>untuk individual yang ingin melakukan atau mengelola usaha yang dijalankan</div>
+                        <div className='card-text-subtitle'>Untuk individual yang ingin melakukan atau mengelola usaha yang dijalankan</div>
                     </div>
                 </div>
                 <div className={tabJenisUsaha === "badanUsaha" ? 'card-when-click mb-3' : 'card-jenis-usaha mb-3'} onClick={() => buttonColor("badanUsaha")} id='badanUsaha'>
                     <img src={badanUsahaQris} alt='qris' />
                     <div className='text-start'>
                         <div className='card-text-title'>Badan Usaha</div>
-                        <div className='card-text-subtitle'>untuk perusahaan dengan izin usaha yang ingin melakukan atau mengelola usaha yang dijalankan</div>
+                        <div className='card-text-subtitle'>Untuk perusahaan dengan izin usaha yang ingin melakukan atau mengelola usaha yang dijalankan</div>
                     </div>
                 </div>
                 <div className={tabJenisUsaha === "tidakBerbadanHukum" ? 'card-when-click mb-3' : 'card-jenis-usaha mb-3'} onClick={() => buttonColor("tidakBerbadanHukum")} id='tidakBerbadanHukum'>
