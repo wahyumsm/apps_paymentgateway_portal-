@@ -39,7 +39,6 @@ const FormInfoUsahaBadanUsaha = () => {
     const hiddenFileInputTempatUsaha = useRef(null)
     const [imageFileTempatUsaha, setImageFileTempatUsaha] = useState([])
     const [imageTempatUsaha, setImageTempatUsaha] = useState(null)
-    const [nameImageTempatUsaha, setNameImageTempatUsaha] = useState("")
     const [uploadTempatUsaha, setUploadTempatUsaha] = useState(false)
     console.log(imageFileTempatUsaha, 'imageFileTempatUsaha');
 
@@ -47,7 +46,7 @@ const FormInfoUsahaBadanUsaha = () => {
         hiddenFileInputTempatUsaha.current.click();
     };
 
-    console.log(inputHandle.nmid, "inputHandle.nmid");
+    console.log(inputHandle.kodePos, "inputHandle.kodePos");
     console.log(Number(inputHandle.jumlahKasir), "inputHandle.jumlahKasir");
 
     function handleChange(e) {
@@ -59,11 +58,19 @@ const FormInfoUsahaBadanUsaha = () => {
                 [e.target.name]: Number(e.target.value)
             })
         } else if (e.target.name === "kodePos") {
-            getDataPostalCodeHandler(e.target.value)
-            setInputHandle({
-                ...inputHandle,
-                [e.target.name]: e.target.value
-            })
+            if (e.target.value.length > 5) {
+                getDataPostalCodeHandler((e.target.value).slice(0,5))
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: (e.target.value).slice(0,5)
+                })
+            } else {
+                getDataPostalCodeHandler(e.target.value)
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: e.target.value
+                })
+            }
         } else if (e.target.name === "nmid") {
             console.log("masuksini");
             if (e.target.value.length < 13) {
@@ -618,7 +625,7 @@ const FormInfoUsahaBadanUsaha = () => {
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }}>Kode Pos</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input name="kodePos" value={inputHandle.kodePos} onChange={(e) => handleChange(e)} className='input-text-user' placeholder='Masukkan kode pos' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input name="kodePos" value={inputHandle.kodePos} onChange={(e) => handleChange(e)} type="number" maxLength={5} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-user' placeholder='Masukkan kode pos' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                     </Row>
@@ -627,13 +634,13 @@ const FormInfoUsahaBadanUsaha = () => {
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }}>Provinsi</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input value={dataKodePos.mprovince_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input value={Object.keys(dataKodePos).length === 0 ? "" : dataKodePos.mprovince_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }}>Kabupaten/kota</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input value={dataKodePos.mcity_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input value={Object.keys(dataKodePos).length === 0 ? "" : dataKodePos.mcity_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                     </Row>
@@ -641,13 +648,13 @@ const FormInfoUsahaBadanUsaha = () => {
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Kecamatan</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input value={dataKodePos.mdistrict_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input value={Object.keys(dataKodePos).length === 0 ? "" : dataKodePos.mdistrict_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Kelurahan</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input value={dataKodePos.mvillage_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input value={Object.keys(dataKodePos).length === 0 ? "" : dataKodePos.mvillage_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                     </Row>

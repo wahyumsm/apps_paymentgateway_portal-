@@ -64,11 +64,19 @@ const FormInfoUsahaOutlet = (props) => {
                 [e.target.name]: Number(e.target.value)
             })
         } else if (e.target.name === "kodePos") {
-            getDataPostalCodeHandler(e.target.value)
-            setInputHandle({
-                ...inputHandle,
-                [e.target.name]: e.target.value
-            })
+            if (e.target.value.length > 5) {
+                getDataPostalCodeHandler((e.target.value).slice(0,5))
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: (e.target.value).slice(0,5)
+                })
+            } else {
+                getDataPostalCodeHandler(e.target.value)
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: e.target.value
+                })
+            }
         } else if (e.target.name === "nmid") {
             console.log("masuksini");
             if (e.target.value.length < 13) {

@@ -194,7 +194,13 @@ const FormDaftarSettlement = () => {
                     </div>
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button className='btn-prev-info-usaha me-2'>Sebelumnya</button>
-                        <button onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : "", inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 300)} className='btn-next-info-usaha ms-2'>Konfirmasi</button>
+                        <button 
+                            className={(selectedDataBank.length !== 0 && inputHandle.namaPemilikRek.length !== 0 && inputHandle.noRek.length !== 0) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
+                            disabled={selectedDataBank.length === 0 || inputHandle.namaPemilikRek.length === 0 || inputHandle.noRek.length === 0}
+                            onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : "", inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 300)} 
+                        >
+                            Konfirmasi
+                        </button>
                     </div>
                 </div>
             </div>
