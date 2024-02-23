@@ -103,6 +103,7 @@ import SettlementVAUSDPartner from './Settlement/SettlementVAUSDPartner';
 import TransaksiQrisApi from './Riwayat/TransaksiQrisApi';
 import ReNotifyQris from './HelpDesk/ReNotifyQris';
 import UnSettledTransaction from './Settlement/UnSettledTransaction';
+import QrisDetailSettlement from './Settlement/QrisDetailSettlement';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -202,6 +203,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccountAdmin.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.ListRiwayatSubAccount.path} component={ListRiwayatSubAccount} />
     <RouteWithSidebar exact path={Routes.InfoSaldoDanMutasi.path} component={InfoSaldoDanMutasi} />
+
     {/* revamp menu */}
     <RouteWithSidebar exact path={Routes.Settlement.path} component={SettlementPage} />
     <RouteWithSidebar exact path={Routes.UserDirectDebit.path} component={DaftarUserDirectDebit} />
@@ -211,6 +213,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.SaldoPartnerMenu.path} component={SaldoPartner} />
     <RouteWithSidebar exact path={Routes.DisbursementPage.path} component={DisbursementPage}/>
     <RouteWithSidebar exact path={Routes.SubAccountTransfer.path} component={TransferSubAccount} />
+
     {/* admin */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLinkAdmin.path} component={VaDanPaymentLink} />
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebitAdmin.path} component={RiwayatDirectDebit} />
@@ -225,6 +228,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.RiwayatFileSFTP.path} component={RiwayatFileSFTP} />
     <RouteWithSidebar exact path={Routes.SettlementVAUSDAdmin.path} component={SettlementVAUSDPartner} />
     <RouteWithSidebar exact path={Routes.UnsettledTransaction.path} component={UnSettledTransaction} />
+    <RouteWithSidebar exact path={Routes.DetailSettlementQRISAdmin.path} component={QrisDetailSettlement} />
 
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />

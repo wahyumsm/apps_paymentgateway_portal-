@@ -550,47 +550,47 @@ function DetailSettlement() {
                 <span className='breadcrumbs-span'><Link to={"/settlement/riwayat-settlement"}>{language === null ? eng.riwayatSettlement : language.riwayatSettlement}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{language === null ? eng.detailSettlement : language.detailSettlement}</span> :
                 <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;<Link to={"/settlement/riwayat-settlement"}>Settlement</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Detail Settlement</span>
             }
-        <div className='head-title'>
-            <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : `Detail Settlement`}</h2>
-        </div>
-        <div className='main-content'>
-            <div className='riwayat-dana-masuk-div mt-4'>
-                <div className='base-content mt-3'>
-                    <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : `Detail Settlement`}</span>
-                    {
-                        dataSettlement.length !== 0 &&
-                        <div style={{ marginBottom: 30 }}>
-                            <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)} className="export-span">{user_role === "102" ? (language === null ? eng.export : language.export) : "Export"}</Link>
+            <div className='head-title'>
+                <h2 className="h5 mb-3 mt-4" style={{fontWeight: 700, fontSize: 18, fontFamily: "Exo", color: "#383838"}}>{user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : `Detail Settlement`}</h2>
+            </div>
+            <div className='main-content'>
+                <div className='riwayat-dana-masuk-div mt-4'>
+                    <div className='base-content mt-3'>
+                        <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>{user_role === "102" ? (language === null ? eng.detailSettlement : language.detailSettlement) : `Detail Settlement`}</span>
+                        {
+                            dataSettlement.length !== 0 &&
+                            <div style={{ marginBottom: 30 }}>
+                                <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)} className="export-span">{user_role === "102" ? (language === null ? eng.export : language.export) : "Export"}</Link>
+                            </div>
+                        }
+                        <div className="div-table mt-4 pb-4">
+                            <DataTable
+                                columns={(user_role === '102') ? (Number(settlementType) === 105 ? columnsSettlPartnerEWallet : columnsSettlPartner) : (Number(settlementType) === 105 ? columnsSettlEWallet : columnsSettl)}
+                                data={dataSettlement}
+                                customStyles={customStyles}
+                                progressPending={pendingSettlement}
+                                progressComponent={<CustomLoader />}
+                                dense
+                                noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
+                                // pagination
+                            />
                         </div>
-                    }
-                    <div className="div-table mt-4 pb-4">
-                        <DataTable
-                            columns={(user_role === '102') ? (Number(settlementType) === 105 ? columnsSettlPartnerEWallet : columnsSettlPartner) : (Number(settlementType) === 105 ? columnsSettlEWallet : columnsSettl)}
-                            data={dataSettlement}
-                            customStyles={customStyles}
-                            progressPending={pendingSettlement}
-                            progressComponent={<CustomLoader />}
-                            dense
-                            noDataComponent={language === null ? eng.tidakAdaData : language.tidakAdaData}
-                            // pagination
-                        />
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
-                    <div style={{ marginRight: 10, marginTop: 10 }}>{user_role === "102" ? (language === null ? eng.totalHalaman : language.totalHalaman) : "Total Page"} : {totalPageDetailSettlement}</div>
-                        <Pagination
-                            activePage={activePageDetailSettlement}
-                            itemsCountPerPage={pageNumberDetailSettlement.row_per_page}
-                            totalItemsCount={(pageNumberDetailSettlement.row_per_page*pageNumberDetailSettlement.max_page)}
-                            pageRangeDisplayed={5}
-                            itemClass="page-item"
-                            linkClass="page-link"
-                            onChange={handlePageChangeDetailSettlement}
-                        />
+                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -15, paddingTop: 12, borderTop: "groove" }}>
+                        <div style={{ marginRight: 10, marginTop: 10 }}>{user_role === "102" ? (language === null ? eng.totalHalaman : language.totalHalaman) : "Total Page"} : {totalPageDetailSettlement}</div>
+                            <Pagination
+                                activePage={activePageDetailSettlement}
+                                itemsCountPerPage={pageNumberDetailSettlement.row_per_page}
+                                totalItemsCount={(pageNumberDetailSettlement.row_per_page*pageNumberDetailSettlement.max_page)}
+                                pageRangeDisplayed={5}
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                onChange={handlePageChangeDetailSettlement}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     )
 }
 

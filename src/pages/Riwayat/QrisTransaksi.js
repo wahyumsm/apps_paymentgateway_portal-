@@ -21,7 +21,8 @@ const QrisTransaksi = () => {
         idTransaksi: "",
         rrn: "",
         statusQris: "",
-        periode: 0
+        periode: 0,
+        channelPembayaran: 0
     })
     const [dataGrupInQris, setDataGrupInQris] = useState([])
     const [selectedGrupName, setSelectedGrupName] = useState([])
@@ -74,6 +75,8 @@ const QrisTransaksi = () => {
     }
 
     function handleChangeTransactionReposrtQris(e) {
+        console.log(e.target.name, 'e.target.name');
+        console.log(e.target.value, 'e.target.value');
         setInputHandleTransactionReportQrisAdmin({
             ...inputHandleTransactionReportQrisAdmin,
             [e.target.name] : e.target.value
@@ -108,7 +111,7 @@ const QrisTransaksi = () => {
     function handlePageChangeTransactionReportQris(page) {
         if (isFilterTransactionReportQris) {
             setActivePageTransactionReportQris(page)
-            filterGetTransactionReportQris(inputHandleTransactionReportQrisAdmin.idTransaksi, inputHandleTransactionReportQrisAdmin.rrn, selectedGrupName.length !== 0 ? selectedGrupName[0].value : 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), (selectedIdKasirName.length !== 0 ? selectedIdKasirName.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisAdmin.statusQris, inputHandleTransactionReportQrisAdmin.periode, dateRangeTransactionReportQris, page, 10)
+            filterGetTransactionReportQris(inputHandleTransactionReportQrisAdmin.idTransaksi, inputHandleTransactionReportQrisAdmin.rrn, selectedGrupName.length !== 0 ? selectedGrupName[0].value : 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), (selectedIdKasirName.length !== 0 ? selectedIdKasirName.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisAdmin.statusQris, inputHandleTransactionReportQrisAdmin.periode, dateRangeTransactionReportQris, page, 10, inputHandleTransactionReportQrisAdmin.channelPembayaran)
         } else {
             setActivePageTransactionReportQris(page)
             getTransactionReportQris(page, partnerId)
@@ -125,11 +128,18 @@ const QrisTransaksi = () => {
             name: 'ID Transaksi',
             selector: row => row.transaction_code,
             width: "170px",
-            wrap: "true"
+            wrap: true
+        },
+        {
+            name: 'No. Referensi',
+            selector: row => row.reference_label !== null ? row.reference_label : "-",
+            wrap: true,
+            width: "150px"
         },
         {
             name: 'RRN',
-            selector: row => row.RRN,
+            selector: row => row.RRN !== null ? row.RRN : "-",
+            wrap: true,
             width: "150px"
         },
         {
@@ -401,14 +411,14 @@ const QrisTransaksi = () => {
                 const getDataQrisReport = await axios.post(BaseURL + "/QRIS/TransactionReport", { data: dataParams }, { headers: headers })
                 // console.log(getDataQrisReport, 'ini user detal funct');
                 if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
                     setPageNumberTransactionReportQrisMerchant(getDataQrisReport.data.response_data)
                     setTotalPageTransactionReportQrisMerchant(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQrisMerchant(getDataQrisReport.data.response_data.results)
                     setPendingTransactionReportQrisMerchant(false)
                 } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
                     setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
                     setPageNumberTransactionReportQrisMerchant(getDataQrisReport.data.response_data)
                     setTotalPageTransactionReportQrisMerchant(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQrisMerchant(getDataQrisReport.data.response_data.results)
@@ -416,7 +426,7 @@ const QrisTransaksi = () => {
                 }
             } else if (user_role !== "102" || user_role !== "104") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "payment_type_qris": "1,2,3", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -424,14 +434,14 @@ const QrisTransaksi = () => {
                 const getDataQrisReport = await axios.post(BaseURL + "/QRIS/TransactionReport", { data: dataParams }, { headers: headers })
                 // console.log(getDataQrisReport, 'ini user detal funct');
                 if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
                     setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
                     setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
                     setPendingTransactionReportQris(false)
                 } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
                     setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
                     setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
                     setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
@@ -445,14 +455,14 @@ const QrisTransaksi = () => {
         }
     }
 
-    async function filterGetTransactionReportQris(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, page, rowPerPage) {
+    async function filterGetTransactionReportQris(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, page, rowPerPage, channelPembayaran) {
         try {
             if (user_role === "106" || user_role === "107" || user_role === "108") {
                 setPendingTransactionReportQrisMerchant(true)
                 setIsFilterTransactionReportQrisMerchant(true)
                 setActivePageTransactionReportQrisMerchant(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "payment_type_qris": "${channelPembayaran !== 0 ? channelPembayaran : "1,2,3"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -460,14 +470,14 @@ const QrisTransaksi = () => {
                 const getDataQrisReport = await axios.post(BaseURL + "/QRIS/TransactionReport", { data: dataParams }, { headers: headers })
                 // console.log(getDataQrisReport, 'ini user detal funct');
                 if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
                     setPageNumberTransactionReportQrisMerchant(getDataQrisReport.data.response_data)
                     setTotalPageTransactionReportQrisMerchant(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQrisMerchant(getDataQrisReport.data.response_data.results)
                     setPendingTransactionReportQrisMerchant(false)
                 } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
                     setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
                     setPageNumberTransactionReportQrisMerchant(getDataQrisReport.data.response_data)
                     setTotalPageTransactionReportQrisMerchant(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQrisMerchant(getDataQrisReport.data.response_data.results)
@@ -478,7 +488,7 @@ const QrisTransaksi = () => {
                 setIsFilterTransactionReportQris(true)
                 setActivePageTransactionReportQris(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "payment_type_qris": "${channelPembayaran !== 0 ? channelPembayaran : "1,2,3"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth
@@ -486,14 +496,14 @@ const QrisTransaksi = () => {
                 const getDataQrisReport = await axios.post(BaseURL + "/QRIS/TransactionReport", { data: dataParams }, { headers: headers })
                 // console.log(getDataQrisReport, 'ini user detal funct');
                 if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
                     setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
                     setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
                     setPendingTransactionReportQris(false)
                 } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
                     setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
                     setPageNumberTransactionReportQris(getDataQrisReport.data.response_data)
                     setTotalPageTransactionReportQris(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionReportQris(getDataQrisReport.data.response_data.results)
@@ -506,12 +516,12 @@ const QrisTransaksi = () => {
         }
     }
 
-    function ExportReportTransactionReportQrisHandler(isFilter, idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode) {
+    function ExportReportTransactionReportQrisHandler(isFilter, idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, channelPembayaran) {
         if (isFilter) {
-            async function dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode) {
+            async function dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, channelPembayaran) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "payment_type_qris": "${channelPembayaran !== 0 ? channelPembayaran : "1,2,3"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -544,12 +554,12 @@ const QrisTransaksi = () => {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode)
+            dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, channelPembayaran)
         } else {
             async function dataExportTransactionQris() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "payment_type_qris": "1,2,3", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -586,12 +596,12 @@ const QrisTransaksi = () => {
         }
     }
 
-    function ExportReportTransactionReportQrisMerchantHandler(isFilter, idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode) {
+    function ExportReportTransactionReportQrisMerchantHandler(isFilter, idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, channelPembayaran) {
         if (isFilter) {
-            async function dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode) {
+            async function dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, channelPembayaran) {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transaction_code": "${idTransaksi}", "RRN": "${rrn}", "merchant_nou": ${grupCode}, "brand_nou": ${brandCode}, "outlet_nou": ${outletCode}, "mterminal_id": ${idKasir}, "status": "${status.length !== 0 ? status : "2,4,5,6"}", "payment_type_qris": "${channelPembayaran !== 0 ? channelPembayaran : "1,2,3"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -636,12 +646,12 @@ const QrisTransaksi = () => {
                     history.push(errorCatch(error.response.status))
                 }
             }
-            dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode)
+            dataExportFilter(idTransaksi, rrn, grupCode, brandCode, outletCode, idKasir, status, dateId, periode, channelPembayaran)
         } else {
             async function dataExportTransactionQris() {
                 try {
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "payment_type_qris": "1,2,3", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth
@@ -703,7 +713,8 @@ const QrisTransaksi = () => {
         idTransaksi: "",
         rrn: "",
         statusQris: "",
-        periode: 0
+        periode: 0,
+        channelPembayaran: 0,
     })
     const [selectedBrandNameMerchant, setSelectedBrandNameMerchant] = useState([])
     const [selectedOutletNameMerchant, setSelectedOutletNameMerchant] = useState([])
@@ -761,7 +772,7 @@ const QrisTransaksi = () => {
     function handlePageChangeTransactionReportQrisMerchant(page) {
         if (isFilterTransactionReportQrisMerchant) {
             setActivePageTransactionReportQrisMerchant(page)
-            filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, page, 10)
+            filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, page, 10, inputHandleTransactionReportQrisMerchant.channelPembayaran)
         } else {
             setActivePageTransactionReportQrisMerchant(page)
             getTransactionReportQris(page, partnerId)
@@ -777,12 +788,19 @@ const QrisTransaksi = () => {
         {
             name: 'ID Transaksi',
             selector: row => row.transaction_code,
-            width: "170px", 
-            wrap: "true"
+            width: "170px",
+            wrap: true
+        },
+        {
+            name: 'No. Referensi',
+            selector: row => row.transaction_code !== null ? row.transaction_code : "-",
+            wrap: true,
+            width: "150px"
         },
         {
             name: 'RRN',
-            selector: row => row.RRN,
+            selector: row => row.RRN !== null ? row.RRN : "-",
+            wrap: true,
             width: "150px"
         },
         {
@@ -862,9 +880,9 @@ const QrisTransaksi = () => {
             setInputHandleTransactionReportQrisAdmin({
                 idTransaksi: "",
                 rrn: "",
-                jenisUsaha: 0,
                 statusQris: "",
-                periode: 0
+                periode: 0,
+                channelPembayaran: 0,
             })
             setDataBrandInQris([])
             setDataOutletInQris([])
@@ -891,9 +909,9 @@ const QrisTransaksi = () => {
             setInputHandleTransactionReportQrisMerchant({
                 idTransaksi: "",
                 rrn: "",
-                jenisUsaha: 0,
                 statusQris: "",
-                periode: 0
+                periode: 0,
+                channelPembayaran: 0,
             })
             setDataBrandInQris([])
             setDataOutletInQris([])
@@ -974,7 +992,7 @@ const QrisTransaksi = () => {
         }
         getTransactionReportQris(activePageTransactionReportQris, partnerId)
     }, [access_token])
-    
+
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
@@ -1026,7 +1044,7 @@ const QrisTransaksi = () => {
                                                 />
                                             </div>
                                         </Col>
-                                    ) 
+                                    )
                                 }
                                 {
                                     user_role === "106" && (
@@ -1107,13 +1125,23 @@ const QrisTransaksi = () => {
                                         <option value={6}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span>Channel Pembayaran</span>
+                                    <Form.Select name="channelPembayaran" value={inputHandleTransactionReportQrisMerchant.channelPembayaran} onChange={(e) => handleChangeTransactionReportQrisMerchant(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
+                                        <option defaultChecked disabled value={0}>Pilih Channel Pembayaran</option>
+                                        <option value={2}>Semua Channel</option>
+                                        <option value={4}>QRIS</option>
+                                        <option value={5}>AliPay</option>
+                                        <option value={6}>WeChatPay</option>
+                                    </Form.Select>
+                                </Col>
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={5}>
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, 1, 10)}
+                                                onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, 1, 10, inputHandleTransactionReportQrisMerchant.channelPembayaran)}
                                                 className={(inputHandleTransactionReportQrisMerchant.periode !== 0 || dateRangeTransactionReportQrisMerchant.length !== 0 || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length !== 0) || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.rrn.length !== 0) || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.statusQris.length !== 0) ? 'btn-ez-on' : 'btn-ez')}
                                                 disabled={inputHandleTransactionReportQrisMerchant.periode === 0 || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length === 0) || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.rrn.length === 0) || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.statusQris.length === 0)}
                                             >
@@ -1135,7 +1163,7 @@ const QrisTransaksi = () => {
                             {
                                 dataTransactionReportQrisMerchant.length !== 0 && (
                                     <div style={{ marginBottom: 30 }} className='mt-3'>
-                                        <Link className="export-span" onClick={() => ExportReportTransactionReportQrisMerchantHandler(isFilterTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant)}>Export</Link>
+                                        <Link className="export-span" onClick={() => ExportReportTransactionReportQrisMerchantHandler(isFilterTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.channelPembayaran)}>Export</Link>
                                     </div>
                                 )
                             }
@@ -1281,13 +1309,23 @@ const QrisTransaksi = () => {
                                         <option value={6}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span>Channel Pembayaran</span>
+                                    <Form.Select name="channelPembayaran" value={inputHandleTransactionReportQrisAdmin.channelPembayaran} onChange={(e) => handleChangeTransactionReposrtQris(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
+                                        <option defaultChecked disabled value={0}>Pilih Channel Pembayaran</option>
+                                        {/* <option value={2}>Semua Channel</option> */}
+                                        <option value={1}>QRIS</option>
+                                        <option value={2}>AliPay</option>
+                                        <option value={3}>WeChatPay</option>
+                                    </Form.Select>
+                                </Col>
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={5}>
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisAdmin.idTransaksi, inputHandleTransactionReportQrisAdmin.rrn, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), (selectedIdKasirName.length !== 0 ? selectedIdKasirName.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisAdmin.statusQris, inputHandleTransactionReportQrisAdmin.periode, dateRangeTransactionReportQris, 1, 10)}
+                                                onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisAdmin.idTransaksi, inputHandleTransactionReportQrisAdmin.rrn, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), (selectedIdKasirName.length !== 0 ? selectedIdKasirName.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisAdmin.statusQris, inputHandleTransactionReportQrisAdmin.periode, dateRangeTransactionReportQris, 1, 10, inputHandleTransactionReportQrisAdmin.channelPembayaran)}
                                                 className={(inputHandleTransactionReportQrisAdmin.periode !== 0 || dateRangeTransactionReportQris.length !== 0 || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.idTransaksi.length !== 0) || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.rrn.length !== 0) || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.statusQris.length !== 0) ? 'btn-ez-on' : 'btn-ez')}
                                                 disabled={inputHandleTransactionReportQrisAdmin.periode === 0 || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.idTransaksi.length === 0) || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.rrn.length === 0) || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.statusQris.length === 0)}
                                             >
@@ -1309,7 +1347,7 @@ const QrisTransaksi = () => {
                             {
                                 dataTransactionReportQris.length !== 0 && (
                                     <div style={{ marginBottom: 30 }} className='mt-3'>
-                                        <Link className="export-span" onClick={() => ExportReportTransactionReportQrisHandler(isFilterTransactionReportQris, inputHandleTransactionReportQrisAdmin.idTransaksi, inputHandleTransactionReportQrisAdmin.rrn, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), (selectedIdKasirName.length !== 0 ? selectedIdKasirName.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisAdmin.statusQris, inputHandleTransactionReportQrisAdmin.periode, dateRangeTransactionReportQris)}>Export</Link>
+                                        <Link className="export-span" onClick={() => ExportReportTransactionReportQrisHandler(isFilterTransactionReportQris, inputHandleTransactionReportQrisAdmin.idTransaksi, inputHandleTransactionReportQrisAdmin.rrn, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), (selectedIdKasirName.length !== 0 ? selectedIdKasirName.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisAdmin.statusQris, inputHandleTransactionReportQrisAdmin.periode, dateRangeTransactionReportQris, inputHandleTransactionReportQrisAdmin.channelPembayaran)}>Export</Link>
                                     </div>
                                 )
                             }
