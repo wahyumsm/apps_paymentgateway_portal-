@@ -6,7 +6,7 @@ import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function
 import encryptData from '../../../function/encryptData';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect, { components } from 'react-select';
 import noteIconRed from "../../../assets/icon/note_icon_red.svg";
 
@@ -16,10 +16,12 @@ const FormInfoUsahaBadanUsaha = () => {
     const [dataKategoriUsaha, setDataKategoriUsaha] = useState([])
     const [dataKodePos, setDataKodePos] = useState({})
     const [selectedDataKategoriUsaha, setSelectedDataKategoriUsaha] = useState([])
+    const [isLoadingInfoUsahaBadanUsaha, setIsLoadingInfoUsahaBadanUsaha] = useState(false)
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [alertMinNmid, setAlertMinNmid] = useState(false)
     const [alertMaxFile, setAlertMaxFile] = useState(false)
     const [alertMaxJumlahKasir, setAlertMaxJumlahKasir] = useState(false)
+    const [getDataSecondStep, setGetDataSecondStep] = useState({})
     const [inputHandle, setInputHandle] = useState({
         namaPerusahaan: "",
         bentukPerusahaan: 0,
@@ -40,17 +42,25 @@ const FormInfoUsahaBadanUsaha = () => {
     const [imageFileTempatUsaha, setImageFileTempatUsaha] = useState([])
     const [imageTempatUsaha, setImageTempatUsaha] = useState(null)
     const [uploadTempatUsaha, setUploadTempatUsaha] = useState(false)
-    console.log(imageFileTempatUsaha, 'imageFileTempatUsaha');
 
     const handleClickTempatUsaha = () => {
         hiddenFileInputTempatUsaha.current.click();
     };
 
-    console.log(inputHandle.kodePos, "inputHandle.kodePos");
-    console.log(Number(inputHandle.jumlahKasir), "inputHandle.jumlahKasir");
-
     function handleChange(e) {
-        if (e.target.name === "pendapatanPertahun") {
+        if (e.target.name === "namaPerusahaan") {
+            if (e.target.value.length > 50) {
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: (e.target.value).slice(0,50)
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: e.target.value
+                })
+            }
+        } else if (e.target.name === "pendapatanPertahun") {
             setSelectedDataKategoriUsaha([])
             getDataKategoriUsaha(e.target.value)
             setInputHandle({
@@ -72,7 +82,6 @@ const FormInfoUsahaBadanUsaha = () => {
                 })
             }
         } else if (e.target.name === "nmid") {
-            console.log("masuksini");
             if (e.target.value.length < 13) {
                 setAlertMinNmid(true)
                 setInputHandle({
@@ -87,7 +96,6 @@ const FormInfoUsahaBadanUsaha = () => {
                 })
             }
         } else if (e.target.name === "jumlahKasir") {
-            console.log("masuksini");
             if (Number(e.target.value) > 1500) {
                 setAlertMaxJumlahKasir(true)
             } else {
@@ -95,7 +103,7 @@ const FormInfoUsahaBadanUsaha = () => {
             }
             setInputHandle({
                 ...inputHandle,
-                [e.target.name]: e.target.value
+                [e.target.name]: Number(e.target.value).toString()
             })
         } else if (e.target.name === "kepunyaanQris") {
             if (Number(e.target.value) === 0) {
@@ -119,8 +127,6 @@ const FormInfoUsahaBadanUsaha = () => {
     }
 
     function handleChangeJenisToko (e) {
-        console.log(e.target.value, "e.target.value");
-        console.log(e.target.checked, "e.target.checked");
         if (e.target.checked) {
             setJenisToko([...jenisToko, e.target.value])
         } else {
@@ -137,7 +143,6 @@ const FormInfoUsahaBadanUsaha = () => {
             const tempArr = [];
 
             [...event.target.files].forEach(file => {
-                console.log(file.size, "file.size");
 
                 if (parseFloat(file.size / 1024).toFixed(2) > 500) {
                     setUploadTempatUsaha(true)
@@ -159,8 +164,6 @@ const FormInfoUsahaBadanUsaha = () => {
             setImageFileTempatUsaha(tempArr);
         }
     }
-
-    console.log(jenisToko, "jenisToko");
 
     async function getDataKategoriUsaha(businessCategory) {
         try {
@@ -249,7 +252,7 @@ const FormInfoUsahaBadanUsaha = () => {
                     alamatUsaha: getDataSecStep.mprofbus_address === null ? "" : getDataSecStep.mprofbus_address,
                     kodePos: getDataSecStep.mprofbus_postal_code === null ? "" : getDataSecStep.mprofbus_postal_code,
                     onlineShopUrl: getDataSecStep.mprofbus_online_shop_url === null ? "" : getDataSecStep.mprofbus_online_shop_url,
-                    kepunyaanQris: getDataSecStep.mprofbus_is_have_QRIS === true ? 1 : 2,
+                    kepunyaanQris: getDataSecStep.mprofbus_is_have_QRIS === true ? 1 : getDataSecStep.mprofbus_is_have_QRIS === false ? 0 : 2,
                     nmid: getDataSecStep.mprofbus_NMID_QRIS === null ? "" : getDataSecStep.mprofbus_NMID_QRIS
                 })
                 getDataPostalCodeHandler(getDataSecStep.mprofbus_postal_code)
@@ -261,29 +264,31 @@ const FormInfoUsahaBadanUsaha = () => {
                 newArrKategoriUsaha.push(objKategoriUsaha)
                 setSelectedDataKategoriUsaha((objKategoriUsaha.value === null || objKategoriUsaha.value === 0) ? [] : newArrKategoriUsaha)
                 setJenisToko((getDataSecStep.mprofbus_shop_type === null || getDataSecStep.mprofbus_shop_type.length === 0) ? [] : getDataSecStep.mprofbus_shop_type.split(","))
-                console.log("masuksini");
                 const data1 = getDataSecStep.mprofbus_photos_url_1 === null ? "" : getDataSecStep.mprofbus_photos_url_1.split()
                 const data2 = getDataSecStep.mprofbus_photos_url_2 === null ? "" : getDataSecStep.mprofbus_photos_url_2.split()
                 const data3 = getDataSecStep.mprofbus_photos_url_3 === null ? "" : getDataSecStep.mprofbus_photos_url_3.split()
-                console.log(data1, "data1");
+                const dataName1 = getDataSecStep.mprofbus_photos_name_1 === null ? "" : getDataSecStep.mprofbus_photos_name_1.split()
+                const dataName2 = getDataSecStep.mprofbus_photos_name_2 === null ? "" : getDataSecStep.mprofbus_photos_name_2.split()
+                const dataName3 = getDataSecStep.mprofbus_photos_name_3 === null ? "" : getDataSecStep.mprofbus_photos_name_3.split()
                 if (data1.length === 0) {
                     setImageFileTempatUsaha([])
                 } else {
                     const newData = (data1.concat(data2).concat(data3)).filter((str) => str !== "")
-                    console.log(newData, "newData");
+                    const newDataName = (dataName1.concat(dataName2).concat(dataName3)).filter((str) => str !== "")
                     let newArrImage = []
-                    newData.forEach(async (item, id) => {
+                    newData.map(async (item, id) => {
                         const obj = {}
                         const response = await fetch(item)
                         const blob = await response.blob();
                         const file = new File([blob], `image${id+1}.jpg`, {type: blob.type});
                         obj.data = file
                         obj.url = item
+                        obj.name = newDataName[id]
                         newArrImage.push(obj)
                     })
-                    console.log(newArrImage, "newArrImage");
                     setImageFileTempatUsaha(newArrImage)
                 }
+                setGetDataSecondStep(getDataSecStep)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 const getDataSecStep = getData.data.response_data.results
@@ -299,7 +304,7 @@ const FormInfoUsahaBadanUsaha = () => {
                     alamatUsaha: getDataSecStep.mprofbus_address === null ? "" : getDataSecStep.mprofbus_address,
                     kodePos: getDataSecStep.mprofbus_postal_code === null ? "" : getDataSecStep.mprofbus_postal_code,
                     onlineShopUrl: getDataSecStep.mprofbus_online_shop_url === null ? "" : getDataSecStep.mprofbus_online_shop_url,
-                    kepunyaanQris: getDataSecStep.mprofbus_is_have_QRIS === true ? 1 : 2,
+                    kepunyaanQris: getDataSecStep.mprofbus_is_have_QRIS === true ? 1 : getDataSecStep.mprofbus_is_have_QRIS === false ? 0 : 2,
                     nmid: getDataSecStep.mprofbus_NMID_QRIS === null ? "" : getDataSecStep.mprofbus_NMID_QRIS
                 })
                 getDataPostalCodeHandler(getDataSecStep.mprofbus_postal_code)
@@ -311,42 +316,44 @@ const FormInfoUsahaBadanUsaha = () => {
                 newArrKategoriUsaha.push(objKategoriUsaha)
                 setSelectedDataKategoriUsaha((objKategoriUsaha.value === null || objKategoriUsaha.value === 0) ? [] : newArrKategoriUsaha)
                 setJenisToko((getDataSecStep.mprofbus_shop_type === null || getDataSecStep.mprofbus_shop_type.length === 0) ? [] : getDataSecStep.mprofbus_shop_type.split(","))
-                console.log("masuksini");
                 const data1 = getDataSecStep.mprofbus_photos_url_1 === null ? "" : getDataSecStep.mprofbus_photos_url_1.split()
                 const data2 = getDataSecStep.mprofbus_photos_url_2 === null ? "" : getDataSecStep.mprofbus_photos_url_2.split()
                 const data3 = getDataSecStep.mprofbus_photos_url_3 === null ? "" : getDataSecStep.mprofbus_photos_url_3.split()
-                console.log(data1, "data1");
+                const dataName1 = getDataSecStep.mprofbus_photos_name_1 === null ? "" : getDataSecStep.mprofbus_photos_name_1.split()
+                const dataName2 = getDataSecStep.mprofbus_photos_name_2 === null ? "" : getDataSecStep.mprofbus_photos_name_2.split()
+                const dataName3 = getDataSecStep.mprofbus_photos_name_3 === null ? "" : getDataSecStep.mprofbus_photos_name_3.split()
                 if (data1.length === 0) {
                     setImageFileTempatUsaha([])
                 } else {
                     const newData = (data1.concat(data2).concat(data3)).filter((str) => str !== "")
-                    console.log(newData, "newData");
+                    const newDataName = (dataName1.concat(dataName2).concat(dataName3)).filter((str) => str !== "")
                     let newArrImage = []
-                    newData.forEach(async (item, id) => {
+                    newData.map(async (item, id) => {
                         const obj = {}
                         const response = await fetch(item)
                         const blob = await response.blob();
                         const file = new File([blob], `image${id+1}.jpg`, {type: blob.type});
                         obj.data = file
                         obj.url = item
+                        obj.name = newDataName[id]
                         newArrImage.push(obj)
                     })
-                    console.log(newArrImage, "newArrImage");
                     setImageFileTempatUsaha(newArrImage)
                 }
+                setGetDataSecondStep(getDataSecStep)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
 
     async function formDataSecondStepInfoUsahaBadanUsaha(businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, step) {
         try {
-            console.log(imageOnlineShop, "imageOnlineShop");
+            setIsLoadingInfoUsahaBadanUsaha(true)
             const auth = "Bearer " + getToken()
             const formData = new FormData()
-            const dataParams = encryptData(`{"business_level": ${businessLevel}, "mprofbus_mprofile_id":${profileId}, "mprofbus_name":"${namaPerusahaan}", "mprofbus_company_type": ${bentukperusahaan}, "mprofbus_company_desc": "${descBentukPerusahaan}", "mprofdtl_email": "${emailPerusahaan}", "mprofbus_brand":"${namaBrand}", "mprofbus_buscat_id": ${kategoriUsaha}, "mprofbus_cashier_count": ${jumlahKasir}, "mprofbus_mbusinc_id": ${pendapatanPerTahun}, "mprofbus_address": "${alamat}", "mprofbus_postal_code": "${kodePos}", "mprofbus_province": "${provinsi}", "mprofbus_city": "${kota}", "mprofbus_district": "${kecamatan}", "mprofbus_village": "${kelurahan}", "mprofbus_shop_type": "${jenisToko}", "mprofbus_is_have_QRIS": ${kepunyaanQris}, "mprofbus_NMID_QRIS": "${nmid}", "mprofbus_online_shop_url": "${onlineShopUrl}", "step": "${step}"}`)
+            const dataParams = encryptData(`{"business_level": ${businessLevel}, "mprofbus_mprofile_id":${profileId}, "mprofbus_name":"${namaPerusahaan}", "mprofbus_company_type": ${bentukperusahaan}, "mprofbus_company_desc": "${descBentukPerusahaan}", "mprofdtl_email": "${emailPerusahaan}", "mprofbus_brand":"${namaBrand}", "mprofbus_name_in_qris": "", "mprofbus_buscat_id": ${kategoriUsaha}, "mprofbus_cashier_count": ${jumlahKasir}, "mprofbus_mbusinc_id": ${pendapatanPerTahun}, "mprofbus_address": "${alamat}", "mprofbus_postal_code": "${kodePos}", "mprofbus_province": "${provinsi}", "mprofbus_city": "${kota}", "mprofbus_district": "${kecamatan}", "mprofbus_village": "${kelurahan}", "mprofbus_shop_type": "${jenisToko}", "mprofbus_is_have_QRIS": ${kepunyaanQris}, "mprofbus_NMID_QRIS": "${nmid}", "mprofbus_online_shop_url": "${onlineShopUrl}", "step": "${step}"}`)
             imageOnlineShop.map((item, id) => {
                 formData.append(`toko${id+1}_url`, item.data)
             })
@@ -356,18 +363,15 @@ const FormInfoUsahaBadanUsaha = () => {
                 'Authorization' : auth
             }
             const getData = await axios.post(BaseURL + "/QRIS/SecondStepAddMerchantQRISOnboarding", formData, { headers: headers })
-            console.log(getData, "getData");
-            console.log("lolosAPI");
             if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 if (getData.data.response_data.results !== null) {
-                    console.log("masuk1");
                     if (step === 3) {
                         history.push(`/form-dokumen-usaha-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                     } else if (step === 2) {
+                        setIsLoadingInfoUsahaBadanUsaha(false)
                         history.push('/daftar-merchant-qris')
                     }
                 } else {
-                    console.log("masuk2");
                     alert(`${getData.data.response_data.error_text}`)
                 }
             } else if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
@@ -376,6 +380,7 @@ const FormInfoUsahaBadanUsaha = () => {
                     if (step === 3) {
                         history.push(`/form-dokumen-usaha-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                     } else if (step === 2) {
+                        setIsLoadingInfoUsahaBadanUsaha(false)
                         history.push('/daftar-merchant-qris')
                     }
                 } else {
@@ -383,8 +388,11 @@ const FormInfoUsahaBadanUsaha = () => {
                 }
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
+            if (error.response.data.response_code === 400) {
+                alert(error.response.data.response_message)
+            }
         }
     }
 
@@ -394,7 +402,15 @@ const FormInfoUsahaBadanUsaha = () => {
 
     function saveAndGoBack () {
         formDataSecondStepInfoUsahaBadanUsaha(101, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 2)
-        history.push('/daftar-merchant-qris')
+    }
+
+    function breadCrumbsMerchant (namaPemilik) {
+        if (namaPemilik.length !== 0) {
+            setShowModalSimpanData(true)
+        } else {
+            setShowModalSimpanData(false)
+            history.push('daftar-merchant-qris')
+        }
     }
 
     const customStylesSelectedOption = {
@@ -424,7 +440,7 @@ const FormInfoUsahaBadanUsaha = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => breadCrumbsMerchant(inputHandle.namaPerusahaan)} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
@@ -494,6 +510,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                     id="lainnya"
                                     name='bentukPerusahaan'
                                     value={3}
+                                    disabled={getDataSecondStep?.mprofile_register_status === 105 ? true : false}
                                     checked={inputHandle.bentukPerusahaan === 3 && true}
                                     onChange={(e) => handleChange(e)}
                                 />
@@ -505,7 +522,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                     Lainnya
                                 </label>
                             </div>
-                            <input placeholder='Masukkan bentuk usaha' disabled={inputHandle.bentukPerusahaan !== 3} className='input-text-user' />
+                            <input placeholder='Masukkan bentuk usaha' disabled={inputHandle.bentukPerusahaan !== 3} onChange={(e) => handleChange(e)} value={inputHandle.bentukPerusahaanLainnya} name='bentukPerusahaanLainnya' type="text" className='input-text-user' />
                         </Col>
                     </Row>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>E-mail perusahaan</div>
@@ -629,7 +646,11 @@ const FormInfoUsahaBadanUsaha = () => {
                             </div>
                         </Col>
                     </Row>
-                    <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>Harus sesuai dengan kelurahan pada alamat anda</div>
+                    {
+                        inputHandle.kodePos.length >= 5 && Object.keys(dataKodePos).length === 0 ?
+                        <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#B9121B" }}>Kode Pos tidak ditemukan</div> :
+                        <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>Harus sesuai dengan kelurahan pada alamat anda</div>
+                    }
                     <Row className='pt-3'>
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }}>Provinsi</div>
@@ -682,6 +703,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                                 ref={hiddenFileInputTempatUsaha}
                                                 id="image"
                                                 name="image"
+                                                disabled={getDataSecondStep?.mprofile_register_status === 105 ? true : false}
                                                 multiple
                                             />
                                             <div className='pt-3 text-center'>Maks: 3 foto, Maks ukuran satu file: 500kb</div>
@@ -709,6 +731,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                                 ref={hiddenFileInputTempatUsaha}
                                                 id="image"
                                                 name="image"
+                                                disabled={getDataSecondStep?.mprofile_register_status === 105 ? true : false}
                                                 multiple
                                             />
                                             <div className='pt-3 text-center'>Maks: 3 foto, Maks ukuran satu file: 500kb</div>
@@ -815,7 +838,7 @@ const FormInfoUsahaBadanUsaha = () => {
                         <button 
                             className={(
                                 inputHandle.namaPerusahaan.length !== 0 && 
-                                (inputHandle.bentukPerusahaan !== 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0)) && 
+                                (inputHandle.bentukPerusahaan === 1 || inputHandle.bentukPerusahaan === 2 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0)) && 
                                 inputHandle.emailPerusahaan.length !== 0 && 
                                 inputHandle.namaBrand.length !== 0 && 
                                 Number(inputHandle.jumlahKasir) !== 0 &&
@@ -831,7 +854,8 @@ const FormInfoUsahaBadanUsaha = () => {
                             }
                             disabled={(
                                 inputHandle.namaPerusahaan.length === 0 || 
-                                (inputHandle.bentukPerusahaan === 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0)) || 
+                                inputHandle.bentukPerusahaan === 0 || 
+                                (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0) || 
                                 inputHandle.emailPerusahaan.length === 0 || 
                                 inputHandle.namaBrand.length === 0 ||
                                 Number(inputHandle.jumlahKasir) === 0 || 
@@ -875,7 +899,9 @@ const FormInfoUsahaBadanUsaha = () => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => saveAndGoBack()} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                        <Button onClick={() => saveAndGoBack()} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
+                            {isLoadingInfoUsahaBadanUsaha ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
+                        </Button>
                     </div>
                 </Modal.Body>
             </Modal>

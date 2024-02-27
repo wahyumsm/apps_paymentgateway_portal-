@@ -37,7 +37,6 @@ const FormInfoUsahaPerseorangan = () => {
     const [imageTempatUsaha, setImageTempatUsaha] = useState(null)
     const [nameImageTempatUsaha, setNameImageTempatUsaha] = useState("")
     const [uploadTempatUsaha, setUploadTempatUsaha] = useState(false)
-    console.log(inputHandle.kepunyaanQris, 'inputHandle.kepunyaanQris');
 
     const handleClickTempatUsaha = () => {
         hiddenFileInputTempatUsaha.current.click();
@@ -58,7 +57,6 @@ const FormInfoUsahaPerseorangan = () => {
                 [e.target.name]: e.target.value
             })
         } else if (e.target.name === "nmid") {
-            console.log("masuksini");
             if (e.target.value.length < 13) {
                 setAlertMinNmid(true)
                 setInputHandle({
@@ -81,17 +79,12 @@ const FormInfoUsahaPerseorangan = () => {
     }
 
     function handleChangeJenisToko (e) {
-        console.log(e.target.value, "e.target.value");
-        console.log(e.target.checked, "e.target.checked");
         if (e.target.checked) {
             setJenisToko([...jenisToko, e.target.value])
         } else {
             setJenisToko(jenisToko.filter(item => item !== e.target.value))
         }
     }
-
-    console.log(imageTempatUsaha, "imageTempatUsaha");
-    console.log(inputHandle.onlineShopUrl, "inputHandle.onlineShopUrl");
 
     const handleFileChangeTempatUsaha = (event) => {
         if(event.target.files[0]) {
@@ -103,7 +96,6 @@ const FormInfoUsahaPerseorangan = () => {
             }
             else {
                 setUploadTempatUsaha(false)
-                console.log("file >>> ", event.target.files.length);
                 if (event.target.files.length > 3) {
                     setAlertMaxFile(true)
                 } else {
@@ -220,16 +212,13 @@ const FormInfoUsahaPerseorangan = () => {
                 newArrKategoriUsaha.push(objKategoriUsaha)
                 setSelectedDataKategoriUsaha((objKategoriUsaha.value === null || objKategoriUsaha.value === 0) ? [] : newArrKategoriUsaha)
                 setJenisToko((getDataSecStep.mprofbus_shop_type === null || getDataSecStep.mprofbus_shop_type.length === 0) ? [] : getDataSecStep.mprofbus_shop_type.split(","))
-                console.log("masuksini");
                 const data1 = getDataSecStep.mprofbus_photos_url_1 === null ? "" : getDataSecStep.mprofbus_photos_url_1.split()
                 const data2 = getDataSecStep.mprofbus_photos_url_2 === null ? "" : getDataSecStep.mprofbus_photos_url_2.split()
                 const data3 = getDataSecStep.mprofbus_photos_url_3 === null ? "" : getDataSecStep.mprofbus_photos_url_3.split()
-                console.log(data1, "data1");
                 if (data1.length === 0) {
                     setImageFileTempatUsaha([])
                 } else {
                     const newData = (data1.concat(data2).concat(data3)).filter((str) => str !== "")
-                    console.log(newData, "newData");
                     let newArrImage = []
                     newData.forEach(async (item, id) => {
                         const obj = {}
@@ -240,7 +229,6 @@ const FormInfoUsahaPerseorangan = () => {
                         obj.url = item
                         newArrImage.push(obj)
                     })
-                    console.log(newArrImage, "newArrImage");
                     setImageFileTempatUsaha(newArrImage)
                 }
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
@@ -267,16 +255,13 @@ const FormInfoUsahaPerseorangan = () => {
                 newArrKategoriUsaha.push(objKategoriUsaha)
                 setSelectedDataKategoriUsaha((objKategoriUsaha.value === null || objKategoriUsaha.value === 0) ? [] : newArrKategoriUsaha)
                 setJenisToko((getDataSecStep.mprofbus_shop_type === null || getDataSecStep.mprofbus_shop_type.length === 0) ? [] : getDataSecStep.mprofbus_shop_type.split(","))
-                console.log("masuksini");
                 const data1 = getDataSecStep.mprofbus_photos_url_1 === null ? "" : getDataSecStep.mprofbus_photos_url_1.split()
                 const data2 = getDataSecStep.mprofbus_photos_url_2 === null ? "" : getDataSecStep.mprofbus_photos_url_2.split()
                 const data3 = getDataSecStep.mprofbus_photos_url_3 === null ? "" : getDataSecStep.mprofbus_photos_url_3.split()
-                console.log(data1, "data1");
                 if (data1.length === 0) {
                     setImageFileTempatUsaha([])
                 } else {
                     const newData = (data1.concat(data2).concat(data3)).filter((str) => str !== "")
-                    console.log(newData, "newData");
                     let newArrImage = []
                     newData.forEach(async (item, id) => {
                         const obj = {}
@@ -287,17 +272,14 @@ const FormInfoUsahaPerseorangan = () => {
                         obj.url = item
                         newArrImage.push(obj)
                     })
-                    console.log(newArrImage, "newArrImage");
                     setImageFileTempatUsaha(newArrImage)
                 }
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
-    // console.log(imageFileTempatUsaha.map((item, id) => item.data), "imageFileTempatUsaha");
-    console.log(selectedDataKategoriUsaha.length, "selectedDataKategoriUsaha");
 
     async function formDataSecondStepInfoUsahaPerorangan(businessLevel, profileId, namaPerusahaan, namaBrand, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, step) {
         try {
@@ -313,9 +295,7 @@ const FormInfoUsahaPerseorangan = () => {
                 'Authorization' : auth
             }
             const getData = await axios.post(BaseURL + "/QRIS/SecondStepAddMerchantQRISOnboarding", formData, { headers: headers })
-            console.log(getData, "getData");
             if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token === null) {
-                console.log("lolos");
                 if (profileId === 0) {
                     if (step === 3) {
                         history.push(`/pengaturan-merchant`)
@@ -323,7 +303,6 @@ const FormInfoUsahaPerseorangan = () => {
                         history.push('/daftar-merchant-qris')
                     }
                 } else {
-                    console.log("masuk2");
                     if (step === 3) {
                         history.push(`/pengaturan-merchant/${profileId}/101/2`)
                     } else if (step === 2) {
@@ -339,7 +318,6 @@ const FormInfoUsahaPerseorangan = () => {
                         history.push('/daftar-merchant-qris')
                     }
                 } else {
-                    console.log("masuk2");
                     if (step === 3) {
                         history.push(`/pengaturan-merchant/${profileId}/101/2`)
                     } else if (step === 2) {
@@ -359,7 +337,6 @@ const FormInfoUsahaPerseorangan = () => {
 
     function saveAndGoBack () {
         formDataSecondStepInfoUsahaPerorangan(101, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 2)
-        history.push('/daftar-merchant-qris')
     }
 
     const customStylesSelectedOption = {

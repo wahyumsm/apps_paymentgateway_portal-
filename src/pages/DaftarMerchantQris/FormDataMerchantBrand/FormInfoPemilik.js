@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import { Button, Form, Modal } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect, { components } from 'react-select';
 import noteIconRed from "../../../assets/icon/note_icon_red.svg"
 
@@ -28,6 +28,7 @@ const FormInfoPemilik = (props) => {
     const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
 
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
+    const [isLoadingInfoPemilikBadanUsaha, setIsLoadingInfoPemilikBadanUsaha] = useState(false)
     const [getDataFirstStep, setGetDataFirstStep] = useState({})
     const [dataList, setDataList] = useState([])
     const [selectedDataGrup, setSelectedDataGrup] = useState([])
@@ -41,14 +42,39 @@ const FormInfoPemilik = (props) => {
         noTelp: "",
     })
 
-    function handleChange(e) {
-        setInputHandle({
-            ...inputHandle,
-            [e.target.name]: (e.target.name === "peranPendaftar" || e.target.name === "kewarganegaraan" || e.target.name === "jenisUsaha") ? Number(e.target.value) : e.target.value
-        })
+    function handleChange(e, kewarganegaraan) {
+        if (e.target.name === "kewarganegaraan") {
+            setInputHandle({
+                ...inputHandle,
+                kewarganegaraan: Number(e.target.value),
+                nomorKtp: ""
+            })
+        } else if (e.target.name === "nomorKtp") {
+            if (kewarganegaraan === 100) {
+                if (e.target.value.length > 16) {
+                    setInputHandle({
+                        ...inputHandle,
+                        [e.target.name]: (e.target.value).slice(0,16)
+                    })
+                } else {
+                    setInputHandle({
+                        ...inputHandle,
+                        [e.target.name]: e.target.value
+                    })
+                }
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: e.target.value
+                })
+            }
+        } else {
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name]: (e.target.name === "peranPendaftar") ? Number(e.target.value) : e.target.value
+            })
+        }
     }
-
-    console.log(profileId, "profileId");
 
     const handleClickKtp = () => {
         hiddenFileInputKtp.current.click();
@@ -83,6 +109,7 @@ const FormInfoPemilik = (props) => {
             setUploadKtp(false)
             setNameImageKtp("")
             setImageFileKtp(null)
+            setImageKtp(null)
         }
     }
 
@@ -98,7 +125,6 @@ const FormInfoPemilik = (props) => {
                 setUploadSelfieKtp(false)
                 const reader = new FileReader()
                 reader.addEventListener("load", () => {
-                    console.log(reader.result, "reader.result");
                     setImageFileSelfieKtp(reader.result)
                 })
                 reader.readAsDataURL(event.target.files[0])
@@ -197,46 +223,47 @@ const FormInfoPemilik = (props) => {
 
     async function formDataFirstStepInfoPemilikBadanUsaha(peranPendaftar, namaUser, nomorKtp, kewarganegaraan, noTelp, imageKtp, imageSelfieKtp, step, businessType, merchantNou, position, profileId) {
         try {
-        console.log(profileId, "profileId");
-        const auth = "Bearer " + getToken()
-        const formData = new FormData()
-        const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "register_type": 102, "user_role": ${peranPendaftar}, "profile_id": ${profileId === undefined ? 0 : profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${nomorKtp}", "user_name": "${namaUser}", "phone_number": "${noTelp}", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": ""}`)
-        formData.append('ktpUrl', imageKtp)
-        formData.append('SelfieKtpUrl', imageSelfieKtp)
-        formData.append('Data', dataParams)
-        const headers = {
-            'Content-Type':'multipart/form-data',
-            'Authorization' : auth
-        }
-        const getData = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
-        if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
-            if (position === "next") {
-                console.log("masuk1");
-                history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}?type=${businessType}`)
-            } else {
-                console.log("masuk2");
-                history.push('/daftar-merchant-qris')
+            setIsLoadingInfoPemilikBadanUsaha(true)
+            const auth = "Bearer " + getToken()
+            const formData = new FormData()
+            const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "register_type": 102, "user_role": ${peranPendaftar}, "profile_id": ${profileId === undefined ? 0 : profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${nomorKtp}", "user_name": "${namaUser}", "phone_number": "${noTelp}", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": ""}`)
+            formData.append('ktpUrl', imageKtp)
+            formData.append('SelfieKtpUrl', imageSelfieKtp)
+            formData.append('Data', dataParams)
+            const headers = {
+                'Content-Type':'multipart/form-data',
+                'Authorization' : auth
             }
-        } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
-            setUserSession(getData.data.response_new_token)
-            if (position === "next") {
-                console.log("masuk1");
-                history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}?type=${businessType}`)
-            } else {
-                console.log("masuk2");
-                history.push('/daftar-merchant-qris')
+            const getData = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
+            if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
+                if (position === "next") {
+                    history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}?type=${businessType}`)
+                } else {
+                    setIsLoadingInfoPemilikBadanUsaha(false)
+                    history.push('/daftar-merchant-qris')
+                }
+            } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
+                setUserSession(getData.data.response_new_token)
+                if (position === "next") {
+                    history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}?type=${businessType}`)
+                } else {
+                    setIsLoadingInfoPemilikBadanUsaha(false)
+                    history.push('/daftar-merchant-qris')
+                }
             }
-        }
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
 
-    console.log(getDataFirstStep.mprofile_id, "getDataFirstStep.mprofile_id");
-
-    function backPage () {
-        setShowModalSimpanData(true)
+    function backPage (namaPemilik) {
+        if (namaPemilik.length !== 0) {
+            setShowModalSimpanData(true)
+        } else {
+            setShowModalSimpanData(false)
+            history.push('/daftar-merchant-qris')
+        }
     }
 
     const Option = (props) => {
@@ -268,14 +295,10 @@ const FormInfoPemilik = (props) => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => backPage(inputHandle.namaUser)} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
-                    {
-                        inputHandle.namaUser.length !== 0 && (
-                            <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
-                        )
-                    }
-                    <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Tambah Brand</h2>
+                    <FontAwesomeIcon onClick={() => backPage(inputHandle.namaUser)} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
+                    <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
                 </div>
                 <div className='pb-4 pt-3'>
                     <div className='d-flex justify-content-start align-items-center' style={{ marginLeft: 25, marginRight: 25 }}>
@@ -301,7 +324,7 @@ const FormInfoPemilik = (props) => {
                                 name='jenisUsaha'
                                 value={1}
                                 checked={inputHandle.jenisUsaha === 1 && true}
-                                onChange={(e) => handleChange(e)}
+                                onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)}
                             />
                             <label
                                 className="form-check-label"
@@ -319,7 +342,7 @@ const FormInfoPemilik = (props) => {
                                 name='jenisUsaha'
                                 value={2}
                                 checked={inputHandle.jenisUsaha === 2 && true}
-                                onChange={(e) => handleChange(e)}
+                                onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)}
                             />
                             <label
                                 className="form-check-label"
@@ -356,7 +379,7 @@ const FormInfoPemilik = (props) => {
                                         name='peranPendaftar'
                                         value={1}
                                         checked={inputHandle.peranPendaftar === 1 && true}
-                                        onChange={(e) => handleChange(e)}
+                                        onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)}
                                     />
                                     <label
                                         className="form-check-label"
@@ -374,7 +397,7 @@ const FormInfoPemilik = (props) => {
                                         name='peranPendaftar'
                                         value={2}
                                         checked={inputHandle.peranPendaftar === 2 && true}
-                                        onChange={(e) => handleChange(e)}
+                                        onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)}
                                     />
                                     <label
                                         className="form-check-label"
@@ -397,7 +420,7 @@ const FormInfoPemilik = (props) => {
                                 name='kewarganegaraan'
                                 value={100}
                                 checked={inputHandle.kewarganegaraan === 100 && true}
-                                onChange={(e) => handleChange(e)}
+                                onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)}
                             />
                             <label
                                 className="form-check-label"
@@ -415,7 +438,7 @@ const FormInfoPemilik = (props) => {
                                 name='kewarganegaraan'
                                 value={101}
                                 checked={inputHandle.kewarganegaraan === 101 && true}
-                                onChange={(e) => handleChange(e)}
+                                onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)}
                             />
                             <label
                                 className="form-check-label"
@@ -428,18 +451,22 @@ const FormInfoPemilik = (props) => {
                     </div>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="namaUser" value={inputHandle.namaUser} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                        <input name="namaUser" value={inputHandle.namaUser} onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)} className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor eKTP pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`} pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="nomorKtp" value={inputHandle.nomorKtp} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan nomor eKTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                        <input name="nomorKtp" value={inputHandle.nomorKtp} onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)} type={inputHandle.kewarganegaraan === 101 ? 'text' : 'number'} onKeyDown={inputHandle.kewarganegaraan === 101 ? "" : (evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder={`Masukan nomor ${inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`} pemilik`} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto eKTP pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`} pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
                     <div className='viewDragDrop mt-2' onClick={handleClickKtp}  style={{cursor: "pointer"}}>
                         {
                             !imageFileKtp ?
                             <>
-                                <div className='pt-4 text-center'>Masukkan foto eKTP.</div>
+                                {
+                                    formatEktp === true ?
+                                    <div className='pt-4 text-center' style={{ color: "#B9121B" }}><span className='me-1'><img src={noteIconRed} alt="" /></span> Format harus .jpg</div> :
+                                    <div className='pt-4 text-center'>Masukkan foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}.</div>
+                                }
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
@@ -512,7 +539,7 @@ const FormInfoPemilik = (props) => {
                     }
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>No telepon pemilik usaha</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e)} type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                        <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)} type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     <div className='text-end mt-4'>
                         <button 
@@ -543,7 +570,9 @@ const FormInfoPemilik = (props) => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, imageSelfieKtp, 1, inputHandle.jenisUsaha, selectedDataGrup.length !== 0 ? selectedDataGrup[0].value : 0, "back", profileId === undefined ? 0 : profileId)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                        <Button onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, imageSelfieKtp, 1, inputHandle.jenisUsaha, selectedDataGrup.length !== 0 ? selectedDataGrup[0].value : 0, "back", profileId === undefined ? 0 : profileId)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
+                            {isLoadingInfoPemilikBadanUsaha ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
+                        </Button>
                     </div>
                 </Modal.Body>
             </Modal>

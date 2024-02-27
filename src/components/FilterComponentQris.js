@@ -56,7 +56,7 @@ export const FilterComponentQris = ({ filterText, onFilter, onClear, title, plac
                     alt="icon edit"
                 /> Upload dokumen
             </button>
-            <button onClick={onClickAddMerchant} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 200, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+            <button onClick={onClickAddMerchant} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 230, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                 <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> {addMerchant}
             </button>
         </div>
@@ -123,6 +123,25 @@ export const FilterComponentQrisOutlet = ({ filterText, onFilter, onClear, title
                     /> Upload dokumen
             </button>
             <button style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 200, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
+                <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah outlet
+            </button>
+        </div>
+    </div>
+);
+
+export const FilterComponentQrisOutletDetail = ({ filterText, onFilter, onClear, title, placeholder, onClickAddMerchantDeatil }) => (
+    <div className="d-flex justify-content-between align-items-center" style={{ width: "inherit" }}>
+        <div className="h5 mb-4" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Info Outlet</div>
+        <div className="d-flex justify-content-end align-items-center mb-4">
+            <button className="me-3" style={{ color: "#077E86", fontFamily: "Exo", fontSize: 14, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 200, height: 48, border: "1px solid var(--contoh-secondary-40-warna-utama, #077E86);", borderRadius: 4 }}>
+                    <img
+                        src={uploadIcon}
+                        // onClick={() => editInTableHandler(row.number)}
+                        style={{ cursor: "pointer" }}
+                        alt="icon edit"
+                    /> Upload dokumen
+            </button>
+            <button onClick={onClickAddMerchantDeatil} style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 200, height: 48, background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", border: "0.6px solid #2C1919", borderRadius: 6 }}>
                 <FontAwesomeIcon icon={faPlus} style={{ marginRight: 10 }} /> Tambah outlet
             </button>
         </div>

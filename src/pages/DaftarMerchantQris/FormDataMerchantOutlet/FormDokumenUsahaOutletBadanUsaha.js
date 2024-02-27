@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import filePdfQris from "../../../assets/icon/file_pdf_qris.svg";
@@ -14,29 +14,38 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
     const history = useHistory()
     const { profileId } = useParams()
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
+    const [isLoadingDokumenUsaha, setIsLoadingDokumenUsaha] = useState(false)
 
     const hiddenFileInputNpwp = useRef(null)
     const [imageFileNpwp, setImageFileNpwp] = useState(null)
+    const [nameNpwp, setNameNpwp] = useState(null)
     const [imageNpwp, setImageNpwp] = useState(null)
     const [uploadPdfNpwp, setUploadPdfNpwp] = useState(false)
+    const [formatJpgNpwp, setFormatJpgNpwp] = useState(false)
     const [fileSizeNpwp, setFileSizeNpwp] = useState(false)
 
     const hiddenFileInputNib = useRef(null)
     const [imageFileNib, setImageFileNib] = useState(null)
+    const [nameNib, setNameNib] = useState(null)
     const [imageNib, setImageNib] = useState(null)
     const [uploadPdfNib, setUploadPdfNib] = useState(false)
+    const [formatJpgNib, setFormatJpgNib] = useState(false)
     const [fileSizeNib, setFileSizeNib] = useState(false)
 
     const hiddenFileInputAktaPerusahaan = useRef(null)
     const [imageFileAktaPerusahaan, setImageFileAktaPerusahaan] = useState(null)
+    const [nameAktaPerusahaan, setNameAktaPerusahaan] = useState(null)
     const [imageAktaPerusahaan, setImageAktaPerusahaan] = useState(null)
     const [uploadPdfAktaPerusahaan, setUploadPdfAktaPerusahaan] = useState(false)
+    const [formatJpgAktaPerusahaan, setFormatJpgAktaPerusahaan] = useState(false)
     const [fileSizeAktaPerusahaan, setFileSizeAktaPerusahaan] = useState(false)
 
     const hiddenFileInputSkKementrian = useRef(null)
     const [imageFileSkKementrian, setImageFileSkKementrian] = useState(null)
+    const [nameSkKementrian, setNameSkKementrian] = useState(null)
     const [imageSkKementrian, setImageSkKementrian] = useState(null)
     const [uploadPdfSkKementrian, setUploadPdfSkKementrian] = useState(false)
+    const [formatJpgSkKementrian, setFormatJpgSkKementrian] = useState(false)
     const [fileSizeSkKementrian, setFileSizeSkKementrian] = useState(false)
 
     const handleClick = (param) => {
@@ -51,13 +60,12 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
         }
     };
 
-    console.log(imageNpwp, "imageNpwp");
-
     const handleFileChange = (event, param) => {
         if (param === "npwp") {
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageNpwp(event.target.files[0])
                 setImageFileNpwp(null)
+                setNameNpwp(event.target.files[0].name)
                 if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
                     setFileSizeNpwp(true)
                     setUploadPdfNpwp(false)
@@ -67,26 +75,39 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfNpwp(false)
-                if(event.target.files[0]) {
-                    setImageNpwp(event.target.files[0])
-                    if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                        setFileSizeNpwp(true)
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                    setFormatJpgNpwp(false)
+                    if(event.target.files[0]) {
+                        setImageNpwp(event.target.files[0])
+                        if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                            setFileSizeNpwp(true)
+                            setImageFileNpwp(null)
+                            setNameNpwp("")
+                        }
+                        else {
+                            setFileSizeNpwp(false)
+                            setNameNpwp(event.target.files[0].name)
+                            const reader = new FileReader()
+                            reader.addEventListener("load", () => {
+                                setImageFileNpwp(reader.result)
+                            })
+                            reader.readAsDataURL(event.target.files[0])
+                        }
                     }
-                    else {
-                        setFileSizeNpwp(false)
-                        const reader = new FileReader()
-                        reader.addEventListener("load", () => {
-                            console.log(reader.result, "reader.result");
-                            setImageFileNpwp(reader.result)
-                        })
-                        reader.readAsDataURL(event.target.files[0])
-                    }
+                } else {
+                    setFormatJpgNpwp(true)
+                    setFileSizeNpwp(false)
+                    setNameNpwp('')
+                    setImageFileNpwp(null)
+                    setImageNpwp(null)
                 }
+                    
             }
         } else if (param === "nib") {
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageNib(event.target.files[0])
                 setImageFileNib(null)
+                setNameNib(event.target.files[0].name)
                 if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
                     setFileSizeNib(true)
                     setUploadPdfNib(false)
@@ -96,25 +117,38 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfNib(false)
-                if(event.target.files[0]) {
-                    setImageNib(event.target.files[0])
-                    if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                        setImageFileNib(imageFileNib)
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                    setFormatJpgNib(false)
+                    if(event.target.files[0]) {
+                        setImageNib(event.target.files[0])
+                        if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                            setFileSizeNib(true)
+                            setImageFileNib(null)
+                            setNameNib("")
+                        }
+                        else {
+                            setFileSizeNib(false)
+                            setNameNib(event.target.files[0].name)
+                            const reader = new FileReader()
+                            reader.addEventListener("load", () => {
+                                setImageFileNib(reader.result)
+                            })
+                            reader.readAsDataURL(event.target.files[0])
+                        }
                     }
-                    else {
-                        const reader = new FileReader()
-                        reader.addEventListener("load", () => {
-                            console.log(reader.result, "reader.result");
-                            setImageFileNib(reader.result)
-                        })
-                        reader.readAsDataURL(event.target.files[0])
-                    }
+                } else {
+                    setFormatJpgNib(true)
+                    setFileSizeNib(false)
+                    setNameNib('')
+                    setImageFileNib(null)
+                    setImageNib(null)
                 }
             }
         } else if (param === "aktaPerusahaan") {
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageAktaPerusahaan(event.target.files[0])
                 setImageFileAktaPerusahaan(null)
+                setNameAktaPerusahaan(event.target.files[0].name)
                 if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
                     setFileSizeAktaPerusahaan(true)
                     setUploadPdfAktaPerusahaan(false)
@@ -124,25 +158,38 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfAktaPerusahaan(false)
-                if(event.target.files[0]) {
-                    setImageAktaPerusahaan(event.target.files[0])
-                    if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                        setImageFileAktaPerusahaan(imageFileAktaPerusahaan)
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                    setFormatJpgAktaPerusahaan(false)
+                    if(event.target.files[0]) {
+                        setImageAktaPerusahaan(event.target.files[0])
+                        if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                            setFileSizeAktaPerusahaan(true)
+                            setImageFileAktaPerusahaan(null)
+                            setNameAktaPerusahaan("")
+                        }
+                        else {
+                            setFileSizeAktaPerusahaan(false)
+                            setNameAktaPerusahaan(event.target.files[0].name)
+                            const reader = new FileReader()
+                            reader.addEventListener("load", () => {
+                                setImageFileAktaPerusahaan(reader.result)
+                            })
+                            reader.readAsDataURL(event.target.files[0])
+                        }
                     }
-                    else {
-                        const reader = new FileReader()
-                        reader.addEventListener("load", () => {
-                            console.log(reader.result, "reader.result");
-                            setImageFileAktaPerusahaan(reader.result)
-                        })
-                        reader.readAsDataURL(event.target.files[0])
-                    }
+                } else {
+                    setFormatJpgAktaPerusahaan(true)
+                    setFileSizeAktaPerusahaan(false)
+                    setNameAktaPerusahaan('')
+                    setImageFileAktaPerusahaan(null)
+                    setImageAktaPerusahaan(null)
                 }
             }
         } else {
             if ((event.target.files[0].name).slice(-3) === "pdf") {
                 setImageSkKementrian(event.target.files[0])
                 setImageFileSkKementrian(null)
+                setNameSkKementrian(event.target.files[0].name)
                 if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
                     setFileSizeSkKementrian(true)
                     setUploadPdfSkKementrian(false)
@@ -152,19 +199,31 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfSkKementrian(false)
-                if(event.target.files[0]) {
-                    setImageSkKementrian(event.target.files[0])
-                    if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                        setImageFileSkKementrian(imageFileSkKementrian)
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                    setFormatJpgSkKementrian(false)
+                    if(event.target.files[0]) {
+                        setImageSkKementrian(event.target.files[0])
+                        if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                            setFileSizeSkKementrian(true)
+                            setImageFileSkKementrian(null)
+                            setNameSkKementrian("")
+                        }
+                        else {
+                            setFileSizeSkKementrian(false)
+                            setNameSkKementrian(event.target.files[0].name)
+                            const reader = new FileReader()
+                            reader.addEventListener("load", () => {
+                                setImageFileSkKementrian(reader.result)
+                            })
+                            reader.readAsDataURL(event.target.files[0])
+                        }
                     }
-                    else {
-                        const reader = new FileReader()
-                        reader.addEventListener("load", () => {
-                            console.log(reader.result, "reader.result");
-                            setImageFileSkKementrian(reader.result)
-                        })
-                        reader.readAsDataURL(event.target.files[0])
-                    }
+                } else {
+                    setFormatJpgSkKementrian(true)
+                    setFileSizeSkKementrian(false)
+                    setNameSkKementrian('')
+                    setImageFileSkKementrian(null)
+                    setImageSkKementrian(null)
                 }
             }
         }
@@ -184,33 +243,42 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 if (data.mprofdoc_npwp_url.slice(-3) === "pdf") {
                     setImageFileNpwp(null)
                     setUploadPdfNpwp(true)
+                    setNameNpwp(data.mprofdoc_npwp_url_filename)
                 } else {
                     setUploadPdfNpwp(false)
                     setImageFileNpwp(data.mprofdoc_npwp_url)
+                    setNameNpwp(data.mprofdoc_npwp_url_filename)
                 }
 
                 if (data.mprofdoc_NIB_url.slice(-3) === "pdf") {
                     setImageFileNib(null)
                     setUploadPdfNib(true)
+                    setNameNib(data.mprofdoc_NIB_url_filename)
                 } else {
                     setUploadPdfNib(false)
                     setImageFileNib(data.mprofdoc_NIB_url)
+                    setNameNib(data.mprofdoc_NIB_url_filename)
+
                 }
 
                 if (data.mprofdoc_akta_pendirian_url.slice(-3) === "pdf") {
                     setImageFileAktaPerusahaan(null)
                     setUploadPdfAktaPerusahaan(true)
+                    setNameAktaPerusahaan(data.mprofdoc_akta_pendirian_url_filename)
                 } else {
                     setUploadPdfAktaPerusahaan(false)
                     setImageFileAktaPerusahaan(data.mprofdoc_akta_pendirian_url)
+                    setNameAktaPerusahaan(data.mprofdoc_akta_pendirian_url_filename)
                 }
 
                 if (data.mprofdoc_SK_url.slice(-3) === "pdf") {
                     setImageFileSkKementrian(null)
                     setUploadPdfSkKementrian(true)
+                    setNameSkKementrian(data.mprofdoc_SK_url_filename)
                 } else {
                     setUploadPdfSkKementrian(false)
                     setImageFileSkKementrian(data.mprofdoc_SK_url)
+                    setNameSkKementrian(data.mprofdoc_SK_url_filename)
                 }
                 
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
@@ -219,33 +287,42 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 if (data.mprofdoc_npwp_url.slice(-3) === "pdf") {
                     setImageFileNpwp(null)
                     setUploadPdfNpwp(true)
+                    setNameNpwp(data.mprofdoc_npwp_url_filename)
                 } else {
                     setUploadPdfNpwp(false)
                     setImageFileNpwp(data.mprofdoc_npwp_url)
+                    setNameNpwp(data.mprofdoc_npwp_url_filename)
                 }
 
                 if (data.mprofdoc_NIB_url.slice(-3) === "pdf") {
                     setImageFileNib(null)
                     setUploadPdfNib(true)
+                    setNameNib(data.mprofdoc_NIB_url_filename)
                 } else {
                     setUploadPdfNib(false)
                     setImageFileNib(data.mprofdoc_NIB_url)
+                    setNameNib(data.mprofdoc_NIB_url_filename)
+
                 }
 
                 if (data.mprofdoc_akta_pendirian_url.slice(-3) === "pdf") {
                     setImageFileAktaPerusahaan(null)
                     setUploadPdfAktaPerusahaan(true)
+                    setNameAktaPerusahaan(data.mprofdoc_akta_pendirian_url_filename)
                 } else {
                     setUploadPdfAktaPerusahaan(false)
                     setImageFileAktaPerusahaan(data.mprofdoc_akta_pendirian_url)
+                    setNameAktaPerusahaan(data.mprofdoc_akta_pendirian_url_filename)
                 }
 
                 if (data.mprofdoc_SK_url.slice(-3) === "pdf") {
                     setImageFileSkKementrian(null)
                     setUploadPdfSkKementrian(true)
+                    setNameSkKementrian(data.mprofdoc_SK_url_filename)
                 } else {
                     setUploadPdfSkKementrian(false)
                     setImageFileSkKementrian(data.mprofdoc_SK_url)
+                    setNameSkKementrian(data.mprofdoc_SK_url_filename)
                 }
                 
                 
@@ -258,7 +335,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
 
     async function formDataThirdStepBusenessDocument(settleGroup, businesLevel, profileId, businessType, step, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian) {
         try {
-            console.log(imageNpwp, "imageNpwp");
+            setIsLoadingDokumenUsaha(true)
             const auth = "Bearer " + getToken()
             const formData = new FormData()
             const dataParams = encryptData(`{"business_level": ${businesLevel}, "profile_id": ${profileId}, "bussiness_type": ${businessType}, "step": ${step}}`)
@@ -274,24 +351,26 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
             const getData = await axios.post(BaseURL + "/QRIS/AddBussinessFileDocument", formData, { headers: headers })
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 if (step === 3) {
+                    setIsLoadingDokumenUsaha(false)
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 200) {
                     history.push(`/pengaturan-merchant/${profileId}/${businesLevel}/${businessType}`)
                 } else if (step === 201) {
-                    history.push(`/form-info-rekening-outlet/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
+                    history.push(`/form-info-rekening-outlet/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.store_nou}/${profileId}`)
                 } else {
-                    history.push(`/detail-merchant-outlet`)
+                    history.push(`/detail-merchant-outlet/${profileId}`)
                 }
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 if (step === 3) {
+                    setIsLoadingDokumenUsaha(false)
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 200) {
                     history.push(`/pengaturan-merchant/${profileId}/${businesLevel}/${businessType}`)
                 } else if (step === 201) {
-                    history.push(`/form-info-rekening-outlet/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
+                    history.push(`/form-info-rekening-outlet/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.store_nou}/${profileId}`)
                 } else {
-                    history.push(`/detail-merchant-outlet`)
+                    history.push(`/detail-merchant-outlet/${profileId}`)
                 }
             }
         } catch (error) {
@@ -351,7 +430,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => setShowModalSimpanData(true)} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
@@ -371,7 +450,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className=''>Dokumen NPWP perusahaan</div>
                     <div className='viewDragDrop mt-2' style={{cursor: "pointer"}} onClick={() => handleClick("npwp")}>
                         {
-                            (!imageFileNpwp && uploadPdfNpwp === false && fileSizeNpwp === false) ? 
+                            (!imageFileNpwp && uploadPdfNpwp === false && fileSizeNpwp === false && formatJpgNpwp === false) ? 
                             <>
                                 <div className='pt-4 text-center'>Masukkan dokumen npwp perusahaan.</div>
                                 <input
@@ -382,7 +461,6 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputNpwp}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
                             </> : (imageFileNpwp) ?
                             <>
@@ -395,8 +473,8 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputNpwp}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameNpwp}</div>
                             </> : (uploadPdfNpwp === true) ?
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
@@ -408,9 +486,9 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputNpwp}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
-                            </> : (fileSizeNpwp === true) &&
+                                <div className='mt-2 ms-4'>{nameNpwp}</div>
+                            </> : (fileSizeNpwp === true) ?
                             <>
                                 <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                     <img src={noteIconRed} className="me-2" alt="icon notice" />
@@ -424,7 +502,21 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputNpwp}
                                     id="image"
                                     name="image"
-                                    multiple
+                                />
+                            </> : (formatJpgNpwp === true) &&
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>Format harus .jpg atau .pdf</div>
+                                </div>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "npwp")}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputNpwp}
+                                    id="image"
+                                    name="image"
                                 />
                             </>
                         }
@@ -434,7 +526,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Dokumen NIB perusahaan</div>
                     <div className='viewDragDrop mt-2' style={{cursor: "pointer"}} onClick={() => handleClick("nib")}>
                         {
-                            (!imageFileNib && uploadPdfNib === false && fileSizeNib === false) ? 
+                            (!imageFileNib && uploadPdfNib === false && fileSizeNib === false && formatJpgNib === false) ? 
                             <>
                                 <div className='pt-4 text-center'>Masukkan dokumen nib perusahaan.</div>
                                 <input
@@ -445,7 +537,6 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputNib}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
                             </> : (imageFileNib) ?
                             <>
@@ -458,8 +549,8 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputNib}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
+                                <div className='mt-2 ms-4'>{nameNib}</div>
                             </> : (uploadPdfNib === true) ?
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
@@ -471,9 +562,9 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputNib}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
-                            </> : (fileSizeNib === true) &&
+                                <div className='mt-2 ms-4'>{nameNib}</div>
+                            </> : (fileSizeNib === true) ?
                             <>
                                 <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                     <img src={noteIconRed} className="me-2" alt="icon notice" />
@@ -487,7 +578,21 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputNib}
                                     id="image"
                                     name="image"
-                                    multiple
+                                />
+                            </> : (formatJpgNib === true) &&
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>Format harus .jpg atau .pdf</div>
+                                </div>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "nib")}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputNib}
+                                    id="image"
+                                    name="image"
                                 />
                             </>
                         }
@@ -497,7 +602,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Akta pendirian perusahaan atau perubahan terakhir</div>
                     <div className='viewDragDrop mt-2' style={{cursor: "pointer"}} onClick={() => handleClick("aktaPerusahaan")}>
                         {
-                            (!imageFileAktaPerusahaan && uploadPdfAktaPerusahaan === false) ? 
+                            (!imageFileAktaPerusahaan && uploadPdfAktaPerusahaan === false && fileSizeAktaPerusahaan === false && formatJpgAktaPerusahaan === false) ? 
                             <>
                                 <div className='pt-4 text-center'>Masukkan Akta pendirian perusahaan atau perubahan terakhir.</div>
                                 <input
@@ -508,7 +613,6 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
                             </> : (imageFileAktaPerusahaan) ?
                             <>
@@ -521,9 +625,9 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
-                            </> : (uploadPdfAktaPerusahaan === true) &&
+                                <div className='mt-2 ms-4'>{nameAktaPerusahaan}</div>
+                            </> : (uploadPdfAktaPerusahaan === true) ?
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
                                 <input
@@ -534,7 +638,37 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
                                     name="image"
-                                    multiple
+                                />
+                                <div className='mt-2 ms-4'>{nameAktaPerusahaan}</div>
+                            </> : (fileSizeAktaPerusahaan === true) ?
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>File lebih dari 500kb</div>
+                                </div>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "aktaPerusahaan")}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputAktaPerusahaan}
+                                    id="image"
+                                    name="image"
+                                />
+                            </> : (formatJpgAktaPerusahaan === true) &&
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>Format harus .jpg atau .pdf</div>
+                                </div>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "aktaPerusahaan")}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputAktaPerusahaan}
+                                    id="image"
+                                    name="image"
                                 />
                             </>
                         }
@@ -544,7 +678,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>SK Kementerian Kehakiman</div>
                     <div className='viewDragDrop mt-2' style={{cursor: "pointer"}} onClick={() => handleClick("skKementrian")}>
                         {
-                            (!imageFileSkKementrian && uploadPdfSkKementrian === false) ? 
+                            (!imageFileSkKementrian && uploadPdfSkKementrian === false && fileSizeSkKementrian === false && formatJpgSkKementrian === false) ? 
                             <>
                                 <div className='pt-4 text-center'>Masukan SK Kementerian Kehakiman.</div>
                                 <input
@@ -555,7 +689,6 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
                             </> : (imageFileSkKementrian) ?
                             <>
@@ -568,9 +701,9 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
                                     name="image"
-                                    multiple
                                 />
-                            </> : (uploadPdfSkKementrian === true) &&
+                                <div className='mt-2 ms-4'>{nameSkKementrian}</div>
+                            </> : (uploadPdfSkKementrian === true) ?
                             <>
                                 <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
                                 <input
@@ -581,7 +714,37 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
                                     name="image"
-                                    multiple
+                                />
+                                <div className='mt-2 ms-4'>{nameSkKementrian}</div>
+                            </> : (fileSizeSkKementrian === true) ?
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>File lebih dari 500kb</div>
+                                </div>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "skKementrian")}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputSkKementrian}
+                                    id="image"
+                                    name="image"
+                                />
+                            </> : (formatJpgSkKementrian === true) &&
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>Format harus .jpg atau .pdf</div>
+                                </div>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "skKementrian")}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputSkKementrian}
+                                    id="image"
+                                    name="image"
                                 />
                             </>
                         }
@@ -596,8 +759,8 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                             Sebelumnya
                         </button>
                         <button 
-                            className={(imageNpwp !== null && imageNib !== null && imageFileAktaPerusahaan !== null && imageSkKementrian !== null) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
-                            disabled={imageNpwp === null || imageNib === null || imageFileAktaPerusahaan === null || imageSkKementrian === null}
+                            className={((uploadPdfNpwp !== false || imageFileNpwp !== "") && (uploadPdfNib !== false || imageFileNib !== "") && (uploadPdfAktaPerusahaan !== false || imageFileAktaPerusahaan !== "") && (uploadPdfSkKementrian !== false || imageFileSkKementrian !== "") && fileSizeNpwp === false && fileSizeNib === false && fileSizeAktaPerusahaan === false && fileSizeSkKementrian === false) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
+                            disabled={(uploadPdfNpwp === false && imageFileNpwp === "") || (uploadPdfNib === false && imageFileNib === "") || (uploadPdfAktaPerusahaan === false && imageFileAktaPerusahaan === "") || (uploadPdfSkKementrian === false && imageFileSkKementrian === "") || fileSizeNpwp !== false || fileSizeNib !== false || fileSizeAktaPerusahaan !== false || fileSizeSkKementrian !== false} 
                             onClick={() => checkPageSettlementHandler(profileId === undefined ? 0 : profileId, 1, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)}
                         >
                             Selanjutnya
@@ -623,7 +786,9 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => formDataThirdStepBusenessDocument(0, 103, profileId === undefined ? 0 : profileId, 1, 3, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                        <Button onClick={() => formDataThirdStepBusenessDocument(0, 103, profileId === undefined ? 0 : profileId, 1, 3, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
+                            {isLoadingDokumenUsaha ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
+                        </Button>
                     </div>
                 </Modal.Body>
             </Modal>

@@ -11,14 +11,16 @@ import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/he
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronLeft, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronLeft, faChevronUp, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import ReactSelect, { components } from 'react-select';
 import CurrencyInput from 'react-currency-input-field'
 
 const PengaturanMerchant = () => {
     const { idProfile, level, type } = useParams()
     const history = useHistory()
+    const [getDataPengaturanMerchant, setGetDataPengaturanMerchant] = useState({})
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
+    const [isLoadingPengaturanMerchant, setIsLoadingPengaturanMerchant] = useState(false)
     const [expandedProgramAffiliator, setExpandedProgramAffiliator] = useState()
     const [expandedProgramCashback, setExpandedProgramCashback] = useState()
     const [expandedAdditionalFee, setExpandedAdditionalFee] = useState()
@@ -32,9 +34,11 @@ const PengaturanMerchant = () => {
     const [selectedDataListPartner, setSelectedDataListPartner] = useState([])
     const [inputHandle, setInputHandle] = useState({
         merchantId: 0,
+        brandNou: 0,
+        outletNou: 0,
         merchantCode: "",
         subPartnerId: "",
-        jenisSettlement: 1,
+        jenisSettlement: 0,
         settlementDikirimkan: 0,
         menerimaPembayaran: 1,
         integrasiApi: 1,
@@ -111,17 +115,45 @@ const PengaturanMerchant = () => {
                 ...inputHandle,
                 [e.target.name]: e.target.value
             })
-        } else if (e.target.name === "jenisKomisi") {
+        } else if (e.target.name === "jenisSettlement") {
+            setInputHandle({
+                ...inputHandle,
+                jenisFeeSettlement: 0,
+                jumlahFeeSettlement: 0,
+                jenisSettlement: Number(e.target.value)
+            })
+        } else if (e.target.name === "jenisFeeSettlement") {
+            setInputHandle({
+                ...inputHandle,
+                jenisFeeSettlement: Number(e.target.value),
+                jumlahFeeSettlement: 0,
+            })
+        } 
+        else if (e.target.name === "jenisKomisi") {
             setInputHandle({
                 ...inputHandle,
                 jenisKomisi: Number(e.target.value),
                 jumlahKomisi: 0,
+            })
+        } else if (e.target.name === "adakanProgramCashbackMdr") {
+            setInputHandle({
+                ...inputHandle,
+                jenisCashback: 0,
+                jumlahCashback: 0,
+                adakanProgramCashbackMdr: Number(e.target.value)
             })
         } else if (e.target.name === "jenisCashback") {
             setInputHandle({
                 ...inputHandle,
                 jenisCashback: Number(e.target.value),
                 jumlahCashback: 0,
+            })
+        } else if (e.target.name === "adakanAdditionalFee") {
+            setInputHandle({
+                ...inputHandle,
+                jenisAdditionalFee: 0,
+                jumlahAdditionalFee: 0,
+                adakanAdditionalFee: Number(e.target.value)
             })
         } else if (e.target.name === "jenisAdditionalFee") {
             setInputHandle({
@@ -137,8 +169,40 @@ const PengaturanMerchant = () => {
         }
     }
 
+    function handleChangejumlahFeeSettlement (e, jenisFeeSettlement) {
+        if (jenisFeeSettlement === 1) {
+            if (e === undefined || e === "") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahFeeSettlement: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahFeeSettlement: e
+                })
+            }
+        } else {
+            if (Number(e) > 100) {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahFeeSettlement: 100
+                })
+            } else if (e === undefined || e === "") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahFeeSettlement: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahFeeSettlement: e
+                })
+            }
+        }
+    }
+
     function handleChangejumlahKomisi (e, jenisKomisi) {
-        console.log(e, "e");
         if (jenisKomisi === 1) {
             if (e === undefined || e === "") {
                 setInputHandle({
@@ -172,7 +236,6 @@ const PengaturanMerchant = () => {
     }
 
     function handleChangeJumlahCashback (e, jenisCashback) {
-        console.log(e, "e");
         if (jenisCashback === 1) {
             if (e === undefined || e === "") {
                 setInputHandle({
@@ -205,35 +268,34 @@ const PengaturanMerchant = () => {
         }
     }
 
-    function handleChangeJumlahAdditionalFee (e, jenisCashback) {
-        console.log(e, "e");
-        if (jenisCashback === 1) {
+    function handleChangeJumlahAdditionalFee (e, jenisAdditionalFee) {
+        if (jenisAdditionalFee === 1) {
             if (e === undefined || e === "") {
                 setInputHandle({
                     ...inputHandle,
-                    jumlahCashback: 0
+                    jumlahAdditionalFee: 0
                 })
             } else {
                 setInputHandle({
                     ...inputHandle,
-                    jumlahCashback: e
+                    jumlahAdditionalFee: e
                 })
             }
         } else {
             if (Number(e) > 100) {
                 setInputHandle({
                     ...inputHandle,
-                    jumlahCashback: 100
+                    jumlahAdditionalFee: 100
                 })
             } else if (e === undefined || e === "") {
                 setInputHandle({
                     ...inputHandle,
-                    jumlahCashback: 0
+                    jumlahAdditionalFee: 0
                 })
             } else {
                 setInputHandle({
                     ...inputHandle,
-                    jumlahCashback: e
+                    jumlahAdditionalFee: e
                 })
             }
         }
@@ -308,8 +370,6 @@ const PengaturanMerchant = () => {
         }
     }
 
-    console.log(selectedDataKomisiAgen, "selectedDataKomisiAgen");
-
     async function getDataAddBrandStepFormTidakBerbadanHukum(profileId) {
         try {
             const auth = "Bearer " + getToken()
@@ -324,12 +384,14 @@ const PengaturanMerchant = () => {
                 setInputHandle({
                     ...getDataConfig,
                     merchantId: getDataConfig.mprofile_merchant_id,
+                    brandNou: getDataConfig.mprofile_outlet_nou,
+                    outletNou: getDataConfig.mprofile_store_nou,
                     merchantCode: getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id,
                     jenisSettlement: getDataConfig.mprofdtl_is_auto_settlle === null ? 1 : getDataConfig.mprofdtl_is_auto_settlle, 
                     settlementDikirimkan: getDataConfig.mmerchant_settle_group_id === null ? 0 : getDataConfig.mmerchant_settle_group_id, 
                     menerimaPembayaran: getDataConfig.mprofdtl_is_alipay === null ? 2 : getDataConfig.mprofdtl_is_alipay, 
                     integrasiApi: getDataConfig.mprofdtl_integrate_api === null ? 2 : getDataConfig.mprofdtl_integrate_api, 
-                    jenisFeeSettlement: getDataConfig.mprofilefee_settle_type === null ? 1 : getDataConfig.mprofilefee_settle_type, 
+                    jenisFeeSettlement: getDataConfig.mprofilefee_settle_type === null ? 0 : getDataConfig.mprofilefee_settle_type, 
                     jumlahFeeSettlement: getDataConfig.mprofilefee_settle_fee === null ? 0 : getDataConfig.mprofilefee_settle_fee, 
                     jenisKomisi: getDataConfig.mprofilefee_affiliation_fee_type === null ? 0 : getDataConfig.mprofilefee_affiliation_fee_type, 
                     jumlahKomisi: getDataConfig.mprofilefee_affiliation_fee === null ? 0 : getDataConfig.mprofilefee_affiliation_fee,
@@ -354,18 +416,21 @@ const PengaturanMerchant = () => {
                 newArrAgenKomisi.push(objAgenKomisi)
                 setSelectedDataKomisiAgen((objAgenKomisi.value === null || objAgenKomisi.value === "") ? [] : newArrAgenKomisi)
                 getDataAgenHandler (getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id)
+                setGetDataPengaturanMerchant(getDataConfig)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 const getDataConfig = getData.data.response_data.results;
                 setInputHandle({
                     ...getDataConfig,
                     merchantId: getDataConfig.mprofile_merchant_id,
+                    brandNou: getDataConfig.mprofile_outlet_nou,
+                    outletNou: getDataConfig.mprofile_store_nou,
                     merchantCode: getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id,
                     jenisSettlement: getDataConfig.mprofdtl_is_auto_settlle === null ? 1 : getDataConfig.mprofdtl_is_auto_settlle, 
                     settlementDikirimkan: getDataConfig.mmerchant_settle_group_id === null ? 0 : getDataConfig.mmerchant_settle_group_id, 
                     menerimaPembayaran: getDataConfig.mprofdtl_is_alipay === null ? 2 : getDataConfig.mprofdtl_is_alipay, 
                     integrasiApi: getDataConfig.mprofdtl_integrate_api === null ? 2 : getDataConfig.mprofdtl_integrate_api, 
-                    jenisFeeSettlement: getDataConfig.mprofilefee_settle_type === null ? 1 : getDataConfig.mprofilefee_settle_type, 
+                    jenisFeeSettlement: getDataConfig.mprofilefee_settle_type === null ? 0 : getDataConfig.mprofilefee_settle_type, 
                     jumlahFeeSettlement: getDataConfig.mprofilefee_settle_fee === null ? 0 : getDataConfig.mprofilefee_settle_fee, 
                     jenisKomisi: getDataConfig.mprofilefee_affiliation_fee_type === null ? 0 : getDataConfig.mprofilefee_affiliation_fee_type, 
                     jumlahKomisi: getDataConfig.mprofilefee_affiliation_fee === null ? 0 : getDataConfig.mprofilefee_affiliation_fee,
@@ -390,6 +455,7 @@ const PengaturanMerchant = () => {
                 newArrAgenKomisi.push(objAgenKomisi)
                 setSelectedDataKomisiAgen(((objAgenKomisi.value === null || objAgenKomisi.value === "") || objAgenKomisi.value === "") ? [] : newArrAgenKomisi)
                 getDataAgenHandler (getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id)
+                setGetDataPengaturanMerchant(getDataConfig)
             }
         } catch (error) {
             // console.log(error)
@@ -397,59 +463,67 @@ const PengaturanMerchant = () => {
         }
     }
 
-    async function savePengaturanTambahMerchantBrandHandler(businesLevel, merchantId, settleTypeId, settleDikirmKemana, menerimaPembayaran, integrasiApi, subPartnerId, idProfile, merchantCode, additionalFee, additionalFeeType, adakanAdditionalFee, affiliationFee, affiliationFeeType, komisiAgen, cashBackFee, cashBackFeeType, adakanCashback, settleFee, settleFeeType, refferalCode, step, position) {
-        const auth = "Bearer " + getToken()
-        const dataParams = encryptData(`{"settle_type_id": ${settleTypeId}, "settle_group_id": ${settleDikirmKemana}, "alipay_wechat": ${menerimaPembayaran}, "api_integrated": ${integrasiApi}, "subpartner_id": "${subPartnerId}", "profile_id": ${idProfile}, "merchant_code": "${merchantCode}", "additional_fee": ${additionalFee}, "additional_fee_type": ${additionalFeeType}, "additional_isactive": ${adakanAdditionalFee}, "affiliation_fee": ${affiliationFee}, "affiliation_fee_type": ${affiliationFeeType}, "aff_id": "${komisiAgen}", "cashback_fee": ${cashBackFee}, "cashback_fee_type": ${cashBackFeeType}, "cashback_isactive": ${adakanCashback}, "settle_fee": ${settleFee}, "settle_type_fee": ${settleFeeType}, "partner_refferal_code": "${refferalCode}", "step": ${step}}`)
-        const headers = {
-            'Content-Type':'application/json',
-            'Authorization' : auth
-        }
-        const getData = await axios.post(BaseURL + "/QRIS/MerchantConfig", {data: dataParams}, { headers: headers })
-        if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
-            if (position === "next") {
-                if (businesLevel === 101) {
-                    if (settleDikirmKemana === 101) {
-                        history.push(`/formulir-daftar-settlement/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+    async function savePengaturanTambahMerchantBrandHandler(businesLevel, merchantId, brandNou, outletNou, settleTypeId, settleDikirmKemana, menerimaPembayaran, integrasiApi, subPartnerId, idProfile, merchantCode, additionalFee, additionalFeeType, adakanAdditionalFee, affiliationFee, affiliationFeeType, komisiAgen, cashBackFee, cashBackFeeType, adakanCashback, settleFee, settleFeeType, refferalCode, step, position) {
+        try {
+            setIsLoadingPengaturanMerchant(true)
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"settle_type_id": ${settleTypeId}, "settle_group_id": ${settleDikirmKemana}, "alipay_wechat": ${menerimaPembayaran}, "api_integrated": ${integrasiApi}, "subpartner_id": "${subPartnerId}", "profile_id": ${idProfile}, "merchant_code": "${merchantCode}", "additional_fee": ${additionalFee}, "additional_fee_type": ${additionalFeeType}, "additional_isactive": ${adakanAdditionalFee}, "affiliation_fee": ${affiliationFee}, "affiliation_fee_type": ${affiliationFeeType}, "aff_id": "${komisiAgen}", "cashback_fee": ${cashBackFee}, "cashback_fee_type": ${cashBackFeeType}, "cashback_isactive": ${adakanCashback}, "settle_fee": ${settleFee}, "settle_type_fee": ${settleFeeType}, "partner_refferal_code": "${refferalCode}", "step": ${step}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const getData = await axios.post(BaseURL + "/QRIS/MerchantConfig", {data: dataParams}, { headers: headers })
+            if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
+                if (position === "next") {
+                    if (businesLevel === 101) {
+                        if (settleDikirmKemana === 101) {
+                            history.push(`/formulir-daftar-settlement/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+                        } else {
+                            history.push(`/detail-merchant-grup/${idProfile}`)
+                        }
+                    } else if (businesLevel === 102) {
+                        if (settleDikirmKemana === 102) {
+                            history.push(`/form-info-rekening-brand/${settleDikirmKemana}/${merchantId}/${brandNou}/${idProfile}`)
+                        } else {
+                            history.push(`/detail-merchant-brand/${idProfile}`)
+                        }
                     } else {
-                        history.push(`detail-merchant-grup`)
-                    }
-                } else if (businesLevel === 102) {
-                    if (settleDikirmKemana === 102) {
-                        history.push(`/form-info-rekening-brand/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
-                    } else {
-                        history.push(`detail-merchant-brand`)
+                        if (settleDikirmKemana === 103) {
+                            history.push(`/form-info-rekening-outlet/${settleDikirmKemana}/${merchantId}/${outletNou}/${idProfile}`)
+                        } 
                     }
                 } else {
-                    if (settleDikirmKemana === 103) {
-                        history.push(`/form-info-rekening-outlet/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
-                    } 
+                    setIsLoadingPengaturanMerchant(false)
+                    history.push('/daftar-merchant-qris')
                 }
-            } else {
-                history.push('/daftar-merchant-qris')
-            }
-        } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
-            setUserSession(getData.data.response_new_token)
-            if (position === "next") {
-                if (businesLevel === 101) {
-                    if (settleDikirmKemana === 101) {
-                        history.push(`/formulir-daftar-settlement/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+            } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
+                setUserSession(getData.data.response_new_token)
+                if (position === "next") {
+                    if (businesLevel === 101) {
+                        if (settleDikirmKemana === 101) {
+                            history.push(`/formulir-daftar-settlement/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
+                        } else {
+                            history.push(`/detail-merchant-grup/${idProfile}`)
+                        }
+                    } else if (businesLevel === 102) {
+                        if (settleDikirmKemana === 102) {
+                            history.push(`/form-info-rekening-brand/${settleDikirmKemana}/${merchantId}/${brandNou}/${idProfile}`)
+                        } else {
+                            history.push(`/detail-merchant-brand/${idProfile}`)
+                        }
                     } else {
-                        history.push(`detail-merchant-grup`)
-                    }
-                } else if (businesLevel === 102) {
-                    if (settleDikirmKemana === 102) {
-                        history.push(`/form-info-rekening-brand/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
-                    } else {
-                        history.push(`detail-merchant-brand`)
+                        if (settleDikirmKemana === 103) {
+                            history.push(`/form-info-rekening-outlet/${settleDikirmKemana}/${merchantId}/${outletNou}/${idProfile}`)
+                        } 
                     }
                 } else {
-                    if (settleDikirmKemana === 103) {
-                        history.push(`/form-info-rekening-outlet/${settleDikirmKemana}/${merchantId}/${merchantId}/${idProfile}`)
-                    } 
+                    setIsLoadingPengaturanMerchant(false)
+                    history.push('/daftar-merchant-qris')
                 }
-            } else {
-                history.push('/daftar-merchant-qris')
             }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
         }
     }
 
@@ -517,7 +591,7 @@ const PengaturanMerchant = () => {
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
+                <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }} onClick={() => setShowModalSimpanData(true)}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
@@ -604,7 +678,19 @@ const PengaturanMerchant = () => {
                                 </div>
                                 <div className='text-setting mt-3'>Jumlah fee settlement same day</div>
                                 <div className='d-flex justify-content-start align-items-center mt-2'>
-                                    <input name='jumlahFeeSettlement' value={inputHandle.jumlahFeeSettlement} onChange={(e) => handleChange(e)} className='input-text-user' style={{ width: "20%" }} placeholder='Rp 0' />
+                                    <CurrencyInput
+                                        className='input-text-user' 
+                                        style={{ width: "20%" }}
+                                        value={inputHandle.jumlahFeeSettlement} 
+                                        onValueChange={(e) => handleChangejumlahFeeSettlement(e, inputHandle.jenisFeeSettlement)}
+                                        placeholder='Rp 0'
+                                        groupSeparator={"."}
+                                        decimalSeparator={','}
+                                        allowDecimals={inputHandle.jenisFeeSettlement === 1 ? true : false}
+                                        prefix={inputHandle.jenisFeeSettlement === 1 ? "Rp " : ""}
+                                        suffix={inputHandle.jenisFeeSettlement === 2 ? " %" : ""}
+                                        onKeyDown={(evt) => ["e", "E", "+", "-", ".", "b", "B", "k", "K", "m", "M"].includes(evt.key) && evt.preventDefault()}
+                                    />
                                     <div className='ms-3 text-setting'>Per Settlement</div>
                                 </div>
                             </>
@@ -802,61 +888,67 @@ const PengaturanMerchant = () => {
                                         styles={customStylesSelectedOption}
                                     />
                                 </div>
-                                <div className='text-setting mt-3'>Jenis komisi</div>
-                                <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
-                                    <div className="form-check form-check-inline">
-                                        <input
-                                            className="form-check-input"
-                                            type="radio"
-                                            id="fixed"
-                                            name='jenisKomisi'
-                                            value={1}
-                                            checked={inputHandle.jenisKomisi === 1 && true}
-                                            onChange={(e) => handleChange(e)}
-                                        />
-                                        <label
-                                            className="form-check-label"
-                                            style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                            for="fixed"
-                                        >
-                                            Fixed
-                                        </label>
-                                    </div>
-                                    <div className="form-check form-check-inline ms-4">
-                                        <input
-                                            className="form-check-input"
-                                            type="radio"
-                                            id="persentase"
-                                            name='jenisKomisi'
-                                            value={2}
-                                            checked={inputHandle.jenisKomisi === 2 && true}
-                                            onChange={(e) => handleChange(e)}
-                                        />
-                                        <label
-                                            className="form-check-label"
-                                            style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                            for="persentase"
-                                        >
-                                            Persentase
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className='text-setting mt-3'>Jumlah komisi</div>
-                                <div className='d-flex justify-content-start align-items-center mt-2'>
-                                    <CurrencyInput
-                                        className='input-text-user' 
-                                        style={{ width: "20%" }}
-                                        value={inputHandle.jumlahKomisi} 
-                                        onValueChange={(e) => handleChangejumlahKomisi(e, inputHandle.jenisKomisi)}
-                                        placeholder='Rp 0'
-                                        groupSeparator={"."}
-                                        decimalSeparator={','}
-                                        allowDecimals={inputHandle.jenisKomisi === 1 ? true : false}
-                                        prefix={inputHandle.jenisKomisi === 1 ? "Rp " : ""}
-                                        suffix={inputHandle.jenisKomisi === 2 ? " %" : ""}
-                                    />
-                                    <div className='ms-3 text-setting'>Per Transaksi</div>
-                                </div>
+                                {
+                                    selectedDataKomisiAgen.length !== 0 &&
+                                    <>
+                                        <div className='text-setting mt-3'>Jenis komisi</div>
+                                        <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
+                                            <div className="form-check form-check-inline">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="fixed"
+                                                    name='jenisKomisi'
+                                                    value={1}
+                                                    checked={inputHandle.jenisKomisi === 1 && true}
+                                                    onChange={(e) => handleChange(e)}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                                    for="fixed"
+                                                >
+                                                    Fixed
+                                                </label>
+                                            </div>
+                                            <div className="form-check form-check-inline ms-4">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="persentase"
+                                                    name='jenisKomisi'
+                                                    value={2}
+                                                    checked={inputHandle.jenisKomisi === 2 && true}
+                                                    onChange={(e) => handleChange(e)}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                                    for="persentase"
+                                                >
+                                                    Persentase
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className='text-setting mt-3'>Jumlah komisi</div>
+                                        <div className='d-flex justify-content-start align-items-center mt-2'>
+                                            <CurrencyInput
+                                                className='input-text-user' 
+                                                style={{ width: "20%" }}
+                                                value={inputHandle.jumlahKomisi} 
+                                                onValueChange={(e) => handleChangejumlahKomisi(e, inputHandle.jenisKomisi)}
+                                                placeholder='Rp 0'
+                                                groupSeparator={"."}
+                                                decimalSeparator={','}
+                                                allowDecimals={inputHandle.jenisKomisi === 1 ? true : false}
+                                                prefix={inputHandle.jenisKomisi === 1 ? "Rp " : ""}
+                                                suffix={inputHandle.jenisKomisi === 2 ? " %" : ""}
+                                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", "b", "B", "k", "K", "m", "M"].includes(evt.key) && evt.preventDefault()}
+                                            />
+                                            <div className='ms-3 text-setting'>Per Transaksi</div>
+                                        </div>
+                                    </>
+                                }
                             </>
                         )
                     }
@@ -913,61 +1005,67 @@ const PengaturanMerchant = () => {
                                         </label>
                                     </div>
                                 </div>
-                                <div className='text-setting mt-3'>Jenis Cashback</div>
-                                <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
-                                    <div className="form-check form-check-inline">
-                                        <input
-                                            className="form-check-input"
-                                            type="radio"
-                                            id="fixed"
-                                            name='jenisCashback'
-                                            value={1}
-                                            checked={inputHandle.jenisCashback === 1 && true}
-                                            onChange={(e) => handleChange(e)}
-                                        />
-                                        <label
-                                            className="form-check-label"
-                                            style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                            for="fixed"
-                                        >
-                                            Fixed
-                                        </label>
-                                    </div>
-                                    <div className="form-check form-check-inline ms-4">
-                                        <input
-                                            className="form-check-input"
-                                            type="radio"
-                                            id="persentase"
-                                            name='jenisCashback'
-                                            value={2}
-                                            checked={inputHandle.jenisCashback === 2 && true}
-                                            onChange={(e) => handleChange(e)}
-                                        />
-                                        <label
-                                            className="form-check-label"
-                                            style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                            for="persentase"
-                                        >
-                                            Persentase
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className='text-setting mt-3'>Jumlah cashback</div>
-                                <div className='d-flex justify-content-start align-items-center mt-2'>
-                                    <CurrencyInput
-                                        className='input-text-user' 
-                                        style={{ width: "20%" }}
-                                        value={inputHandle.jumlahCashback} 
-                                        onValueChange={(e) => handleChangeJumlahCashback(e, inputHandle.jenisCashback)}
-                                        placeholder='Rp 0'
-                                        groupSeparator={"."}
-                                        decimalSeparator={','}
-                                        allowDecimals={inputHandle.jenisCashback === 1 ? true : false}
-                                        prefix={inputHandle.jenisCashback === 1 ? "Rp " : ""}
-                                        suffix={inputHandle.jenisCashback === 2 ? " %" : ""}
-                                    />
-                                    <div className='ms-3 text-setting'>Per Transaksi</div>
-                                </div>
+                                {
+                                    inputHandle.adakanProgramCashbackMdr === 1 && 
+                                    <>
+                                        <div className='text-setting mt-3'>Jenis Cashback</div>
+                                        <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
+                                            <div className="form-check form-check-inline">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="fixed"
+                                                    name='jenisCashback'
+                                                    value={1}
+                                                    checked={inputHandle.jenisCashback === 1 && true}
+                                                    onChange={(e) => handleChange(e)}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                                    for="fixed"
+                                                >
+                                                    Fixed
+                                                </label>
+                                            </div>
+                                            <div className="form-check form-check-inline ms-4">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="persentase"
+                                                    name='jenisCashback'
+                                                    value={2}
+                                                    checked={inputHandle.jenisCashback === 2 && true}
+                                                    onChange={(e) => handleChange(e)}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                                    for="persentase"
+                                                >
+                                                    Persentase
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className='text-setting mt-3'>Jumlah cashback</div>
+                                        <div className='d-flex justify-content-start align-items-center mt-2'>
+                                            <CurrencyInput
+                                                className='input-text-user' 
+                                                style={{ width: "20%" }}
+                                                value={inputHandle.jumlahCashback} 
+                                                onValueChange={(e) => handleChangeJumlahCashback(e, inputHandle.jenisCashback)}
+                                                placeholder='Rp 0'
+                                                groupSeparator={"."}
+                                                decimalSeparator={','}
+                                                allowDecimals={inputHandle.jenisCashback === 1 ? true : false}
+                                                prefix={inputHandle.jenisCashback === 1 ? "Rp " : ""}
+                                                suffix={inputHandle.jenisCashback === 2 ? " %" : ""}
+                                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", "b", "B", "k", "K", "m", "M"].includes(evt.key) && evt.preventDefault()}
+                                            />
+                                            <div className='ms-3 text-setting'>Per Transaksi</div>
+                                        </div>
+                                    </>
+                                }
                             </>
                         )
                     }
@@ -1024,61 +1122,67 @@ const PengaturanMerchant = () => {
                                         </label>
                                     </div>
                                 </div>
-                                <div className='text-setting mt-3'>Jenis additional fee</div>
-                                <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
-                                    <div className="form-check form-check-inline">
-                                        <input
-                                            className="form-check-input"
-                                            type="radio"
-                                            id="fixed"
-                                            name='jenisAdditionalFee'
-                                            value={1}
-                                            checked={inputHandle.jenisAdditionalFee === 1 && true}
-                                            onChange={(e) => handleChange(e)}
-                                        />
-                                        <label
-                                            className="form-check-label"
-                                            style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                            for="fixed"
-                                        >
-                                            Fixed
-                                        </label>
-                                    </div>
-                                    <div className="form-check form-check-inline ms-4">
-                                        <input
-                                            className="form-check-input"
-                                            type="radio"
-                                            id="persentase"
-                                            name='jenisAdditionalFee'
-                                            value={2}
-                                            checked={inputHandle.jenisAdditionalFee === 2 && true}
-                                            onChange={(e) => handleChange(e)}
-                                        />
-                                        <label
-                                            className="form-check-label"
-                                            style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
-                                            for="persentase"
-                                        >
-                                            Persentase
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className='text-setting mt-3'>Jumlah additional fee</div>
-                                <div className='d-flex justify-content-start align-items-center mt-2'>
-                                    <CurrencyInput
-                                        className='input-text-user' 
-                                        style={{ width: "20%" }}
-                                        value={inputHandle.jumlahAdditionalFee} 
-                                        onValueChange={(e) => handleChangeJumlahAdditionalFee(e, inputHandle.jenisAdditionalFee)}
-                                        placeholder='Rp 0'
-                                        groupSeparator={"."}
-                                        decimalSeparator={','}
-                                        allowDecimals={inputHandle.jenisAdditionalFee === 1 ? true : false}
-                                        prefix={inputHandle.jenisAdditionalFee === 1 ? "Rp " : ""}
-                                        suffix={inputHandle.jenisAdditionalFee === 2 ? " %" : ""}
-                                    />
-                                    <div className='ms-3 text-setting'>Per Transaksi</div>
-                                </div>
+                                {
+                                    inputHandle.adakanAdditionalFee === 1 && 
+                                    <>
+                                        <div className='text-setting mt-3'>Jenis additional fee</div>
+                                        <div className='d-flex justify-content-start align-items-center py-2' style={{ width: 442 }}>
+                                            <div className="form-check form-check-inline">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="fixed"
+                                                    name='jenisAdditionalFee'
+                                                    value={1}
+                                                    checked={inputHandle.jenisAdditionalFee === 1 && true}
+                                                    onChange={(e) => handleChange(e)}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                                    for="fixed"
+                                                >
+                                                    Fixed
+                                                </label>
+                                            </div>
+                                            <div className="form-check form-check-inline ms-4">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="persentase"
+                                                    name='jenisAdditionalFee'
+                                                    value={2}
+                                                    checked={inputHandle.jenisAdditionalFee === 2 && true}
+                                                    onChange={(e) => handleChange(e)}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                                    for="persentase"
+                                                >
+                                                    Persentase
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className='text-setting mt-3'>Jumlah additional fee</div>
+                                        <div className='d-flex justify-content-start align-items-center mt-2'>
+                                            <CurrencyInput
+                                                className='input-text-user' 
+                                                style={{ width: "20%" }}
+                                                value={inputHandle.jumlahAdditionalFee} 
+                                                onValueChange={(e) => handleChangeJumlahAdditionalFee(e, inputHandle.jenisAdditionalFee)}
+                                                placeholder='Rp 0'
+                                                groupSeparator={"."}
+                                                decimalSeparator={','}
+                                                allowDecimals={inputHandle.jenisAdditionalFee === 1 ? true : false}
+                                                prefix={inputHandle.jenisAdditionalFee === 1 ? "Rp " : ""}
+                                                suffix={inputHandle.jenisAdditionalFee === 2 ? " %" : ""}
+                                                onKeyDown={(evt) => ["e", "E", "+", "-", ".", "b", "B", "k", "K", "m", "M"].includes(evt.key) && evt.preventDefault()}
+                                            />
+                                            <div className='ms-3 text-setting'>Per Transaksi</div>
+                                        </div>
+                                    </>
+                                }
                             </>
                         )
                     }
@@ -1103,11 +1207,29 @@ const PengaturanMerchant = () => {
                             Sebelumnya
                         </button>
                         <button 
-                            className='btn-next-info-usaha ms-2' 
+                            className={
+                                (inputHandle.jenisSettlement === 1 || inputHandle.jenisSettlement === 2 || (inputHandle.jenisSettlement === 3 && inputHandle.jenisFeeSettlement !== 0 && inputHandle.jumlahFeeSettlement !== 0)) &&
+                                inputHandle.settlementDikirimkan !== 0 &&
+                                (inputHandle.menerimaPembayaran === 1 || inputHandle.menerimaPembayaran === 0) &&
+                                (inputHandle.integrasiApi === 0 || (inputHandle.integrasiApi === 1 && selectedDataListPartner.length !== 0)) ?
+                                'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2' 
+                            }
+                            disabled={(
+                                inputHandle.jenisSettlement === 0 ||
+                                (inputHandle.jenisSettlement === 3 && inputHandle.jenisFeeSettlement === 0 && (Number(inputHandle.jumlahFeeSettlement) === 0 || inputHandle.jumlahFeeSettlement.length === 0)) ||
+                                (inputHandle.jenisSettlement === 3 && inputHandle.jenisFeeSettlement === 0 && (Number(inputHandle.jumlahFeeSettlement) !== 0 || inputHandle.jumlahFeeSettlement.length !== 0)) ||
+                                (inputHandle.jenisSettlement === 3 && inputHandle.jenisFeeSettlement !== 0 && (Number(inputHandle.jumlahFeeSettlement) === 0 || inputHandle.jumlahFeeSettlement.length === 0)) ||
+                                inputHandle.settlementDikirimkan === 0 ||
+                                inputHandle.menerimaPembayaran === 2 ||
+                                inputHandle.integrasiApi === 2 ||
+                                (inputHandle.integrasiApi === 1 && selectedDataListPartner.length === 0)
+                            )}
                             onClick={() => 
                                 savePengaturanTambahMerchantBrandHandler(
-                                    Number(Number(level)),
+                                    Number(level),
                                     inputHandle.merchantId,
+                                    inputHandle.brandNou,
+                                    inputHandle.outletNou,
                                     inputHandle.jenisSettlement, 
                                     inputHandle.settlementDikirimkan, 
                                     inputHandle.menerimaPembayaran, 
@@ -1115,19 +1237,19 @@ const PengaturanMerchant = () => {
                                     selectedDataListPartner.length !== 0 ? selectedDataListPartner[0].value : "",
                                     idProfile === undefined ? 0 : idProfile, 
                                     inputHandle.merchantCode, 
-                                    Number((inputHandle.jumlahAdditionalFee).replaceAll(',','.')), 
+                                    typeof inputHandle.jumlahAdditionalFee === "string" ? ((inputHandle.jumlahAdditionalFee).includes(',') === true ? Number((inputHandle.jumlahAdditionalFee).replaceAll(',', '.')) : Number(inputHandle.jumlahAdditionalFee)) : Number(inputHandle.jumlahAdditionalFee),
                                     inputHandle.jenisAdditionalFee, 
                                     inputHandle.adakanAdditionalFee === 2 ? 0 : inputHandle.adakanAdditionalFee, 
-                                    Number((inputHandle.jumlahKomisi).replaceAll(',','.')), 
+                                    typeof inputHandle.jumlahKomisi === "string" ? ((inputHandle.jumlahKomisi).includes(',') === true ? Number((inputHandle.jumlahKomisi).replaceAll(',', '.')) : Number(inputHandle.jumlahKomisi)) : Number(inputHandle.jumlahKomisi),
                                     inputHandle.jenisKomisi, 
                                     selectedDataKomisiAgen.length !== 0 ? selectedDataKomisiAgen[0].value : "",
-                                    Number((inputHandle.jumlahCashback).replaceAll(',','.')), 
+                                    typeof inputHandle.jumlahCashback === "string" ? ((inputHandle.jumlahCashback).includes(',') === true ? Number((inputHandle.jumlahCashback).replaceAll(',', '.')) : Number(inputHandle.jumlahCashback)) : Number(inputHandle.jumlahCashback),
                                     inputHandle.jenisCashback, 
                                     inputHandle.adakanProgramCashbackMdr === 2 ? 0 : inputHandle.adakanProgramCashbackMdr, 
-                                    inputHandle.jumlahFeeSettlement, 
+                                    typeof inputHandle.jumlahFeeSettlement === "string" ?((inputHandle.jumlahFeeSettlement).includes(',') === true ? Number((inputHandle.jumlahFeeSettlement).replaceAll(',', '.')) : Number(inputHandle.jumlahFeeSettlement)) : Number(inputHandle.jumlahFeeSettlement), 
                                     inputHandle.jenisFeeSettlement, 
                                     inputHandle.kodeRefferal,
-                                    201,
+                                    Number(level) === 101 ? (inputHandle.settlementDikirimkan === 101 ? 201 : 300) : Number(level) === 102 ? (inputHandle.settlementDikirimkan === 102 ? 201 : 300) : (inputHandle.settlementDikirimkan === 103 ? 201 : 300),
                                     "next"
                                 )
                             }
@@ -1161,6 +1283,8 @@ const PengaturanMerchant = () => {
                                 savePengaturanTambahMerchantBrandHandler(
                                     Number(level),
                                     inputHandle.merchantId,
+                                    inputHandle.brandNou,
+                                    inputHandle.outletNou,
                                     inputHandle.jenisSettlement, 
                                     inputHandle.settlementDikirimkan, 
                                     inputHandle.menerimaPembayaran, 
@@ -1168,16 +1292,16 @@ const PengaturanMerchant = () => {
                                     selectedDataListPartner.length !== 0 ? selectedDataListPartner[0].value : "",
                                     idProfile === undefined ? 0 : idProfile, 
                                     inputHandle.merchantCode, 
-                                    Number((inputHandle.jumlahAdditionalFee).replaceAll(',','.')), 
+                                    typeof inputHandle.jumlahAdditionalFee === "string" ? ((inputHandle.jumlahAdditionalFee).includes(',') === true ? Number((inputHandle.jumlahAdditionalFee).replaceAll(',', '.')) : Number(inputHandle.jumlahAdditionalFee)) : Number(inputHandle.jumlahAdditionalFee),
                                     inputHandle.jenisAdditionalFee, 
                                     inputHandle.adakanAdditionalFee === 2 ? 0 : inputHandle.adakanAdditionalFee, 
-                                    Number((inputHandle.jumlahKomisi).replaceAll(',','.')), 
+                                    typeof inputHandle.jumlahKomisi === "string" ? ((inputHandle.jumlahKomisi).includes(',') === true ? Number((inputHandle.jumlahKomisi).replaceAll(',', '.')) : Number(inputHandle.jumlahKomisi)) : Number(inputHandle.jumlahKomisi),
                                     inputHandle.jenisKomisi, 
                                     selectedDataKomisiAgen.length !== 0 ? selectedDataKomisiAgen[0].value : "",
-                                    Number((inputHandle.jumlahCashback).replaceAll(',','.')), 
+                                    typeof inputHandle.jumlahCashback === "string" ? ((inputHandle.jumlahCashback).includes(',') === true ? Number((inputHandle.jumlahCashback).replaceAll(',', '.')) : Number(inputHandle.jumlahCashback)) : Number(inputHandle.jumlahCashback),
                                     inputHandle.jenisCashback, 
                                     inputHandle.adakanProgramCashbackMdr === 2 ? 0 : inputHandle.adakanProgramCashbackMdr, 
-                                    inputHandle.jumlahFeeSettlement, 
+                                    typeof inputHandle.jumlahFeeSettlement === "string" ?((inputHandle.jumlahFeeSettlement).includes(',') === true ? Number((inputHandle.jumlahFeeSettlement).replaceAll(',', '.')) : Number(inputHandle.jumlahFeeSettlement)) : Number(inputHandle.jumlahFeeSettlement), 
                                     inputHandle.jenisFeeSettlement, 
                                     inputHandle.kodeRefferal,
                                     200,
@@ -1185,72 +1309,72 @@ const PengaturanMerchant = () => {
                                 )
                             }
                         >
-                            Simpan
+                            {isLoadingPengaturanMerchant ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
                         </Button>
                     </div>
                 </Modal.Body>
             </Modal>
 
             <Modal
-                    size="lg"
-                    centered
-                    show={showModalSyaratKetentuan}
-                    onHide={() => setShowModalSyaratKetentuan(false)}
-                    style={{ display: "flex", borderRadius: 8, justifyContent: "center" }}
-                    className='modal-syarat-ketentuan'
-                >
-                    <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
-                        <div style={{ display: "flex", justifyContent: "center", marginTop: 10, marginBottom: 16 }}>
-                            <p style={{ fontFamily: "Exo", fontSize: 26, fontWeight: 700, marginBottom: "unset" }} className="text-center">Syarat dan Ketentuan</p>
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "start", marginTop: 20, marginBottom: 8 }}>
-                            <p style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 400, marginBottom: "unset", color: "var(--palet-pengembangan-shades-hitam-62-grey, #888)" }} className="text-start">nulla. Egestas consectetur etiam dolor augue morbi cursus eget non consequat. Natoque nunc odio enim proin a lectus.</p>
-                        </div>
-                        <div className='my-1 merchant-modal-text'>Merchant registration Ezeelink</div>
-                        <div className='my-1 merchant-modal-text'>Merchant Ezeelink</div>
-                        <div className='my-2'>
-                            <Form.Check
-                                className='checklist-modal-confirm'
-                                label="Seluruh transaksi saya tidak terkait pencucian uang dan pendanaan terorisme"
-                                id="statusId"
-                                // onChange={handleChangeCheckBoxConfirm}
-                                // checked={isCheckedConfirm}
+                size="lg"
+                centered
+                show={showModalSyaratKetentuan}
+                onHide={() => setShowModalSyaratKetentuan(false)}
+                style={{ display: "flex", borderRadius: 8, justifyContent: "center" }}
+                className='modal-syarat-ketentuan'
+            >
+                <Modal.Body style={{  width: "100%", padding: "12px 24px" }}>
+                    <div style={{ display: "flex", justifyContent: "center", marginTop: 10, marginBottom: 16 }}>
+                        <p style={{ fontFamily: "Exo", fontSize: 26, fontWeight: 700, marginBottom: "unset" }} className="text-center">Syarat dan Ketentuan</p>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "start", marginTop: 20, marginBottom: 8 }}>
+                        <p style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 400, marginBottom: "unset", color: "var(--palet-pengembangan-shades-hitam-62-grey, #888)" }} className="text-start">nulla. Egestas consectetur etiam dolor augue morbi cursus eget non consequat. Natoque nunc odio enim proin a lectus.</p>
+                    </div>
+                    <div className='my-1 merchant-modal-text'>Merchant registration Ezeelink</div>
+                    <div className='my-1 merchant-modal-text'>Merchant Ezeelink</div>
+                    <div className='my-2'>
+                        <Form.Check
+                            className='checklist-modal-confirm'
+                            label="Seluruh transaksi saya tidak terkait pencucian uang dan pendanaan terorisme"
+                            id="statusId"
+                            // onChange={handleChangeCheckBoxConfirm}
+                            // checked={isCheckedConfirm}
+                        />
+                    </div>
+                    <div className='my-2'>
+                        <Form.Check
+                            className='checklist-modal-confirm'
+                            label="Saya memastikan bahwa seluruh data yang saya isi adalah benar"
+                            id="statusId"
+                            // onChange={handleChangeCheckBoxConfirm}
+                            // checked={isCheckedConfirm}
+                        />
+                    </div>
+                    <div className='my-2'>
+                        <Form.Check
+                            className='checklist-modal-confirm'
+                            label="Seluruh informasi transaksi akan dikirim ke nomor telepon dan/atau email yang didaftarkan"
+                            id="statusId"
+                            // onChange={handleChangeCheckBoxConfirm}
+                            // checked={isCheckedConfirm}
                             />
-                        </div>
-                        <div className='my-2'>
-                            <Form.Check
-                                className='checklist-modal-confirm'
-                                label="Saya memastikan bahwa seluruh data yang saya isi adalah benar"
-                                id="statusId"
-                                // onChange={handleChangeCheckBoxConfirm}
-                                // checked={isCheckedConfirm}
-                            />
-                        </div>
-                        <div className='my-2'>
-                            <Form.Check
-                                className='checklist-modal-confirm'
-                                label="Seluruh informasi transaksi akan dikirim ke nomor telepon dan/atau email yang didaftarkan"
-                                id="statusId"
-                                // onChange={handleChangeCheckBoxConfirm}
-                                // checked={isCheckedConfirm}
-                                />
-                        </div>
-                        <div className='text-desc-modal'>Vitae quam bibendum at sit urna libero nulla aliquam. Amet netus velit feugiat neque auctor. Sed ut velit posuere a. Morbi fringilla ac turpis sit at massa integer integer faucibus. Semper nunc eu quis </div>
-                        <div className='mb-3 mt-3'>
-                            <Form.Check
-                                className='checklist-modal-confirm'
-                                label="Saya telah membaca dan menyetujui semua syarat dan ketentuan diatas"
-                                id="statusId"
-                                // onChange={handleChangeCheckBoxConfirm}
-                                // checked={isCheckedConfirm}
-                            />
-                        </div>
-                        <div className="d-flex justify-content-center mb-3">
-                            <Button style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                            <Button style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }} onClick={() => toProsesVerifikasi()}>Submit data saya</Button>
-                        </div>
-                    </Modal.Body>
-                </Modal>
+                    </div>
+                    <div className='text-desc-modal'>Vitae quam bibendum at sit urna libero nulla aliquam. Amet netus velit feugiat neque auctor. Sed ut velit posuere a. Morbi fringilla ac turpis sit at massa integer integer faucibus. Semper nunc eu quis </div>
+                    <div className='mb-3 mt-3'>
+                        <Form.Check
+                            className='checklist-modal-confirm'
+                            label="Saya telah membaca dan menyetujui semua syarat dan ketentuan diatas"
+                            id="statusId"
+                            // onChange={handleChangeCheckBoxConfirm}
+                            // checked={isCheckedConfirm}
+                        />
+                    </div>
+                    <div className="d-flex justify-content-center mb-3">
+                        <Button style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
+                        <Button style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }} onClick={() => toProsesVerifikasi()}>Submit data saya</Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </>
     )
 }

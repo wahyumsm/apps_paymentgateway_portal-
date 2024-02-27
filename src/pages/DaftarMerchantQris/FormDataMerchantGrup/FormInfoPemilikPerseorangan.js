@@ -27,13 +27,6 @@ const FormInfoPemilikPerseorangan = () => {
     const [imageSelfieKtp, setImageSelfieKtp] = useState(null)
     const [nameImageSelfieKtp, setNameImageSelfieKtp] = useState("")
     const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
-    console.log(imageKtp, "imageKtp");
-    console.log(nameImageKtp, "nameImageKtp");
-    console.log(imageFileKtp, "imageFileKtp");
-    console.log(imageSelfieKtp, "imageSelfieKtp");
-    console.log(nameImageSelfieKtp, "nameImageSelfieKtp");
-    console.log(imageFileSelfieKtp, "imageFileSelfieKtp");
-    console.log(uploadKtp, "uploadKtp");
     const [inputHandleWni, setInputHandleWni] = useState({
         numberId: "",
         userName: "",
@@ -117,7 +110,6 @@ const FormInfoPemilikPerseorangan = () => {
                 setUploadSelfieKtp(false)
                 const reader = new FileReader()
                 reader.addEventListener("load", () => {
-                    console.log(reader.result, "reader.result");
                     setImageFileSelfieKtp(reader.result)
                 })
                 reader.readAsDataURL(event.target.files[0])
@@ -166,17 +158,10 @@ const FormInfoPemilikPerseorangan = () => {
         }
     }
 
-    console.log(getDataFirstStep, "getDataFirstStep");
-
     async function formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, profileId, numberKtp, nameUser, imageKtp, imageFileKtp, nameImageKtp, imageSelfieKtp, imageFileSelfieKtp, nameImageSelfieKtp, step, businessType, merchantName, position) {
         try {
-            console.log(imageFileKtp, "imageFileKtp");
-            console.log(nameImageKtp, "nameImageKtp");
-            console.log(imageSelfieKtp, "imageSelfieKtp");
             if (imageKtp === null) {
-                console.log("masuk1");
                 if (imageSelfieKtp === null) {
-                    console.log("masuk11");
                     const auth = "Bearer " + getToken()
                     const formData = new FormData()
                     const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
@@ -219,7 +204,6 @@ const FormInfoPemilikPerseorangan = () => {
                         }
                     }
                 } else {
-                    console.log("masuk12");
                     const auth = "Bearer " + getToken()
                     const formData = new FormData()
                     const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
@@ -263,9 +247,7 @@ const FormInfoPemilikPerseorangan = () => {
                     }
                 }
             } else {
-                console.log("masuk2");
                 if (imageSelfieKtp === null) {
-                    console.log("masuk21");
                     const auth = "Bearer " + getToken()
                     const formData = new FormData()
                     const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
@@ -308,7 +290,6 @@ const FormInfoPemilikPerseorangan = () => {
                         }
                     }
                 } else {
-                    console.log("masuk22");
                     const auth = "Bearer " + getToken()
                     const formData = new FormData()
                     const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)

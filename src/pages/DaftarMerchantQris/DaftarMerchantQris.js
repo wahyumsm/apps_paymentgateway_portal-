@@ -3,8 +3,8 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import $ from 'jquery'
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faPencilAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FormControl, Image, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
+import { faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { Image, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { FilterComponentQrisGrup, FilterComponentQris } from '../../components/FilterComponentQris';
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../function/helpers';
@@ -12,7 +12,6 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import encryptData from '../../function/encryptData';
 import Pagination from 'react-js-pagination';
-import search from "../../assets/icon/search_icon.svg"
 
 const DaftarMerchantQris = () => {
     const history = useHistory()
@@ -143,41 +142,42 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    function getPageRegisterQris (id, step, businessTypeId, settleId, merchantNou, userNou) {
-        console.log(settleId, "settleId");
-        console.log(merchantNou, "merchantNou");
-        console.log(userNou, "userNou");
-        if (step === 1) {
-            if (businessTypeId === 2) {
-                history.push(`/form-info-pemilik-perorangan/${id}`)
-            } else if (businessTypeId === 3) {
-                history.push(`/form-tidak-berbadan-hukum/${id}`)
-            } else if (businessTypeId === 1) {
-                console.log("masukbadanusaha");
-                history.push(`/form-info-pemilik-badan-usaha/${id}`)
+    function getPageRegisterQris (id, step, businessTypeId, settleId, merchantNou, userNou, statusId) {
+        if (statusId === 106 || statusId === 107) {
+            if (step === 1) {
+                if (businessTypeId === 2) {
+                    history.push(`/form-info-pemilik-perorangan/${id}`)
+                } else if (businessTypeId === 3) {
+                    history.push(`/form-tidak-berbadan-hukum/${id}`)
+                } else if (businessTypeId === 1) {
+                    history.push(`/form-info-pemilik-badan-usaha/${id}`)
+                }
+            } 
+            
+            if (step === 2) {
+                if (businessTypeId === 2) {
+                    history.push(`/form-info-usaha-perorangan/${id}`)
+                } else if (businessTypeId === 1) {
+                    history.push(`/form-info-usaha-badan-usaha/${id}`)
+                    window.location.reload()
+                }
+            } 
+            
+            if (step === 3) {
+                if (businessTypeId === 1) {
+                    history.push(`/form-dokumen-usaha-badan-usaha/${id}`)
+                }
+            } 
+            
+            if (step === 200) {
+                history.push(`/pengaturan-merchant/${id}/101/${businessTypeId}`)
             }
-        } 
-        
-        if (step === 2) {
-            if (businessTypeId === 2) {
-                history.push(`/form-info-usaha-perorangan/${id}`)
-            } else if (businessTypeId === 1) {
-                history.push(`/form-info-usaha-badan-usaha/${id}`)
+    
+            if (step === 201) {
+                history.push(`/formulir-daftar-settlement/${settleId}/${merchantNou}/${userNou}/${id}`)
             }
-        } 
-        
-        if (step === 3) {
-            if (businessTypeId === 1) {
-                history.push(`/form-dokumen-usaha-badan-usaha/${id}`)
-            }
-        } 
-        
-        if (step === 200) {
-            history.push(`/pengaturan-merchant/${id}/101/${businessTypeId}`)
-        }
-
-        if (step === 201) {
-            history.push(`/formulir-daftar-settlement/${settleId}/${merchantNou}/${userNou}/${id}`)
+        } else {
+            history.push(`/detail-merchant-grup/${id}`)
         }
     }
 
@@ -212,15 +212,15 @@ const DaftarMerchantQris = () => {
         {
             name: 'Status',
             selector: row => row.status_name,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px", borderRadius: 4 },
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px 6px 6px 0px", borderRadius: 4,  },
             conditionalCellStyles: [
                 {
                     when: row => row.status_id === 105,
-                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
                 },
                 {
                     when: row => row.status_id === 106 || row.status_id === 107,
-                    style: { background: "#FEF4E9", color: "#F79421", }
+                    style: { background: "#FEF4E9", color: "#F79421", width: "150px"}
                 }
             ],
         },
@@ -229,7 +229,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id  === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon onClick={() => getPageRegisterQris(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getPageRegisterQris(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou, row.status_id)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },
@@ -334,20 +334,23 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    function getPageRegisterQrisBrand (id, step, businessTypeId, settleId, merchantNou, userNou) {
-        console.log(settleId, "settleId");
-        console.log(merchantNou, "merchantNou");
-        console.log(userNou, "userNou");
-        if (step === 1) {
-            history.push(`/formulir-info-pemilik-brand/${id}`)
-        } else if (step === 2) {
-            history.push(`/formulir-info-usaha-brand/${id}`)
-        } else if (step === 3) {
-            history.push(`/form-dokumen-usaha-brand-badan-usaha/${id}`)
-        } else if (step === 200) {
-            history.push(`/pengaturan-merchant/${id}/102/${businessTypeId}`)
-        } else if (step === 300) {
-            history.push(`/detail-merchant-brand`)
+    function getPageRegisterQrisBrand (id, step, businessTypeId, settleId, merchantNou, userNou, statusId) {
+        if (statusId === 106 || statusId === 107) {
+            if (step === 1) {
+                history.push(`/formulir-info-pemilik-brand/${id}`)
+            } else if (step === 2) {
+                history.push(`/formulir-info-usaha-brand/${id}`)
+            } else if (step === 3) {
+                history.push(`/form-dokumen-usaha-brand-badan-usaha/${id}`)
+            } else if (step === 200) {
+                history.push(`/pengaturan-merchant/${id}/102/${businessTypeId}`)
+            } else if (step === 201) {
+                history.push(`/form-info-rekening-brand/${settleId}/${merchantNou}/${userNou}/${id}`)
+            } else if (step === 300) {
+                history.push(`/detail-merchant-brand/${id}`)
+            }
+        } else {
+            history.push(`/detail-merchant-brand/${id}`)
         }
     }
 
@@ -358,8 +361,8 @@ const DaftarMerchantQris = () => {
             width: '67px'
         },
         {
-            name: 'ID merchant',
-            selector: row => row.merchant_id,
+            name: 'ID brand',
+            selector: row => row.moutlet_id,
             width: "130px"
         },
         {
@@ -388,15 +391,15 @@ const DaftarMerchantQris = () => {
         {
             name: 'Status',
             selector: row => row.status_name,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px", borderRadius: 4 },
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px 6px 6px 0px", borderRadius: 4,  },
             conditionalCellStyles: [
                 {
                     when: row => row.status_id === 105,
-                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
                 },
                 {
                     when: row => row.status_id === 106 || row.status_id === 107,
-                    style: { background: "#FEF4E9", color: "#F79421", }
+                    style: { background: "#FEF4E9", color: "#F79421", width: "150px"}
                 }
             ],
         },
@@ -405,7 +408,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon onClick={() => getPageRegisterQrisBrand(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getPageRegisterQrisBrand(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.mmerchant_nou, row.moutlet_nou, row.status_id)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },
@@ -485,7 +488,7 @@ const DaftarMerchantQris = () => {
             setIsFilterDataOutletQris(true)
             setActivePageDataOutletQris(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"outlet_name":"${merchantName}", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"store_name":"${merchantName}", "date_from": "", "date_to": "", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -510,22 +513,23 @@ const DaftarMerchantQris = () => {
         }
     }
 
-    function getPageRegisterQrisOutlet (id, step, businessTypeId, settleId, merchantNou, userNou) {
-        console.log(settleId, "settleId");
-        console.log(merchantNou, "merchantNou");
-        console.log(userNou, "userNou");
-        if (step === 1) {
-            history.push(`/formulir-info-pemilik-outlet/${id}`)
-        } else if (step === 2) {
-            history.push(`/formulir-info-usaha-outlet/${id}`)
-        } else if (step === 3) {
-            history.push(`/form-dokumen-usaha-outlet/${id}`)
-        } else if (step === 200) {
-            history.push(`/pengaturan-merchant/${id}/103/${businessTypeId}`)
-        } else if (step === 201) {
-            history.push(`/form-info-rekening-outlet/${settleId}/${merchantNou}/${userNou}/${id}`)
-        } else if (step === 300) {
-            history.push(`/detail-merchant-outlet`)
+    function getPageRegisterQrisOutlet (id, step, businessTypeId, settleId, merchantNou, userNou, statusId) {
+        if (statusId === 106 || statusId === 107) {
+            if (step === 1) {
+                history.push(`/formulir-info-pemilik-outlet/${id}`)
+            } else if (step === 2) {
+                history.push(`/formulir-info-usaha-outlet/${id}`)
+            } else if (step === 3) {
+                history.push(`/form-dokumen-usaha-outlet/${id}`)
+            } else if (step === 200) {
+                history.push(`/pengaturan-merchant/${id}/103/${businessTypeId}`)
+            } else if (step === 201) {
+                history.push(`/form-info-rekening-outlet/${settleId}/${merchantNou}/${userNou}/${id}`)
+            } else if (step === 300) {
+                history.push(`/detail-merchant-outlet/${id}`)
+            }
+        } else {
+            history.push(`/detail-merchant-outlet/${id}`)
         }
     }
 
@@ -536,9 +540,9 @@ const DaftarMerchantQris = () => {
             width: '67px'
         },
         {
-            name: 'ID merchant',
-            selector: row => row.merchant_id,
-            width: "130px"
+            name: 'ID outlet',
+            selector: row => row.mstore_id,
+            width: "150px"
         },
         {
             name: 'Waktu bergabung',
@@ -560,15 +564,15 @@ const DaftarMerchantQris = () => {
         {
             name: 'Status',
             selector: row => row.status_name,
-            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px", borderRadius: 4 },
+            style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px 6px 6px 0px", borderRadius: 4,  },
             conditionalCellStyles: [
                 {
                     when: row => row.status_id === 105,
-                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86", }
+                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
                 },
                 {
                     when: row => row.status_id === 106 || row.status_id === 107,
-                    style: { background: "#FEF4E9", color: "#F79421", }
+                    style: { background: "#FEF4E9", color: "#F79421", width: "150px"}
                 }
             ],
         },
@@ -577,7 +581,7 @@ const DaftarMerchantQris = () => {
             width: "170px",
             cell: (row) => (
                 <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon onClick={() => getPageRegisterQrisOutlet(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.merchant_nou)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => getPageRegisterQrisOutlet(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.mstore_nou, row.status_id)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger> 
             ),
         },

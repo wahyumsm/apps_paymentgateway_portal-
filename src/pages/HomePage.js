@@ -101,7 +101,6 @@ import FormInfoUsahaPerseorangan from './DaftarMerchantQris/FormDataMerchantGrup
 import PengaturanMerchant from './DaftarMerchantQris/PengaturanMerchant';
 import FormDaftarSettlement from './DaftarMerchantQris/FormDataMerchantGrup/FormDaftarSettlement';
 import DetailMerchantGrup from './DaftarMerchantQris/FormDataMerchantGrup/DetailMerchantGrup';
-import FormTambahSettlementBrand from './DaftarMerchantQris/FormDataMerchantGrup/FormTambahSettlementBrand';
 import FormTidakBerbadanHukum from './DaftarMerchantQris/FormDataMerchantGrup/FormTidakBerbadanHukum';
 import FormInfoPemilikBadanUsaha from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoPemilikBadanUsaha';
 import FormInfoUsahaBadanUsaha from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoUsahaBadanUsaha';
@@ -116,6 +115,8 @@ import FormInfoUsahaOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/For
 import FormDokumenUsahaOutletBadanUsaha from './DaftarMerchantQris/FormDataMerchantOutlet/FormDokumenUsahaOutletBadanUsaha';
 import FormInfoRekeningOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/FormInfoRekeningOutlet';
 import DetailMerchantOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/DetailMerchantOutlet';
+import FormTambahSettlement from './DaftarMerchantQris/FormDataMerchantGrup/FormTambahSettlement';
+import DetailSettlementGrup from './DaftarMerchantQris/FormDataMerchantGrup/DetailSettlementGrup';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -247,10 +248,11 @@ export default () => (
     <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukumFirstStep.path} component={FormTidakBerbadanHukum} />
     <RouteWithSidebar exact path={Routes.PengaturanMerchant.path} component={PengaturanMerchant} />
     <RouteWithSidebar exact path={Routes.PengaturanMerchantEdit.path} component={PengaturanMerchant} />
-    <RouteWithSidebar exact path={Routes.FormDaftarSettlement.path} component={FormDaftarSettlement} />
     <RouteWithSidebar exact path={Routes.FormDaftarSettlementEditData.path} component={FormDaftarSettlement} />
     <RouteWithSidebar exact path={Routes.DetailMerchantGrup.path} component={DetailMerchantGrup} />
-    <RouteWithSidebar exact path={Routes.FormTambahSettlementBrand.path} component={FormTambahSettlementBrand} />
+    <RouteWithSidebar exact path={Routes.FormTambahSettlement.path} component={FormTambahSettlement} />
+    <RouteWithSidebar exact path={Routes.FormTambahSettlementEdit.path} component={FormTambahSettlement} />
+    <RouteWithSidebar exact path={Routes.DetailSettlementGrupQris.path} component={DetailSettlementGrup} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikBrand.path} component={FormInfoPemilik} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikBrandFirstStep.path} component={FormInfoPemilik} />
     <RouteWithSidebar exact path={Routes.FormInfoUsahaBrandSecondStep.path} component={FormInfoUsaha} />
