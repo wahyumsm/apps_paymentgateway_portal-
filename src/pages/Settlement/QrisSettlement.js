@@ -521,59 +521,74 @@ const QrisSettlement = () => {
             selector: row => row.tqrissettl_bank_acc_name_to,
             width: "230px"
         },
+        // {
+        //     name: 'Jumlah Transaksi WeChat Pay',
+        //     selector: row => convertToRupiah(row.tqrissettl_trx_count_wechatpay, false, 0),
+        //     width: "280px"
+        // },
+        // {
+        //     name: 'Jumlah Transaksi Alipay',
+        //     selector: row => convertToRupiah(row.tqrissettl_trx_count_alipay, false, 0),
+        //     width: "230px"
+        // },
+        // {
+        //     name: 'Jumlah Transaksi QRIS',
+        //     selector: row => convertToRupiah(row.tqrissettl_trx_count, false, 0),
+        //     width: "230px"
+        // },
         {
-            name: 'Jumlah Transaksi WeChat Pay',
-            selector: row => convertToRupiah(row.tqrissettl_trx_count_wechatpay, false, 0),
-            width: "280px"
-        },
-        {
-            name: 'Jumlah Transaksi Alipay',
-            selector: row => convertToRupiah(row.tqrissettl_trx_count_alipay, false, 0),
-            width: "230px"
-        },
-        {
-            name: 'Jumlah Transaksi QRIS',
+            name: 'Jumlah Transaksi',
             selector: row => convertToRupiah(row.tqrissettl_trx_count, false, 0),
             width: "230px"
         },
+        // {
+        //     name: 'Total Transaksi WeChat Pay',
+        //     selector: row => convertToRupiah(row.tqrissettl_trx_amount_wechatpay, true, 2),
+        //     width: "250px"
+        // },
+        // {
+        //     name: 'Total Transaksi Alipay',
+        //     selector: row => convertToRupiah(row.tqrissettl_trx_amount_alipay, true, 2),
+        //     width: "230px"
+        // },
+        // {
+        //     name: 'Total Transaksi QRIS',
+        //     selector: row => convertToRupiah(row.tqrissettl_trx_amount, true, 2),
+        //     width: "230px"
+        // },
         {
-            name: 'Total Transaksi WeChat Pay',
-            selector: row => convertToRupiah(row.tqrissettl_trx_amount_wechatpay, true, 2),
-            width: "250px"
-        },
-        {
-            name: 'Total Transaksi Alipay',
-            selector: row => convertToRupiah(row.tqrissettl_trx_amount_alipay, true, 2),
-            width: "230px"
-        },
-        {
-            name: 'Total Transaksi QRIS',
+            name: 'Total Transaksi',
             selector: row => convertToRupiah(row.tqrissettl_trx_amount, true, 2),
             width: "230px"
         },
-        {
-            name: 'Total Transaksi Keseluruhan',
-            selector: row => convertToRupiah((row.tqrissettl_trx_amount + row.tqrissettl_trx_amount_wechatpay + row.tqrissettl_trx_amount_alipay), true, 2),
-            width: "250px"
-        },
-        {
-            name: 'MDR WeChat Pay',
-            selector: row => convertToRupiah(row.tqrissettl_total_mdr_wechatpay, true, 2),
-            width: "180px"
-        },
-        {
-            name: 'MDR Alipay',
-            selector: row => convertToRupiah(row.tqrissettl_total_mdr_alipay, true, 2),
-            width: "140px"
-        },
-        {
-            name: 'MDR QRIS',
-            selector: row => convertToRupiah(row.tqrissettl_total_mdr, true, 2),
-            width: "140px"
-        },
+        // {
+        //     name: 'Total Transaksi Keseluruhan',
+        //     selector: row => convertToRupiah((row.tqrissettl_trx_amount + row.tqrissettl_trx_amount_wechatpay + row.tqrissettl_trx_amount_alipay), true, 2),
+        //     width: "250px"
+        // },
+        // {
+        //     name: 'MDR WeChat Pay',
+        //     selector: row => convertToRupiah(row.tqrissettl_total_mdr_wechatpay, true, 2),
+        //     width: "180px"
+        // },
+        // {
+        //     name: 'MDR Alipay',
+        //     selector: row => convertToRupiah(row.tqrissettl_total_mdr_alipay, true, 2),
+        //     width: "140px"
+        // },
+        // {
+        //     name: 'MDR QRIS',
+        //     selector: row => convertToRupiah(row.tqrissettl_total_mdr, true, 2),
+        //     width: "140px"
+        // },
+        // {
+        //     name: 'Total MDR',
+        //     selector: row => convertToRupiah((row.tqrissettl_total_mdr + row.tqrissettl_total_mdr_wechatpay + row.tqrissettl_total_mdr_alipay), true, 2),
+        //     width: "140px"
+        // },
         {
             name: 'Total MDR',
-            selector: row => convertToRupiah((row.tqrissettl_total_mdr + row.tqrissettl_total_mdr_wechatpay + row.tqrissettl_total_mdr_alipay), true, 2),
+            selector: row => convertToRupiah((row.tqrissettl_total_mdr), true, 2),
             width: "140px"
         },
         {

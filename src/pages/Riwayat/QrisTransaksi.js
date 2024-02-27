@@ -154,31 +154,31 @@ const QrisTransaksi = () => {
         // },
         {
             name: 'Nama Grup',
-            selector: row => row.merchant_name,
+            selector: row => row.merchant_name !== null ? row.merchant_name : "-",
             wrap: true,
             width: "180px"
         },
         {
             name: 'Nama Brand',
-            selector: row => row.outlet_name,
+            selector: row => row.outlet_name !== null ? row.outlet_name : "-",
             wrap: true,
             width: "200px"
         },
         {
             name: 'Nama Outlet',
-            selector: row => row.store_name,
+            selector: row => row.store_name !== null ? row.store_name : "-",
             wrap: true,
             width: "150px"
         },
         {
             name: 'Nama Kasir',
-            selector: row => row.cashier_name,
+            selector: row => row.cashier_name !== null ? row.cashier_name : "-",
             wrap: true,
             width: "200px"
         },
         {
             name: 'ID Kasir',
-            selector: row => row.mterminal_name,
+            selector: row => row.mterminal_name !== null ? row.mterminal_name : "-",
             width: "100px"
         },
         {
