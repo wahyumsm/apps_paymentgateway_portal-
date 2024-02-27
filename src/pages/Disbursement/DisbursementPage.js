@@ -1783,6 +1783,8 @@ function DisbursementPage() {
         bankName: "",
         bankCode: ""
     })
+    // console.log(inputData.bankName, 'inputData.bankName');
+    // console.log(inputData.bankCode, 'inputData.bankCode');
 
     const [inputRekening, setInputRekening] = useState({
         bankNameRek: "",

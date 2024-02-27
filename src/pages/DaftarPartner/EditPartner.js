@@ -1101,7 +1101,7 @@ function EditPartner() {
     typeName,
     number
   ) {
-    console.log(minFee, 'minFee');
+    // console.log(minFee, 'minFee');
     let sameFlag = 0
     payment.forEach((val) => {
       if (val.fitur_id === Number(fiturId)) {

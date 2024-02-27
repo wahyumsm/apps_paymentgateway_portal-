@@ -75,8 +75,8 @@ const QrisTransaksi = () => {
     }
 
     function handleChangeTransactionReposrtQris(e) {
-        console.log(e.target.name, 'e.target.name');
-        console.log(e.target.value, 'e.target.value');
+        // console.log(e.target.name, 'e.target.name');
+        // console.log(e.target.value, 'e.target.value');
         setInputHandleTransactionReportQrisAdmin({
             ...inputHandleTransactionReportQrisAdmin,
             [e.target.name] : e.target.value
