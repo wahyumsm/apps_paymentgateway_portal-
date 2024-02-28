@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Form, Image, Modal, Button, Toast} from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
+import { BaseURL, convertSimpleTimeStamp, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession, CustomLoader } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -45,19 +44,19 @@ function Disbursement() {
     const [totalPageDisbursement, setTotalPageDisbursement] = useState(1)
     const [isFilterDisbursement, setIsFilterDisbursement] = useState(false)
     const [listDisburseChannel, setListDisburseChannel] = useState([])
-    const currentDate = new Date().toLocaleString().split(',')[0]
+    const currentDate = new Date().toLocaleDateString('id-ID').split(' ')[0]
     // const currentDate = new Date().toISOString().split('T')[0] //new Date().toLocaleString().split(',')[0]
-    const yesterdayDate = new Date(new Date().setDate(new Date().getDate() - 1)).toLocaleString().split(',')[0]
+    const yesterdayDate = new Date(new Date().setDate(new Date().getDate() - 1)).toLocaleDateString('id-ID').split(' ')[0]
     // const yesterdayDate = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] //new Date(new Date().setDate(new Date().getDate() - 1)).toLocaleString().split(',')[0]
-    const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleString().split(',')[0]
+    const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleDateString('id-ID').split(' ')[0]
     // const sevenDaysAgo = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0] //new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleString().split(',')[0]
-    const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleString().split(',')[0]
+    const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleDateString('id-ID').split(' ')[0]
     // const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 2).toISOString().split('T')[0] //new Date(new Date().getFullYear(), new Date().getMonth(), 1).toLocaleString().split(',')[0]
-    const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, -0).toLocaleString().split(',')[0]
+    const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, -0).toLocaleDateString('id-ID').split(' ')[0]
     // const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1).toISOString().split('T')[0] //new Date(new Date().getFullYear(), new Date().getMonth() + 1, -0).toLocaleString().split(',')[0]
-    const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toLocaleString().split(',')[0]
+    const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toLocaleDateString('id-ID').split(' ')[0]
     // const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 2).toISOString().split('T')[0] //new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toLocaleString().split(',')[0]
-    const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth(), -0).toLocaleString().split(',')[0]
+    const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth(), -0).toLocaleDateString('id-ID').split(' ')[0]
     // const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth()).toISOString().split('T')[0] //new Date(new Date().getFullYear(), new Date().getMonth(), -0).toLocaleString().split(',')[0]
 
     const [selectedPartnerDisbursement, setSelectedPartnerDisbursement] = useState([])
@@ -502,9 +501,11 @@ function Disbursement() {
 
     async function disbursementReport(dateNow, currentPage, userRole, lang) {
         try {
+            let newDate = ''
+            dateNow.split('/').forEach((item, i) => i === 0 ? newDate = item : newDate = `${item}-${newDate}`)
             if (userRole !== "102") {
                 const auth = 'Bearer ' + getToken();
-                const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "sub_partner_id":"", "date_from": "${dateNow}", "date_to": "${dateNow}", "partner_trans_id":"", "payment_code":"", "reference_no": "", "keterangan": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "sub_partner_id":"", "date_from": "${newDate}", "date_to": "${newDate}", "partner_trans_id":"", "payment_code":"", "reference_no": "", "keterangan": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth,
@@ -529,7 +530,7 @@ function Disbursement() {
                 }
             } else {
                 const auth = 'Bearer ' + getToken();
-                const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "date_from": "${dateNow}", "date_to": "${dateNow}", "partner_trans_id":"", "payment_code":"", "reference_no": "", "keterangan": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "date_from": "${newDate}", "date_to": "${newDate}", "partner_trans_id":"", "payment_code":"", "reference_no": "", "keterangan": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth,
@@ -569,12 +570,18 @@ function Disbursement() {
 
     async function filterDisbursement(user_role, page, statusId, transId, paymentCode, partnerId, dateRange, periode, partnerTransId, reffNo, rowPerPage, lang, keterangan) {
         try {
+            let newDate1 = ''
+            let newDate2 = ''
+            if (typeof(dateRange) === 'object') {
+                dateRange[0].split('/').forEach((item, i) => i === 0 ? newDate1 = item : newDate1 = `${item}-${newDate1}`)
+                dateRange[1].split('/').forEach((item, i) => i === 0 ? newDate2 = item : newDate2 = `${item}-${newDate2}`)
+            }
             setPendingDisbursement(true)
             setIsFilterDisbursement(true)
             setActivePageDisbursement(page)
             const auth = 'Bearer ' + getToken();
-            const dataParamsAdmin = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
-            const dataParamsPertner = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParamsAdmin = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? newDate1 : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? newDate2 : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParamsPertner = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? newDate1 : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? newDate2 : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", "reference_no": "${reffNo}", "keterangan": "${keterangan}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
@@ -1051,8 +1058,14 @@ function Disbursement() {
         if (isFilter === true && userRole === "102") {
             async function dataExportFilter(statusId, transId, paymentCode, keterangan, dateRange, periode, partnerTransId) {
                 try {
+                    let newDate1 = ''
+                    let newDate2 = ''
+                    if (typeof(dateRange) === 'object') {
+                        dateRange[0].split('/').forEach((item, i) => i === 0 ? newDate1 = item : newDate1 = `${item}-${newDate1}`)
+                        dateRange[1].split('/').forEach((item, i) => i === 0 ? newDate2 = item : newDate2 = `${item}-${newDate2}`)
+                    }
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId === undefined ? "" : partnerTransId}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "reference_no": "", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? newDate1 : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? newDate2 : periode[1]) : ""}", "partner_trans_id":"${partnerTransId === undefined ? "" : partnerTransId}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "reference_no": "", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -1092,8 +1105,14 @@ function Disbursement() {
             async function dataExportFilter(statusId, transId, paymentCode, partnerId, dateRange, periode, partnerTransId, referenceNo, keterangan) {
                 try {
                     // console.log(partnerTransId, "partner trans filter");
+                    let newDate1 = ''
+                    let newDate2 = ''
+                    if (typeof(dateRange) === 'object') {
+                        dateRange[0].split('/').forEach((item, i) => i === 0 ? newDate1 = item : newDate1 = `${item}-${newDate1}`)
+                        dateRange[1].split('/').forEach((item, i) => i === 0 ? newDate2 = item : newDate2 = `${item}-${newDate2}`)
+                    }
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[0] : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? dateRange[1] : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "${referenceNo}", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [${(statusId.length !== 0) ? statusId : [1,2,4,19]}], "transID" : "${(transId.length !== 0) ? transId : ""}", "payment_code":"${(paymentCode.length !== 0) ? paymentCode : ""}", "sub_partner_id":"${(partnerId.length !== 0) ? partnerId : ""}", "date_from": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? newDate1 : periode[0]) : ""}", "date_to": "${(dateRange.length !== 0) ? (typeof(dateRange) === 'object' ? newDate2 : periode[1]) : ""}", "partner_trans_id":"${partnerTransId}", reference_no: "${referenceNo}", "keterangan": "${keterangan}", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -1131,8 +1150,10 @@ function Disbursement() {
         } else if (isFilter === false && userRole === "102") {
             async function dataExportDisbursement() {
                 try {
+                    let newDate = ''
+                    currentDate.split('/').forEach((item, i) => i === 0 ? newDate = item : newDate = `${item}-${newDate}`)
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "payment_code": "", "date_from": "${currentDate}", "date_to": "${currentDate}", "partner_trans_id":"", "reference_no":"", "keterangan": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "payment_code": "", "date_from": "${newDate}", "date_to": "${newDate}", "partner_trans_id":"", "reference_no":"", "keterangan": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -1170,8 +1191,10 @@ function Disbursement() {
         } else if (isFilter === false && userRole !== "102") {
             async function dataExportDisbursement() {
                 try {
+                    let newDate = ''
+                    currentDate.split('/').forEach((item, i) => i === 0 ? newDate = item : newDate = `${item}-${newDate}`)
                     const auth = 'Bearer ' + getToken();
-                    const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "sub_partner_id":"", "payment_code": "", "date_from": "${currentDate}", "date_to": "${currentDate}", "partner_trans_id":"", "reference_no":"", "keterangan": "", "page": 1, "row_per_page": 1000000}`)
+                    const dataParams = encryptData(`{"statusID": [1,2,4,19], "transID" : "", "sub_partner_id":"", "payment_code": "", "date_from": "${newDate}", "date_to": "${newDate}", "partner_trans_id":"", "reference_no":"", "keterangan": "", "page": 1, "row_per_page": 1000000}`)
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
@@ -1236,12 +1259,6 @@ function Disbursement() {
             $('#detailakunspan').addClass('menu-detail-akun-span-active')
         }
     }
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-        </div>
-    );
 
     return (
         <div className="main-content mt-5" style={{ padding: "37px 27px" }}>

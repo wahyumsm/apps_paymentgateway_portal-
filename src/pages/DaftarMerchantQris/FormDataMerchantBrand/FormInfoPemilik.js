@@ -354,7 +354,7 @@ const FormInfoPemilik = (props) => {
                         </div>
                     </div>
                     <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Grup</div>
-                    <div className="dropdown dropDisbursePartner mt-2">
+                    <div className="dropdown dropInfoPemilikBrand mt-2" >
                         <ReactSelect
                             closeMenuOnSelect={true}
                             hideSelectedOptions={false}

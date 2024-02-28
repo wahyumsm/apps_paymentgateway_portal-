@@ -74,6 +74,145 @@ function UpdateUser() {
         // })
         setSelectedAgenUpdateUser([])
     }
+    
+    const [dataGrupInQris, setDataGrupInQris] = useState([])
+    const [selectedGrupName, setSelectedGrupName] = useState([])
+  
+    function handleChangeGrup(e) {
+        // getBrandInQrisTransactionHandler(e.value)
+        getBrandQris(e[0].value)
+        setSelectedGrupName(e)
+    }
+
+    const [dataBrandInQris, setDataBrandInQris] = useState([])
+    const [selectedBrandName, setSelectedBrandName] = useState([])
+  
+    function handleChangeBrand(e) {
+      // getBrandInQrisTransactionHandler(e.value)
+      getOutletQris(e[0].value)
+      setSelectedBrandName(e)
+    }
+
+    const [dataStoreInQris, setDataStoreInQris] = useState([])
+    const [selectedStoreName, setSelectedStoreName] = useState([])
+  
+    function handleChangeStore(e) {
+      // getStoreInQrisTransactionHandler(e.value)
+      setSelectedStoreName(e)
+    }
+
+    async function getGrupQrisHandler() {
+        try {
+            const auth = "Bearer " + access_token
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataGrupQris = await axios.post(BaseURL + "/QRIS/MasterGroup", { data: "" }, { headers: headers })
+            // console.log(dataGrupQris, 'ini user detal funct');
+            if (dataGrupQris.status === 200 && dataGrupQris.data.response_code === 200 && dataGrupQris.data.response_new_token === null) {
+                let newArr = []
+                dataGrupQris.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.nou
+                    obj.label = e.name
+                    newArr.push(obj)
+                })
+                setDataGrupInQris(newArr)
+            } else if (dataGrupQris.status === 200 && dataGrupQris.data.response_code === 200 && dataGrupQris.data.response_new_token !== null) {
+                setUserSession(dataGrupQris.data.response_new_token)
+                let newArr = []
+                dataGrupQris.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.nou
+                    obj.label = e.name
+                    newArr.push(obj)
+                })
+                setDataGrupInQris(newArr)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+      }
+    
+      async function getBrandQris(nouGrup) {
+        try {
+            const auth = "Bearer " + access_token
+            const dataParams = encryptData(`{"mmerchant_nou": ${nouGrup}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataBrandQris = await axios.post(BaseURL + "/QRIS/MasterBrand", { data: dataParams }, { headers: headers })
+            // console.log(dataBrandQris, 'ini user detal funct');
+            if (dataBrandQris.status === 200 && dataBrandQris.data.response_code === 200 && dataBrandQris.data.response_new_token === null) {
+              let newArr = []
+              dataBrandQris.data.response_data.results.forEach(e => {
+                  let obj = {}
+                  obj.value = e.nou
+                  obj.label = e.name
+                  newArr.push(obj)
+              })
+              setDataBrandInQris(newArr)
+            } else if (dataBrandQris.status === 200 && dataBrandQris.data.response_code === 200 && dataBrandQris.data.response_new_token !== null) {
+                setUserSession(dataBrandQris.data.response_new_token)
+                let newArr = []
+                dataBrandQris.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.nou
+                    obj.label = e.name
+                    newArr.push(obj)
+                })
+                setDataBrandInQris(newArr)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+      }
+    
+      async function getOutletQris(nouBrand) {
+          try {
+              const auth = "Bearer " + access_token
+              const dataParams = encryptData(`{"moutlet_nou": ${nouBrand}}`)
+              const headers = {
+                  'Content-Type':'application/json',
+                  'Authorization' : auth
+              }
+              const dataOutletQris = await axios.post(BaseURL + "/QRIS/MasterOutlet", { data: dataParams }, { headers: headers })
+              // console.log(dataOutletQris, 'ini user detal funct');
+              if (dataOutletQris.status === 200 && dataOutletQris.data.response_code === 200 && dataOutletQris.data.response_new_token === null) {
+                let newArr = []
+                dataOutletQris.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.nou
+                    obj.label = e.name
+                    newArr.push(obj)
+                })
+                setDataStoreInQris(newArr)
+              } else if (dataOutletQris.status === 200 && dataOutletQris.data.response_code === 200 && dataOutletQris.data.response_new_token !== null) {
+                setUserSession(dataOutletQris.data.response_new_token)
+                let newArr = []
+                dataOutletQris.data.response_data.results.forEach(e => {
+                    let obj = {}
+                    obj.value = e.nou
+                    obj.label = e.name
+                    newArr.push(obj)
+                })
+                setDataStoreInQris(newArr)
+              }
+              // if (dataOutletQris.status === 200 && dataOutletQris.data.response_code === 200 && dataOutletQris.data.response_new_token === null) {
+              //     setDataOutletInQris(dataOutletQris.data.response_data.results)
+              // } else if (dataOutletQris.status === 200 && dataOutletQris.data.response_code === 200 && dataOutletQris.data.response_new_token !== null) {
+              //     setUserSession(dataOutletQris.data.response_new_token)
+              //     setDataOutletInQris(dataOutletQris.data.response_data.results)
+              // }
+          } catch (error) {
+              // console.log(error);
+              history.push(errorCatch(error.response.status))
+          }
+    }
 
     async function getDetailUser(muserId) {
         try {
@@ -119,10 +258,10 @@ function UpdateUser() {
         }
     }        
 
-        async function editUserHandle(idUser, nameUser, emailUser, roleUser, isActive, partnerId, agenId) {
+        async function editUserHandle(idUser, nameUser, emailUser, roleUser, isActive, partnerId, agenId, grupNou, brandNou, outletNou) {
             try {
                 const auth = "Bearer " + getToken()
-                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser === 102) ? partnerId : (inputHandle.roleUser === 104 ) ? agenId : ""}"}`)
+                const dataParams = encryptData(`{"muser_id":"${idUser}", "name": "${nameUser}", "email": "${emailUser}", "role": "${roleUser}", "is_active": "${isActive}", "partnerdtl_id":"${(inputHandle.roleUser === 102) ? partnerId : (inputHandle.roleUser === 104 ) ? agenId : (inputHandle.roleUser === 106 ) ? grupNou : (inputHandle.roleUser === 107) ? brandNou : (inputHandle.roleUser === 108 ) ? outletNou : ""}"}`)
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': auth
@@ -259,6 +398,8 @@ function UpdateUser() {
                 history.push(errorCatch(error.response.status))
             }
         }
+
+
         useEffect(() => {
             if (!access_token) {
                 history.push("/login");
@@ -268,8 +409,11 @@ function UpdateUser() {
             }
             getDetailUser(muserId);
             getMenuRole();
+            if (inputHandle.roleUser === 106 || inputHandle.roleUser === 107 || inputHandle.roleUser === 108) {
+                getGrupQrisHandler()
+            }
             // getListPartner();
-        }, [access_token, muserId, user_role]);
+        }, [access_token, muserId, user_role, inputHandle.roleUser]);
 
         const goBack = () => {
             window.history.back();
@@ -334,6 +478,84 @@ function UpdateUser() {
                                         );
                                     })}
                                 </Form.Select>
+                            </Col>
+                            <Col
+                                xs={12}
+                                className="mt-2"
+                                style={{
+                                    display:
+                                      inputHandle.roleUser === 106 || inputHandle.roleUser === 107 || inputHandle.roleUser === 108
+                                        ? ""
+                                        : "none",
+                                }}
+                            >
+                                <h6>Nama Grup</h6>
+                                <div className="dropdown dropPartnerAddUser">
+                                    <ReactSelect
+                                    // isMulti
+                                    closeMenuOnSelect={true}
+                                    hideSelectedOptions={false}
+                                    options={dataGrupInQris}
+                                    // allowSelectAll={true}
+                                    value={selectedGrupName}
+                                    onChange={(selected) => handleChangeGrup([selected])}
+                                    placeholder="--- Choose Grup Name ---"
+                                    components={{ Option }}
+                                    styles={customStylesSelectedOption}
+                                />
+                                </div>
+                            </Col>
+                            <Col
+                                xs={12}
+                                className="mt-2"
+                                style={{
+                                    display:
+                                      inputHandle.roleUser === 107 || inputHandle.roleUser === 108
+                                        ? ""
+                                        : "none",
+                                }}
+                            >
+                                <h6>Nama Brand</h6>
+                                <div className="dropdown dropPartnerAddUser">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={dataBrandInQris}
+                                        // allowSelectAll={true}
+                                        value={selectedBrandName}
+                                        onChange={(selected) => handleChangeBrand([selected])}
+                                        placeholder="--- Choose Brand Name ---"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
+                            </Col>
+                            <Col
+                                xs={12}
+                                className="mt-2"
+                                style={{
+                                    display:
+                                      inputHandle.roleUser === 108
+                                        ? ""
+                                        : "none",
+                                }}
+                            >
+                                <h6>Nama Outlet / Store</h6>
+                                <div className="dropdown dropPartnerAddUser">
+                                    <ReactSelect
+                                        // isMulti
+                                        closeMenuOnSelect={true}
+                                        hideSelectedOptions={false}
+                                        options={dataStoreInQris}
+                                        // allowSelectAll={true}
+                                        value={selectedStoreName}
+                                        onChange={(selected) => handleChangeStore([selected])}
+                                        placeholder="--- Choose Store Name ---"
+                                        components={{ Option }}
+                                        styles={customStylesSelectedOption}
+                                    />
+                                </div>
                             </Col>
                             <Col
                                 xs={12}
@@ -457,7 +679,10 @@ function UpdateUser() {
                                     inputHandle.roleUser,
                                     inputHandle.isActive,
                                     inputHandle.partnerId,
-                                    inputHandle.agenId
+                                    inputHandle.agenId,
+                                    selectedGrupName.length !== 0 ? selectedGrupName[0].value : "",
+                                    selectedBrandName.length !== 0 ? selectedBrandName[0].value : "",
+                                    selectedStoreName.length !== 0 ? selectedStoreName[0].value : ""
                                 )
                             }
                             style={{

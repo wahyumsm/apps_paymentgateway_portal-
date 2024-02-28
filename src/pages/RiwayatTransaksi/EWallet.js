@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Form, Image} from '@themesberg/react-bootstrap';
+import { Col, Row, Form } from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession, CustomLoader } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -651,13 +650,6 @@ function EWallet() {
         },
     };
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          {/* <div>Loading...</div> */}
-        </div>
-    );
-
     return (
         <div className="content-page mt-6">
             <span className='breadcrumbs-span'><Link to={"/"}>{user_role !== "102" ? "Beranda" : (language === null ? eng.laporan : language.laporan)}</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role !== "102" ? "Riwayat" : (language === null ? eng.riwayat : language.riwayat)}  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;{user_role !== "102" ? "Collection E-Wallet" : (language === null ? eng.collectionEwallet : language.collectionEwallet)}</span>
@@ -700,6 +692,7 @@ function EWallet() {
                                         <option value={1}>DANA</option>
                                         <option value={2}>OVO</option>
                                         <option value={3}>GOPAY</option>
+                                        <option value={4}>SHOPEEPAY</option>
                                     </Form.Select>
                                 </Col>
                             }
@@ -740,6 +733,7 @@ function EWallet() {
                                         <option value={1}>DANA</option>
                                         <option value={2}>OVO</option>
                                         <option value={3}>GOPAY</option>
+                                        <option value={4}>SHOPEEPAY</option>
                                     </Form.Select>
                                 </Col>
                             }

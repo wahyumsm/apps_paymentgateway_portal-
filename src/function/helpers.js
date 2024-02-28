@@ -1,9 +1,20 @@
+import React from "react";
+import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
+import { Image } from "@themesberg/react-bootstrap";
+
+export const CustomLoader = () => (
+	<div style={{ padding: '24px' }}>
+		<Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
+		<div>Loading...</div>
+	</div>
+);
+
 // export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
+export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile9"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile11/"
-export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile15/"
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile14/"
+// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile15/"
+// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile13"
 // export const BaseURL = "https://apid.ezeelink.co.id/snap/api2"
 // export const BaseURL = "https://apid.ezeelink.co.id/ezpaygateway/portal/"
 // export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
@@ -372,7 +383,7 @@ export function replaceText (text) {
 }
 
 export const customFilter = (option, searchText) => {
-	console.log(option.data.label.toLowerCase().includes(searchText.toLowerCase()), "option");
+	// console.log(option.data.label.toLowerCase().includes(searchText.toLowerCase()), "option");
 	if (
 		option.data.label.toLowerCase().includes(searchText.toLowerCase())
 	) {

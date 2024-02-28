@@ -195,7 +195,7 @@ const DetailMerchantOutlet = () => {
                 setDataDetailOutlet(datamerchantGrup.data.response_data.results)
                 setInputHandle({...inputHandle, jenisUsaha: datamerchantGrup.data.response_data.results.mprofdtl_bustype, peranPendaftar: datamerchantGrup.data.response_data.results.mprofdtl_register_role, namaUser: datamerchantGrup.data.response_data.results.profile_user_name === null ? "" : datamerchantGrup.data.response_data.results.profile_user_name, nomorKtp: datamerchantGrup.data.response_data.results.mprofdtl_identity_no === null ? "" : datamerchantGrup.data.response_data.results.mprofdtl_identity_no, kewarganegaraan: datamerchantGrup.data.response_data.results.mprofdtl_identity_type_id, noTelp: datamerchantGrup.data.response_data.results.mprofdtl_mobile})
                 setImageFileKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_url)
-                setNameImageKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_file_name)
+                setNameImageKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_url_name)
                 let newArrDataGrup = []
                 let objDataGrup = {}
                 objDataGrup.value = datamerchantGrup.data.response_data.results.mmerchant_nou
@@ -214,7 +214,7 @@ const DetailMerchantOutlet = () => {
                 setDataDetailOutlet(datamerchantGrup.data.response_data.results)
                 setInputHandle({...inputHandle, jenisUsaha: datamerchantGrup.data.response_data.results.mprofdtl_bustype, peranPendaftar: datamerchantGrup.data.response_data.results.mprofdtl_register_role, namaUser: datamerchantGrup.data.response_data.results.profile_user_name === null ? "" : datamerchantGrup.data.response_data.results.profile_user_name, nomorKtp: datamerchantGrup.data.response_data.results.mprofdtl_identity_no === null ? "" : datamerchantGrup.data.response_data.results.mprofdtl_identity_no, kewarganegaraan: datamerchantGrup.data.response_data.results.mprofdtl_identity_type_id, noTelp: datamerchantGrup.data.response_data.results.mprofdtl_mobile})
                 setImageFileKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_url)
-                setNameImageKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_file_name)
+                setNameImageKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_url_name)
                 let newArrDataGrup = []
                 let objDataGrup = {}
                 objDataGrup.value = datamerchantGrup.data.response_data.results.mmerchant_nou
@@ -499,7 +499,7 @@ const DetailMerchantOutlet = () => {
                                     name="image"
                                     disabled
                                 />
-                                <div className='mt-2 ms-3'>{nameImageKtp}</div>
+                                <div className='mt-2 ms-4'>{nameImageKtp}</div>
                             </>
                         }
                         <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
@@ -541,7 +541,7 @@ const DetailMerchantOutlet = () => {
                                             name="image"
                                             disabled
                                         />
-                                        <div className='mt-2 ms-3'>{nameImageSelfieKtp}</div>
+                                        <div className='mt-2 ms-4'>{nameImageSelfieKtp}</div>
                                     </>
                                 }
                                 <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>

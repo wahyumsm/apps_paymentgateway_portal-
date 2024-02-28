@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Image, Modal, Container} from '@themesberg/react-bootstrap';
+import { Col, Row, Button, Dropdown, ButtonGroup, InputGroup, Form, Modal, Container} from '@themesberg/react-bootstrap';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 // import { invoiceItems } from '../../data/tables';
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession, CustomLoader } from '../../function/helpers';
 import encryptData from '../../function/encryptData';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import * as XLSX from "xlsx"
 import Pagination from "react-js-pagination";
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
@@ -64,7 +63,7 @@ function RiwayatTransaksi() {
     const [selectedBankDanaMasuk, setSelectedBankDanaMasuk] = useState([])
     const [selectedPartnerSettlement, setSelectedPartnerSettlement] = useState([])
     const [selectedBankSettlement, setSelectedBankSettlement] = useState([])
-    
+
     const Option = (props) => {
         return (
             <div>
@@ -150,7 +149,7 @@ function RiwayatTransaksi() {
     }
 
     function handleChangePeriodeSettlement(e) {
-        
+
         if (e.target.value === "7") {
             setShowDateSettlement("")
             setInputHandle({
@@ -480,7 +479,7 @@ function RiwayatTransaksi() {
             history.push(errorCatch(error.response.status))
         }
     }
-    
+
     const columns = [
         {
             name: 'No',
@@ -498,13 +497,13 @@ function RiwayatTransaksi() {
         {
             name: 'Waktu',
             selector: row => row.tvatrans_crtdt_format,
-            // sortable: true,          
+            // sortable: true,
             width: "143px",
         },
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_transid,
-            // sortable: true,          
+            // sortable: true,
             wrap: true,
             width: "150px",
         },
@@ -700,7 +699,7 @@ function RiwayatTransaksi() {
                 fontSize: '16px',
                 display: 'flex',
                 justifyContent: 'flex-start',
-                
+
             },
         },
         headRow: {
@@ -711,7 +710,7 @@ function RiwayatTransaksi() {
             },
         },
     };
-    
+
     const customStylesSettlement = {
         headCells: {
             style: {
@@ -906,13 +905,6 @@ function RiwayatTransaksi() {
         }
     }
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          {/* <div>Loading...</div> */}
-        </div>
-    );
-
   return (
     <div className="content-page mt-6">
         <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Riwayat Transaksi</span>
@@ -1006,7 +998,7 @@ function RiwayatTransaksi() {
                                 <option value={5}>Bulan Ini</option>
                                 <option value={6}>Bulan Kemarin</option>
                                 <option value={7}>Pilih Range Tanggal</option>
-                            </Form.Select>                            
+                            </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Jenis Transaksi</span>
@@ -1046,7 +1038,7 @@ function RiwayatTransaksi() {
                             </Form.Select> */}
                         </Col>
                         <Col xs={4} style={{ display: showDateDanaMasuk }} className='text-end pe-4'>
-                            <DateRangePicker 
+                            <DateRangePicker
                                 onChange={pickDateDanaMasuk}
                                 value={stateDanaMasuk}
                                 clearIcon={null}
@@ -1173,7 +1165,7 @@ function RiwayatTransaksi() {
                                 <option value={5}>Bulan Ini</option>
                                 <option value={6}>Bulan Kemarin</option>
                                 <option value={7}>Pilih Range Tanggal</option>
-                            </Form.Select>                            
+                            </Form.Select>
                         </Col>
                         <Col xs={4} className="d-flex justify-content-start align-items-center">
                             <span>Jenis Transaksi</span>
@@ -1214,7 +1206,7 @@ function RiwayatTransaksi() {
                     <Row className='mt-4'>
                         <Col xs={4} style={{ display: showDateSettlement }} className='text-end'>
                             <div className='me-4' style={{ paddingRight: "0.5rem" }}>
-                                <DateRangePicker 
+                                <DateRangePicker
                                     onChange={pickDateSettlement}
                                     value={stateSettlement}
                                     clearIcon={null}

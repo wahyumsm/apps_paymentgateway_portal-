@@ -93,7 +93,16 @@ import ProsesSettlementManual from './Settlement/ProsesSettlementManual';
 import GetBalance from './Transfer/GetBalance';
 import TransaksiTopUp from './TopUp/TransaksiTopUp';
 import ReNotifyEwallet from './HelpDesk/ReNotifyEwallet';
+import QrisTransaksi from './Riwayat/QrisTransaksi';
+import QrisSettlement from './Settlement/QrisSettlement';
 import RiwayatInvoice from './Invoice/RiwayatInvoice';
+import CreateVAUSD from './VAUSD/CreateVAUSD';
+import RiwayatVAUSD from './RiwayatTransaksi/RiwayatVAUSD';
+import RiwayatFileSFTP from './VAUSD/RiwayatFileSFTP';
+import SettlementVAUSDPartner from './Settlement/SettlementVAUSDPartner';
+import TransaksiQrisApi from './Riwayat/TransaksiQrisApi';
+import ReNotifyQris from './HelpDesk/ReNotifyQris';
+import UnSettledTransaction from './Settlement/UnSettledTransaction';
 import DaftarMerchantQris from './DaftarMerchantQris/DaftarMerchantQris';
 import PilihJenisUsaha from './DaftarMerchantQris/PilihJenisUsaha';
 import FormInfoPemilikPerseorangan from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoPemilikPerseorangan';
@@ -203,6 +212,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.InvoiceDisbursement.path} component={InvoiceDisbursement}/>
     <RouteWithSidebar exact path={Routes.ReNotifyVA.path} component={ReNotifyVA}/>
     <RouteWithSidebar exact path={Routes.ReNotifyEwallet.path} component={ReNotifyEwallet}/>
+    <RouteWithSidebar exact path={Routes.ReNotifyQris.path} component={ReNotifyQris}/>
     <RouteWithSidebar exact path={Routes.RiwayatDisbursement.path} component={DisbursementReport}/>
     {/* <RouteWithSidebar exact path={Routes.DisbursementReport.path} component={DisbursementReport}/> */}
     {/* <RouteWithSidebar exact path={Routes.Settings.path} component={Settings} /> */}
@@ -230,8 +240,15 @@ export default () => (
     <RouteWithSidebar exact path={Routes.DisbursementAdmin.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccountAdmin.path} component={InfoSaldoMutasi} />
     <RouteWithSidebar exact path={Routes.DisbursementTimeout.path} component={DisbursementTimeout} />
+    <RouteWithSidebar exact path={Routes.QrisTransaksiAdmin.path} component={QrisTransaksi} />
+    <RouteWithSidebar exact path={Routes.TransaksiQrisApiAdmin.path} component={TransaksiQrisApi} />
     <RouteWithSidebar exact path={Routes.ExcludeSettlementManual.path} component={ExcludeSettlementManual} />
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />
+    <RouteWithSidebar exact path={Routes.VAUSD.path} component={CreateVAUSD} />
+    <RouteWithSidebar exact path={Routes.RiwayatFileSFTP.path} component={RiwayatFileSFTP} />
+    <RouteWithSidebar exact path={Routes.SettlementVAUSDAdmin.path} component={SettlementVAUSDPartner} />
+    <RouteWithSidebar exact path={Routes.UnsettledTransaction.path} component={UnSettledTransaction} />
+
     <RouteWithSidebar exact path={Routes.DaftarMerchantQris.path} component={DaftarMerchantQris} />
     <RouteWithSidebar exact path={Routes.PilihJenisUsahaQris.path} component={PilihJenisUsaha} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseorangan.path} component={FormInfoPemilikPerseorangan} />
@@ -271,13 +288,19 @@ export default () => (
     <RouteWithSidebar exact path={Routes.RiwayatDirectDebit.path} component={RiwayatDirectDebit} />
     <RouteWithSidebar exact path={Routes.Disbursement.path} component={Disbursement} />
     <RouteWithSidebar exact path={Routes.SubAccount.path} component={InfoSaldoMutasi} />
+    <RouteWithSidebar exact path={Routes.SettlementVAUSDPartner.path} component={SettlementVAUSDPartner} />
+    <RouteWithSidebar exact path={Routes.QrisTransaksi.path} component={QrisTransaksi} />
+    <RouteWithSidebar exact path={Routes.TransaksiQrisApi.path} component={TransaksiQrisApi} />
 
     <RouteWithSidebar exact path={Routes.eWalletAdmin.path} component={EWallet} />
     <RouteWithSidebar exact path={Routes.eWallet.path} component={EWallet} />
+    <RouteWithSidebar exact path={Routes.RiwayatVAUSDAdmin.path} component={RiwayatVAUSD} />
+    <RouteWithSidebar exact path={Routes.RiwayatVAUSDPartner.path} component={RiwayatVAUSD} />
     <RouteWithSidebar exact path={Routes.SettlementManual.path} component={SettlementManual} />
     <RouteWithSidebar exact path={Routes.RiwayatBalance.path} component={RiwayatBalance} />
     <RouteWithSidebar exact path={Routes.GetBalance.path} component={GetBalance} />
     <RouteWithSidebar exact path={Routes.TransaksiTopup.path} component={TransaksiTopUp} />
+    <RouteWithSidebar exact path={Routes.QrisSettlement.path} component={QrisSettlement} />
 
     {/* components */}
     {/* <RouteWithSidebar exact path={Routes.Accordions.path} component={Accordion} /> */}

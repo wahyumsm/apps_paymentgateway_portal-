@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Form, Image, Row, Container,
+import { Col, Form, Row, Container,
     ListGroup,
     InputGroup,
     Modal,
@@ -7,8 +7,7 @@ import { Col, Form, Image, Row, Container,
 import DataTable from 'react-data-table-component'
 import Pagination from 'react-js-pagination'
 import { Link, useHistory } from 'react-router-dom'
-import { BaseURL, convertSimpleTimeStamp, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import { BaseURL, convertSimpleTimeStamp, convertDateTimeStamp, convertToRupiah, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import axios from 'axios'
 import encryptData from '../../function/encryptData'
@@ -99,13 +98,13 @@ function SaldoPartner() {
         })
     }
 
-    const startColorNumber = (money) => {  
+    const startColorNumber = (money) => {
         if (money !== 0) {
             var diSliceAwal = String(money).slice(0, -3)
         }
         return new Intl.NumberFormat('id-ID', { style: 'decimal', currency: 'IDR', maximumFractionDigits: 2, currencyDisplay: "symbol"}).format(diSliceAwal).replace(/\B(?=(\d{4})+(?!\d))/g, ".") + "."
     }
-    
+
     const endColorNumber = (money) => {
         var diSliceAkhir = String(money).slice(-3)
         return diSliceAkhir
@@ -114,7 +113,7 @@ function SaldoPartner() {
     const copyHandler = (event) => {
         setText(event.target.value);
     };
-    
+
     const copyPrice = async () => {
         try {
             var copyText = document.getElementById('pricing').innerHTML.split("<")
@@ -124,7 +123,7 @@ function SaldoPartner() {
             // console.log(error);
         }
     };
-    
+
     const copyRek = async () => {
         try {
             var copyText = document.getElementById('noRek').innerHTML;
@@ -193,13 +192,13 @@ function SaldoPartner() {
                 setListRiwayatTopUpPartner(listRiwayat.data.response_data.results)
                 setPendingTopup(false)
             }
-            
+
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
-    
+
     // async function getDisbursementChannel() {
     //     try {
     //         const auth = "Bearer " + getToken()
@@ -226,7 +225,7 @@ function SaldoPartner() {
     //         // console.log(error);
     //     }
     // }
-    
+
     // async function historyAlokasiSaldo(currentPage, isDescending, orderField, payTypeId) {
     //     try {
     //         if ((isDescending === undefined && orderField === undefined) || (isDescending === true && orderField === "tpartballchannel_crtdt")) {
@@ -269,7 +268,7 @@ function SaldoPartner() {
     //         // console.log(error);
     //     }
     // }
-    
+
     // async function filterHistoryAlokasiSaldo(currentPage, dateId, dateRange, payTypeId, isDescending, orderField, partnerId, statusId) {
     //     try {
     //         setIsFilterHistory(true)
@@ -305,7 +304,7 @@ function SaldoPartner() {
     //         // console.log(error);
     //     }
     // }
-    
+
     // function sortingHandle(sortColumn, value, isFilter, dateId, dateRange, payTypeId, channelDisburse, partnerId, statusId) {
     //     setIsSorting(true)
     //     let newPayTypeId = []
@@ -469,7 +468,7 @@ function SaldoPartner() {
             setSelectedPartnerSaldoPartner([e])
         }
     }
-    
+
     function handleChange(e) {
         setInputHandle({
             ...inputHandle,
@@ -484,7 +483,7 @@ function SaldoPartner() {
             setDateRangeRiwayatTopUp(item)
         }
     }
-    
+
     // function pickDateRiwayatAlokasiSaldo(item) {
     //     setStateRiwayatAlokasiSaldo(item)
     //     if (item !== null) {
@@ -508,7 +507,7 @@ function SaldoPartner() {
             })
         }
     }
-    
+
     // function handleChangePeriodeRiwayatAlokasiSaldo(e) {
     //     if (e.target.value === "7") {
     //         setShowDateRiwayatAlokasiSaldo("")
@@ -523,7 +522,7 @@ function SaldoPartner() {
         setActivePageRiwayatTopUp(page)
         listRiwayatTopUp(inputHandle.statusRiwayatTopUp, inputHandle.idTransaksiRiwayatTopUp, (inputHandle.periodeRiwayatTopUp !== 0 ? inputHandle.periodeRiwayatTopUp : undefined), dateRangeRiwayatTopUp, page, selectedPartnerAdminTopUp.length !== 0 ? selectedPartnerAdminTopUp[0].value : "", isFilterTopUp, inputHandle.tipeTopup)
     }
-    
+
     // function handlePageChangeAlokasiSaldo(page, isFilter, detId, dateRange, payTypeId, isDescending, channelDisburse, partnerId, statusId) {
     //     setActivePageRiwayatAlokasiSaldo(page)
     //     let newPayTypeId = []
@@ -551,7 +550,7 @@ function SaldoPartner() {
         setDateRangeRiwayatTopUp([])
         setShowDateRiwayatTopUp("none")
     }
-    
+
     // function resetButtonHandleAlokasiSaldo() {
     //     setNamaPartnerAlokasiSaldo("")
     //     setSelectedPartnerAlokasiSaldo([])
@@ -565,7 +564,7 @@ function SaldoPartner() {
 
     async function detailTopUpHandler(idTransaksi) {
         try {
-            const auth = "Bearer " + getToken()   
+            const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"tparttopup_code":"${idTransaksi}"}`)
             const headers = {
                 "Content-Type": "application/json",
@@ -592,7 +591,7 @@ function SaldoPartner() {
 
     async function topUpHandleConfirm() {
         try {
-            const auth = "Bearer " + getToken()        
+            const auth = "Bearer " + getToken()
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -628,7 +627,7 @@ function SaldoPartner() {
         // getDisbursementChannel()
         historySaldoPartner()
     }, [access_token, user_role])
-    
+
     const columnsRiwayatTopUpAdmin = [
         {
             name: 'No',
@@ -677,7 +676,7 @@ function SaldoPartner() {
         {
             name: 'Status',
             selector: row => row.mstatus_name_ind,
-            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>, 
+            cell:  (row) => (row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7) ? <Link style={{color: "#F79421"}} onClick={() => detailTopUpHandler(row.tparttopup_code)}>{row.mstatus_name_ind}</Link> : (row.tparttopup_status_id === 2) ? <div style={{color: "#077E86"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 4) ? <div style={{color: "#B9121B"}}>{row.mstatus_name_ind}</div> : (row.tparttopup_status_id === 3 || row.tparttopup_status_id === 5 || row.tparttopup_status_id === 6 || row.tparttopup_status_id === 8 || row.tparttopup_status_id === 9 || row.tparttopup_status_id === 10 || row.tparttopup_status_id === 11 || row.tparttopup_status_id === 12 || row.tparttopup_status_id === 13 || row.tparttopup_status_id === 14 || row.tparttopup_status_id === 15) && <div style={{color: "#888888"}}>{row.mstatus_name_ind}</div>,
             // width: "150px",
             // sortable: true,
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "6px", margin: "6px", width: "100%", borderRadius: 4 },
@@ -687,7 +686,7 @@ function SaldoPartner() {
                     style: { background: "rgba(7, 126, 134, 0.08)", paddingLeft: "unset" }
                 },
                 {
-                    when: row => row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7, 
+                    when: row => row.tparttopup_status_id === 1 || row.tparttopup_status_id === 7,
                     className: ['detailStatus'],
                     style: { cursor:"pointer", textDecoration: "underline", background: "rgba(247, 148, 33, 0.08)", paddingLeft: "unset", '&:hover': {cursor: 'pointer', backgroundColor: '#FFFFFF'},},
                     option: {'&:hover': {backgroundColor: "#FFFFFF"} }
@@ -829,13 +828,6 @@ function SaldoPartner() {
         }
     }
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-            <div>Loading...</div>
-        </div>
-    );
-
     return (
         <>
             <div className="content-page mt-6">
@@ -917,7 +909,7 @@ function SaldoPartner() {
                             <Row className='mt-4' style={{ display: showDateRiwayatTopUp }}>
                                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                                     <div  className='pe-3'>
-                                        <DateRangePicker 
+                                        <DateRangePicker
                                             onChange={pickDateRiwayatTopUp}
                                             value={stateRiwayatTopup}
                                             clearIcon={null}
@@ -1121,8 +1113,8 @@ function SaldoPartner() {
                                                         <td style={{ paddingRight: 20, width: 155, textAlign: "end" }}>{item.tpartballchannel_amount_rp}</td>
                                                         <td style={{ paddingRight: 20, width: 155, textAlign: "end" }}>{item.tpartballchannel_balance_before_rp}</td>
                                                         <td style={{ paddingRight: 20, width: 155, textAlign: "end" }}>{item.tpartballchannel_balance_after_rp}</td>
-                                                        <td 
-                                                            style={{ 
+                                                        <td
+                                                            style={{
                                                                 background:
                                                                     (item.tpartballchannel_status_id === 2) ? "rgba(7, 126, 134, 0.08)" :
                                                                     (item.tpartballchannel_status_id === 1 || item.tpartballchannel_status_id === 7) ? "#FEF4E9" :
@@ -1259,10 +1251,10 @@ function SaldoPartner() {
                         <Modal.Title className="text-center fw-extrabold mt-3 title-topup">
                             Selesaikan Proses Topup
                         </Modal.Title>
-                        </Col>            
+                        </Col>
                     </Modal.Header>
                     <Modal.Body className="text-center" style={{ maxWidth: 468, width: "100%", padding: "0px 24px" }}>
-                        <div className="text-center" style={{fontSize: "14px"}}>Selesaikan Pembayaran Dalam</div> 
+                        <div className="text-center" style={{fontSize: "14px"}}>Selesaikan Pembayaran Dalam</div>
                         <div className="text-center mt-2">
                             <img src={Jam} alt="jam" /><span className="mx-2 fw-bold" style={{color: "#077E86"}}><Countdown date={Date.now() + countDown} daysInHours={true} /></span>
                         </div>
@@ -1304,7 +1296,7 @@ function SaldoPartner() {
                                 <div onClick={copyPrice} style={{padding:"unset", cursor: "pointer"}} className="fw-bold"><img src={CopyIcon} alt="copy" /><span className="ms-2" style={{color: "#077E86"}}>Salin</span></div>
                                 </div>
                             </div>
-                            </Table>                
+                            </Table>
                         </div>
                         <Table style={{borderRadius: "8px", backgroundColor: "#FFFBE5", fontSize: "12px", padding: "10px"}} className="d-flex justify-content-center align-items-center mt-2">
                             <img src={noticeIcon} alt="notice" />

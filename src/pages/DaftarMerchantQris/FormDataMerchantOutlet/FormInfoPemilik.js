@@ -420,7 +420,7 @@ const FormInfoPemilikOutlet = () => {
                         </div>
                     </div>
                     <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Grup</div>
-                    <div className="dropdown dropDisbursePartner mt-2">
+                    <div className="dropdown dropInfoPemilikBrand mt-2">
                         <ReactSelect
                             closeMenuOnSelect={true}
                             hideSelectedOptions={false}
@@ -433,7 +433,7 @@ const FormInfoPemilikOutlet = () => {
                         />
                     </div>
                     <div className='mb-1 mt-3' style={{ fontFamily: "Nunito", fontSize: 14}}>Brand</div>
-                    <div className="dropdown dropDisbursePartner mt-2">
+                    <div className="dropdown dropInfoPemilikBrand mt-2">
                         <ReactSelect
                             closeMenuOnSelect={true}
                             hideSelectedOptions={false}

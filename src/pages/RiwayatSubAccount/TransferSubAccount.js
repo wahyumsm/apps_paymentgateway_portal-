@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react'
 import SubAccountComponent from '../../components/SubAccountComponent'
 import { useHistory } from 'react-router-dom'
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession } from '../../function/helpers'
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, language, setUserSession, CustomLoader } from '../../function/helpers'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Button, Col, Form, Modal, Row } from '@themesberg/react-bootstrap'
 import noteIconRed from "../../assets/icon/note_icon_red.svg";
 import chevron from "../../assets/icon/chevron_down_icon.svg"
 import { useState } from 'react'
 import DataTable from 'react-data-table-component'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import noteIconGreen from "../../assets/icon/note_icon_green.svg"
 import transferSuccess from "../../assets/icon/berhasiltopup_icon.svg"
 import transferProses from "../../assets/icon/transaksiproses_icon.svg"
@@ -525,13 +524,6 @@ const TransferSubAccount = () => {
     };
 
     // console.log(listAkunPartner, "LIST AKUN PARTNER");
-
-    const CustomLoader = () => (
-      <div style={{ padding: '24px' }}>
-        <img className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} alt="loading" />
-        <div>Loading...</div>
-      </div>
-    );
 
     useEffect(() => {
         if (!access_token) {

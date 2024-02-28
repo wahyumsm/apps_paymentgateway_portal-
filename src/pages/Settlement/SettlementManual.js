@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import $ from 'jquery'
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers'
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, setUserSession, CustomLoader } from '../../function/helpers'
 import { Link, useHistory } from 'react-router-dom'
-import { Button, Col, Form, Image, Modal, Row, Toast } from '@themesberg/react-bootstrap'
+import { Button, Col, Form, Modal, Row, Toast } from '@themesberg/react-bootstrap'
 import ReactSelect, { components } from 'react-select';
 import axios from 'axios'
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import encryptData from '../../function/encryptData'
 import { DateRangePicker } from 'rsuite'
@@ -96,10 +95,10 @@ function SettlementManual() {
                 opacity: 'unset'
             },
             placement: 'bottom',
-            
+
         },
     ]
-    
+
     const Option = (props) => {
         return (
             <div>
@@ -406,7 +405,7 @@ function SettlementManual() {
         XLSX.utils.book_append_sheet(workBook, workSheet2, "Detail Transaksi");
         XLSX.writeFile(workBook, settlementId === 100 ? "Settlement_Manual_VA.xlsx" : "Settlement_Manual_eMoney.xlsx");
     }
-    
+
     const columnsSettlVA = [
         {
             name: 'No',
@@ -530,7 +529,7 @@ function SettlementManual() {
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
     ];
-    
+
     const columnsSettlEMoney = [
         {
             name: 'No',
@@ -647,7 +646,7 @@ function SettlementManual() {
             // style: { backgroundColor: 'rgba(187, 204, 221, 1)', }
         },
     ];
-    
+
     const customStylesSettlement = {
         headCells: {
             style: {
@@ -690,7 +689,7 @@ function SettlementManual() {
             },
         },
     };
-    
+
     const customStylesSummary = {
         headCells: {
             style: {
@@ -747,13 +746,6 @@ function SettlementManual() {
         },
     };
 
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          {/* <div>Loading...</div> */}
-        </div>
-    );
-
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
             {
@@ -806,18 +798,18 @@ function SettlementManual() {
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.2%" }}>
                                         <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
                                         <div className='me-4' style={{ paddingRight: "0.5rem" }}>
-                                            <DateRangePicker 
-                                                value={stateSettlementVA} 
-                                                ranges={column} 
-                                                onChange={(e) => pickDateSettlement(e, "VA")} 
-                                                character=' - ' 
-                                                cleanable={true} 
-                                                placement={'bottomEnd'} 
-                                                size='lg' 
-                                                appearance="default" 
-                                                placeholder="Select Date Range" 
+                                            <DateRangePicker
+                                                value={stateSettlementVA}
+                                                ranges={column}
+                                                onChange={(e) => pickDateSettlement(e, "VA")}
+                                                character=' - '
+                                                cleanable={true}
+                                                placement={'bottomEnd'}
+                                                size='lg'
+                                                appearance="default"
+                                                placeholder="Select Date Range"
                                                 // disabledDate={after(threeDaysAgo)}
-                                                disabledDate={date => isAfter(date, new Date())} 
+                                                disabledDate={date => isAfter(date, new Date())}
                                                 className='datePicker'
                                                 locale={Locale}
                                                 format="yyyy-MM-dd"
@@ -868,7 +860,7 @@ function SettlementManual() {
                                     </Row>
                                 </div>
                                 {
-                                    dataListVA.length !== 0 &&  
+                                    dataListVA.length !== 0 &&
                                     <div style={{ marginBottom: 30 }}>
                                         <Link to={"#"} onClick={() => ExportReportDetailSettlementVAOrEMoney(dataListVA, dataListSummaryVA, isSettlementVA)} className="export-span">Export</Link>
                                     </div>
@@ -923,24 +915,24 @@ function SettlementManual() {
                                     <Col xs={4} className="d-flex justify-content-start align-items-center" style={{ width: "33.2%" }}>
                                         <span style={{ marginRight: 26 }}>Periode<span style={{ color: "red" }}>*</span></span>
                                         <div className='me-4' style={{ paddingRight: "0.5rem" }}>
-                                            <DateRangePicker 
-                                                value={stateSettlementEMoney} 
-                                                ranges={column} 
-                                                onChange={(e) => pickDateSettlement(e, "eMoney")} 
-                                                character=' - ' 
-                                                cleanable={true} 
-                                                placement={'bottomEnd'} 
-                                                size='lg' 
-                                                appearance="default" 
-                                                placeholder="Select Date Range" 
-                                                // disabledDate={after(threeDaysAgo)} 
-                                                disabledDate={date => isAfter(date, new Date())} 
+                                            <DateRangePicker
+                                                value={stateSettlementEMoney}
+                                                ranges={column}
+                                                onChange={(e) => pickDateSettlement(e, "eMoney")}
+                                                character=' - '
+                                                cleanable={true}
+                                                placement={'bottomEnd'}
+                                                size='lg'
+                                                appearance="default"
+                                                placeholder="Select Date Range"
+                                                // disabledDate={after(threeDaysAgo)}
+                                                disabledDate={date => isAfter(date, new Date())}
                                                 className='datePicker'
                                                 locale={Locale}
                                                 format="yyyy-MM-dd"
                                                 defaultCalendarValue={[new Date(`${oneMonthAgo}`), new Date(`${currentDate}`)]}
                                             />
-                                        </div>                          
+                                        </div>
                                     </Col>
                                 </Row>
                                 <Row className='mt-4'>
@@ -985,7 +977,7 @@ function SettlementManual() {
                                     </Row>
                                 </div>
                                 {
-                                    dataListEMoney.length !== 0 &&  
+                                    dataListEMoney.length !== 0 &&
                                     <div style={{ marginBottom: 30 }}>
                                         <Link to={"#"} onClick={() => ExportReportDetailSettlementVAOrEMoney(dataListEMoney, dataListSummaryEMoney, isSettlementVA)} className="export-span">Export</Link>
                                     </div>

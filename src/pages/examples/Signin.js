@@ -117,6 +117,12 @@ export default () => {
             case 1105:
               history.push("/riwayat-transaksi/sub-account")
             break;
+            case 1106:
+              history.push("/riwayat-transaksi/transaksi-qris")
+            break;
+            case 1108:
+              history.push("/riwayat-transaksi/va-usd")
+            break;
             case 1601:
               history.push("/Transaksi/va-dan-paylink")
             break;
@@ -135,10 +141,16 @@ export default () => {
             case 1606:
               history.push("/Transaksi/disbursement-timeout")
             break;
+            case 1607:
+              history.push("/transaksi/transaksi-qris")
+            break;
             case 1701:
               history.push("/settlement/riwayat-settlement")
             break;
             case 1702:
+              history.push("/settlement/settlement-manual")
+            break;
+            case 1705:
               history.push("/settlement/settlement-manual")
             break;
             case 1901:

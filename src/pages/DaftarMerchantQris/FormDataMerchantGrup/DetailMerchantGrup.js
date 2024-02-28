@@ -584,16 +584,16 @@ const DetailMerchantGrup = () => {
                                 <img src={String(dataDetailGrup?.mprofdoc_akta_pendirian_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdoc_akta_pendirian_url} alt="foto 1" width="150px" height="90px" />
                                 <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_akta_pendirian_url_name}</div>
                             </Col>
-                            <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                            <Col xs={6} className='d-flex justify-content-start align-items-center pb-4'>
                                 <img src={String(dataDetailGrup?.mpromprofdoc_SK_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mpromprofdoc_SK_url} alt="foto 1" width="150px" height="90px" />
                                 <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_SK_url_name}</div>
                             </Col>
                         </Row>
-                        <div className='text-end mt-3 pb-4'>
+                        {/* <div className='text-end mt-3 pb-4'>
                             <button className='button-ubah-info-merchant-detail'>
                                 Ubah info merchant
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 ) : (
                     <div className='base-content' style={{ marginTop: -15 }}>

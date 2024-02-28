@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row, Form, Modal, Button, Table, ButtonGroup, Breadcrumb, InputGroup, Dropdown, Container, Image } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Modal, Button, Table, ButtonGroup, Breadcrumb, InputGroup, Dropdown, Container } from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom';
 import 'chart.js/auto';
 import DataTable from 'react-data-table-component';
 // import { TransactionsTable } from "../components/Tables";
-import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession } from "../function/helpers";
+import { BaseURL, convertToRupiah, errorCatch, getRole, getToken, RouteTo, setUserSession, CustomLoader } from "../function/helpers";
 import axios from "axios";
 import encryptData from "../function/encryptData";
 import * as XLSX from "xlsx"
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import loadingEzeelink from "../assets/img/technologies/Double Ring-1s-303px.svg"
 // import { addDays } from "date-fns";
 // import "./Transactions.css";
 import {Pie, Line} from 'react-chartjs-2'
@@ -232,7 +231,7 @@ export default () => {
       history.push(errorCatch(error.response.status))
     }
   }
-  
+
   async function getListTransferDana(partnerId, currentPage) {
     try {
       const auth = "Bearer " + getToken()
@@ -376,7 +375,7 @@ export default () => {
         dataSettlement.data.response_data.results = dataSettlement.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage-1)*10) : idx + 1}));
         setPageNumberSettlement(dataSettlement.data.response_data)
         setTotalPageSettlement(dataSettlement.data.response_data.max_page)
-        setListSettlement(dataSettlement.data.response_data.results)        
+        setListSettlement(dataSettlement.data.response_data.results)
         setPendingSettlement(false)
       } else if (dataSettlement.status === 200 && dataSettlement.data.response_code === 200 && dataSettlement.data.response_new_token.length !== 0) {
         setUserSession(dataSettlement.data.response_new_token)
@@ -492,7 +491,7 @@ export default () => {
           statusDanaMasuk: [],
           periodeDanaMasuk: 0,
           partnerTransIdDanaMasuk: "",
-          // bankDanaMasuk: "",        
+          // bankDanaMasuk: "",
           fiturDanaMasuk: 0
       })
       setSelectedAgenDanaMasuk([])
@@ -505,7 +504,7 @@ export default () => {
           ...inputHandle,
           idTransaksiSettlement: "",
           statusSettlement: [],
-          periodeSettlement: 0, 
+          periodeSettlement: 0,
           fiturSettlement: 0
       })
       setStateSettlement(null)
@@ -732,7 +731,7 @@ export default () => {
             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
             let workBook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-            XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");            
+            XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");
           }
         } catch (error) {
           // console.log(error)
@@ -760,8 +759,8 @@ export default () => {
             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
             let workBook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
-            XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");            
-            
+            XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");
+
           } else if (dataExportDefault.status === 200 && dataExportDefault.data.response_code === 200 && dataExportDefault.data.response_new_token !== null) {
             setUserSession(dataExportDefault.data.response_new_token)
             const data = dataExportDefault.data.response_data.results.list
@@ -773,7 +772,7 @@ export default () => {
             let workBook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
             XLSX.writeFile(workBook, "Laporan Dana Masuk.xlsx");
-            
+
           }
         } catch (error) {
           // console.log(error)
@@ -805,7 +804,7 @@ export default () => {
             let workBook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
             XLSX.writeFile(workBook, "Laporan Settlement.xlsx");
-          } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {            
+          } else if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token.length !== 0) {
             setUserSession(dataExportFilter.data.response_new_token)
             const data = dataExportFilter.data.response_data.results = dataExportFilter.data.response_data.results.map((obj, id) => ({ ...obj, number: id + 1 }));
             let dataExcel = []
@@ -865,13 +864,6 @@ export default () => {
     }
   }
 
-  const CustomLoader = () => (
-    <div style={{ padding: '24px' }}>
-      <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-      <div>Loading...</div>
-    </div>
-  );
-
   return (
     <>
       <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
@@ -914,7 +906,7 @@ export default () => {
                       display: false
                     },
                     tooltip: {
-                      displayColors: false,                              
+                      displayColors: false,
                     }
                   },
                   responsive: true,
@@ -932,7 +924,7 @@ export default () => {
                         display: false
                       }
                     },
-                    yAxes: {                        
+                    yAxes: {
                       grid: {
                         display: false,
                         drawBorder: false
@@ -1040,7 +1032,7 @@ export default () => {
                     <option value={5}>Bulan Ini</option>
                     <option value={6}>Bulan Kemarin</option>
                     <option value={7}>Pilih Range Tanggal</option>
-                  </Form.Select>                 
+                  </Form.Select>
                 </Col>
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span>Jenis Transaksi</span>
@@ -1089,8 +1081,8 @@ export default () => {
                 <Col xs={4} className="d-flex justify-content-start align-items-center">
                     <span className="pe-2">Partner Trans ID</span>
                     <input onChange={(e) => handleChange(e)} value={inputHandle.partnerTransIdDanaMasuk} name="partnerTransIdDanaMasuk" type='text' className='input-text-riwayat ms-1' placeholder='Masukkan Partner Trans ID'/>
-                </Col>           
-                
+                </Col>
+
             </Row>
             <Row className='mt-4'>
                 <Col xs={5}>
@@ -1224,8 +1216,8 @@ export default () => {
                       <option value={5}>Bulan Ini</option>
                       <option value={6}>Bulan Kemarin</option>
                       <option value={7}>Pilih Range Tanggal</option>
-                  </Form.Select>                    
-                </Col>                
+                  </Form.Select>
+                </Col>
                 <Col xs={4}>
                     <span>Status</span>
                     <Form.Select name="statusSettlement" className='input-text-ez' style={{ display: "inline" }} value={inputHandle.statusSettlement} onChange={(e) => handleChange(e)}>

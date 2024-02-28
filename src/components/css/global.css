@@ -312,7 +312,7 @@ body {
     font-family: 'Exo';
     font-size: 16px;
     font-weight: 400;
-    color: '#383838'
+    color: #383838
 }
 
 .menu-detail-akun-span-active {
@@ -843,9 +843,21 @@ width: 150px;
 }
 
 /* select option in riwayat Top up admin and disburse report*/
-.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control  {
+.dropTopupPartner .css-1s2u09g-control, .dropDisbursePartner .css-1s2u09g-control, .dropTopupPartner .css-1pahdxg-control, .dropDisbursePartner .css-1pahdxg-control, .dropDirectDebit .css-1pahdxg-control, .dropDirectDebit .css-1s2u09g-control, .dropVAUSD .css-1s2u09g-control {
     min-height: 40px;
     min-width: 188px;
+    border-radius: 8px;
+}
+
+.dropSettlementVausd .css-1s2u09g-control {
+    min-height: 40px;
+    min-width: 198px;
+    border-radius: 8px;
+}
+
+.dropInfoPemilikBrand .css-1s2u09g-control, .dropInfoPemilikBrand .css-1pahdxg-control {
+    min-height: 40px;
+    min-width: 100%;
     border-radius: 8px;
 }
 
@@ -881,6 +893,37 @@ width: 150px;
     border-radius: 8px;
 } */
 
+.dropSettlementVausd .css-1domo0x-control {
+    width: 198px;
+}
+
+.dropSettlementVausd .css-261x2u-control {
+    width: 198px;
+}
+
+.dropSettlementVausd .css-319lph-ValueContainer {
+    max-height: 43px !important;
+    max-width: 198px !important;
+}
+
+.dropSettlementVausd .css-261x2u-control {
+    min-height: 43px;
+    border-radius: 8px;
+}
+
+.dropSettlementVausd .css-qqcyw1-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropSettlementVausd .css-17rpq10-option:hover {
+    background-color: #3b8aff;
+}
+
+.dropSettlementVausd .css-1s2u09g-control {
+    min-height: 43px;
+    border-radius: 8px;
+}
+
 .css-14el2xx-placeholder {
     font-size: 14px;
 }
@@ -889,15 +932,39 @@ width: 150px;
 .dropPartner .css-qqcyw1-option:hover,
 .dropDisbursePartner .css-qqcyw1-option:hover,
 .dropSaldoPartner .css-qqcyw1-option:hover,
+.dropSettlementVausd .css-qqcyw1-option:hover,
 .dropLaporanPartner .css-qqcyw1-option:hover,
 .dropLaporanPartnerBank .css-qqcyw1-option:hover,
 .dropTopupPartner .css-qqcyw1-option:hover,
-.dropDirectDebit .css-qqcyw1-option:hover  {
+.dropDirectDebit .css-qqcyw1-option:hover,
+.dropVAUSD .css-qqcyw1-option:hover,
+.dropSettlementVausd .css-qqcyw1-option:hover,
+.dropInfoPemilikBrand .css-qqcyw1-option:hover{
     background-color: #3b8aff;
 }
 
 .dropPartner .css-17rpq10-option:hover {
     background-color: #3b8aff;
+}
+
+.dropVAUSD .css-b62m3t-container {
+    min-width: 260px;
+    max-width: 265px;
+    width: max-content;
+}
+
+.dropDisbursePartner .css-b62m3t-container {
+   width: 188px;
+}
+
+.dropInfoPemilikBrand .css-b62m3t-container {
+    max-width: 100%;
+ }
+
+.dropVAUSD .css-g1d714-ValueContainer, .dropVAUSD .css-1hwfws3 {
+    overflow-y: auto !important;
+    max-height: 43px !important;
+    max-width: 265px !important;
 }
 
 /* select option in dashboard */
@@ -1233,6 +1300,40 @@ header.sc-dIouRR.evxAbm {
 }
 
 /* drag & drop package */
+.dragdropSettlementVAUSD .filepond--root {
+    font-family: 'Nunito' !important;
+    max-height: 10em;
+}
+
+.dragdropSettlementVAUSD .filepond--root .filepond--drop-label {
+    min-height: 22em !important;
+    margin-top: -5px;
+}
+
+.dragdropSettlementVAUSD .filepond--panel[data-scalable=true] {
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    background-color: rgba(7, 126, 134, 0.04) !important;
+    border: 1.4px dashed #077E86 !important;
+}
+
+.dragdropSettlementVAUSD .filepond--panel-root {
+    border-radius: 8px;
+    background-color: unset;
+}
+
+.dragdropSettlementVAUSD .filepond--panel-top .filepond--panel-root {
+    border-radius: 8px;
+    background-color: unset;
+}
+
+.dragdropSettlementVAUSD .filepond--panel {
+    min-height: max-content !important;
+    height: 100% !important;
+}
+
+/* DISBURSEMENT */
+
 .dragdrop .filepond--root {
     font-family: 'Nunito' !important;
     max-height: 10em;
@@ -1359,6 +1460,39 @@ header.sc-dIouRR.evxAbm {
 /* .filepond--panel-center {
     border-radius: 8px !important;
 } */
+
+/* VA USD */
+
+.btn-va-usd-active {
+    font-family: Exo;
+    font-size: 16;
+    font-weight: 900;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+    width: 308px;
+    height: 44px;
+    background: linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%);
+    border: 0.6px solid #2C1919;
+    border-radius: 6px;
+}
+
+.btn-va-usd-non-active {
+    font-family: Exo;
+    font-size: 16;
+    font-weight: 900;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+    width: 308px;
+    height: 44px;
+    color: #C4C4C4;
+    border: 0.6px solid #EBEBEB;
+    border-radius: 6px;
+    background: #EBEBEB;
+}
+
+/* VA USD */
 
 /* Disbursement Page */
 
@@ -1760,6 +1894,29 @@ th {
 
 .form-confirm {
     font-family: Nunito;
+}
+
+.filename-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.base-content-qris {
+    width: 26%;
+    border-radius: 8px;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15);
+}
+
+.biaya-settlement-qris {
+    color: #B9121B;
+    font-family: "Nunito";
+    font-size: 14px;
+}
+
+.saldo-dan-total-settlement {
+    color: #383838;
+    font-family: "Nunito";
     font-size: 14px;
     font-weight: 700;
 }
@@ -1769,6 +1926,19 @@ th {
 }
 
 .input-text-form {
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 0px 10px;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #888888;
+}
+
+.input-nominal-qris-settlement {
     width: 100%;
     height: 40px;
     border-radius: 8px;
@@ -2053,4 +2223,46 @@ input::-webkit-inner-spin-button {
     justify-content: center;
     align-items: center;
     font-size: 14px;
+    color: #000000;
+}
+
+.qrisInput input::-webkit-outer-spin-button,
+.qrisInput input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.btn-settle-va-usd {
+    font-family: "Exo";
+    font-size: 16px;
+    font-weight: 900;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+    width: 136px;
+    height: 45px;
+    background: linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%);
+    border: 0.6px solid #2C1919;
+    border-radius: 6px;
+}
+
+.btn-settle-va-usd-disable {
+    height: 45px;
+    width: 136px;
+    font-family: 'Exo';
+    font-weight: 900;
+    font-size: 16px;
+    color: #C4C4C4;
+    background: transparent;
+    border: 0.6px solid #EBEBEB;
+    border-radius: 6px;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8;
+}
+
+.no-rek-va-usd input::-webkit-outer-spin-button,
+.no-rek-va-usd input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import '../../components/css/global.css'
 import DataTable from 'react-data-table-component';
-import { Image} from '@themesberg/react-bootstrap';
 import {Link, useHistory} from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession } from '../../function/helpers';
+import { BaseURL, errorCatch, getRole, getToken, RouteTo, setUserSession, CustomLoader } from '../../function/helpers';
 import axios from 'axios';
-import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import FilterComponent from '../../components/FilterComponent';
 import { useMemo } from 'react';
@@ -60,7 +58,7 @@ function DaftarPartner() {
                 setListPartner(listDataPartner.data.response_data)
                 setPending(false)
             }
-            
+
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
@@ -129,17 +127,10 @@ function DaftarPartner() {
                 fontWeight: 'bold',
                 fontSize: '16px',
                 paddingRight: 'none'
-                
+
             },
         },
     };
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-          <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
-          <div>Loading...</div>
-        </div>
-    );
 
   return (
     <div className='main-content mt-5' style={{padding: "37px 27px 37px 27px"}}>

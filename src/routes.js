@@ -25,6 +25,7 @@ export const Routes = {
     // AlokasiSaldo : { path: "/alokasisaldo" },
     ReNotifyVA : { path: "/helpDesk/renotifyva" },
     ReNotifyEwallet : { path: "/helpDesk/renotify-ewallet" },
+    ReNotifyQris : { path: "/helpDesk/renotify-qris" },
     RiwayatDisbursement : { path: "/Disbursement/report" },
     // DisbursementReport : { path: "/disbursement-report" },
     // Billing: { path: "/examples/billing" },
@@ -59,6 +60,7 @@ export const Routes = {
     Settlement: { path: "/settlement/riwayat-settlement"},
     RiwayatBalance: { path: "/riwayat-balance" },
     GetBalance: { path: "/transaksi-bank"},
+    QrisSettlement: {path: "/settlement/settlement-qris"},
 
     // admin
     VaDanPaymentLinkAdmin: {path: "/transaksi/va-dan-paylink"},
@@ -68,8 +70,15 @@ export const Routes = {
     DisbursementTimeout: {path: "/transaksi/disbursement-timeout"},
     SettlementManual: {path: "/settlement/settlement-manual"},
     eWalletAdmin: {path: "/transaksi/ewallet"},
+    RiwayatVAUSDAdmin: {path: "/transaksi/vausd"},
+    QrisTransaksiAdmin: {path: "/transaksi/transaksi-qris"},
+    TransaksiQrisApiAdmin: {path: "/transaksi/transaksi-qris-api"},
     ExcludeSettlementManual: {path: "/settlement/exclude-settlement"},
     ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},
+    SettlementVAUSDAdmin: {path: "/settlement/va-usd"},
+    VAUSD: {path: "/VA USD/create-va-usd"},
+    RiwayatFileSFTP: {path: "/VA USD/riwayat-file-sftp"},
+    UnsettledTransaction: {path: "/settlement/unsettled-transaction"},
     DaftarMerchantQris: {path: "/daftar-merchant-qris"},
     PilihJenisUsahaQris: {path: "/pilih-jenis-usaha"},
     FormInfoPemilikPerseorangan: {path: "/form-info-pemilik-perorangan"},
@@ -111,7 +120,10 @@ export const Routes = {
     Disbursement: {path: "/riwayat-transaksi/disbursement"},
     SubAccount: {path: "/riwayat-transaksi/sub-account"},
     eWallet: {path: "/riwayat-transaksi/ewallet"},
-
+    RiwayatVAUSDPartner: {path: "/riwayat-transaksi/va-usd"},
+    SettlementVAUSDPartner: {path: "/settlement/va-usd"},
+    TransaksiQrisApi: {path: "/riwayat-transaksi/transaksi-qris-api"},
+    QrisTransaksi: {path: "/riwayat-transaksi/transaksi-qris"},
 
     // docs
     // DocsOverview: { path: "/documentation/overview" },
