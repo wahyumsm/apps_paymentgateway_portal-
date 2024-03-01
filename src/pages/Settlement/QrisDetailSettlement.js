@@ -58,6 +58,45 @@ function QrisDetailSettlement() {
         }
     }
 
+    async function ExportReportDetailSettlementHandler(codeSettlement, idMerchant, idBrand, idOutlet, lang) {
+        try {
+            const auth = 'Bearer ' + access_token;
+            const dataParams = encryptData(`{ "settl_id": "${codeSettlement}", "merchant_nou": ${idMerchant}, "brand_nou": ${idBrand}, "store_nou": ${idOutlet}, "page": 1, "row_per_page": 1000000 }`);
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept-Language' : user_role === "102" ? lang : "ID"
+            }
+            const detailsettlement = await axios.post(BaseURL + "/QRIS/TransactionReportByID", { data: dataParams }, { headers: headers })
+            // console.log(detailsettlement, 'detailsettlement');
+            if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token === null) {
+                const data = detailsettlement.data.response_data.results
+                let dataExcel = []
+                for (let i = 0; i < data.length; i++) {
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
+                }
+                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                let workBook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                XLSX.writeFile(workBook, "Riwayat Details Settlement QRIS.xlsx");
+            } else if (detailsettlement.status === 200 && detailsettlement.data.response_code === 200 && detailsettlement.data.response_new_token !== null) {
+                setUserSession(detailsettlement.data.response_new_token)
+                const data = detailsettlement.data.response_data.results
+                let dataExcel = []
+                for (let i = 0; i < data.length; i++) {
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
+                }
+                let workSheet = XLSX.utils.json_to_sheet(dataExcel);
+                let workBook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workBook, workSheet, "Sheet1");
+                XLSX.writeFile(workBook, "Riwayat Details Settlement QRIS.xlsx");
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     useEffect(() => {
         getDetailSettlement(activePageQRISDetailSettlement, settlementCode, merchantId, brandId, outletId, language === null ? 'EN' : language.flagName)
     }, [])
@@ -66,14 +105,15 @@ function QrisDetailSettlement() {
         {
             name: 'No',
             selector: row => row.No,
-            width: "57px",
+            wrap: true,
+            width: "60px",
             // style: { justifyContent: "center", }
         },
         {
             name: 'ID Transaksi',
             selector: row => row.transaction_code,
             width: "170px",
-            wrap: "true"
+            wrap: true
         },
         {
             name: 'No. Referensi',
@@ -206,7 +246,7 @@ function QrisDetailSettlement() {
                         {
                             dataQRISDetailSettlement.length !== 0 &&
                             <div style={{ marginBottom: 30 }}>
-                                {/* <Link onClick={() => ExportReportDetailSettlementHandler(settlementId, user_role, bankCode, settlementType, eWalletCode, language === null ? 'EN' : language.flagName)} className="export-span">{user_role === "102" ? (language === null ? eng.export : language.export) : "Export"}</Link> */}
+                                <Link onClick={() => ExportReportDetailSettlementHandler(settlementCode, merchantId, brandId, outletId, language === null ? 'EN' : language.flagName)} className="export-span">{user_role === "102" ? (language === null ? eng.export : language.export) : "Export"}</Link>
                             </div>
                         }
                         <div className="div-table mt-4 pb-4">
