@@ -103,6 +103,29 @@ import SettlementVAUSDPartner from './Settlement/SettlementVAUSDPartner';
 import TransaksiQrisApi from './Riwayat/TransaksiQrisApi';
 import ReNotifyQris from './HelpDesk/ReNotifyQris';
 import UnSettledTransaction from './Settlement/UnSettledTransaction';
+import DaftarMerchantQris from './DaftarMerchantQris/DaftarMerchantQris';
+import PilihJenisUsaha from './DaftarMerchantQris/PilihJenisUsaha';
+import FormInfoPemilikPerseorangan from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoPemilikPerseorangan';
+import FormInfoUsahaPerseorangan from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoUsahaPerseorangan';
+import PengaturanMerchant from './DaftarMerchantQris/PengaturanMerchant';
+import FormDaftarSettlement from './DaftarMerchantQris/FormDataMerchantGrup/FormDaftarSettlement';
+import DetailMerchantGrup from './DaftarMerchantQris/FormDataMerchantGrup/DetailMerchantGrup';
+import FormTidakBerbadanHukum from './DaftarMerchantQris/FormDataMerchantGrup/FormTidakBerbadanHukum';
+import FormInfoPemilikBadanUsaha from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoPemilikBadanUsaha';
+import FormInfoUsahaBadanUsaha from './DaftarMerchantQris/FormDataMerchantGrup/FormInfoUsahaBadanUsaha';
+import FormDokumenUsahaBadanUsaha from './DaftarMerchantQris/FormDataMerchantGrup/FormDokumenUsahaBadanUsaha';
+import FormInfoPemilik from './DaftarMerchantQris/FormDataMerchantBrand/FormInfoPemilik';
+import FormInfoUsaha from './DaftarMerchantQris/FormDataMerchantBrand/FormInfoUsaha';
+import FormInfoPemilikOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/FormInfoPemilik';
+import FormDokumenUsahaBrandBadanUsaha from './DaftarMerchantQris/FormDataMerchantBrand/FormDokumenUsahaBrandBadanUsaha';
+import FormInfoRekeningBrand from './DaftarMerchantQris/FormDataMerchantBrand/FormInfoRekeningBrand';
+import DetailMerchantBrand from './DaftarMerchantQris/FormDataMerchantBrand/DetailMerchantBrand';
+import FormInfoUsahaOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/FormInfoUsaha';
+import FormDokumenUsahaOutletBadanUsaha from './DaftarMerchantQris/FormDataMerchantOutlet/FormDokumenUsahaOutletBadanUsaha';
+import FormInfoRekeningOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/FormInfoRekeningOutlet';
+import DetailMerchantOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/DetailMerchantOutlet';
+import FormTambahSettlement from './DaftarMerchantQris/FormDataMerchantGrup/FormTambahSettlement';
+import DetailSettlementGrup from './DaftarMerchantQris/FormDataMerchantGrup/DetailSettlementGrup';
 import QrisDetailSettlement from './Settlement/QrisDetailSettlement';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
@@ -229,6 +252,38 @@ export default () => (
     <RouteWithSidebar exact path={Routes.SettlementVAUSDAdmin.path} component={SettlementVAUSDPartner} />
     <RouteWithSidebar exact path={Routes.UnsettledTransaction.path} component={UnSettledTransaction} />
     <RouteWithSidebar exact path={Routes.DetailSettlementQRISAdmin.path} component={QrisDetailSettlement} />
+
+    <RouteWithSidebar exact path={Routes.DaftarMerchantQris.path} component={DaftarMerchantQris} />
+    <RouteWithSidebar exact path={Routes.PilihJenisUsahaQris.path} component={PilihJenisUsaha} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseorangan.path} component={FormInfoPemilikPerseorangan} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseoranganFirstStep.path} component={FormInfoPemilikPerseorangan} />
+    <RouteWithSidebar exact path={Routes.FormInfoUsahaPerseoranganSecondStep.path} component={FormInfoUsahaPerseorangan} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikBadanUsaha.path} component={FormInfoPemilikBadanUsaha} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikBadanUsahaFirstStep.path} component={FormInfoPemilikBadanUsaha} />
+    <RouteWithSidebar exact path={Routes.FormDokumenUsahaBadanUsahaThirdStep.path} component={FormDokumenUsahaBadanUsaha} />
+    <RouteWithSidebar exact path={Routes.FormInfoUsahaBadanUsahaSecondStep.path} component={FormInfoUsahaBadanUsaha} />
+    <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukum.path} component={FormTidakBerbadanHukum} />
+    <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukumFirstStep.path} component={FormTidakBerbadanHukum} />
+    <RouteWithSidebar exact path={Routes.PengaturanMerchant.path} component={PengaturanMerchant} />
+    <RouteWithSidebar exact path={Routes.PengaturanMerchantEdit.path} component={PengaturanMerchant} />
+    <RouteWithSidebar exact path={Routes.FormDaftarSettlementEditData.path} component={FormDaftarSettlement} />
+    <RouteWithSidebar exact path={Routes.DetailMerchantGrup.path} component={DetailMerchantGrup} />
+    <RouteWithSidebar exact path={Routes.FormTambahSettlement.path} component={FormTambahSettlement} />
+    <RouteWithSidebar exact path={Routes.FormTambahSettlementEdit.path} component={FormTambahSettlement} />
+    <RouteWithSidebar exact path={Routes.DetailSettlementGrupQris.path} component={DetailSettlementGrup} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikBrand.path} component={FormInfoPemilik} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikBrandFirstStep.path} component={FormInfoPemilik} />
+    <RouteWithSidebar exact path={Routes.FormInfoUsahaBrandSecondStep.path} component={FormInfoUsaha} />
+    <RouteWithSidebar exact path={Routes.FormDokumenUsahaBrandThirdStep.path} component={FormDokumenUsahaBrandBadanUsaha} />
+    <RouteWithSidebar exact path={Routes.FormInfoRekeningBrand.path} component={FormInfoRekeningBrand} />
+    <RouteWithSidebar exact path={Routes.FormInfoRekeningBrandEditStep.path} component={FormInfoRekeningBrand} />
+    <RouteWithSidebar exact path={Routes.DetailMerchantBrand.path} component={DetailMerchantBrand} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikOutlet.path} component={FormInfoPemilikOutlet} />
+    <RouteWithSidebar exact path={Routes.FormInfoPemilikOutletFirstStep.path} component={FormInfoPemilikOutlet} />
+    <RouteWithSidebar exact path={Routes.FormInfoUsahaOutletSecondStep.path} component={FormInfoUsahaOutlet} />
+    <RouteWithSidebar exact path={Routes.FormDokumenUsahaOutletThirdStep.path} component={FormDokumenUsahaOutletBadanUsaha} />
+    <RouteWithSidebar exact path={Routes.FormInfoRekeningOutletFourthStep.path} component={FormInfoRekeningOutlet} />
+    <RouteWithSidebar exact path={Routes.DetailMerchantOutlet.path} component={DetailMerchantOutlet} />
 
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
