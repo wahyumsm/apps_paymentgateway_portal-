@@ -20,16 +20,16 @@ const FormInfoPemilik = (props) => {
     const [nameImageKtp, setNameImageKtp] = useState("")
     const [uploadKtp, setUploadKtp] = useState(false)
     const [formatEktp, setFormatEktp] = useState(false)
-
+    
     const hiddenFileInputSelfieKtp = useRef(null)
     const [imageFileSelfieKtp, setImageFileSelfieKtp] = useState(null)
     const [imageSelfieKtp, setImageSelfieKtp] = useState(null)
     const [nameImageSelfieKtp, setNameImageSelfieKtp] = useState("")
     const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
+    const [formatSelfieKtp, setFormatSelfieKtp] = useState(false)
 
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [isLoadingInfoPemilikBadanUsaha, setIsLoadingInfoPemilikBadanUsaha] = useState(false)
-    const [getDataFirstStep, setGetDataFirstStep] = useState({})
     const [dataList, setDataList] = useState([])
     const [selectedDataGrup, setSelectedDataGrup] = useState([])
 
@@ -42,8 +42,25 @@ const FormInfoPemilik = (props) => {
         noTelp: "",
     })
 
+    console.log(inputHandle.jenisUsaha, "inputHandle.jenisUsaha");
+
     function handleChange(e, kewarganegaraan) {
-        if (e.target.name === "kewarganegaraan") {
+        if (e.target.name === "jenisUsaha") {
+            if (Number(e.target.value) === 1) {
+                setImageFileSelfieKtp(null)
+                setImageSelfieKtp(null)
+                setInputHandle({
+                    ...inputHandle,
+                    jenisUsaha: Number(e.target.value),
+                    peranPendaftar: 0
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    jenisUsaha: Number(e.target.value),
+                })
+            }
+        } else if (e.target.name === "kewarganegaraan") {
             setInputHandle({
                 ...inputHandle,
                 kewarganegaraan: Number(e.target.value),
@@ -114,21 +131,31 @@ const FormInfoPemilik = (props) => {
     }
 
     const handleFileChangeSelfieKtp = (event) => {
-        if(event.target.files[0]) {
-            setImageSelfieKtp(event.target.files[0])
-            setNameImageSelfieKtp(event.target.files[0].name)
-            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                setUploadSelfieKtp(true)
-                setImageFileSelfieKtp(imageFileSelfieKtp)
+        if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+            setFormatSelfieKtp(false)
+            if(event.target.files[0]) {
+                setImageSelfieKtp(event.target.files[0])
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setUploadSelfieKtp(true)
+                    setImageFileSelfieKtp(null)
+                    setNameImageSelfieKtp("")
+                }
+                else {
+                    setNameImageSelfieKtp(event.target.files[0].name)
+                    setUploadSelfieKtp(false)
+                    const reader = new FileReader()
+                    reader.addEventListener("load", () => {
+                        setImageFileSelfieKtp(reader.result)
+                    })
+                    reader.readAsDataURL(event.target.files[0])
+                }
             }
-            else {
-                setUploadSelfieKtp(false)
-                const reader = new FileReader()
-                reader.addEventListener("load", () => {
-                    setImageFileSelfieKtp(reader.result)
-                })
-                reader.readAsDataURL(event.target.files[0])
-            }
+        } else {
+            setFormatSelfieKtp(true)
+            setUploadSelfieKtp(false)
+            setNameImageSelfieKtp("")
+            setImageFileSelfieKtp(null)
+            setImageSelfieKtp(null)
         }
     }
 
@@ -178,7 +205,7 @@ const FormInfoPemilik = (props) => {
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 setInputHandle({
                     ...getData.data.response_data.results, 
-                    jenisUsaha: getData.data.response_data.results.mprofdtl_register_role,
+                    jenisUsaha: getData.data.response_data.results.mprofdtl_bustype,
                     peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role, 
                     namaUser: getData.data.response_data.results.mprofdtl_name, 
                     nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, 
@@ -187,7 +214,8 @@ const FormInfoPemilik = (props) => {
                 })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
-                setGetDataFirstStep(getData.data.response_data.results)
+                setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
+                setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
                 let newArrDataGrup = []
                 let objDataGrup = {}
                 objDataGrup.value = getData.data.response_data.results.mmerchant_nou
@@ -198,7 +226,7 @@ const FormInfoPemilik = (props) => {
                 setUserSession(getData.data.response_new_token)
                 setInputHandle({
                     ...getData.data.response_data.results, 
-                    jenisUsaha: getData.data.response_data.results.mprofdtl_register_role,
+                    jenisUsaha: getData.data.response_data.results.mprofdtl_bustype,
                     peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role, 
                     namaUser: getData.data.response_data.results.mprofdtl_name, 
                     nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, 
@@ -207,7 +235,8 @@ const FormInfoPemilik = (props) => {
                 })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
-                setGetDataFirstStep(getData.data.response_data.results)
+                setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
+                setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
                 let newArrDataGrup = []
                 let objDataGrup = {}
                 objDataGrup.value = getData.data.response_data.results.mmerchant_nou
@@ -237,7 +266,7 @@ const FormInfoPemilik = (props) => {
             const getData = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 if (position === "next") {
-                    history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}?type=${businessType}`)
+                    history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}`)
                 } else {
                     setIsLoadingInfoPemilikBadanUsaha(false)
                     history.push('/daftar-merchant-qris')
@@ -245,7 +274,7 @@ const FormInfoPemilik = (props) => {
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 if (position === "next") {
-                    history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}?type=${businessType}`)
+                    history.push(`/formulir-info-usaha-brand/${getData.data.response_data.mprof_id}`)
                 } else {
                     setIsLoadingInfoPemilikBadanUsaha(false)
                     history.push('/daftar-merchant-qris')
@@ -506,7 +535,11 @@ const FormInfoPemilik = (props) => {
                                 {
                                     !imageFileSelfieKtp ?
                                     <>
-                                        <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
+                                        {
+                                            formatSelfieKtp === true ?
+                                            <div className='pt-4 text-center' style={{ color: "#B9121B" }}><span className='me-1'><img src={noteIconRed} alt="" /></span> Format harus .jpg</div> :
+                                            <div className='pt-4 text-center'>Masukan foto selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}.</div>
+                                        }
                                         <input
                                             type="file"
                                             onChange={handleFileChangeSelfieKtp}
@@ -535,6 +568,9 @@ const FormInfoPemilik = (props) => {
                                 <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
                                 <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                             </div>
+                            {
+                                uploadSelfieKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
+                            }
                         </>
                     }
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>No telepon pemilik usaha</div>
@@ -543,8 +579,8 @@ const FormInfoPemilik = (props) => {
                     </div>
                     <div className='text-end mt-4'>
                         <button 
-                            className={((inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
-                            disabled={(inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (imageKtp === null && imageFileKtp === null) || inputHandle.noTelp.length === 0}
+                            className={(((inputHandle.jenisUsaha === 1 && (inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2)) || (inputHandle.jenisUsaha === 2 && (imageSelfieKtp !== null || imageFileSelfieKtp !== null))) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={((inputHandle.jenisUsaha === 1 && (inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2)) || (inputHandle.jenisUsaha === 2 && (imageSelfieKtp === null && imageFileSelfieKtp === null))) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (imageKtp === null && imageFileKtp === null) || inputHandle.noTelp.length === 0}
                             onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, imageSelfieKtp, 2, inputHandle.jenisUsaha, selectedDataGrup.length !== 0 ? selectedDataGrup[0].value : 0, "next", profileId === undefined ? 0 : profileId)}
                         >
                             Selanjutnya

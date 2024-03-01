@@ -253,13 +253,10 @@ export default () => (
     <RouteWithSidebar exact path={Routes.PilihJenisUsahaQris.path} component={PilihJenisUsaha} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseorangan.path} component={FormInfoPemilikPerseorangan} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikPerseoranganFirstStep.path} component={FormInfoPemilikPerseorangan} />
-    <RouteWithSidebar exact path={Routes.FormInfoUsahaPerseorangan.path} component={FormInfoUsahaPerseorangan} />
     <RouteWithSidebar exact path={Routes.FormInfoUsahaPerseoranganSecondStep.path} component={FormInfoUsahaPerseorangan} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikBadanUsaha.path} component={FormInfoPemilikBadanUsaha} />
     <RouteWithSidebar exact path={Routes.FormInfoPemilikBadanUsahaFirstStep.path} component={FormInfoPemilikBadanUsaha} />
-    <RouteWithSidebar exact path={Routes.FormDokumenUsahaBadanUsaha.path} component={FormDokumenUsahaBadanUsaha} />
     <RouteWithSidebar exact path={Routes.FormDokumenUsahaBadanUsahaThirdStep.path} component={FormDokumenUsahaBadanUsaha} />
-    <RouteWithSidebar exact path={Routes.FormInfoUsahaBadanUsaha.path} component={FormInfoUsahaBadanUsaha} />
     <RouteWithSidebar exact path={Routes.FormInfoUsahaBadanUsahaSecondStep.path} component={FormInfoUsahaBadanUsaha} />
     <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukum.path} component={FormTidakBerbadanHukum} />
     <RouteWithSidebar exact path={Routes.FormTidakBerbadanHukumFirstStep.path} component={FormTidakBerbadanHukum} />

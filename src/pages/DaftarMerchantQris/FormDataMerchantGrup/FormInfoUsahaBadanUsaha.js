@@ -21,7 +21,6 @@ const FormInfoUsahaBadanUsaha = () => {
     const [alertMinNmid, setAlertMinNmid] = useState(false)
     const [alertMaxFile, setAlertMaxFile] = useState(false)
     const [alertMaxJumlahKasir, setAlertMaxJumlahKasir] = useState(false)
-    const [getDataSecondStep, setGetDataSecondStep] = useState({})
     const [inputHandle, setInputHandle] = useState({
         namaPerusahaan: "",
         bentukPerusahaan: 0,
@@ -40,7 +39,6 @@ const FormInfoUsahaBadanUsaha = () => {
 
     const hiddenFileInputTempatUsaha = useRef(null)
     const [imageFileTempatUsaha, setImageFileTempatUsaha] = useState([])
-    const [imageTempatUsaha, setImageTempatUsaha] = useState(null)
     const [uploadTempatUsaha, setUploadTempatUsaha] = useState(false)
 
     const handleClickTempatUsaha = () => {
@@ -135,7 +133,6 @@ const FormInfoUsahaBadanUsaha = () => {
     }
 
     const handleFileChangeTempatUsaha = (event) => {
-        setImageTempatUsaha(event.target.files)
         if (event.target.files.length > 3) {
             setAlertMaxFile(true)
         } else {
@@ -248,7 +245,7 @@ const FormInfoUsahaBadanUsaha = () => {
                     emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email, 
                     namaBrand: getDataSecStep.mprofbus_brand === null ? "" : getDataSecStep.mprofbus_brand,
                     jumlahKasir: getDataSecStep.mprofbus_cashier_count === null ? 0 : getDataSecStep.mprofbus_cashier_count,
-                    pendapatanPertahun: getDataSecStep.mprofbus_mbusinc_id,
+                    pendapatanPertahun: getDataSecStep.mprofbus_mbusinc_id === null ? 0 : getDataSecStep.mprofbus_mbusinc_id,
                     alamatUsaha: getDataSecStep.mprofbus_address === null ? "" : getDataSecStep.mprofbus_address,
                     kodePos: getDataSecStep.mprofbus_postal_code === null ? "" : getDataSecStep.mprofbus_postal_code,
                     onlineShopUrl: getDataSecStep.mprofbus_online_shop_url === null ? "" : getDataSecStep.mprofbus_online_shop_url,
@@ -256,7 +253,6 @@ const FormInfoUsahaBadanUsaha = () => {
                     nmid: getDataSecStep.mprofbus_NMID_QRIS === null ? "" : getDataSecStep.mprofbus_NMID_QRIS
                 })
                 getDataPostalCodeHandler(getDataSecStep.mprofbus_postal_code)
-                getDataKategoriUsaha(getDataSecStep.mprofbus_mbusinc_id)
                 let newArrKategoriUsaha = []
                 let objKategoriUsaha = {}
                 objKategoriUsaha.value = getDataSecStep.mprofbus_buscat_id
@@ -288,7 +284,6 @@ const FormInfoUsahaBadanUsaha = () => {
                     })
                     setImageFileTempatUsaha(newArrImage)
                 }
-                setGetDataSecondStep(getDataSecStep)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 const getDataSecStep = getData.data.response_data.results
@@ -300,7 +295,7 @@ const FormInfoUsahaBadanUsaha = () => {
                     emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email, 
                     namaBrand: getDataSecStep.mprofbus_brand === null ? "" : getDataSecStep.mprofbus_brand,
                     jumlahKasir: getDataSecStep.mprofbus_cashier_count === null ? 0 : getDataSecStep.mprofbus_cashier_count,
-                    pendapatanPertahun: getDataSecStep.mprofbus_mbusinc_id,
+                    pendapatanPertahun: getDataSecStep.mprofbus_mbusinc_id === null ? 0 : getDataSecStep.mprofbus_mbusinc_id,
                     alamatUsaha: getDataSecStep.mprofbus_address === null ? "" : getDataSecStep.mprofbus_address,
                     kodePos: getDataSecStep.mprofbus_postal_code === null ? "" : getDataSecStep.mprofbus_postal_code,
                     onlineShopUrl: getDataSecStep.mprofbus_online_shop_url === null ? "" : getDataSecStep.mprofbus_online_shop_url,
@@ -308,7 +303,6 @@ const FormInfoUsahaBadanUsaha = () => {
                     nmid: getDataSecStep.mprofbus_NMID_QRIS === null ? "" : getDataSecStep.mprofbus_NMID_QRIS
                 })
                 getDataPostalCodeHandler(getDataSecStep.mprofbus_postal_code)
-                getDataKategoriUsaha(getDataSecStep.mprofbus_mbusinc_id)
                 let newArrKategoriUsaha = []
                 let objKategoriUsaha = {}
                 objKategoriUsaha.value = getDataSecStep.mprofbus_buscat_id
@@ -340,7 +334,6 @@ const FormInfoUsahaBadanUsaha = () => {
                     })
                     setImageFileTempatUsaha(newArrImage)
                 }
-                setGetDataSecondStep(getDataSecStep)
             }
         } catch (error) {
             // console.log(error)
@@ -510,7 +503,6 @@ const FormInfoUsahaBadanUsaha = () => {
                                     id="lainnya"
                                     name='bentukPerusahaan'
                                     value={3}
-                                    disabled={getDataSecondStep?.mprofile_register_status === 105 ? true : false}
                                     checked={inputHandle.bentukPerusahaan === 3 && true}
                                     onChange={(e) => handleChange(e)}
                                 />
@@ -539,7 +531,7 @@ const FormInfoUsahaBadanUsaha = () => {
                     </div>
                     {
                         alertMaxJumlahKasir ? 
-                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                             <img src={noteIconRed} className="me-2" alt="icon notice" />
                             <div>Jumlah kasir tidak boleh lebih dari 1500</div>
                         </div> : ""
@@ -703,7 +695,6 @@ const FormInfoUsahaBadanUsaha = () => {
                                                 ref={hiddenFileInputTempatUsaha}
                                                 id="image"
                                                 name="image"
-                                                disabled={getDataSecondStep?.mprofile_register_status === 105 ? true : false}
                                                 multiple
                                             />
                                             <div className='pt-3 text-center'>Maks: 3 foto, Maks ukuran satu file: 500kb</div>
@@ -731,7 +722,6 @@ const FormInfoUsahaBadanUsaha = () => {
                                                 ref={hiddenFileInputTempatUsaha}
                                                 id="image"
                                                 name="image"
-                                                disabled={getDataSecondStep?.mprofile_register_status === 105 ? true : false}
                                                 multiple
                                             />
                                             <div className='pt-3 text-center'>Maks: 3 foto, Maks ukuran satu file: 500kb</div>
@@ -741,7 +731,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                 </div>
                                 {
                                     uploadTempatUsaha === true ? (
-                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                             <img src={noteIconRed} className="me-2" alt="icon notice" />
                                             <div>Salah satu file lebih dari 500kb</div>
                                         </div>
@@ -749,7 +739,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                 }
                                 {
                                     alertMaxFile === true ? (
-                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                             <img src={noteIconRed} className="me-2" alt="icon notice" />
                                             <div>file lebih dari 3</div>
                                         </div>
@@ -816,7 +806,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                 </div>
                                 {
                                     alertMinNmid === true ? (
-                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                             <img src={noteIconRed} className="me-2" alt="icon notice" />
                                             <div>Minimal 13 digit angka</div>
                                         </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import alertIconYellow from '../../../assets/icon/note_icon_grey.svg'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
+import noteIconRed from "../../../assets/icon/note_icon_red.svg"
 import 'filepond/dist/filepond.min.css'
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
 import encryptData from '../../../function/encryptData';
@@ -14,59 +15,57 @@ const FormInfoPemilikPerseorangan = () => {
     const history = useHistory()
     const { profileId } = useParams()
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
-    const [getDataFirstStep, setGetDataFirstStep] = useState({})
 
     const hiddenFileInputKtp = useRef(null)
     const [imageFileKtp, setImageFileKtp] = useState(null)
     const [imageKtp, setImageKtp] = useState(null)
     const [nameImageKtp, setNameImageKtp] = useState("")
     const [uploadKtp, setUploadKtp] = useState(false)
-
+    const [formatKtp, setFormatKtp] = useState(false)
+    
     const hiddenFileInputSelfieKtp = useRef(null)
     const [imageFileSelfieKtp, setImageFileSelfieKtp] = useState(null)
     const [imageSelfieKtp, setImageSelfieKtp] = useState(null)
     const [nameImageSelfieKtp, setNameImageSelfieKtp] = useState("")
     const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
-    const [inputHandleWni, setInputHandleWni] = useState({
-        numberId: "",
-        userName: "",
-        phoneNumber: "",
-        grupId: 0,
-        brandId: 0,
-        outletId: 0,
-        step: 1,
-        businessType: 1,
-        userId: 0,
-        merchantName: ""
+    const [formatSelfieKtp, setFormatSelfieKtp] = useState(false)
+    const [inputHandle, setInputHandle] = useState({
+        merchantNou: 0,
+        kewarganegaraan: 100,
+        namaUser: "",
+        nomorPengenal: "",
     })
-    const [inputHandleWna, setInputHandleWna] = useState({
-        numberId: "",
-        userName: "",
-        phoneNumber: "",
-        grupId: 0,
-        brandId: 0,
-        outletId: 0,
-        step: 1,
-        businessType: 1,
-        userId: 0,
-        merchantName: ""
-    })
-    
-    const [kewarganegaraan, setKewarganegaraan] = useState(100)
-    const handleOnChangeCheckBoxKewarganegaraan = (e) => {
-        setKewarganegaraan(Number(e.target.value));
-    };
 
-    function handleChange(e, param) {
-        if (param === 100) {
-            setInputHandleWni({
-                ...inputHandleWni,
-                [e.target.name] : e.target.value
+    function handleChange(e, kewarganegaraan) {
+        if (e.target.name === "kewarganegaraan") {
+            setInputHandle({
+                ...inputHandle,
+                kewarganegaraan: Number(e.target.value),
+                nomorPengenal: ""
             })
+        } else if (e.target.name === "nomorPengenal") {
+            if (kewarganegaraan === 100) {
+                if (e.target.value.length > 16) {
+                    setInputHandle({
+                        ...inputHandle,
+                        [e.target.name]: (e.target.value).slice(0,16)
+                    })
+                } else {
+                    setInputHandle({
+                        ...inputHandle,
+                        [e.target.name]: e.target.value
+                    })
+                }
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: e.target.value
+                })
+            }
         } else {
-            setInputHandleWna({
-                ...inputHandleWna,
-                [e.target.name] : e.target.value
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name]: e.target.value
             })
         }
     }
@@ -76,21 +75,31 @@ const FormInfoPemilikPerseorangan = () => {
     };
 
     const handleFileChangeKtp = (event) => {
-        if(event.target.files[0]) {
-            setImageKtp(event.target.files[0])
-            setNameImageKtp(event.target.files[0].name)
-            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                setUploadKtp(true)
-                setImageFileKtp(imageFileKtp)
+        if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+            setFormatKtp(false)
+            if(event.target.files[0]) {
+                setImageKtp(event.target.files[0])
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setUploadKtp(true)
+                    setImageFileKtp(null)
+                    setNameImageKtp("")
+                }
+                else {
+                    setNameImageKtp(event.target.files[0].name)
+                    setUploadKtp(false)
+                    const reader = new FileReader()
+                    reader.addEventListener("load", () => {
+                        setImageFileKtp(reader.result)
+                    })
+                    reader.readAsDataURL(event.target.files[0])
+                }
             }
-            else {
-                setUploadKtp(false)
-                const reader = new FileReader()
-                reader.addEventListener("load", () => {
-                    setImageFileKtp(reader.result)
-                })
-                reader.readAsDataURL(event.target.files[0])
-            }
+        } else {
+            setFormatKtp(true)
+            setUploadKtp(false)
+            setNameImageKtp("")
+            setImageFileKtp(null)
+            setImageKtp(null)
         }
     }
 
@@ -99,21 +108,31 @@ const FormInfoPemilikPerseorangan = () => {
     };
 
     const handleFileChangeSelfieKtp = (event) => {
-        if(event.target.files[0]) {
-            setImageSelfieKtp(event.target.files[0])
-            setNameImageSelfieKtp(event.target.files[0].name)
-            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                setUploadSelfieKtp(true)
-                setImageFileSelfieKtp(imageFileSelfieKtp)
+        if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+            setFormatSelfieKtp(false)
+            if(event.target.files[0]) {
+                setImageSelfieKtp(event.target.files[0])
+                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                    setUploadSelfieKtp(true)
+                    setImageFileSelfieKtp(imageFileSelfieKtp)
+                    setNameImageSelfieKtp("")
+                }
+                else {
+                    setNameImageSelfieKtp(event.target.files[0].name)
+                    setUploadSelfieKtp(false)
+                    const reader = new FileReader()
+                    reader.addEventListener("load", () => {
+                        setImageFileSelfieKtp(reader.result)
+                    })
+                    reader.readAsDataURL(event.target.files[0])
+                }
             }
-            else {
-                setUploadSelfieKtp(false)
-                const reader = new FileReader()
-                reader.addEventListener("load", () => {
-                    setImageFileSelfieKtp(reader.result)
-                })
-                reader.readAsDataURL(event.target.files[0])
-            }
+        } else {
+            setFormatSelfieKtp(true)
+            setUploadSelfieKtp(false)
+            setNameImageSelfieKtp("")
+            setImageFileSelfieKtp(null)
+            setImageSelfieKtp(null)
         }
     }
 
@@ -127,30 +146,30 @@ const FormInfoPemilikPerseorangan = () => {
             }
             const getData = await axios.post(BaseURL + "/QRIS/GetFirstStepData", { data: dataParams }, { headers: headers })
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
-                if (getData.data.response_data.results.mprofdtl_identity_type_id === 100) {
-                    setInputHandleWni({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
-                } else {
-                    setInputHandleWna({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
-                }
-                setKewarganegaraan(getData.data.response_data.results.mprofdtl_identity_type_id)
+                setInputHandle({
+                    ...getData.data.response_data.results, 
+                    merchantNou: getData.data.response_data.results.mmerchant_nou,
+                    kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id, 
+                    namaUser: getData.data.response_data.results.mprofdtl_name, 
+                    nomorPengenal: getData.data.response_data.results.mprofdtl_identity_no
+                })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
                 setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
                 setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
-                setGetDataFirstStep(getData.data.response_data.results)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
-                if (getData.data.response_data.results.mprofdtl_identity_type_id === 100) {
-                    setInputHandleWni({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
-                } else {
-                    setInputHandleWna({...getData.data.response_data.results, userName: getData.data.response_data.results.mprofdtl_name, numberId: getData.data.response_data.results.mprofdtl_identity_no})
-                }
-                setKewarganegaraan(getData.data.response_data.results.mprofdtl_identity_type_id)
+                setInputHandle({
+                    ...getData.data.response_data.results, 
+                    merchantNou: getData.data.response_data.results.mmerchant_nou,
+                    kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id, 
+                    namaUser: getData.data.response_data.results.mprofdtl_name, 
+                    nomorPengenal: getData.data.response_data.results.mprofdtl_identity_no
+                })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
                 setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
                 setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
-                setGetDataFirstStep(getData.data.response_data.results)
             }
         } catch (error) {
             // console.log(error)
@@ -158,179 +177,34 @@ const FormInfoPemilikPerseorangan = () => {
         }
     }
 
-    async function formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, profileId, numberKtp, nameUser, imageKtp, imageFileKtp, nameImageKtp, imageSelfieKtp, imageFileSelfieKtp, nameImageSelfieKtp, step, businessType, merchantName, position) {
+    console.log(inputHandle.namaUser, "inputHandle.namaUser");
+    console.log(inputHandle.namaUser, "inputHandle.namaUser");
+
+    async function formDataFirstStepInfoPemilikPerorangan(merchantNou, kewarganegaraan, profileId, numberKtp, nameUser, imageKtp, imageSelfieKtp, step, businessType, position) {
         try {
-            if (imageKtp === null) {
-                if (imageSelfieKtp === null) {
-                    const auth = "Bearer " + getToken()
-                    const formData = new FormData()
-                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
-                    formData.append('ktpUrl', null)
-                    formData.append('SelfieKtpUrl', null)
-                    formData.append('Data', dataParams)
-                    const headers = {
-                        'Content-Type':'multipart/form-data',
-                        'Authorization' : auth
-                    }
-                    const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
-                    if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
-                        if (profileId === 0) {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        } else {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan/${profileId}`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        }
-                    } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
-                        setUserSession(saveFirstStep.data.response_new_token)
-                        if (profileId === 0) {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        } else {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan/${profileId}`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        }
-                    }
-                } else {
-                    const auth = "Bearer " + getToken()
-                    const formData = new FormData()
-                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
-                    formData.append('ktpUrl', null)
-                    formData.append('SelfieKtpUrl', imageSelfieKtp)
-                    formData.append('Data', dataParams)
-                    const headers = {
-                        'Content-Type':'multipart/form-data',
-                        'Authorization' : auth
-                    }
-                    const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
-                    if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
-                        if (profileId === 0) {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        } else {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan/${profileId}`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        }
-                    } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
-                        setUserSession(saveFirstStep.data.response_new_token)
-                        if (profileId === 0) {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        } else {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan/${profileId}`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        }
-                    }
+            const auth = "Bearer " + getToken()
+            const formData = new FormData()
+            const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "register_type": 102, "user_role": 0, "profile_id": ${profileId === undefined ? 0 : profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": ""}`)
+            formData.append('ktpUrl', imageKtp)
+            formData.append('SelfieKtpUrl', imageSelfieKtp)
+            formData.append('Data', dataParams)
+            const headers = {
+                'Content-Type':'multipart/form-data',
+                'Authorization' : auth
+            }
+            const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
+            if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
+                if (position === "next") {
+                    history.push(`/form-info-usaha-perorangan/${saveFirstStep.data.response_data.mprof_id}`)
+                } else if (position === "back") {
+                    history.push('/daftar-merchant-qris')
                 }
-            } else {
-                if (imageSelfieKtp === null) {
-                    const auth = "Bearer " + getToken()
-                    const formData = new FormData()
-                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
-                    formData.append('ktpUrl', imageKtp)
-                    formData.append('SelfieKtpUrl', null)
-                    formData.append('Data', dataParams)
-                    const headers = {
-                        'Content-Type':'multipart/form-data',
-                        'Authorization' : auth
-                    }
-                    const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
-                    if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
-                        if (profileId === 0) {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        } else {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan/${profileId}`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        }
-                    } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
-                        setUserSession(saveFirstStep.data.response_new_token)
-                        if (profileId === 0) {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        } else {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan/${profileId}`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        }
-                    }
-                } else {
-                    const auth = "Bearer " + getToken()
-                    const formData = new FormData()
-                    const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${merchantName}"}`)
-                    formData.append('ktpUrl', imageKtp)
-                    formData.append('SelfieKtpUrl', imageSelfieKtp)
-                    formData.append('Data', dataParams)
-                    const headers = {
-                        'Content-Type':'multipart/form-data',
-                        'Authorization' : auth
-                    }
-                    const saveFirstStep = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
-                    if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token === null) {
-                        if (profileId === 0) {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        } else {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan/${profileId}`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        }
-                    } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
-                        setUserSession(saveFirstStep.data.response_new_token)
-                        if (profileId === 0) {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        } else {
-                            if (position === "next") {
-                                history.push(`/form-info-usaha-perorangan/${profileId}`)
-                            } else if (position === "back") {
-                                history.push('/daftar-merchant-qris')
-                            }
-                        }
-                    }
+            } else if (saveFirstStep.status === 200 && saveFirstStep.data.response_code === 200 && saveFirstStep.data.response_new_token !== null) {
+                setUserSession(saveFirstStep.data.response_new_token)
+                if (position === "next") {
+                    history.push(`/form-info-usaha-perorangan/${saveFirstStep.data.response_data.mprof_id}`)
+                } else if (position === "back") {
+                    history.push('/daftar-merchant-qris')
                 }
             }
         } catch (error) {
@@ -339,8 +213,13 @@ const FormInfoPemilikPerseorangan = () => {
         }
     }
 
-    function backPage () {
-        setShowModalSimpanData(true)
+    function backPage (namaPemilik) {
+        if (namaPemilik.length !== 0) {
+            setShowModalSimpanData(true)
+        } else {
+            setShowModalSimpanData(false)
+            history.push('/daftar-merchant-qris')
+        }
     }
 
     useEffect(() => {
@@ -355,7 +234,7 @@ const FormInfoPemilikPerseorangan = () => {
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
                 <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
                 <div className="d-flex justify-content-start align-items-center head-title"> 
-                    <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
+                    <FontAwesomeIcon onClick={() => backPage(inputHandle.namaUser)} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
                 </div>
                 <div className='pb-4 pt-3'>
@@ -382,8 +261,8 @@ const FormInfoPemilikPerseorangan = () => {
                                 id="wni"
                                 name='kewarganegaraan'
                                 value={100}
-                                checked={kewarganegaraan === 100 && true}
-                                onChange={(e) => handleOnChangeCheckBoxKewarganegaraan(e)}
+                                checked={inputHandle.kewarganegaraan === 100 && true}
+                                onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)}
                             />
                             <label
                                 className="form-check-label"
@@ -400,8 +279,8 @@ const FormInfoPemilikPerseorangan = () => {
                                 id="wna"
                                 name='kewarganegaraan'
                                 value={101}
-                                checked={kewarganegaraan === 101 && true}
-                                onChange={(e) => handleOnChangeCheckBoxKewarganegaraan(e)}
+                                checked={inputHandle.kewarganegaraan === 101 && true}
+                                onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)}
                             />
                             <label
                                 className="form-check-label"
@@ -412,172 +291,102 @@ const FormInfoPemilikPerseorangan = () => {
                             </label>
                         </div>
                     </div>
+
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}</div>
+                    <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
+                        <input name="namaUser" value={inputHandle.namaUser} onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)} className='input-text-form' placeholder={`Masukan nama sesuai ${inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}`} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                    </div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`} pemilik usaha</div>
+                    <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
+                        <input name="nomorPengenal" value={inputHandle.nomorPengenal} onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)} type={inputHandle.kewarganegaraan === 101 ? 'text' : 'number'} onKeyDown={inputHandle.kewarganegaraan === 101 ? "" : (evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder={`Masukan nomor ${inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}`} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                    </div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`} pemilik usaha</div>
+                    <div className='viewDragDrop  mt-2' onClick={handleClickKtp} style={{cursor: "pointer"}}>
+                        {
+                            !imageFileKtp ?
+                            <>
+                                {
+                                    formatKtp === true ?
+                                    <div className='pt-4 text-center' style={{ color: "#B9121B" }}><span className='me-1'><img src={noteIconRed} alt="" /></span> Format harus .jpg</div> :
+                                    <div className='pt-4 text-center'>Masukkan foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}.</div>
+                                }
+                                <input
+                                    type="file"
+                                    onChange={handleFileChangeKtp}
+                                    accept=".jpg"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputKtp}
+                                    id="image"
+                                    name="image"
+                                />
+                            </>
+                                :
+                            <>
+                                <img src={imageFileKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                <input
+                                    type="file"
+                                    onChange={handleFileChangeKtp}
+                                    accept=".jpg"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputKtp}
+                                    id="image"
+                                    name="image"
+                                />
+                                <div className='mt-2 ms-3'>{nameImageKtp}</div>
+                            </>
+                        }
+                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
+                        <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
+                    </div>
                     {
-                        kewarganegaraan === 101 ? (
+                        uploadKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
+                    }
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}</div>
+                    <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
+                        {
+                            !imageFileSelfieKtp ?
                             <>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai KITAS</div>
-                                <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="userName" value={inputHandleWna.userName} onChange={(e) => handleChange(e, 101)} className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                                </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor KITAS pemilik usaha</div>
-                                <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="numberId" value={inputHandleWna.numberId} onChange={(e) => handleChange(e, 101)} className='input-text-form' placeholder='Masukan nomor KITAS pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                                </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto KITAS pemilik usaha</div>
-                                <div className='viewDragDrop  mt-2' onClick={handleClickKtp} style={{cursor: "pointer"}}>
-                                    {
-                                        !imageFileKtp ?
-                                        <>
-                                            <div className='pt-4 text-center'>Masukkan foto KITAS.</div>
-                                            <input
-                                                type="file"
-                                                onChange={handleFileChangeKtp}
-                                                accept=".jpg"
-                                                style={{ display: "none" }}
-                                                ref={hiddenFileInputKtp}
-                                                id="image"
-                                                name="image"
-                                            />
-                                        </>
-                                         :
-                                        <>
-                                            <img src={imageFileKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
-                                            <input
-                                                type="file"
-                                                onChange={handleFileChangeKtp}
-                                                accept=".jpg"
-                                                style={{ display: "none" }}
-                                                ref={hiddenFileInputKtp}
-                                                id="image"
-                                                name="image"
-                                            />
-                                            <div className='mt-2 ms-3'>{nameImageKtp}</div>
-                                        </>
-                                    }
-                                    <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
-                                    <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
-                                </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Selfie dengan KITAS</div>
-                                <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
-                                    {
-                                        !imageFileSelfieKtp ?
-                                        <>
-                                            <div className='pt-4 text-center'>Masukan foto selfie dengan KITAS.</div>
-                                            <input
-                                                type="file"
-                                                onChange={handleFileChangeSelfieKtp}
-                                                accept=".jpg"
-                                                style={{ display: "none" }}
-                                                ref={hiddenFileInputSelfieKtp}
-                                                id="image"
-                                                name="image"
-                                            />
-                                        </>
-                                         :
-                                        <>
-                                            <img src={imageFileSelfieKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
-                                            <input
-                                                type="file"
-                                                onChange={handleFileChangeSelfieKtp}
-                                                accept=".jpg"
-                                                style={{ display: "none" }}
-                                                ref={hiddenFileInputSelfieKtp}
-                                                id="image"
-                                                name="image"
-                                            />
-                                            <div className='mt-2 ms-3'>{nameImageSelfieKtp}</div>
-                                        </>
-                                    }
-                                    <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
-                                    <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
-                                </div>
+                                {
+                                    formatSelfieKtp === true ?
+                                    <div className='pt-4 text-center' style={{ color: "#B9121B" }}><span className='me-1'><img src={noteIconRed} alt="" /></span> Format harus .jpg</div> :
+                                    <div className='pt-4 text-center'>Masukan foto selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}.</div>
+                                }
+                                <input
+                                    type="file"
+                                    onChange={handleFileChangeSelfieKtp}
+                                    accept=".jpg"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputSelfieKtp}
+                                    id="image"
+                                    name="image"
+                                />
                             </>
-                        ) : (
+                                :
                             <>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai eKTP</div>
-                                <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="userName" value={inputHandleWni.userName} onChange={(e) => handleChange(e, 100)} className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                                </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor eKTP pemilik usaha</div>
-                                <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="numberId" value={inputHandleWni.numberId} onChange={(e) => handleChange(e, 100)} className='input-text-form' placeholder='Masukan nomor eKTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                                </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto eKTP pemilik usaha sesuai</div>
-                                <div className='viewDragDrop  mt-2' onClick={handleClickKtp} style={{cursor: "pointer"}}>
-                                    {
-                                        !imageFileKtp ?
-                                        <>
-                                            <div className='pt-4 text-center'>Masukkan foto eKTP.</div>
-                                            <input
-                                                type="file"
-                                                onChange={handleFileChangeKtp}
-                                                accept=".jpg"
-                                                style={{ display: "none" }}
-                                                ref={hiddenFileInputKtp}
-                                                id="image"
-                                                name="image"
-                                            />
-                                        </>
-                                         :
-                                        <>
-                                            <img src={imageFileKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
-                                            <input
-                                                type="file"
-                                                onChange={handleFileChangeKtp}
-                                                accept=".jpg"
-                                                style={{ display: "none" }}
-                                                ref={hiddenFileInputKtp}
-                                                id="image"
-                                                name="image"
-                                            />
-                                            <div className='mt-2 ms-3'>{nameImageKtp}</div>
-                                        </>
-                                    }
-                                    <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
-                                    <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
-                                </div>
-                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan eKTP</div>
-                                <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
-                                    {
-                                        !imageFileSelfieKtp ?
-                                        <>
-                                            <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
-                                            <input
-                                                type="file"
-                                                onChange={handleFileChangeSelfieKtp}
-                                                accept=".jpg"
-                                                style={{ display: "none" }}
-                                                ref={hiddenFileInputSelfieKtp}
-                                                id="image"
-                                                name="image"
-                                            />
-                                        </>
-                                         :
-                                        <>
-                                            <img src={imageFileSelfieKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
-                                            <input
-                                                type="file"
-                                                onChange={handleFileChangeSelfieKtp}
-                                                accept=".jpg"
-                                                style={{ display: "none" }}
-                                                ref={hiddenFileInputSelfieKtp}
-                                                id="image"
-                                                name="image"
-                                            />
-                                            <div className='mt-2 ms-3'>{nameImageSelfieKtp}</div>
-                                        </>
-                                    }
-                                    <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
-                                    <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
-                                </div>
+                                <img src={imageFileSelfieKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                <input
+                                    type="file"
+                                    onChange={handleFileChangeSelfieKtp}
+                                    accept=".jpg"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputSelfieKtp}
+                                    id="image"
+                                    name="image"
+                                />
+                                <div className='mt-2 ms-3'>{nameImageSelfieKtp}</div>
                             </>
-                        )
+                        }
+                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
+                        <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
+                    </div>
+                    {
+                        uploadSelfieKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
                     }
                     <div className='text-end mt-4'>
                         <button 
-                            onClick={() => formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id, kewarganegaraan === 100 ? inputHandleWni.numberId : inputHandleWna.numberId, kewarganegaraan === 100 ? inputHandleWni.userName : inputHandleWna.userName, imageKtp, imageFileKtp === null ? "" : imageFileKtp, nameImageKtp, imageSelfieKtp, imageFileSelfieKtp, nameImageSelfieKtp, 2, 2, "", "next")} 
-                            className={((inputHandleWni.userName.length !== 0 && inputHandleWni.numberId.length !== 0 && imageFileKtp !== null && imageFileSelfieKtp !== null && imageFileKtp.length !== 0 && imageFileSelfieKtp.length !== 0) || (inputHandleWna.userName.length !== 0 && inputHandleWna.numberId.length !== 0 && imageFileKtp !== null && imageFileSelfieKtp !== null && imageFileKtp.length !== 0 && imageFileSelfieKtp.length !== 0)) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
-                            disabled={((inputHandleWni.userName.length === 0 || inputHandleWni.numberId.length === 0 || imageFileKtp === null || imageFileSelfieKtp === null || imageFileKtp.length === 0 || imageFileSelfieKtp.length === 0) && (inputHandleWna.userName.length === 0 || inputHandleWna.numberId.length === 0 || imageFileKtp === null || imageFileSelfieKtp === null || imageFileKtp.length === 0 || imageFileSelfieKtp.length === 0))}
+                            onClick={() => formDataFirstStepInfoPemilikPerorangan(inputHandle.merchantNou, inputHandle.kewarganegaraan, profileId === undefined ? 0 : profileId, inputHandle.nomorPengenal, inputHandle.namaUser, imageKtp, imageSelfieKtp, 2, 2, "next")} 
+                            className={((inputHandle.kewarganegaraan !== 0 && inputHandle.namaUser.length !== 0 && inputHandle.nomorPengenal.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && (imageSelfieKtp !== null || imageFileSelfieKtp !== null))) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={((inputHandle.kewarganegaraan === 0 || inputHandle.namaUser.length === 0 || inputHandle.nomorPengenal.length === 0 || (imageKtp === null && imageFileKtp === null) || (imageSelfieKtp === null && imageFileSelfieKtp === null)))}
                         >
                             Selanjutnya
                         </button>
@@ -603,7 +412,7 @@ const FormInfoPemilikPerseorangan = () => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => formDataFirstStepInfoPemilikPerorangan(kewarganegaraan, getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id, kewarganegaraan === 100 ? inputHandleWni.numberId : inputHandleWna.numberId, kewarganegaraan === 100 ? inputHandleWni.userName : inputHandleWna.userName, imageKtp, imageFileKtp, nameImageKtp, imageSelfieKtp, imageFileSelfieKtp, nameImageSelfieKtp, 1, 2, "", "back")} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                        <Button onClick={() => formDataFirstStepInfoPemilikPerorangan(inputHandle.merchantNou, inputHandle.kewarganegaraan, profileId === undefined ? 0 : profileId, inputHandle.nomorPengenal, inputHandle.namaUser, imageKtp, imageSelfieKtp, 1, 2, "back")} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
                     </div>
                 </Modal.Body>
             </Modal>

@@ -460,7 +460,7 @@ const DetailMerchantGrup = () => {
                         </Row>
                         <Row className='mt-1'>
                             <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_name}</Col>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofile_username}</Col>
+                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_no}</Col>
                         </Row>
                         <Row className='mt-3'>
                             <Col xs={6} className='sub-title-detail-merchant'>Peran pendaftar</Col>
@@ -579,12 +579,12 @@ const DetailMerchantGrup = () => {
                             <Col xs={6} className='sub-title-detail-merchant'>Akta pendirian perusahaan atau perubahan terakhir</Col>
                             <Col xs={6} className='sub-title-detail-merchant'>SK Kementerian Kehakiman</Col>
                         </Row>
-                        <Row className='mt-1'>
+                        <Row className='mt-1 pb-4'>
                             <Col xs={6} className='d-flex justify-content-start align-items-center'>
                                 <img src={String(dataDetailGrup?.mprofdoc_akta_pendirian_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdoc_akta_pendirian_url} alt="foto 1" width="150px" height="90px" />
                                 <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_akta_pendirian_url_name}</div>
                             </Col>
-                            <Col xs={6} className='d-flex justify-content-start align-items-center pb-4'>
+                            <Col xs={6} className='d-flex justify-content-start align-items-center'>
                                 <img src={String(dataDetailGrup?.mpromprofdoc_SK_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mpromprofdoc_SK_url} alt="foto 1" width="150px" height="90px" />
                                 <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_SK_url_name}</div>
                             </Col>

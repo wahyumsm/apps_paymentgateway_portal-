@@ -49,6 +49,18 @@ const FormDokumenUsahaBadanUsaha = () => {
     const [formatJpgSkKementrian, setFormatJpgSkKementrian] = useState(false)
     const [fileSizeSkKementrian, setFileSizeSkKementrian] = useState(false)
 
+    const [npwpId, setNpwpId] = useState("")
+    const [alertMinNpwpId, setAlertMinNpwpId] = useState(false)
+    const handleChangeNpwpId = (e) => {
+        if (e.target.value.length < 15) {
+            setAlertMinNpwpId(true)
+            setNpwpId(e.target.value)
+        } else {
+            setAlertMinNpwpId(false)
+            setNpwpId(e.target.value)
+        }
+    }
+
     const handleClick = (param) => {
         if (param === "npwp") {
             hiddenFileInputNpwp.current.click();
@@ -242,6 +254,7 @@ const FormDokumenUsahaBadanUsaha = () => {
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 const data = getData.data.response_data.results
                 setGetDataThirdStep(data)
+                setNpwpId(data.mprofdoc_npwp)
                 if (data.mprofdoc_npwp_url.slice(-3) === "pdf") {
                     setImageFileNpwp(null)
                     setUploadPdfNpwp(true)
@@ -287,6 +300,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                 setUserSession(getData.data.response_new_token)
                 const data = getData.data.response_data.results
                 setGetDataThirdStep(data)
+                setNpwpId(data.mprofdoc_npwp)
                 if (data.mprofdoc_npwp_url.slice(-3) === "pdf") {
                     setImageFileNpwp(null)
                     setUploadPdfNpwp(true)
@@ -334,12 +348,12 @@ const FormDokumenUsahaBadanUsaha = () => {
         }
     }
 
-    async function formDataThirdStepBusenessDocument(profileId, businessType, step, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian) {
+    async function formDataThirdStepBusenessDocument(profileId, businessType, npwp, step, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian) {
         try {
             setIsLoadingDokumenUsaha(true)
             const auth = "Bearer " + getToken()
             const formData = new FormData()
-            const dataParams = encryptData(`{"profile_id": ${profileId}, "bussiness_type": ${businessType}, "step": ${step}}`)
+            const dataParams = encryptData(`{"profile_id": ${profileId}, "bussiness_type": ${businessType}, "npwp": "${npwp}", "step": ${step}}`)
             formData.append('NPWP', imageNpwp)
             formData.append('NIB', imageNib)
             formData.append('Akta_Perusahaan', imageAktaPerusahaan)
@@ -495,6 +509,20 @@ const FormDokumenUsahaBadanUsaha = () => {
                         <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>No. NPWP</div>
+                    <div className='pt-2 d-flex justify-content-end align-items-center'>
+                        <input name="npwpId" value={npwpId} onChange={(e) => handleChangeNpwpId(e)} className='input-text-form' placeholder='Masukkan No. NPWP' type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                    </div>
+                    {
+                        alertMinNpwpId === true ? (
+                            <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                <div>Minimal 15 digit angka</div>
+                            </div>
+                        ) : (
+                            ""
+                        )
+                    }
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Dokumen NIB perusahaan</div>
                     <div className='viewDragDrop mt-2' style={{cursor: "pointer"}} onClick={() => handleClick("nib")}>
                         {
@@ -731,9 +759,9 @@ const FormDokumenUsahaBadanUsaha = () => {
                             Sebelumnya
                         </button>
                         <button 
-                            className={((uploadPdfNpwp !== false || imageFileNpwp !== "") && (uploadPdfNib !== false || imageFileNib !== "") && (uploadPdfAktaPerusahaan !== false || imageFileAktaPerusahaan !== "") && (uploadPdfSkKementrian !== false || imageFileSkKementrian !== "") && fileSizeNpwp === false && fileSizeNib === false && fileSizeAktaPerusahaan === false && fileSizeSkKementrian === false) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
-                            disabled={(uploadPdfNpwp === false && imageFileNpwp === "") || (uploadPdfNib === false && imageFileNib === "") || (uploadPdfAktaPerusahaan === false && imageFileAktaPerusahaan === "") || (uploadPdfSkKementrian === false && imageFileSkKementrian === "") || fileSizeNpwp !== false || fileSizeNib !== false || fileSizeAktaPerusahaan !== false || fileSizeSkKementrian !== false} 
-                            onClick={() => formDataThirdStepBusenessDocument(profileId === undefined ? 0 : profileId, 1, 200, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)}
+                            className={(npwpId.length >= 15 && (uploadPdfNpwp !== false || imageFileNpwp !== "") && (uploadPdfNib !== false || imageFileNib !== "") && (uploadPdfAktaPerusahaan !== false || imageFileAktaPerusahaan !== "") && (uploadPdfSkKementrian !== false || imageFileSkKementrian !== "") && fileSizeNpwp === false && fileSizeNib === false && fileSizeAktaPerusahaan === false && fileSizeSkKementrian === false) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
+                            disabled={npwpId.length < 15 || (uploadPdfNpwp === false && imageFileNpwp === "") || (uploadPdfNib === false && imageFileNib === "") || (uploadPdfAktaPerusahaan === false && imageFileAktaPerusahaan === "") || (uploadPdfSkKementrian === false && imageFileSkKementrian === "") || fileSizeNpwp !== false || fileSizeNib !== false || fileSizeAktaPerusahaan !== false || fileSizeSkKementrian !== false} 
+                            onClick={() => formDataThirdStepBusenessDocument(profileId === undefined ? 0 : profileId, 1, npwpId, 200, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)}
                         >
                             Selanjutnya
                         </button>
@@ -758,7 +786,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => formDataThirdStepBusenessDocument(profileId === undefined ? 0 : profileId, 1, 3, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
+                        <Button onClick={() => formDataThirdStepBusenessDocument(profileId === undefined ? 0 : profileId, 1, npwpId, 3, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
                             {isLoadingDokumenUsaha ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
                         </Button>
                     </div>
