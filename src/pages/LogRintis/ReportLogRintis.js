@@ -8,7 +8,7 @@ import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.
 import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 const ReportLogRintis = () => {
 

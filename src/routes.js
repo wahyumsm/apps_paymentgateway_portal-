@@ -79,7 +79,7 @@ export const Routes = {
     VAUSD: {path: "/VA USD/create-va-usd"},
     RiwayatFileSFTP: {path: "/VA USD/riwayat-file-sftp"},
     UnsettledTransaction: {path: "/settlement/unsettled-transaction"},
-    ReportLogRintis: {path: "/report-log-rintis"},
+    ReportLogRintis: {path: "/sftp-data/report-log-rintis"},
 
     // partner
     VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},
