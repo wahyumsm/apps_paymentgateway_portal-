@@ -35,10 +35,10 @@ const FormTidakBerbadanHukum = () => {
         })
     }
 
-    async function getDataFirstStepFormTidakBerbadanHukum(merchantNou) {
+    async function getDataFirstStepFormTidakBerbadanHukum(profileId) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"merchant_nou":"${merchantNou}"}`)
+            const dataParams = encryptData(`{"profile_id": ${profileId}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth

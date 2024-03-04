@@ -231,7 +231,7 @@ const FormInfoPemilikOutlet = () => {
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 setInputHandle({
                     ...getData.data.response_data.results, 
-                    jenisUsaha: getData.data.response_data.results.mprofdtl_register_role,
+                    jenisUsaha: getData.data.response_data.results.mprofdtl_bustype,
                     peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role, 
                     namaUser: getData.data.response_data.results.mprofdtl_name === null ? "" : getData.data.response_data.results.mprofdtl_name, 
                     nomorKtp: getData.data.response_data.results.mprofdtl_identity_no === null ? "" : getData.data.response_data.results.mprofdtl_identity_no, 
@@ -259,7 +259,7 @@ const FormInfoPemilikOutlet = () => {
                 setUserSession(getData.data.response_new_token)
                 setInputHandle({
                     ...getData.data.response_data.results, 
-                    jenisUsaha: getData.data.response_data.results.mprofdtl_register_role,
+                    jenisUsaha: getData.data.response_data.results.mprofdtl_bustype,
                     peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role, 
                     namaUser: getData.data.response_data.results.mprofdtl_name === null ? "" : getData.data.response_data.results.mprofdtl_name, 
                     nomorKtp: getData.data.response_data.results.mprofdtl_identity_no === null ? "" : getData.data.response_data.results.mprofdtl_identity_no, 
@@ -306,7 +306,7 @@ const FormInfoPemilikOutlet = () => {
             const getData = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 if (position === "next") {
-                    history.push(`/formulir-info-usaha-outlet/${getData.data.response_data.mprof_id}?type=${businessType}`)
+                    history.push(`/formulir-info-usaha-outlet/${getData.data.response_data.mprof_id}`)
                 } else {
                     setIsLoadingInfoPemilikBadanUsaha(false)
                     history.push('/daftar-merchant-qris')
@@ -314,7 +314,7 @@ const FormInfoPemilikOutlet = () => {
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 if (position === "next") {
-                    history.push(`/formulir-info-usaha-outlet/${getData.data.response_data.mprof_id}?type=${businessType}`)
+                    history.push(`/formulir-info-usaha-outlet/${getData.data.response_data.mprof_id}`)
                 } else {
                     setIsLoadingInfoPemilikBadanUsaha(false)
                     history.push('/daftar-merchant-qris')
