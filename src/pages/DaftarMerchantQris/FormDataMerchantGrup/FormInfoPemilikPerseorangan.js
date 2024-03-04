@@ -184,7 +184,7 @@ const FormInfoPemilikPerseorangan = () => {
         try {
             const auth = "Bearer " + getToken()
             const formData = new FormData()
-            const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "register_type": 102, "user_role": 0, "profile_id": ${profileId === undefined ? 0 : profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": ""}`)
+            const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "register_type": 101, "user_role": 0, "profile_id": ${profileId === undefined ? 0 : profileId}, "email": "", "identity_id": ${kewarganegaraan}, "identity_number": "${numberKtp}", "user_name": "${nameUser}", "phone_number": "", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": ""}`)
             formData.append('ktpUrl', imageKtp)
             formData.append('SelfieKtpUrl', imageSelfieKtp)
             formData.append('Data', dataParams)

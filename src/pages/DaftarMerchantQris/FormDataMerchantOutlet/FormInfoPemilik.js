@@ -111,20 +111,22 @@ const FormInfoPemilikOutlet = () => {
             setUploadKtp(false)
             setNameImageKtp("")
             setImageFileKtp(null)
+            setImageKtp(null)
         }
     }
 
     const handleFileChangeSelfieKtp = (event) => {
-        if ((event.target.files[0].name).slice(-3) === "jpg") {
+        if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
             setFormatSelfieKtp(false)
             if(event.target.files[0]) {
                 setImageSelfieKtp(event.target.files[0])
-                setNameImageSelfieKtp(event.target.files[0].name)
                 if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
                     setUploadSelfieKtp(true)
-                    setImageFileSelfieKtp(imageFileSelfieKtp)
+                    setImageFileSelfieKtp(null)
+                    setNameImageSelfieKtp("")
                 }
                 else {
+                    setNameImageSelfieKtp(event.target.files[0].name)
                     setUploadSelfieKtp(false)
                     const reader = new FileReader()
                     reader.addEventListener("load", () => {
@@ -135,8 +137,9 @@ const FormInfoPemilikOutlet = () => {
             }
         } else {
             setFormatSelfieKtp(true)
+            setUploadSelfieKtp(false)
+            setNameImageSelfieKtp("")
             setImageFileSelfieKtp(null)
-            setNameImageSelfieKtp(null)
             setImageSelfieKtp(null)
         }
     }
@@ -237,6 +240,8 @@ const FormInfoPemilikOutlet = () => {
                 })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
+                setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
                 let newArrDataGrup = []
                 let objDataGrup = {}
                 objDataGrup.value = getData.data.response_data.results.mmerchant_nou
@@ -263,6 +268,8 @@ const FormInfoPemilikOutlet = () => {
                 })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
+                setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
                 let newArrDataGrup = []
                 let objDataGrup = {}
                 objDataGrup.value = getData.data.response_data.results.mmerchant_nou
@@ -626,8 +633,8 @@ const FormInfoPemilikOutlet = () => {
                     </div>
                     <div className='text-end mt-4'>
                         <button 
-                            className={((inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
-                            disabled={(inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (imageKtp === null && imageFileKtp === null) || inputHandle.noTelp.length === 0}
+                            className={(((inputHandle.jenisUsaha === 1 && (inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2)) || (inputHandle.jenisUsaha === 2 && (imageSelfieKtp !== null || imageFileSelfieKtp !== null))) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={((inputHandle.jenisUsaha === 1 && (inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2)) || (inputHandle.jenisUsaha === 2 && (imageSelfieKtp === null && imageFileSelfieKtp === null))) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (imageKtp === null && imageFileKtp === null) || inputHandle.noTelp.length === 0}
                             onClick={() => formDataFirstStepInfoPemilikBadanUsaha(selectedDataBrand.length !== 0 ? selectedDataBrand[0].value : 0, inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, imageSelfieKtp, 2, inputHandle.jenisUsaha, selectedDataGrup.length !== 0 ? selectedDataGrup[0].value : 0, "next", profileId === undefined ? 0 : profileId)}
                         >
                             Selanjutnya

@@ -33,13 +33,13 @@ const PilihJenisUsaha = (props) => {
             <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }} onClick={() => history.push('/')}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }} onClick={() => history.push('/daftar-merchant-qris')}>Daftar Merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah Merchant</span></span>
             <div className=''>
                 <div className='text-jenis-usaha py-4'>Pilih Jenis Usaha</div>
-                {/* <div className={tabJenisUsaha === "perorangan" ? 'card-when-click mb-3' : 'card-jenis-usaha mb-3'} onClick={() => buttonColor("perorangan")} id='usahaPerorangan'>
+                <div className={tabJenisUsaha === "perorangan" ? 'card-when-click mb-3' : 'card-jenis-usaha mb-3'} onClick={() => buttonColor("perorangan")} id='usahaPerorangan'>
                     <img src={peroranganQris} alt='qris' />
                     <div className='text-start'>
                         <div className='card-text-title'>Perorangan</div>
                         <div className='card-text-subtitle'>Untuk individual yang ingin melakukan atau mengelola usaha yang dijalankan</div>
                     </div>
-                </div> */}
+                </div>
                 <div className={tabJenisUsaha === "badanUsaha" ? 'card-when-click mb-3' : 'card-jenis-usaha mb-3'} onClick={() => buttonColor("badanUsaha")} id='badanUsaha'>
                     <img src={badanUsahaQris} alt='qris' />
                     <div className='text-start'>

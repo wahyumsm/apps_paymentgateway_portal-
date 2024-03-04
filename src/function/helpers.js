@@ -10,7 +10,7 @@ export const CustomLoader = () => (
 );
 
 // export const BaseURL = "https://api.ezeelink.co.id/mobile-demo/mobile3"
-// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"zal
+// export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile2"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile9"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile11/"
 export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile15/"

@@ -44,6 +44,8 @@ const FormInfoUsaha = () => {
     const [uploadTempatUsaha, setUploadTempatUsaha] = useState(false)
 
     console.log(inputHandle.namaPerusahaan, "inputHandle.namaPerusahaan");
+    console.log(inputHandle.bentukPerusahaan, "inputHandle.bentukPerusahaan");
+    console.log(inputHandle.bentukPerusahaanLainnya, "inputHandle.bentukPerusahaanLainnya");
     console.log(inputHandle.emailPerusahaan, "inputHandle.emailPerusahaan");
     console.log(inputHandle.namaBrand, "inputHandle.namaBrand");
     console.log(inputHandle.namaYangDicetakQris, "inputHandle.namaYangDicetakQris");
@@ -372,7 +374,7 @@ const FormInfoUsaha = () => {
         }
     }
 
-    async function formDataSecondStepInfoUsahaBadanUsaha(businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, step) {
+    async function formDataSecondStepInfoUsahaBadanUsaha(settleGroup, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, step) {
         try {
             setIsLoadingInfoUsaha(true)
             const auth = "Bearer " + getToken()
@@ -389,15 +391,24 @@ const FormInfoUsaha = () => {
             const getData = await axios.post(BaseURL + "/QRIS/SecondStepAddMerchantQRISOnboarding", formData, { headers: headers })
             if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 if (getData.data.response_data.results !== null) {
-                    if (step === 3) {
-                        if (Number(businessType) === 1) {
+                    if (Number(businessType) === 1) {
+                        if (step === 3) {
                             history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                         } else {
-                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
+                            setIsLoadingInfoUsaha(false)
+                            history.push('/daftar-merchant-qris')
                         }
-                    } else if (step === 2) {
-                        setIsLoadingInfoUsaha(false)
-                        history.push('/daftar-merchant-qris')
+                    } else {
+                        if (step === 200) {
+                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
+                        } else if (step === 201) {
+                            history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
+                        } else if (step === 300) {
+                            history.push(`/detail-merchant-brand/${profileId}`)
+                        } else {
+                            setIsLoadingInfoUsaha(false)
+                            history.push('/daftar-merchant-qris')
+                        }
                     }
                 } else {
                     alert(`${getData.data.response_data.error_text}`)
@@ -405,15 +416,24 @@ const FormInfoUsaha = () => {
             } else if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 if (getData.data.response_data.results !== null) {
-                    if (step === 3) {
-                        if (Number(businessType) === 1) {
+                    if (Number(businessType) === 1) {
+                        if (step === 3) {
                             history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                         } else {
-                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
+                            setIsLoadingInfoUsaha(false)
+                            history.push('/daftar-merchant-qris')
                         }
-                    } else if (step === 2) {
-                        setIsLoadingInfoUsaha(false)
-                        history.push('/daftar-merchant-qris')
+                    } else {
+                        if (step === 200) {
+                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
+                        } else if (step === 201) {
+                            history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
+                        } else if (step === 300) {
+                            history.push(`/detail-merchant-brand/${profileId}`)
+                        } else {
+                            setIsLoadingInfoUsaha(false)
+                            history.push('/daftar-merchant-qris')
+                        }
                     }
                 } else {
                     alert(`${getData.data.response_data.error_text}`)
@@ -428,12 +448,49 @@ const FormInfoUsaha = () => {
         }
     }
 
+    async function checkPageSettlementHandler(businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl) {
+        try {
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{"profile_id": ${profileId}, "business_level": ${businessLevel}}`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const getData = await axios.post(BaseURL + "/QRIS/CheckPageSettlement", { data: dataParams }, { headers: headers })
+            if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
+                if (getData.data.response_data.results.is_settlement_page === 0) {
+                    formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 200)
+                } else {
+                    if (getData.data.response_data.results.settle_group_id === 102) {
+                        formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 201)
+                    } else {
+                        formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 300)
+                    }
+                }
+            } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
+                setUserSession(getData.data.response_new_token)
+                if (getData.data.response_data.results.is_settlement_page === 0) {
+                    formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 200)
+                } else {
+                    if (getData.data.response_data.results.settle_group_id === 102) {
+                        formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 201)
+                    } else {
+                        formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 300)
+                    }
+                }
+            }
+        } catch (error) {
+            // console.log(error)
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     function backPage () {
         setShowModalSimpanData(true)
     }
 
     function saveAndGoBack () {
-        formDataSecondStepInfoUsahaBadanUsaha(inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 2)
+        formDataSecondStepInfoUsahaBadanUsaha(0, inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 2)
     }
 
     const customStylesSelectedOption = {
@@ -886,7 +943,7 @@ const FormInfoUsaha = () => {
                         <button 
                             className={(
                                 inputHandle.namaPerusahaan.length !== 0 && 
-                                (inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan !== 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) && 
+                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan !== 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) || inputHandle.businessType === 2) && 
                                 inputHandle.emailPerusahaan.length !== 0 && 
                                 inputHandle.namaBrand.length !== 0 && 
                                 inputHandle.namaYangDicetakQris.length !== 0 && 
@@ -903,7 +960,7 @@ const FormInfoUsaha = () => {
                             }
                             disabled={(
                                 inputHandle.namaPerusahaan.length === 0 || 
-                                (inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0))) || 
+                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0))) || inputHandle.businessType !== 2) || 
                                 inputHandle.emailPerusahaan.length === 0 || 
                                 inputHandle.namaBrand.length === 0 || 
                                 inputHandle.namaYangDicetakQris.length === 0 || 
@@ -921,7 +978,11 @@ const FormInfoUsaha = () => {
                                 uploadTempatUsaha === true ||
                                 inputHandle.kepunyaanQris === 2 || ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length === 0)) || (inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length < 13)))   
                             )}
-                            onClick={() => formDataSecondStepInfoUsahaBadanUsaha(inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 3)}
+                            onClick={
+                                inputHandle.businessType === 1 ? 
+                                    () => formDataSecondStepInfoUsahaBadanUsaha(0, inputHandle.businessType, 102, profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 3) :
+                                    () => checkPageSettlementHandler(inputHandle.businessType, 102, profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl)
+                            }
                         >
                             Selanjutnya
                         </button>

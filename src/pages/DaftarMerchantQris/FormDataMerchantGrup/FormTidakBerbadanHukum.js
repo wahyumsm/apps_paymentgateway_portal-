@@ -17,6 +17,7 @@ const FormTidakBerbadanHukum = () => {
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [getDataFirstStep, setGetDataFirstStep] = useState({})
     const [inputHandle, setInputHandle] = useState({
+        merchantNou: 0,
         namaGrup: "",
         namaUser: "",
         nomorKtp: "",
@@ -44,11 +45,27 @@ const FormTidakBerbadanHukum = () => {
             }
             const getData = await axios.post(BaseURL + "/QRIS/GetFirstStepData", { data: dataParams }, { headers: headers })
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
-                setInputHandle({...getData.data.response_data.results, namaGrup: getData.data.response_data.results.mmerchant_name, namaUser: getData.data.response_data.results.mprofdtl_name, nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, email: getData.data.response_data.results.mprofdtl_email, noTelp: getData.data.response_data.results.mprofdtl_mobile})
+                setInputHandle({
+                    ...getData.data.response_data.results, 
+                    merchantNou: getData.data.response_data.results.mmerchant_nou,
+                    namaGrup: getData.data.response_data.results.mmerchant_name, 
+                    namaUser: getData.data.response_data.results.mprofdtl_name, 
+                    nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, 
+                    email: getData.data.response_data.results.mprofdtl_email, 
+                    noTelp: getData.data.response_data.results.mprofdtl_mobile
+                })
                 setGetDataFirstStep(getData.data.response_data.results)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
-                setInputHandle({...getData.data.response_data.results, namaGrup: getData.data.response_data.results.mmerchant_name, namaUser: getData.data.response_data.results.mprofdtl_name, nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, email: getData.data.response_data.results.mprofdtl_email, noTelp: getData.data.response_data.results.mprofdtl_mobile})
+                setInputHandle({
+                    ...getData.data.response_data.results, 
+                    merchantNou: getData.data.response_data.results.mmerchant_nou,
+                    namaGrup: getData.data.response_data.results.mmerchant_name, 
+                    namaUser: getData.data.response_data.results.mprofdtl_name, 
+                    nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, 
+                    email: getData.data.response_data.results.mprofdtl_email, 
+                    noTelp: getData.data.response_data.results.mprofdtl_mobile
+                })
                 setGetDataFirstStep(getData.data.response_data.results)
             }
         } catch (error) {
@@ -57,10 +74,10 @@ const FormTidakBerbadanHukum = () => {
         }
     }
 
-    async function formDataFirstStepDataTidakBebadanHukum(namaGrup, namaUser, nomorKtp, email, noTelp, step, businessType, position, profileId) {
+    async function formDataFirstStepDataTidakBebadanHukum(merchantNou, namaGrup, namaUser, nomorKtp, email, noTelp, step, businessType, position, profileId) {
         const auth = "Bearer " + getToken()
         const formData = new FormData()
-        const dataParams = encryptData(`{"user_role": 0, "profile_id": ${profileId}, "email": "${email}", "identity_id": 100, "identity_number": "${nomorKtp}", "user_name": "${namaUser}", "phone_number": "${noTelp}", "grupID": 0, "brandID": 0, "outletID": 0, "step": "${step}", "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${namaGrup}"}`)
+        const dataParams = encryptData(`{"merchant_nou": ${merchantNou}, "register_type": 101, "user_role": 0, "profile_id": ${profileId === undefined ? 0 : profileId}, "email": "${email}", "identity_id": 100, "identity_number": "${nomorKtp}", "user_name": "${namaUser}", "phone_number": "${noTelp}", "grupID": 0, "brandID": 0, "outletID": 0, "step": ${step}, "bussiness_type": ${businessType}, "user_id": 0, "merchant_name": "${namaGrup}"}`)
         formData.append('ktpUrl', null)
         formData.append('SelfieKtpUrl', null)
         formData.append('Data', dataParams)
@@ -141,8 +158,9 @@ const FormTidakBerbadanHukum = () => {
                     </div>
                     <div className='text-end mt-4'>
                         <button 
-                            className="btn-next-active mb-4"
-                            onClick={() => formDataFirstStepDataTidakBebadanHukum(inputHandle.namaGrup, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.email, inputHandle.noTelp, 2, 3, "next", getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id)}
+                            className={(inputHandle.namaGrup.length !== 0 && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && inputHandle.email.length !== 0 && inputHandle.noTelp.length !== 0 && isCheckedConfirm === true) ? "btn-next-active mb-4" : "btn-next-inactive mb-4"}
+                            disabled={inputHandle.namaGrup.length === 0 || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || inputHandle.email.length === 0 || inputHandle.noTelp.length === 0 || isCheckedConfirm !== true}
+                            onClick={() => formDataFirstStepDataTidakBebadanHukum(inputHandle.merchantNou, inputHandle.namaGrup, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.email, inputHandle.noTelp, 200, 3, "next", getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id)}
                         >
                             Selanjutnya
                         </button>
@@ -167,7 +185,7 @@ const FormTidakBerbadanHukum = () => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => formDataFirstStepDataTidakBebadanHukum(inputHandle.namaGrup, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.email, inputHandle.noTelp, 1, 3, "back", getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
+                        <Button onClick={() => formDataFirstStepDataTidakBebadanHukum(inputHandle.merchantNou, inputHandle.namaGrup, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.email, inputHandle.noTelp, 1, 3, "back", getDataFirstStep.mprofile_id === undefined ? 0 : getDataFirstStep.mprofile_id)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Simpan</Button>
                     </div>
                 </Modal.Body>
             </Modal>
