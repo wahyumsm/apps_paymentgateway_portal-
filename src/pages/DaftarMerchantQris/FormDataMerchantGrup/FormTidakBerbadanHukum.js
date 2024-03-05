@@ -29,10 +29,24 @@ const FormTidakBerbadanHukum = () => {
     }
 
     function handleChange(e) {
-        setInputHandle({
-            ...inputHandle,
-            [e.target.name] : e.target.value
-        })
+        if (e.target.name === "nomorKtp") {
+            if (e.target.value.length > 16) {
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: (e.target.value).slice(0,16)
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: e.target.value
+                })
+            }
+        } else {
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name] : e.target.value
+            })
+        }
     }
 
     async function getDataFirstStepFormTidakBerbadanHukum(profileId) {
@@ -88,14 +102,14 @@ const FormTidakBerbadanHukum = () => {
         const getData = await axios.post(BaseURL + "/QRIS/FirstStepAddMerchantQRISOnboarding", formData, { headers: headers })
         if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
             if (position === "next") {
-                history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
+                history.push(`/pengaturan-merchant/${getData.data.response_data.mprof_id}/101/${businessType}`)
             } else if (position === "back") {
                 history.push('/daftar-merchant-qris')
             }
         } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
             setUserSession(getData.data.response_new_token)
             if (position === "next") {
-                history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
+                history.push(`/pengaturan-merchant/${getData.data.response_data.mprof_id}/101/${businessType}`)
             } else if (position === "back") {
                 history.push('/daftar-merchant-qris')
             }
@@ -136,7 +150,7 @@ const FormTidakBerbadanHukum = () => {
                     </div>
                     <div className='field-form-tidak-berbadan-hukum pt-3'>Nomor eKTP penanggung jawab</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="nomorKtp" onChange={(e) => handleChange(e)} value={inputHandle.nomorKtp} className='input-text-form' placeholder='Masukan nomor eKTP' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nomor eKTP'*/ />
+                        <input name="nomorKtp" onChange={(e) => handleChange(e)} value={inputHandle.nomorKtp} type="number" onKeyDown={inputHandle.kewarganegaraan === 101 ? "" : (evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan nomor eKTP' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nomor eKTP'*/ />
                     </div>
                     <div className='field-form-tidak-berbadan-hukum pt-3'>Email</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
@@ -144,7 +158,7 @@ const FormTidakBerbadanHukum = () => {
                     </div>
                     <div className='field-form-tidak-berbadan-hukum pt-3'>No telepon penanggung jawab</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="noTelp" onChange={(e) => handleChange(e)} value={inputHandle.noTelp} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan No Telepon'*/ />
+                        <input name="noTelp" onChange={(e) => handleChange(e)} value={inputHandle.noTelp} type="number" onKeyDown={inputHandle.kewarganegaraan === 101 ? "" : (evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan No Telepon'*/ />
                     </div>
                     <div className='mb-3 mt-3'>
                         <Form.Check

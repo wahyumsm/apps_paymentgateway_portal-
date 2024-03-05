@@ -458,7 +458,7 @@ const PengaturanMerchant = () => {
                 setGetDataPengaturanMerchant(getDataConfig)
             }
         } catch (error) {
-            // console.log(error)
+            console.log(error)
             history.push(errorCatch(error.response.status))
         }
     }
