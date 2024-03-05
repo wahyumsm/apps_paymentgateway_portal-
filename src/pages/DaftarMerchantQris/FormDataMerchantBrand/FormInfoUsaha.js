@@ -400,9 +400,9 @@ const FormInfoUsaha = () => {
                         }
                     } else {
                         if (step === 200) {
-                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
+                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/${businessLevel}/${businessType}`)
                         } else if (step === 201) {
-                            history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
+                            history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.mprofile_merchant_id}/${getData.data.response_data.results.mprofile_outlet_nou}/${profileId}`)
                         } else if (step === 300) {
                             history.push(`/detail-merchant-brand/${profileId}`)
                         } else {
@@ -425,9 +425,9 @@ const FormInfoUsaha = () => {
                         }
                     } else {
                         if (step === 200) {
-                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
+                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/${businessLevel}/${businessType}`)
                         } else if (step === 201) {
-                            history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
+                            history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.mprofile_merchant_id}/${getData.data.response_data.results.mprofile_outlet_nou}/${profileId}`)
                         } else if (step === 300) {
                             history.push(`/detail-merchant-brand/${profileId}`)
                         } else {

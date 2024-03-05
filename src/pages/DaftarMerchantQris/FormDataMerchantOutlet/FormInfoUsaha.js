@@ -380,18 +380,18 @@ const FormInfoUsahaOutlet = () => {
                 if (getData.data.response_data.results !== null) {
                     if (Number(businessType) === 1) {
                         if (step === 3) {
-                            history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
+                            history.push(`/form-dokumen-usaha-outlet/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                         } else {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
                         }
                     } else {
                         if (step === 200) {
-                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
+                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/${businessLevel}/${businessType}`)
                         } else if (step === 201) {
-                            history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
+                            history.push(`/form-info-rekening-outlet/${settleGroup}/${getData.data.response_data.results.mprofile_merchant_id}/${getData.data.response_data.results.mprofile_store_nou}/${profileId}`)
                         } else if (step === 300) {
-                            history.push(`/detail-merchant-brand/${profileId}`)
+                            history.push(`/detail-merchant-outlet/${profileId}`)
                         } else {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
@@ -405,18 +405,18 @@ const FormInfoUsahaOutlet = () => {
                 if (getData.data.response_data.results !== null) {
                     if (Number(businessType) === 1) {
                         if (step === 3) {
-                            history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
+                            history.push(`/form-dokumen-usaha-outlet/${getData.data.response_data.results.mprofbus_mprofile_id}`)
                         } else {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
                         }
                     } else {
                         if (step === 200) {
-                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/102/${businessType}`)
+                            history.push(`/pengaturan-merchant/${getData.data.response_data.results.mprofbus_mprofile_id}/${businessLevel}/${businessType}`)
                         } else if (step === 201) {
-                            history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
+                            history.push(`/form-info-rekening-outlet/${settleGroup}/${getData.data.response_data.results.mprofile_merchant_id}/${getData.data.response_data.results.mprofile_store_nou}/${profileId}`)
                         } else if (step === 300) {
-                            history.push(`/detail-merchant-brand/${profileId}`)
+                            history.push(`/detail-merchant-outlet/${profileId}`)
                         } else {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
@@ -448,7 +448,7 @@ const FormInfoUsahaOutlet = () => {
                 if (getData.data.response_data.results.is_settlement_page === 0) {
                     formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 200)
                 } else {
-                    if (getData.data.response_data.results.settle_group_id === 102) {
+                    if (getData.data.response_data.results.settle_group_id === 103) {
                         formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 201)
                     } else {
                         formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 300)
@@ -459,7 +459,7 @@ const FormInfoUsahaOutlet = () => {
                 if (getData.data.response_data.results.is_settlement_page === 0) {
                     formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 200)
                 } else {
-                    if (getData.data.response_data.results.settle_group_id === 102) {
+                    if (getData.data.response_data.results.settle_group_id === 103) {
                         formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 201)
                     } else {
                         formDataSecondStepInfoUsahaBadanUsaha(getData.data.response_data.results.settle_group_id, businessType, businessLevel, profileId, namaPerusahaan, bentukperusahaan, descBentukPerusahaan, emailPerusahaan, namaBrand, namaDiQris, kategoriUsaha, jumlahKasir, pendapatanPerTahun, alamat, kodePos, provinsi, kota, kecamatan, kelurahan, jenisToko, kepunyaanQris, imageOnlineShop, nmid, onlineShopUrl, 300)

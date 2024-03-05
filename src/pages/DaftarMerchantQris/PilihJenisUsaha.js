@@ -47,13 +47,13 @@ const PilihJenisUsaha = (props) => {
                         <div className='card-text-subtitle'>Untuk perusahaan dengan izin usaha yang ingin melakukan atau mengelola usaha yang dijalankan</div>
                     </div>
                 </div>
-                {/* <div className={tabJenisUsaha === "tidakBerbadanHukum" ? 'card-when-click mb-3' : 'card-jenis-usaha mb-3'} onClick={() => buttonColor("tidakBerbadanHukum")} id='tidakBerbadanHukum'>
+                <div className={tabJenisUsaha === "tidakBerbadanHukum" ? 'card-when-click mb-3' : 'card-jenis-usaha mb-3'} onClick={() => buttonColor("tidakBerbadanHukum")} id='tidakBerbadanHukum'>
                     <img src={tidakBerbadanHukumQris} alt='qris' />
                     <div className='text-start'>
                         <div className='card-text-title'>Tidak Berbadan Hukum</div>
                         <div className='card-text-subtitle'>Untuk perusahaan dengan izin usaha yang belum memiliki dokumen legalitas. <br/> Pastikan sebuah brand yang dimiliki sudah memiliki surat izin usaha (E-KTP/NPWP, SK Kementerian Kehakiman, NIB perusahaan, dan Akta pendirian).</div>
                     </div>
-                </div> */}
+                </div>
                 <div className='d-flex justify-content-center align-items-center'>
                     <button onClick={() => nextPage(tabJenisUsaha)} className={tabJenisUsaha.length === 0 ? "btn-confirm-disable" : "btn-confirm-enable"} disabled={tabJenisUsaha.length === 0} style={{ width: "100%"}}>Konfirmasi</button>
                 </div>
