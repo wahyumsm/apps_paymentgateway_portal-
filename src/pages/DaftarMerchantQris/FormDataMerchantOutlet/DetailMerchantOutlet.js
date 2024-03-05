@@ -287,9 +287,9 @@ const DetailMerchantOutlet = () => {
                         <div className='sub-title-detail-merchant mt-3'>Brand</div>
                         <div className='isi-content-detail-merchant mt-2'>{dataDetailOutlet?.moutlet_name === "" ? "-" : dataDetailOutlet?.moutlet_name}</div>
                         <div className='sub-title-detail-merchant mt-3'>Kategori Usaha</div>
-                        <div className='isi-content-detail-merchant mt-2'>{dataDetailOutlet?.mbuscat_name}</div>
+                        <div className='isi-content-detail-merchant mt-2'>{dataDetailOutlet?.mbuscat_name === null ? "-" : dataDetailOutlet?.mbuscat_name}</div>
                         <div className='sub-title-detail-merchant mt-3'>Riwayat terakhir</div>
-                        <div className='isi-content-detail-merchant mt-2'>{dataDetailOutlet?.edit_date}</div>
+                        <div className='isi-content-detail-merchant mt-2'>{dataDetailOutlet?.edit_date === null ? "-" : dataDetailOutlet?.edit_date}</div>
                         <div className='sub-title-detail-merchant mt-3'>Nomor rekening</div>
                         <div className='isi-content-detail-merchant mt-2'>{(dataDetailOutlet?.mqrismerchsettle_acc_number === "" || dataDetailOutlet?.mqrismerchsettle_acc_number === null) ? "-" : dataDetailOutlet?.mqrismerchsettle_acc_number}</div>
                     </Col>
@@ -422,7 +422,7 @@ const DetailMerchantOutlet = () => {
                             </div>
                         </>
                     }
-                    <div className={inputHandle.jenisUsaha === 2 ? 'mt-3 mb-1' : 'my-1'} style={{ fontFamily: "Nunito", fontSize: 14}}>Kewarganegaraan pemilik usaha</div>
+                    <div className={inputHandle.jenisUsaha === 2 ? 'mt-3 mb-1' : 'mt-3'} style={{ fontFamily: "Nunito", fontSize: 14}}>Kewarganegaraan pemilik usaha</div>
                     <div className='d-flex justify-content-start align-items-center py-2'>
                         <div className="form-check form-check-inline">
                             <input
@@ -507,7 +507,7 @@ const DetailMerchantOutlet = () => {
                         <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
-                    {
+                    {/* {
                         inputHandle.jenisUsaha === 2 && 
                         <>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}</div>
@@ -547,7 +547,7 @@ const DetailMerchantOutlet = () => {
                                 <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                             </div>
                         </>
-                    }
+                    } */}
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>No telepon pemilik usaha</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                         <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e)} disabled type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />

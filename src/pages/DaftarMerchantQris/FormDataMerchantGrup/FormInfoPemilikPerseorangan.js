@@ -341,7 +341,7 @@ const FormInfoPemilikPerseorangan = () => {
                     {
                         uploadKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
                     }
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}</div>
+                    {/* <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}</div>
                     <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
                         {
                             !imageFileSelfieKtp ?
@@ -381,12 +381,12 @@ const FormInfoPemilikPerseorangan = () => {
                     </div>
                     {
                         uploadSelfieKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
-                    }
+                    } */}
                     <div className='text-end mt-4'>
                         <button 
                             onClick={() => formDataFirstStepInfoPemilikPerorangan(inputHandle.merchantNou, inputHandle.kewarganegaraan, profileId === undefined ? 0 : profileId, inputHandle.nomorPengenal, inputHandle.namaUser, imageKtp, imageSelfieKtp, 2, 2, "next")} 
-                            className={((inputHandle.kewarganegaraan !== 0 && inputHandle.namaUser.length !== 0 && inputHandle.nomorPengenal.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && (imageSelfieKtp !== null || imageFileSelfieKtp !== null))) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
-                            disabled={((inputHandle.kewarganegaraan === 0 || inputHandle.namaUser.length === 0 || inputHandle.nomorPengenal.length === 0 || (imageKtp === null && imageFileKtp === null) || (imageSelfieKtp === null && imageFileSelfieKtp === null)))}
+                            className={((inputHandle.kewarganegaraan !== 0 && inputHandle.namaUser.length !== 0 && inputHandle.nomorPengenal.length !== 0 && (imageKtp !== null || imageFileKtp !== null))) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={((inputHandle.kewarganegaraan === 0 || inputHandle.namaUser.length === 0 || inputHandle.nomorPengenal.length === 0 || (imageKtp === null && imageFileKtp === null)))}
                         >
                             Selanjutnya
                         </button>

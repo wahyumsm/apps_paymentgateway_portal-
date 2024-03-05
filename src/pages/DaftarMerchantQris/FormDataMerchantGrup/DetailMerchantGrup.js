@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import filePdfQris from "../../../assets/icon/file_pdf_qris.svg";
 import $ from 'jquery'
@@ -7,7 +7,6 @@ import alertIconYellow from '../../../assets/icon/note_icon_grey.svg'
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { FilterComponentQris } from '../../../components/FilterComponentQris';
 import loadingEzeelink from "../../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
 import encryptData from '../../../function/encryptData';
@@ -441,160 +440,315 @@ const DetailMerchantGrup = () => {
             <hr className='hr-style' style={{marginTop: -2}}/>
             {
                 isMerchantQris === true ? (
-                    <div className='base-content' style={{ marginTop: -15 }}>
-                        <div className="waktu-bergabung-detail">Waktu bergabung : {dataDetailGrup?.created_date}</div>
-                        <div className="nama-merchant-in-detail mt-2">{dataDetailGrup?.mprofbus_name}</div>
-                        {/* <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>ID pengguna</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Kata sandi</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>12345abcde</Col>
-                            <Col xs={6} className='isi-content-detail-merchant'>sad12i3ui</Col>
-                        </Row> */}
-                        <hr/>
-                        <div className='title-sub-content-detail-merchant'>Info pemilik</div>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Nama pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_name}</Col>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_no}</Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Peran pendaftar</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Kewarganegaraan pemilik usaha</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_register_role_name}</Col>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_type_name}</Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>No telepon pemilik usaha</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Foto eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_mobile}</Col>
-                            <Col xs={6} className='d-flex justify-content-start align-items-center'>
-                                <img src={dataDetailGrup?.mprofdtl_identity_url} alt="foto 1" width="150px" height="90px" />
-                                <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdtl_identity_filename}</div>
-                            </Col>
-                        </Row>
-                        <hr/>
-                        <div className='title-sub-content-detail-merchant'>Info usaha</div>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Nama perusahaan</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Bentuk perusahaan</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_name}</Col>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_company_type_name}</Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Kategori usaha</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Jumlah kasir (counter pembayaran)</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbuscat_name}</Col>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_cashier_count}</Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Pendapatan pertahun</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Alamat usaha</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbusinc_desc}</Col>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_address}</Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Kode pos</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Jenis toko</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_postal_code}</Col>
-                            <Col xs={6} className='isi-content-detail-merchant'>{(dataDetailGrup?.mprofbus_shop_type_id === "2,1" || dataDetailGrup?.mprofbus_shop_type_id === "1,2") ? "Toko Fisik & Toko Online" : (dataDetailGrup?.mprofbus_shop_type_id === "1") ? "Toko Fisik" : "Toko Online"}</Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Sudah pernah mendaftar QRIS ?</Col>
-                            {
-                                dataDetailGrup?.mprofbus_shop_type_id !== null && (
-                                    <Col xs={6} className='sub-title-detail-merchant'>Foto tempat usaha</Col>
-                                )
-                            }
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_is_have_QRIS === false ? `Tidak` : `Ya`}</Col>
-                            {
-                                dataDetailGrup?.mprofbus_shop_type_id !== null && (
-                                    <Col xs={6} className='d-flex justify-content-start align-items-center'>
-                                    {
-                                        imageTempatUsaha.length !== 0 ?
-                                        imageTempatUsaha.map((item, id) => {
-                                            return (
-                                                <div className='d-flex justify-content-start flex-column align-items-center ms-1' key={id}>
-                                                    <img src={item.url} alt="alt" width="150px" height="90px" className='pt-4 text-start' />
-                                                    <div className='pt-2 text-wrap' style={{ width: 150 }}>{item.name}</div>
-                                                </div>
-                                            )
-                                        }) : "-"
-                                    }
-                                    </Col>
-                                )
-                            }
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Kode refferal</Col>
-                            {
-                                dataDetailGrup?.mprofbus_shop_type_id !== null && (
-                                    <Col xs={6} className='sub-title-detail-merchant'>Link / Website toko</Col>
-                                )
-                            }
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofilefee_user_referal_code}</Col>
-                            {
-                                dataDetailGrup?.mprofbus_shop_type_id !== null && (
-                                    <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_online_shop_url }</Col>
-                                )
-                            }
-                        </Row>
-                        <hr/>
-                        <div className='title-sub-content-detail-merchant'>Dokumen usaha</div>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Dokumen NPWP perusahaan</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>Dokumen NIB perusahaan</Col>
-                        </Row>
-                        <Row className='mt-1'>
-                            <Col xs={6} className='d-flex justify-content-start align-items-center'>
-                                <img src={String(dataDetailGrup?.mprofdoc_npwp_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdoc_npwp_url} alt="foto 1" width="150px" height="90px" />
-                                <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_npwp_url_name}</div>
-                            </Col>
-                            <Col xs={6} className='d-flex justify-content-start align-items-center'>
-                                <img src={String(dataDetailGrup?.mprofdoc_NIB_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdoc_NIB_url} alt="foto 1" width="150px" height="90px" />
-                                <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_NIB_url_name}</div>
-                            </Col>
-                        </Row>
-                        <Row className='mt-3'>
-                            <Col xs={6} className='sub-title-detail-merchant'>Akta pendirian perusahaan atau perubahan terakhir</Col>
-                            <Col xs={6} className='sub-title-detail-merchant'>SK Kementerian Kehakiman</Col>
-                        </Row>
-                        <Row className='mt-1 pb-4'>
-                            <Col xs={6} className='d-flex justify-content-start align-items-center'>
-                                <img src={String(dataDetailGrup?.mprofdoc_akta_pendirian_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdoc_akta_pendirian_url} alt="foto 1" width="150px" height="90px" />
-                                <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_akta_pendirian_url_name}</div>
-                            </Col>
-                            <Col xs={6} className='d-flex justify-content-start align-items-center'>
-                                <img src={String(dataDetailGrup?.mpromprofdoc_SK_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mpromprofdoc_SK_url} alt="foto 1" width="150px" height="90px" />
-                                <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_SK_url_name}</div>
-                            </Col>
-                        </Row>
-                        {/* <div className='text-end mt-3 pb-4'>
-                            <button className='button-ubah-info-merchant-detail'>
-                                Ubah info merchant
-                            </button>
-                        </div> */}
-                    </div>
+                    dataDetailGrup?.mprofdtl_bustype === 1 ? (
+                        <div className='base-content' style={{ marginTop: -15 }}>
+                            <div className="waktu-bergabung-detail">Waktu bergabung : {dataDetailGrup?.created_date}</div>
+                            <div className="nama-merchant-in-detail mt-2">{dataDetailGrup?.mprofbus_name}</div>
+                            {/* <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>ID pengguna</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kata sandi</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>12345abcde</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>sad12i3ui</Col>
+                            </Row> */}
+                            <hr/>
+                            <div className='title-sub-content-detail-merchant'>Info pemilik</div>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nama pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_no}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Peran pendaftar</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kewarganegaraan pemilik usaha</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_register_role_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_type_name}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>No telepon pemilik usaha</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Foto eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_mobile}</Col>
+                                <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                                    <img src={dataDetailGrup?.mprofdtl_identity_url} alt="foto 1" width="150px" height="90px" />
+                                    <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdtl_identity_filename}</div>
+                                </Col>
+                            </Row>
+                            <hr/>
+                            <div className='title-sub-content-detail-merchant'>Info usaha</div>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nama perusahaan</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Bentuk perusahaan</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_company_type_name}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kategori usaha</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Jumlah kasir (counter pembayaran)</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbuscat_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_cashier_count}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Pendapatan pertahun</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Alamat usaha</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbusinc_desc}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_address}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kode pos</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Jenis toko</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_postal_code}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{(dataDetailGrup?.mprofbus_shop_type_id === "2,1" || dataDetailGrup?.mprofbus_shop_type_id === "1,2") ? "Toko Fisik & Toko Online" : (dataDetailGrup?.mprofbus_shop_type_id === "1") ? "Toko Fisik" : "Toko Online"}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Sudah pernah mendaftar QRIS ?</Col>
+                                {
+                                    dataDetailGrup?.mprofbus_shop_type_id !== null && (
+                                        <Col xs={6} className='sub-title-detail-merchant'>Foto tempat usaha</Col>
+                                    )
+                                }
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_is_have_QRIS === false ? `Tidak` : `Ya`}</Col>
+                                {
+                                    dataDetailGrup?.mprofbus_shop_type_id !== null && (
+                                        <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                                        {
+                                            imageTempatUsaha.length !== 0 ?
+                                            imageTempatUsaha.map((item, id) => {
+                                                return (
+                                                    <div className='d-flex justify-content-start flex-column align-items-center ms-1' key={id}>
+                                                        <img src={item.url} alt="alt" width="150px" height="90px" className='pt-4 text-start' />
+                                                        <div className='pt-2 text-wrap' style={{ width: 150 }}>{item.name}</div>
+                                                    </div>
+                                                )
+                                            }) : "-"
+                                        }
+                                        </Col>
+                                    )
+                                }
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kode refferal</Col>
+                                {
+                                    dataDetailGrup?.mprofbus_shop_type_id !== null && (
+                                        <Col xs={6} className='sub-title-detail-merchant'>Link / Website toko</Col>
+                                    )
+                                }
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofilefee_user_referal_code}</Col>
+                                {
+                                    dataDetailGrup?.mprofbus_shop_type_id !== null && (
+                                        <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_online_shop_url }</Col>
+                                    )
+                                }
+                            </Row>
+                            <hr/>
+                            <div className='title-sub-content-detail-merchant'>Dokumen usaha</div>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Dokumen NPWP perusahaan</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Dokumen NIB perusahaan</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                                    <img src={String(dataDetailGrup?.mprofdoc_npwp_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdoc_npwp_url} alt="foto 1" width="150px" height="90px" />
+                                    <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_npwp_url_name}</div>
+                                </Col>
+                                <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                                    <img src={String(dataDetailGrup?.mprofdoc_NIB_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdoc_NIB_url} alt="foto 1" width="150px" height="90px" />
+                                    <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_NIB_url_name}</div>
+                                </Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Akta pendirian perusahaan atau perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>SK Kementerian Kehakiman</Col>
+                            </Row>
+                            <Row className='mt-1 pb-4'>
+                                <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                                    <img src={String(dataDetailGrup?.mprofdoc_akta_pendirian_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdoc_akta_pendirian_url} alt="foto 1" width="150px" height="90px" />
+                                    <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_akta_pendirian_url_name}</div>
+                                </Col>
+                                <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                                    <img src={String(dataDetailGrup?.mpromprofdoc_SK_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mpromprofdoc_SK_url} alt="foto 1" width="150px" height="90px" />
+                                    <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdoc_SK_url_name}</div>
+                                </Col>
+                            </Row>
+                            {/* <div className='text-end mt-3 pb-4'>
+                                <button className='button-ubah-info-merchant-detail'>
+                                    Ubah info merchant
+                                </button>
+                            </div> */}
+                        </div>
+                    ) : dataDetailGrup?.mprofdtl_bustype === 2 ? (
+                        <div className='base-content' style={{ marginTop: -15 }}>
+                            <div className="waktu-bergabung-detail">Waktu bergabung : {dataDetailGrup?.created_date}</div>
+                            <div className="nama-merchant-in-detail mt-2">{dataDetailGrup?.mprofbus_name}</div>
+                            {/* <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>ID pengguna</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kata sandi</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>12345abcde</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>sad12i3ui</Col>
+                            </Row> */}
+                            <hr/>
+                            <div className='title-sub-content-detail-merchant'>Info pemilik</div>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nama pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kewarganegaraan pemilik usaha</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_type_name}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Foto eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_no}</Col>
+                                <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                                    <img src={dataDetailGrup?.mprofdtl_identity_url} alt="foto 1" width="150px" height="90px" />
+                                    <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdtl_identity_filename}</div>
+                                </Col>
+                            </Row>
+                            <hr/>
+                            <div className='title-sub-content-detail-merchant'>Info usaha</div>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nama perusahaan</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Bentuk perusahaan</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_company_type_name}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kategori usaha</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Jumlah kasir (counter pembayaran)</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbuscat_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_cashier_count}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Pendapatan pertahun</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Alamat usaha</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbusinc_desc}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_address}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kode pos</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Jenis toko</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_postal_code}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{(dataDetailGrup?.mprofbus_shop_type_id === "2,1" || dataDetailGrup?.mprofbus_shop_type_id === "1,2") ? "Toko Fisik & Toko Online" : (dataDetailGrup?.mprofbus_shop_type_id === "1") ? "Toko Fisik" : "Toko Online"}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Sudah pernah mendaftar QRIS ?</Col>
+                                {
+                                    dataDetailGrup?.mprofbus_shop_type_id !== null && (
+                                        <Col xs={6} className='sub-title-detail-merchant'>Foto tempat usaha</Col>
+                                    )
+                                }
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_is_have_QRIS === false ? `Tidak` : `Ya`}</Col>
+                                {
+                                    dataDetailGrup?.mprofbus_shop_type_id !== null && (
+                                        <Col xs={6} className='d-flex justify-content-start align-items-center'>
+                                        {
+                                            imageTempatUsaha.length !== 0 ?
+                                            imageTempatUsaha.map((item, id) => {
+                                                return (
+                                                    <div className='d-flex justify-content-start flex-column align-items-center ms-1' key={id}>
+                                                        <img src={item.url} alt="alt" width="150px" height="90px" className='pt-4 text-start' />
+                                                        <div className='pt-2 text-wrap' style={{ width: 150 }}>{item.name}</div>
+                                                    </div>
+                                                )
+                                            }) : "-"
+                                        }
+                                        </Col>
+                                    )
+                                }
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kode refferal</Col>
+                                {
+                                    dataDetailGrup?.mprofbus_shop_type_id !== null && (
+                                        <Col xs={6} className='sub-title-detail-merchant'>Link / Website toko</Col>
+                                    )
+                                }
+                            </Row>
+                            <Row className='mt-1 pb-5'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofilefee_user_referal_code}</Col>
+                                {
+                                    dataDetailGrup?.mprofbus_shop_type_id !== null && (
+                                        <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_online_shop_url }</Col>
+                                    )
+                                }
+                            </Row>
+                            {/* <div className='text-end mt-3 pb-4'>
+                                <button className='button-ubah-info-merchant-detail'>
+                                    Ubah info merchant
+                                </button>
+                            </div> */}
+                        </div>
+                    ) : (
+                        <div className='base-content' style={{ marginTop: -15 }}>
+                            <div className="waktu-bergabung-detail">Waktu bergabung : {dataDetailGrup?.created_date}</div>
+                            <div className="nama-merchant-in-detail mt-2">{dataDetailGrup?.mprofbus_name === null ? "-" : dataDetailGrup?.mprofbus_name}</div>
+                            {/* <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>ID pengguna</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kata sandi</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>12345abcde</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>sad12i3ui</Col>
+                            </Row> */}
+                            <hr/>
+                            <div className='title-sub-content-detail-merchant'>Info pemilik</div>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nama pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_no}</Col>
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Email</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>No telepon penanggung jawab</Col>
+                            </Row>
+                            <Row className='mt-1 pb-4'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_email}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_mobile}</Col>
+                            </Row>
+                            {/* <div className='text-end mt-3 pb-4'>
+                                <button className='button-ubah-info-merchant-detail'>
+                                    Ubah info merchant
+                                </button>
+                            </div> */}
+                        </div>
+                    )
                 ) : (
                     <div className='base-content' style={{ marginTop: -15 }}>
                         <div className='title-sub-content-detail-merchant'>Info settlement</div>

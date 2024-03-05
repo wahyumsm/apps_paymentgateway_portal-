@@ -526,7 +526,7 @@ const FormInfoPemilik = (props) => {
                     {
                         uploadKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
                     }
-                    {
+                    {/* {
                         inputHandle.jenisUsaha === 2 && 
                         <>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}</div>
@@ -571,15 +571,15 @@ const FormInfoPemilik = (props) => {
                                 uploadSelfieKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
                             }
                         </>
-                    }
+                    } */}
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>No telepon pemilik usaha</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                         <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)} type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     <div className='text-end mt-4'>
                         <button 
-                            className={(((inputHandle.jenisUsaha === 1 && (inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2)) || (inputHandle.jenisUsaha === 2 && (imageSelfieKtp !== null || imageFileSelfieKtp !== null))) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
-                            disabled={((inputHandle.jenisUsaha === 1 && (inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2)) || (inputHandle.jenisUsaha === 2 && (imageSelfieKtp === null && imageFileSelfieKtp === null))) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (imageKtp === null && imageFileKtp === null) || inputHandle.noTelp.length === 0}
+                            className={(((inputHandle.jenisUsaha === 1 && (inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2))  || inputHandle.jenisUsaha === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={((inputHandle.jenisUsaha === 1 && (inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2))) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (imageKtp === null && imageFileKtp === null) || inputHandle.noTelp.length === 0}
                             onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, imageSelfieKtp, 2, inputHandle.jenisUsaha, selectedDataGrup.length !== 0 ? selectedDataGrup[0].value : 0, "next", profileId === undefined ? 0 : profileId)}
                         >
                             Selanjutnya
