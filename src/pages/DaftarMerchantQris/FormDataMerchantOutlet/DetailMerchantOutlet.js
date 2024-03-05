@@ -3,8 +3,6 @@ import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import { Col, Image, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { agenLists } from '../../../data/tables';
-import { FilterComponentQrisOutletDetail } from '../../../components/FilterComponentQris';
 import loadingEzeelink from "../../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { useHistory, useParams } from 'react-router-dom';
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
@@ -196,6 +194,8 @@ const DetailMerchantOutlet = () => {
                 setInputHandle({...inputHandle, jenisUsaha: datamerchantGrup.data.response_data.results.mprofdtl_bustype, peranPendaftar: datamerchantGrup.data.response_data.results.mprofdtl_register_role, namaUser: datamerchantGrup.data.response_data.results.profile_user_name === null ? "" : datamerchantGrup.data.response_data.results.profile_user_name, nomorKtp: datamerchantGrup.data.response_data.results.mprofdtl_identity_no === null ? "" : datamerchantGrup.data.response_data.results.mprofdtl_identity_no, kewarganegaraan: datamerchantGrup.data.response_data.results.mprofdtl_identity_type_id, noTelp: datamerchantGrup.data.response_data.results.mprofdtl_mobile})
                 setImageFileKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_url_name)
+                setImageFileSelfieKtp(datamerchantGrup.data.response_data.results.mprofdtl_selfie_identity_url)
+                setNameImageSelfieKtp(datamerchantGrup.data.response_data.results.mprofdtl_selfie_identity_file_name)
                 let newArrDataGrup = []
                 let objDataGrup = {}
                 objDataGrup.value = datamerchantGrup.data.response_data.results.mmerchant_nou
@@ -215,6 +215,8 @@ const DetailMerchantOutlet = () => {
                 setInputHandle({...inputHandle, jenisUsaha: datamerchantGrup.data.response_data.results.mprofdtl_bustype, peranPendaftar: datamerchantGrup.data.response_data.results.mprofdtl_register_role, namaUser: datamerchantGrup.data.response_data.results.profile_user_name === null ? "" : datamerchantGrup.data.response_data.results.profile_user_name, nomorKtp: datamerchantGrup.data.response_data.results.mprofdtl_identity_no === null ? "" : datamerchantGrup.data.response_data.results.mprofdtl_identity_no, kewarganegaraan: datamerchantGrup.data.response_data.results.mprofdtl_identity_type_id, noTelp: datamerchantGrup.data.response_data.results.mprofdtl_mobile})
                 setImageFileKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(datamerchantGrup.data.response_data.results.mprofdtl_identity_url_name)
+                setImageFileSelfieKtp(datamerchantGrup.data.response_data.results.mprofdtl_selfie_identity_url)
+                setNameImageSelfieKtp(datamerchantGrup.data.response_data.results.mprofdtl_selfie_identity_file_name)
                 let newArrDataGrup = []
                 let objDataGrup = {}
                 objDataGrup.value = datamerchantGrup.data.response_data.results.mmerchant_nou
@@ -461,20 +463,20 @@ const DetailMerchantOutlet = () => {
                             </label>
                         </div>
                     </div>
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama pemilik usaha sesuai {inputHandle.jenisUsaha === 2 ? (inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`) : (inputHandle.kewarganegaraan === 101 ? `KITAS` : `akta pendirian / perubahan terakhir`)}</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="namaUser" value={inputHandle.namaUser} onChange={(e) => handleChange(e)} disabled className='input-text-form' placeholder='Masukan nama lengkap' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                        <input name="namaUser" value={inputHandle.namaUser} onChange={(e) => handleChange(e)} disabled className='input-text-form' placeholder={`Masukan nama sesuai ${inputHandle.jenisUsaha === 2 ? (inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`) : (inputHandle.kewarganegaraan === 101 ? `KITAS` : `akta pendirian / perubahan terakhir`)}`} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor eKTP pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nomor {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`} pemilik usaha {inputHandle.jenisUsaha === 1 ? ((inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 0) && `sesuai akta pendirian / perubahan terakhir`) : ``}</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                        <input name="nomorKtp" value={inputHandle.nomorKtp} onChange={(e) => handleChange(e)} disabled className='input-text-form' placeholder='Masukan nomor eKTP pemilik' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                        <input name="nomorKtp" value={inputHandle.nomorKtp} onChange={(e) => handleChange(e)} disabled className='input-text-form' placeholder={`Masukan nomor ${inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}`} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto eKTP pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`} pemilik usaha {inputHandle.jenisUsaha === 1 ? ((inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 0) && `sesuai akta pendirian / perubahan terakhir`) : ``}</div>
                     <div className='viewDragDrop mt-2' onClick={handleClickKtp}  style={{cursor: "pointer"}}>
                         {
                             !imageFileKtp ?
                             <>
-                                <div className='pt-4 text-center'>Masukkan foto eKTP.</div>
+                                <div className='pt-4 text-center'>Masukkan foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}.</div>
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
@@ -506,17 +508,14 @@ const DetailMerchantOutlet = () => {
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     {
-                        uploadKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
-                    }
-                    {
                         inputHandle.jenisUsaha === 2 && 
                         <>
-                            <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan eKTP</div>
+                            <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}</div>
                             <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
                                 {
                                     !imageFileSelfieKtp ?
                                     <>
-                                        <div className='pt-4 text-center'>Masukan foto selfie dengan eKTP.</div>
+                                        <div className='pt-4 text-center'>Masukan foto selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}.</div>
                                         <input
                                             type="file"
                                             onChange={handleFileChangeSelfieKtp}
