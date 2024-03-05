@@ -79,10 +79,10 @@ const ReNotifyQris = () => {
     // console.log(dataQris.rrn, "dataQris.rrn");
     // console.log(dataQris.tpayewallet_pay_trans_id, "dataQris.tpayewallet_pay_trans_id");
 
-    async function submitReNotify(noQris, rrn, partnerId) {
+    async function submitReNotify(noQris, rrn) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"transaction_code": "${noQris}" "rrn": "${rrn}", "submited_user": "${partnerId}"}`)
+            const dataParams = encryptData(`{"transaction_code": "${noQris}", "rrn": "${rrn}"}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -418,7 +418,7 @@ const ReNotifyQris = () => {
                     </p>                
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSubmitQris(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
-                        <Button onClick={() => submitReNotify(noQris, dataQris.rrn !== null ? dataQris.rrn : inputHandleRrn, partnerId)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
+                        <Button onClick={() => submitReNotify(noQris, dataQris.rrn !== null ? dataQris.rrn : inputHandleRrn)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
                     </div>
                 </Modal.Body>
             </Modal>

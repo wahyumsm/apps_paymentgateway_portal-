@@ -26,7 +26,6 @@ const ReportLogRintis = () => {
         type: "",
         rrn: "",
         fileName: "",
-        traceNumber: "",
         statusLog: "",
         periode: 0
     })
@@ -66,7 +65,7 @@ const ReportLogRintis = () => {
     function handlePageChangeReportLogRintis(page) {
         if (isFilterReportLogRintis) {
             setActivePageReportLogRintis(page)
-            filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.traceNumber, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, page, 10)
+            filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, page, 10)
         } else {
             console.log("masuk2");
             console.log(page);
@@ -192,7 +191,6 @@ const ReportLogRintis = () => {
             type: "",
             rrn: "",
             fileName: "",
-            traceNumber: "",
             statusLog: "",
             periode: 0
         })
@@ -322,7 +320,7 @@ const ReportLogRintis = () => {
                         <button
                             className={(inputHandleReportLogRintis.periode !== 0 || dateRangeReportLogRintis.length !== 0 || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.type.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.fileName.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.rrn.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.statusLog.length !== 0) ? 'btn-ez-on' : 'btn-ez')}
                             disabled={inputHandleReportLogRintis.periode === 0 || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.type.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.fileName.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.rrn.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.statusLog.length === 0)}
-                            onClick={() => filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.traceNumber, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, activePageReportLogRintis, 10)}
+                            onClick={() => filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, activePageReportLogRintis, 10)}
                         >
                             Terapkan
                         </button>
