@@ -58,12 +58,14 @@ const ReNotifyQris = () => {
                 getDataQris.data.response_data.results.history_notify = getDataQris.data.response_data.results.history_notify.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataQris(getDataQris.data.response_data.results)
                 setDataHistoryNotifyQris(getDataQris.data.response_data.results.history_notify)
+                setInputHandleRrn("")
                 // console.log(getDataQris.data.response_data.results.history_notify[0].request_data, 'response_data');
             } else if (getDataQris.status === 200 && getDataQris.data.response_code === 200 && getDataQris.data.response_new_token !== null) {
                 getDataQris.data.response_data.results.history_notify = getDataQris.data.response_data.results.history_notify.map((obj, idx) => ({...obj, number: idx + 1}))
                 setUserSession(getDataQris.data.response_new_token)
                 setDataQris(getDataQris.data.response_data.results)
                 setDataHistoryNotifyQris(getDataQris.data.response_data.results.history_notify)
+                setInputHandleRrn("")
             }
         } catch (error) {
             // console.log(error);
