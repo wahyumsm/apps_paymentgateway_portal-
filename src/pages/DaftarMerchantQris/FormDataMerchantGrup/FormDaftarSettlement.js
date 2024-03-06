@@ -229,7 +229,7 @@ const FormDaftarSettlement = () => {
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => history.push(`/pengaturan-merchant/${id}/${101}/${1}`)}
+                            onClick={() => history.push(`/pengaturan-merchant/${id}/${101}/${dataMerchantSettlement?.mprofdtl_bustype}`)}
                         >
                             Sebelumnya
                         </button>

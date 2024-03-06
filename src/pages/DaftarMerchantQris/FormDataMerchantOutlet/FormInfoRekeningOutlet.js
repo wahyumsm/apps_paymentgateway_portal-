@@ -230,7 +230,12 @@ const FormInfoRekeningOutlet = () => {
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => history.push(`/form-dokumen-usaha-outlet/${dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id}`)}
+                            onClick={
+                                dataMerchantSettlement?.mprofdtl_bustype === 1 ? 
+                                () => history.push(`/form-dokumen-usaha-outlet/${dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id}`) :
+                                dataMerchantSettlement?.mprofdtl_bustype === 2 ?
+                                () => history.push(`/formulir-info-usaha-outlet/${dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id}`) : ""
+                            }
                         >
                             Sebelumnya
                         </button>
