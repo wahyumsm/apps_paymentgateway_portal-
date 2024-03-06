@@ -67,8 +67,8 @@ const ReportLogRintis = () => {
             setActivePageReportLogRintis(page)
             filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, page, 10)
         } else {
-            console.log("masuk2");
-            console.log(page);
+            // console.log("masuk2");
+            // console.log(page);
             setActivePageReportLogRintis(page)
             getListRiwayatLogRintisHandler(page)
         }

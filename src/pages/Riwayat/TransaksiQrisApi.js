@@ -199,7 +199,7 @@ const TransaksiQrisApi = () => {
         try {
             if (user_role === "102") {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "${partnerId}", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "${partnerId}", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "payment_type_qris": "1,2,3", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth,
@@ -208,14 +208,14 @@ const TransaksiQrisApi = () => {
                 const getDataQrisReport = await axios.post(BaseURL + "/QRIS/QRISTransMerchantReport", { data: dataParams }, { headers: headers })
                 // console.log(getDataQrisReport, 'ini user detal funct');
                 if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
                     setPageNumberTransactionQrisApiPartner(getDataQrisReport.data.response_data)
                     setTotalPageTransactionQrisApiPartner(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionQrisApiPartner(getDataQrisReport.data.response_data.results)
                     setPendingTransactionQrisApiPartner(false)
                 } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
                     setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
                     setPageNumberTransactionQrisApiPartner(getDataQrisReport.data.response_data)
                     setTotalPageTransactionQrisApiPartner(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionQrisApiPartner(getDataQrisReport.data.response_data.results)
@@ -223,7 +223,7 @@ const TransaksiQrisApi = () => {
                 }
             } else {
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
+                const dataParams = encryptData(`{"trans_id": "", "partner_trans_id": "", "sub_partner_id": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "payment_type_qris": "1,2,3", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth,
@@ -232,14 +232,14 @@ const TransaksiQrisApi = () => {
                 const getDataQrisReport = await axios.post(BaseURL + "/QRIS/QRISTransMerchantReport", { data: dataParams }, { headers: headers })
                 // console.log(getDataQrisReport, 'ini user detal funct');
                 if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
                     setPageNumberTransactionQrisApiAdmin(getDataQrisReport.data.response_data)
                     setTotalPageTransactionQrisApiAdmin(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionQrisApiAdmin(getDataQrisReport.data.response_data.results)
                     setPendingTransactionQrisApiAdmin(false)
                 } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
                     setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (currentPage > 1) ? (idx + 1)+((currentPage - 1) * 10) : idx + 1}))
                     setPageNumberTransactionQrisApiAdmin(getDataQrisReport.data.response_data)
                     setTotalPageTransactionQrisApiAdmin(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionQrisApiAdmin(getDataQrisReport.data.response_data.results)
@@ -253,14 +253,14 @@ const TransaksiQrisApi = () => {
         }
     }
 
-    async function filterTransactionQrisApiReport(transId, partnerTransId, partnerId, rrn, partnerNameId, brandNou, outletNou, idKasirNou, statusQris, dateId, periode, page, rowPerPage, lang) {
+    async function filterTransactionQrisApiReport(transId, partnerTransId, partnerId, rrn, partnerNameId, brandNou, outletNou, idKasirNou, statusQris, dateId, periode, page, rowPerPage, lang, channelPembayaran) {
         try {
             if (user_role === "102") {
                 setPendingTransactionQrisApiPartner(true)
                 setIsFilterTransactionQrisApiPartner(true)
                 setActivePageTransactionQrisApiPartner(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "${partnerId}", "RRN": "${rrn}", "merchant_nou": 0, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "${partnerId}", "RRN": "${rrn}", "merchant_nou": 0, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "payment_type_qris": "${channelPembayaran !== 0 ? channelPembayaran : "1,2,3"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth,
@@ -269,14 +269,14 @@ const TransaksiQrisApi = () => {
                 const getDataQrisReport = await axios.post(BaseURL + "/QRIS/QRISTransMerchantReport", { data: dataParams }, { headers: headers })
                 // console.log(getDataQrisReport, 'ini user detal funct');
                 if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
                     setPageNumberTransactionQrisApiPartner(getDataQrisReport.data.response_data)
                     setTotalPageTransactionQrisApiPartner(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionQrisApiPartner(getDataQrisReport.data.response_data.results)
                     setPendingTransactionQrisApiPartner(false)
                 } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
                     setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
                     setPageNumberTransactionQrisApiPartner(getDataQrisReport.data.response_data)
                     setTotalPageTransactionQrisApiPartner(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionQrisApiPartner(getDataQrisReport.data.response_data.results)
@@ -287,7 +287,7 @@ const TransaksiQrisApi = () => {
                 setIsFilterTransactionQrisApiAdmin(true)
                 setActivePageTransactionQrisApiAdmin(page)
                 const auth = "Bearer " + access_token
-                const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "", "RRN": "${rrn}", "merchant_nou": ${partnerNameId}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+                const dataParams = encryptData(`{"trans_id": "${transId}", "partner_trans_id": "${partnerTransId}", "sub_partner_id": "", "RRN": "${rrn}", "merchant_nou": ${partnerNameId}, "brand_nou": ${brandNou}, "outlet_nou": ${outletNou}, "mterminal_id": ${idKasirNou}, "status": "${statusQris.length !== 0 ? statusQris : "2,4,5,6"}", "payment_type_qris": "${channelPembayaran !== 0 ? channelPembayaran : "1,2,3"}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page < 1) ? 1 : page}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
                 const headers = {
                     'Content-Type':'application/json',
                     'Authorization' : auth,
@@ -296,14 +296,14 @@ const TransaksiQrisApi = () => {
                 const getDataQrisReport = await axios.post(BaseURL + "/QRIS/QRISTransMerchantReport", { data: dataParams }, { headers: headers })
                 // console.log(getDataQrisReport, 'ini user detal funct');
                 if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token === null) {
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
                     setPageNumberTransactionQrisApiAdmin(getDataQrisReport.data.response_data)
                     setTotalPageTransactionQrisApiAdmin(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionQrisApiAdmin(getDataQrisReport.data.response_data.results)
                     setPendingTransactionQrisApiAdmin(false)
                 } else if (getDataQrisReport.status === 200 && getDataQrisReport.data.response_code === 200 && getDataQrisReport.data.response_new_token !== null) {
                     setUserSession(getDataQrisReport.data.response_new_token)
-                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1})) 
+                    getDataQrisReport.data.response_data.results = getDataQrisReport.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
                     setPageNumberTransactionQrisApiAdmin(getDataQrisReport.data.response_data)
                     setTotalPageTransactionQrisApiAdmin(getDataQrisReport.data.response_data.max_page)
                     setDataTransactionQrisApiAdmin(getDataQrisReport.data.response_data.results)
@@ -326,7 +326,7 @@ const TransaksiQrisApi = () => {
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
-                        'Accept-Language' : role !== "102" ? "ID" : lang 
+                        'Accept-Language' : role !== "102" ? "ID" : lang
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/QRIS/QRISTransMerchantReport", {data: dataParams}, { headers: headers });
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
@@ -335,10 +335,12 @@ const TransaksiQrisApi = () => {
                         if (role === "102") {
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -352,10 +354,12 @@ const TransaksiQrisApi = () => {
                         if (role === "102") {
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -377,7 +381,7 @@ const TransaksiQrisApi = () => {
                     const headers = {
                         'Content-Type': 'application/json',
                         'Authorization': auth,
-                        'Accept-Language' : role !== "102" ? "ID" : lang 
+                        'Accept-Language' : role !== "102" ? "ID" : lang
                     }
                     const dataExportTransactionQris = await axios.post(BaseURL + "/QRIS/QRISTransMerchantReport", {data: dataParams}, { headers: headers });
                     if (dataExportTransactionQris.status === 200 && dataExportTransactionQris.data.response_code === 200 && dataExportTransactionQris.data.response_new_token === null) {
@@ -385,11 +389,13 @@ const TransaksiQrisApi = () => {
                         let dataExcel = []
                         if (role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -403,10 +409,12 @@ const TransaksiQrisApi = () => {
                         if (role === "102") {
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -436,7 +444,8 @@ const TransaksiQrisApi = () => {
                 periode: 0,
                 rrn: "",
                 partnerTransId: "",
-                statusQris: ""
+                statusQris: "",
+                channelPembayaran: 0,
             })
             setDataBrandInQris([])
             setDataOutletInQris([])
@@ -456,7 +465,8 @@ const TransaksiQrisApi = () => {
                 periode: 0,
                 rrn: "",
                 partnerTransId: "",
-                statusQris: ""
+                statusQris: "",
+                channelPembayaran: 0,
             })
             setDataOutletInQris([])
             setDataIdKasirInQris([])
@@ -467,7 +477,7 @@ const TransaksiQrisApi = () => {
         }
     }
 
-    
+
     const [dataTransactionQrisApiAdmin, setDataTransactionQrisApiAdmin] = useState([])
     const [showDateTransactionQrisApiAdmin, setShowDateTransactionQrisApiAdmin] = useState("none")
     const [dateRangeTransactionQrisApiAdmin, setDateRangeTransactionQrisApiAdmin] = useState([])
@@ -482,7 +492,8 @@ const TransaksiQrisApi = () => {
         periode: 0,
         rrn: "",
         partnerTransId: "",
-        statusQris: ""
+        statusQris: "",
+        channelPembayaran: 0,
     })
     const [selectedGrupName, setSelectedGrupName] = useState([])
     const [selectedBrandNameAdmin, setSelectedBrandNameAdmin] = useState([])
@@ -524,7 +535,7 @@ const TransaksiQrisApi = () => {
     function handlePageChangeTransactionQrisApiAdmin(page) {
         if (isFilterTransactionQrisApiAdmin) {
             setActivePageTransactionQrisApiAdmin(page)
-            filterTransactionQrisApiReport((inputHandleTransactionApiAdmin.idTransaksi), inputHandleTransactionApiAdmin.partnerTransId, partnerId, inputHandleTransactionApiAdmin.rrn, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandNameAdmin.length !== 0 ? selectedBrandNameAdmin.map((item, idx) => item.value) : 0), (selectedOutletNameAdmin.length !== 0 ? selectedOutletNameAdmin.map((item, idx) => item.value) : 0), (selectedIdKasirAdmin.length !== 0 ? selectedIdKasirAdmin.map((item, idx) => item.value) : 0), inputHandleTransactionApiAdmin.statusQris, inputHandleTransactionApiAdmin.periode, dateRangeTransactionQrisApiAdmin, page, 10, language === null ? 'EN' : language.flagName)
+            filterTransactionQrisApiReport((inputHandleTransactionApiAdmin.idTransaksi), inputHandleTransactionApiAdmin.partnerTransId, partnerId, inputHandleTransactionApiAdmin.rrn, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandNameAdmin.length !== 0 ? selectedBrandNameAdmin.map((item, idx) => item.value) : 0), (selectedOutletNameAdmin.length !== 0 ? selectedOutletNameAdmin.map((item, idx) => item.value) : 0), (selectedIdKasirAdmin.length !== 0 ? selectedIdKasirAdmin.map((item, idx) => item.value) : 0), inputHandleTransactionApiAdmin.statusQris, inputHandleTransactionApiAdmin.periode, dateRangeTransactionQrisApiAdmin, page, 10, language === null ? 'EN' : language.flagName, inputHandleTransactionApiAdmin.channelPembayaran)
         } else {
             setActivePageTransactionQrisApiAdmin(page)
             getTransactionQrisApiReport(page, language === null ? 'EN' : language.flagName, partnerId)
@@ -573,7 +584,8 @@ const TransaksiQrisApi = () => {
         periode: 0,
         rrn: "",
         partnerTransId: "",
-        statusQris: ""
+        statusQris: "",
+        channelPembayaran: 0,
     })
     const [selectedBrandNamePartner, setSelectedBrandNamePartner] = useState([])
     const [selectedOutletNamePartner, setSelectedOutletNamePartner] = useState([])
@@ -614,7 +626,7 @@ const TransaksiQrisApi = () => {
     function handlePageChangeTransactionQrisApiPartner(page) {
         if (isFilterTransactionQrisApiPartner) {
             setActivePageTransactionQrisApiPartner(page)
-            filterTransactionQrisApiReport((inputHandleTransactionApiPartner.idTransaksi), inputHandleTransactionApiPartner.partnerTransId, partnerId, inputHandleTransactionApiPartner.rrn, 0, (selectedBrandNamePartner.length !== 0 ? selectedBrandNamePartner.map((item, idx) => item.value) : 0), (selectedOutletNamePartner.length !== 0 ? selectedOutletNamePartner.map((item, idx) => item.value) : 0), (selectedIdKasirPartner.length !== 0 ? selectedIdKasirPartner.map((item, idx) => item.value) : 0), inputHandleTransactionApiPartner.statusQris, inputHandleTransactionApiPartner.periode, dateRangeTransactionQrisApiPartner, page, 10, language === null ? 'EN' : language.flagName)
+            filterTransactionQrisApiReport((inputHandleTransactionApiPartner.idTransaksi), inputHandleTransactionApiPartner.partnerTransId, partnerId, inputHandleTransactionApiPartner.rrn, 0, (selectedBrandNamePartner.length !== 0 ? selectedBrandNamePartner.map((item, idx) => item.value) : 0), (selectedOutletNamePartner.length !== 0 ? selectedOutletNamePartner.map((item, idx) => item.value) : 0), (selectedIdKasirPartner.length !== 0 ? selectedIdKasirPartner.map((item, idx) => item.value) : 0), inputHandleTransactionApiPartner.statusQris, inputHandleTransactionApiPartner.periode, dateRangeTransactionQrisApiPartner, page, 10, language === null ? 'EN' : language.flagName, inputHandleTransactionApiPartner.channelPembayaran)
         } else {
             setActivePageTransactionQrisApiPartner(page)
             getTransactionQrisApiReport(page, language === null ? 'EN' : language.flagName, partnerId)
@@ -649,7 +661,7 @@ const TransaksiQrisApi = () => {
             name: 'ID Transaksi',
             selector: row => row.pay_trans_code,
             width: "150px",
-            wrap: "true"
+            wrap: true
         },
         {
             name: 'Waktu Request',
@@ -661,9 +673,16 @@ const TransaksiQrisApi = () => {
             selector: row => row.qris_paid,
             width: "150px"
         },
+        // {
+        //     name: 'No. Referensi',
+        //     selector: row => row.reference_label !== null ? row.reference_label : "-",
+        //     wrap: true,
+        //     width: "150px"
+        // },
         {
             name: 'RRN',
-            selector: row => row.rrn,
+            selector: row => row.rrn !== null ? row.rrn : "-",
+            wrap: true,
             width: "150px"
         },
         {
@@ -674,24 +693,25 @@ const TransaksiQrisApi = () => {
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_trans_id,
+            wrap: true,
             width: "180px"
         },
         {
             name: 'Nama Partner',
             selector: row => row.partner_name,
-            wrap: "true",
+            wrap: true,
             width: "200px"
         },
         {
             name: 'Nama Brand',
             selector: row => row.brand_name,
-            wrap: "true",
+            wrap: true,
             width: "200px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.outlet_name,
-            wrap: "true",
+            wrap: true,
             width: "150px"
         },
         {
@@ -750,7 +770,7 @@ const TransaksiQrisApi = () => {
             name: 'ID Transaksi',
             selector: row => row.pay_trans_code,
             width: "150px",
-            wrap: "true"
+            wrap: true
         },
         {
             name: 'Waktu Request',
@@ -763,8 +783,15 @@ const TransaksiQrisApi = () => {
             width: "150px"
         },
         {
+            name: 'No. Referensi',
+            selector: row => row.reference_label !== null ? row.reference_label : "-",
+            wrap: true,
+            width: "150px"
+        },
+        {
             name: 'RRN',
-            selector: row => row.rrn,
+            selector: row => row.rrn !== null ? row.rrn : "-",
+            wrap: true,
             width: "150px"
         },
         {
@@ -775,24 +802,25 @@ const TransaksiQrisApi = () => {
         {
             name: 'Partner Trans ID',
             selector: row => row.partner_trans_id,
+            wrap: true,
             width: "180px"
         },
         {
             name: 'Nama Partner',
             selector: row => row.partner_name,
-            wrap: "true",
+            wrap: true,
             width: "200px"
         },
         {
             name: 'Nama Brand',
             selector: row => row.brand_name,
-            wrap: "true",
+            wrap: true,
             width: "200px"
         },
         {
             name: 'Nama Outlet',
             selector: row => row.outlet_name,
-            wrap: "true",
+            wrap: true,
             width: "150px"
         },
         {
@@ -897,9 +925,9 @@ const TransaksiQrisApi = () => {
         userDetails()
         if (user_role !== "102") {
             getGrupInQrisTransactionHandler()
-        } 
+        }
     }, [])
-    
+
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
@@ -937,9 +965,9 @@ const TransaksiQrisApi = () => {
                                     <span>Partner Trans ID</span>
                                     <input name="partnerTransId" value={inputHandleTransactionApiPartner.partnerTransId} onChange={(e) => handleChangeTransactionQrisApiPartner(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan Partner Trans ID'/>
                                 </Col>
-                                <Col 
-                                    xs={4} 
-                                    className='text-end mt-4' 
+                                <Col
+                                    xs={4}
+                                    className='text-end mt-4'
                                     style={{ display: showDateTransactionQrisApiPartner }}
                                 >
                                     <DateRangePicker
@@ -1006,13 +1034,23 @@ const TransaksiQrisApi = () => {
                                         <option value={6}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span>Channel Pembayaran</span>
+                                    <Form.Select name="channelPembayaran" value={inputHandleTransactionApiPartner.channelPembayaran} onChange={(e) => handleChangeTransactionQrisApiPartner(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
+                                        <option defaultChecked disabled value={0}>Pilih Channel Pembayaran</option>
+                                        {/* <option value={2}>Semua Channel</option> */}
+                                        <option value={1}>QRIS</option>
+                                        <option value={2}>AliPay</option>
+                                        <option value={3}>WeChatPay</option>
+                                    </Form.Select>
+                                </Col>
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={5}>
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterTransactionQrisApiReport((inputHandleTransactionApiPartner.idTransaksi), inputHandleTransactionApiPartner.partnerTransId, partnerId, inputHandleTransactionApiPartner.rrn, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandNamePartner.length !== 0 ? selectedBrandNamePartner.map((item, idx) => item.value) : 0), (selectedOutletNamePartner.length !== 0 ? selectedOutletNamePartner.map((item, idx) => item.value) : 0), (selectedIdKasirPartner.length !== 0 ? selectedIdKasirPartner.map((item, idx) => item.value) : 0), inputHandleTransactionApiPartner.statusQris, inputHandleTransactionApiPartner.periode, dateRangeTransactionQrisApiPartner, 1, 10, language === null ? 'EN' : language.flagName)}
+                                                onClick={() => filterTransactionQrisApiReport((inputHandleTransactionApiPartner.idTransaksi), inputHandleTransactionApiPartner.partnerTransId, partnerId, inputHandleTransactionApiPartner.rrn, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandNamePartner.length !== 0 ? selectedBrandNamePartner.map((item, idx) => item.value) : 0), (selectedOutletNamePartner.length !== 0 ? selectedOutletNamePartner.map((item, idx) => item.value) : 0), (selectedIdKasirPartner.length !== 0 ? selectedIdKasirPartner.map((item, idx) => item.value) : 0), inputHandleTransactionApiPartner.statusQris, inputHandleTransactionApiPartner.periode, dateRangeTransactionQrisApiPartner, 1, 10, language === null ? 'EN' : language.flagName, inputHandleTransactionApiPartner.channelPembayaran)}
                                                 className={(inputHandleTransactionApiPartner.periode !== 0 || dateRangeTransactionQrisApiPartner.length !== 0 || (dateRangeTransactionQrisApiPartner.length !== 0 && inputHandleTransactionApiPartner.idTransaksi.length !== 0) || (dateRangeTransactionQrisApiPartner.length !== 0 && inputHandleTransactionApiPartner.partnerTransId.length !== 0) || (dateRangeTransactionQrisApiPartner.length !== 0 && inputHandleTransactionApiPartner.rrn.length !== 0) || (dateRangeTransactionQrisApiPartner.length !== 0 && inputHandleTransactionApiPartner.statusQris.length !== 0) ? 'btn-ez-on' : 'btn-ez')}
                                                 disabled={inputHandleTransactionApiPartner.periode === 0 || (inputHandleTransactionApiPartner.periode === 0 && inputHandleTransactionApiPartner.idTransaksi.length === 0) || (inputHandleTransactionApiPartner.periode === 0 && inputHandleTransactionApiPartner.partnerTransId.length === 0) || (inputHandleTransactionApiPartner.periode === 0 && inputHandleTransactionApiPartner.rrn.length === 0) || (inputHandleTransactionApiPartner.periode === 0 && inputHandleTransactionApiPartner.rrn.length === 0) || (inputHandleTransactionApiPartner.periode === 0 && inputHandleTransactionApiPartner.statusQris.length === 0)}
                                             >
@@ -1095,9 +1133,9 @@ const TransaksiQrisApi = () => {
                                     <span>Partner Trans ID</span>
                                     <input name="partnerTransId" value={inputHandleTransactionApiAdmin.partnerTransId} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan Partner Trans ID'/>
                                 </Col>
-                                <Col 
-                                    xs={4} 
-                                    className='text-end mt-4' 
+                                <Col
+                                    xs={4}
+                                    className='text-end mt-4'
                                     style={{ display: showDateTransactionQrisApiAdmin }}
                                 >
                                     <DateRangePicker
@@ -1180,13 +1218,23 @@ const TransaksiQrisApi = () => {
                                         <option value={6}>Kadaluwarsa</option>
                                     </Form.Select>
                                 </Col>
+                                <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                                    <span>Channel Pembayaran</span>
+                                    <Form.Select name="channelPembayaran" value={inputHandleTransactionApiAdmin.channelPembayaran} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
+                                        <option defaultChecked disabled value={0}>Pilih Channel Pembayaran</option>
+                                        {/* <option value={2}>Semua Channel</option> */}
+                                        <option value={1}>QRIS</option>
+                                        <option value={2}>AliPay</option>
+                                        <option value={3}>WeChatPay</option>
+                                    </Form.Select>
+                                </Col>
                             </Row>
                             <Row className='mt-4'>
                                 <Col xs={5}>
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterTransactionQrisApiReport((inputHandleTransactionApiAdmin.idTransaksi), inputHandleTransactionApiAdmin.partnerTransId, partnerId, inputHandleTransactionApiAdmin.rrn, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandNameAdmin.length !== 0 ? selectedBrandNameAdmin.map((item, idx) => item.value) : 0), (selectedOutletNameAdmin.length !== 0 ? selectedOutletNameAdmin.map((item, idx) => item.value) : 0), (selectedIdKasirAdmin.length !== 0 ? selectedIdKasirAdmin.map((item, idx) => item.value) : 0), inputHandleTransactionApiAdmin.statusQris, inputHandleTransactionApiAdmin.periode, dateRangeTransactionQrisApiAdmin, 1, 10, language === null ? 'EN' : language.flagName)}
+                                                onClick={() => filterTransactionQrisApiReport((inputHandleTransactionApiAdmin.idTransaksi), inputHandleTransactionApiAdmin.partnerTransId, partnerId, inputHandleTransactionApiAdmin.rrn, (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0), (selectedBrandNameAdmin.length !== 0 ? selectedBrandNameAdmin.map((item, idx) => item.value) : 0), (selectedOutletNameAdmin.length !== 0 ? selectedOutletNameAdmin.map((item, idx) => item.value) : 0), (selectedIdKasirAdmin.length !== 0 ? selectedIdKasirAdmin.map((item, idx) => item.value) : 0), inputHandleTransactionApiAdmin.statusQris, inputHandleTransactionApiAdmin.periode, dateRangeTransactionQrisApiAdmin, 1, 10, language === null ? 'EN' : language.flagName, inputHandleTransactionApiAdmin.channelPembayaran)}
                                                 className={(inputHandleTransactionApiAdmin.periode !== 0 || dateRangeTransactionQrisApiAdmin.length !== 0 || (dateRangeTransactionQrisApiAdmin.length !== 0 && inputHandleTransactionApiAdmin.idTransaksi.length !== 0) || (dateRangeTransactionQrisApiAdmin.length !== 0 && inputHandleTransactionApiAdmin.partnerTransId.length !== 0) || (dateRangeTransactionQrisApiAdmin.length !== 0 && inputHandleTransactionApiAdmin.rrn.length !== 0) || (dateRangeTransactionQrisApiAdmin.length !== 0 && inputHandleTransactionApiAdmin.statusQris.length !== 0) ? 'btn-ez-on' : 'btn-ez')}
                                                 disabled={inputHandleTransactionApiAdmin.periode === 0 || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.idTransaksi.length === 0) || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.partnerTransId.length === 0) || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.rrn.length === 0) || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.rrn.length === 0) || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.statusQris.length === 0)}
                                             >

@@ -132,7 +132,7 @@ export default (props = {}) => {
             <Nav className="flex-column pt-3 pt-md-0">
               <div style={{backgroundColor: '#DF9C43', height: '67px', textAlign: 'center'}}>
                 {/* <img src={language === null ? EzeeLogo : language.flagName === "CN" ? EzeeLogoChina : EzeeLogo} style={{width: 66, height: language === null ? 36 : language.flagName === "CN" ? 46 : 36, marginTop: 12}} alt=""/> */}
-                <img src={user_role !== "102" || language !== "CN" ? EzeeLogo : EzeeLogoChina} style={{width: 66, height: user_role !== "102" || language !== "CN" ? 36 :46, marginTop: 12}} alt=""/>
+                <img src={user_role !== "102" || language !== "CN" ? EzeeLogo : EzeeLogoChina} style={{width: 66, height: user_role !== "102" || language !== "CN" ? 36 : 46, marginTop: 12}} alt=""/>
               </div>
               {
                 userAccessMenu.map((item) => {

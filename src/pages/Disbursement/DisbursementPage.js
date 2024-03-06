@@ -560,20 +560,40 @@ function DisbursementPage() {
                                     })
                                     // console.log(balanceBank, 'balanceBank');
                                     // console.log(bankFee, 'bankFee');
-                                    const resultBankFee = bankFee.find((item) => { //filter fee bank
+                                    let resultBankFee = bankFee.find((item) => { //filter fee bank
+                                        // console.log(sameBankName.mbank_code === item.mpaytype_bank_code, 'sameBankName.mbank_code === item.mpaytype_bank_code');
+                                        // console.log(sameBankName.mbank_code, 'sameBankName.mbank_code');
+                                        // console.log(item.mpaytype_bank_code, 'item.mpaytype_bank_code');
                                         if (sameBankName.mbank_code === item.mpaytype_bank_code) {
+                                            // console.log(item.mpaytype_bank_code === sameBankName.mbank_code, 'item.mpaytype_bank_code === sameBankName.mbank_code');
                                             return item.mpaytype_bank_code === sameBankName.mbank_code
-                                        } else {
-                                            // sameBankName.mbank_code = "BIF"
-                                            return item.mpaytype_bank_code === "BIF"
+                                        // } else {
+                                        //     // sameBankName.mbank_code = "BIF"
+                                        //     return item.mpaytype_bank_code === "BIF"
                                         }
-                                        // if (sameBankName !== undefined) {
-                                        // }
                                     })
+                                    if (resultBankFee === undefined) {
+                                        resultBankFee = bankFee.find(item => {return item.mpaytype_bank_code === "BIF"})
+                                    }
                                     // console.log(resultBankFee, 'resultBankFee');
                                     if (resultBankFee !== undefined) {
-                                        totalFeeDisburse += resultBankFee.fee_total
-                                        totalFeeDisburseArr.push(resultBankFee.fee_total)
+                                        if (Number(resultBankFee.mpartfitur_fee_type) === 101) {
+                                            // console.log(resultBankFee, 'resultBankFee');
+                                            const nominalDisbursementNumberForFee = (typeof el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] === 'string') ? Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", "")) : (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])
+                                            const feeDisburse = nominalDisbursementNumberForFee * (resultBankFee.fee_partner / 100)
+                                            const feePPN = feeDisburse * 0.11
+                                            const feeTotal = (feeDisburse + feePPN) < resultBankFee.mpartfitur_min_fee ? resultBankFee.mpartfitur_min_fee : (feeDisburse + feePPN)
+                                            // console.log(nominalDisbursementNumberForFee, 'nominalDisbursementNumberForFee');
+                                            // console.log(feeDisburse, 'feeDisburse');
+                                            // console.log(feePPN, 'feePPN');
+                                            // console.log(feeDisburse + feePPN, 'feeDisburse + feePPN');
+                                            totalFeeDisburse += (feeTotal)
+                                            totalFeeDisburseArr.push((feeTotal))
+                                        } else {
+                                            // console.log(resultBankFee.mpartfitur_fee_type, 'resultBankFee.mpartfitur_fee_type');
+                                            totalFeeDisburse += resultBankFee.fee_total
+                                            totalFeeDisburseArr.push(resultBankFee.fee_total)
+                                        }
                                         // if (sameBankName !== undefined && bankFee.length !== 0) { //set total fee
                                         // }
                                         // console.log(el["Nominal Disbursement*"], 'el["Nominal Disbursement*"]');
@@ -1783,6 +1803,8 @@ function DisbursementPage() {
         bankName: "",
         bankCode: ""
     })
+    // console.log(inputData.bankName, 'inputData.bankName');
+    // console.log(inputData.bankCode, 'inputData.bankCode');
 
     const [inputRekening, setInputRekening] = useState({
         bankNameRek: "",
@@ -2425,16 +2447,16 @@ function DisbursementPage() {
                 if (sameFlag === 0) {
                     // console.log('masuk2');
                     setShowModalDuplikasi(false)
-                    const result = feeBank.find((item) => {
+                    let result = feeBank.find((item) => {
                         // console.log(bankCodeTujuan, "bankCodeTujuan");
                         // console.log(item.mpaytype_bank_code, "item.mpaytype_bank_code");
                         if (bankCodeTujuan === item.mpaytype_bank_code) {
                             // console.log("masuk 1");
                             return item.mpaytype_bank_code === bankCodeTujuan
-                        } else {
-                            // console.log("masuk 2");
-                            bankCodeTujuan = "BIF"
-                            return item.mpaytype_bank_code === bankCodeTujuan
+                        // } else {
+                        //     // console.log("masuk 2");
+                        //     bankCodeTujuan = "BIF"
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
                         }
                         // if (bankCodeTujuan === "011") {
                         //     console.log("masuk 1");
@@ -2445,8 +2467,20 @@ function DisbursementPage() {
                         //     return item.mpaytype_bank_code === bankCodeTujuan
                         // }
                     })
+                    // console.log(result, 'result');
+                    let feeTotalPercentage = 0
+                    if (result === undefined) {
+                        result = feeBank.find(item => {return item.mpaytype_bank_code === "BIF"})
+                    } else {
+                        if (Number(result.mpartfitur_fee_type) === 101) {
+                            const nominalDisbursementNumberForFee = nominal
+                            const feeDisburse = nominalDisbursementNumberForFee * (result.fee_partner / 100)
+                            const feePPN = feeDisburse * 0.11
+                            feeTotalPercentage = (feeDisburse + feePPN) < result.mpartfitur_min_fee ? result.mpartfitur_min_fee : (feeDisburse + feePPN)
+                        }
+                    }
                     // console.log(result, "result");
-                    if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                    if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)) < 0) {
                         setAlertSaldo(true)
                     } else {
                         const newData = {
@@ -2460,14 +2494,14 @@ function DisbursementPage() {
                             emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
                             catatan: catatan.length !== 0 ? catatan : "",
                             saveAcc: saveAcc,
-                            feeTotal: result.fee_total
+                            feeTotal: (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)
                         }
-                        setSisaAllSaldoTempManual((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total))
+                        setSisaAllSaldoTempManual((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)))
                         // setSisaSaldoAlokasiPerBank({
                         //     ...sisaSaldoAlokasiPerBank,
                         //     danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
                         // })
-                        setAllFee([...allFee, result.fee_total])
+                        setAllFee([...allFee, (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)])
                         setDataDisburse([...dataDisburse, newData])
                         setAllNominal([...allNominal, Number(nominal)])
                         setInputData({
@@ -2758,14 +2792,14 @@ function DisbursementPage() {
         if (alertCount === 0) {
             if (nominal <= allBalance) {
                 setAlertSaldo(false)
-                const result = feeBank.find((item) => {
+                let result = feeBank.find((item) => {
                     if (bankCodeTujuan === item.mpaytype_bank_code) {
                         // console.log("masuk 1");
                         return item.mpaytype_bank_code === bankCodeTujuan
-                    } else {
-                        // console.log("masuk 2");
-                        bankCodeTujuan = "BIF"
-                        return item.mpaytype_bank_code === bankCodeTujuan
+                    // } else {
+                    //     // console.log("masuk 2");
+                    //     bankCodeTujuan = "BIF"
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
                     }
                     // if (bankCodeTujuan === "011") {
                     //     return item.mpaytype_bank_code === bankCodeTujuan
@@ -2774,7 +2808,18 @@ function DisbursementPage() {
                     //     return item.mpaytype_bank_code === bankCodeTujuan
                     // }
                 })
-                if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                let feeTotalPercentage = 0
+                if (result === undefined) {
+                    result = feeBank.find(item => {return item.mpaytype_bank_code === "BIF"})
+                } else {
+                    if (Number(result.mpartfitur_fee_type) === 101) {
+                        const nominalDisbursementNumberForFee = nominal
+                        const feeDisburse = nominalDisbursementNumberForFee * (result.fee_partner / 100)
+                        const feePPN = feeDisburse * 0.11
+                        feeTotalPercentage = feeDisburse + feePPN
+                    }
+                }
+                if ((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)) < 0) {
                     setAlertSaldo(true)
                 } else {
                     const newData = {
@@ -2788,14 +2833,14 @@ function DisbursementPage() {
                         emailPenerima: emailPenerima.length !== 0 ? emailPenerima : "",
                         catatan: catatan.length !== 0 ? catatan : "",
                         saveAcc: saveAcc,
-                        feeTotal: result.fee_total
+                        feeTotal: (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)
                     }
-                    setSisaAllSaldoTempManual((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total))
+                    setSisaAllSaldoTempManual((sisaAllSaldoTempManual !== 0 ? sisaAllSaldoTempManual : allBalance - allHoldBalance) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)))
                     // setSisaSaldoAlokasiPerBank({
                     //     ...sisaSaldoAlokasiPerBank,
                     //     danamon: (sisaSaldoAlokasiPerBank.danamon !== 0 ? sisaSaldoAlokasiPerBank.danamon : balanceBank.mpartballchannel_balance - balanceBank.hold_balance) - (Number(nominal) + result.fee_total)
                     // })
-                    setAllFee([...allFee, result.fee_total])
+                    setAllFee([...allFee, (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)])
                     setDataDisburse([...dataDisburse, newData])
                     setAllNominal([...allNominal, Number(nominal)])
                     setInputData({
@@ -3114,9 +3159,9 @@ function DisbursementPage() {
                     const result = feeBank.find((item) => {
                         if (bankCodeTujuan === item.mpaytype_bank_code) {
                             return item.mpaytype_bank_code === bankCodeTujuan
-                        } else {
-                            bankCodeTujuan = "BIF"
-                            return item.mpaytype_bank_code === bankCodeTujuan
+                        // } else {
+                        //     bankCodeTujuan = "BIF"
+                        //     return item.mpaytype_bank_code === bankCodeTujuan
                         }
                         // if (bankCodeTujuan === "011") {
                         //     return item.mpaytype_bank_code === bankCodeTujuan
@@ -3125,14 +3170,25 @@ function DisbursementPage() {
                         //     return item.mpaytype_bank_code === bankCodeTujuan
                         // }
                     })
+                    let feeTotalPercentage = 0
+                    if (result === undefined) {
+                        result = feeBank.find(item => {return item.mpaytype_bank_code === "BIF"})
+                    } else {
+                        if (Number(result.mpartfitur_fee_type) === 101) {
+                            const nominalDisbursementNumberForFee = nominal
+                            const feeDisburse = nominalDisbursementNumberForFee * (result.fee_partner / 100)
+                            const feePPN = feeDisburse * 0.11
+                            feeTotalPercentage = (feeDisburse + feePPN) < result.mpartfitur_min_fee ? result.mpartfitur_min_fee : (feeDisburse + feePPN)
+                        }
+                    }
                     const dataLama = dataDisburse.find((item) => item.number === number);
                     if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
-                        if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                        if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)) < 0) {
                             setAlertSaldo(true)
                             return
                         } else {
                             setAlertSaldo(false)
-                            setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
+                            setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)))
                             // setSisaSaldoAlokasiPerBank({
                             //     ...sisaSaldoAlokasiPerBank,
                             //     [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
@@ -3173,12 +3229,12 @@ function DisbursementPage() {
                         //     }
                         // }
                     } else {
-                        if ((sisaAllSaldoTempManual !== 0 ? (sisaAllSaldoTempManual + Number(dataLama.nominal + dataLama.feeTotal)) : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                        if ((sisaAllSaldoTempManual !== 0 ? (sisaAllSaldoTempManual + Number(dataLama.nominal + dataLama.feeTotal)) : allBalance - allHoldBalance) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)) < 0) {
                             setAlertSaldo(true)
                             return
                         } else {
                             setAlertSaldo(false)
-                            setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
+                            setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)))
                             // setSisaSaldoAlokasiPerBank({
                             //     ...sisaSaldoAlokasiPerBank,
                             //     bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
@@ -3268,7 +3324,7 @@ function DisbursementPage() {
 
                     if (finding >= 0) {
                         allNominal[finding] = Number(nominal)
-                        allFee[finding] = result.fee_total
+                        allFee[finding] = (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)
                     }
                     setAllFee([...allFee])
                     const target = dataDisburse.find((item) => item.number === number)
@@ -3283,7 +3339,7 @@ function DisbursementPage() {
                         emailPenerima: emailPenerima,
                         catatan: catatan,
                         saveAcc: saveAcc,
-                        feeTotal: result.fee_total
+                        feeTotal: (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)
                     };
                     Object.assign(target, source)
                     setDataDisburse([...dataDisburse])
@@ -3449,12 +3505,12 @@ function DisbursementPage() {
                 const finding = dataDisburse.findIndex((object) => {
                     return object.number === number
                 })
-                const result = feeBank.find((item) => {
+                let result = feeBank.find((item) => {
                     if (bankCodeTujuan === item.mpaytype_bank_code) {
                         return item.mpaytype_bank_code === bankCodeTujuan
-                    } else {
-                        bankCodeTujuan = "BIF"
-                        return item.mpaytype_bank_code === bankCodeTujuan
+                    // } else {
+                    //     bankCodeTujuan = "BIF"
+                    //     return item.mpaytype_bank_code === bankCodeTujuan
                     }
                     // if (bankCodeTujuan === "011") {
                     //     return item.mpaytype_bank_code === bankCodeTujuan
@@ -3463,16 +3519,25 @@ function DisbursementPage() {
                     //     return item.mpaytype_bank_code === bankCodeTujuan
                     // }
                 })
+                let feeTotalPercentage = 0
+                if (result === undefined) {
+                    result = feeBank.find(item => {return item.mpaytype_bank_code === "BIF"})
+                } else {
+                    if (Number(result.mpartfitur_fee_type) === 101) {
+                        const nominalDisbursementNumberForFee = nominal
+                        const feeDisburse = nominalDisbursementNumberForFee * (result.fee_partner / 100)
+                        const feePPN = feeDisburse * 0.11
+                        feeTotalPercentage = feeDisburse + feePPN
+                    }
+                }
                 const dataLama = dataDisburse.find((item) => item.number === number);
-
-
                 if (dataLama.bankCodeTujuan === bankCodeTujuan || bankCodeTujuan === 'BIF') {
-                    if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) < 0) {
+                    if (Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)) < 0) {
                         setAlertSaldo(true)
                         return
                     } else {
                         setAlertSaldo(false)
-                        setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
+                        setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)))
                         // setSisaSaldoAlokasiPerBank({
                         //     ...sisaSaldoAlokasiPerBank,
                         //     [(dataLama.bankCodeTujuan === '014') ? 'bca' : (dataLama.bankCodeTujuan === '011') ? 'danamon' : 'bifast']: (dataLama.bankCodeTujuan === '014') ? Number(sisaSaldoAlokasiPerBank.bca) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : (dataLama.bankCodeTujuan === '011') ? Number(sisaSaldoAlokasiPerBank.danamon) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total) : Number(sisaSaldoAlokasiPerBank.bifast) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total)
@@ -3513,12 +3578,12 @@ function DisbursementPage() {
                     //     }
                     // }
                 } else {
-                    if ((sisaAllSaldoTempManual !== 0 ? (sisaAllSaldoTempManual + Number(dataLama.nominal + dataLama.feeTotal)) : allBalance - allHoldBalance) - (Number(nominal) + result.fee_total) < 0) {
+                    if ((sisaAllSaldoTempManual !== 0 ? (sisaAllSaldoTempManual + Number(dataLama.nominal + dataLama.feeTotal)) : allBalance - allHoldBalance) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)) < 0) {
                         setAlertSaldo(true)
                         return
                     } else {
                         setAlertSaldo(false)
-                        setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + result.fee_total))
+                        setSisaAllSaldoTempManual(Number(sisaAllSaldoTempManual) + Number(dataLama.nominal + dataLama.feeTotal) - (Number(nominal) + (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)))
                         // setSisaSaldoAlokasiPerBank({
                         //     ...sisaSaldoAlokasiPerBank,
                         //     bca: sisaSaldoAlokasiPerBank.bca + (dataLama.nominal + dataLama.feeTotal),
@@ -3608,7 +3673,7 @@ function DisbursementPage() {
 
                 if (finding) {
                     allNominal[finding] = Number(nominal)
-                    allFee[finding] = result.fee_total
+                    allFee[finding] = (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)
                 }
                 setAllFee([...allFee])
                 const target = dataDisburse.find((item) => item.number === number)
@@ -3623,7 +3688,7 @@ function DisbursementPage() {
                     emailPenerima: emailPenerima,
                     catatan: catatan,
                     saveAcc: saveAcc,
-                    feeTotal: result.fee_total
+                    feeTotal: (Number(result.mpartfitur_fee_type) === 101 ? feeTotalPercentage : result.fee_total)
                 };
 
                 Object.assign(target, source)
@@ -4023,7 +4088,7 @@ function DisbursementPage() {
                                         <Col xs={10}>
                                             <div style={{ fontFamily:'Nunito', fontSize: 12, color: "#888888"}} className='d-flex justify-content-start align-items-center'>
                                                 <span className='me-1'><img src={noteIconGrey} alt='icon error' /></span>
-                                                 {language === null ? eng.descBankTujuan : language.descBankTujuan}
+                                                    {language === null ? eng.descBankTujuan : language.descBankTujuan}
                                             </div>
                                         </Col>
                                     </Row>

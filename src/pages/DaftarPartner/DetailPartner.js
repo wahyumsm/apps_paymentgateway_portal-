@@ -315,16 +315,11 @@ function DetailPartner() {
             selector: row => row.fee_type === 100 ? convertToRupiah(row.fee, true, 2) : `${row.fee}%`,
         },
         {
-            name: 'Settlement Fee',
-            selector: row => convertToRupiah(row.fee_settle, true, 2),
-            width: "150px"
+            name: "Minimal Fee",
+            selector: (row) => convertToRupiah(row.mpartfitur_min_fee, true, 2),
+            width: "200px",
+            wrap: true
         },
-        // {
-        //     name: "Minimal Topup Alokasi",
-        //     selector: (row) => convertToRupiah(row.mpartfitur_min_topup_allocation, true, 2),
-        //     width: "200px",
-        //     wrap: true
-        // },
         {
             name: "Minimal Transaksi",
             selector: (row) => convertToRupiah(row.mpartfitur_min_amount_trx, true, 2),
@@ -336,6 +331,11 @@ function DetailPartner() {
             selector: (row) => convertToRupiah(row.mpartfitur_max_amount_trx, true, 2),
             width: "180px",
             wrap: true
+        },
+        {
+            name: 'Settlement Fee',
+            selector: row => convertToRupiah(row.fee_settle, true, 2),
+            width: "150px"
         },
         {
             name: 'Aksi',
@@ -543,6 +543,11 @@ function DetailPartner() {
                                 <br/>
                                 <tr>
                                     <td style={{width: 200}}>Fee <span style={{color: "red"}}>*</span></td>
+                                    <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
+                                </tr>
+                                <br/>
+                                <tr>
+                                    <td style={{width: 200}}>Minimal Fee <span style={{color: "red"}}>*</span></td>
                                     <td><input type='text'className='input-text-ez' value={convertToRupiah(0, true, 0)} disabled style={{width: '100%', marginLeft: 'unset'}}/></td>
                                 </tr>
                                 <br/>
