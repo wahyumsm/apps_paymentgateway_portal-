@@ -546,10 +546,10 @@ export default (props) => {
                 (window.location.href === 'https://www.ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://www.ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement')
 
                 // Test Web
-                // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/disbursement') ||
-                // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/riwayattopup' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/riwayattopup') ||
-                // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/alokasisaldo') ||
-                // (window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/#/ezeepg/riwayat-transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/ezeepg/?#/ezeepg/riwayat-transaksi/disbursement') ||
+                // || (window.location.href === 'https://wwwd.ezeelink.co.id/prelive/#/prelive/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/prelive/?#/prelive/disbursement') ||
+                // (window.location.href === 'https://wwwd.ezeelink.co.id/prelive/#/prelive/riwayattopup' || window.location.href === 'https://wwwd.ezeelink.co.id/prelive/?#/prelive/riwayattopup') ||
+                // (window.location.href === 'https://wwwd.ezeelink.co.id/prelive/#/prelive/alokasisaldo' || window.location.href === 'https://wwwd.ezeelink.co.id/prelive/?#/prelive/alokasisaldo') ||
+                // (window.location.href === 'https://wwwd.ezeelink.co.id/prelive/#/prelive/riwayat-transaksi/disbursement' || window.location.href === 'https://wwwd.ezeelink.co.id/prelive/?#/prelive/riwayat-transaksi/disbursement')
 
                 // || (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/disbursement') ||
                 // (window.location.href === 'https://localhost:3000/ezeepg#/ezeepg/riwayattopup') ||
