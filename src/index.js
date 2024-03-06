@@ -30,7 +30,7 @@ import ScrollToTop from "./components/ScrollToTop";
 
 ReactDOM.render(
   <Provider store={store}>
-    <HashRouter basename={'/prelive/'}>
+    <HashRouter basename={'/ezeepg/'}>
       <ScrollToTop />
       <HomePage />
     </HashRouter>

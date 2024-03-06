@@ -73,7 +73,8 @@ function QrisDetailSettlement() {
                 const data = detailsettlement.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, RRN: data[i].RRN !== null ? data[i].RRN : "-", "Nama Grup": data[i].merchant_name !== null ? data[i].merchant_name : "-", "Nama Brand": data[i].outlet_name !== null ? data[i].outlet_name : "-", "Nama Outlet": data[i].store_name !== null ? data[i].store_name : "-", "Nama Kasir": data[i].cashier_name !== null ? data[i].cashier_name : "-", "ID Kasir": data[i].mterminal_name !== null ? data[i].mterminal_name : "-", "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
+                    // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -84,7 +85,8 @@ function QrisDetailSettlement() {
                 const data = detailsettlement.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, RRN: data[i].RRN !== null ? data[i].RRN : "-", "Nama Grup": data[i].merchant_name !== null ? data[i].merchant_name : "-", "Nama Brand": data[i].outlet_name !== null ? data[i].outlet_name : "-", "Nama Outlet": data[i].store_name !== null ? data[i].store_name : "-", "Nama Kasir": data[i].cashier_name !== null ? data[i].cashier_name : "-", "ID Kasir": data[i].mterminal_name !== null ? data[i].mterminal_name : "-", "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
+                    // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -115,20 +117,30 @@ function QrisDetailSettlement() {
             width: "170px",
             wrap: true
         },
+        // {
+        //     name: 'No. Referensi',
+        //     selector: row => row.reference_label !== null ? row.reference_label : "-",
+        //     wrap: true,
+        //     width: "150px"
+        // },
         {
-            name: 'No. Referensi',
-            selector: row => row.reference_label !== null ? row.reference_label : "-",
-            wrap: true,
-            width: "150px"
+            name: 'Waktu Generate QR',
+            selector: row => row.generate_qris_date,
+            width: "200px"
+        },
+        {
+            name: 'Waktu Pembayaran',
+            selector: row => row.trans_date,
+            width: "200px"
+        },
+        {
+            name: 'Channel Pembayaran',
+            selector: row => row.paymenttype_name,
+            width: "200px"
         },
         {
             name: 'RRN',
-            selector: row => row.RRN,
-            width: "150px"
-        },
-        {
-            name: 'Waktu',
-            selector: row => row.trans_date,
+            selector: row => row.RRN !== null ? row.RRN : "-",
             width: "150px"
         },
         // {
@@ -138,31 +150,31 @@ function QrisDetailSettlement() {
         // },
         {
             name: 'Nama Grup',
-            selector: row => row.merchant_name,
+            selector: row => row.merchant_name !== null ? row.merchant_name : "-",
             wrap: true,
             width: "180px"
         },
         {
             name: 'Nama Brand',
-            selector: row => row.outlet_name,
+            selector: row => row.outlet_name !== null ? row.outlet_name : "-",
             wrap: true,
             width: "200px"
         },
         {
             name: 'Nama Outlet',
-            selector: row => row.store_name,
+            selector: row => row.store_name !== null ? row.store_name : "-",
             wrap: true,
             width: "150px"
         },
         {
             name: 'Nama Kasir',
-            selector: row => row.cashier_name,
+            selector: row => row.cashier_name !== null ? row.cashier_name : "-",
             wrap: true,
             width: "200px"
         },
         {
             name: 'ID Kasir',
-            selector: row => row.mterminal_name,
+            selector: row => row.mterminal_name !== null ? row.mterminal_name : "-",
             width: "100px"
         },
         {

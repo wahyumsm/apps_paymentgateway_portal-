@@ -376,7 +376,7 @@ function EditPartner() {
   );
 
   const handleChangeFitur = (e, handleBiaya) => {
-    if (e.target.value === "105" || e.target.value === "100" || e.target.value === "102" || e.target.value === "108") {
+    if (Number(e.target.value) === 105 || Number(e.target.value) === 100 || Number(e.target.value) === 102 || Number(e.target.value) === 108 || Number(e.target.value) === 109) {
       setIsDisableFeeType(false)
     } else {
       setIsDisableFeeType(true)
