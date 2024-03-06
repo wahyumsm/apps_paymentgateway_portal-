@@ -274,8 +274,8 @@ const QrisSettlement = () => {
     function pickDateSettlementQrisManualMerchant(item) {
         setStateSettlementQrisManualMerchant(item)
         if (item !== null) {
-            item = item.map(el => el.toLocaleDateString('en-CA'))
-            setDateRangeSettlementQrisManualMerchant(item)
+          item = item.map(el => el.toLocaleDateString('en-CA'))
+          setDateRangeSettlementQrisManualMerchant(item)
         }
     }
 
@@ -318,8 +318,8 @@ const QrisSettlement = () => {
     function pickDateSettlementQrisManualAdmin(item) {
         setStateSettlementQrisManualAdmin(item)
         if (item !== null) {
-            item = item.map(el => el.toLocaleDateString('en-CA'))
-            setDateRangeSettlementQrisManualAdmin(item)
+          item = item.map(el => el.toLocaleDateString('en-CA'))
+          setDateRangeSettlementQrisManualAdmin(item)
         }
     }
 
@@ -522,76 +522,76 @@ const QrisSettlement = () => {
             selector: row => row.tqrissettl_bank_acc_name_to,
             width: "230px"
         },
-        // {
-        //     name: 'Jumlah Transaksi WeChat Pay',
-        //     selector: row => convertToRupiah(row.tqrissettl_trx_count_wechatpay, false, 0),
-        //     width: "280px"
-        // },
-        // {
-        //     name: 'Jumlah Transaksi Alipay',
-        //     selector: row => convertToRupiah(row.tqrissettl_trx_count_alipay, false, 0),
-        //     width: "230px"
-        // },
-        // {
-        //     name: 'Jumlah Transaksi QRIS',
-        //     selector: row => convertToRupiah(row.tqrissettl_trx_count, false, 0),
-        //     width: "230px"
-        // },
         {
-            name: 'Jumlah Transaksi',
+            name: 'Jumlah Transaksi WeChat Pay',
+            selector: row => convertToRupiah(row.tqrissettl_trx_count_wechatpay, false, 0),
+            width: "280px"
+        },
+        {
+            name: 'Jumlah Transaksi Alipay',
+            selector: row => convertToRupiah(row.tqrissettl_trx_count_alipay, false, 0),
+            width: "230px"
+        },
+        {
+            name: 'Jumlah Transaksi QRIS',
             selector: row => convertToRupiah(row.tqrissettl_trx_count, false, 0),
             width: "230px"
         },
         // {
-        //     name: 'Total Transaksi WeChat Pay',
-        //     selector: row => convertToRupiah(row.tqrissettl_trx_amount_wechatpay, true, 2),
-        //     width: "250px"
-        // },
-        // {
-        //     name: 'Total Transaksi Alipay',
-        //     selector: row => convertToRupiah(row.tqrissettl_trx_amount_alipay, true, 2),
-        //     width: "230px"
-        // },
-        // {
-        //     name: 'Total Transaksi QRIS',
-        //     selector: row => convertToRupiah(row.tqrissettl_trx_amount, true, 2),
+        //     name: 'Jumlah Transaksi',
+        //     selector: row => convertToRupiah(row.tqrissettl_trx_count, false, 0),
         //     width: "230px"
         // },
         {
-            name: 'Total Transaksi',
+            name: 'Total Transaksi WeChat Pay',
+            selector: row => convertToRupiah(row.tqrissettl_trx_amount_wechatpay, true, 2),
+            width: "250px"
+        },
+        {
+            name: 'Total Transaksi Alipay',
+            selector: row => convertToRupiah(row.tqrissettl_trx_amount_alipay, true, 2),
+            width: "230px"
+        },
+        {
+            name: 'Total Transaksi QRIS',
             selector: row => convertToRupiah(row.tqrissettl_trx_amount, true, 2),
             width: "230px"
         },
         // {
-        //     name: 'Total Transaksi Keseluruhan',
-        //     selector: row => convertToRupiah((row.tqrissettl_trx_amount + row.tqrissettl_trx_amount_wechatpay + row.tqrissettl_trx_amount_alipay), true, 2),
-        //     width: "250px"
-        // },
-        // {
-        //     name: 'MDR WeChat Pay',
-        //     selector: row => convertToRupiah(row.tqrissettl_total_mdr_wechatpay, true, 2),
-        //     width: "180px"
-        // },
-        // {
-        //     name: 'MDR Alipay',
-        //     selector: row => convertToRupiah(row.tqrissettl_total_mdr_alipay, true, 2),
-        //     width: "140px"
-        // },
-        // {
-        //     name: 'MDR QRIS',
-        //     selector: row => convertToRupiah(row.tqrissettl_total_mdr, true, 2),
-        //     width: "140px"
-        // },
-        // {
-        //     name: 'Total MDR',
-        //     selector: row => convertToRupiah((row.tqrissettl_total_mdr + row.tqrissettl_total_mdr_wechatpay + row.tqrissettl_total_mdr_alipay), true, 2),
-        //     width: "140px"
+        //     name: 'Total Transaksi',
+        //     selector: row => convertToRupiah(row.tqrissettl_trx_amount, true, 2),
+        //     width: "230px"
         // },
         {
-            name: 'Total MDR',
-            selector: row => convertToRupiah((row.tqrissettl_total_mdr), true, 2),
+            name: 'Total Transaksi Keseluruhan',
+            selector: row => convertToRupiah((row.tqrissettl_trx_amount + row.tqrissettl_trx_amount_wechatpay + row.tqrissettl_trx_amount_alipay), true, 2),
+            width: "250px"
+        },
+        {
+            name: 'MDR WeChat Pay',
+            selector: row => convertToRupiah(row.tqrissettl_total_mdr_wechatpay, true, 2),
+            width: "180px"
+        },
+        {
+            name: 'MDR Alipay',
+            selector: row => convertToRupiah(row.tqrissettl_total_mdr_alipay, true, 2),
             width: "140px"
         },
+        {
+            name: 'MDR QRIS',
+            selector: row => convertToRupiah(row.tqrissettl_total_mdr, true, 2),
+            width: "140px"
+        },
+        {
+            name: 'Total MDR',
+            selector: row => convertToRupiah((row.tqrissettl_total_mdr + row.tqrissettl_total_mdr_wechatpay + row.tqrissettl_total_mdr_alipay), true, 2),
+            width: "140px"
+        },
+        // {
+        //     name: 'Total MDR',
+        //     selector: row => convertToRupiah((row.tqrissettl_total_mdr), true, 2),
+        //     width: "140px"
+        // },
         {
             name: 'Biaya Admin',
             selector: row => convertToRupiah(row.tqrissettl_admin_fee, true, 2),
@@ -1628,8 +1628,8 @@ const QrisSettlement = () => {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                // dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Settlement atas Tanggal": data[i].tqrissettl_crtdt, "Waktu": data[i].tqrissettl_crtdt, "Channel Pembayaran": data[i].mpaytypeqris_name, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi WeChat Pay": data[i].tqrissettl_trx_count_wechatpay, "Jumlah Transaksi Alipay": data[i].tqrissettl_trx_count_alipay, "Jumlah Transaksi Qris": data[i].tqrissettl_trx_count, "Total Transaksi WeChat Pay": data[i].tqrissettl_trx_amount_wechatpay, "Total Transaksi Alipay": data[i].tqrissettl_trx_amount_alipay, "Total Transaksi QRIS": data[i].tqrissettl_trx_amount, "Total Transaksi Keseluruhan": (data[i].tqrissettl_trx_amount + data[i].tqrissettl_trx_amount_alipay + data[i].tqrissettl_trx_amount_wechatpay), "MDR WeChat Pay": data[i].tqrissettl_total_mdr_wechatpay, "MDR Alipay": data[i].tqrissettl_total_mdr_alipay, "MDR QRIS": data[i].tqrissettl_total_mdr, "Total MDR": (data[i].tqrissettl_total_mdr + data[i].tqrissettl_total_mdr_alipay + data[i].tqrissettl_total_mdr_wechatpay), "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
-                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Settlement atas Tanggal": data[i].tqrissettl_crtdt, "Waktu": data[i].tqrissettl_crtdt, "Channel Pembayaran": data[i].mpaytypeqris_name, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi WeChat Pay": data[i].tqrissettl_trx_count_wechatpay, "Jumlah Transaksi Alipay": data[i].tqrissettl_trx_count_alipay, "Jumlah Transaksi Qris": data[i].tqrissettl_trx_count, "Total Transaksi WeChat Pay": data[i].tqrissettl_trx_amount_wechatpay, "Total Transaksi Alipay": data[i].tqrissettl_trx_amount_alipay, "Total Transaksi QRIS": data[i].tqrissettl_trx_amount, "Total Transaksi Keseluruhan": (data[i].tqrissettl_trx_amount + data[i].tqrissettl_trx_amount_alipay + data[i].tqrissettl_trx_amount_wechatpay), "MDR WeChat Pay": data[i].tqrissettl_total_mdr_wechatpay, "MDR Alipay": data[i].tqrissettl_total_mdr_alipay, "MDR QRIS": data[i].tqrissettl_total_mdr, "Total MDR": (data[i].tqrissettl_total_mdr + data[i].tqrissettl_total_mdr_alipay + data[i].tqrissettl_total_mdr_wechatpay), "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                // dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1640,8 +1640,8 @@ const QrisSettlement = () => {
                             const data = dataExportFilter.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                // dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Settlement atas Tanggal": data[i].tqrissettl_crtdt, "Waktu": data[i].tqrissettl_crtdt, "Channel Pembayaran": data[i].mpaytypeqris_name, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi WeChat Pay": data[i].tqrissettl_trx_count_wechatpay, "Jumlah Transaksi Alipay": data[i].tqrissettl_trx_count_alipay, "Jumlah Transaksi Qris": data[i].tqrissettl_trx_count, "Total Transaksi WeChat Pay": data[i].tqrissettl_trx_amount_wechatpay, "Total Transaksi Alipay": data[i].tqrissettl_trx_amount_alipay, "Total Transaksi QRIS": data[i].tqrissettl_trx_amount, "Total Transaksi Keseluruhan": (data[i].tqrissettl_trx_amount + data[i].tqrissettl_trx_amount_alipay + data[i].tqrissettl_trx_amount_wechatpay), "MDR WeChat Pay": data[i].tqrissettl_total_mdr_wechatpay, "MDR Alipay": data[i].tqrissettl_total_mdr_alipay, "MDR QRIS": data[i].tqrissettl_total_mdr, "Total MDR": (data[i].tqrissettl_total_mdr + data[i].tqrissettl_total_mdr_alipay + data[i].tqrissettl_total_mdr_wechatpay), "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
-                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Settlement atas Tanggal": data[i].tqrissettl_crtdt, "Waktu": data[i].tqrissettl_crtdt, "Channel Pembayaran": data[i].mpaytypeqris_name, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi WeChat Pay": data[i].tqrissettl_trx_count_wechatpay, "Jumlah Transaksi Alipay": data[i].tqrissettl_trx_count_alipay, "Jumlah Transaksi Qris": data[i].tqrissettl_trx_count, "Total Transaksi WeChat Pay": data[i].tqrissettl_trx_amount_wechatpay, "Total Transaksi Alipay": data[i].tqrissettl_trx_amount_alipay, "Total Transaksi QRIS": data[i].tqrissettl_trx_amount, "Total Transaksi Keseluruhan": (data[i].tqrissettl_trx_amount + data[i].tqrissettl_trx_amount_alipay + data[i].tqrissettl_trx_amount_wechatpay), "MDR WeChat Pay": data[i].tqrissettl_total_mdr_wechatpay, "MDR Alipay": data[i].tqrissettl_total_mdr_alipay, "MDR QRIS": data[i].tqrissettl_total_mdr, "Total MDR": (data[i].tqrissettl_total_mdr + data[i].tqrissettl_total_mdr_alipay + data[i].tqrissettl_total_mdr_wechatpay), "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                // dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1668,8 +1668,8 @@ const QrisSettlement = () => {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                // dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Settlement atas Tanggal": data[i].tqrissettl_crtdt, "Waktu": data[i].tqrissettl_crtdt, "Channel Pembayaran": data[i].mpaytypeqris_name, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi WeChat Pay": data[i].tqrissettl_trx_count_wechatpay, "Jumlah Transaksi Alipay": data[i].tqrissettl_trx_count_alipay, "Jumlah Transaksi Qris": data[i].tqrissettl_trx_count, "Total Transaksi WeChat Pay": data[i].tqrissettl_trx_amount_wechatpay, "Total Transaksi Alipay": data[i].tqrissettl_trx_amount_alipay, "Total Transaksi QRIS": data[i].tqrissettl_trx_amount, "Total Transaksi Keseluruhan": (data[i].tqrissettl_trx_amount + data[i].tqrissettl_trx_amount_alipay + data[i].tqrissettl_trx_amount_wechatpay), "MDR WeChat Pay": data[i].tqrissettl_total_mdr_wechatpay, "MDR Alipay": data[i].tqrissettl_total_mdr_alipay, "MDR QRIS": data[i].tqrissettl_total_mdr, "Total MDR": (data[i].tqrissettl_total_mdr + data[i].tqrissettl_total_mdr_alipay + data[i].tqrissettl_total_mdr_wechatpay), "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
-                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Settlement atas Tanggal": data[i].tqrissettl_crtdt, "Waktu": data[i].tqrissettl_crtdt, "Channel Pembayaran": data[i].mpaytypeqris_name, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi WeChat Pay": data[i].tqrissettl_trx_count_wechatpay, "Jumlah Transaksi Alipay": data[i].tqrissettl_trx_count_alipay, "Jumlah Transaksi Qris": data[i].tqrissettl_trx_count, "Total Transaksi WeChat Pay": data[i].tqrissettl_trx_amount_wechatpay, "Total Transaksi Alipay": data[i].tqrissettl_trx_amount_alipay, "Total Transaksi QRIS": data[i].tqrissettl_trx_amount, "Total Transaksi Keseluruhan": (data[i].tqrissettl_trx_amount + data[i].tqrissettl_trx_amount_alipay + data[i].tqrissettl_trx_amount_wechatpay), "MDR WeChat Pay": data[i].tqrissettl_total_mdr_wechatpay, "MDR Alipay": data[i].tqrissettl_total_mdr_alipay, "MDR QRIS": data[i].tqrissettl_total_mdr, "Total MDR": (data[i].tqrissettl_total_mdr + data[i].tqrissettl_total_mdr_alipay + data[i].tqrissettl_total_mdr_wechatpay), "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                // dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1680,8 +1680,8 @@ const QrisSettlement = () => {
                             const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
-                                // dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Settlement atas Tanggal": data[i].tqrissettl_crtdt, "Waktu": data[i].tqrissettl_crtdt, "Channel Pembayaran": data[i].mpaytypeqris_name, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi WeChat Pay": data[i].tqrissettl_trx_count_wechatpay, "Jumlah Transaksi Alipay": data[i].tqrissettl_trx_count_alipay, "Jumlah Transaksi Qris": data[i].tqrissettl_trx_count, "Total Transaksi WeChat Pay": data[i].tqrissettl_trx_amount_wechatpay, "Total Transaksi Alipay": data[i].tqrissettl_trx_amount_alipay, "Total Transaksi QRIS": data[i].tqrissettl_trx_amount, "Total Transaksi Keseluruhan": (data[i].tqrissettl_trx_amount + data[i].tqrissettl_trx_amount_alipay + data[i].tqrissettl_trx_amount_wechatpay), "MDR WeChat Pay": data[i].tqrissettl_total_mdr_wechatpay, "MDR Alipay": data[i].tqrissettl_total_mdr_alipay, "MDR QRIS": data[i].tqrissettl_total_mdr, "Total MDR": (data[i].tqrissettl_total_mdr + data[i].tqrissettl_total_mdr_alipay + data[i].tqrissettl_total_mdr_wechatpay), "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
-                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Settlement atas Tanggal": data[i].tqrissettl_crtdt, "Waktu": data[i].tqrissettl_crtdt, "Channel Pembayaran": data[i].mpaytypeqris_name, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi WeChat Pay": data[i].tqrissettl_trx_count_wechatpay, "Jumlah Transaksi Alipay": data[i].tqrissettl_trx_count_alipay, "Jumlah Transaksi Qris": data[i].tqrissettl_trx_count, "Total Transaksi WeChat Pay": data[i].tqrissettl_trx_amount_wechatpay, "Total Transaksi Alipay": data[i].tqrissettl_trx_amount_alipay, "Total Transaksi QRIS": data[i].tqrissettl_trx_amount, "Total Transaksi Keseluruhan": (data[i].tqrissettl_trx_amount + data[i].tqrissettl_trx_amount_alipay + data[i].tqrissettl_trx_amount_wechatpay), "MDR WeChat Pay": data[i].tqrissettl_total_mdr_wechatpay, "MDR Alipay": data[i].tqrissettl_total_mdr_alipay, "MDR QRIS": data[i].tqrissettl_total_mdr, "Total MDR": (data[i].tqrissettl_total_mdr + data[i].tqrissettl_total_mdr_alipay + data[i].tqrissettl_total_mdr_wechatpay), "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
+                                // dataExcel.push({ No: i + 1, "ID Settlement": data[i].tqrissettl_code, "Waktu": data[i].tqrissettl_crtdt, "Tujuan Settlement": data[i].mqrissettlegroup_name, "Nama Grup": data[i].GroupName, "Nama Brand": data[i].BrandName, "Nama Outlet": data[i].StoreName, "Bank Tujuan": data[i].mbank_name, "Nomor Rekening": data[i].tqrissettl_bank_acc_num_to, "Nama Pemilik Rekening": data[i].tqrissettl_bank_acc_name_to, "Jumlah Transaksi": data[i].tqrissettl_trx_count, "Total Nominal": data[i].tqrissettl_trx_amount, "Total MDR": data[i].tqrissettl_total_mdr, "Biaya Admin": data[i].tqrissettl_admin_fee, "Nominal Transaksi": data[i].tqrissettl_total_settle, Status: data[i].mstatus_name })
                             }
                             let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                             let workBook = XLSX.utils.book_new();
@@ -1891,7 +1891,7 @@ const QrisSettlement = () => {
                         }
                         const dataExportSettlementQris = await axios.post(BaseURL + "/QRIS/QRISSettleAutomaticExportDetail", {data: dataParams}, { headers: headers });
                         if (dataExportSettlementQris.status === 200 && dataExportSettlementQris.data.response_code === 200 && dataExportSettlementQris.data.response_new_token === null) {
-                            const data = dataExportSettlementQris.data.response_data.results.list
+                            const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Settlement": data[i].settl_code, "Waktu Settlement": data[i].settl_crtdt, "Tujuan Settlement": data[i].settl_group_type, "Nama Grup": data[i].settl_group_name, "Nama Brand": data[i].settl_brand_name, "Nama Outlet": data[i].settl_store_name, "Bank Tujuan": data[i].settl_bank_name, "Nomor Rekening": data[i].settl_acc_num_to, "Nama Pemilik Rekening": data[i].settl_acc_name_to, "Jumlah Transaksi": data[i].settl_trx_count, "Total Nominal": data[i].settl_trx_amount, "Total MDR": data[i].settl_total_mdr, "Biaya Admin": data[i].settl_admin_fee, "Nominal Settlement": data[i].settl_total_settle, "Status Settlement": data[i].settl_status_name, "ID Transaksi": data[i].trx_code, "RRN": data[i].trx_partner_trans_id, "Waktu Transaksi": data[i].trx_trx_date, "Nominal Transaksi": data[i].trx_amount, "Potongan MDR": data[i].trx_mdr, "Pendapatan": data[i].trx_fee, "Status Transaksi": data[i].trx_status })
@@ -1902,7 +1902,7 @@ const QrisSettlement = () => {
                             XLSX.writeFile(workBook, "Riwayat Details Settlement QRIS.xlsx");
                         } else if (dataExportSettlementQris.status === 200 && dataExportSettlementQris.data.response_code === 200 && dataExportSettlementQris.data.response_new_token !== null) {
                             setUserSession(dataExportSettlementQris.data.response_new_token)
-                            const data = dataExportSettlementQris.data.response_data.results.list
+                            const data = dataExportSettlementQris.data.response_data.results
                             let dataExcel = []
                             for (let i = 0; i < data.length; i++) {
                                 dataExcel.push({ No: i + 1, "ID Settlement": data[i].settl_code, "Waktu Settlement": data[i].settl_crtdt, "Tujuan Settlement": data[i].settl_group_type, "Nama Grup": data[i].settl_group_name, "Nama Brand": data[i].settl_brand_name, "Nama Outlet": data[i].settl_store_name, "Bank Tujuan": data[i].settl_bank_name, "Nomor Rekening": data[i].settl_acc_num_to, "Nama Pemilik Rekening": data[i].settl_acc_name_to, "Jumlah Transaksi": data[i].settl_trx_count, "Total Nominal": data[i].settl_trx_amount, "Total MDR": data[i].settl_total_mdr, "Biaya Admin": data[i].settl_admin_fee, "Nominal Settlement": data[i].settl_total_settle, "Status Settlement": data[i].settl_status_name, "ID Transaksi": data[i].trx_code, "RRN": data[i].trx_partner_trans_id, "Waktu Transaksi": data[i].trx_trx_date, "Nominal Transaksi": data[i].trx_amount, "Potongan MDR": data[i].trx_mdr, "Pendapatan": data[i].trx_fee, "Status Transaksi": data[i].trx_status })

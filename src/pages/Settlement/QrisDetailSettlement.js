@@ -73,8 +73,7 @@ function QrisDetailSettlement() {
                 const data = detailsettlement.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
-                    // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -85,8 +84,7 @@ function QrisDetailSettlement() {
                 const data = detailsettlement.data.response_data.results
                 let dataExcel = []
                 for (let i = 0; i < data.length; i++) {
-                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
-                    // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
+                    dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label, RRN: data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, "Status": data[i].status_name })
                 }
                 let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                 let workBook = XLSX.utils.book_new();
@@ -117,15 +115,15 @@ function QrisDetailSettlement() {
             width: "170px",
             wrap: true
         },
-        // {
-        //     name: 'No. Referensi',
-        //     selector: row => row.reference_label !== null ? row.reference_label : "-",
-        //     wrap: true,
-        //     width: "150px"
-        // },
+        {
+            name: 'No. Referensi',
+            selector: row => row.reference_label !== null ? row.reference_label : "-",
+            wrap: true,
+            width: "150px"
+        },
         {
             name: 'RRN',
-            selector: row => row.RRN !== null ? row.RRN: "-",
+            selector: row => row.RRN,
             width: "150px"
         },
         {
@@ -140,31 +138,31 @@ function QrisDetailSettlement() {
         // },
         {
             name: 'Nama Grup',
-            selector: row => row.merchant_name !== null ? row.merchant_name : "-",
+            selector: row => row.merchant_name,
             wrap: true,
             width: "180px"
         },
         {
             name: 'Nama Brand',
-            selector: row => row.outlet_name !== null ? row.outlet_name : "-",
+            selector: row => row.outlet_name,
             wrap: true,
             width: "200px"
         },
         {
             name: 'Nama Outlet',
-            selector: row => row.store_name !== null ? row.store_name : "-",
+            selector: row => row.store_name,
             wrap: true,
             width: "150px"
         },
         {
             name: 'Nama Kasir',
-            selector: row => row.cashier_name !== null ? row.cashier_name : "-",
+            selector: row => row.cashier_name,
             wrap: true,
             width: "200px"
         },
         {
             name: 'ID Kasir',
-            selector: row => row.mterminal_name !== null ? row.mterminal_name : "-",
+            selector: row => row.mterminal_name,
             width: "100px"
         },
         {

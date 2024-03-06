@@ -132,66 +132,32 @@ function TambahPartner() {
   }
 
   function handleChangeFee(e, feeType) {
-    // setAlertFee(false)
-    // setBiayaHandle({
-    //   ...biayaHandle,
-    //   fee: e,
-    // });
-    // if (feeType === 101) {
-    //   if (e === undefined || e === "") {
-    //     setAlertFee(true)
-    //   } else if (e.length === 3 && e !== "100") {
-    //     setBiayaHandle({
-    //       ...biayaHandle,
-    //       fee: "100",
-    //     });
-    //   }
-    // }
     setAlertFee(false)
+    setBiayaHandle({
+      ...biayaHandle,
+      fee: e,
+    });
     if (feeType === 101) {
       if (e === undefined || e === "") {
-        // console.log('masuk if 1');
         setAlertFee(true)
+      } else if (e.length === 3 && e !== "100") {
         setBiayaHandle({
           ...biayaHandle,
-          fee: 0,
-        });
-      } else if (Number(e.replaceAll(',', '.')) > 100 && e !== "100" || e === "100,") {
-        // console.log(Number(e.replaceAll(',', '.')), 'Number(e.replaceAll(');
-        // console.log('masuk if 2');
-        setBiayaHandle({
-          ...biayaHandle,
-          fee: 100,
-        });
-      } else {
-        // console.log('masuk if 3');
-        setBiayaHandle({
-          ...biayaHandle,
-          fee: e,
+          fee: "100",
         });
       }
-    } else {
-        // console.log('masuk if 4');
-        setBiayaHandle({
-        ...biayaHandle,
-        fee: e,
-      });
     }
   }
 
   function handleChangeMinimalFee(e) {
+    setAlertMinimalFee(false)
     setBiayaHandle({
       ...biayaHandle,
-      minimalFee: e !== undefined ? e : 0
+      minimalFee: e
     })
-    // setAlertMinimalFee(false)
-    // setBiayaHandle({
-    //   ...biayaHandle,
-    //   minimalFee: e
-    // })
-    // if (e === undefined || e === "") {
-    //   setAlertMinimalFee(true)
-    // }
+    if (e === undefined || e === "") {
+      setAlertMinimalFee(true)
+    }
   }
 
   // function handleChangeFee(e) {
@@ -329,7 +295,7 @@ function TambahPartner() {
 
   const handleChangeFitur = (e, handleBiaya) => {
     // console.log(e.target.name, 'e.target.name');
-    if (e.target.value === "105" || e.target.value === "100" || e.target.value === "102" || e.target.value === "108") {
+    if (e.target.name === "Payment Collection" || e.target.name === "VA" || e.target.name === "Disbursement" || e.target.name === "VA USD") {
       setIsDisableFeeType(false)
     } else {
       setIsDisableFeeType(true)
@@ -1264,8 +1230,7 @@ function toDashboard() {
                 }}
                 groupSeparator={"."}
                 decimalSeparator={','}
-                allowDecimals={(biayaHandle.feeType === 0 || biayaHandle.feeType === 100) ? false : true}
-                // maxLength={biayaHandle.feeType === 101 ? 3 : false}
+                maxLength={biayaHandle.feeType === 101 ? 3 : false}
                 prefix={biayaHandle.feeType === 0 || biayaHandle.feeType === 100 ? "Rp " : ""}
                 suffix={biayaHandle.feeType === 0 || biayaHandle.feeType === 100 ? "" : "%"}
               />
