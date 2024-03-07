@@ -943,7 +943,7 @@ const FormInfoUsaha = () => {
                         <button 
                             className={(
                                 inputHandle.namaPerusahaan.length !== 0 && 
-                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan !== 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) || inputHandle.businessType === 2) && 
+                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 1 || inputHandle.bentukPerusahaan === 2 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) || inputHandle.businessType === 2) &&
                                 inputHandle.emailPerusahaan.length !== 0 && 
                                 inputHandle.namaBrand.length !== 0 && 
                                 inputHandle.namaYangDicetakQris.length !== 0 && 
@@ -961,7 +961,7 @@ const FormInfoUsaha = () => {
                             }
                             disabled={(
                                 inputHandle.namaPerusahaan.length === 0 || 
-                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0))) || inputHandle.businessType !== 2) || 
+                                ((inputHandle.businessType === 1 && ((inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0)))) ||
                                 inputHandle.emailPerusahaan.length === 0 || 
                                 inputHandle.namaBrand.length === 0 || 
                                 inputHandle.namaYangDicetakQris.length === 0 || 

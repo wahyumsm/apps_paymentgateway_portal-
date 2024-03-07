@@ -472,6 +472,13 @@ const FormInfoUsahaOutlet = () => {
         }
     }
 
+    console.log(inputHandle.kodePos, "inputHandle.kodePos");
+    console.log(inputHandle.namaPerusahaan, "inputHandle.namaPerusahaan");
+    console.log(inputHandle.businessType, "inputHandle.businessType");
+    console.log(inputHandle.bentukPerusahaan, "inputHandle.bentukPerusahaan");
+    console.log(inputHandle.bentukPerusahaanLainnya, "inputHandle.bentukPerusahaanLainnya");
+    console.log(dataKodePos, "dataKodePos");
+
     function backPage () {
         setShowModalSimpanData(true)
     }
@@ -927,8 +934,8 @@ const FormInfoUsahaOutlet = () => {
                         </button>
                         <button 
                             className={(
-                                inputHandle.namaPerusahaan.length !== 0 && 
-                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan !== 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) || inputHandle.businessType === 2) && 
+                                inputHandle.namaPerusahaan.length !== 0 &&
+                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 1 || inputHandle.bentukPerusahaan === 2 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) || inputHandle.businessType === 2) &&
                                 inputHandle.emailPerusahaan.length !== 0 && 
                                 inputHandle.namaBrand.length !== 0 && 
                                 inputHandle.namaYangDicetakQris.length !== 0 && 
@@ -937,7 +944,7 @@ const FormInfoUsahaOutlet = () => {
                                 Number(inputHandle.jumlahKasir) <= 1500 &&
                                 inputHandle.pendapatanPertahun !== 0 && 
                                 selectedDataKategoriUsaha.length !== 0 &&
-                                inputHandle.alamatUsaha.length !== 0 && 
+                                inputHandle.alamatUsaha.length !== 0 &&
                                 inputHandle.kodePos.length !== 0 && 
                                 (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length !== 0) &&
                                 (jenisToko.length !== 0 && (((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length !== 0 && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false))) || (jenisToko.join() === "1" && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false)) || (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length !== 0))) && 
@@ -945,8 +952,8 @@ const FormInfoUsahaOutlet = () => {
                                 ) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'
                             }
                             disabled={(
-                                inputHandle.namaPerusahaan.length === 0 || 
-                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0))) || inputHandle.businessType !== 2) || 
+                                inputHandle.namaPerusahaan.length === 0 ||
+                                ((inputHandle.businessType === 1 && ((inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0)))) ||
                                 inputHandle.emailPerusahaan.length === 0 || 
                                 inputHandle.namaBrand.length === 0 || 
                                 inputHandle.namaYangDicetakQris.length === 0 || 
@@ -955,7 +962,7 @@ const FormInfoUsahaOutlet = () => {
                                 Number(inputHandle.jumlahKasir) > 1500 ||
                                 inputHandle.pendapatanPertahun === 0 || 
                                 selectedDataKategoriUsaha.length === 0 ||
-                                inputHandle.alamatUsaha.length === 0 || 
+                                inputHandle.alamatUsaha.length === 0 ||
                                 inputHandle.kodePos.length === 0 || 
                                 inputHandle.kodePos.length !== 5 ||
                                 (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length === 0) ||
