@@ -239,7 +239,6 @@ const QrisSettlement = () => {
         if (isFilterSettlementQrisOtomatisAdmin) {
             setActivePageSettlementQrisOtomatisAdmin(page)
             filterDataSettlementQrisOtomatisHandler(user_role, inputHandleSettlementQrisOtomatisAdmin.idSettlement, inputHandleSettlementQrisOtomatisAdmin.periode, dateRangeSettlementQrisOtomatisAdmin, inputHandleSettlementQrisOtomatisAdmin.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0, page, 10, inputHandleSettlementQrisOtomatisAdmin.channelPembayaran)
-
         } else {
             setActivePageSettlementQrisOtomatisAdmin(page)
             getDataSettlementQrisOtomatisHandler(user_role, page)
