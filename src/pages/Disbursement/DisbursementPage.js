@@ -578,7 +578,7 @@ function DisbursementPage() {
                                     // console.log(resultBankFee, 'resultBankFee');
                                     if (resultBankFee !== undefined) {
                                         if (Number(resultBankFee.mpartfitur_fee_type) === 101) {
-                                            console.log(resultBankFee, 'resultBankFee');
+                                            // console.log(resultBankFee, 'resultBankFee');
                                             const nominalDisbursementNumberForFee = (typeof el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] === 'string') ? Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", "")) : (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])
                                             const feeDisburse = nominalDisbursementNumberForFee * (resultBankFee.fee_partner / 100)
                                             const feePPN = feeDisburse * 0.11
@@ -2467,7 +2467,7 @@ function DisbursementPage() {
                         //     return item.mpaytype_bank_code === bankCodeTujuan
                         // }
                     })
-                    console.log(result, 'result');
+                    // console.log(result, 'result');
                     let feeTotalPercentage = 0
                     if (result === undefined) {
                         result = feeBank.find(item => {return item.mpaytype_bank_code === "BIF"})

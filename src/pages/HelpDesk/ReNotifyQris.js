@@ -58,12 +58,14 @@ const ReNotifyQris = () => {
                 getDataQris.data.response_data.results.history_notify = getDataQris.data.response_data.results.history_notify.map((obj, idx) => ({...obj, number: idx + 1}))
                 setDataQris(getDataQris.data.response_data.results)
                 setDataHistoryNotifyQris(getDataQris.data.response_data.results.history_notify)
+                setInputHandleRrn("")
                 // console.log(getDataQris.data.response_data.results.history_notify[0].request_data, 'response_data');
             } else if (getDataQris.status === 200 && getDataQris.data.response_code === 200 && getDataQris.data.response_new_token !== null) {
                 getDataQris.data.response_data.results.history_notify = getDataQris.data.response_data.results.history_notify.map((obj, idx) => ({...obj, number: idx + 1}))
                 setUserSession(getDataQris.data.response_new_token)
                 setDataQris(getDataQris.data.response_data.results)
                 setDataHistoryNotifyQris(getDataQris.data.response_data.results.history_notify)
+                setInputHandleRrn("")
             }
         } catch (error) {
             // console.log(error);
@@ -71,18 +73,18 @@ const ReNotifyQris = () => {
         }
     }
 
-    const [inputHandlePayTransId, setInputHandlePayTransId] = useState("")
-    function handleChangePayTransId (e) {
-        setInputHandlePayTransId(e.target.value)
+    const [inputHandleRrn, setInputHandleRrn] = useState("")
+    function handleChangeRrn (e) {
+        setInputHandleRrn(e.target.value)
     }
     
-    // console.log(inputHandlePayTransId, "inputHandlePayTransId");
+    // console.log(dataQris.rrn, "dataQris.rrn");
     // console.log(dataQris.tpayewallet_pay_trans_id, "dataQris.tpayewallet_pay_trans_id");
 
-    async function submitReNotify(noQris, payTransId) {
+    async function submitReNotify(noQris, rrn) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"transaction_code": "${noQris}", "submited_user": "${payTransId}"}`)
+            const dataParams = encryptData(`{"transaction_code": "${noQris}", "rrn": "${rrn}"}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
@@ -226,14 +228,29 @@ const ReNotifyQris = () => {
                         <Row className='mb-4'>
                             <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
                                 <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
+                                    RRN
+                                </span>
+                            </Col>
+                            <Col xs={10}>
+                                <Form.Control
+                                    value={dataQris.rrn !== null ? dataQris.rrn : inputHandleRrn}
+                                    onChange={(e) => handleChangeRrn(e)}
+                                    disabled={dataQris.rrn !== null}
+                                    type='text'
+                                    style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
+                                />
+                            </Col>
+                        </Row>
+                        <Row className='mb-4'>
+                            <Col xs={2} style={{ width: '14%', paddingRight: "unset" }}>
+                                <span style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 400 }}>
                                     Partner Trans ID
                                 </span>
                             </Col>
                             <Col xs={10}>
                                 <Form.Control
-                                    value={dataQris.tqristrans_partner_trans_id !== null ? dataQris.tqristrans_partner_trans_id : inputHandlePayTransId}
-                                    onChange={(e) => handleChangePayTransId(e)}
-                                    disabled={dataQris.tqristrans_partner_trans_id !== null}
+                                    value={dataQris.tqristrans_partner_trans_id}
+                                    disabled
                                     type='text'
                                     style={{ width: "100%", height: 40, marginTop: '-7px', marginLeft: 'unset' }}
                                 />
@@ -403,7 +420,7 @@ const ReNotifyQris = () => {
                     </p>                
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalSubmitQris(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB" }} className="mx-2">Tidak</Button>
-                        <Button onClick={() => submitReNotify(noQris, partnerId)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
+                        <Button onClick={() => submitReNotify(noQris, dataQris.rrn !== null ? dataQris.rrn : inputHandleRrn)} style={{ fontFamily: "Exo", color: "black", background: "linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%)", maxWidth: 125, maxHeight: 45, width: "100%", height: "100%" }}>Ya</Button>
                     </div>
                 </Modal.Body>
             </Modal>

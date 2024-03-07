@@ -15,12 +15,13 @@ export const CustomLoader = () => (
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile9"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile11/"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile15/"
+export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile7/"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile13"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile14"
 // export const BaseURL = "https://apid.ezeelink.co.id/mobile-demo/mobile16"
 // export const BaseURL = "https://apid.ezeelink.co.id/snap/api2"
 // export const BaseURL = "https://apid.ezeelink.co.id/ezpaygateway/portal/"
-export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
+// export const BaseURL = "https://api.ezeelink.co.id/ezpaygateway/portal"
 
 export const authorization = "Basic ZXplZWxpbms6ZXplZWxpbms=";
 
