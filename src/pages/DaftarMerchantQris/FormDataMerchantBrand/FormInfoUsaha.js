@@ -752,7 +752,7 @@ const FormInfoUsaha = () => {
                         </Col>
                     </Row>
                     {
-                        inputHandle.kodePos.length >= 5 && Object.keys(dataKodePos).length === 0 ?
+                        (inputHandle.kodePos.length !== 0 && Object.keys(dataKodePos).length === 0) ?
                         <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#B9121B" }}>Kode Pos tidak ditemukan</div> :
                         <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>Harus sesuai dengan kelurahan pada alamat anda</div>
                     }
@@ -954,6 +954,7 @@ const FormInfoUsaha = () => {
                                 selectedDataKategoriUsaha.length !== 0 &&
                                 inputHandle.alamatUsaha.length !== 0 && 
                                 inputHandle.kodePos.length !== 0 && 
+                                (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length !== 0) &&
                                 (jenisToko.length !== 0 && (((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length !== 0 && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false))) || (jenisToko.join() === "1" && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false)) || (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length !== 0))) && 
                                 (inputHandle.kepunyaanQris !== 2 && ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length >= 13)) || (inputHandle.kepunyaanQris === 0)))
                                 ) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'
@@ -971,6 +972,8 @@ const FormInfoUsaha = () => {
                                 selectedDataKategoriUsaha.length === 0 ||
                                 inputHandle.alamatUsaha.length === 0 || 
                                 inputHandle.kodePos.length === 0 || 
+                                inputHandle.kodePos.length !== 5 ||
+                                (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length === 0) ||
                                 jenisToko.length === 0 ||
                                 (jenisToko.length !== 0 && ((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length === 0 || imageFileTempatUsaha.length === 0))) ||
                                 (jenisToko.length !== 0 && (jenisToko.join() === "1" && imageFileTempatUsaha.length === 0)) ||

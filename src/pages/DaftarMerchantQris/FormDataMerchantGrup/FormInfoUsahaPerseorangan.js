@@ -612,18 +612,22 @@ const FormInfoUsahaPerseorangan = () => {
                             </div>
                         </Col>
                     </Row>
-                    <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>Harus sesuai dengan kelurahan pada alamat anda</div>
+                    {
+                        (inputHandle.kodePos.length !== 0 && Object.keys(dataKodePos).length === 0) ?
+                        <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#B9121B" }}>Kode Pos tidak ditemukan</div> :
+                        <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>Harus sesuai dengan kelurahan pada alamat anda</div>
+                    }
                     <Row className='pt-3'>
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }}>Provinsi</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input value={dataKodePos.mprovince_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input value={dataKodePos.mprovince_name !== undefined ? dataKodePos.mprovince_name : ""} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }}>Kabupaten/kota</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input value={dataKodePos.mcity_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input value={dataKodePos.mcity_name !== undefined ? dataKodePos.mcity_name : ""} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                     </Row>
@@ -631,13 +635,13 @@ const FormInfoUsahaPerseorangan = () => {
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Kecamatan</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input value={dataKodePos.mdistrict_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input value={dataKodePos.mdistrict_name !== undefined ? dataKodePos.mdistrict_name : ""} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                         <Col xs={6}>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Kelurahan</div>
                             <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                <input value={dataKodePos.mvillage_name} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                <input value={dataKodePos.mvillage_name !== undefined ? dataKodePos.mvillage_name : ""} disabled className='input-text-user' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                             </div>
                         </Col>
                     </Row>
@@ -772,11 +776,11 @@ const FormInfoUsahaPerseorangan = () => {
                             <>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>NMID</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="nmid" value={inputHandle.nmid} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan NMID' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                    <input name="nmid" value={inputHandle.nmid} onChange={(e) => handleChange(e)} className='input-text-form' type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} placeholder='Masukan NMID' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
                                 {
                                     alertMinNmid === true ? (
-                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                             <img src={noteIconRed} className="me-2" alt="icon notice" />
                                             <div>Minimal 13 digit angka</div>
                                         </div>
@@ -796,8 +800,8 @@ const FormInfoUsahaPerseorangan = () => {
                             Sebelumnya
                         </button>
                         <button 
-                            className={(inputHandle.namaPerusahaan.length !== 0 && inputHandle.namaBrand.length !== 0 && inputHandle.jumlahKasir !== 0 && inputHandle.pendapatanPertahun !== 0 && inputHandle.alamatUsaha.length !== 0 && inputHandle.kodePos.length !== 0 && inputHandle.onlineShopUrl.length !== 0 && ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length >= 13)) || inputHandle.kepunyaanQris === 0) && jenisToko.length !== 0) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
-                            disabled={inputHandle.namaPerusahaan.length === 0 || inputHandle.namaBrand.length === 0 || inputHandle.jumlahKasir === 0 || inputHandle.pendapatanPertahun === 0 || inputHandle.alamatUsaha.length === 0 || inputHandle.kodePos.length === 0 || inputHandle.onlineShopUrl.length === 0 || (inputHandle.kepunyaanQris !== 1 && inputHandle.kepunyaanQris !== 0) || (inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length === 0 && inputHandle.nmid.length < 13))  || jenisToko.length === 0}
+                            className={(inputHandle.namaPerusahaan.length !== 0 && (inputHandle.bentukPerusahaan === 1 || inputHandle.bentukPerusahaan === 2 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0)) && inputHandle.emailPerusahaan.length !== 0 && inputHandle.namaBrand.length !== 0 && Number(inputHandle.jumlahKasir) !== 0 && inputHandle.jumlahKasir !== undefined && Number(inputHandle.jumlahKasir) <= 1500 && inputHandle.pendapatanPertahun !== 0 && selectedDataKategoriUsaha.length !== 0 && inputHandle.alamatUsaha.length !== 0 && inputHandle.kodePos.length !== 0 && (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length !== 0) && (jenisToko.length !== 0 && (((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length !== 0 && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false))) || (jenisToko.join() === "1" && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false)) || (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length !== 0))) && (inputHandle.kepunyaanQris !== 2 && ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length >= 13)) || (inputHandle.kepunyaanQris === 0)))) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'}
+                            disabled={inputHandle.namaPerusahaan.length === 0 || inputHandle.bentukPerusahaan === 0 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0) || inputHandle.emailPerusahaan.length === 0 || inputHandle.namaBrand.length === 0 || Number(inputHandle.jumlahKasir) === 0 || inputHandle.jumlahKasir === undefined || Number(inputHandle.jumlahKasir) > 1500 || inputHandle.pendapatanPertahun === 0 || selectedDataKategoriUsaha.length === 0 || inputHandle.alamatUsaha.length === 0 || inputHandle.kodePos.length === 0 || inputHandle.kodePos.length !== 5 || (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length === 0) || jenisToko.length === 0 || (jenisToko.length !== 0 && ((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length === 0 || imageFileTempatUsaha.length === 0))) || (jenisToko.length !== 0 && (jenisToko.join() === "1" && imageFileTempatUsaha.length === 0)) || (jenisToko.length !== 0 && (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length === 0)) || uploadTempatUsaha === true || inputHandle.kepunyaanQris === 2 || ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length === 0)) || (inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length < 13)))}
                             onClick={() => formDataSecondStepInfoUsahaPerorangan(101, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 200)}
                         >
                             Selanjutnya

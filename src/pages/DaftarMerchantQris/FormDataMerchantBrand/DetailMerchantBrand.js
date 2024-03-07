@@ -558,6 +558,11 @@ const DetailMerchantBrand = () => {
                                 </div>
                             </Col>
                         </Row>
+                        {
+                            ((inputHandle.kodePos.length !== 0 && Object.keys(dataKodePos).length === 0)) ?
+                            <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#B9121B" }}>Kode Pos tidak ditemukan</div> :
+                            <div className='mt-1' style={{ fontSize: 12, fontFamily: "Nunito", color: "#888888" }}>Harus sesuai dengan kelurahan pada alamat anda</div>
+                        }
                         <Row className='pt-2'>
                             <Col xs={6}>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }}>Provinsi</div>
@@ -631,7 +636,8 @@ const DetailMerchantBrand = () => {
                                 inputHandle.cabang.length !== 0 && 
                                 inputHandle.namaYangDicetakQris.length !== 0 &&
                                 inputHandle.alamat.length !== 0 &&
-                                inputHandle.kodePos.length !== 0 
+                                inputHandle.kodePos.length !== 0 &&
+                                (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length !== 0) 
                                 // ((selectedDataBank.length !== 0 && inputHandle.namaPemiliRek.length !== 0 && inputHandle.nomorRek.length !== 0))
                                 ) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'
                             }
@@ -644,7 +650,9 @@ const DetailMerchantBrand = () => {
                                 inputHandle.cabang.length === 0 || 
                                 inputHandle.namaYangDicetakQris.length === 0 ||
                                 inputHandle.alamat.length === 0 ||
-                                inputHandle.kodePos.length === 0 
+                                inputHandle.kodePos.length === 0 || 
+                                inputHandle.kodePos.length !== 5 ||
+                                (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length === 0) 
                                 // ((selectedDataBank.length === 0 || inputHandle.namaPemiliRek.length === 0 || inputHandle.nomorRek.length === 0))
                             )}
                             onClick={() => addFormTambahOutletHandler(inputHandle.email, inputHandle.alamat, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.cabang, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.kodePos, inputHandle.namaBrand, inputHandle.namaKepalaOutlet, inputHandle.namaPemiliRek, inputHandle.namaYangDicetakQris, inputHandle.nikKepalaOutlet, inputHandle.nomorRek, profileId, 300)}

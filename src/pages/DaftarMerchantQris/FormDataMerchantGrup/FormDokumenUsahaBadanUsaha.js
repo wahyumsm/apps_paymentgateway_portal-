@@ -406,6 +406,11 @@ const FormDokumenUsahaBadanUsaha = () => {
         setShowModalSimpanData(true)
     }
 
+    function buttonBackHandler () {
+        history.push(`/form-info-usaha-badan-usaha/${profileId === undefined ? 0 : profileId}`)
+        window.location.reload()
+    }
+
     useEffect(() => {
         if (profileId !== undefined) {
             getDataThirdStepHandler(profileId)
@@ -754,7 +759,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => history.push(`/form-info-usaha-badan-usaha/${profileId === undefined ? 0 : profileId}`)}
+                            onClick={() => buttonBackHandler()}
                         >
                             Sebelumnya
                         </button>
