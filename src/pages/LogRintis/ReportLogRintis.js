@@ -221,10 +221,6 @@ const ReportLogRintis = () => {
         },
     };
 
-    console.log(inputHandleReportLogRintis.type, "inputHandleReportLogRintis.type");
-    console.log(inputHandleReportLogRintis.periode, "inputHandleReportLogRintis.periode");
-    console.log(dateRangeReportLogRintis, "dateRangeReportLogRintis");
-
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
           <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
