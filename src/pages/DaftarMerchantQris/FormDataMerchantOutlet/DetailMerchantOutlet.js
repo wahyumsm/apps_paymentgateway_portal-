@@ -270,7 +270,7 @@ const DetailMerchantOutlet = () => {
             <div className='base-content mt-4 pb-4'>
                 <div className='d-flex justify-content-between align-items-center'>
                     <div className='nama-merchant-in-detail'>{dataDetailOutlet?.mstore_name}</div>
-                    <div className='status-in-detail-qris-brand-success'>{dataDetailOutlet?.mregstatus_name_ind}</div>
+                    <div className={(dataDetailOutlet?.mprofile_register_status === 105 || dataDetailOutlet?.mprofile_register_status === 108) ? 'status-in-detail-qris-brand-success' : 'status-in-detail-qris-brand-proses-pten'}>{dataDetailOutlet?.mregstatus_name_ind}</div>
                 </div>
                 <Row>
                     <Col xs={4}>
@@ -501,11 +501,9 @@ const DetailMerchantOutlet = () => {
                                     name="image"
                                     disabled
                                 />
-                                <div className='mt-2 ms-4'>{nameImageKtp}</div>
+                                <div className='mt-2 mb-3 ms-4'>{nameImageKtp}</div>
                             </>
                         }
-                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
-                        <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     {/* {
                         inputHandle.jenisUsaha === 2 && 

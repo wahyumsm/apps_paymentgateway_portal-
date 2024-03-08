@@ -186,7 +186,7 @@ const DetailMerchantGrup = () => {
         {
             name: 'Aksi',
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat Detail'}</div></Tooltip>}>
                     <FontAwesomeIcon onClick={() => getPageRegisterQris(row.mprofile_id, row.mqrissettlegroup_id, row.mmerchant_nou, row.moutlet_nou, row.status_id, 2)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger>
               ),
@@ -322,7 +322,7 @@ const DetailMerchantGrup = () => {
         {
             name: 'Aksi',
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">Lanjutkan daftar</div></Tooltip>}>
+                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat Detail'}</div></Tooltip>}>
                     <FontAwesomeIcon onClick={() => getPageRegisterQris(row.mprofile_id, row.mqrissettlegroup_id, row.merchant_nou, row.mstore_nou, row.status_id, 3)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                 </OverlayTrigger>
               ),

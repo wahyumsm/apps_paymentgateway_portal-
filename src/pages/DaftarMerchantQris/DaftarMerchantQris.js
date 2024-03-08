@@ -19,6 +19,10 @@ const DaftarMerchantQris = () => {
     function disbursementTabs(isTabs){
         if(isTabs === "merchantGrup"){
             setIsMerchantQris(isTabs)
+            setFilterTextBrand('')
+            getListDataBrandQrisHandler(1)
+            setFilterTextOutlet('')
+            getListDataOutletQrisHandler(1)
             $('#merchantGrup').addClass('menu-detail-akun-hr-active')
             $('#merchantGrupspan').addClass('menu-detail-akun-span-active')
             $('#merchantBrand').removeClass('menu-detail-akun-hr-active')
@@ -27,6 +31,10 @@ const DaftarMerchantQris = () => {
             $('#merchantOutletspan').removeClass('menu-detail-akun-span-active')
         } else if (isTabs === "merchantBrand") {
             setIsMerchantQris(isTabs)
+            setFilterTextGrup('')
+            getListDataGrupQrisHandler(1)
+            setFilterTextOutlet('')
+            getListDataOutletQrisHandler(1)
             $('#merchantGrup').removeClass('menu-detail-akun-hr-active')
             $('#merchantGrupspan').removeClass('menu-detail-akun-span-active')
             $('#merchantBrand').addClass('menu-detail-akun-hr-active')
@@ -35,6 +43,10 @@ const DaftarMerchantQris = () => {
             $('#merchantOutletspan').removeClass('menu-detail-akun-span-active')
         } else {
             setIsMerchantQris(isTabs)
+            setFilterTextGrup('')
+            getListDataGrupQrisHandler(1)
+            setFilterTextBrand('')
+            getListDataBrandQrisHandler(1)
             $('#merchantGrup').removeClass('menu-detail-akun-hr-active')
             $('#merchantGrupspan').removeClass('menu-detail-akun-span-active')
             $('#merchantBrand').removeClass('menu-detail-akun-hr-active')
@@ -215,12 +227,16 @@ const DaftarMerchantQris = () => {
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px 6px 6px 0px", borderRadius: 4,  },
             conditionalCellStyles: [
                 {
-                    when: row => row.status_id === 105,
+                    when: row => row.status_id === 105 || row.status_id === 108,
                     style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
                 },
                 {
-                    when: row => row.status_id === 106 || row.status_id === 107,
+                    when: row => row.status_id === 106 || row.status_id === 107 || row.status_id === 109,
                     style: { background: "#FEF4E9", color: "#F79421", width: "150px"}
+                },
+                {
+                    when: row => row.status_id === 110,
+                    style: { background: "#FEF4E9", color: "#B9121B", width: "150px"}
                 }
             ],
         },
@@ -394,12 +410,16 @@ const DaftarMerchantQris = () => {
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px 6px 6px 0px", borderRadius: 4,  },
             conditionalCellStyles: [
                 {
-                    when: row => row.status_id === 105,
+                    when: row => row.status_id === 105 || row.status_id === 108,
                     style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
                 },
                 {
-                    when: row => row.status_id === 106 || row.status_id === 107,
+                    when: row => row.status_id === 106 || row.status_id === 107 || row.status_id === 109,
                     style: { background: "#FEF4E9", color: "#F79421", width: "150px"}
+                },
+                {
+                    when: row => row.status_id === 110,
+                    style: { background: "#FEF4E9", color: "#B9121B", width: "150px"}
                 }
             ],
         },
@@ -567,12 +587,16 @@ const DaftarMerchantQris = () => {
             style: { display: "flex", flexDirection: "row", justifyContent: "center", alignItem: "center", padding: "unset", margin: "6px 6px 6px 0px", borderRadius: 4,  },
             conditionalCellStyles: [
                 {
-                    when: row => row.status_id === 105,
+                    when: row => row.status_id === 105 || row.status_id === 108,
                     style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86" }
                 },
                 {
-                    when: row => row.status_id === 106 || row.status_id === 107,
+                    when: row => row.status_id === 106 || row.status_id === 107 || row.status_id === 109,
                     style: { background: "#FEF4E9", color: "#F79421", width: "150px"}
+                },
+                {
+                    when: row => row.status_id === 110,
+                    style: { background: "#FEF4E9", color: "#B9121B", width: "150px"}
                 }
             ],
         },
