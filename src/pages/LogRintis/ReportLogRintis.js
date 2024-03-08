@@ -221,6 +221,10 @@ const ReportLogRintis = () => {
         },
     };
 
+    console.log(inputHandleReportLogRintis.type, "inputHandleReportLogRintis.type");
+    console.log(inputHandleReportLogRintis.periode, "inputHandleReportLogRintis.periode");
+    console.log(dateRangeReportLogRintis, "dateRangeReportLogRintis");
+
     const CustomLoader = () => (
         <div style={{ padding: '24px' }}>
           <Image className="loader-element animate__animated animate__jackInTheBox" src={loadingEzeelink} height={80} />
@@ -245,7 +249,7 @@ const ReportLogRintis = () => {
                 </span>
                 <Row className="">
                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
-                        <div>Tipe</div>
+                        <div>Tipe <span style={{ color: "red" }}>*</span></div>
                         <Form.Select name="type" value={inputHandleReportLogRintis.type} onChange={(e) => handleChangeReportLogRintis(e)} className='input-text-riwayat' style={{ display: "inline" }}>
                             <option defaultChecked disabled value={""}>Pilih Tipe</option>
                             <option value={"Q1"}>Issuer</option>
@@ -318,8 +322,8 @@ const ReportLogRintis = () => {
                 <Row className='mt-3'>
                     <Col xs={6} style={{ width: "15%", padding: "0px 15px" }}>
                         <button
-                            className={(inputHandleReportLogRintis.periode !== 0 || dateRangeReportLogRintis.length !== 0 || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.type.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.fileName.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.rrn.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.statusLog.length !== 0) ? 'btn-ez-on' : 'btn-ez')}
-                            disabled={inputHandleReportLogRintis.periode === 0 || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.type.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.fileName.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.rrn.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.statusLog.length === 0)}
+                            className={(((inputHandleReportLogRintis.periode === "2" || inputHandleReportLogRintis.periode === "3" || inputHandleReportLogRintis.periode === "4" || inputHandleReportLogRintis.periode === "5" || inputHandleReportLogRintis.periode === "6") && inputHandleReportLogRintis.type.length !== 0) || ((inputHandleReportLogRintis.periode === "7" && dateRangeReportLogRintis.length !== 0) && inputHandleReportLogRintis.type.length !== 0)) ? 'btn-ez-on' : 'btn-ez'}
+                            disabled={((inputHandleReportLogRintis.periode === 0 || (inputHandleReportLogRintis.periode === "7" && dateRangeReportLogRintis.length === 0)) || inputHandleReportLogRintis.type.length === 0)}
                             onClick={() => filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, activePageReportLogRintis, 10)}
                         >
                             Terapkan
@@ -327,8 +331,8 @@ const ReportLogRintis = () => {
                     </Col>
                     <Col xs={6} style={{ width: "15%", padding: "0px 15px" }}>
                         <button 
-                            className={(inputHandleReportLogRintis.periode !== 0 || dateRangeReportLogRintis.length !== 0 || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.type.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.fileName.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.rrn.length !== 0) || (dateRangeReportLogRintis.length !== 0 && inputHandleReportLogRintis.statusLog.length !== 0) ? 'btn-reset' : 'btn-ez-reset')}
-                            disabled={inputHandleReportLogRintis.periode === 0 || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.type.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.fileName.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.rrn.length === 0) || (inputHandleReportLogRintis.periode === 0 && inputHandleReportLogRintis.statusLog.length === 0)}
+                            className={(inputHandleReportLogRintis.type.length !== 0 || inputHandleReportLogRintis.fileName.length !== 0 || inputHandleReportLogRintis.rrn.length !== 0 || (inputHandleReportLogRintis.periode === "2" || inputHandleReportLogRintis.periode === "3" || inputHandleReportLogRintis.periode === "4" || inputHandleReportLogRintis.periode === "5" || inputHandleReportLogRintis.periode === "6") || (inputHandleReportLogRintis.periode === "7" && dateRangeReportLogRintis.length !== 0) || inputHandleReportLogRintis.statusLog.length !== 0) ? 'btn-reset' : 'btn-ez-reset'}
+                            disabled={(inputHandleReportLogRintis.type.length === 0 && inputHandleReportLogRintis.fileName.length === 0 && inputHandleReportLogRintis.rrn.length === 0 && (inputHandleReportLogRintis.periode === 0 || (inputHandleReportLogRintis.periode === "7" && dateRangeReportLogRintis.length === 0)) && inputHandleReportLogRintis.statusLog.length === 0)}
                             onClick={() => resetButtonReportLogRintis()}
                         >
                             Atur Ulang
