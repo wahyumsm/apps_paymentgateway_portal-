@@ -14,6 +14,7 @@ import * as XLSX from "xlsx"
 
 const QrisTransaksi = () => {
     const user_role = getRole()
+    // console.log(user_role !== "102" && user_role !== "104", 'user_role !== "102" && user_role !== "104"');
     const access_token = getToken();
     const history = useHistory()
     const [partnerId, setPartnerId] = useState("")
@@ -434,7 +435,7 @@ const QrisTransaksi = () => {
                     setDataTransactionReportQrisMerchant(getDataQrisReport.data.response_data.results)
                     setPendingTransactionReportQrisMerchant(false)
                 }
-            } else if (user_role !== "102" || user_role !== "104") {
+            } else if (user_role !== "102" && user_role !== "104") {
                 const auth = "Bearer " + access_token
                 const dataParams = encryptData(`{"transaction_code": "", "RRN": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "mterminal_id": 0, "status": "2,4,5,6", "payment_type_qris": "1,2,3", "period": 2, "date_from": "", "date_to": "", "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
@@ -493,7 +494,7 @@ const QrisTransaksi = () => {
                     setDataTransactionReportQrisMerchant(getDataQrisReport.data.response_data.results)
                     setPendingTransactionReportQrisMerchant(false)
                 }
-            } else if (user_role !== "102" || user_role !== "104") {
+            } else if (user_role !== "102" && user_role !== "104") {
                 setPendingTransactionReportQris(true)
                 setIsFilterTransactionReportQris(true)
                 setActivePageTransactionReportQris(page)
@@ -786,7 +787,7 @@ const QrisTransaksi = () => {
     function handlePageChangeTransactionReportQrisMerchant(page) {
         if (isFilterTransactionReportQrisMerchant) {
             setActivePageTransactionReportQrisMerchant(page)
-            filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, page, 10, inputHandleTransactionReportQrisMerchant.channelPembayaran)
+            filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" && user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" && user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" && user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, page, 10, inputHandleTransactionReportQrisMerchant.channelPembayaran)
         } else {
             setActivePageTransactionReportQrisMerchant(page)
             getTransactionReportQris(page, partnerId)
@@ -1001,8 +1002,10 @@ const QrisTransaksi = () => {
         if (user_role === "106" || user_role === "107" || user_role === "108") {
             userDetails()
         }
-        else if (user_role !== "102" || user_role !== "104") {
+        else if (user_role !== "102" && user_role !== "104") {
             getGrupInQrisTransactionHandler()
+        } else {
+            history.push('/404');
         }
         getTransactionReportQris(activePageTransactionReportQris, partnerId)
     }, [access_token])
@@ -1155,7 +1158,7 @@ const QrisTransaksi = () => {
                                     <Row>
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
-                                                onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, 1, 10, inputHandleTransactionReportQrisMerchant.channelPembayaran)}
+                                                onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" && user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" && user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" && user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, 1, 10, inputHandleTransactionReportQrisMerchant.channelPembayaran)}
                                                 className={(inputHandleTransactionReportQrisMerchant.periode !== 0 || dateRangeTransactionReportQrisMerchant.length !== 0 || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length !== 0) || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.rrn.length !== 0) || (dateRangeTransactionReportQrisMerchant.length !== 0 && inputHandleTransactionReportQrisMerchant.statusQris.length !== 0) ? 'btn-ez-on' : 'btn-ez')}
                                                 disabled={inputHandleTransactionReportQrisMerchant.periode === 0 || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.idTransaksi.length === 0) || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.rrn.length === 0) || (inputHandleTransactionReportQrisMerchant.periode === 0 && inputHandleTransactionReportQrisMerchant.statusQris.length === 0)}
                                             >
@@ -1177,7 +1180,7 @@ const QrisTransaksi = () => {
                             {
                                 dataTransactionReportQrisMerchant.length !== 0 && (
                                     <div style={{ marginBottom: 30 }} className='mt-3'>
-                                        <Link className="export-span" onClick={() => ExportReportTransactionReportQrisMerchantHandler(isFilterTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" || user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" || user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" || user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.channelPembayaran)}>Export</Link>
+                                        <Link className="export-span" onClick={() => ExportReportTransactionReportQrisMerchantHandler(isFilterTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.idTransaksi, inputHandleTransactionReportQrisMerchant.rrn, (user_role !== "102" && user_role !== "104") ? (selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0) : user_role === "106" ? partnerId : 0, (user_role !== "102" && user_role !== "104") ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" ? (selectedBrandNameMerchant.length !== 0 ? selectedBrandNameMerchant.map((item, idx) => item.value) : 0) : user_role === "107" ? partnerId : 0), (user_role !== "102" && user_role !== "104") ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : (user_role === "106" || user_role === "107" ? (selectedOutletNameMerchant.length !== 0 ? selectedOutletNameMerchant.map((item, idx) => item.value) : 0) : partnerId), (selectedIdKasirNameMerchant.length !== 0 ? selectedIdKasirNameMerchant.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisMerchant.statusQris, inputHandleTransactionReportQrisMerchant.periode, dateRangeTransactionReportQrisMerchant, inputHandleTransactionReportQrisMerchant.channelPembayaran)}>Export</Link>
                                     </div>
                                 )
                             }
@@ -1205,14 +1208,14 @@ const QrisTransaksi = () => {
                             </div>
                         </div>
                     </>
-                ) : (user_role !== "102" || user_role !== "104") ? (
+                ) : (user_role !== "102" && user_role !== "104") ? (
                     <>
                         <span className='breadcrumbs-span'><Link to={"/"}>Beranda</Link>  &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp; Transaksi &nbsp; <img alt="" src={breadcrumbsIcon} />  &nbsp;QRIS</span>
                         <div className="head-title">
                             <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Transaksi QRIS</h2>
                         </div>
                         <div className='base-content mt-3'>
-                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter in</span>
                             <Row className=''>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>ID Transaksi</span>
