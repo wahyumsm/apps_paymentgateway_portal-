@@ -79,6 +79,8 @@ export const Routes = {
     VAUSD: {path: "/VA USD/create-va-usd"},
     RiwayatFileSFTP: {path: "/VA USD/riwayat-file-sftp"},
     UnsettledTransaction: {path: "/settlement/unsettled-transaction"},
+    DetailSettlementQRISAdmin: { path: "/detail-settlement-qris/:merchantId/:brandId/:outletId/:settlementCode"},
+    ReportLogRintis: {path: "/sftp-data/report-log-rintis"},
     DaftarMerchantQris: {path: "/daftar-merchant-qris"},
     PilihJenisUsahaQris: {path: "/pilih-jenis-usaha"},
     FormInfoPemilikPerseorangan: {path: "/form-info-pemilik-perorangan"},
