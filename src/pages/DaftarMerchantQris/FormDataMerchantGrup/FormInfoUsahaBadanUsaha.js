@@ -424,8 +424,6 @@ const FormInfoUsahaBadanUsaha = () => {
         );
     };
 
-    console.log(imageFileTempatUsaha, "imageFileTempatUsaha");
-
     useEffect(() => {
         if (profileId !== undefined) {
             getDataSecondStepInfoUsahaBadanUsaha(profileId)

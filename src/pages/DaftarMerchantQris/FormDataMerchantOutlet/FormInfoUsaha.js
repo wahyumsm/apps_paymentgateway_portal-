@@ -472,13 +472,6 @@ const FormInfoUsahaOutlet = () => {
         }
     }
 
-    console.log(inputHandle.kodePos, "inputHandle.kodePos");
-    console.log(inputHandle.namaPerusahaan, "inputHandle.namaPerusahaan");
-    console.log(inputHandle.businessType, "inputHandle.businessType");
-    console.log(inputHandle.bentukPerusahaan, "inputHandle.bentukPerusahaan");
-    console.log(inputHandle.bentukPerusahaanLainnya, "inputHandle.bentukPerusahaanLainnya");
-    console.log(dataKodePos, "dataKodePos");
-
     function backPage () {
         setShowModalSimpanData(true)
     }

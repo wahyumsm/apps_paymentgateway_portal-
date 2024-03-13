@@ -43,19 +43,6 @@ const FormInfoUsaha = () => {
     const [imageFileTempatUsaha, setImageFileTempatUsaha] = useState([])
     const [uploadTempatUsaha, setUploadTempatUsaha] = useState(false)
 
-    console.log(inputHandle.namaPerusahaan, "inputHandle.namaPerusahaan");
-    console.log(inputHandle.bentukPerusahaan, "inputHandle.bentukPerusahaan");
-    console.log(inputHandle.bentukPerusahaanLainnya, "inputHandle.bentukPerusahaanLainnya");
-    console.log(inputHandle.emailPerusahaan, "inputHandle.emailPerusahaan");
-    console.log(inputHandle.namaBrand, "inputHandle.namaBrand");
-    console.log(inputHandle.namaYangDicetakQris, "inputHandle.namaYangDicetakQris");
-    console.log(inputHandle.jumlahKasir, "inputHandle.jumlahKasir");
-    console.log(dataKategoriUsaha, "dataKategoriUsaha");
-    console.log(inputHandle.pendapatanPertahun, "inputHandle.pendapatanPertahun");
-    console.log(inputHandle.alamatUsaha, "inputHandle.alamatUsaha");
-    console.log(jenisToko, "jenisToko");
-    console.log(inputHandle.kepunyaanQris, "inputHandle.kepunyaanQris");
-
     const handleClickTempatUsaha = () => {
         hiddenFileInputTempatUsaha.current.click();
     };

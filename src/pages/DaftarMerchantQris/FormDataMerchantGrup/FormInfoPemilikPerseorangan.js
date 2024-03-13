@@ -177,9 +177,6 @@ const FormInfoPemilikPerseorangan = () => {
         }
     }
 
-    console.log(inputHandle.namaUser, "inputHandle.namaUser");
-    console.log(inputHandle.namaUser, "inputHandle.namaUser");
-
     async function formDataFirstStepInfoPemilikPerorangan(merchantNou, kewarganegaraan, profileId, numberKtp, nameUser, imageKtp, imageSelfieKtp, step, businessType, position) {
         try {
             const auth = "Bearer " + getToken()

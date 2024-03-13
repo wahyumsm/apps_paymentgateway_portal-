@@ -41,8 +41,6 @@ const FormInfoPemilik = (props) => {
         noTelp: "",
     })
 
-    console.log(inputHandle.jenisUsaha, "inputHandle.jenisUsaha");
-
     function handleChange(e, kewarganegaraan) {
         if (e.target.name === "jenisUsaha") {
             if (Number(e.target.value) === 1) {
