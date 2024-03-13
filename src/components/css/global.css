@@ -2215,15 +2215,23 @@ input::-webkit-inner-spin-button {
 
 .status-in-detail-qris-brand-success {
     color: #077E86;
-    border-radius: 4px;
     background: rgba(7, 126, 134, 0.08);
+}
+
+.status-in-detail-qris-brand-proses-pten {
+    color: #F79421;
+    background: #FEF4E9;
+}
+
+.status-in-detail-qris-brand-success,
+.status-in-detail-qris-brand-proses-pten {
+    border-radius: 4px;
     padding: 8px;
     width: 160px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 14px;
-    color: #000000;
 }
 
 .qrisInput input::-webkit-outer-spin-button,
