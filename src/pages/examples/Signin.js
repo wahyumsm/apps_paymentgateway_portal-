@@ -120,29 +120,35 @@ export default () => {
             case 1106:
               history.push("/riwayat-transaksi/transaksi-qris")
             break;
+            case 1107:
+              history.push("/riwayat-transaksi/transaksi-qris-api")
+            break;
             case 1108:
               history.push("/riwayat-transaksi/va-usd")
             break;
             case 1601:
-              history.push("/Transaksi/va-dan-paylink")
+              history.push("/transaksi/va-dan-paylink")
             break;
             case 1602:
-              history.push("/Transaksi/disbursement")
+              history.push("/transaksi/disbursement")
             break;
             case 1603:
-              history.push("/Transaksi/ewallet")
+              history.push("/transaksi/ewallet")
             break;
             case 1604:
-              history.push("/Transaksi/direct-debit")
+              history.push("/transaksi/direct-debit")
             break;
             case 1605:
-              history.push("/Transaksi/sub-account")
+              history.push("/transaksi/sub-account")
             break;
             case 1606:
-              history.push("/Transaksi/disbursement-timeout")
+              history.push("/transaksi/disbursement-timeout")
             break;
             case 1607:
               history.push("/transaksi/transaksi-qris")
+            break;
+            case 1610:
+              history.push("/transaksi/transaksi-qris-api")
             break;
             case 1701:
               history.push("/settlement/riwayat-settlement")
