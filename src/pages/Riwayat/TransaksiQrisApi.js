@@ -778,6 +778,12 @@ const TransaksiQrisApi = () => {
             wrap: true
         },
         {
+            name: 'No. Referensi',
+            selector: row => row.reference_label !== null ? row.reference_label : "-",
+            wrap: true,
+            width: "150px"
+        },
+        {
             name: 'Waktu Request',
             selector: row => row.qris_request,
             width: "150px"
@@ -788,10 +794,9 @@ const TransaksiQrisApi = () => {
             width: "150px"
         },
         {
-            name: 'No. Referensi',
-            selector: row => row.reference_label !== null ? row.reference_label : "-",
-            wrap: true,
-            width: "150px"
+            name: 'Channel Pembayaran',
+            selector: row => row.payment_channel_name,
+            width: "200px"
         },
         {
             name: 'RRN',
