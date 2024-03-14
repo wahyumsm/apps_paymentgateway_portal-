@@ -632,7 +632,7 @@ const QrisSettlement = () => {
             name: 'ID Settlement',
             selector: row => row.tqrissettl_code,
             width: "190px",
-            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detail-settlement-qris/${row.mmerchant_nou === null ? "0" : row.mmerchant_nou}/${row.mstore_nou === null ? "0" : row.mstore_nou}/${row.moutlet_nou === null ? "0" : row.moutlet_nou}/${row.tqrissettl_id}`} >{row.ID}</Link>
+            cell: (row) => <Link style={{ textDecoration: "underline", color: "#077E86" }} to={`/detail-settlement-qris/${row.mmerchant_nou === null ? "0" : row.mmerchant_nou}/${row.mstore_nou === null ? "0" : row.mstore_nou}/${row.moutlet_nou === null ? "0" : row.moutlet_nou}/${row.tqrissettl_id}`} >{row.tqrissettl_code}</Link>
         },
         {
             name: 'Waktu',
@@ -1052,7 +1052,9 @@ const QrisSettlement = () => {
                     } else {
                         getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisMerchant)
                     }
-                } else if (user_role !== "102" && user_role !== "104") {
+                } else if (user_role === "102" || user_role === "104") {
+                    getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisAdmin)
+                } else {
                     getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualAdmin, userDetail.data.response_data.muser_partnerdtl_id)
                     getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisAdmin)
                 }
@@ -1081,7 +1083,9 @@ const QrisSettlement = () => {
                     } else {
                         getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisMerchant)
                     }
-                } else if (user_role !== "102" && user_role !== "104") {
+                } else if (user_role === "102" || user_role === "104") {
+                    getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisAdmin)
+                } else {
                     getDataSettlementQrisManualHandler(user_role, activePageSettlementQrisManualAdmin, userDetail.data.response_data.muser_partnerdtl_id)
                     getDataSettlementQrisOtomatisHandler(user_role, activePageSettlementQrisOtomatisAdmin)
                 }
@@ -1239,7 +1243,7 @@ const QrisSettlement = () => {
 
     async function getDataSettlementQrisOtomatisHandler(role, currentPage) {
         try {
-            if (role === "106" || role === "107" || role === "108") {
+            if (role === "106" || role === "107" || role === "108" || role === "102" || role === "104") {
                 const auth = "Bearer " + access_token
                 const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "payment_type_qris": "1,2,3", "period": 2, "date_from": "", "date_to": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
@@ -1262,7 +1266,7 @@ const QrisSettlement = () => {
                     setDataSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.results)
                     setPendingSettlementQrisOtomatisMerchant(false)
                 }
-            } else if (role !== "102" && role !== "104") {
+            } else {
                 const auth = "Bearer " + access_token
                 const dataParams = encryptData(`{"settle_code": "", "status" : "2,4,5,6,8", "payment_type_qris": "1,2,3", "period": 2, "date_from": "", "date_to": "", "merchant_nou": 0, "brand_nou": 0, "outlet_nou": 0, "page": ${(currentPage < 1) ? 1 : currentPage}, "row_per_page": 10}`)
                 const headers = {
@@ -1294,7 +1298,7 @@ const QrisSettlement = () => {
 
     async function filterDataSettlementQrisOtomatisHandler(role, idSettle, dateId, periode, statusQris, grupNou, brandNou, outletNou, page, rowPerPage, channelPembayaran) {
         try {
-            if (role === "106" || role === "107" || role === "108") {
+            if (role === "106" || role === "107" || role === "108" || role === "102" || role === "104") {
                 setPendingSettlementQrisOtomatisMerchant(true)
                 setIsFilterSettlementQrisOtomatisMerchant(true)
                 setActivePageSettlementQrisOtomatisMerchant(page)
@@ -1320,7 +1324,7 @@ const QrisSettlement = () => {
                     setDataSettlementQrisOtomatisMerchant(dataReportSettleQris.data.response_data.results)
                     setPendingSettlementQrisOtomatisMerchant(false)
                 }
-            } else if (role !== "102" && role !== "104") {
+            } else {
                 setPendingSettlementQrisOtomatisAdmin(true)
                 setIsFilterSettlementQrisOtomatisAdmin(true)
                 setActivePageSettlementQrisOtomatisAdmin(page)
@@ -1470,7 +1474,7 @@ const QrisSettlement = () => {
     }
 
     function ExportReportSettlementQrisOtomatisHandler(role, isFilter, idSettle, dateId, periode, statusQris, grupNou, brandNou, outletNou, channelPembayaran) {
-        if (role === "106" || role === "107" || role === "108") {
+        if (role === "106" || role === "107" || role === "108" || role === "102" || role === "104") {
             if (isFilter) {
                 async function dataExportFilter(idSettle, dateId, periode, statusQris, channelPembayaran) {
                     try {
@@ -1612,7 +1616,7 @@ const QrisSettlement = () => {
                 }
                 dataExportSettlementQris()
             }
-        } else if (role !== "102" && role !== "104") {
+        } else {
             if (isFilter) {
                 async function dataExportFilter(idSettle, dateId, periode, statusQris, channelPembayaran) {
                     try {
@@ -2219,7 +2223,7 @@ const QrisSettlement = () => {
                 <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Settlement QRIS</h2>
             </div>
             {
-                (user_role === "106" || user_role === "107" || user_role === "108") ? (
+                (user_role === "106" || user_role === "107" || user_role === "108" || user_role === "102" || user_role === "104") ? (
                     <>
                         {
                             settleType[0]?.mqrismerchant_settle_type === 102 ? (
@@ -2626,7 +2630,7 @@ const QrisSettlement = () => {
                         }
 
                     </>
-                ) : (user_role !== "102" && user_role !== "104") ? (
+                ) : (
                     <>
                         <div className='detail-akun-menu mt-4' style={{display: 'flex', height: 33}}>
                             <div className='detail-akun-tabs menu-detail-akun-hr-active' onClick={() => pindahHalaman("otomatis")} id="detailakuntab">
@@ -2934,7 +2938,7 @@ const QrisSettlement = () => {
                             )
                         }
                     </>
-                ) : ""
+                )
             }
         </div>
     )

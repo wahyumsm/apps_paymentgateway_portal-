@@ -43,19 +43,6 @@ const FormInfoUsaha = () => {
     const [imageFileTempatUsaha, setImageFileTempatUsaha] = useState([])
     const [uploadTempatUsaha, setUploadTempatUsaha] = useState(false)
 
-    console.log(inputHandle.namaPerusahaan, "inputHandle.namaPerusahaan");
-    console.log(inputHandle.bentukPerusahaan, "inputHandle.bentukPerusahaan");
-    console.log(inputHandle.bentukPerusahaanLainnya, "inputHandle.bentukPerusahaanLainnya");
-    console.log(inputHandle.emailPerusahaan, "inputHandle.emailPerusahaan");
-    console.log(inputHandle.namaBrand, "inputHandle.namaBrand");
-    console.log(inputHandle.namaYangDicetakQris, "inputHandle.namaYangDicetakQris");
-    console.log(inputHandle.jumlahKasir, "inputHandle.jumlahKasir");
-    console.log(dataKategoriUsaha, "dataKategoriUsaha");
-    console.log(inputHandle.pendapatanPertahun, "inputHandle.pendapatanPertahun");
-    console.log(inputHandle.alamatUsaha, "inputHandle.alamatUsaha");
-    console.log(jenisToko, "jenisToko");
-    console.log(inputHandle.kepunyaanQris, "inputHandle.kepunyaanQris");
-
     const handleClickTempatUsaha = () => {
         hiddenFileInputTempatUsaha.current.click();
     };
@@ -184,7 +171,7 @@ const FormInfoUsaha = () => {
                     });
                 }
             });
-            
+
             setImageFileTempatUsaha(tempArr);
         }
     }
@@ -270,7 +257,7 @@ const FormInfoUsaha = () => {
                     namaPerusahaan: getDataSecStep.mprofbus_name === null ? "" : getDataSecStep.mprofbus_name,
                     bentukPerusahaan: getDataSecStep.mprofbus_company_type === null ? 0 : getDataSecStep.mprofbus_company_type,
                     bentukPerusahaanLainnya: getDataSecStep.mprofbus_company_desc === null ? "" : getDataSecStep.mprofbus_company_desc,
-                    emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email, 
+                    emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email,
                     namaBrand: getDataSecStep.mprofbus_brand === null ? "" : getDataSecStep.mprofbus_brand,
                     namaYangDicetakQris: getDataSecStep.mprofbus_name_in_Qris === null ? "" : getDataSecStep.mprofbus_name_in_Qris,
                     jumlahKasir: getDataSecStep.mprofbus_cashier_count === null ? 0 : getDataSecStep.mprofbus_cashier_count,
@@ -323,7 +310,7 @@ const FormInfoUsaha = () => {
                     namaPerusahaan: getDataSecStep.mprofbus_name === null ? "" : getDataSecStep.mprofbus_name,
                     bentukPerusahaan: getDataSecStep.mprofbus_company_type === null ? 0 : getDataSecStep.mprofbus_company_type,
                     bentukPerusahaanLainnya: getDataSecStep.mprofbus_company_desc === null ? "" : getDataSecStep.mprofbus_company_desc,
-                    emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email, 
+                    emailPerusahaan: getDataSecStep.mprofdtl_email === null ? "" : getDataSecStep.mprofdtl_email,
                     namaBrand: getDataSecStep.mprofbus_brand === null ? "" : getDataSecStep.mprofbus_brand,
                     namaYangDicetakQris: getDataSecStep.mprofbus_name_in_Qris === null ? "" : getDataSecStep.mprofbus_name_in_Qris,
                     jumlahKasir: getDataSecStep.mprofbus_cashier_count === null ? 0 : getDataSecStep.mprofbus_cashier_count,
@@ -412,7 +399,7 @@ const FormInfoUsaha = () => {
                     }
                 } else {
                     alert(`${getData.data.response_data.error_text}`)
-                }                
+                }
             } else if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 if (getData.data.response_data.results !== null) {
@@ -521,7 +508,7 @@ const FormInfoUsaha = () => {
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
                 <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => setShowModalSimpanData(true)} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
-                <div className="d-flex justify-content-start align-items-center head-title"> 
+                <div className="d-flex justify-content-start align-items-center head-title">
                     <FontAwesomeIcon onClick={() => backPage()} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
                 </div>
@@ -643,7 +630,7 @@ const FormInfoUsaha = () => {
                         <input name="jumlahKasir" value={inputHandle.jumlahKasir} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='0' type='number' min={0} max={2500} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     {
-                        alertMaxJumlahKasir ? 
+                        alertMaxJumlahKasir ?
                         <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
                             <img src={noteIconRed} className="me-2" alt="icon notice" />
                             <div>Jumlah kasir tidak boleh lebih dari 1500</div>
@@ -797,7 +784,7 @@ const FormInfoUsaha = () => {
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto tempat usaha</div>
                                 <div className='viewDragDrop mt-2' style={{cursor: "pointer"}} onClick={handleClickTempatUsaha}>
                                     {
-                                        imageFileTempatUsaha.length === 0 ? 
+                                        imageFileTempatUsaha.length === 0 ?
                                         <>
                                             <div className='pt-4 text-center'>Masukkan foto tempat usaha.</div>
                                             <input
@@ -812,8 +799,8 @@ const FormInfoUsaha = () => {
                                             />
                                             <div className='pt-3 text-center'>Maks: 3 foto, Maks ukuran satu file: 500kb</div>
                                             <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
-                                        </> 
-                                            : 
+                                        </>
+                                            :
                                         <>
                                             <div className='d-flex justify-content-start align-items-center' >
                                             {
@@ -859,9 +846,9 @@ const FormInfoUsaha = () => {
                                     ) : ""
                                 }
                             </>
-                        ) 
+                        )
                     }
-                    {    
+                    {
                         (jenisToko.join() === "1,2" || jenisToko.join() === "2,1" || jenisToko.join() === "2") && (
                             <>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838"}} className='pt-3'>Link / Website toko</div>
@@ -869,7 +856,7 @@ const FormInfoUsaha = () => {
                                     <input name="onlineShopUrl" value={inputHandle.onlineShopUrl} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan link / website toko' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
                             </>
-                        ) 
+                        )
                     }
                     <div style={{ fontFamily: "Nunito", fontSize: 14 }} className='pt-3'>Sudah pernah mendaftar QRIS sebelumnya ?</div>
                     <div className='d-flex justify-content-start align-items-center py-2'>
@@ -880,7 +867,7 @@ const FormInfoUsaha = () => {
                                 id="Ya"
                                 name='kepunyaanQris'
                                 value={1}
-                               
+
                                 checked={inputHandle.kepunyaanQris === 1 && true}
                                 onChange={(e) => handleChange(e)}
                             />
@@ -899,7 +886,7 @@ const FormInfoUsaha = () => {
                                 id="Tidak"
                                 name='kepunyaanQris'
                                 value={0}
-                               
+
                                 checked={inputHandle.kepunyaanQris === 0 && true}
                                 onChange={(e) => handleChange(e)}
                             />
@@ -934,55 +921,55 @@ const FormInfoUsaha = () => {
                     }
                    <div>
                    <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
-                        <button 
+                        <button
                             className='btn-prev-info-usaha me-2'
                             onClick={() => history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)}
                         >
                             Sebelumnya
                         </button>
-                        <button 
+                        <button
                             className={(
-                                inputHandle.namaPerusahaan.length !== 0 && 
+                                inputHandle.namaPerusahaan.length !== 0 &&
                                 ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 1 || inputHandle.bentukPerusahaan === 2 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) || inputHandle.businessType === 2) &&
-                                inputHandle.emailPerusahaan.length !== 0 && 
-                                inputHandle.namaBrand.length !== 0 && 
-                                inputHandle.namaYangDicetakQris.length !== 0 && 
+                                inputHandle.emailPerusahaan.length !== 0 &&
+                                inputHandle.namaBrand.length !== 0 &&
+                                inputHandle.namaYangDicetakQris.length !== 0 &&
                                 Number(inputHandle.jumlahKasir) !== 0 &&
-                                inputHandle.jumlahKasir !== undefined && 
+                                inputHandle.jumlahKasir !== undefined &&
                                 Number(inputHandle.jumlahKasir) <= 1500 &&
-                                inputHandle.pendapatanPertahun !== 0 && 
+                                inputHandle.pendapatanPertahun !== 0 &&
                                 selectedDataKategoriUsaha.length !== 0 &&
-                                inputHandle.alamatUsaha.length !== 0 && 
-                                inputHandle.kodePos.length !== 0 && 
+                                inputHandle.alamatUsaha.length !== 0 &&
+                                inputHandle.kodePos.length !== 0 &&
                                 (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length !== 0) &&
-                                (jenisToko.length !== 0 && (((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length !== 0 && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false))) || (jenisToko.join() === "1" && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false)) || (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length !== 0))) && 
+                                (jenisToko.length !== 0 && (((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length !== 0 && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false))) || (jenisToko.join() === "1" && (imageFileTempatUsaha.length !== 0 && uploadTempatUsaha === false)) || (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length !== 0))) &&
                                 (inputHandle.kepunyaanQris !== 2 && ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length >= 13)) || (inputHandle.kepunyaanQris === 0)))
                                 ) ? 'btn-next-info-usaha ms-2' : 'btn-next-info-usaha-inactive ms-2'
                             }
                             disabled={(
-                                inputHandle.namaPerusahaan.length === 0 || 
+                                inputHandle.namaPerusahaan.length === 0 ||
                                 ((inputHandle.businessType === 1 && ((inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0)))) ||
-                                inputHandle.emailPerusahaan.length === 0 || 
-                                inputHandle.namaBrand.length === 0 || 
-                                inputHandle.namaYangDicetakQris.length === 0 || 
-                                Number(inputHandle.jumlahKasir) === 0 || 
+                                inputHandle.emailPerusahaan.length === 0 ||
+                                inputHandle.namaBrand.length === 0 ||
+                                inputHandle.namaYangDicetakQris.length === 0 ||
+                                Number(inputHandle.jumlahKasir) === 0 ||
                                 inputHandle.jumlahKasir === undefined ||
                                 Number(inputHandle.jumlahKasir) > 1500 ||
-                                inputHandle.pendapatanPertahun === 0 || 
+                                inputHandle.pendapatanPertahun === 0 ||
                                 selectedDataKategoriUsaha.length === 0 ||
-                                inputHandle.alamatUsaha.length === 0 || 
-                                inputHandle.kodePos.length === 0 || 
+                                inputHandle.alamatUsaha.length === 0 ||
+                                inputHandle.kodePos.length === 0 ||
                                 inputHandle.kodePos.length !== 5 ||
                                 (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length === 0) ||
                                 jenisToko.length === 0 ||
                                 (jenisToko.length !== 0 && ((jenisToko.join() === "1,2" || jenisToko.join() === "2,1") && (inputHandle.onlineShopUrl.length === 0 || imageFileTempatUsaha.length === 0))) ||
                                 (jenisToko.length !== 0 && (jenisToko.join() === "1" && imageFileTempatUsaha.length === 0)) ||
-                                (jenisToko.length !== 0 && (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length === 0)) || 
+                                (jenisToko.length !== 0 && (jenisToko.join() === "2" && inputHandle.onlineShopUrl.length === 0)) ||
                                 uploadTempatUsaha === true ||
-                                inputHandle.kepunyaanQris === 2 || ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length === 0)) || (inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length < 13)))   
+                                inputHandle.kepunyaanQris === 2 || ((inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length === 0)) || (inputHandle.kepunyaanQris === 1 && (inputHandle.nmid.length !== 0 && inputHandle.nmid.length < 13)))
                             )}
                             onClick={
-                                inputHandle.businessType === 1 ? 
+                                inputHandle.businessType === 1 ?
                                     () => formDataSecondStepInfoUsahaBadanUsaha(0, inputHandle.businessType, 102, profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 3) :
                                     () => checkPageSettlementHandler(inputHandle.businessType, 102, profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl)
                             }
@@ -1009,7 +996,7 @@ const FormInfoUsaha = () => {
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 15, marginBottom: 16 }}>
                         <p style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 400, marginBottom: "unset", color: "var(--palet-pengembangan-shades-hitam-62-grey, #888)" }} className="text-center">Data anda akan terhapus apabila anda keluar tanpa menyimpan data anda</p>
-                    </div>             
+                    </div>
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
                         <Button onClick={() => saveAndGoBack()} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
