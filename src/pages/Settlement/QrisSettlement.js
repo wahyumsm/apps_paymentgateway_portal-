@@ -1702,7 +1702,7 @@ const QrisSettlement = () => {
     }
 
     function ExportReportDetailsSettlementQrisOtomatisHandler(role, isFilter, idSettle, dateId, periode, statusQris, grupNou, brandNou, outletNou, channelPembayaran) {
-        if (role === "106" || role === "107" || role === "108") {
+        if (role === "106" || role === "107" || role === "108" || role === "102" || role === "104") {
             if (isFilter) {
                 async function dataExportFilter(idSettle, dateId, periode, statusQris, channelPembayaran) {
                     try {
@@ -1844,7 +1844,7 @@ const QrisSettlement = () => {
                 }
                 dataExportSettlementQris()
             }
-        } else if (role !== "102" && role !== "104") {
+        } else {
             if (isFilter) {
                 async function dataExportFilter(idSettle, dateId, periode, statusQris, grupNou, brandNou, outletNou, channelPembayaran) {
                     try {
@@ -2592,12 +2592,15 @@ const QrisSettlement = () => {
                                             </Row>
                                         </Col>
                                     </Row>
-                                    <div style={{ marginBottom: 20 }} className='mt-3 d-flex justify-content-between align-items-center'>
+                                    <div style={{ marginBottom: 10 }} className='mt-3 d-flex justify-content-between align-items-center'>
                                         <div style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600, color: "#383838" }}>Daftar pengajuan settlement</div>
                                         {
                                             dataSettlementQrisOtomatisMerchant.length !== 0 && (
                                             <div style={{ marginBottom: 30 }} className='mt-3'>
-                                                <Link onClick={() => ExportReportDetailsSettlementQrisOtomatisHandler(user_role, isFilterSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0, inputHandleSettlementQrisOtomatisMerchant.channelPembayaran)} className="export-span">Export Details</Link>
+                                                {
+                                                    user_role !== "102" && user_role !== "104" && 
+                                                    <Link onClick={() => ExportReportDetailsSettlementQrisOtomatisHandler(user_role, isFilterSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0, inputHandleSettlementQrisOtomatisMerchant.channelPembayaran)} className="export-span">Export Details</Link>
+                                                }
                                                 <Link style={{ marginRight: 15 }} onClick={() => ExportReportSettlementQrisOtomatisHandler(user_role, isFilterSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.idSettlement, inputHandleSettlementQrisOtomatisMerchant.periode, dateRangeSettlementQrisOtomatisMerchant, inputHandleSettlementQrisOtomatisMerchant.statusQris, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0, selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0, inputHandleSettlementQrisOtomatisMerchant.channelPembayaran)} className="export-span">Export Summary</Link>
                                             </div>
                                             )
