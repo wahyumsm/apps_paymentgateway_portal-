@@ -1046,7 +1046,7 @@ const TransaksiQrisApi = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>Channel Pembayaran</span>
-                                    <Form.Select name="channelPembayaran" value={inputHandleTransactionApiPartner.channelPembayaran} onChange={(e) => handleChangeTransactionQrisApiPartner(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
+                                    <Form.Select name="channelPembayaran" value={inputHandleTransactionApiPartner.channelPembayaran} onChange={(e) => handleChangeTransactionQrisApiPartner(e)} className='input-text-riwayat ms-3' style={{ width: "11.7rem" }}>
                                         <option defaultChecked disabled value={0}>Pilih Channel Pembayaran</option>
                                         {/* <option value={2}>Semua Channel</option> */}
                                         <option value={1}>QRIS</option>
@@ -1137,11 +1137,11 @@ const TransaksiQrisApi = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span className="me-4">RRN</span>
-                                    <input name="rrn" value={inputHandleTransactionApiAdmin.rrn} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan RRN'/>
+                                    <input name="rrn" value={inputHandleTransactionApiAdmin.rrn} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} type='text' className='input-text-riwayat ms-3' placeholder='Masukkan RRN'/>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>Partner Trans ID</span>
-                                    <input name="partnerTransId" value={inputHandleTransactionApiAdmin.partnerTransId} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan Partner Trans ID'/>
+                                    <input name="partnerTransId" value={inputHandleTransactionApiAdmin.partnerTransId} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} type='text' className='input-text-riwayat ms-3' placeholder='Masukkan Partner Trans ID'/>
                                 </Col>
                                 <Col
                                     xs={4}
@@ -1230,7 +1230,7 @@ const TransaksiQrisApi = () => {
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>Channel Pembayaran</span>
-                                    <Form.Select name="channelPembayaran" value={inputHandleTransactionApiAdmin.channelPembayaran} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} className='input-text-riwayat ms-3' style={{ display: "inline" }}>
+                                    <Form.Select name="channelPembayaran" value={inputHandleTransactionApiAdmin.channelPembayaran} onChange={(e) => handleChangeTransactionQrisApiAdmin(e)} className='input-text-riwayat ms-3' style={{ width: "11.7rem" }}>
                                         <option defaultChecked disabled value={0}>Pilih Channel Pembayaran</option>
                                         {/* <option value={2}>Semua Channel</option> */}
                                         <option value={1}>QRIS</option>

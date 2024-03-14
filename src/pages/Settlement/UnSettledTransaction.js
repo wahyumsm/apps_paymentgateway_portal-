@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import ReactSelect, { components } from 'react-select'
-import { BaseURL, CustomLoader, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, CustomLoader, convertToRupiah, errorCatch, getRole, getToken, setUserSession } from '../../function/helpers';
 import axios from 'axios';
 import encryptData from '../../function/encryptData';
 import DataTable, { defaultThemes } from 'react-data-table-component';
@@ -14,6 +14,7 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 function UnSettledTransaction() {
 
+    const user_role = getRole();
     const history = useHistory()
     const [listBank, setListBank] = useState([])
     const [listEWallet, setListEWallet] = useState([])
@@ -247,10 +248,15 @@ function UnSettledTransaction() {
     }
 
     useEffect(() => {
-        getListPartner()
-        getListEWallet()
-        getBankNameHandler()
-        unsettledTransactionList(selectedPartnerSettlement, transactionType, selectedBankSettlement, selectedEWalletSettlement)
+        if (user_role === "100") {
+            getListPartner()
+            getListEWallet()
+            getBankNameHandler()
+            unsettledTransactionList(selectedPartnerSettlement, transactionType, selectedBankSettlement, selectedEWalletSettlement)
+        } else {
+            history.push("/404");
+        }
+        
     }, [])
 
     const columnsSettl = [
