@@ -128,6 +128,7 @@ import FormInfoRekeningOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/
 import DetailMerchantOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/DetailMerchantOutlet';
 import FormTambahSettlement from './DaftarMerchantQris/FormDataMerchantGrup/FormTambahSettlement';
 import DetailSettlementGrup from './DaftarMerchantQris/FormDataMerchantGrup/DetailSettlementGrup';
+import QrisIssuer from './Riwayat/QrisIssuer';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -245,6 +246,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.SubAccountAdmin.path} component={InfoSaldoMutasi} />
     <RouteWithSidebar exact path={Routes.DisbursementTimeout.path} component={DisbursementTimeout} />
     <RouteWithSidebar exact path={Routes.QrisTransaksiAdmin.path} component={QrisTransaksi} />
+    <RouteWithSidebar exact path={Routes.QrisIssuerAdmin.path} component={QrisIssuer} />
     <RouteWithSidebar exact path={Routes.TransaksiQrisApiAdmin.path} component={TransaksiQrisApi} />
     <RouteWithSidebar exact path={Routes.ExcludeSettlementManual.path} component={ExcludeSettlementManual} />
     <RouteWithSidebar exact path={Routes.ProsesSettlementManual.path} component={ProsesSettlementManual} />

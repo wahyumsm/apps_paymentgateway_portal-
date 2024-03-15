@@ -72,6 +72,7 @@ export const Routes = {
     eWalletAdmin: {path: "/transaksi/ewallet"},
     RiwayatVAUSDAdmin: {path: "/transaksi/vausd"},
     QrisTransaksiAdmin: {path: "/transaksi/transaksi-qris"},
+    QrisIssuerAdmin: {path: "/transaksi/qris-issuer"},
     TransaksiQrisApiAdmin: {path: "/transaksi/transaksi-qris-api"},
     ExcludeSettlementManual: {path: "/settlement/exclude-settlement"},
     ProsesSettlementManual: {path: "/settlement/proses-settlement-manual"},

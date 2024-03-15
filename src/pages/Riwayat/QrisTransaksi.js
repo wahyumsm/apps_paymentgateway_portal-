@@ -193,19 +193,54 @@ const QrisTransaksi = () => {
             width: "100px"
         },
         {
+            name: 'Issuer',
+            selector: row => row.nns_name !== null ? row.nns_name : "-",
+            width: "100px"
+        },
+        {
             name: 'Nominal Transaksi',
             selector: row => convertToRupiah(row.amount, true, 2),
             width: "180px"
         },
         {
             name: 'Potongan MDR',
-            selector: row => convertToRupiah(row.MDR, true, 2),
+            selector: row => convertToRupiah(row.potongan_mdr, true, 2),
             width: "150px"
         },
         {
-            name: 'Pendapatan',
-            selector: row => convertToRupiah(row.net_amount, true, 2),
+            name: 'Transaksi Sebelum Cashback',
+            selector: row => convertToRupiah(row.trx_before_cashback, true, 2),
+            width: "250px"
+        },
+        {
+            name: 'Cashback',
+            selector: row => convertToRupiah(row.cashback, true, 2),
             width: "150px"
+        },
+        {
+            name: 'Transaksi Setelah Cashback',
+            selector: row => convertToRupiah(row.trx_after_cashback, true, 2),
+            width: "250px"
+        },
+        {
+            name: 'Biaya Tambahan',
+            selector: row => convertToRupiah(row.biaya_tambahan, true, 2),
+            width: "180px"
+        },
+        {
+            name: 'Komisi Agen',
+            selector: row => convertToRupiah(row.komisi_agen, true, 2),
+            width: "150px"
+        },
+        {
+            name: 'Pendapatan Merchant',
+            selector: row => convertToRupiah(row.pendapatan_merchant, true, 2),
+            width: "200px"
+        },
+        {
+            name: 'Pendapatan Ezeelink',
+            selector: row => convertToRupiah(row.pendapatan_ezee, true, 2),
+            width: "200px"
         },
         {
             name: 'Status',
@@ -542,7 +577,7 @@ const QrisTransaksi = () => {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, "RRN": data[i].RRN, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, "RRN": data[i].RRN, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Issuer": data[i].nns_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].potongan_mdr, "Transaksi Sebelum Cashback": data[i].trx_before_cashback, "Cashback": data[i].cashback, "Transaksi Setelah Cashback": data[i].trx_after_cashback, "Biaya Tambahan": data[i].biaya_tambahan, "Komisi Agen": data[i].komisi_agen, "Pendapatan Merchant": data[i].pendapatan_merchant, "Pendapatan Ezeelink": data[i].pendapatan_ezee, Status: data[i].status_name })
                             // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -554,7 +589,7 @@ const QrisTransaksi = () => {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, "RRN": data[i].RRN, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, "RRN": data[i].RRN, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Issuer": data[i].nns_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].potongan_mdr, "Transaksi Sebelum Cashback": data[i].trx_before_cashback, "Cashback": data[i].cashback, "Transaksi Setelah Cashback": data[i].trx_after_cashback, "Biaya Tambahan": data[i].biaya_tambahan, "Komisi Agen": data[i].komisi_agen, "Pendapatan Merchant": data[i].pendapatan_merchant, "Pendapatan Ezeelink": data[i].pendapatan_ezee, Status: data[i].status_name })
                             // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -582,7 +617,7 @@ const QrisTransaksi = () => {
                         const data = dataExportTransactionQris.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, "RRN": data[i].RRN, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, "RRN": data[i].RRN, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Issuer": data[i].nns_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].potongan_mdr, "Transaksi Sebelum Cashback": data[i].trx_before_cashback, "Cashback": data[i].cashback, "Transaksi Setelah Cashback": data[i].trx_after_cashback, "Biaya Tambahan": data[i].biaya_tambahan, "Komisi Agen": data[i].komisi_agen, "Pendapatan Merchant": data[i].pendapatan_merchant, "Pendapatan Ezeelink": data[i].pendapatan_ezee, Status: data[i].status_name })
                             // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -594,7 +629,7 @@ const QrisTransaksi = () => {
                         const data = dataExportTransactionQris.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, "RRN": data[i].RRN, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Generate QR": data[i].generate_qris_date, "Waktu Pembayaran": data[i].trans_date, "Channel Pembayaran": data[i].paymenttype_name, "RRN": data[i].RRN, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Issuer": data[i].nns_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].potongan_mdr, "Transaksi Sebelum Cashback": data[i].trx_before_cashback, "Cashback": data[i].cashback, "Transaksi Setelah Cashback": data[i].trx_after_cashback, "Biaya Tambahan": data[i].biaya_tambahan, "Komisi Agen": data[i].komisi_agen, "Pendapatan Merchant": data[i].pendapatan_merchant, "Pendapatan Ezeelink": data[i].pendapatan_ezee, Status: data[i].status_name })
                             // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].transaction_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].RRN, "Waktu": data[i].trans_date, "Nama Grup": data[i].merchant_name, "Nama Brand": data[i].outlet_name, "Nama Outlet": data[i].store_name, "Nama Kasir": data[i].cashier_name, "ID Kasir": data[i].mterminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].MDR, "Pendapatan": data[i].net_amount, Status: data[i].status_name })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -1215,7 +1250,7 @@ const QrisTransaksi = () => {
                             <h2 className="h4 mt-4" style={{ fontFamily: "Exo", fontSize: 18, fontWeight: 700 }}>Transaksi QRIS</h2>
                         </div>
                         <div className='base-content mt-3'>
-                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter in</span>
+                            <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
                             <Row className=''>
                                 <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                                     <span>ID Transaksi</span>
