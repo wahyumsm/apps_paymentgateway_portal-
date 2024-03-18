@@ -80,7 +80,7 @@ export default () => {
               history.push("/settlement/settlement-manual")
             break;
             case 1901:
-              history.push("/HelpDesk/renotifyva")
+              history.push("/helpdesk/renotifyva")
             break;
             case 2301:
               history.push("/Buat Invoice/disbursement")
@@ -128,7 +128,7 @@ export default () => {
               history.push("/managementuser")
             break;
             case 19:
-              history.push("/HelpDesk/renotifyva")
+              history.push("/helpdesk/renotifyva")
             break;
             case 20:
               history.push("/listpayment")

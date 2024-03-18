@@ -8,7 +8,8 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Button, Modal } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import noteIconRed from "../../../assets/icon/note_icon_red.svg"
+import noteIconRed from "../../../assets/icon/note_icon_red.svg";
+import filePdfQris from "../../../assets/icon/file_pdf_qris.svg";
 
 const FormInfoPemilikBadanUsaha = () => {
     const history = useHistory()
@@ -18,7 +19,8 @@ const FormInfoPemilikBadanUsaha = () => {
     const [imageKtp, setImageKtp] = useState(null)
     const [nameImageKtp, setNameImageKtp] = useState("")
     const [formatEktp, setFormatEktp] = useState(false)
-    const [uploadKtp, setUploadKtp] = useState(false)
+    const [fileSizeKtp, setFileSizeKtp] = useState(false)
+    const [uploadPdfKtp, setUploadPdfKtp] = useState(false)
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [isLoadingInfoPemilikBadanUsaha, setIsLoadingInfoPemilikBadanUsaha] = useState(false)
 
@@ -33,6 +35,12 @@ const FormInfoPemilikBadanUsaha = () => {
 
     function handleChange(e, kewarganegaraan) {
         if (e.target.name === "kewarganegaraan") {
+            setFileSizeKtp(false)
+            setUploadPdfKtp(false)
+            setFormatEktp(false)
+            setNameImageKtp("")
+            setImageFileKtp(null)
+            setImageKtp(null)
             setInputHandle({
                 ...inputHandle,
                 kewarganegaraan: Number(e.target.value),
@@ -70,31 +78,45 @@ const FormInfoPemilikBadanUsaha = () => {
     };
 
     const handleFileChangeKtp = (event) => {
-        if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
-            setFormatEktp(false)
-            if(event.target.files[0]) {
-                setImageKtp(event.target.files[0])
-                if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
-                    setUploadKtp(true)
-                    setImageFileKtp(null)
-                    setNameImageKtp("")
-                }
-                else {
-                    setNameImageKtp(event.target.files[0].name)
-                    setUploadKtp(false)
-                    const reader = new FileReader()
-                    reader.addEventListener("load", () => {
-                        setImageFileKtp(reader.result)
-                    })
-                    reader.readAsDataURL(event.target.files[0])
-                }
+        if ((event.target.files[0].name).slice(-3) === "pdf") {
+            setImageKtp(event.target.files[0])
+            setImageFileKtp(null)
+            setNameImageKtp(event.target.files[0].name)
+            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                setFileSizeKtp(true)
+                setUploadPdfKtp(false)
+            } else {
+                setFileSizeKtp(false)
+                setUploadPdfKtp(true)
             }
         } else {
-            setFormatEktp(true)
-            setUploadKtp(false)
-            setNameImageKtp("")
-            setImageFileKtp(null)
-            setImageKtp(null)
+            setUploadPdfKtp(false)
+            if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                setFormatEktp(false)
+                if(event.target.files[0]) {
+                    setImageKtp(event.target.files[0])
+                    if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                        setFileSizeKtp(true)
+                        setImageFileKtp(null)
+                        setNameImageKtp("")
+                    }
+                    else {
+                        setNameImageKtp(event.target.files[0].name)
+                        setFileSizeKtp(false)
+                        const reader = new FileReader()
+                        reader.addEventListener("load", () => {
+                            setImageFileKtp(reader.result)
+                        })
+                        reader.readAsDataURL(event.target.files[0])
+                    }
+                }
+            } else {
+                setFormatEktp(true)
+                setFileSizeKtp(false)
+                setNameImageKtp("")
+                setImageFileKtp(null)
+                setImageKtp(null)
+            }
         }
     }
 
@@ -313,52 +335,91 @@ const FormInfoPemilikBadanUsaha = () => {
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`} pemilik usaha sesuai akta pendirian / perubahan terakhir</div>
                     <div className='viewDragDrop mt-2' onClick={handleClickKtp}  style={{cursor: "pointer"}}>
                         {
-                            !imageFileKtp ?
+                            (!imageFileKtp && uploadPdfKtp === false && fileSizeKtp === false && formatEktp === false) ?
                             <>
-                                {
-                                    formatEktp === true ?
-                                    <div className='pt-4 text-center' style={{ color: "#B9121B" }}><span className='me-1'><img src={noteIconRed} alt="" /></span> Format harus .jpg</div> :
-                                    <div className='pt-4 text-center'>Masukkan foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}.</div>
-                                }
+                                <div className='pt-4 text-center'>Masukkan foto {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}.</div>
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg"
+                                    accept=".jpg, .pdf"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
                                     name="image"
                                 />
                             </>
-                                :
+                                : (imageFileKtp) ?
                             <>
                                 <img src={imageFileKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg"
+                                    accept=".jpg, .pdf"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
                                     name="image"
                                 />
-                                <div className='mt-2 ms-3'>{nameImageKtp}</div>
+                                <div className='mt-2 ms-4'>{nameImageKtp}</div>
+                            </>
+                                : (uploadPdfKtp === true) ?
+                            <>
+                                <img src={filePdfQris} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                <input
+                                    type="file"
+                                    onChange={handleFileChangeKtp}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputKtp}
+                                    id="image"
+                                    name="image"
+                                />
+                                <div className='mt-2 ms-4'>{nameImageKtp}</div>
+                            </>
+                                : (fileSizeKtp === true) ?
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>File lebih dari 500kb</div>
+                                </div>
+                                <input
+                                    type="file"
+                                    onChange={handleFileChangeKtp}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputKtp}
+                                    id="image"
+                                    name="image"
+                                />
+                            </>
+                                : (formatEktp === true) &&
+                            <>
+                                <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                    <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                    <div>Format harus .jpg atau .pdf</div>
+                                </div>
+                                <input
+                                    type="file"
+                                    onChange={handleFileChangeKtp}
+                                    accept=".jpg, .pdf"
+                                    style={{ display: "none" }}
+                                    ref={hiddenFileInputKtp}
+                                    id="image"
+                                    name="image"
+                                />
                             </>
                         }
-                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg</div>
+                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg atau .pdf</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
-                    {
-                        uploadKtp && <div className='pt-2' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}><span className='me-2'><img src={noteIconRed} alt="" /></span>Data lebih dari 500kb</div>
-                    }
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>No telepon pemilik usaha</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                         <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)} type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     <div className='text-end mt-4'>
                         <button 
-                            className={((inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (imageKtp !== null || imageFileKtp !== null) && inputHandle.noTelp.length !== 0) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
-                            disabled={(inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (imageKtp === null && imageFileKtp === null) || inputHandle.noTelp.length === 0}
+                            className={((inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (uploadPdfKtp !== false || (imageKtp !== null || imageFileKtp !== null)) && inputHandle.noTelp.length !== 0 && fileSizeKtp === false) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
+                            disabled={(inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (uploadPdfKtp === false && (imageKtp === null && imageFileKtp === null)) || inputHandle.noTelp.length === 0 || fileSizeKtp !== false}
                             onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.merchantNou, inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, 2, 1, "next", profileId === undefined ? 0 : profileId)}
                         >
                             Selanjutnya

@@ -477,7 +477,7 @@ const DetailMerchantGrup = () => {
                             <Row className='mt-1'>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_mobile}</Col>
                                 <Col xs={6} className='d-flex justify-content-start align-items-center'>
-                                    <img src={dataDetailGrup?.mprofdtl_identity_url} alt="foto 1" width="150px" height="90px" />
+                                    <img src={String(dataDetailGrup?.mprofdtl_identity_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdtl_identity_url} alt="foto 1" width="150px" height="90px" />
                                     <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdtl_identity_filename}</div>
                                 </Col>
                             </Row>
@@ -624,7 +624,7 @@ const DetailMerchantGrup = () => {
                             <Row className='mt-1'>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_no}</Col>
                                 <Col xs={6} className='d-flex justify-content-start align-items-center'>
-                                    <img src={dataDetailGrup?.mprofdtl_identity_url} alt="foto 1" width="150px" height="90px" />
+                                    <img src={String(dataDetailGrup?.mprofdtl_identity_url).slice(-3) === "pdf" ? filePdfQris : dataDetailGrup?.mprofdtl_identity_url} alt="foto 1" width="150px" height="90px" />
                                     <div className='isi-content-detail-merchant ms-2'>{dataDetailGrup?.mprofdtl_identity_filename}</div>
                                 </Col>
                             </Row>
