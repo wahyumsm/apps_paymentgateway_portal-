@@ -582,7 +582,7 @@ function DisbursementPage() {
                                             const nominalDisbursementNumberForFee = (typeof el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)] === 'string') ? Number(el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)].replaceAll(",", "").replaceAll(".", "")) : (el[(language === null ? eng.nominalDisburseStar : language.nominalDisburseStar)])
                                             const feeDisburse = nominalDisbursementNumberForFee * (resultBankFee.fee_partner / 100)
                                             const feePPN = feeDisburse * 0.11
-                                            const feeTotal = (feeDisburse + feePPN) < resultBankFee.mpartfitur_min_fee ? resultBankFee.mpartfitur_min_fee : (feeDisburse + feePPN)
+                                            const feeTotal = (feeDisburse + feePPN) < resultBankFee.mpartfitur_min_fee ? resultBankFee.mpartfitur_min_fee + (resultBankFee.mpartfitur_min_fee*0.11) : (feeDisburse + feePPN)
                                             // console.log(nominalDisbursementNumberForFee, 'nominalDisbursementNumberForFee');
                                             // console.log(feeDisburse, 'feeDisburse');
                                             // console.log(feePPN, 'feePPN');
@@ -2476,7 +2476,7 @@ function DisbursementPage() {
                             const nominalDisbursementNumberForFee = nominal
                             const feeDisburse = nominalDisbursementNumberForFee * (result.fee_partner / 100)
                             const feePPN = feeDisburse * 0.11
-                            feeTotalPercentage = (feeDisburse + feePPN) < result.mpartfitur_min_fee ? result.mpartfitur_min_fee : (feeDisburse + feePPN)
+                            feeTotalPercentage = (feeDisburse + feePPN) < result.mpartfitur_min_fee ? result.mpartfitur_min_fee + (result.mpartfitur_min_fee*0.11) : (feeDisburse + feePPN)
                         }
                     }
                     // console.log(result, "result");
@@ -3178,7 +3178,7 @@ function DisbursementPage() {
                             const nominalDisbursementNumberForFee = nominal
                             const feeDisburse = nominalDisbursementNumberForFee * (result.fee_partner / 100)
                             const feePPN = feeDisburse * 0.11
-                            feeTotalPercentage = (feeDisburse + feePPN) < result.mpartfitur_min_fee ? result.mpartfitur_min_fee : (feeDisburse + feePPN)
+                            feeTotalPercentage = (feeDisburse + feePPN) < result.mpartfitur_min_fee ? result.mpartfitur_min_fee + (result.mpartfitur_min_fee*0.11) : (feeDisburse + feePPN)
                         }
                     }
                     const dataLama = dataDisburse.find((item) => item.number === number);
