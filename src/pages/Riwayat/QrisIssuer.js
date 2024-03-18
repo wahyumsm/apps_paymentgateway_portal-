@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { BaseURL, CustomLoader, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers';
+import { BaseURL, CustomLoader, convertToRupiah, customFilter, errorCatch, getToken, setUserSession } from '../../function/helpers';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { Form, Row } from '@themesberg/react-bootstrap';
-import { Col } from 'rsuite';
+import { Form, Row, Col } from '@themesberg/react-bootstrap';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DataTable, { defaultThemes } from 'react-data-table-component';
 import Pagination from 'react-js-pagination';
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import encryptData from '../../function/encryptData';
+import ReactSelect, { components } from 'react-select';
 
 function QrisIssuer() {
 
@@ -30,6 +30,36 @@ function QrisIssuer() {
     const [dateRangeTransactionReportQrisIssuer, setDateRangeTransactionReportQrisIssuer] = useState([])
     const [stateTransactionReportQrisIssuer, setStateTransactionReportQrisIssuer] = useState(null)
     const [isFilterTransactionReportQrisIssuer, setIsFilterTransactionReportQrisIssuer] = useState(false)
+    const [dataNNS, setDataNNS] = useState([])
+    const [selectNNS, setSelectNNS] = useState([])
+
+    const customStylesSelectedOption = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: "none",
+            color: "#888888",
+            fontSize: "14px",
+            fontFamily: "Nunito"
+        }),
+        control: (provided, state) => ({
+            ...provided,
+            border: "1px solid #E0E0E0",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontFamily: "Nunito",
+            height: "40px",
+        })
+    }
+
+    const Option = (props) => {
+        return (
+            <div>
+                <components.Option {...props}>
+                    <label>{props.label}</label>
+                </components.Option>
+            </div>
+        );
+    };
 
     function handleChangeTransactionReposrtQrisIssuer(e) {
         setInputHandleTransactionReportQrisIssuerAdmin({
@@ -66,17 +96,72 @@ function QrisIssuer() {
     function handlePageChangeTransactionReportQrisIssuer(page) {
         if (isFilterTransactionReportQrisIssuer) {
             setActivePageTransactionReportQrisIssuer(page)
-            // filterGetTransactionReportQris(inputHandleTransactionReportQrisAdmin.idTransaksi, inputHandleTransactionReportQrisAdmin.rrn, selectedGrupName.length !== 0 ? selectedGrupName[0].value : 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), (selectedIdKasirName.length !== 0 ? selectedIdKasirName.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisAdmin.statusQris, inputHandleTransactionReportQrisAdmin.periode, dateRangeTransactionReportQris, page, 10, inputHandleTransactionReportQrisAdmin.channelPembayaran)
+            filterTransactionQrisIssuer(page, inputHandleTransactionReportQrisIssuerAdmin.idTransaksi, inputHandleTransactionReportQrisIssuerAdmin.jenisTransaksi, inputHandleTransactionReportQrisIssuerAdmin.namaPenerbit, inputHandleTransactionReportQrisIssuerAdmin.statusEzee, inputHandleTransactionReportQrisIssuerAdmin.statusRintis, inputHandleTransactionReportQrisIssuerAdmin.periode, dateRangeTransactionReportQrisIssuer)
         } else {
             setActivePageTransactionReportQrisIssuer(page)
-            // getTransactionReportQris(page, partnerId)
+            getTransactionReportQrisIssuer(page)
+        }
+    }
+
+    function resetButtonQrisTransactionIssuer(param) {
+        if (param === "admin") {
+            setInputHandleTransactionReportQrisIssuerAdmin({
+                idTransaksi: "",
+                jenisTransaksi: "",
+                namaPenerbit: "",
+                periode: 0,
+                statusEzee: "",
+                statusRintis: "",
+            })
+            setIsFilterTransactionReportQrisIssuer(false)
+            setShowDateTransactionReportQrisIssuer("none")
+            setDateRangeTransactionReportQrisIssuer([])
+            setStateTransactionReportQrisIssuer(null)
+            setSelectNNS([])
+            getTransactionReportQrisIssuer(1)
+        }
+    }
+
+    async function getNNSdata() {
+        try {
+            const auth = "Bearer " + getToken()
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const dataNNS = await axios.post(BaseURL + "/QRIS/QrisNNSGet", {data: ""}, {headers: headers})
+            console.log(dataNNS, 'dataNNS');
+            if (dataNNS.status === 200 && dataNNS.data.response_code === 200 && dataNNS.data.response_new_token === null) {
+                let newArr = []
+                dataNNS.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.mqrisnns_code
+                    obj.label = e.mqrisnns_name
+                    newArr.push(obj)
+                })
+                setDataNNS(newArr)
+            } else if (dataNNS.status === 200 && dataNNS.data.response_code === 200 && dataNNS.data.response_new_token !== null) {
+                setUserSession(dataNNS.data.response_new_token)
+                let newArr = []
+                dataNNS.data.response_data.forEach(e => {
+                    let obj = {}
+                    obj.value = e.mqrisnns_code
+                    obj.label = e.mqrisnns_name
+                    newArr.push(obj)
+                })
+                setDataNNS(newArr)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
         }
     }
 
     async function getTransactionReportQrisIssuer(currentPage) {
         try {
+            setActivePageTransactionReportQrisIssuer(currentPage)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "id_trans": null, "jenis_trans": "", "id_penerbit": 0, "status_ezee": "1,2,4,6,9", "status_rintis": "00, A0, 03, 05, 12, 13, 14, 30, 51, 57, 58, 59, 61, 62, 65, 68, 90, 91,92, 94, 96, 99", "period": 7, "date_from": "2024-02-10", "date_to": "2024-02-14", "page": 0, "row_per_page": 10 }`)
+            const dataParams = encryptData(`{ "id_trans": null, "jenis_trans": "", "id_penerbit": "", "status_ezee": "1,2,4,6,9", "status_rintis": "00, A0, 03, 05, 12, 13, 14, 30, 51, 57, 58, 59, 61, 62, 65, 68, 90, 91,92, 94, 96, 99", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 10 }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -103,7 +188,42 @@ function QrisIssuer() {
         }
     }
 
+    async function filterTransactionQrisIssuer(page, idTrans, jenisTrans, idPenerbit, statusEZ, statusRintis, periode, dateRange) {
+        try {
+            setIsFilterTransactionReportQrisIssuer(true)
+            console.log(page, 'page');
+            console.log(periode, 'periode');
+            console.log(dateRange, 'dateRange');
+            const auth = "Bearer " + getToken()
+            const dataParams = encryptData(`{ "id_trans": ${idTrans.length !== 0 ? JSON.stringify(idTrans) : null}, "jenis_trans": "${jenisTrans}", "id_penerbit": "${idPenerbit}", "status_ezee": "${statusEZ.length !== 0 ? statusEZ : "1,2,4,6,9"}", "status_rintis": "${statusRintis.length !== 0 ? statusRintis : "00, A0, 03, 05, 12, 13, 14, 30, 51, 57, 58, 59, 61, 62, 65, 68, 90, 91, 92, 94, 96, 99"}", "period": ${periode !== 0 ? periode : 2}, "date_from": "${dateRange.length !== 0 ? dateRange[0] : ""}", "date_to": "${dateRange.length !== 0 ? dateRange[1] : ""}", "page": ${page}, "row_per_page": 10 }`)
+            const headers = {
+                'Content-Type':'application/json',
+                'Authorization' : auth
+            }
+            const filteredDataQrisIssuer = await axios.post(BaseURL + "/QRIS/QrisTransactionReportIssuer", {data: dataParams}, {headers: headers})
+            // console.log(filteredDataQrisIssuer, 'filteredDataQrisIssuer');
+            if (filteredDataQrisIssuer.status === 200 && filteredDataQrisIssuer.data.response_code === 200 && filteredDataQrisIssuer.data.response_new_token === null) {
+                filteredDataQrisIssuer.data.response_data.results = filteredDataQrisIssuer.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
+                setPageNumberTransactionReportQrisIssuer(filteredDataQrisIssuer.data.response_data)
+                setTotalPageTransactionReportQrisIssuer(filteredDataQrisIssuer.data.response_data.max_page)
+                setDataTransactionReportQrisIssuer(filteredDataQrisIssuer.data.response_data.results)
+                setPendingTransactionReportQrisIssuer(false)
+            } else if (filteredDataQrisIssuer.status === 200 && filteredDataQrisIssuer.data.response_code === 200 && filteredDataQrisIssuer.data.response_new_token !== null) {
+                setUserSession(filteredDataQrisIssuer.data.response_new_token)
+                filteredDataQrisIssuer.data.response_data.results = filteredDataQrisIssuer.data.response_data.results.map((obj, idx) => ({...obj, number: (page > 1) ? (idx + 1)+((page - 1) * 10) : idx + 1}))
+                setPageNumberTransactionReportQrisIssuer(filteredDataQrisIssuer.data.response_data)
+                setTotalPageTransactionReportQrisIssuer(filteredDataQrisIssuer.data.response_data.max_page)
+                setDataTransactionReportQrisIssuer(filteredDataQrisIssuer.data.response_data.results)
+                setPendingTransactionReportQrisIssuer(false)
+            }
+        } catch (error) {
+            // console.log(error);
+            history.push(errorCatch(error.response.status))
+        }
+    }
+
     useEffect(() => {
+        getNNSdata()
         getTransactionReportQrisIssuer(activePageTransactionReportQrisIssuer)
     }, [])
 
@@ -139,6 +259,7 @@ function QrisIssuer() {
         {
             name: 'Nama Penerbit QR',
             selector: row => row.nama_penerbit !== null ? row.nama_penerbit : "-",
+            wrap: true,
             width: "200px"
         },
         {
@@ -165,18 +286,19 @@ function QrisIssuer() {
             name: 'Status Ezee',
             selector: row => row.status_ezee,
             style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
+            wrap: true,
             conditionalCellStyles: [
                 {
                     when: row => row.status_id === 9 || row.status_id === 5 || row.status_id === 3,
-                    style: { background: "#FEF4E9", color: "#F79421"}
+                    style: { background: "#FEF4E9", color: "#F79421"} //bg: silver
                 },
                 {
                     when: row => row.id_ezee === 2,
-                    style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86"}
+                    style: { background: "#077e8614", color: "#077E86"} //bg: biru
                 },
                 {
                     when: row => row.status_id === 7 || row.status_id === 6 || row.status_id === 4,
-                    style: { background: "#FDEAEA", color: "#EE2E2C"}
+                    style: { background: "#FDEAEA", color: "#EE2E2C"}// bg: merah
                 },
             ]
         },
@@ -184,6 +306,7 @@ function QrisIssuer() {
             name: 'Status RINTIS',
             selector: row => row.status_rintis,
             style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
+            wrap: true,
             conditionalCellStyles: [
                 {
                     when: row => row.status_id === 9 || row.status_id === 5 || row.status_id === 3,
@@ -231,7 +354,7 @@ function QrisIssuer() {
             </div>
             <div className='base-content mt-3'>
                 <span className='font-weight-bold mb-4' style={{fontWeight: 600}}>Filter</span>
-                <Row className=''>
+                <Row>
                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                         <span>ID Transaksi</span>
                         <input name="idTransaksi" value={inputHandleTransactionReportQrisIssuerAdmin.idTransaksi} onChange={(e) => handleChangeTransactionReposrtQrisIssuer(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
@@ -239,14 +362,27 @@ function QrisIssuer() {
                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                         <span>Jenis Transaksi</span>
                         <Form.Select name='jenisTransaksi' value={inputHandleTransactionReportQrisIssuerAdmin.jenisTransaksi} onChange={(e) => handleChangeTransactionReposrtQrisIssuer(e)} className="input-text-riwayat ms-3">
-                            <option defaultChecked disabled value={0}>Pilih Jenis Transaksi</option>
-                            <option value={1}>Off Us</option>
-                            <option value={2}>On Us</option>
+                            <option defaultChecked disabled value={""}>Pilih Jenis Transaksi</option>
+                            <option value={"1"}>Off Us</option>
+                            <option value={"93600922"}>On Us</option>
                         </Form.Select>
                     </Col>
                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                         <span>Nama Penerbit</span>
-                        <input name="namaPenerbit" value={inputHandleTransactionReportQrisIssuerAdmin.namaPenerbit} onChange={(e) => handleChangeTransactionReposrtQrisIssuer(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/>
+                        <div className="dropdown dropSaldoPartner" style={{ width: "15.6rem" }}>
+                            <ReactSelect
+                                closeMenuOnSelect={true}
+                                hideSelectedOptions={false}
+                                options={dataNNS}
+                                value={selectNNS}
+                                onChange={(selected) => setSelectNNS([selected])}
+                                placeholder="Pilih Nama Penerbit"
+                                components={{ Option }}
+                                styles={customStylesSelectedOption}
+                                filterOption={customFilter}
+                            />
+                        </div>
+                        {/* <input name="namaPenerbit" value={inputHandleTransactionReportQrisIssuerAdmin.namaPenerbit} onChange={(e) => handleChangeTransactionReposrtQrisIssuer(e)} type='text'className='input-text-riwayat ms-3' placeholder='Masukkan ID Transaksi'/> */}
                     </Col>
                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                         <span>Periode <span style={{ color: "red" }}>*</span></span>
@@ -293,18 +429,18 @@ function QrisIssuer() {
                         <Row>
                             <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                 <button
-                                    // onClick={() => filterGetTransactionReportQris(inputHandleTransactionReportQrisAdmin.idTransaksi, inputHandleTransactionReportQrisAdmin.rrn, selectedGrupName.length !== 0 ? selectedGrupName.map((item, idx) => item.value) : 0, (selectedBrandName.length !== 0 ? selectedBrandName.map((item, idx) => item.value) : 0), (selectedOutletName.length !== 0 ? selectedOutletName.map((item, idx) => item.value) : 0), (selectedIdKasirName.length !== 0 ? selectedIdKasirName.map((item, idx) => item.value) : 0), inputHandleTransactionReportQrisAdmin.statusQris, inputHandleTransactionReportQrisAdmin.periode, dateRangeTransactionReportQris, 1, 10, inputHandleTransactionReportQrisAdmin.channelPembayaran)}
-                                    // className={(inputHandleTransactionReportQrisAdmin.periode !== 0 || dateRangeTransactionReportQris.length !== 0 || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.idTransaksi.length !== 0) || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.rrn.length !== 0) || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.statusQris.length !== 0) ? 'btn-ez-on' : 'btn-ez')}
-                                    // disabled={inputHandleTransactionReportQrisAdmin.periode === 0 || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.idTransaksi.length === 0) || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.rrn.length === 0) || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.statusQris.length === 0)}
+                                    onClick={() => filterTransactionQrisIssuer(1, inputHandleTransactionReportQrisIssuerAdmin.idTransaksi, inputHandleTransactionReportQrisIssuerAdmin.jenisTransaksi, inputHandleTransactionReportQrisIssuerAdmin.namaPenerbit, inputHandleTransactionReportQrisIssuerAdmin.statusEzee, inputHandleTransactionReportQrisIssuerAdmin.statusRintis, inputHandleTransactionReportQrisIssuerAdmin.periode, dateRangeTransactionReportQrisIssuer)}
+                                    className={(inputHandleTransactionReportQrisIssuerAdmin.periode === 0 || (inputHandleTransactionReportQrisIssuerAdmin.periode === 7 && dateRangeTransactionReportQrisIssuer.length === 0)) ? "btn-ez" : "btn-ez-on"}
+                                    disabled={(inputHandleTransactionReportQrisIssuerAdmin.periode === 0 || (inputHandleTransactionReportQrisIssuerAdmin.periode === 7 && dateRangeTransactionReportQrisIssuer.length === 0))}
                                 >
                                     Terapkan
                                 </button>
                             </Col>
                             <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                 <button
-                                    // onClick={() => resetButtonQrisTransaction("admin")}
-                                    // className={(inputHandleTransactionReportQrisAdmin.periode !== 0 || dateRangeTransactionReportQris.length !== 0 || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.idTransaksi.length !== 0) || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.rrn.length !== 0) || (dateRangeTransactionReportQris.length !== 0 && inputHandleTransactionReportQrisAdmin.statusQris.length !== 0) ? 'btn-reset' : 'btn-ez-reset')}
-                                    // disabled={inputHandleTransactionReportQrisAdmin.periode === 0 || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.idTransaksi.length === 0) || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.rrn.length === 0) || (inputHandleTransactionReportQrisAdmin.periode === 0 && inputHandleTransactionReportQrisAdmin.statusQris.length === 0)}
+                                    onClick={() => resetButtonQrisTransactionIssuer("admin")}
+                                    className={(inputHandleTransactionReportQrisIssuerAdmin.periode === 0 || (inputHandleTransactionReportQrisIssuerAdmin.periode === 7 && dateRangeTransactionReportQrisIssuer.length === 0)) ? "btn-ez-reset" : "btn-reset"}
+                                    disabled={(inputHandleTransactionReportQrisIssuerAdmin.periode === 0 || (inputHandleTransactionReportQrisIssuerAdmin.periode === 7 && dateRangeTransactionReportQrisIssuer.length === 0))}
                                 >
                                     Atur Ulang
                                 </button>
