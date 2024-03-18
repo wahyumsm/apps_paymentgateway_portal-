@@ -525,10 +525,10 @@ const FormInfoUsahaBadanUsaha = () => {
                     <div className='pt-2 d-flex justify-content-end align-items-center'>
                         <input name="namaBrand" value={inputHandle.namaBrand} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukkan nama brand / toko' type='text' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Jumlah kasir (counter pembayaran)</div>
+                    {/* <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Jumlah kasir (counter pembayaran)</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center jumlahKasir' style={{ width:"7%" }}>
-                        <input name="jumlahKasir" value={inputHandle.jumlahKasir} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='0' type='number' min={0} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                    </div>
+                        <input name="jumlahKasir" value={inputHandle.jumlahKasir} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='0' type='number' min={0} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} />
+                    </div> */}
                     {
                         alertMaxJumlahKasir ? 
                         <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
@@ -831,9 +831,9 @@ const FormInfoUsahaBadanUsaha = () => {
                                 (inputHandle.bentukPerusahaan === 1 || inputHandle.bentukPerusahaan === 2 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0)) && 
                                 inputHandle.emailPerusahaan.length !== 0 && 
                                 inputHandle.namaBrand.length !== 0 && 
-                                Number(inputHandle.jumlahKasir) !== 0 &&
-                                inputHandle.jumlahKasir !== undefined && 
-                                Number(inputHandle.jumlahKasir) <= 1500 &&
+                                // Number(inputHandle.jumlahKasir) !== 0 &&
+                                // inputHandle.jumlahKasir !== undefined && 
+                                // Number(inputHandle.jumlahKasir) <= 1500 &&
                                 inputHandle.pendapatanPertahun !== 0 && 
                                 selectedDataKategoriUsaha.length !== 0 &&
                                 inputHandle.alamatUsaha.length !== 0 && 
@@ -849,9 +849,9 @@ const FormInfoUsahaBadanUsaha = () => {
                                 (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0) || 
                                 inputHandle.emailPerusahaan.length === 0 || 
                                 inputHandle.namaBrand.length === 0 ||
-                                Number(inputHandle.jumlahKasir) === 0 || 
-                                inputHandle.jumlahKasir === undefined ||
-                                Number(inputHandle.jumlahKasir) > 1500 ||
+                                // Number(inputHandle.jumlahKasir) === 0 || 
+                                // inputHandle.jumlahKasir === undefined ||
+                                // Number(inputHandle.jumlahKasir) > 1500 ||
                                 inputHandle.pendapatanPertahun === 0 || 
                                 selectedDataKategoriUsaha.length === 0 ||
                                 inputHandle.alamatUsaha.length === 0 || 
