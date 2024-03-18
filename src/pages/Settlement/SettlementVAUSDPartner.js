@@ -41,29 +41,37 @@ function SettlementVAUSDPartner() {
             }
             // console.log(dataParams, 'dataParams');
             const dataListMerchant = await axios.post(BaseURL + "/VirtualAccountUSD/MerchantVAUSD", {data: dataParams}, {headers: headers})
-            // console.log(dataListMerchant, "dataListMerchant");
+            console.log(dataListMerchant.data.response_data.results, "dataListMerchant.data.response_data.results");
             if (dataListMerchant.status === 200 && dataListMerchant.data.response_code === 200 && dataListMerchant.data.response_new_token === null) {
-                let newArr = []
-                dataListMerchant.data.response_data.results.forEach(e => {
-                    let obj = {}
-                    obj.value = e.mpartner_id
-                    obj.label = e.mpartner_name
-                    newArr.push(obj)
-                })
-                setListMerchant(newArr)
+                if (dataListMerchant.data.response_data.results !== null) {
+                    let newArr = []
+                    dataListMerchant.data.response_data.results.forEach(e => {
+                        let obj = {}
+                        obj.value = e.mpartner_id
+                        obj.label = e.mpartner_name
+                        newArr.push(obj)
+                    })
+                    setListMerchant(newArr)
+                } else {
+                    setListMerchant([])
+                }
             } else if (dataListMerchant.status === 200 && dataListMerchant.data.response_code === 200 && dataListMerchant.data.response_new_token !== null) {
                 setUserSession(dataListMerchant.data.response_new_token)
-                let newArr = []
-                dataListMerchant.data.response_data.results.forEach(e => {
-                    let obj = {}
-                    obj.value = e.mpartner_id
-                    obj.label = e.mpartner_name
-                    newArr.push(obj)
-                })
-                setListMerchant(newArr)
+                if (dataListMerchant.data.response_data.results !== null) {
+                    let newArr = []
+                    dataListMerchant.data.response_data.results.forEach(e => {
+                        let obj = {}
+                        obj.value = e.mpartner_id
+                        obj.label = e.mpartner_name
+                        newArr.push(obj)
+                    })
+                    setListMerchant(newArr)
+                } else {
+                    setListMerchant([])
+                }
             }
         } catch (error) {
-            // console.log(error);
+            console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }

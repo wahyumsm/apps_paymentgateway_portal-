@@ -1,15 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
-import { Col, Image, OverlayTrigger, Row, Tooltip } from '@themesberg/react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import loadingEzeelink from "../../../assets/img/technologies/Double Ring-1s-303px.svg"
+import { Col, Row } from '@themesberg/react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers';
 import axios from 'axios';
 import ReactSelect, { components } from 'react-select';
-import noteIconRed from "../../../assets/icon/note_icon_red.svg"
 import encryptData from '../../../function/encryptData';
+import filePdfQris from "../../../assets/icon/file_pdf_qris.svg";
 
 const DetailMerchantOutlet = () => {
     const history = useHistory()
@@ -28,7 +25,6 @@ const DetailMerchantOutlet = () => {
     const [nameImageSelfieKtp, setNameImageSelfieKtp] = useState("")
     const [uploadSelfieKtp, setUploadSelfieKtp] = useState(false)
 
-    const [getDataFirstStep, setGetDataFirstStep] = useState({})
     const [dataList, setDataList] = useState([])
     const [selectedDataGrup, setSelectedDataGrup] = useState([])
     const [dataListBrand, setDataListBrand] = useState([])
@@ -490,7 +486,7 @@ const DetailMerchantOutlet = () => {
                             </>
                                 :
                             <>
-                                <img src={imageFileKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                                <img src={String(imageFileKtp).slice(-3) === "pdf" ? filePdfQris : imageFileKtp} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
