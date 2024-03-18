@@ -41,7 +41,7 @@ function SettlementVAUSDPartner() {
             }
             // console.log(dataParams, 'dataParams');
             const dataListMerchant = await axios.post(BaseURL + "/VirtualAccountUSD/MerchantVAUSD", {data: dataParams}, {headers: headers})
-            console.log(dataListMerchant.data.response_data.results, "dataListMerchant.data.response_data.results");
+            // console.log(dataListMerchant.data.response_data.results, "dataListMerchant.data.response_data.results");
             if (dataListMerchant.status === 200 && dataListMerchant.data.response_code === 200 && dataListMerchant.data.response_new_token === null) {
                 if (dataListMerchant.data.response_data.results !== null) {
                     let newArr = []
@@ -71,7 +71,7 @@ function SettlementVAUSDPartner() {
                 }
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
